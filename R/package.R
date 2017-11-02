@@ -34,5 +34,9 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 #' @inheritParams pkginstall::install_packages
 #' @export
 pkg_install_local <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
-  pkg_install(pkgdepends::remotes$new(paste0("local::", path), library = lib), lib =lib, num_workers = num_workers)
+
+  # Construct a local spec
+  pkg <- paste0("local::", path)
+
+  pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
 }
