@@ -40,3 +40,10 @@ repo_deactivate <- function(repo) {
   options(repos = repos)
   invisible(old)
 }
+
+#' Repository status
+#' @export
+repo_status <- function() {
+  repos <- getOption("repos")
+  data.frame(type = names(repos), url = repos, row.names = NULL)
+}
