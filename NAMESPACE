@@ -3,6 +3,7 @@
 export(lib_activate)
 export(lib_create)
 export(lib_deactivate)
+export(lib_temporary)
 export(local_pkg_install)
 export(pkg_install)
 export(pkg_remove)

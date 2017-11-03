@@ -28,3 +28,14 @@ lib_deactivate <- function(lib) {
   old <- .libPaths()
   .libPaths(setdiff(old, lib))
 }
+
+#' Create a session specific temporary library
+#'
+#' @param dir Directory to create the library in
+#' @inheritParams base::tempfile
+#' @export
+lib_temporary <- function(dir = tempdir(), pattern = "library-") {
+  lib <- tempfile(pattern = pattern, tmpdir = dir)
+  dir.create(lib)
+  lib_activate(lib)
+}
