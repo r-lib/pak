@@ -33,7 +33,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 #' @param path to the local package
 #' @inheritParams pkginstall::install_packages
 #' @export
-pkg_install_local <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
+local_pkg_install <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Construct a local spec
   pkg <- paste0("local::", path)
