@@ -13,3 +13,13 @@ merge_new <- function(old, new, action = match.arg(action, c("replace", "prepend
     replace = new
   )
 }
+
+names2 <- function(x) {
+  nms <- names(x)
+  if (is.null(nms)) {
+    rep("", length(x))
+  } else {
+    nms[is.na(nms)] <- ""
+    nms
+  }
+}
