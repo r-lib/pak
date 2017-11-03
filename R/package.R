@@ -40,3 +40,13 @@ pkg_install_local <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
 }
+
+#' Remove installed packages
+#'
+#' @param pkg A character vector of packages to remove.
+#' @param lib library to remove packages from
+#' @export
+pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
+  # TODO: do we need to do anything else for this?
+  suppressMessages(utils::remove.packages(pkg, lib))
+}
