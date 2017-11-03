@@ -2,7 +2,8 @@
 % Please edit documentation in R/package.R
 \name{pkg_remove}
 \alias{pkg_remove}
-\title{Remove installed packages}
+\title{Display installed locations of a package
+Remove installed packages}
 \usage{
 pkg_remove(pkg, lib = .libPaths()[[1L]])
 }
@@ -12,5 +13,6 @@ pkg_remove(pkg, lib = .libPaths()[[1L]])
 \item{lib}{library to remove packages from}
 }
 \description{
+Display installed locations of a package
 Remove installed packages
 }

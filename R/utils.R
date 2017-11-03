@@ -23,3 +23,19 @@ names2 <- function(x) {
     nms
   }
 }
+
+vcapply <- function(X, FUN, ...) {
+  vapply(X, FUN, FUN.VALUE = character(1), ...)
+}
+
+vlapply <- function(X, FUN, ...) {
+  vapply(X, FUN, FUN.VALUE = logical(1), ...)
+}
+
+viapply <- function(X, FUN, ...) {
+  vapply(X, FUN, FUN.VALUE = integer(1), ...)
+}
+
+vdapply <- function(X, FUN, ...) {
+  vapply(X, FUN, FUN.VALUE = double(1), ...)
+}

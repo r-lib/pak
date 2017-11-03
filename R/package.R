@@ -41,6 +41,14 @@ local_pkg_install <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
   pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
 }
 
+##' Display installed locations of a package
+#pkg_status <- function(package, libraries = .libPaths()) {
+  #desc <- lapply(libraries, function(lib) {
+    #packageDescription(package, lib.loc = lib, fields = c("Version", "Built"))
+  #})
+  #desc
+#}
+
 #' Remove installed packages
 #'
 #' @param pkg A character vector of packages to remove.

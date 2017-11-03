@@ -12,7 +12,7 @@ lib_deactivate(lib)
 \arguments{
 \item{lib}{The library directory}
 
-\item{action}{\code{[character(1)]} Should lib \code{"replace'}, \code{"prepend"} or \code{"append"} the existing library paths.}
+\item{action}{\code{[character(1)]} Should lib \code{"replace"}, \code{"prepend"} or \code{"append"} the existing library paths.}
 }
 \description{
 Activate or deactivate a given library

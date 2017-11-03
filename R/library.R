@@ -10,7 +10,7 @@ lib_create <- function(lib) {
 
 #' Activate or deactivate a given library
 #'
-#' @param action `[character(1)]` Should lib `"replace'`, `"prepend"` or `"append"` the existing library paths.
+#' @param action `[character(1)]` Should lib `"replace"`, `"prepend"` or `"append"` the existing library paths.
 #' @inheritParams lib_create
 #' @export
 lib_activate <- function(lib, action = "replace") {

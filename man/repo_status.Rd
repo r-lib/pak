@@ -6,6 +6,15 @@
 \usage{
 repo_status()
 }
+\value{
+A data.frame with the following columns
+\itemize{
+\item type - The repository type
+\item url - The repository URL
+\item time - Total time taken for a HEAD request to the repositiory
+\item last_modified - Last time the repositiory was updated
+}
+}
 \description{
 Repository status
 }

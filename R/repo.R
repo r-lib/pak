@@ -3,8 +3,7 @@
 #' @param ... One or more repositories to set. If a repository is unnamed it is
 #'   assumed to be the CRAN repository.
 #' @export
-repo_activate <- function(...) {
-  repo <- unlist(list(...))
+repo_activate <- function(repo) {
   nms <- names2(repo)
 
   if (sum(nms == "") > 1) {
@@ -42,8 +41,29 @@ repo_deactivate <- function(repo) {
 }
 
 #' Repository status
+#' @importFrom async async http_head async_map synchronise http_stop_for_status
+#' @importFrom tibble tibble
+#' @return A data.frame with the following columns
+#' - type - The repository type
+#' - url - The repository URL
+#' - time - Total time in seconds taken for a HEAD request to the repositiory
+#' - last_modified - Last time the repositiory was updated
 #' @export
 repo_status <- function() {
   repos <- getOption("repos")
-  data.frame(type = names(repos), url = repos, row.names = NULL)
+
+  # TODO: how to hangdle
+  resp_vals <- async(function(url, ...) {
+      http_head(url, ...)$
+      then(http_stop_for_status)$
+      then(function(resp) list(time = resp$times[["total"]], last_modified = resp$modified))$
+      catch(function(err) list(time = NA_real_, last_modified = as.POSIXct(NA)))#, last_modified = as.POSIXct(0)))
+  })
+
+  res <- synchronise(async_map(unname(repos), resp_vals, timeout = 2))
+  time <- vdapply(res, "[[", "time")
+  last_modified <- do.call(c, lapply(res, "[[", "last_modified"))
+
+  tibble(type = names(repos), url = repos, time = time, last_modified = last_modified)
 }
+

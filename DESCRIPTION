@@ -10,7 +10,9 @@ ByteCompile: true
 RoxygenNote: 6.0.1
 Imports:
     pkgdepends,
-    pkginstall
+    pkginstall,
+    tibble,
+    async
 Remotes:
   r-lib/pkgdepends,
   r-lib/pkginstall
