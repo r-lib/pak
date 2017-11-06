@@ -4,14 +4,17 @@
 \alias{repo_status}
 \title{Repository status}
 \usage{
-repo_status()
+repo_status(repos = getOption("repos"))
+}
+\arguments{
+\item{repos}{Repositories of which to check status.}
 }
 \value{
 A data.frame with the following columns
 \itemize{
 \item type - The repository type
 \item url - The repository URL
-\item time - Total time taken for a HEAD request to the repositiory
+\item time - Total time in seconds taken for a HEAD request to the repositiory
 \item last_modified - Last time the repositiory was updated
 }
 }

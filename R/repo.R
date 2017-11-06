@@ -41,6 +41,8 @@ repo_deactivate <- function(repo) {
 }
 
 #' Repository status
+#'
+#' @param repos Repositories of which to check status.
 #' @importFrom async async http_head async_map synchronise http_stop_for_status
 #' @importFrom tibble tibble
 #' @return A data.frame with the following columns
@@ -49,8 +51,7 @@ repo_deactivate <- function(repo) {
 #' - time - Total time in seconds taken for a HEAD request to the repositiory
 #' - last_modified - Last time the repositiory was updated
 #' @export
-repo_status <- function() {
-  repos <- getOption("repos")
+repo_status <- function(repos = getOption("repos")) {
 
   # TODO: how to hangdle
   resp_vals <- async(function(url, ...) {

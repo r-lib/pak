@@ -4,7 +4,7 @@
 \alias{repo_activate}
 \title{Activiate a repository}
 \usage{
-repo_activate(...)
+repo_activate(repo)
 }
 \arguments{
 \item{...}{One or more repositories to set. If a repository is unnamed it is
