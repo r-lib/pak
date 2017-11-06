@@ -41,13 +41,30 @@ local_pkg_install <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
   pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
 }
 
-##' Display installed locations of a package
-#pkg_status <- function(package, libraries = .libPaths()) {
-  #desc <- lapply(libraries, function(lib) {
-    #packageDescription(package, lib.loc = lib, fields = c("Version", "Built"))
-  #})
-  #desc
-#}
+#' Display installed locations of a package
+#'
+#' @param pkg Name of an installed package to display status for.
+#' @param lib One or more library paths to lookup package status in.
+#' @export
+pkg_status <- function(pkg, lib = .libPaths()) {
+  stopifnot(length(pkg == 1 && is.character(pkg)))
+
+  desc <- lapply(lib, function(lib) {
+    res <- suppressWarnings(packageDescription(pkg, lib.loc = lib, fields = c("Version", "Built")))
+  })
+  found <- !is.na(desc)
+  versions <- vcapply(desc[found], "[[", "Version")
+  built <- split_built(vcapply(desc[found], "[[", "Built"))
+  tibble::tibble(!!! append(list(library = lib[found], version = versions), built))
+}
+
+split_built <- function(built) {
+  nms <- c("build_r_version", "build_platform", "build_date", "build_os")
+  if (length(built) < 1) {
+    return(setNames(list(character(0), character(0), character(0), character(0)), nms))
+  }
+  setNames(as.list(strsplit(built, "; ")[[1L]]), nms)
+}
 
 #' Remove installed packages
 #'
