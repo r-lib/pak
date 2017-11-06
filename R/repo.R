@@ -57,7 +57,7 @@ repo_status <- function() {
       http_head(url, ...)$
       then(http_stop_for_status)$
       then(function(resp) list(time = resp$times[["total"]], last_modified = resp$modified))$
-      catch(function(err) list(time = NA_real_, last_modified = as.POSIXct(NA)))#, last_modified = as.POSIXct(0)))
+      catch(function(err) list(time = NA_real_, last_modified = as.POSIXct(NA)))
   })
 
   res <- synchronise(async_map(unname(repos), resp_vals, timeout = 2))
@@ -66,4 +66,3 @@ repo_status <- function() {
 
   tibble(type = names(repos), url = repos, time = time, last_modified = last_modified)
 }
-
