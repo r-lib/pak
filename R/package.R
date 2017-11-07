@@ -3,6 +3,8 @@
 #' Install a package and it's dependencies.
 #' @param pkg A package specification. See [pkgdepends::remotes] for details.
 #' @inheritParams pkginstall::install_packages
+#' @importFrom pkgdepends remotes
+#' @importFrom pkginstall install_packages
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   if (is_uri(pkg)) {
@@ -10,7 +12,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   }
 
   # Install from CRAN
-  r <- pkgdepends::remotes$new(pkg, library = lib)
+  r <- remotes$new(pkg, library = lib)
 
   # Solve the dependency graph
   r$solve()
@@ -30,25 +32,27 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   }
 
   # Install what is left
-  pkginstall::install_packages(plan$file, lib = lib, plan = plan, num_workers = num_workers)
+  install_packages(plan$file, lib = lib, plan = plan, num_workers = num_workers)
 }
 
 #' Install a local development package
 #' @param path to the local package
 #' @inheritParams pkginstall::install_packages
+#' @importFrom pkgdepends remotes
 #' @export
 local_pkg_install <- function(path, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Construct a local spec
   pkg <- paste0("local::", path)
 
-  pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
+  pkg_install(remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
 }
 
 #' Display installed locations of a package
 #'
 #' @param pkg Name of an installed package to display status for.
 #' @param lib One or more library paths to lookup package status in.
+#' @importFrom tibble tibble
 #' @export
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1 && is.character(pkg)))
@@ -59,7 +63,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   found <- !is.na(desc)
   versions <- vcapply(desc[found], "[[", "Version")
   built <- split_built(vcapply(desc[found], "[[", "Built"))
-  tibble::tibble(!!! append(list(library = lib[found], version = versions), built))
+  tibble(!!! append(list(library = lib[found], version = versions), built))
 }
 
 split_built <- function(built) {
@@ -74,8 +78,9 @@ split_built <- function(built) {
 #'
 #' @param pkg A character vector of packages to remove.
 #' @param lib library to remove packages from
+#' @importFrom utils remove.packages
 #' @export
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   # TODO: do we need to do anything else for this?
-  suppressMessages(utils::remove.packages(pkg, lib))
+  suppressMessages(remove.packages(pkg, lib))
 }
