@@ -20,10 +20,6 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   # Actually download packages as needed
   r$download_solution()
 
-  # Workaround https://github.com/r-lib/pkgdepends/issues/42
-  # TODO: remove once that is fixed
-  r$download_solution()
-
   # Get the installation plan and ignore already installed versions.
   plan <- r$get_install_plan()
   plan <- plan[plan$type != "installed", ]
