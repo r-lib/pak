@@ -27,7 +27,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   uninstalled_plan <- dependencies[dependencies$type != "installed", ]
   if (nrow(uninstalled_plan) == 0) {
     message(glue::glue("
-        {green_tick()} {blue(pkg)} and it's {blue(nrow(dependencies))} \\
+        {green_tick()} {blue(pkg)} and its {blue(nrow(dependencies))} \\
         dependencies already installed"))
     return(invisible(plan))
   }
