@@ -23,7 +23,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Get the installation plan and ignore already installed versions.
   plan <- r$get_install_plan()
-  dependencies <- plan[plan$package != pkg, ]
+  dependencies <- plan[!plan$direct, ]
   uninstalled_plan <- dependencies[dependencies$type != "installed", ]
   if (nrow(uninstalled_plan) == 0) {
     message(glue::glue("
