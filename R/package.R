@@ -33,7 +33,8 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   }
 
   # Install what is left
-  install_packages(plan$file, lib = lib, plan = plan, num_workers = num_workers)
+  install_packages(needs_install$file, lib = lib, plan = needs_install,
+                   num_workers = num_workers)
 }
 
 #' Install a local development package
