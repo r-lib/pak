@@ -24,3 +24,5 @@ Remotes:
   r-lib/pkgdepends,
   r-lib/pkginstall
 Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 3.1)
