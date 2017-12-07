@@ -1,5 +1,6 @@
 #' Activiate a repository
 #'
+#' @param repo name of repository to activate.
 #' @param ... One or more repositories to set. If a repository is unnamed it is
 #'   assumed to be the CRAN repository.
 #' @export

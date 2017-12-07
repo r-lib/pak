@@ -7,6 +7,8 @@
 repo_activate(repo)
 }
 \arguments{
+\item{repo}{name of repository to activate.}
+
 \item{...}{One or more repositories to set. If a repository is unnamed it is
 assumed to be the CRAN repository.}
 }
