@@ -11,10 +11,15 @@ LazyData: true
 ByteCompile: true
 RoxygenNote: 6.0.1
 Imports:
-    pkgdepends,
-    pkginstall,
-    tibble,
-    async
+    pkgdepends (>= 0.0.0.9000),
+    pkginstall (>= 0.0.0.9000),
+    tibble (>= 1.3.4),
+    clisymbols (>= 1.2.0),
+    crayon (>= 1.3.4),
+    rematch2 (>= 2.0.0),
+    rex (>= 1.1.2),
+    async (>= 0.0.0.9000),
+    glue (>= 1.2.0)
 Remotes:
   r-lib/pkgdepends,
   r-lib/pkginstall

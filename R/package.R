@@ -55,6 +55,8 @@ local_pkg_install <- function(path = ".", lib = .libPaths()[[1L]], num_workers =
 #' @param pkg Name of an installed package to display status for.
 #' @param lib One or more library paths to lookup package status in.
 #' @importFrom tibble tibble
+#' @importFrom stats setNames
+#' @importFrom utils packageDescription
 #' @export
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1 && is.character(pkg)))
