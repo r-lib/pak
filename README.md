@@ -1,9 +1,15 @@
-# pkgman
+pkgman
+------
+
 [![Travis build status](https://travis-ci.org/r-lib/pkgman.svg?branch=master)](https://travis-ci.org/r-lib/pkgman)
 
+Overview
+--------
 The goal of pkgman is to install packages and manage libraries and repositories.
 
-## Installation
+
+Installation
+------------
 You can install the development version from github:
 
 ```r
@@ -11,7 +17,9 @@ You can install the development version from github:
 devtools::install_github("r-lib/pkgman")
 ```
 
-## Usage
+Usage
+-----
+
 ```r
 library(pkgman)
 
