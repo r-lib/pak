@@ -4,8 +4,15 @@
 The goal of pkgman is to install packages and manage libraries and repositories.
 
 ## Installation
+You can install the development version from github:
 
-``` r
+```r
+# install.packages("devtools")
+devtools::install_github("r-lib/pkgman")
+```
+
+## Usage
+```r
 library(pkgman)
 
 pkg_install("dplyr", num_workers = 4)
