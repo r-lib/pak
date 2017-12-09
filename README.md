@@ -8,6 +8,11 @@ Overview
 The goal of pkgman is to install packages and manage libraries and repositories.
 
 
+Prerequisites
+-------------
+Linux users will need the `libarchive` pakcage which can be installed: `sudo apt-get install libarchive`
+
+
 Installation
 ------------
 You can install the development version from github:
