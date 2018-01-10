@@ -19,4 +19,14 @@ test_that("merge_new", {
 
 test_that("names2", {
 
+  cases <- list(
+    list(NULL, character()),
+    list(list(), character()),
+    list("x", ""),
+    list(1:4, rep("", 4)),
+    list(c(0, a = 1, b = 2, 3, d = 4), c("", "a", "b", "", "d")),
+    list(structure(1:4, names = c("a", NA, "c")), c("a", "", "c", ""))
+  )
+
+  for (c in cases) expect_identical(names2(c[[1]]), c[[2]])
 })
