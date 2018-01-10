@@ -4,7 +4,7 @@ is_uri <- function(x) {
 }
 
 # Adapted from withr:::merge_new
-merge_new <- function(old, new, action = match.arg(action, c("replace", "prepend", "append"))) {
+merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
   action <- match.arg(action, c("replace", "prepend", "append"))
 
   switch(action,
