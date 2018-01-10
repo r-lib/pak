@@ -8,11 +8,6 @@
 #' @importFrom crayon blue
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
-  if (is_uri(pkg)) {
-    stop("TODO: parse uri")
-  }
-
-  # Install from CRAN
   r <- remotes$new(pkg, library = lib)
 
   # Solve the dependency graph

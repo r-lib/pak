@@ -1,7 +1,3 @@
-is_uri <- function(x) {
-  # TODO
-  FALSE
-}
 
 # Adapted from withr:::merge_new
 merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
