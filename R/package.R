@@ -19,11 +19,16 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
   # Get the installation plan and ignore already installed versions.
   plan <- r$get_install_plan()
   needs_install <- plan[plan$type != "installed", ]
+
+  # Do we need to do anything?
   if (nrow(needs_install) == 0) {
-    dependencies <- plan[!plan$direct, ]
-    message(glue::glue("
-        {green_tick()} {pkg} {blue(packageVersion(pkg))} and its {blue(nrow(dependencies))} \\
-        dependencies already installed"))
+    dir <- plan[plan$direct, ]
+    ind <- plan[!plan$direct, ]
+    for (i in seq_len(nrow(dir))) {
+      msg_success("{fmt_pkg(dir$package[i])} {fmt_ver(dir$version[i])} \\
+                   already installed")
+    }
+    if (nrow(ind)) msg_success("{nrow(ind)} dependencies already installed")
     return(invisible(plan))
   }
 
