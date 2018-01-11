@@ -32,6 +32,11 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
     return(invisible(plan))
   }
 
+  # Remove already installed dependencies from the plan
+  installed <- plan$package[plan$type == "installed"]
+  needs_install$dependencies <-
+    lapply(needs_install$dependencies, setdiff, y = installed)
+
   # Install what is left
   install_packages(needs_install$file, lib = lib, plan = needs_install,
                    num_workers = num_workers)
