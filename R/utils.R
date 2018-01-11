@@ -35,7 +35,3 @@ viapply <- function(X, FUN, ...) {
 vdapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = double(1), ...)
 }
-
-#' @importFrom crayon green
-#' @importFrom clisymbols symbol
-green_tick <- function() green(symbol$tick)
