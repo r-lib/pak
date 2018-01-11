@@ -1,6 +1,6 @@
 
 #' @importFrom crayon green
-#' @importFrom clisymbols symbol
+#' @importFrom cli symbol
 green_tick <- function() green(symbol$tick)
 
 #' @importFrom glue glue_data

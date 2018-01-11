@@ -14,7 +14,7 @@ ByteCompile: true
 RoxygenNote: 6.0.1
 Imports:
     async (>= 0.0.0.9000),
-    clisymbols (>= 1.2.0),
+    cli (>= 1.0.0),
     crayon (>= 1.3.4),
     glue (>= 1.2.0),
     pkgdepends (>= 0.0.0.9000),
