@@ -64,7 +64,7 @@ local_pkg_install <- function(path = ".", lib = .libPaths()[[1L]], num_workers =
 #' @importFrom utils packageDescription
 #' @export
 pkg_status <- function(pkg, lib = .libPaths()) {
-  stopifnot(length(pkg == 1 && is.character(pkg)))
+  stopifnot(length(pkg == 1) && is.character(pkg))
 
   desc <- lapply(lib, function(lib) {
     res <- suppressWarnings(packageDescription(pkg, lib.loc = lib, fields = c("Version", "Built")))
