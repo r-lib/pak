@@ -22,24 +22,26 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Do we need to do anything?
   if (nrow(needs_install) == 0) {
+    plan$num_deps <- total_num_deps(plan)
     dir <- plan[plan$direct, ]
     ind <- plan[!plan$direct, ]
     for (i in seq_len(nrow(dir))) {
       msg_success("{fmt_pkg(dir$package[i])} {fmt_ver(dir$version[i])} \\
-                   already installed")
+                   and {dir$num_deps[i]} dependencies already installed")
     }
-    if (nrow(ind)) msg_success("{nrow(ind)} dependencies already installed")
-    return(invisible(plan))
+
+  } else {
+    # Remove already installed dependencies from the plan
+    installed <- plan$package[plan$type == "installed"]
+    needs_install$dependencies <-
+      lapply(needs_install$dependencies, setdiff, y = installed)
+
+    # Install what is left
+    install_packages(needs_install$file, lib = lib, plan = needs_install,
+                     num_workers = num_workers)
   }
 
-  # Remove already installed dependencies from the plan
-  installed <- plan$package[plan$type == "installed"]
-  needs_install$dependencies <-
-    lapply(needs_install$dependencies, setdiff, y = installed)
-
-  # Install what is left
-  install_packages(needs_install$file, lib = lib, plan = needs_install,
-                   num_workers = num_workers)
+  invisible(plan)
 }
 
 #' Install a local development package
@@ -92,4 +94,25 @@ split_built <- function(built) {
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   # TODO: do we need to do anything else for this?
   suppressMessages(remove.packages(pkg, lib))
+}
+
+total_num_deps <- function(plan) {
+  nn <- nrow(plan)
+  res <- rep(0, nn)
+  for (i in seq_along(res)) {
+    done <- rep(FALSE, nn)
+    edge <- i
+    while (length(edge)) {
+      done[edge] <- TRUE
+      res[i] <- res[i] + length(edge)
+      edge <- match(
+        setdiff(
+          unique(unlist(plan$dependencies[edge])),
+          plan$package[done]
+        ),
+        plan$package
+      )
+    }
+  }
+  res
 }
