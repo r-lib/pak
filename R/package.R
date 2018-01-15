@@ -12,9 +12,11 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Solve the dependency graph
   r$solve()
+  r$stop_for_solve_error()
 
   # Actually download packages as needed
   r$download_solution()
+  r$stop_for_solution_download_error()
 
   # Get the installation plan and ignore already installed versions.
   plan <- r$get_install_plan()
