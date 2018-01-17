@@ -22,12 +22,14 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
 
   # Do we need to do anything?
   if (nrow(needs_install) == 0) {
-    plan$num_deps <- total_num_deps(plan)
-    dir <- plan[plan$direct, ]
-    ind <- plan[!plan$direct, ]
-    for (i in seq_len(nrow(dir))) {
-      msg_success("{fmt_pkg(dir$package[i])} {fmt_ver(dir$version[i])} \\
+    if (is_verbose()) {
+      plan$num_deps <- total_num_deps(plan)
+      dir <- plan[plan$direct, ]
+      ind <- plan[!plan$direct, ]
+      for (i in seq_len(nrow(dir))) {
+        msg_success("{fmt_pkg(dir$package[i])} {fmt_ver(dir$version[i])} \\
                    and {dir$num_deps[i]} dependencies already installed")
+      }
     }
 
   } else {
@@ -37,8 +39,14 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
       lapply(needs_install$dependencies, setdiff, y = installed)
 
     # Install what is left
-    install_packages(needs_install$file, lib = lib, plan = needs_install,
-                     num_workers = num_workers)
+    inst_stat <- install_packages(
+      needs_install$file, lib = lib, plan = needs_install,
+      num_workers = num_workers)
+
+    if (is_verbose()) print(inst_stat)
+
+    inst_lib <- match(plan$file, names(inst_stat))
+    plan$installed[match(names(inst_stat), plan$file)] <- unlist(inst_stat)
   }
 
   invisible(plan)

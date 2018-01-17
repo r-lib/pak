@@ -1,4 +1,6 @@
 
+`%||%` <- function(l, r) if (is.null(l)) r else l
+
 # Adapted from withr:::merge_new
 merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
   action <- match.arg(action, c("replace", "prepend", "append"))
@@ -34,4 +36,8 @@ viapply <- function(X, FUN, ...) {
 
 vdapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = double(1), ...)
+}
+
+is_verbose <- function() {
+  getOption("pkg.progress.bar") %||% interactive()
 }
