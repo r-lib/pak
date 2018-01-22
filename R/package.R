@@ -2,16 +2,20 @@
 #'
 #' Install a package and it's dependencies.
 #' @param pkg A package specification. See [pkgdepends::remotes] for details.
+#' @param upgrade whether to upgrade already installed packages to the
+#'   latest available version
 #' @inheritParams pkginstall::install_packages
 #' @importFrom pkgdepends remotes
 #' @importFrom pkginstall install_packages
 #' @importFrom crayon blue
 #' @export
-pkg_install <- function(pkg, lib = .libPaths()[[1L]], num_workers = 1L) {
+pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
+                        num_workers = 1L) {
   r <- remotes$new(pkg, library = lib)
 
   # Solve the dependency graph
-  r$solve()
+  policy <- if (upgrade) "upgrade" else "lazy"
+  r$solve(policy = policy)
   r$stop_for_solve_error()
 
   # Actually download packages as needed
