@@ -39,5 +39,5 @@ vdapply <- function(X, FUN, ...) {
 }
 
 is_verbose <- function() {
-  getOption("pkg.progress.bar") %||% interactive()
+  getOption("pkg.show_progress") %||% interactive()
 }
