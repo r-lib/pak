@@ -9,9 +9,9 @@ local_pkg_install(path = ".", lib = .libPaths()[[1L]], num_workers = 1L)
 \arguments{
 \item{path}{to the local package}
 
-\item{lib}{library to install packages into}
+\item{lib}{Package library to install the packages to.}
 
-\item{num_workers}{Number of parallel workers to use}
+\item{num_workers}{Number of worker processes to use.}
 }
 \description{
 Install a local development package

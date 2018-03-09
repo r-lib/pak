@@ -1,12 +1,15 @@
 #' Install a package
 #'
 #' Install a package and it's dependencies.
-#' @param pkg A package specification. See [pkgdepends::remotes] for details.
-#' @param upgrade whether to upgrade already installed packages to the
-#'   latest available version
-#' @inheritParams pkginstall::install_packages
+#' @param pkg Package names or remote package specifications to install.
+#'   See [pkgdepends::remotes] for details about remote package
+#'   specifications.
+#' @param lib Package library to install the packages to.
+#' @param upgrade Whether to upgrade already installed packages to the
+#'   latest available version.
+#' @param num_workers Number of worker processes to use.
 #' @importFrom pkgdepends remotes
-#' @importFrom pkginstall install_packages
+#' @importFrom pkginstall install_package_plan
 #' @importFrom crayon blue
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
@@ -37,6 +40,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                    and {dir$num_deps[i]} dependencies already installed")
       }
     }
+    invisible(plan)
 
   } else {
     # Remove already installed dependencies from the plan
@@ -45,22 +49,14 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
       lapply(needs_install$dependencies, setdiff, y = installed)
 
     # Install what is left
-    inst_stat <- install_packages(
-      needs_install$file, lib = lib, plan = needs_install,
-      num_workers = num_workers)
-
-    if (is_verbose()) print(inst_stat)
-
-    inst_lib <- match(plan$file, names(inst_stat))
-    plan$installed[match(names(inst_stat), plan$file)] <- unlist(inst_stat)
+    install_package_plan(
+      plan = needs_install,  lib = lib, num_workers = num_workers)
   }
-
-  invisible(plan)
 }
 
 #' Install a local development package
 #' @param path to the local package
-#' @inheritParams pkginstall::install_packages
+#' @inheritParams pkg_install
 #' @importFrom pkgdepends remotes
 #' @export
 local_pkg_install <- function(path = ".", lib = .libPaths()[[1L]], num_workers = 1L) {
