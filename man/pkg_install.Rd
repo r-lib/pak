@@ -8,14 +8,16 @@ pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   num_workers = 1L)
 }
 \arguments{
-\item{pkg}{A package specification. See \link[pkgdepends:remotes]{pkgdepends::remotes} for details.}
+\item{pkg}{Package names or remote package specifications to install.
+See \link[pkgdepends:remotes]{pkgdepends::remotes} for details about remote package
+specifications.}
 
-\item{lib}{library to install packages into}
+\item{lib}{Package library to install the packages to.}
 
-\item{upgrade}{whether to upgrade already installed packages to the
-latest available version}
+\item{upgrade}{Whether to upgrade already installed packages to the
+latest available version.}
 
-\item{num_workers}{Number of parallel workers to use}
+\item{num_workers}{Number of worker processes to use.}
 }
 \description{
 Install a package and it's dependencies.
