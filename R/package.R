@@ -25,33 +25,9 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   r$download_solution()
   r$stop_for_solution_download_error()
 
-  # Get the installation plan and ignore already installed versions.
+  # Get the installation plan and hand it over to pkginstall
   plan <- r$get_install_plan()
-  needs_install <- plan[plan$type != "installed", ]
-
-  # Do we need to do anything?
-  if (nrow(needs_install) == 0) {
-    if (is_verbose()) {
-      plan$num_deps <- total_num_deps(plan)
-      dir <- plan[plan$direct, ]
-      ind <- plan[!plan$direct, ]
-      for (i in seq_len(nrow(dir))) {
-        msg_success("{fmt_pkg(dir$package[i])} {fmt_ver(dir$version[i])} \\
-                   and {dir$num_deps[i]} dependencies already installed")
-      }
-    }
-    invisible(plan)
-
-  } else {
-    # Remove already installed dependencies from the plan
-    installed <- plan$package[plan$type == "installed"]
-    needs_install$dependencies <-
-      lapply(needs_install$dependencies, setdiff, y = installed)
-
-    # Install what is left
-    install_package_plan(
-      plan = needs_install,  lib = lib, num_workers = num_workers)
-  }
+  install_package_plan(plan = plan, lib = lib, num_workers = num_workers)
 }
 
 #' Install a local development package
