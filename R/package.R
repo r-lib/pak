@@ -8,12 +8,18 @@
 #' @param upgrade Whether to upgrade already installed packages to the
 #'   latest available version.
 #' @param num_workers Number of worker processes to use.
+#' @param ask Whether to ask for confirmation.
 #' @importFrom pkgdepends remotes
 #' @importFrom pkginstall install_package_plan
 #' @importFrom crayon blue
+#' @importFrom cli cli default_theme
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-                        num_workers = 1L) {
+                        num_workers = 1L, ask = interactive()) {
+
+  start <- Sys.time()
+  cli$add_theme(default_theme())
+
   r <- remotes$new(pkg, library = lib)
 
   # Solve the dependency graph
@@ -21,13 +27,20 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   r$solve(policy = policy)
   r$stop_for_solve_error()
 
+  if (ask) ask_for_confirmation(r$get_solution()$data$data)
+
   # Actually download packages as needed
   r$download_solution()
   r$stop_for_solution_download_error()
 
   # Get the installation plan and hand it over to pkginstall
   plan <- r$get_install_plan()
-  install_package_plan(plan = plan, lib = lib, num_workers = num_workers)
+  inst <- install_package_plan(plan = plan, lib = lib,
+                               num_workers = num_workers)
+
+  attr(inst, "total_time") <- Sys.time() - start
+  class(inst) <- c("pkgman_install_result", class(inst))
+  inst
 }
 
 #' Install a local development package
