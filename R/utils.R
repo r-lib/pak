@@ -42,8 +42,6 @@ is_verbose <- function() {
   getOption("pkg.show_progress") %||% interactive()
 }
 
-#' @importFrom glue collapse backtick
-
 format_items <- function (x) {
-  paste0(collapse(backtick(x), sep = ", ", last = " and "))
+  paste0(glue::collapse(glue::backtick(x), sep = ", ", last = " and "))
 }

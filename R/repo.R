@@ -44,8 +44,6 @@ repo_deactivate <- function(repo) {
 #' Repository status
 #'
 #' @param repos Repositories of which to check status.
-#' @importFrom async async http_head async_map synchronise http_stop_for_status
-#' @importFrom tibble tibble
 #' @return A data.frame with the following columns
 #' - type - The repository type
 #' - url - The repository URL
@@ -55,16 +53,17 @@ repo_deactivate <- function(repo) {
 repo_status <- function(repos = getOption("repos")) {
 
   # TODO: how to hangdle
-  resp_vals <- async(function(url, ...) {
-      http_head(url, ...)$
-      then(http_stop_for_status)$
+  resp_vals <- async::async(function(url, ...) {
+    async::http_head(url, ...)$
+      then(async::http_stop_for_status)$
       then(function(resp) list(time = resp$times[["total"]], last_modified = resp$modified))$
       catch(function(err) list(time = NA_real_, last_modified = as.POSIXct(NA)))
   })
 
-  res <- synchronise(async_map(unname(repos), resp_vals, timeout = 2))
+  res <- async::synchronise(async_map(unname(repos), resp_vals, timeout = 2))
   time <- vdapply(res, "[[", "time")
   last_modified <- do.call(c, lapply(res, "[[", "last_modified"))
 
-  tibble(type = names(repos), url = repos, time = time, last_modified = last_modified)
+  tibble::tibble(type = names(repos), url = repos, time = time,
+                 last_modified = last_modified)
 }
