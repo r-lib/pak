@@ -24,7 +24,7 @@ Imports:
 Remotes:
   r-lib/async,
   r-lib/pkgdepends,
-  r-lib/pkginstall@reorganize
+  r-lib/pkginstall
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.1)
