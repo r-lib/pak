@@ -54,19 +54,17 @@ print.pkgman_install_result <- function(x, ...) {
     " [{timestamp {total_time}}]"))
 }
 
-ask_for_confirmation <- function(sol) {
+ask_for_confirmation <- function(ask, sol, lib) {
 
   direct <- sum(sol$direct)
   deps <- sum(! sol$direct)
 
-  newly <- sum(sol$lib_status == "new")
-  upd   <- sum(sol$lib_status == "update")
-  curr  <- sum(sol$lib_status == "current")
-  noupd <- sum(sol$lib_status == "no-update")
+  n_newly <- sum(newly <- sol$lib_status == "new")
+  n_upd   <- sum(upd   <- sol$lib_status == "update")
+  n_curr  <- sum(curr  <- sol$lib_status == "current")
+  n_noupd <- sum(noupd <- sol$lib_status == "no-update")
 
-  if (! (newly + upd)) return()
-
-  cli$text(" ")
+  if (! (n_newly + n_upd)) return()
 
   package_list <- function(x) {
     cli$div(
@@ -77,21 +75,47 @@ ask_for_confirmation <- function(sol) {
     cli$text(" ")
   }
 
-  if (newly) {
-    cli$alert("Newly installing {newly} packages:")
-    package_list(sol$ref[sol$lib_status == "new"])
+  cli$text(" ")
+  if (n_newly) {
+    cli$alert("Will {emph install} {n_newly} packages:")
+    package_list(sol$ref[newly])
   }
-  if (upd) {
-    cli$alert("Updating {upd} packages:")
-    package_list(sol$ref[sol$lib_status == "update"])
+  if (n_upd) {
+    cli$alert("Will {emph update} {n_upd} packages:")
+    package_list(sol$ref[upd])
   }
-  if (curr + noupd) {
-    cli$alert("Not updating {curr + noupd} packages.")
+  if (n_curr + n_noupd) {
+    cli$alert("Will {emph not update} {n_curr + n_noupd} packages.")
     cli$text(" ")
   }
 
-  yesno("  Do you want to continue? (Y/n) ", "Installtion aborted")
+  warn_for_loaded_packages(sol$package[newly | upd], lib)
+
+  if (ask) {
+    yesno(
+      paste0(crayon::yellow("?"), " Do you want to continue? (Y/n) "),
+      "Installation aborted")
+  }
+
   cli$text(" ")
+}
+
+warn_for_loaded_packages <- function(pkgs, lib) {
+  if (length(maybe_bad <- intersect(pkgs, loadedNamespaces()))) {
+    loaded_from <- vcapply(
+      maybe_bad,
+      function(x) dirname(getNamespaceInfo(x, "path"))
+    )
+    bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
+    if (length(bad)) {
+      cli$alert_warning(
+        "Package(s) {format_items(bad)} are already loaded, installing \\
+         them may cause problems. Use {code pkgload::unload()} to unload them.",
+        wrap = TRUE
+      )
+      cli$text(" ")
+    }
+  }
 }
 
 yesno <-  function(q, msg = "Aborted.") {

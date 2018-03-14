@@ -41,3 +41,9 @@ vdapply <- function(X, FUN, ...) {
 is_verbose <- function() {
   getOption("pkg.show_progress") %||% interactive()
 }
+
+#' @importFrom glue collapse backtick
+
+format_items <- function (x) {
+  paste0(collapse(backtick(x), sep = ", ", last = " and "))
+}

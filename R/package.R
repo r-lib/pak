@@ -27,7 +27,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   r$solve(policy = policy)
   r$stop_for_solve_error()
 
-  if (ask) ask_for_confirmation(r$get_solution()$data$data)
+  ask_for_confirmation(ask, r$get_solution()$data$data, lib)
 
   # Actually download packages as needed
   r$download_solution()
