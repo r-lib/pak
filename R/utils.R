@@ -45,3 +45,7 @@ is_verbose <- function() {
 format_items <- function (x) {
   paste0(glue::collapse(glue::backtick(x), sep = ", ", last = " and "))
 }
+
+str_trim <- function (x) {
+  sub("^\\s+", "", sub("\\s+$", "", x))
+}
