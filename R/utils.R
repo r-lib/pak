@@ -1,6 +1,8 @@
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
+isFALSE <- function(x) identical(x, FALSE)
+
 # Adapted from withr:::merge_new
 merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
   action <- match.arg(action, c("replace", "prepend", "append"))
@@ -48,4 +50,36 @@ format_items <- function (x) {
 
 str_trim <- function (x) {
   sub("^\\s+", "", sub("\\s+$", "", x))
+}
+
+## This only works properly for packages without S3 and S4!
+
+unload_package <- function(pkg) {
+  unloadNamespace(pkg)
+  libs <- .dynLibs()
+  pkg_dll <- vcapply(libs, "[[", "name") == pkg
+  if (any(pkg_dll)) {
+    for (i in which(pkg_dll)) dyn.unload(libs[[i]][["path"]])
+    .dynLibs(libs[!pkg_dll])
+  }
+  invisible()
+}
+
+with_package <- function(pkg, expr) {
+  if (! pkg %in% loadedNamespaces()) on.exit(unload_package(pkg), add = TRUE)
+    expr
+}
+
+list_files <- function(path) {
+  if (!file.exists(path)) return(character())
+  fs <- dir(path, full.names = TRUE)
+  basename(fs[! is_dir(fs)])
+}
+
+file_mtime <- function(...) {
+  file.info(..., extra_cols = FALSE)$mtime
+}
+
+is_dir <- function(...) {
+  file.info(..., extra_cols = FALSE)$isdir
 }

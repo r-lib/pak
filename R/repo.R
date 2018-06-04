@@ -60,7 +60,8 @@ repo_status <- function(repos = getOption("repos")) {
       catch(function(err) list(time = NA_real_, last_modified = as.POSIXct(NA)))
   })
 
-  res <- async::synchronise(async_map(unname(repos), resp_vals, timeout = 2))
+  res <- async::synchronise(
+    async::async_map(unname(repos), resp_vals, timeout = 2))
   time <- vdapply(res, "[[", "time")
   last_modified <- do.call(c, lapply(res, "[[", "last_modified"))
 
