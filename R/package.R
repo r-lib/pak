@@ -34,7 +34,6 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 pkg_install_make_plan <- function(pkg, lib, upgrade) {
 
   cliapp::default_app() %||% cliapp::start_app()
-  
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
   # Solve the dependency graph
@@ -54,6 +53,7 @@ pkg_install_do_plan <- function(remotes, lib, num_workers) {
   plan <- remotes$get_install_plan()
   inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
                                            num_workers = num_workers)
+  inst
 }
 
 #' Install a local development package

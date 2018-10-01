@@ -41,7 +41,17 @@ vdapply <- function(X, FUN, ...) {
 }
 
 is_verbose <- function() {
-  getOption("pkg.show_progress") %||% interactive()
+  env <- Sys.getenv("R_PKG_SHOW_PROGRESS", "")
+  if (env != "") {
+    tolower(env) == "true"
+  } else {
+    opt <- getOption("pkg.show_progress")
+    if (!is.null(opt)) {
+      return(isTRUE(opt))
+    } else {
+      interactive()
+    }
+  }
 }
 
 format_items <- function (x) {

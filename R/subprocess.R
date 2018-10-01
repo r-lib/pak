@@ -16,6 +16,10 @@ remote <- function(func, args = list()) {
     return(do.call(func, args))
   }
 
+  ## TODO Kill it if it is busy,
+  ## Actually we should kill it if it  is busy in on.exit(), and
+  ## start a new instance. If it is starting, then we wait for it.
+
   rs <- pkgman_data$remote
   state <- rs$get_state()
   if (state %in% c("busy", "starting")) {
@@ -24,7 +28,15 @@ remote <- function(func, args = list()) {
   }
   if (state != "idle") stop("Subprocess is busy or cannot start")
 
-  withCallingHandlers(
-    rs$run(func, args),
-    "callr_message" = function(x) print(x))
+  res <- withCallingHandlers(
+    rs$run_with_output(func, args),
+    "cliapp_message" = function(x) cat(x$message))
+
+  res$result
+}
+
+new_remote_session <- function() {
+  opts <- callr::r_session_options()
+  opts$env <- c(opts$env, R_PKG_SHOW_PROGRESS = "true")
+  callr::r_session$new(opts)
 }
