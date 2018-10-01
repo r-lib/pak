@@ -47,7 +47,8 @@ print.pkgman_install_result <- function(x, ...) {
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
   total_time <- pretty_dt(attr(x, "total_time")) %||% "???s"
 
-  cli$alert_success(paste0(
+  app <- default_app() %||% start_app()
+  app$alert_success(paste0(
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
     "downloaded ", downloaded, " (", pretty_bytes(dlbytes), ")",
@@ -66,27 +67,28 @@ ask_for_confirmation <- function(ask, sol, lib) {
 
   if (! (n_newly + n_upd)) return()
 
+  app <- default_app() %||% start_app()  
   package_list <- function(x) {
-    cli$div(
+    app$div(
       class = "pkglist",
       theme = list(div.pkglist = list("margin-left" = 2))
     )
-    cli$text(paste(x, collapse = ", "))
-    cli$text(" ")
+    app$text(paste(x, collapse = ", "))
+    app$text(" ")
   }
 
-  cli$text(" ")
+  app$text(" ")
   if (n_newly) {
-    cli$alert("Will {emph install} {n_newly} packages:")
+    app$alert("Will {emph install} {n_newly} packages:")
     package_list(sol$ref[newly])
   }
   if (n_upd) {
-    cli$alert("Will {emph update} {n_upd} packages:")
+    app$alert("Will {emph update} {n_upd} packages:")
     package_list(sol$ref[upd])
   }
   if (n_curr + n_noupd) {
-    cli$alert("Will {emph not update} {n_curr + n_noupd} packages.")
-    cli$text(" ")
+    app$alert("Will {emph not update} {n_curr + n_noupd} packages.")
+    app$text(" ")
   }
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
@@ -97,7 +99,7 @@ ask_for_confirmation <- function(ask, sol, lib) {
       "Installation aborted")
   }
 
-  cli$text(" ")
+  app$text(" ")
 }
 
 warn_for_loaded_packages <- function(pkgs, lib) {
@@ -108,12 +110,13 @@ warn_for_loaded_packages <- function(pkgs, lib) {
     )
     bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
     if (length(bad)) {
-      cli$alert_warning(
+      app <- default_app()
+      app$alert_warning(
         "Package(s) {format_items(bad)} are already loaded, installing \\
          them may cause problems. Use {code pkgload::unload()} to unload them.",
         wrap = TRUE
       )
-      cli$text(" ")
+      app$text(" ")
     }
   }
 }

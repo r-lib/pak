@@ -12,13 +12,13 @@
 #' @importFrom pkgdepends remotes
 #' @importFrom pkginstall install_package_plan
 #' @importFrom crayon blue
-#' @importFrom cliapp cliapp default_theme
+#' @importFrom cliapp start_app default_app
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {
 
   start <- Sys.time()
-  cli$add_theme(default_theme())
+  default_app() %||% start_app()
 
   r <- remotes$new(pkg, library = lib)
 
