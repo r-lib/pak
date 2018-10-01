@@ -1,4 +1,8 @@
 
+## ----------------------------------------------------------------------
+## Helper functions
+## ----------------------------------------------------------------------
+
 remote_is_alive <- function() {
   inherits(rs <- pkgman_data$remote, "process") && rs$is_alive()
 }
@@ -7,9 +11,9 @@ should_remote <- function() {
   !isFALSE(getOption("pkgman.subprocess"))
 }
 
-remote <- function(func) {
-  if (should_remote() || !remote_is_alive()) {
-    return(func())
+remote <- function(func, args = list()) {
+  if (!should_remote() || !remote_is_alive()) {
+    return(do.call(func, args))
   }
 
   rs <- pkgman_data$remote
@@ -18,7 +22,9 @@ remote <- function(func) {
     pr <- callr::poll(list(rs$get_poll_connection()), 5000)[[1]]
     state <- rs$get_state()
   }
-  if (state != "idle") return(func())
+  if (state != "idle") stop("Subprocess is busy or cannot start")
 
-  rs$run(func)$result
+  withCallingHandlers(
+    rs$run(func, args),
+    "callr_message" = function(x) print(x))
 }

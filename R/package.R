@@ -9,35 +9,51 @@
 #'   latest available version.
 #' @param num_workers Number of worker processes to use.
 #' @param ask Whether to ask for confirmation.
-#' @importFrom cliapp default_app start_app
 #' @export
+
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {
 
   start <- Sys.time()
-  default_app() %||% start_app()
 
+  r <- remote(
+    function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
+    list(pkg = pkg, lib = lib, upgrade = upgrade))
+
+  ask_for_confirmation(ask, r$get_solution()$data, lib)
+
+  inst <- remote(
+    function(...) get("pkg_install_do_plan", asNamespace("pkgman"))(...),
+    list(remotes = r, lib = lib, num_workers = num_workers))
+
+  attr(inst, "total_time") <- Sys.time() - start
+  class(inst) <- c("pkgman_install_result", class(inst))
+  inst
+}
+
+pkg_install_make_plan <- function(pkg, lib, upgrade) {
+
+  cliapp::default_app() %||% cliapp::start_app()
+  
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
   # Solve the dependency graph
   policy <- if (upgrade) "upgrade" else "lazy"
   r$solve(policy = policy)
   r$stop_for_solve_error()
+  r
+}
 
-  ask_for_confirmation(ask, r$get_solution()$data, lib)
+pkg_install_do_plan <- function(remotes, lib, num_workers) {
 
   # Actually download packages as needed
-  r$download_solution()
-  r$stop_for_solution_download_error()
+  remotes$download_solution()
+  remotes$stop_for_solution_download_error()
 
   # Get the installation plan and hand it over to pkginstall
-  plan <- r$get_install_plan()
+  plan <- remotes$get_install_plan()
   inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
                                            num_workers = num_workers)
-
-  attr(inst, "total_time") <- Sys.time() - start
-  class(inst) <- c("pkgman_install_result", class(inst))
-  inst
 }
 
 #' Install a local development package
