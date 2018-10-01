@@ -12,7 +12,7 @@
 #' @importFrom pkgdepends remotes
 #' @importFrom pkginstall install_package_plan
 #' @importFrom crayon blue
-#' @importFrom cli cli default_theme
+#' @importFrom cliapp cliapp default_theme
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {

@@ -4,7 +4,8 @@
 \alias{local_pkg_install}
 \title{Install a local development package}
 \usage{
-local_pkg_install(path = ".", lib = .libPaths()[[1L]], num_workers = 1L)
+local_pkg_install(path = ".", lib = .libPaths()[[1L]],
+  num_workers = 1L)
 }
 \arguments{
 \item{path}{to the local package}
