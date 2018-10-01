@@ -9,11 +9,13 @@
 #'   latest available version.
 #' @param num_workers Number of worker processes to use.
 #' @param ask Whether to ask for confirmation.
+#' @importFrom cliapp default_app start_app
 #' @export
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {
 
   start <- Sys.time()
+  default_app() %||% start_app()
 
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
