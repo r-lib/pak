@@ -16,15 +16,15 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   start <- Sys.time()
 
-  r <- remote(
+  sol <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade))
 
-  ask_for_confirmation(ask, r$get_solution()$data, lib)
+  ask_for_confirmation(ask, sol, lib)
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pkgman"))(...),
-    list(remotes = r, lib = lib, num_workers = num_workers))
+    list(remotes = NULL, lib = lib, num_workers = num_workers))
 
   attr(inst, "total_time") <- Sys.time() - start
   class(inst) <- c("pkgman_install_result", class(inst))
@@ -32,18 +32,22 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade) {
-
   cliapp::default_app() %||% cliapp::start_app()
+
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
-  # Solve the dependency graph
+  ## Solve the dependency graph
   policy <- if (upgrade) "upgrade" else "lazy"
   r$solve(policy = policy)
   r$stop_for_solve_error()
-  r
+  pkgman_data$tmp <- r
+  r$get_solution()$data
 }
 
 pkg_install_do_plan <- function(remotes, lib, num_workers) {
+
+  remotes <- remotes %||% pkgman_data$tmp
+  pkgman_data$tmp <- NULL
 
   # Actually download packages as needed
   remotes$download_solution()
@@ -53,6 +57,10 @@ pkg_install_do_plan <- function(remotes, lib, num_workers) {
   plan <- remotes$get_install_plan()
   inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
                                            num_workers = num_workers)
+
+  ## Remove some largeish columns that we don't really need any more
+  inst$extra <- NULL
+
   inst
 }
 
