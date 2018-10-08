@@ -41,7 +41,10 @@ remote <- function(func, args = list()) {
 
 new_remote_session <- function() {
   opts <- callr::r_session_options(stderr = NULL,  stdout = NULL)
-  opts$env <- c(opts$env, R_PKG_SHOW_PROGRESS = "true",
-                R_PKG_PKGMAN_WORKER = "true")
+  opts$env <- c(
+    opts$env, R_PKG_SHOW_PROGRESS = "true",
+    R_PKG_PKGMAN_WORKER = "true",
+    R_PKG_PKGMAN_COLORS = as.character(crayon::has_color()),
+    R_PKG_PKGMAN_NUM_COLORS = as.character(crayon::num_colors()))
   callr::r_session$new(opts, wait = FALSE)
 }
