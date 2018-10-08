@@ -46,5 +46,5 @@ new_remote_session <- function() {
     R_PKG_PKGMAN_WORKER = "true",
     R_PKG_PKGMAN_COLORS = as.character(crayon::has_color()),
     R_PKG_PKGMAN_NUM_COLORS = as.character(crayon::num_colors()))
-  callr::r_session$new(opts, wait = FALSE)
+  pkgman_data$remote <- callr::r_session$new(opts, wait = FALSE)
 }

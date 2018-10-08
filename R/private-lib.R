@@ -1,4 +1,11 @@
 
+use_private_lib <- function() {
+  lib <- get_private_lib()
+  old <- .libPaths()
+  new <- c(lib, old[old != lib])
+  .libPaths(new)
+}
+
 get_private_lib <- function() {
   pkgman_data$private_lib %||% create_private_lib()
 }
@@ -50,13 +57,18 @@ create_private_lib <- function() {
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
   upd <- vlapply(pkg_dirs, package_needs_update, lib = lib)
+  app <- cliapp::default_app() %||% cliapp::start_app()
   if (any(upd)) {
+    app$alert_info("Updating private library")
     with_package("filelock", {
-      l <-  filelock::lock(file.path(lib, "pkgman-lib.lock"))
+      l <- filelock::lock(file.path(lib, "pkgman-lib.lock"))
       if (is.null(l)) stop("Cannot create private lib, cannot lock")
       on.exit(filelock::unlock(l))
       for(i in which(upd)) copy_package(pkg_dirs[i], lib)
     })
+    app$alert_success("Updated private library")
+  } else {
+    app$alert_success("Private library is up to date")
   }
 
   pkgman_data$private_lib <- lib

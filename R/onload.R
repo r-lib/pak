@@ -3,16 +3,22 @@ pkgman_data <- new.env(parent = emptyenv())
 
 .onLoad <- function(libname, pkgname) {
   ## TODO: load callr from the private library
-  if (Sys.getenv("R_PKG_PKGMAN_WORKER", "") == "") {
+  worker <- Sys.getenv("R_PKG_PKGMAN_WORKER", "")
+  if (worker == "") {
     ## In the main process
-    pkgman_data$remote <- new_remote_session()
+    new_remote_session()
 
-  } else  {
+  } else if (worker == "true") {
     ## In the worker process
-    Sys.unsetenv("R_PKG_PKGMAN_WORKER")
+    Sys.setenv("R_PKG_PKGMAN_WORKER" = "false")
     options(
       crayon.enabled = (Sys.getenv("R_PKG_PKGMAN_COLORS") == "TRUE"),
       crayon.colors = as.numeric(Sys.getenv("R_PKG_PKGMAN_NUM_COLORS", "1"))
     )
+    use_private_lib()
+
+  } else {
+    ## In a subprocess of a worker
+    use_private_lib()
   }
 }
