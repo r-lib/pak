@@ -33,8 +33,7 @@ remote <- function(func, args = list()) {
 
   res <- withCallingHandlers(
     rs$run_with_output(func, args),
-    "cliapp_message" = function(x) cat(x$message))
-
+    "cliapp_message" = function(x) message(x$message, appendLF = FALSE))
   if (!is.null(res$error)) stop(res$error)
 
   res$result
