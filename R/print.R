@@ -28,7 +28,6 @@
 ## in 34s, resolve: 12s, download: 15s, build: 5s, install: 2s
 
 #' @export
-#' @importFrom prettyunits pretty_bytes pretty_dt
 
 print.pkgman_install_result <- function(x, ...) {
 
@@ -45,13 +44,13 @@ print.pkgman_install_result <- function(x, ...) {
   dlbytes <- sum(x$bytes[x$download_status == "Got"])
   build_time <- sum(unlist(x$build_time), na.rm = TRUE)
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
-  total_time <- pretty_dt(attr(x, "total_time")) %||% "???s"
+  total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% "???s"
 
-  app <- default_app() %||% start_app()
+  app <- cliapp::default_app() %||% cliapp::start_app()
   app$alert_success(paste0(
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
-    "downloaded ", downloaded, " (", pretty_bytes(dlbytes), ")",
+    "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
     " [{timestamp {total_time}}]"))
 }
 
@@ -67,7 +66,7 @@ ask_for_confirmation <- function(ask, sol, lib) {
 
   if (! (n_newly + n_upd)) return()
 
-  app <- default_app() %||% start_app()  
+  app <- cliapp::default_app() %||% cliapp::start_app()  
   package_list <- function(x) {
     app$div(
       class = "pkglist",
@@ -110,7 +109,7 @@ warn_for_loaded_packages <- function(pkgs, lib) {
     )
     bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
     if (length(bad)) {
-      app <- default_app()
+      app <- cliapp::default_app()
       app$alert_warning(
         "Package(s) {format_items(bad)} are already loaded, installing \\
          them may cause problems. Use {code pkgload::unload()} to unload them.",
