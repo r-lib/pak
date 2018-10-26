@@ -12,12 +12,8 @@ should_remote <- function() {
 }
 
 remote <- function(func, args = list()) {
-
-  ## TODO: try to restart it if dead
-
-  ## TODO Kill it if it is busy,
-  ## Actually we should kill it if it is busy in on.exit(), and
-  ## start a new instance. If it is starting, then we wait for it.
+  restart_remote_if_needed()
+  on.exit(restart_remote_if_needed(), add = TRUE)
 
   rs <- pkgman_data$remote
   state <- rs$get_state()
@@ -47,4 +43,19 @@ new_remote_session <- function() {
     R_PKG_PKGMAN_COLORS = as.character(crayon::has_color()),
     R_PKG_PKGMAN_NUM_COLORS = as.character(crayon::num_colors()))
   pkgman_data$remote <- callr::r_session$new(opts, wait = FALSE)
+}
+
+restart_remote_if_needed <- function() {
+  "!DEBUG Restarting background process"
+  rs <- pkgman_data$remote
+  if (inherits(rs, "r_session") &&
+      rs$is_alive() &&
+      rs$get_state() != "busy") return()
+
+  ## Try to interrupt nicely (SIGINT/CTRL+C), if that fails within 100ms,
+  ## kill it.
+  rs$interrupt()
+  rs$wait(100)
+  rs$kill()
+  new_remote_session()
 }
