@@ -92,6 +92,16 @@ ask_for_confirmation <- function(ask, sol, lib) {
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
 
+  w_dl <- sol$cache_status == "miss"
+  w_ch <- sol$cache_status == "hit"
+  n_dl <- sum(w_dl, na.rm = TRUE)
+  n_ch <- sum(w_ch, na.rm = TRUE)
+  b_dl <- prettyunits::pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
+  b_ch <- prettyunits::pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
+
+  app$alert("Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+  app$text(" ")
+
   if (ask) {
     yesno(
       paste0(crayon::yellow("?"), " Do you want to continue? (Y/n) "),
