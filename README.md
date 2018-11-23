@@ -23,8 +23,61 @@ devtools::install_github("r-lib/pkgman")
 
 ``` r
 library(pkgman)
-pkg_install("dplyr", num_workers = 4)
+pkg_install("dplyr", num_workers = 4, lib = "/tmp/lib")
 ```
+
+## Goals
+
+* Make package installation cheaper and more reliable.
+
+* Cheaper, reliable package installation allows safer, more convenient
+  workflows.
+
+## Features
+
+### Speedy Features
+
+* Fast downloads and queries (all HTTP is concurrent).
+
+* Fast installs (package installations and builds are concurrent).
+
+* Package cache (all downloaded and locally built packages are cached).
+
+* Lazy downloads, only download if needed.
+
+### Safety features
+
+* Private library (pkgman's own dependencies do not affect your "regular"
+  packages and vice versa).
+
+* Do load any package in the main process (except for pkgman itself).
+  Every operation runs in the sub-process.
+
+* Dependency solver: makes sure that you end up in a consistent, working
+  state of dependencies.
+
+* Confirmation, warning for overwriting loaded packages.
+
+* Concurrency safe, locks library, locks caches. Lock is released when the
+  process terminates.
+
+### Convenience features
+
+* GitHub packages.
+
+* BioC packages.
+
+* Show download sizes.
+
+## Family of Packages
+
+* `pkgman`: main user facing package
+
+* `pkgdepends`: dependency resolution, package downloads
+
+* `pkginstall`: install downloaded packages
+
+* `pkgcache`: metadata and package cache
 
 ## License
 
