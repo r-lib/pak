@@ -46,8 +46,7 @@ print.pkgman_install_result <- function(x, ...) {
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
   total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% "???s"
 
-  app <- cliapp::default_app() %||% cliapp::start_app()
-  app$alert_success(paste0(
+  cliapp::cli_alert_success(paste0(
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
     "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
@@ -66,28 +65,27 @@ ask_for_confirmation <- function(ask, sol, lib) {
 
   if (! (n_newly + n_upd)) return()
 
-  app <- cliapp::default_app() %||% cliapp::start_app()  
   package_list <- function(x) {
-    app$div(
+    cliapp::cli_div(
       class = "pkglist",
       theme = list(div.pkglist = list("margin-left" = 2))
     )
-    app$text(paste(x, collapse = ", "))
-    app$text(" ")
+    cliapp::cli_text(paste(x, collapse = ", "))
+    cliapp::cli_text()
   }
 
-  app$text(" ")
+  cliapp::cli_text(" ")
   if (n_newly) {
-    app$alert("Will {emph install} {n_newly} packages:")
+    cliapp::cli_alert("Will {emph install} {n_newly} packages:")
     package_list(sol$ref[newly])
   }
   if (n_upd) {
-    app$alert("Will {emph update} {n_upd} packages:")
+    cliapp::cli_alert("Will {emph update} {n_upd} packages:")
     package_list(sol$ref[upd])
   }
   if (n_curr + n_noupd) {
-    app$alert("Will {emph not update} {n_curr + n_noupd} packages.")
-    app$text(" ")
+    cliapp::cli_alert("Will {emph not update} {n_curr + n_noupd} packages.")
+    cliapp::cli_text(" ")
   }
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
@@ -99,8 +97,8 @@ ask_for_confirmation <- function(ask, sol, lib) {
   b_dl <- prettyunits::pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
   b_ch <- prettyunits::pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
 
-  app$alert("Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
-  app$text(" ")
+  cliapp::cli_alert("Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+  cliapp::cli_text(" ")
 
   if (ask) {
     yesno(
@@ -108,7 +106,7 @@ ask_for_confirmation <- function(ask, sol, lib) {
       "Installation aborted")
   }
 
-  app$text(" ")
+  cliapp::cli_text(" ")
 }
 
 warn_for_loaded_packages <- function(pkgs, lib) {
@@ -119,13 +117,12 @@ warn_for_loaded_packages <- function(pkgs, lib) {
     )
     bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
     if (length(bad)) {
-      app <- cliapp::default_app()
-      app$alert_warning(
+      cliapp::cli_alert_warning(
         "Package(s) {format_items(bad)} are already loaded, installing \\
          them may cause problems. Use {code pkgload::unload()} to unload them.",
         wrap = TRUE
       )
-      app$text(" ")
+      cliapp::cli_text(" ")
     }
   }
 }

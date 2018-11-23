@@ -15,6 +15,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {
 
   start <- Sys.time()
+  cliapp::start_app(theme = cliapp::simple_theme())
 
   sol <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
@@ -32,8 +33,6 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade) {
-  cliapp::default_app() %||% cliapp::start_app()
-
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
   ## Solve the dependency graph

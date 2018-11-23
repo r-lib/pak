@@ -27,9 +27,7 @@ remote <- function(func, args = list()) {
   }
   if (state != "idle") stop("Subprocess is busy or cannot start")
 
-  res <- withCallingHandlers(
-    rs$run_with_output(func, args),
-    "cliapp_message" = function(x) message(x$message, appendLF = FALSE))
+  res <- rs$run_with_output(func, args)
   if (!is.null(res$error)) stop(res$error)
 
   res$result
