@@ -2,10 +2,16 @@
 pkgman_data <- new.env(parent = emptyenv())
 
 .onLoad <- function(libname, pkgname) {
-  ## TODO: load callr from the private library
+  pkgman_data$ns <- list()
+
   worker <- Sys.getenv("R_PKG_PKGMAN_WORKER", "")
   if (worker == "") {
     ## In the main process
+    load_private_package("crayon")
+    load_private_package("rappdirs")
+    load_private_package("ps")
+    load_private_package("processx", "c_")
+    load_private_package("callr")
     new_remote_session()
 
   } else if (worker == "true") {
