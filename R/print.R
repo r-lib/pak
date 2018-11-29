@@ -30,7 +30,17 @@
 #' @export
 
 print.pkgman_install_result <- function(x, ...) {
+  nice_df_print(x, ...)
+}
 
+nice_df_print <- function(x, ...) {
+  old <- options(max.print = 100)
+  on.exit(options(old))
+  print.data.frame(x)
+  invisible(x)
+}
+
+print_install_summary <- function(x) {
   direct <- sum(x$direct)
   deps <- sum(! x$direct)
 
