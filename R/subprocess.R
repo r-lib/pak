@@ -158,7 +158,12 @@ set_function_envs <- function(within, new) {
   suppressWarnings({
     for (nm in nms) {
       if (is.function(within[[nm]])) {
-        environment(within[[nm]]) <- new
+        if (identical(environment(within[[nm]]), base::.GlobalEnv)) {
+          environment(within[[nm]]) <- new
+        } else if (identical(parent.env(environment(within[[nm]])),
+                             base::.GlobalEnv)) {
+          parent.env(environment(within[[nm]])) <- new
+        }
       } else if ("R6ClassGenerator" %in% class(within[[nm]])) {
         within[[nm]]$parent_env <- new
         for (mth in names(within[[nm]]$public_methods)) {
