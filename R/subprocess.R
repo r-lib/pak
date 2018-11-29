@@ -91,8 +91,6 @@ restart_remote_if_needed <- function() {
 }
 
 load_private_package <- function(package, reg_prefix = "")  {
-  ## First we try ps, that has no dependencies
-
   if (!is.null(ns <- pkgman_data$ns[[package]])) return(ns)
 
   priv <- get_private_lib()
