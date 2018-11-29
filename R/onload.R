@@ -16,6 +16,7 @@ pkgman_data <- new.env(parent = emptyenv())
       crayon.colors = as.numeric(Sys.getenv("R_PKG_PKGMAN_NUM_COLORS", "1"))
     )
     use_private_lib()
+    cliapp::start_app(theme = cliapp::simple_theme())
 
   } else {
     ## In a subprocess of a worker

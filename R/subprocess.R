@@ -27,7 +27,34 @@ remote <- function(func, args = list()) {
   }
   if (state != "idle") stop("Subprocess is busy or cannot start")
 
-  res <- rs$run_with_output(func, args)
+  func2 <- func
+  body(func2) <- substitute({
+    withCallingHandlers(
+      cliapp_message = function(msg) {
+        withCallingHandlers(
+          cliapp:::cli_server_default(msg),
+          message = function(mmsg) {
+            class(mmsg) <- c("callr_message", "message", "condition")
+            signalCondition(mmsg)
+            invokeRestart("muffleMessage")
+          }
+        )
+        invokeRestart("muffleMessage")
+      },
+      `__body__`
+    )},
+    list("__body__" = body(func))
+  )
+
+  res <- withCallingHandlers(
+    callr_message = function(msg) {
+      message(msg)
+      if (!is.null(findRestart("muffleMessage"))) {
+        invokeRestart("muffleMessage")
+      }
+    },
+    rs$run_with_output(func2, args)
+  )
   if (!is.null(res$error)) stop(res$error)
 
   res$result

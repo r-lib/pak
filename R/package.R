@@ -15,13 +15,14 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         num_workers = 1L, ask = interactive()) {
 
   start <- Sys.time()
-  cliapp::start_app(theme = cliapp::simple_theme())
 
-  sol <- remote(
+  todo <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
-    list(pkg = pkg, lib = lib, upgrade = upgrade))
+    list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask))
 
-  ask_for_confirmation(ask, sol, lib)
+  if (todo && ask) {
+    get_confirmation("? Do you want to continue (Y/n) ")
+  }
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pkgman"))(...),
@@ -32,7 +33,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   inst
 }
 
-pkg_install_make_plan <- function(pkg, lib, upgrade) {
+pkg_install_make_plan <- function(pkg, lib, upgrade, ask) {
   r <- pkgdepends::remotes$new(pkg, library = lib)
 
   ## Solve the dependency graph
@@ -40,7 +41,8 @@ pkg_install_make_plan <- function(pkg, lib, upgrade) {
   r$solve(policy = policy)
   r$stop_for_solve_error()
   pkgman_data$tmp <- r
-  r$get_solution()$data
+  sol <- r$get_solution()$data
+  print_install_details(sol, lib)
 }
 
 pkg_install_do_plan <- function(remotes, lib, num_workers) {
