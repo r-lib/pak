@@ -61,6 +61,8 @@ remote <- function(func, args = list()) {
 }
 
 new_remote_session <- function() {
+  get_private_lib()
+  load_private_packages()
   callr <- pkgman_data$ns$callr
   crayon <- pkgman_data$ns$crayon
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
@@ -75,6 +77,14 @@ new_remote_session <- function() {
   pkgman_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }
 
+try_new_remote_session <- function() {
+  tryCatch({
+    check_for_private_lib()
+    load_private_packages()
+    new_remote_session()
+  }, error = function(e) e)
+}
+
 restart_remote_if_needed <- function() {
   "!DEBUG Restarting background process"
   rs <- pkgman_data$remote
@@ -84,10 +94,20 @@ restart_remote_if_needed <- function() {
 
   ## Try to interrupt nicely (SIGINT/CTRL+C), if that fails within 100ms,
   ## kill it.
-  rs$interrupt()
-  rs$wait(100)
-  rs$kill()
+  if (inherits(rs, "r_session")) {
+    rs$interrupt()
+    rs$wait(100)
+    rs$kill()
+  }
+
   new_remote_session()
+}
+
+load_private_packages <- function() {
+  load_private_package("crayon")
+  load_private_package("ps")
+  load_private_package("processx", "c_")
+  load_private_package("callr")
 }
 
 load_private_package <- function(package, reg_prefix = "")  {

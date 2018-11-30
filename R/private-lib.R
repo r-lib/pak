@@ -1,6 +1,16 @@
 
+check_for_private_lib <- function(
+    pkgs = c("crayon", "ps", "processx", "callr")) {
+  lib <- private_lib_dir()
+  if (!file.exists(lib) || !is_dir(lib)) stop("No private lib")
+  for (pkg in pkgs) {
+    pkgdir <- file.path(lib, pkg)
+    if (!file.exists(pkgdir) || !is_dir(pkgdir)) stop("Broken private lib")
+  }
+}
+
 use_private_lib <- function() {
-  lib <- get_private_lib()
+  lib <- private_lib_dir()
   old <- .libPaths()
   new <- c(lib, old[old != lib])
   .libPaths(new)

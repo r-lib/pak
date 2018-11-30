@@ -7,12 +7,7 @@ pkgman_data <- new.env(parent = emptyenv())
   worker <- Sys.getenv("R_PKG_PKGMAN_WORKER", "")
   if (worker == "") {
     ## In the main process
-    load_private_package("filelock", "c_")
-    load_private_package("crayon")
-    load_private_package("ps")
-    load_private_package("processx", "c_")
-    load_private_package("callr")
-    new_remote_session()
+    try_new_remote_session()
 
   } else if (worker == "true") {
     ## In the worker process
