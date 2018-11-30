@@ -7,10 +7,6 @@ remote_is_alive <- function() {
   inherits(rs <- pkgman_data$remote, "process") && rs$is_alive()
 }
 
-should_remote <- function() {
-  !isFALSE(getOption("pkgman.subprocess"))
-}
-
 remote <- function(func, args = list()) {
   restart_remote_if_needed()
   on.exit(restart_remote_if_needed(), add = TRUE)
