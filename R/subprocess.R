@@ -143,7 +143,12 @@ load_private_package <- function(package, reg_prefix = "")  {
   ## to the package env via asNamespace(), e.g. the ps package does that.
   ## In theory we should handle errors in .onLoad...
   pkgman_data$ns[[package]] <- pkg_env
-  if (".onLoad" %in% names(pkg_env)) pkg_env$.onLoad(priv, package)
+  if (".onLoad" %in% names(pkg_env)) {
+    withCallingHandlers(
+      pkg_env$.onLoad(priv, package),
+      error = function(e) pkgman_data$ns[[package]] <<- NULL
+    )
+  }
 
   pkg_env
 }
