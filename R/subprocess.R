@@ -158,13 +158,17 @@ set_function_envs <- function(within, new) {
   .libPaths(character())
   on.exit(.libPaths(old), add = TRUE)
   nms <- names(within)
+
+  is_target_env <- function(x) {
+    identical(x, base::.GlobalEnv) || environmentName(x) != ""
+  }
+
   suppressWarnings({
     for (nm in nms) {
       if (is.function(within[[nm]])) {
-        if (identical(environment(within[[nm]]), base::.GlobalEnv)) {
+        if (is_target_env(environment(within[[nm]])))  {
           environment(within[[nm]]) <- new
-        } else if (identical(parent.env(environment(within[[nm]])),
-                             base::.GlobalEnv)) {
+        } else if (is_target_env(parent.env(environment(within[[nm]])))) {
           parent.env(environment(within[[nm]])) <- new
         }
       } else if ("R6ClassGenerator" %in% class(within[[nm]])) {
