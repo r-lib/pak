@@ -36,7 +36,7 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy")) {
 
   done <- FALSE
 
-  if (mode %in% c("auto", "download")) {
+  if (mode %in% c("auto", "copy")) {
     tryCatch({
       create_private_lib()
       done <- TRUE
