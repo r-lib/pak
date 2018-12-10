@@ -2,11 +2,12 @@
 pkgman_data <- new.env(parent = emptyenv())
 
 .onLoad <- function(libname, pkgname) {
-  ## TODO: load callr from the private library
+  pkgman_data$ns <- list()
+
   worker <- Sys.getenv("R_PKG_PKGMAN_WORKER", "")
   if (worker == "") {
     ## In the main process
-    new_remote_session()
+    try_new_remote_session()
 
   } else if (worker == "true") {
     ## In the worker process
@@ -22,4 +23,6 @@ pkgman_data <- new.env(parent = emptyenv())
     ## In a subprocess of a worker
     use_private_lib()
   }
+
+  invisible()
 }

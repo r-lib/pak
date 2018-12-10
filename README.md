@@ -15,15 +15,17 @@ repositories.
 
 ## Installation
 
+Once on CRAN, install the package with:
+
 ``` r
-devtools::install_github("r-lib/pkgman")
+install.packages("pkgman", dependencies = FALSE)
+pkgman::pkgman_install_deps("download")
 ```
 
 ## Usage
 
 ``` r
-library(pkgman)
-pkg_install("dplyr", num_workers = 4, lib = "/tmp/lib")
+pkgman::pkg_install("dplyr", num_workers = 4, lib = "/tmp/lib")
 ```
 
 ## Goals

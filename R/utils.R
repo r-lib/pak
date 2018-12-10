@@ -93,3 +93,55 @@ file_mtime <- function(...) {
 is_dir <- function(...) {
   file.info(..., extra_cols = FALSE)$isdir
 }
+
+get_current_r_version <- function() {
+  as.character(getRversion())
+}
+
+get_minor_r_version <- function(x = getRversion()) {
+  x <- package_version(x)
+  vapply(unclass(x), function(x) paste(x[1:2], collapse = "."), character(1))
+}
+
+get_os <- function() {
+  if (.Platform$OS.type == "windows") {
+    "win"
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    "mac"
+  } else if (.Platform$OS.type == "unix") {
+    "unix"
+  } else {
+    "unknown"
+  }
+}
+
+user_cache_dir <- function(appname, version) {
+  switch(
+    get_os(),
+    win = file_path(win_path_local(), appname, version, "Cache"),
+    mac = file_path("~/Library/Caches", appname, version),
+    unix = file_path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), appname,
+                     version),
+    unknown = file_path(tempdir(), "r-pkg-cache", appname, version)
+  )
+}
+
+file_path <- function(...) {
+  normalizePath(do.call("file.path", as.list(c(...))), mustWork = FALSE)
+}
+
+win_path_local <- function() {
+  if (nzchar(lapp <- Sys.getenv("LOCALAPPDATA", ""))) {
+    lapp
+
+  } else if (nzchar(usrprof <- Sys.getenv("USERPROFILE", ""))) {
+    file.path(usrprof, "AppData", "Local")
+
+  } else {
+    file.path(tempdir(), "r-pkg-cache")
+  }
+}
+
+cat0 <- function(..., sep = "") {
+  cat(..., sep = sep)
+}

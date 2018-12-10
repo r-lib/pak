@@ -60,7 +60,7 @@ print_install_summary <- function(x) {
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
     "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
-    " [{timestamp {total_time}}]"))
+    " {timestamp {total_time}}"))
 }
 
 warn_for_loaded_packages <- function(pkgs, lib) {
