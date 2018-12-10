@@ -141,3 +141,7 @@ win_path_local <- function() {
     file.path(tempdir(), "r-pkg-cache")
   }
 }
+
+cat0 <- function(..., sep = "") {
+  cat(..., sep = sep)
+}

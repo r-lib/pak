@@ -16,8 +16,14 @@ use_private_lib <- function() {
   .libPaths(new)
 }
 
-get_private_lib <- function() {
-  pkgman_data$private_lib %||% create_private_lib()
+get_private_lib <- function(create = TRUE) {
+  if (!is.null(l <- pkgman_data$private_lib)) return(l)
+  if (!is.null(l <- check_private_lib())) return(l)
+  if (create) {
+    pkgman_install_deps()
+  } else {
+    stop("No pkgman private library")
+  }
 }
 
 private_lib_dir <- function()  {
@@ -59,7 +65,7 @@ copy_package <- function(from, lib) {
 
 create_private_lib <- function() {
   lib <- private_lib_dir()
-  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
+  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
   pkg_dirs <- pkgman_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
@@ -77,6 +83,13 @@ create_private_lib <- function() {
   lib
 }
 
+check_private_lib <- function() {
+  lib <- private_lib_dir()
+  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
+  pkgs <- basename(pkgman_data$deps)
+  if (all(pkgs %in% dir(lib))) lib else NULL
+}
+
 #' @importFrom utils head
 
 lookup_deps <- function(package) {
@@ -87,6 +100,7 @@ lookup_deps <- function(package) {
   result <- character()
   todo <- path
 
+  ## TODO: check for version requirements
   find_lib <- function(pkg) {
     w <- head(which(vlapply(lib_pkgs, `%in%`, x = pkg)), 1)
     if (!length(w)) {
@@ -114,6 +128,10 @@ extract_deps <- function(path) {
     if ("Depends" %in% colnames(dcf)) dcf[, "Depends"]
   ), collapse = ", ")
 
+  parse_dep_fields(deps)
+}
+
+parse_dep_fields <- function(deps) {
   deps <- str_trim(strsplit(deps, ",")[[1]])
   deps <- lapply(strsplit(deps, "\\("), str_trim)
   deps <- lapply(deps, sub, pattern = "\\)$", replacement = "")
@@ -130,4 +148,39 @@ base_packages <- function() {
       rownames(utils::installed.packages(priority = "base"))
   }
   pkgman_data$base_packages
+}
+
+download_private_lib <- function() {
+  lib <- private_lib_dir()
+  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
+  pkg_dirs <- pkgman_data$deps
+  dir.create(lib, recursive = TRUE, showWarnings = FALSE)
+  remotes <- packageDescription(.packageName)$Remotes
+
+  old_libs <- .libPaths()
+  on.exit(.libPaths(old_libs), add = TRUE)
+  .libPaths(lib)
+
+  old_env <- Sys.getenv("R_REMOTES_STANDALONE", NA_character_)
+  if (!is.na(old_env)) {
+    on.exit(Sys.setenv("R_REMOTES_STANDALONE" = old_env), add = TRUE)
+  } else {
+    on.exit(Sys.unsetenv("R_REMOTES_STANDALONE"), add = TRUE)
+  }
+  Sys.setenv("R_REMOTES_STANDALONE" = "true")
+
+  if (!is.null(remotes)) {
+    remotes <- str_trim(strsplit(remotes, ",\\s*")[[1]])
+    message("\n! This is a _development_ version of pkgman,\n",
+        "! some packages will be installed from *GitHub*\n\n")
+    for (rem in remotes) {
+      source(paste0("https://install-github.me/", rem))
+    }
+  }
+
+  installed <- dir(lib, pattern = "^[a-zA-Z0-9\\.]+$")
+  to_install <- setdiff(basename(pkgman_data$deps), dir(lib))
+  if (length(to_install)) utils::install.packages(to_install, lib = lib)
+
+  invisible(lib)
 }

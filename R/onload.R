@@ -23,4 +23,6 @@ pkgman_data <- new.env(parent = emptyenv())
     ## In a subprocess of a worker
     use_private_lib()
   }
+
+  invisible()
 }

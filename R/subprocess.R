@@ -56,9 +56,9 @@ remote <- function(func, args = list()) {
   res$result
 }
 
-new_remote_session <- function() {
-  get_private_lib()
-  load_private_packages()
+new_remote_session <- function(create = TRUE) {
+  get_private_lib(create = create)
+  load_private_packages(create = create)
   callr <- pkgman_data$ns$callr
   crayon <- pkgman_data$ns$crayon
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
@@ -76,8 +76,8 @@ new_remote_session <- function() {
 try_new_remote_session <- function() {
   tryCatch({
     check_for_private_lib()
-    load_private_packages()
-    new_remote_session()
+    load_private_packages(create = FALSE)
+    new_remote_session(create = FALSE)
   }, error = function(e) e)
 }
 
@@ -99,17 +99,17 @@ restart_remote_if_needed <- function() {
   new_remote_session()
 }
 
-load_private_packages <- function() {
-  load_private_package("crayon")
-  load_private_package("ps")
-  load_private_package("processx", "c_")
-  load_private_package("callr")
+load_private_packages <- function(create = TRUE) {
+  load_private_package("crayon", create = create)
+  load_private_package("ps", create = create)
+  load_private_package("processx", "c_", create = create)
+  load_private_package("callr", create = create)
 }
 
-load_private_package <- function(package, reg_prefix = "")  {
+load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
   if (!is.null(ns <- pkgman_data$ns[[package]])) return(ns)
 
-  priv <- get_private_lib()
+  priv <- get_private_lib(create = create)
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
