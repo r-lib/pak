@@ -151,7 +151,7 @@ base_packages <- function() {
   pkgman_data$base_packages
 }
 
-download_private_lib <- function() {
+download_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
   if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
@@ -173,8 +173,10 @@ download_private_lib <- function() {
 
   if (!is.null(remotes)) {
     remotes <- str_trim(strsplit(remotes, ",\\s*")[[1]])
-    message("\n! This is a _development_ version of pkgman,\n",
-        "! some packages will be installed from *GitHub*\n\n")
+    if (!quiet) {
+      message("\n! This is a _development_ version of pkgman,\n",
+              "! some packages will be installed from *GitHub*\n\n")
+    }
     for (rem in remotes) {
       source(paste0("https://install-github.me/", rem))
     }

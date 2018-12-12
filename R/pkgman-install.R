@@ -9,19 +9,21 @@
 #'   download them from CRAN. "copy" will try to copy them from your
 #'   current "regular" package library. "auto" will try to copy first,
 #'   and if that fails, then it tries to download.
+#' @param quiet Whether to omit messages.
 #' @return The path to the private library, invisibly.
 #'
 #' @seealso [pkgman_sitrep()].
 #'
 #' @export
 
-pkgman_install_deps <- function(mode = c("auto", "download", "copy")) {
+pkgman_install_deps <- function(mode = c("auto", "download", "copy"),
+                                quiet = FALSE) {
 
   mode <- match.arg(mode)
 
   lib <- private_lib_dir()
 
-  if (mode == "auto") {
+  if (mode == "auto" && !quiet) {
     message(
       "\n`pkgman` will create its private package library in",
       "\n`", lib, "`. ",
@@ -32,7 +34,7 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy")) {
     if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
   }
 
-  message("\nCreating private lib in `", lib, "`...")
+  if (!quiet) message("\nCreating private lib in `", lib, "`...")
 
   done <- FALSE
 
@@ -41,20 +43,20 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy")) {
       create_private_lib()
       done <- TRUE
     }, error = function(e) {
-      if (mode == "copy") stop(e)
+      if (mode == "copy") stop(e) else if (!quiet) print(e)
     })
   }
 
   if (!done) {
     tryCatch({
-      download_private_lib()
+      download_private_lib(quiet = quiet)
       return(invisible())
     }, error = function(e) {
       stop(e)
     })
   }
 
-  message("\nCreated private lib in `", lib, "`...")
+  if (!quiet) message("\nCreated private lib in `", lib, "`...")
 
   invisible(lib)
 }
