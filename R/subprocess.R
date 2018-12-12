@@ -113,7 +113,16 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
-  pkg_dir <- normalizePath(file.path(priv, package))
+  pkg_dir0 <- normalizePath(file.path(priv, package))
+  mkdirp(pkg_dir <- file.path(tempfile(), package))
+  file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)
+  pkg_env[["__pkgman-dir__"]] <- pkg_dir
+  reg.finalizer(pkg_env, function(x) {
+    tryCatch(
+      unlink(x[["__pkgman-dir__"]], recursive = TRUE, force = TRUE),
+      error = function(e) e)
+  })
+
   lazyLoad(file.path(pkg_dir, "R", package), envir = pkg_env)
 
   ## Reset environments
@@ -161,7 +170,7 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
   pkgman_data$ns[[package]] <- pkg_env
   if (".onLoad" %in% names(pkg_env)) {
     withCallingHandlers(
-      pkg_env$.onLoad(priv, package),
+      pkg_env$.onLoad(pkg_dir, package),
       error = function(e) pkgman_data$ns[[package]] <<- NULL
     )
   }

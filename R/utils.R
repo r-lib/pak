@@ -145,3 +145,7 @@ win_path_local <- function() {
 cat0 <- function(..., sep = "") {
   cat(..., sep = sep)
 }
+
+mkdirp <- function(path) {
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+}
