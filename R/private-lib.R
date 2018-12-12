@@ -65,6 +65,7 @@ copy_package <- function(from, lib) {
 
 create_private_lib <- function() {
   lib <- private_lib_dir()
+  if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
   pkg_dirs <- pkgman_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
@@ -152,6 +153,7 @@ base_packages <- function() {
 
 download_private_lib <- function() {
   lib <- private_lib_dir()
+  if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
   pkg_dirs <- pkgman_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
