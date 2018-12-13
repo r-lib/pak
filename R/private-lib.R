@@ -157,7 +157,7 @@ download_private_lib <- function(quiet = FALSE) {
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
   pkg_dirs <- pkgman_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
-  remotes <- packageDescription(.packageName)$Remotes
+  remotes <- utils::packageDescription(.packageName)$Remotes
 
   old_libs <- .libPaths()
   on.exit(.libPaths(old_libs), add = TRUE)

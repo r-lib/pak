@@ -28,7 +28,7 @@ remote <- function(func, args = list()) {
     withCallingHandlers(
       cliapp_message = function(msg) {
         withCallingHandlers(
-          cliapp:::cli_server_default(msg),
+          asNamespace("cliapp")$cli_server_default(msg),
           message = function(mmsg) {
             class(mmsg) <- c("callr_message", "message", "condition")
             signalCondition(mmsg)
@@ -208,5 +208,14 @@ set_function_envs <- function(within, new) {
     }
   })
 
+  invisible()
+}
+
+## This is a workaround for R CMD check
+
+r_cmd_check_fix <- function() {
+  callr::r
+  cli::rule
+  crayon::red
   invisible()
 }
