@@ -48,7 +48,7 @@ test_that("no interference", {
   pkgman_data$ns$processx <- NULL
   gc()
 
-  requireNamespace("ps")
+  asNamespace("ps")
   expect_true("ps" %in%  loadedNamespaces())
   expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
 
