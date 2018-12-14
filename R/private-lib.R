@@ -66,19 +66,14 @@ copy_package <- function(from, lib) {
 create_private_lib <- function() {
   lib <- private_lib_dir()
   if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
+  liblock <- lock_private_lib(lib)
+  on.exit(unlock_private_lib(liblock), add = TRUE)
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
   pkg_dirs <- pkgman_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
   upd <- vlapply(pkg_dirs, package_needs_update, lib = lib)
-  if (any(upd)) {
-    with_package("filelock", {
-      l <- filelock::lock(file.path(lib, "pkgman-lib.lock"))
-      if (is.null(l)) stop("Cannot create private lib, cannot lock")
-      on.exit(filelock::unlock(l))
-      for(i in which(upd)) copy_package(pkg_dirs[i], lib)
-    })
-  }
+  for(i in which(upd)) copy_package(pkg_dirs[i], lib)
 
   pkgman_data$private_lib <- lib
   lib
@@ -153,6 +148,8 @@ base_packages <- function() {
 
 download_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
+  l <- lock_private_lib(lib, download = TRUE)
+  on.exit(unlock_private_lib(l), add = TRUE)
   if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
   pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
   pkg_dirs <- pkgman_data$deps
@@ -187,4 +184,51 @@ download_private_lib <- function(quiet = FALSE) {
   if (length(to_install)) utils::install.packages(to_install, lib = lib)
 
   invisible(lib)
+}
+
+lock_private_lib <- function(path, download = FALSE) {
+  lib <- private_lib_dir()
+  lockfile <- file.path(lib, "pkgman-lib.lock")
+  load_filelock(download)
+  mkdirp(dirname(lockfile))
+  lock <- pkgman_data$ns$filelock$lock(lockfile, timeout = 3000)
+  if (is.null(lock)) {
+    stop("Cannot lock private library")
+  }
+  lock
+}
+
+unlock_private_lib <- function(lock) {
+  load_filelock()
+  pkgman_data$ns$filelock$unlock(lock)
+}
+
+load_filelock <- function(download = FALSE) {
+  ## Maybe we have a useable instance
+  if (!is.null(pkgman_data$ns$filelock)) return()
+
+  ## Try to load it from the private library
+  tryCatch({
+    load_private_package("filelock", "c_")
+  }, error = function(e) e)
+  if (!is.null(pkgman_data$ns$filelock)) return()
+
+  ## Try to load it from the regular library
+  tryCatch({
+    fl <- find.package("filelock")
+    load_private_package("filelock", "c_", lib = dirname(fl))
+  }, error = function(e) e)
+  if (!is.null(pkgman_data$ns$filelock)) return()
+
+  ## Try to download and install it into a temporary directory
+  if (download) {
+    mkdirp(tmp <- tempfile())
+    on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+    install.packages("filelock", lib = tmp)
+    load_private_package("filelock", "c_", lib = tmp)
+  }
+
+  if (is.null(pkgman_data$ns$filelock)) {
+    stop("Cannot lock private library, cannot install filelock package")
+  }
 }

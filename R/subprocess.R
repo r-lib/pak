@@ -107,14 +107,13 @@ load_private_packages <- function(create = TRUE) {
   load_private_package("callr", create = create)
 }
 
-load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
-  if (!is.null(ns <- pkgman_data$ns[[package]])) return()
-
-  priv <- get_private_lib(create = create)
+load_private_package <- function(package, reg_prefix = "", create = TRUE,
+                                 lib = get_private_lib(create = create))  {
+  if (!is.null(pkgman_data$ns[[package]])) return()
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
-  pkg_dir0 <- normalizePath(file.path(priv, package))
+  pkg_dir0 <- normalizePath(file.path(lib, package))
   mkdirp(pkg_dir <- file.path(tempfile(), package))
   pkg_dir <- normalizePath(pkg_dir)
   file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)

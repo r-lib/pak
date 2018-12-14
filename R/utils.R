@@ -75,11 +75,6 @@ unload_package <- function(pkg) {
   invisible()
 }
 
-with_package <- function(pkg, expr) {
-  if (! pkg %in% loadedNamespaces()) on.exit(unload_package(pkg), add = TRUE)
-    expr
-}
-
 list_files <- function(path) {
   if (!file.exists(path)) return(character())
   fs <- dir(path, full.names = TRUE)
