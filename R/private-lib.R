@@ -181,7 +181,12 @@ download_private_lib <- function(quiet = FALSE) {
 
   installed <- dir(lib, pattern = "^[a-zA-Z0-9\\.]+$")
   to_install <- setdiff(basename(pkgman_data$deps), dir(lib))
-  if (length(to_install)) utils::install.packages(to_install, lib = lib)
+  if (length(to_install)) {
+    utils::update.packages(oldPkgs = to_install, lib.loc = lib,
+                           instlib = lib, ask = FALSE)
+  } else {
+    message("CRAN packages are up to date.")
+  }
 
   invisible(lib)
 }
