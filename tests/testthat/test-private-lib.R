@@ -54,7 +54,7 @@ test_that("no interference", {
 
   load_private_package("ps", create = TRUE)
   expect_true(is.function(pkgman_data$ns$ps$ps))
-  expect_true(is.function(ps::ps))
+  expect_true(is.function(asNamespace("ps")$ps))
 
   pkgman_data$ns$ps <- NULL
   gc(); gc()
