@@ -17,7 +17,6 @@ test_that("no dependencies are loaded with pkgman", {
     timeout = 5
   )
 
-  if (length(new_pkgs) > 1) print(new_pkgs)
   expect_true(all(new_pkgs %in% c("pkgman", base_packages())))
 })
 

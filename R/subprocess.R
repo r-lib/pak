@@ -9,6 +9,7 @@ remote_is_alive <- function() {
 
 remote <- function(func, args = list()) {
   restart_remote_if_needed()
+  load_private_packages()
   on.exit(restart_remote_if_needed(), add = TRUE)
 
   rs <- pkgman_data$remote
@@ -107,7 +108,7 @@ load_private_packages <- function(create = TRUE) {
 }
 
 load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
-  if (!is.null(ns <- pkgman_data$ns[[package]])) return(ns)
+  if (!is.null(ns <- pkgman_data$ns[[package]])) return()
 
   priv <- get_private_lib(create = create)
 
@@ -115,12 +116,26 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
   pkg_env <- new.env(parent = asNamespace(.packageName))
   pkg_dir0 <- normalizePath(file.path(priv, package))
   mkdirp(pkg_dir <- file.path(tempfile(), package))
+  pkg_dir <- normalizePath(pkg_dir)
   file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)
+  pkg_env[[".packageName"]] <- package
   pkg_env[["__pkgman-dir__"]] <- pkg_dir
-  reg.finalizer(pkg_env, function(x) {
-    tryCatch(
-      unlink(x[["__pkgman-dir__"]], recursive = TRUE, force = TRUE),
-      error = function(e) e)
+
+  reg.finalizer(pkg_env, onexit = TRUE, function(x) {
+    tryCatch({
+      pkg_dir <- pkg_env[["__pkgman-dir__"]]
+      if (!is.null(pkg_env[[".onUnload"]])) {
+        tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
+      }
+      libs <- .dynLibs()
+      matchidx <- grepl(pkg_dir, vcapply(libs, "[[", "path"), fixed = TRUE)
+      if (any(matchidx)) {
+        pkglibs <- libs[matchidx]
+        for (lib in pkglibs) dyn.unload(lib[["path"]])
+        .dynLibs(libs[!matchidx])
+      }
+      unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)
+    }, error = function(e) e)
   })
 
   lazyLoad(file.path(pkg_dir, "R", package), envir = pkg_env)
@@ -133,6 +148,8 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
                         paste0(package, .Platform$dynlib.ext))
   if (file.exists(dll_file)) {
     dll <- dyn.load(dll_file)
+    dll[["name"]] <- paste0("pkgman-", dll[["name"]])
+    .dynLibs(c(.dynLibs(), list(dll)))
     natfuns <- getDLLRegisteredRoutines(dll)$.Call
     for (natfun in natfuns) {
       pkg_env[[paste0(reg_prefix, natfun$name)]] <- natfun
@@ -175,7 +192,7 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE)  {
     )
   }
 
-  pkg_env
+  invisible()
 }
 
 set_function_envs <- function(within, new) {
