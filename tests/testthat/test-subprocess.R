@@ -17,7 +17,10 @@ test_that("no dependencies are loaded with pkgman", {
     timeout = 5
   )
 
-  expect_true(all(new_pkgs %in% c("pkgman", base_packages())))
+  if_fail(
+    expect_true(all(new_pkgs %in% c("pkgman", base_packages()))),
+    function(e) print(new_pkgs)
+  )
 })
 
 test_that("remote", {
