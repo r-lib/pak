@@ -229,7 +229,7 @@ load_filelock <- function(download = FALSE) {
   if (download) {
     mkdirp(tmp <- tempfile())
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
-    install.packages("filelock", lib = tmp)
+    utils::install.packages("filelock", lib = tmp)
     load_private_package("filelock", "c_", lib = tmp)
   }
 

@@ -233,5 +233,6 @@ r_cmd_check_fix <- function() {
   callr::r
   cli::rule
   crayon::red
+  filelock::lock
   invisible()
 }
