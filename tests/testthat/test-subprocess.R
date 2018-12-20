@@ -5,6 +5,10 @@ test_that("no dependencies are loaded with pkgman", {
 
   skip_on_cran()
 
+  ## Skip this is covr, because covr loads a bunch of other packages
+  ## for some reason
+  skip_if(Sys.getenv("R_COVR", "") == "true", "not run in covr")
+
   new_pkgs <- callr::r(
     function() {
       withr::with_options(list(pkgman.subprocess = FALSE), {
