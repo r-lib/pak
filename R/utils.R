@@ -24,6 +24,11 @@ names2 <- function(x) {
   }
 }
 
+set_names <- function(object, nm) {
+  names(object) <- nm
+  object
+}
+
 vcapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = character(1), ...)
 }

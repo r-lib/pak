@@ -1,6 +1,8 @@
+
 #' Install a package
 #'
 #' Install a package and it's dependencies.
+#'
 #' @param pkg Package names or remote package specifications to install.
 #'   See [pkgdepends::remotes] for details about remote package
 #'   specifications.
@@ -9,6 +11,7 @@
 #'   latest available version.
 #' @param num_workers Number of worker processes to use.
 #' @param ask Whether to ask for confirmation.
+#'
 #' @export
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
@@ -16,11 +19,11 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   start <- Sys.time()
 
-  todo <- remote(
+  any <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask, start = start))
 
-  if (todo && ask) {
+  if (any && ask) {
     get_confirmation("? Do you want to continue (Y/n) ")
   }
 
@@ -70,28 +73,21 @@ pkg_install_do_plan <- function(remotes, lib, num_workers) {
   inst
 }
 
-#' Install a local development package
-#' @param path to the local package
-#' @inheritParams pkg_install
-#' @export
-local_pkg_install <- function(path = ".", lib = .libPaths()[[1L]], num_workers = 1L) {
-
-  # Construct a local spec
-  pkg <- paste0("local::", normalizePath(path))
-
-  pkg_install(pkgdepends::remotes$new(pkg, library = lib), lib = lib, num_workers = num_workers)
-}
-
 #' Display installed locations of a package
+#'
+#' Note that this function loads the tibble package.
 #'
 #' @param pkg Name of an installed package to display status for.
 #' @param lib One or more library paths to lookup package status in.
+#'
 #' @export
+
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
   desc <- lapply(lib, function(lib) {
-    res <- suppressWarnings(utils::packageDescription(pkg, lib.loc = lib, fields = c("Version", "Built")))
+    res <- suppressWarnings(
+      utils::packageDescription(pkg, lib.loc = lib, fields = c("Version", "Built")))
   })
   found <- !is.na(desc)
   versions <- vcapply(desc[found], "[[", "Version")
@@ -103,9 +99,11 @@ pkg_status <- function(pkg, lib = .libPaths()) {
 split_built <- function(built) {
   nms <- c("build_r_version", "build_platform", "build_date", "build_os")
   if (length(built) < 1) {
-    return(stats::setNames(list(character(0), character(0), character(0), character(0)), nms))
+    set_names(
+      list(character(0), character(0), character(0), character(0)), nms)
+  } else {
+    set_names(as.list(strsplit(built, "; ")[[1L]]), nms)
   }
-  stats::setNames(as.list(strsplit(built, "; ")[[1L]]), nms)
 }
 
 #' Remove installed packages
@@ -113,28 +111,18 @@ split_built <- function(built) {
 #' @param pkg A character vector of packages to remove.
 #' @param lib library to remove packages from
 #' @export
+
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
-  # TODO: do we need to do anything else for this?
-  suppressMessages(utils::remove.packages(pkg, lib))
+  remote(
+    function(...) {
+      get("pkg_remove_internal", asNamespace("pkgman"))(...)
+    },
+    list(pkg = pkg, lib = lib)
+  )
 }
 
-total_num_deps <- function(plan) {
-  nn <- nrow(plan)
-  res <- rep(0, nn)
-  for (i in seq_along(res)) {
-    done <- rep(FALSE, nn)
-    edge <- i
-    while (length(edge)) {
-      done[edge] <- TRUE
-      res[i] <- res[i] + length(edge)
-      edge <- match(
-        setdiff(
-          unique(unlist(plan$dependencies[edge])),
-          plan$package[done]
-        ),
-        plan$package
-      )
-    }
-  }
-  res
+pkg_remove_internal <- function(pkg, lib) {
+  pr <- pkgdepends::parse_remotes(pkg)[[1]]
+  suppressMessages(utils::remove.packages(pr$package, lib))
+  invisible(pr)
 }
