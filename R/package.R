@@ -75,8 +75,6 @@ pkg_install_do_plan <- function(remotes, lib, num_workers) {
 
 #' Display installed locations of a package
 #'
-#' Note that this function loads the tibble package.
-#'
 #' @param pkg Name of an installed package to display status for.
 #' @param lib One or more library paths to lookup package status in.
 #'
@@ -92,8 +90,10 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   found <- !is.na(desc)
   versions <- vcapply(desc[found], "[[", "Version")
   built <- split_built(vcapply(desc[found], "[[", "Built"))
-  do.call(tibble::tibble,
-          append(list(library = lib[found], version = versions), built))
+  lst <- append(list(library = lib[found], version = versions), built)
+  tab <- as.data.frame(lst, stringsAsFactors = FALSE)
+  class(tab) <- unique(c("tbl_df", "tbl", class(tab)))
+  tab
 }
 
 split_built <- function(built) {

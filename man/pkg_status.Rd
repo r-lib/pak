@@ -12,5 +12,5 @@ pkg_status(pkg, lib = .libPaths())
 \item{lib}{One or more library paths to lookup package status in.}
 }
 \description{
-Note that this function loads the tibble package.
+Display installed locations of a package
 }
