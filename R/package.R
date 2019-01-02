@@ -83,27 +83,14 @@ pkg_install_do_plan <- function(remotes, lib, num_workers) {
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
-  desc <- lapply(lib, function(lib) {
-    res <- suppressWarnings(
-      utils::packageDescription(pkg, lib.loc = lib, fields = c("Version", "Built")))
-  })
-  found <- !is.na(desc)
-  versions <- vcapply(desc[found], "[[", "Version")
-  built <- split_built(vcapply(desc[found], "[[", "Built"))
-  lst <- append(list(library = lib[found], version = versions), built)
-  tab <- as.data.frame(lst, stringsAsFactors = FALSE)
-  class(tab) <- unique(c("tbl_df", "tbl", class(tab)))
-  tab
+  remote(
+    function(...) asNamespace("pkgman")$pkg_status_internal(...),
+    list(pkg = pkg, lib = lib))
 }
 
-split_built <- function(built) {
-  nms <- c("build_r_version", "build_platform", "build_date", "build_os")
-  if (length(built) < 1) {
-    set_names(
-      list(character(0), character(0), character(0), character(0)), nms)
-  } else {
-    set_names(as.list(strsplit(built, "; ")[[1L]]), nms)
-  }
+pkg_status_internal <- function(pkg, lib) {
+  st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
+  do.call(rbind, st)
 }
 
 #' Remove installed packages
@@ -126,3 +113,15 @@ pkg_remove_internal <- function(pkg, lib) {
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }
+
+## TODO: pkg_check()
+## Like lib_check(), but for a single package and its dependencies
+
+## TODO: pkg_doctor()
+## Like lib_doctor(), but for a single package and its dependencies
+
+## TODO: pkg_update_status()
+## Like lib_status(), but for a single package and its dependencies
+
+## TODO: pkg_update()
+## Like  lib_update(), but fir a single package and dependencies
