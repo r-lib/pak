@@ -155,7 +155,7 @@ get_num_workers <- function() {
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
     error = function(e) NA_integer_)
 
-  if (is.na(n)) {
+  if (length(n) != 1 || is.na(n)) {
     n <- tryCatch(
       ps::ps_cpu_count(logical = TRUE),
       error = function(e) NA_integer_)
