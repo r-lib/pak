@@ -149,3 +149,19 @@ cat0 <- function(..., sep = "") {
 mkdirp <- function(path) {
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
 }
+
+get_num_workers <- function() {
+  n <- tryCatch(
+    suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
+    error = function(e) NA_integer_)
+
+  if (is.na(n)) {
+    n <- tryCatch(
+      ps::ps_cpu_count(logical = TRUE),
+      error = function(e) NA_integer_)
+  }
+
+  if (is.na(n)) n <- 1L
+  
+  n    
+}

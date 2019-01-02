@@ -5,7 +5,7 @@
 \title{Install a package}
 \usage{
 pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-  num_workers = 1L, ask = interactive())
+  ask = interactive())
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
@@ -16,8 +16,6 @@ specifications.}
 
 \item{upgrade}{Whether to upgrade already installed packages to the
 latest available version.}
-
-\item{num_workers}{Number of worker processes to use.}
 
 \item{ask}{Whether to ask for confirmation.}
 }

@@ -9,13 +9,12 @@
 #' @param lib Package library to install the packages to.
 #' @param upgrade Whether to upgrade already installed packages to the
 #'   latest available version.
-#' @param num_workers Number of worker processes to use.
 #' @param ask Whether to ask for confirmation.
 #'
 #' @export
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-                        num_workers = 1L, ask = interactive()) {
+                        ask = interactive()) {
 
   start <- Sys.time()
 
@@ -29,7 +28,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pkgman"))(...),
-    list(remotes = NULL, lib = lib, num_workers = num_workers))
+    list(remotes = NULL, lib = lib))
 
   invisible(inst)
 }
@@ -46,8 +45,9 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
   print_install_details(sol, lib)
 }
 
-pkg_install_do_plan <- function(remotes, lib, num_workers) {
+pkg_install_do_plan <- function(remotes, lib) {
 
+  num_workers <- get_num_workers()
   remotes <- remotes %||% pkgman_data$tmp$remotes
   start  <- pkgman_data$tmp$start
   pkgman_data$tmp <- NULL
