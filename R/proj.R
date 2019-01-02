@@ -20,7 +20,7 @@ proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
 
   inst <- remote(
     function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
-    list(remotes = NULL, optional = optional))
+    list(optional = optional))
 
   invisible(inst)
 }
@@ -38,7 +38,7 @@ proj_install_make_plan <- function(pkg, path, upgrade, ask, start) {
   ret
 }
 
-proj_install_do_plan <- function(remotes, optional) {
+proj_install_do_plan <- function(optional) {
   tmp <- pkgman_data$tmp
 
   res <- pkg_install_do_plan(remotes = tmp$remotes, lib = tmp$lib)
@@ -86,7 +86,7 @@ proj_remove_internal <-  function(pkg, path, ask) {
 proj_remove_internal_do <- function() {
   tmp <- pkgman_data$tmp
   suppressMessages(utils::remove.packages(tmp$packages, tmp$lib))
-  remove_refs_from_desciption(tmp$root, tmp$parsed)
+  remove_refs_from_description(tmp$root, tmp$parsed)
 }
 
 #' @export
