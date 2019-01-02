@@ -50,7 +50,8 @@ print_install_summary <- function(x) {
   noupd <- sum(x$lib_status == "no-update")
 
   downloaded <- sum(x$download_status == "Got")
-  cached <- sum(x$download_status == "Had" & x$type != "installed")
+  cached <- sum(x$download_status == "Had" &
+                ! x$type %in% c("installed", "deps"))
   dlbytes <- sum(x$bytes[x$download_status == "Got"])
   build_time <- sum(unlist(x$build_time), na.rm = TRUE)
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
