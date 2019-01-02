@@ -1,4 +1,12 @@
 
+print_package_list <- function(x) {
+  cliapp::cli_div(
+    class = "pkglist",
+    theme = list(div.pkglist = list("margin-left" = 2)))
+  cliapp::cli_text(paste(x, collapse = ", "))
+  cliapp::cli_text()
+}
+
 print_install_details <- function(sol, lib) {
   direct <- sum(sol$direct)
   deps <- sum(! sol$direct)
@@ -10,23 +18,14 @@ print_install_details <- function(sol, lib) {
 
   if (! (n_newly + n_upd)) return(FALSE)
 
-  package_list <- function(x) {
-    cliapp::cli_div(
-      class = "pkglist",
-      theme = list(div.pkglist = list("margin-left" = 2))
-    )
-    cliapp::cli_text(paste(x, collapse = ", "))
-    cliapp::cli_text()
-  }
-
   cliapp::cli_text(" ")
   if (n_newly) {
     cliapp::cli_alert("Will {emph install} {n_newly} packages:")
-    package_list(sol$ref[newly])
+    print_package_list(sol$ref[newly])
   }
   if (n_upd) {
     cliapp::cli_alert("Will {emph update} {n_upd} packages:")
-    package_list(sol$ref[upd])
+    print_package_list(sol$ref[upd])
   }
   if (n_curr + n_noupd) {
     cliapp::cli_alert("Will {emph not update} {n_curr + n_noupd} packages.")
