@@ -129,7 +129,3 @@ test_that("remove_refs_from_description", {
   expect_equal(dsc2$get_deps()$type, "Imports")
   expect_identical(dsc2$get_remotes(), character())
 })
-
-test_that("proj_install", {
-  
-})
