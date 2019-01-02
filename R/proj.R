@@ -5,8 +5,7 @@
 #' @export
 
 proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
-                         optional = FALSE, ask = interactive(),
-                         num_workers = 1) {
+                         optional = FALSE, ask = interactive()) {
 
   start <- Sys.time()
 
@@ -21,7 +20,7 @@ proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
 
   inst <- remote(
     function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
-    list(remotes = NULL, num_workers = num_workers, optional = optional))
+    list(remotes = NULL, optional = optional))
 
   invisible(inst)
 }
@@ -39,12 +38,10 @@ proj_install_make_plan <- function(pkg, path, upgrade, ask, start) {
   ret
 }
 
-proj_install_do_plan <- function(remotes, num_workers, optional) {
+proj_install_do_plan <- function(remotes, optional) {
   tmp <- pkgman_data$tmp
 
-  res <- pkg_install_do_plan(
-    remotes = tmp$remotes, lib = tmp$lib,
-    num_workers = num_workers)
+  res <- pkg_install_do_plan(remotes = tmp$remotes, lib = tmp$lib)
 
   if (!is.null(tmp$pkg)) {
     add_refs_to_description(tmp$root, tmp$pkg, optional)
