@@ -26,12 +26,10 @@ Imports:
     ps (>= 1.3.0),
     rprojroot (>= 1.3.2),
     tibble (>= 1.3.4),
-    utils,
-    pkgconfig
+    utils
 Remotes: 
     r-lib/pkgdepends,
-    r-lib/pkginstall,
-    r-lib/pkgconfig
+    r-lib/pkginstall
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.1)
