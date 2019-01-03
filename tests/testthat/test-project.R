@@ -10,7 +10,7 @@ test_that("proj_install from DESCRIPTION", {
   add_refs_to_description(dir, c("cli", "cran/pkgconfig@2.0.2"), FALSE)
 
   pkgman_data$tmp <- NULL
-  plan <- proj_install_make_plan(pkg = NULL, path = dir, upgrade = FALSE,
+  plan <- proj_install_make_plan(pkg = NULL, root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time())
   expect_true(plan)
 
@@ -27,7 +27,7 @@ test_that("proj_install from DESCRIPTION", {
     c("assertthat", "cli", "crayon", "cran/pkgconfig@2.0.2") %in% res$ref))
   expect_true(file.exists(file.path(data$lib, "pkgconfig")))
 
-  stat <- proj_status_internal(path = dir)
+  stat <- proj_status_internal(root = dir)
   expect_s3_class(stat, "tbl_df")
   expect_true(all(
     c("assertthat", "cli", "crayon", "pkgconfig") %in% stat$package))
@@ -37,7 +37,7 @@ test_that("proj_install from DESCRIPTION", {
   expect_true(ret)
   proj_remove_internal_do()
 
-  stat2 <- proj_status_internal(path = dir)
+  stat2 <- proj_status_internal(root = dir)
   expect_s3_class(stat2, "tbl_df")
   expect_true(all(c("assertthat", "cli", "crayon") %in% stat2$package))
   expect_false("pkgconfig" %in% stat2$package)
@@ -57,7 +57,7 @@ test_that("proj_install with new package", {
 
   pkgman_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = c("cli", "cran/pkgconfig@2.0.2"),
-                                 path = dir, upgrade = FALSE,
+                                 root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time())
   expect_true(plan)
 

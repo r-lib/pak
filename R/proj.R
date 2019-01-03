@@ -1,10 +1,27 @@
 
-## Take packages from DESCRIPTION and make sure they are installed,
-## with their dependencies
-
+#' Install project dependencies into the project library
+#'
+#' The project library is in `r-packages`, within the project directory.
+#'
+#' @param pkg Package(s) to install. By default (if `NULL`), they are
+#'   taken from the `DESCRIPTION` file in `root`. If not `NULL`, then the
+#'   packages will be added to the `DESCRIPTION` files, and existing
+#'   references to these packages will be removed first.
+#' @param root Path to the project directory. A subdirectory can be given
+#'   as well. Defaults to the current working directory.
+#' @param upgrade Whether to try to install the latest available versions
+#'   of the specified package(s) and/or all dependencies.
+#' @param optional If `pkg` is not `NULL`, then the new packages will be
+#'   added as optional, i.e. in the `Suggests` section.
+#' @param ask Whether to ask the user for confirmation. For non-interactive
+#'   installs supply`FALSE` here.
+#' @return Data frame containing data about the installed / updated
+#'   packages.
+#'
+#' @family project functions
 #' @export
 
-proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
+proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
                          optional = FALSE, ask = interactive()) {
 
   start <- Sys.time()
@@ -13,7 +30,7 @@ proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
     function(...) {
       get("proj_install_make_plan", asNamespace("pkgman"))(...)
     },
-    list(pkg = pkg, path = path, upgrade = upgrade, ask = ask,
+    list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
          start = start))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
@@ -25,10 +42,8 @@ proj_install <- function(pkg = NULL, path = ".", upgrade = FALSE,
   invisible(inst)
 }
 
-## TODO: install package from path? We should probably do that?
-
-proj_install_make_plan <- function(pkg, path, upgrade, ask, start) {
-  dirs <- proj_get_dirs(path)
+proj_install_make_plan <- function(pkg, root, upgrade, ask, start) {
+  dirs <- proj_get_dirs(root)
   ref <- pkg %||% paste0("deps::", dirs$root)
   ret <- pkg_install_make_plan(
     ref, lib = dirs$lib, upgrade = upgrade, ask = ask, start = start)
@@ -50,17 +65,26 @@ proj_install_do_plan <- function(optional) {
   res
 }
 
-## Uninstall package, remove from DESCRIPTION
-
+#' Remove package(s) from a project
+#'
+#' Removes it both from the project library and the `DESCRIPTION` file.
+#' Note that it does not remove dependencies that are not needed any more.
+#'
+#' @param pkg Package(s) to remove. These can be package names or general
+#'   remote references, e.g. `github::r-lib/pkgman`. The packages are also
+#'   removed from `DESCRIPTION`.
+#' @inheritParams proj_install
+#'
+#' @family project functions
 #' @export
 
-proj_remove <- function(pkg, path = ".", ask = interactive()) {
+proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
   any <-  remote(
     function(...) {
       get("proj_remove_internal", asNamespace("pkgman"))(...)
     },
-    list(pkg = pkg, path = path, ask = ask))
+    list(pkg = pkg, root = root, ask = ask))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
@@ -71,8 +95,8 @@ proj_remove <- function(pkg, path = ".", ask = interactive()) {
   invisible(remo)
 }
 
-proj_remove_internal <-  function(pkg, path, ask) {
-  dirs <- proj_get_dirs(path)
+proj_remove_internal <-  function(pkg, root, ask) {
+  dirs <- proj_get_dirs(root)
   parsed <- pkgdepends::parse_remotes(pkg)
   packages <- vcapply(parsed, "[[", "package")
   cliapp::cli_alert("Will {emph remove} {length(pkg)} packages:")
@@ -89,16 +113,23 @@ proj_remove_internal_do <- function() {
   remove_refs_from_description(tmp$root, tmp$parsed)
 }
 
+#' Status of packages in the project library
+#'
+#' @inheritParams proj_install
+#' @return Data frame (tibble) the contains data about the packages
+#'   installed in the project library.
+#'
+#' @family project functions
 #' @export
 
-proj_status <- function(path = ".") {
+proj_status <- function(root = ".") {
   remote(
     function(...) asNamespace("pkgman")$proj_status_intenal(...),
-    list(path = path))
+    list(root = root))
 }
 
-proj_status_internal <- function(path) {
-  dirs <- proj_get_dirs(path)
+proj_status_internal <- function(root) {
+  dirs <- proj_get_dirs(root)
   pkgdepends::lib_status(dirs$lib)
 }
 
@@ -114,8 +145,8 @@ proj_status_internal <- function(path) {
 
 ## ----------------------------------------------------------------------
 
-proj_get_dirs <- function(path) {
-  root <- rprojroot::find_root(proj_crit(), path = path)
+proj_get_dirs <- function(root) {
+  root <- rprojroot::find_root(proj_crit(), path = root)
   mkdirp(lib <- file.path(root, "r-packages"))
   if (!file.info(lib)$isdir) stop("`", lib, "` is not a directory")
   list(root = root, lib = lib)
