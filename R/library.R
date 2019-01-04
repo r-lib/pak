@@ -1,4 +1,11 @@
 
+
+#' Status of packages in a ibrary
+#'
+#' @param lib Path to library.
+#' @return Data frame (tibble) the contains data about the packages
+#'   installed in the library.
+#'
 #' @export
 
 lib_status <- function(lib = .libPaths()[1]) {

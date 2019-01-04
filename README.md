@@ -25,7 +25,7 @@ pkgman::pkgman_install_deps("download")
 ## Usage
 
 ``` r
-pkgman::pkg_install("dplyr", num_workers = 4, lib = "/tmp/lib")
+pkgman::pkg_install("dplyr", lib = "/tmp/lib")
 ```
 
 ## Goals
