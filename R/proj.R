@@ -46,7 +46,9 @@ proj_install_make_plan <- function(pkg, root, upgrade, ask, start) {
   ref <- pkg %||% paste0("deps::", dirs$root)
   ret <- pkg_install_make_plan(
     ref, lib = dirs$lib, upgrade = upgrade, ask = ask, start = start)
-  pkgman_data$tmp <- list(lib = dirs$lib, root = dirs$root, pkg = pkg)
+  pkgman_data$tmp$lib <- dirs$lib
+  pkgman_data$tmp$root <- dirs$root
+  pkgman_data$tmp$pkg <- pkg
   ret
 }
 
