@@ -19,7 +19,6 @@
 #'   packages.
 #'
 #' @family project functions
-#' @export
 
 proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
                          optional = FALSE, ask = interactive()) {
@@ -76,7 +75,6 @@ proj_install_do_plan <- function(optional) {
 #' @inheritParams proj_install
 #'
 #' @family project functions
-#' @export
 
 proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
@@ -120,7 +118,6 @@ proj_remove_internal_do <- function() {
 #'   installed in the project library.
 #'
 #' @family project functions
-#' @export
 
 proj_status <- function(root = ".") {
   remote(
