@@ -1,8 +1,6 @@
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
-isFALSE <- function(x) identical(x, FALSE)
-
 # Adapted from withr:::merge_new
 merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
   action <- match.arg(action, c("replace", "prepend", "append"))
@@ -12,21 +10,6 @@ merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
     append = c(old, new),
     replace = new
   )
-}
-
-names2 <- function(x) {
-  nms <- names(x)
-  if (is.null(nms)) {
-    rep("", length(x))
-  } else {
-    nms[is.na(nms)] <- ""
-    nms
-  }
-}
-
-set_names <- function(object, nm) {
-  names(object) <- nm
-  object
 }
 
 vcapply <- function(X, FUN, ...) {
@@ -67,19 +50,6 @@ str_trim <- function (x) {
   sub("^\\s+", "", sub("\\s+$", "", x))
 }
 
-## This only works properly for packages without S3 and S4!
-
-unload_package <- function(pkg) {
-  unloadNamespace(pkg)
-  libs <- .dynLibs()
-  pkg_dll <- vcapply(libs, "[[", "name") == pkg
-  if (any(pkg_dll)) {
-    for (i in which(pkg_dll)) dyn.unload(libs[[i]][["path"]])
-    .dynLibs(libs[!pkg_dll])
-  }
-  invisible()
-}
-
 list_files <- function(path) {
   if (!file.exists(path)) return(character())
   fs <- dir(path, full.names = TRUE)
@@ -92,10 +62,6 @@ file_mtime <- function(...) {
 
 is_dir <- function(...) {
   file.info(..., extra_cols = FALSE)$isdir
-}
-
-get_current_r_version <- function() {
-  as.character(getRversion())
 }
 
 get_minor_r_version <- function(x = getRversion()) {
