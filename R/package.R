@@ -10,6 +10,7 @@
 #' @param upgrade Whether to upgrade already installed packages to the
 #'   latest available version.
 #' @param ask Whether to ask for confirmation.
+#' @return Data frame, with information about the installed package(s).
 #'
 #' @export
 

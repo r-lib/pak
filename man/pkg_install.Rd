@@ -19,6 +19,9 @@ latest available version.}
 
 \item{ask}{Whether to ask for confirmation.}
 }
+\value{
+Data frame, with information about the installed package(s).
+}
 \description{
 Install a package and it's dependencies.
 }
