@@ -2,6 +2,9 @@
 
 S3method(print,pkgman_install_result)
 export(lib_status)
+export(local_install)
+export(local_install_deps)
+export(local_install_dev_deps)
 export(pkg_install)
 export(pkg_remove)
 export(pkg_status)
