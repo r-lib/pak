@@ -121,7 +121,7 @@ proj_remove_internal_do <- function() {
 
 proj_status <- function(root = ".") {
   remote(
-    function(...) asNamespace("pkgman")$proj_status_intenal(...),
+    function(...) asNamespace("pkgman")$proj_status_internal(...),
     list(root = root))
 }
 
