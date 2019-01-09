@@ -214,7 +214,7 @@ load_filelock <- function(download = FALSE) {
 
   ## Try to load it from the private library
   tryCatch({
-    load_private_package("filelock", "c_")
+    load_private_package("filelock", "c_", create = FALSE)
   }, error = function(e) e)
   if (!is.null(pkgman_data$ns$filelock)) return()
 
