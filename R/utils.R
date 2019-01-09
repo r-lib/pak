@@ -81,14 +81,13 @@ get_os <- function() {
   }
 }
 
-user_cache_dir <- function(appname, version) {
+user_cache_dir <- function(appname) {
   switch(
     get_os(),
-    win = file_path(win_path_local(), appname, version, "Cache"),
-    mac = file_path("~/Library/Caches", appname, version),
-    unix = file_path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), appname,
-                     version),
-    unknown = file_path(tempdir(), "r-pkg-cache", appname, version)
+    win = file_path(win_path_local(), appname, "Cache"),
+    mac = file_path("~/Library/Caches", appname),
+    unix = file_path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), appname),
+    unknown = file_path(tempdir(), "r-pkg-cache", appname)
   )
 }
 

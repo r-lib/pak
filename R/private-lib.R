@@ -27,7 +27,7 @@ get_private_lib <- function(create = TRUE) {
 }
 
 private_lib_dir <- function()  {
-  file.path(user_cache_dir("R-pkg", version = get_minor_r_version()), "lib")
+  file.path(user_cache_dir("R-pkg"), "lib", get_minor_r_version())
 }
 
 get_package_hash <- function(pkgdir) {
