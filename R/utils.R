@@ -130,3 +130,14 @@ get_num_workers <- function() {
   
   n    
 }
+
+to_package_name <- function(x) {
+  x <- gsub("[^a-zA-Z0-9\\.]", "", x)
+  if (nchar(x) < 2) {
+    "unknown.package"
+  } else if (!grepl("^[a-zA-Z]", x)) {
+    paste0("X", x)
+  } else {
+    x
+  }
+}

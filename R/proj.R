@@ -1,4 +1,68 @@
 
+#' Create a project that has a private package library
+#'
+#' @param project_root Root directory of the project. If it does not
+#'   exist, it will be created.
+#'
+#' @family project functions
+
+proj_create <- function(project_root = ".") {
+  remote(
+    function(...) {
+      asNamespace("pkgman")$proj_create_internal(...)
+    },
+    list(project_root = project_root))
+  .libPaths(unique(c('r-packages', .libPaths())))
+}
+
+proj_create_internal <- function(project_root) {
+  mkdirp(file.path(project_root, "r-packages"))
+  prof <- file.path(project_root, ".Rprofile")
+  if (file.exists(prof)) {
+    cliapp::cli_alert_danger(
+      "{path .Rprofile} already exist at {path {prof}}, remove it first")
+    stop("Could not create .Rprofile, already exists")
+  } else {
+    writeLines(proj_rprofile(), con = prof)
+    descfile <- file.path(project_root, "DESCRIPTION")
+    if (file.exists(descfile)) {
+      cliapp::cli_alert_info("{path DESCRIPTION} file already exists.")
+    } else {
+      proj_create_desc(project_root)
+      cliapp::cli_alert_success("Created {path DESCRIPTION} file.")
+    }
+    cliapp::cli_alert_success("Created {path .Rprofile} at {path {prof}}.")
+  }
+}
+
+proj_rprofile <- function() {
+  c("if (file.exists('~/.Rprofile')) source('~/.Rprofile')",
+    "dir.create('r-packages', showWarnings = FALSE, recursive = TRUE)",
+    ".libPaths(unique(c('r-packages', .libPaths())))"
+  )
+}
+
+proj_create_desc <- function(project_root) {
+  dsc <- desc::desc(text = "")
+  dsc$set(
+    Package = to_package_name(basename(project_root)),
+    Version = "0.0.0.9000",
+    Title = "<Package title>",
+    Description = "<Longer desciption of package or project>",
+    URL = "<Package URL>",
+    BugReports = "<Issue tracker URL>",
+    License = "Private package",
+    Encoding = "UTF-8",
+    Roxygen = "list(markdown = TRUE)")
+
+  tryCatch(
+    dsc$add_me(role = c("cre", "aut")),
+    error = function(e) e)
+
+  descfile <- file.path(project_root, "DESCRIPTION")
+  dsc$write(descfile)
+}
+
 #' Install project dependencies into the project library
 #'
 #' The project library is in `r-packages`, within the project directory.
