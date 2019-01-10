@@ -33,7 +33,8 @@ packages.
 The project library is in \code{r-packages}, within the project directory.
 }
 \seealso{
-Other project functions: \code{\link{proj_remove}},
-  \code{\link{proj_status}}
+Other project functions: \code{\link{proj_create}},
+  \code{\link{proj_install_dev}},
+  \code{\link{proj_remove}}, \code{\link{proj_status}}
 }
 \concept{project functions}

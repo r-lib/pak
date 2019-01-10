@@ -94,7 +94,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
       get("proj_install_make_plan", asNamespace("pkgman"))(...)
     },
     list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
-         start = start))
+         start = start, dev = FALSE))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
@@ -105,15 +105,22 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
   invisible(inst)
 }
 
-proj_install_make_plan <- function(pkg, root, upgrade, ask, start) {
+proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
   dirs <- proj_get_dirs(root)
-  ref <- pkg %||% paste0("deps::", dirs$root)
-  ret <- pkg_install_make_plan(
-    ref, lib = dirs$lib, upgrade = upgrade, ask = ask, start = start)
-  pkgman_data$tmp$lib <- dirs$lib
-  pkgman_data$tmp$root <- dirs$root
-  pkgman_data$tmp$pkg <- pkg
-  ret
+
+  r <- pkgdepends::remotes$new(
+    pkg %||% paste0("deps::", dirs$root), library = dirs$lib,
+    config = if (dev) list(dependencies = TRUE) else list())
+
+  policy <- if (upgrade) "upgrade" else "lazy"
+  r$solve(policy = policy)
+  r$stop_for_solve_error()
+
+  pkgman_data$tmp <- list(
+    remotes = r, start = start, lib = dirs$lib, root = dirs$root, pkg = pkg)
+
+  sol <- r$get_solution()$data
+  print_install_details(sol, dirs$lib)
 }
 
 proj_install_do_plan <- function(optional) {
@@ -126,6 +133,35 @@ proj_install_do_plan <- function(optional) {
   }
 
   res
+}
+
+#' Install project dependencies, including dev dependencies into
+#' private project library
+#'
+#' @inheritParams proj_install
+#' @return Data frame containing data about the installed / updated
+#'   packages.
+#'
+#' @family project functions
+
+proj_install_dev <-  function(root = ".", upgrade = FALSE,
+                              ask = interactive()) {
+  start <- Sys.time()
+
+  any <- remote(
+    function(...) {
+      get("proj_install_make_plan", asNamespace("pkgman"))(...)
+    },
+    list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
+         start = start, dev = TRUE))
+
+  if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
+
+  inst <- remote(
+    function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
+    list(optional = optional))
+
+  invisible(inst)
 }
 
 #' Remove package(s) from a project

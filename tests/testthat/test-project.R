@@ -11,7 +11,7 @@ test_that("proj_install from DESCRIPTION", {
 
   pkgman_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = NULL, root = dir, upgrade = FALSE,
-                                 ask = FALSE, start = Sys.time())
+                                 ask = FALSE, start = Sys.time(), dev = FALSE)
   expect_true(plan)
 
   data <- pkgman_data$tmp
@@ -58,7 +58,7 @@ test_that("proj_install with new package", {
   pkgman_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = c("cli", "cran/pkgconfig@2.0.2"),
                                  root = dir, upgrade = FALSE,
-                                 ask = FALSE, start = Sys.time())
+                                 ask = FALSE, start = Sys.time(), dev = FALSE)
   expect_true(plan)
 
   data <- pkgman_data$tmp
