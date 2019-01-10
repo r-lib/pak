@@ -28,7 +28,7 @@ Imports:
     rprojroot (>= 1.3.2),
     utils
 Remotes:
-    r-lib/pkgcache
+    r-lib/pkgcache,
     r-lib/pkgdepends,
     r-lib/pkginstall
 Roxygen: list(markdown = TRUE)
