@@ -152,14 +152,14 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
     function(...) {
       get("proj_install_make_plan", asNamespace("pkgman"))(...)
     },
-    list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
+    list(pkg = NULL, root = root, upgrade = upgrade, ask = ask,
          start = start, dev = TRUE))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   inst <- remote(
     function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
-    list(optional = optional))
+    list(optional = FALSE))
 
   invisible(inst)
 }
