@@ -53,3 +53,8 @@ get_confirmation <-  function(q, msg = "Aborted.") {
     stop(msg, call. = FALSE)
   }
 }
+
+get_confirmation2 <- function(q = "? Do you want to continue (Y/n) ") {
+  ans <- readline(q)
+  tolower(ans) %in% c("", "y", "yes", "yeah", "yep")
+}
