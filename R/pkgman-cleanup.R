@@ -17,10 +17,10 @@ pkgman_cleanup <- function(package_cache = TRUE, metadata_cache = TRUE,
     stop("Refused to clean up, please specify `force = TRUE`")
   }
 
+  if (package_cache) package_cache <- pkgman_cleanup_package_cache(force)
+  if (metadata_cache) metadata_cache <- pkgman_cleanup_metadata_cache(force)
+  if (pkgman_lib) pkgman_lib <- pkgman_cleanup_lib(force)
   all <- package_cache && metadata_cache && pkgman_lib
-  if (package_cache)  all <- all && pkgman_cleanup_package_cache(force)
-  if (metadata_cache) all <- all && pkgman_cleanup_metadata_cache(force)
-  if (pkgman_lib)     all <- all && pkgman_cleanup_lib(force)
 
   if (all) {
     root <- user_cache_dir("R-pkg")
