@@ -18,7 +18,3 @@ addons:
   apt:
     packages:
       libarchive-dev
-
-env:
-  global:
-    secure: "Y0uHMcezerbE4X9fYXFxdNBf0aFm9ThFnBm43Gc2FopirTTMrhSECbEoN6bjYns0AiTTqT0fz18DvMCzIWGVTuHdacfGmWc/Z12nV8zj3eUyjtA4QgBd42/nN3J/neCtW4SEfc5GBxXkIqHkNTvfD27xTrPdCkYxL/k/jx3PfB4D+FVU/Ysu9qnoRDHV11yHl8hTJ0IaE6vMe/u00CAk8Pq+UKiw5EyXmf1oOt+ebVWSD/t+0oaFauJk8gPao+tMjr3Huo8oYLnEqLcGoV0x8vtuMyids815/JEocDdkYuo3X7+9+1jj7HYlqdN7ZKlWDNq9gtmj0OOobxlsxMkeAOR1CurZt+3tVhBOEiQ+9Pr/qd1lUOXUOHVk+TIRNH/AN2PZXkVigt9Q1vK1OyQuURub3O+hR//m0jMf5aSGh3okePAbporz7VKsddX6lbRczin7ELhS7kVwHyLOG4+IfCA20SB5RAQOWZQ24fnKaoru7Ai86WeIFRUznbzk5Uvi31PL3SRxurAeC0DFSFtUMkOla/YKhbDy3eiS35oPuG6hEJWptgeOgsJF0EF/W4e5dimPqAsPkH6kMSTnUTJrYtZOP8m1J3sbHkqVGEPmJdWkgMCfMAVQw2dMo64V3z7Xkl2wFKLmDz4c0uuz1yRbD9fb+VE9kZf4uV7D+bS4yKo="
