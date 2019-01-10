@@ -54,6 +54,7 @@ package_needs_update <- function(pkgdir, lib) {
 }
 
 copy_package <- function(from, lib) {
+  message("Copying package `", basename(from), "`")
   file.copy(from, lib, recursive = TRUE)
   pkgdir <- file.path(lib, basename(from))
   hash <- get_package_hash(pkgdir)
