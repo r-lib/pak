@@ -43,7 +43,7 @@ is_verbose <- function() {
 }
 
 format_items <- function (x) {
-  paste0(glue::collapse(glue::backtick(x), sep = ", ", last = " and "))
+  paste0(glue::glue_collapse(glue::backtick(x), sep = ", ", last = " and "))
 }
 
 str_trim <- function (x) {
@@ -111,10 +111,6 @@ cat0 <- function(..., sep = "") {
   cat(..., sep = sep)
 }
 
-mkdirp <- function(path) {
-  dir.create(path, showWarnings = FALSE, recursive = TRUE)
-}
-
 get_num_workers <- function() {
   n <- tryCatch(
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
@@ -140,4 +136,17 @@ to_package_name <- function(x) {
   } else {
     x
   }
+}
+
+strrep <- function(x, times) {
+  x = as.character(x)
+  if (length(x) == 0L)
+    return(x)
+  unlist(.mapply(function(x, times) {
+    if (is.na(x) || is.na(times))
+      return(NA_character_)
+    if (times <= 0L)
+      return("")
+    paste0(replicate(times, x), collapse = "")
+  }, list(x = x, times = times), MoreArgs = list()), use.names = FALSE)
 }

@@ -1064,21 +1064,9 @@ cut_into_lines <- function(x) {
   if (length(x)) x else ""
 }
 
-is_string <- function(x) {
-  is.character(x) && length(x) == 1 && !is.na(x)
-}
-
-is_flag <- function(x) {
-  is.logical(x) && length(x) == 1 && !is.na(x)
-}
-
 is_count <- function(x, min = 0L)  {
   is.numeric(x) && length(x) == 1 && !is.na(x) &&
     as.integer(x) == x && x >= min
-}
-
-all_named <- function(x) {
-  length(names(x)) == length(x) && all(names(x) != "")
 }
 
 verify_extracted_package <- function(filename, parent_path) {

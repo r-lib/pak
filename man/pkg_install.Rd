@@ -8,9 +8,7 @@ pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   ask = interactive())
 }
 \arguments{
-\item{pkg}{Package names or remote package specifications to install.
-See \link[pkgdepends:remotes]{pkgdepends::remotes} for details about remote package
-specifications.}
+\item{pkg}{Package names or remote package specifications to install.}
 
 \item{lib}{Package library to install the packages to.}
 

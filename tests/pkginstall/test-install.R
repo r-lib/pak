@@ -3,8 +3,6 @@ context("install_packages")
 
 describe("install_packages", {
 
-  skip_without_package("pkgdepends")
-
   it("works with source packages", {
 
   pkg <- "foo_0.0.0.9000.tar.gz"

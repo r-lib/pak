@@ -4,8 +4,6 @@
 #' Install a package and it's dependencies.
 #'
 #' @param pkg Package names or remote package specifications to install.
-#'   See [pkgdepends::remotes] for details about remote package
-#'   specifications.
 #' @param lib Package library to install the packages to.
 #' @param upgrade Whether to upgrade already installed packages to the
 #'   latest available version.
@@ -35,7 +33,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
-  r <- pkgdepends::remotes$new(pkg, library = lib)
+  r <- remotes$new(pkg, library = lib)
 
   ## Solve the dependency graph
   policy <- if (upgrade) "upgrade" else "lazy"
@@ -90,7 +88,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
 }
 
 pkg_status_internal <- function(pkg, lib) {
-  st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
+  st <- lapply(lib, pkgdepends_lib_status, packages = pkg)
   do.call(rbind, st)
 }
 
@@ -110,7 +108,7 @@ pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
 }
 
 pkg_remove_internal <- function(pkg, lib) {
-  pr <- pkgdepends::parse_remotes(pkg)[[1]]
+  pr <- parse_remotes(pkg)[[1]]
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }

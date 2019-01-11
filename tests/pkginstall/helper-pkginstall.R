@@ -86,12 +86,8 @@ make_dummy_worker_process <- function(n_iter = 10, sleep = 1, status = 0) {
   }
 }
 
-skip_without_package <- function(pkg) {
-  if (!requireNamespace("pkgdepends", quietly = TRUE)) skip(paste("No", pkg))
-}
-
 make_install_plan <- function(ref, lib = .libPaths()[1]) {
-  r <- pkgdepends::remotes$new(ref, lib = lib)
+  r <- remotes$new(ref, lib = lib)
   r$resolve()
   r$solve()
   r$download_solution()
