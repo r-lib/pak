@@ -1,10 +1,11 @@
 
-context("proj_install")
+context("project")
 
 test_that("proj_install from DESCRIPTION", {
   skip_if_offline()
 
   dsc <- desc::desc("!new")
+  dsc$set(Package = "foobar")
   dir <- test_temp_dir()
   dsc$write(file = file.path(dir, "DESCRIPTION"))
   add_refs_to_description(dir, c("cli", "cran/pkgconfig@2.0.2"), FALSE)

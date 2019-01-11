@@ -71,16 +71,6 @@ pkgman::pkg_install("dplyr", lib = "/tmp/lib")
 
 * Show download sizes.
 
-## Family of Packages
-
-* `pkgman`: main user facing package
-
-* `pkgdepends`: dependency resolution, package downloads
-
-* `pkginstall`: install downloaded packages
-
-* `pkgcache`: metadata and package cache
-
 ## License
 
 GPL-3 © RStudio

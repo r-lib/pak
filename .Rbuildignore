@@ -3,3 +3,5 @@
 ^codecov\.yml$
 ^\.env$
 ^r-packages$
+^tests/pkginstall/foo/src/.*\.so$
+^tests/pkginstall/foo/src/.*\.o$
