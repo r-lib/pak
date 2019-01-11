@@ -51,7 +51,7 @@ fixture_dir <- function() {
   tryCatch(
     file.path(
       rprojroot::find_package_root_file(),
-      "tests", "testthat", "fixtures"
+      "tests", "pkgdepends", "fixtures"
     ),
     error = function(e) "fixtures"
   )
