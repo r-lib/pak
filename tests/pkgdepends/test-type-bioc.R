@@ -59,7 +59,7 @@ test_that("failed resolution", {
 
   skip("TODO")
 
-  r <- remotes$new(
+  r <- remotes()$new(
     "bioc::Biobase@0.0", config = list(cache_dir = tmp))
   withr::with_options(
     c(pkg.show_progress = FALSE),

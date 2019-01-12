@@ -97,7 +97,7 @@ test_that("download_remote", {
   path <- get_fixture("foobar_1.0.0.tar.gz")
   ref <- paste0("local::", path)
 
-  rem <- remotes$new(ref)
+  rem <- remotes()$new(ref)
   rem$resolve()
   res <- rem$get_resolution()
 
@@ -115,7 +115,7 @@ test_that("download_remote", {
   ref2 <- paste0("local::", "foobar_1.0.0.tar.gz")
 
   withr::with_dir(fix_dir, {
-    rem <- remotes$new(ref2)
+    rem <- remotes()$new(ref2)
     rem$resolve()
     res <- rem$get_resolution()
   })
@@ -140,7 +140,7 @@ test_that("download_remote error", {
   path <- get_fixture("foobar_1.0.0.tar.gz")
   file.copy(path, tmp2)
   ref <- paste0("local::", path2 <- file.path(tmp2, basename(path)))
-  r <- remotes$new(
+  r <- remotes()$new(
     ref, config = list(dependencies = FALSE, cache_dir = tmp))
   expect_error(r$resolve(), NA)
   unlink(path2)

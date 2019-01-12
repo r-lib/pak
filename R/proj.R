@@ -108,7 +108,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
 proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
   dirs <- proj_get_dirs(root)
 
-  r <- remotes$new(
+  r <- remotes()$new(
     pkg %||% paste0("deps::", dirs$root), library = dirs$lib,
     config = if (dev) list(dependencies = TRUE) else list())
 

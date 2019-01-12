@@ -33,7 +33,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
-  r <- remotes$new(pkg, library = lib)
+  r <- remotes()$new(pkg, library = lib)
 
   ## Solve the dependency graph
   policy <- if (upgrade) "upgrade" else "lazy"

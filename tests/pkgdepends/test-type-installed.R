@@ -45,7 +45,7 @@ test_that("download", {
 
   tt <- dirname(dirname(attr(packageDescription("testthat"), "file")))
   ref <- paste0("installed::", tt)
-  r <- remotes$new(
+  r <- remotes()$new(
     ref, library = dirname(tt),
     config = list(dependencies = FALSE, cache_dir = tmp))
   expect_error(r$resolve(), NA)

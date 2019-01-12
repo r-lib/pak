@@ -134,7 +134,7 @@ test_that("integration test", {
   on.exit(unlink(lib, recursive = TRUE), add = TRUE)
   withr::with_options(
     c(pkg.show_progress = FALSE), {
-      r <- remotes$new(c("r-lib/cli"), lib = lib)
+      r <- remotes()$new(c("r-lib/cli"), lib = lib)
       r$resolve()
     })
   sol <- r$solve()
@@ -142,7 +142,7 @@ test_that("integration test", {
 
   withr::with_options(
     c(pkg.show_progress = FALSE), {
-      r <- remotes$new("cran::cli", lib = lib)
+      r <- remotes()$new("cran::cli", lib = lib)
       r$resolve()
     })
   sol <- r$solve()
@@ -151,7 +151,7 @@ test_that("integration test", {
 
   withr::with_options(
     c(pkg.show_progress = FALSE), {
-      r <- remotes$new(c("cran::cli", "r-lib/cli"), lib = lib)
+      r <- remotes()$new(c("cran::cli", "r-lib/cli"), lib = lib)
       r$resolve()
     })
   sol <- r$solve()

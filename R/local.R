@@ -78,7 +78,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 ## Almost the same as a "regular" install, but need to set dependencies
 
 local_install_dev_deps_make_plan <- function(root, lib, upgrade, start) {
-  r <- remotes$new(
+  r <- remotes()$new(
     paste0("deps::", root), library = lib,
     config = list(dependencies = TRUE))
 

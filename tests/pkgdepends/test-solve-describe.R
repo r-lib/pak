@@ -23,7 +23,7 @@ test_that("failed resolution", {
   skip_if_offline()
 
   withr::with_options(list(pkg.show_progress = FALSE), {
-    r <- remotes$new("nonexistentpackage", lib = tempfile())
+    r <- remotes()$new("nonexistentpackage", lib = tempfile())
     r$resolve()
   })
   sol <- r$solve()

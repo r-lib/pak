@@ -87,7 +87,7 @@ make_dummy_worker_process <- function(n_iter = 10, sleep = 1, status = 0) {
 }
 
 make_install_plan <- function(ref, lib = .libPaths()[1]) {
-  r <- remotes$new(ref, lib = lib)
+  r <- remotes()$new(ref, lib = lib)
   r$resolve()
   r$solve()
   r$download_solution()

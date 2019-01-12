@@ -16,7 +16,7 @@ test_that("errors", {
   withr::with_options(c(pkg.show_progress = FALSE), {
     npkg1 <- basename(tempfile())
     npkg2 <- basename(tempfile())
-    r <- remotes$new(c(npkg1, paste0("r-lib/", npkg2)), lib = tempfile())
+    r <- remotes()$new(c(npkg1, paste0("r-lib/", npkg2)), lib = tempfile())
     res <- r$resolve()
   })
 

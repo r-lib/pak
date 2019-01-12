@@ -66,7 +66,7 @@ test_that("failed resolution", {
 
   skip("TODO")
 
-  r <- remotes$new(
+  r <- remotes()$new(
     "cran::crayon@0.0", config = list(cache_dir = tmp))
   withr::with_options(
     c(pkg.show_progress = FALSE),
@@ -127,7 +127,7 @@ test_that("resolve an old version", {
   dir.create(tmp <- tempfile())
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
 
-  r <- remotes$new(
+  r <- remotes()$new(
     "cran::crayon@1.1.0",
     config = list(dependencies = FALSE, cache_dir = tmp))
   withr::with_options(
@@ -152,7 +152,7 @@ test_that("resolve current version, specified via version number", {
   dir.create(tmp <- tempfile())
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
 
-  r <- remotes$new(
+  r <- remotes()$new(
     "cran::crayon@current",
     config = list(dependencies = FALSE, cache_dir = tmp))
   withr::with_options(
@@ -163,7 +163,7 @@ test_that("resolve current version, specified via version number", {
   ver <- res$version[1]
 
   ref <- paste0("cran::crayon@", ver)
-  r2 <- remotes$new(
+  r2 <- remotes()$new(
     ref, config = list(dependencies = FALSE, cache_dir = tmp))
   withr::with_options(
     c(pkg.show_progress = FALSE),
@@ -182,7 +182,7 @@ test_that("resolve a version range", {
   dir.create(tmp <- tempfile())
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
 
-  r <- remotes$new(
+  r <- remotes()$new(
     "cran::crayon@>=1.3.2",
     config = list(dependencies = FALSE, cache_dir = tmp))
   withr::with_options(

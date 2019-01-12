@@ -930,121 +930,123 @@ parse_remotes <- function(specs, remote_types = NULL, ...) {
 }
 
 remotes__with_progress_bar <- function(self, private, args, expr) {
-  private$progress_bar <- do.call(pkg_progress_bar$new, as.list(args))
+  private$progress_bar <- do.call(pkg_progress_bar()$new, as.list(args))
   on.exit(private$progress_bar$done())
   expr
 }
 
-pkg_progress_bar <- R6::R6Class(
-  "pkg_progress_bar",
+pkg_progress_bar <- function() {
+  R6::R6Class(
+    "pkg_progress_bar",
 
-  public = list(
-    initialize = function(type = c("resolution", "download"),
-      show_after = 0, total = 1e10, ...) {
+    public = list(
+      initialize = function(type = c("resolution", "download"),
+                            show_after = 0, total = 1e10, ...) {
 
-      private$active <- is_verbose()
-      if (! private$active) return()
-
-      private$data$total <- total
-      private$data$start <- Sys.time()
-
-      type <- match.arg(type)
-      format <- if (type == "resolution") {
-        paste0("  Crawling dependencies for :gtotal packages:",
-               " [:gcount/:gtotal] :elapsedfull")
-      } else {
-        paste0("  Downloading packages [:count/:total] ",
-               "[:strcbytes] :elapsedfull")
-      }
-
-      private$bar <- cliapp::cli_progress_bar(
-        show_after = show_after, total = total, format = format, ...)
-    },
-
-    update = function(...) {
-      if (!private$active) return()
-      args <- list(...)
-      if (is.null(names(args))) {
-        args <- structure(list(args[[2]]), names = args[[1]])
-      }
-      for (n in names(args)) {
-        private$data[[n]] <- private$data[[n]] + args[[n]]
-        if (n == "cbytes") {
-          private$data$strcbytes <- prettyunits::pretty_bytes(private$data$cbytes)
+        private$active <- is_verbose()
+        if (! private$active) return()
+        
+        private$data$total <- total
+        private$data$start <- Sys.time()
+        
+        type <- match.arg(type)
+        format <- if (type == "resolution") {
+          paste0("  Crawling dependencies for :gtotal packages:",
+                 " [:gcount/:gtotal] :elapsedfull")
+        } else {
+          paste0("  Downloading packages [:count/:total] ",
+                 "[:strcbytes] :elapsedfull")
         }
-        if (n == "btotal") {
-          private$data$strbtotal <- prettyunits::pretty_bytes(private$data$btotal)
+
+        private$bar <- cliapp::cli_progress_bar(
+          show_after = show_after, total = total, format = format, ...)
+      },
+
+      update = function(...) {
+        if (!private$active) return()
+        args <- list(...)
+        if (is.null(names(args))) {
+          args <- structure(list(args[[2]]), names = args[[1]])
         }
-      }
-      data <- private$data
-      data$gcount <- data$count + data$xcount
-      data$gtotal <- data$total + data$xtotal
-      private$bar$tick(0, tokens = data)
-    },
-
-    done = function() {
-      if (!private$active) return()
-      private$bar$terminate()
-    },
-
-    report = function() {
-      if (!private$active) return()
-      if (!private$data$total) {
-        cliapp::cli_alert_success("No downloads are needed")
-      } else {
+        for (n in names(args)) {
+          private$data[[n]] <- private$data[[n]] + args[[n]]
+          if (n == "cbytes") {
+            private$data$strcbytes <- prettyunits::pretty_bytes(private$data$cbytes)
+          }
+          if (n == "btotal") {
+            private$data$strbtotal <- prettyunits::pretty_bytes(private$data$btotal)
+          }
+        }
         data <- private$data
-        dl <- data$count - data$failed - data$cached
-        self$alert_success(paste0(
-          data$total, " packages",
-          if (dl) paste0(", ", dl, " downloaded") else "",
-          if (data$cached) paste0(", {cached} cached") else "",
-          if (data$failed) paste0(", {failed} failed") else "",
-          ", in ", prettyunits::pretty_dt(Sys.time() - data$start)
-        ))
+        data$gcount <- data$count + data$xcount
+        data$gtotal <- data$total + data$xtotal
+        private$bar$tick(0, tokens = data)
+      },
+      
+      done = function() {
+        if (!private$active) return()
+        private$bar$terminate()
+      },
+      
+      report = function() {
+        if (!private$active) return()
+        if (!private$data$total) {
+          cliapp::cli_alert_success("No downloads are needed")
+        } else {
+          data <- private$data
+          dl <- data$count - data$failed - data$cached
+          self$alert_success(paste0(
+            data$total, " packages",
+            if (dl) paste0(", ", dl, " downloaded") else "",
+            if (data$cached) paste0(", {cached} cached") else "",
+            if (data$failed) paste0(", {failed} failed") else "",
+            ", in ", prettyunits::pretty_dt(Sys.time() - data$start)
+            ))
+        }
+      },
+      
+      alert = function(text, ...) {
+        if (!private$active) return()
+        text <- glue::glue_data(private$data, text, .envir = parent.frame())
+        cliapp::cli_alert(text, ...)
+      },
+      
+      alert_success = function(text, ...) {
+        if (!private$active) return()
+        text <- glue::glue_data(private$data, text, .envir = parent.frame())
+        cliapp::cli_alert_success(text, ...)
       }
-    },
-
-    alert = function(text, ...) {
-      if (!private$active) return()
-      text <- glue::glue_data(private$data, text, .envir = parent.frame())
-      cliapp::cli_alert(text, ...)
-    },
-
-    alert_success = function(text, ...) {
-      if (!private$active) return()
-      text <- glue::glue_data(private$data, text, .envir = parent.frame())
-      cliapp::cli_alert_success(text, ...)
-    }
-  ),
-
-  private = list(
-    data = list(
-      start = NULL,
-      count = 0,    ## number of refs/files done
-      total = 0,    ## total number of refs/files
-      xcount = 0,   ## number of deps done, for resolution
-      xtotal = 0,   ## total number of deps, for resolution
-      gcount = 0,
-      gtotal = 0,
-      cbytes = 0,   ## number of bytes done (download)
-      btotal = 0,   ## total number of bytes (download)
-      cached = 0,   ## number of cached packages (download)
-      bcached = 0,  ## cached bytes (download)
-      failed = 0,   ## number of failed packages
-      strcbytes = "",
-      strbtotal = ""
     ),
-    active = NULL,
-    bar = NULL,
-    template = NULL
+    
+    private = list(
+      data = list(
+        start = NULL,
+        count = 0,    ## number of refs/files done
+        total = 0,    ## total number of refs/files
+        xcount = 0,   ## number of deps done, for resolution
+        xtotal = 0,   ## total number of deps, for resolution
+        gcount = 0,
+        gtotal = 0,
+        cbytes = 0,   ## number of bytes done (download)
+        btotal = 0,   ## total number of bytes (download)
+        cached = 0,   ## number of cached packages (download)
+        bcached = 0,  ## cached bytes (download)
+        failed = 0,   ## number of failed packages
+        strcbytes = "",
+        strbtotal = ""
+      ),
+      active = NULL,
+      bar = NULL,
+      template = NULL
+    )
   )
-)
+}
 
 #' Class for package dependency resolution and package downloads
 #'
 #' @section Usage:
 #' ```
-#' r <- remotes$new(specs, config = list())
+#' r <- remotes()$new(specs, config = list())
 #'
 #' r$resolve()
 #' r$async_resolve()
@@ -1130,7 +1132,7 @@ pkg_progress_bar <- R6::R6Class(
 #' @examples
 #' ## This does download a bunch of packages, so we don't run it currently
 #' \dontrun{
-#' rems <- remotes$new(c("dplyr", "r-lib/rcmdcheck"))
+#' rems <- remotes()$new(c("dplyr", "r-lib/rcmdcheck"))
 #' rems$resolve()
 #' rems$download_resolution()
 #' rems$get_download_status()
@@ -1138,85 +1140,87 @@ pkg_progress_bar <- R6::R6Class(
 #' @noRd
 NULL
 
-remotes <- R6::R6Class(
-  "remotes",
-  public = list(
-    initialize = function(specs, config = list(), library = NULL,
-                          remote_types = NULL)
-      remotes_init(self, private, specs, config, library, remote_types),
+remotes <- function() {
+  R6::R6Class(
+    "remotes",
+    public = list(
+      initialize = function(specs, config = list(), library = NULL,
+                            remote_types = NULL)
+        remotes_init(self, private, specs, config, library, remote_types),
 
-    async_resolve = function()
-      remotes_async_resolve(self, private),
-    resolve = function()
-      remotes_resolve(self, private),
-    get_resolution = function()
-      remotes_get_resolution(self, private),
+      async_resolve = function()
+        remotes_async_resolve(self, private),
+      resolve = function()
+        remotes_resolve(self, private),
+      get_resolution = function()
+        remotes_get_resolution(self, private),
 
-    async_download_resolution = function()
-      remotes_async_download_resolution(self, private),
-    download_resolution = function()
-      remotes_download_resolution(self, private),
-    get_resolution_download = function()
-      remotes_get_resolution_download(self, private),
+      async_download_resolution = function()
+        remotes_async_download_resolution(self, private),
+      download_resolution = function()
+        remotes_download_resolution(self, private),
+      get_resolution_download = function()
+        remotes_get_resolution_download(self, private),
 
-    solve = function(policy = c("lazy", "upgrade"))
-      remotes_solve(self, private, match.arg(policy)),
-    stop_for_solve_error = function()
-      remotes_stop_for_solve_error(self, private),
-    get_solution = function()
-      remotes_get_solution(self, private),
-    get_install_plan = function()
-      remotes_install_plan(self, private),
-    draw_tree = function(pkgs = NULL)
-      remotes_draw_tree(self, private, pkgs),
+      solve = function(policy = c("lazy", "upgrade"))
+        remotes_solve(self, private, match.arg(policy)),
+      stop_for_solve_error = function()
+        remotes_stop_for_solve_error(self, private),
+      get_solution = function()
+        remotes_get_solution(self, private),
+      get_install_plan = function()
+        remotes_install_plan(self, private),
+      draw_tree = function(pkgs = NULL)
+        remotes_draw_tree(self, private, pkgs),
 
-    async_download_solution = function()
-      remotes_async_download_solution(self, private),
-    download_solution = function()
-      remotes_download_solution(self, private),
-    get_solution_download = function()
-      remotes_get_solution_download(self, private),
-    stop_for_solution_download_error = function()
-      remotes_stop_for_solution_download_error(self, private),
+      async_download_solution = function()
+        remotes_async_download_solution(self, private),
+      download_solution = function()
+        remotes_download_solution(self, private),
+      get_solution_download = function()
+        remotes_get_solution_download(self, private),
+      stop_for_solution_download_error = function()
+        remotes_stop_for_solution_download_error(self, private),
 
-    print = function(...)
-      remotes_print(self, private, ...)
-  ),
+      print = function(...)
+        remotes_print(self, private, ...)
+    ),
 
-  private = list(
-    library = NULL,
-    dirty = FALSE,
-    remotes = list(),
-    cache = NULL,
-    resolution = NULL,
-    solution = NULL,
-    downloads = NULL,
-    solution_downloads = NULL,
-    download_cache = NULL,
-    config = NULL,
-    progress_bar = NULL,
-    progress_bar_timer = NULL,
-    remote_types = NULL,
+    private = list(
+      library = NULL,
+      dirty = FALSE,
+      remotes = list(),
+      cache = NULL,
+      resolution = NULL,
+      solution = NULL,
+      downloads = NULL,
+      solution_downloads = NULL,
+      download_cache = NULL,
+      config = NULL,
+      progress_bar = NULL,
+      progress_bar_timer = NULL,
+      remote_types = NULL,
 
-    download_res = function(res, which, on_progress = NULL)
-      remotes_download_res(self, private, res, which, on_progress),
-    subset_resolution = function(which)
-      remotes__subset_resolution(self, private, which),
-    create_lp_problem = function(pkgs, policy)
-      remotes__create_lp_problem(self, private, pkgs, policy),
-    solve_lp_problem = function(problem)
-      remotes__solve_lp_problem(self, private, problem),
+      download_res = function(res, which, on_progress = NULL)
+        remotes_download_res(self, private, res, which, on_progress),
+      subset_resolution = function(which)
+        remotes__subset_resolution(self, private, which),
+      create_lp_problem = function(pkgs, policy)
+        remotes__create_lp_problem(self, private, pkgs, policy),
+      solve_lp_problem = function(problem)
+        remotes__solve_lp_problem(self, private, problem),
 
-    create_progress_bar = function(what)
-      remotes__create_progress_bar(self, private, what),
-    update_progress_bar = function(idx, data)
-      remotes__update_progress_bar(self, private, idx, data),
-    show_progress_bar = function()
-      remotes__show_progress_bar(self, private),
-    done_progress_bar = function()
-      remotes__done_progress_bar(self, private)
+      create_progress_bar = function(what)
+        remotes__create_progress_bar(self, private, what),
+      update_progress_bar = function(idx, data)
+        remotes__update_progress_bar(self, private, idx, data),
+      show_progress_bar = function()
+        remotes__show_progress_bar(self, private),
+      done_progress_bar = function()
+        remotes__done_progress_bar(self, private)
+    )
   )
-)
+}
 
 remotes_init <- function(self, private, specs, config, library,
                          remote_types) {
@@ -1685,7 +1689,7 @@ remotes_async_resolve <- function(self, private) {
   private$solution <- NULL
 
   private$dirty <- TRUE
-  private$resolution <- resolution$new(
+  private$resolution <- resolution()$new(
     config = private$config, cache = private$cache,
     library = private$library, remote_types = private$remote_types)
 
@@ -1710,47 +1714,49 @@ remotes__subset_resolution <- function(self, private, which) {
   res
 }
 
-resolution <- R6::R6Class(
-  "resolution",
-  public = list(
-    result = NULL,
-    initialize = function(config, cache, library = NULL,
-                          remote_types = NULL)
-      res_init(self, private, config, cache, library, remote_types),
-    push = function(..., direct = FALSE, .list = list())
-      res_push(self, private, ..., direct = direct, .list = .list),
-    when_complete = function() private$deferred
-  ),
-
-  private = list(
-    remote_types = NULL,
-    config = NULL,
-    cache = NULL,
-    library = NULL,
-    deferred = NULL,
-    state = NULL,
-    dependencies = NULL,
-    metadata = NULL,
-    bar = NULL,
-
-    delayed = list(),
-    delayed_refs = character(),
-    resolve_delayed = function(resolve)
-      res__resolve_delayed(self, private, resolve),
-
-    create_progress_bar = function()
-      res__create_progress_bar(self, private),
-    update_progress_bar = function()
-      res__update_progress_bar(self, private),
-    done_progress_bar = function()
-      res__done_progress_bar(self, private),
-
-    set_result = function(row_idx, value)
-      res__set_result(self, private, row_idx, value),
-    try_finish = function(resolve)
-      res__try_finish(self, private, resolve)
+resolution <- function() {
+  R6::R6Class(
+    "resolution",
+    public = list(
+      result = NULL,
+      initialize = function(config, cache, library = NULL,
+                            remote_types = NULL)
+        res_init(self, private, config, cache, library, remote_types),
+      push = function(..., direct = FALSE, .list = list())
+        res_push(self, private, ..., direct = direct, .list = .list),
+      when_complete = function() private$deferred
+    ),
+    
+    private = list(
+      remote_types = NULL,
+      config = NULL,
+      cache = NULL,
+      library = NULL,
+      deferred = NULL,
+      state = NULL,
+      dependencies = NULL,
+      metadata = NULL,
+      bar = NULL,
+      
+      delayed = list(),
+      delayed_refs = character(),
+      resolve_delayed = function(resolve)
+        res__resolve_delayed(self, private, resolve),
+      
+      create_progress_bar = function()
+        res__create_progress_bar(self, private),
+      update_progress_bar = function()
+        res__update_progress_bar(self, private),
+      done_progress_bar = function()
+        res__done_progress_bar(self, private),
+      
+      set_result = function(row_idx, value)
+        res__set_result(self, private, row_idx, value),
+      try_finish = function(resolve)
+        res__try_finish(self, private, resolve)
+    )
   )
-)
+}
 
 res_init <- function(self, private, config, cache, library,
                      remote_types) {
