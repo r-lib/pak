@@ -4,8 +4,8 @@ Title: Manage Package Libraries
 Description: Manage package libraries, including package
     installation from various sources.
 Authors@R: c(
-    person("Jim", "Hester", email = "james.f.hester@gmail.com", role = c("aut", "cre")),
-    person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = "aut"),
+    person("Jim", "Hester", email = "james.f.hester@gmail.com", role = "aut"),
+    person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
 License: GPL-3
 Encoding: UTF-8
