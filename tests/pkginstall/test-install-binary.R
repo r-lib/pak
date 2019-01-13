@@ -20,6 +20,7 @@ test_that("install_binary", {
 
 test_that("install_binary works for simultaneous installs", {
   skip_on_cran()
+  skip_in_covr()
 
   pkg <- binary_test_package("foo_0.0.0.9000")
   on.exit({

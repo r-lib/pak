@@ -4,6 +4,7 @@ context("non-trivial paths")
 test_that("folders with potentially problematic characters", {
 
   skip_on_cran()
+  skip_in_covr()
 
   tmp <- tempfile()
   on.exit(tryCatch(unloadNamespace("foo"), error = identity), add = TRUE)
