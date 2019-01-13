@@ -201,6 +201,7 @@ test_that("installed refs are also resolved", {
 })
 
 test_that("explicit cran", {
+  skip_on_cran()
   conf <- remotes_default_config()
   cache <- list(package = NULL,
                 metadata = pkgcache::get_cranlike_metadata_cache())
@@ -237,6 +238,7 @@ test_that("explicit cran", {
 })
 
 test_that("standard", {
+  skip_on_cran()
   conf <- remotes_default_config()
   cache <- list(
     package = NULL,

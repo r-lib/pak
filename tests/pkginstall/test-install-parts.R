@@ -81,8 +81,8 @@ test_that("handle_event, process still running", {
     ## We cannot be sure that both stdout and stderr are already there,
     ## but one of them must be
     expect_true(
-      grepl("^out ", state$workers[[1]]$stdout) ||
-      grepl("^err ", state$workers[[1]]$stderr))
+      any(grepl("^out ", state$workers[[1]]$stdout)) ||
+      any(grepl("^err ", state$workers[[1]]$stderr)))
     expect_true(proc$is_alive())
     expect_false(is.na(state$plan$worker_id[1]))
   }
