@@ -6,27 +6,34 @@
 ![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
 [![Linux Build Status](https://travis-ci.org/r-lib/pkgman.svg?branch=master)](https://travis-ci.org/r-lib/pkgman)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pkgman)
-[![](http://www.r-pkg.org/badges/version/pkgman)](http://www.r-pkg.org/pkg/pkgman)
-[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/pkgman)](http://www.r-pkg.org/pkg/pkgman)
+[![](https://www.r-pkg.org/badges/version/pkgman)](https://cran.r-project.org/package=pkgman)
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/pkgman)](https://www.r-pkg.org/pkg/pkgman)
 [![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pkgman/master.svg)](https://codecov.io/github/r-lib/pkgman?branch=master)
 
-The goal of pkgman is to install packages and manage libraries and
-repositories.
+pkgman installs R packages from various sources.
 
 ## Installation
 
-Once on CRAN, install the package with:
+Install the package from CRAN:
 
 ``` r
-install.packages("pkgman", dependencies = FALSE)
-pkgman::pkgman_install_deps("download")
+install.packages("pkgman")
+pkgman::pkgman_install_deps()
 ```
+
+The second line creates pkgman's own package library, to avoid interference
+between pkgman's dependencies and the user's regular packages. Run this
+command any time to update pkgman's package library.
 
 ## Usage
 
-``` r
+Simply call `pkg_install` to install packages:
+
+```r
 pkgman::pkg_install("dplyr", lib = "/tmp/lib")
 ```
+
+All dependencies will be installed as well, to the same library.
 
 ## Goals
 
@@ -45,7 +52,7 @@ pkgman::pkg_install("dplyr", lib = "/tmp/lib")
 
 * Package cache (all downloaded and locally built packages are cached).
 
-* Lazy downloads, only download if needed.
+* Lazy downloads, only download metadata and package files if needed.
 
 ### Safety features
 
@@ -53,10 +60,12 @@ pkgman::pkg_install("dplyr", lib = "/tmp/lib")
   packages and vice versa).
 
 * Do load any package in the main process (except for pkgman itself).
-  Every operation runs in the sub-process.
+  Every operation runs in the sub-process, and the packages are loaded
+  from the private library.
 
 * Dependency solver: makes sure that you end up in a consistent, working
-  state of dependencies.
+  state of dependencies. Find conflicts up front, before actually installing
+  anything.
 
 * Confirmation, warning for overwriting loaded packages.
 
