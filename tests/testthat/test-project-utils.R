@@ -8,16 +8,16 @@ test_that("proj_get_dirs", {
   mkdirp(file.path(dir, "one", "two", "three"))
   mkdirp(file.path(dir, "r-packages"))
 
-  expect_equal(proj_get_dirs(dir)$root, normalizePath(dir))
+  expect_equal(norm_path(proj_get_dirs(dir)$root), norm_path(dir))
   expect_equal(
-    proj_get_dirs(dir)$lib, normalizePath(file.path(dir, "r-packages")))
+    norm_path(proj_get_dirs(dir)$lib), norm_path(file.path(dir, "r-packages")))
   expect_equal(
-    proj_get_dirs(file.path(dir, "one"))$root,  normalizePath(dir))
+    norm_path(proj_get_dirs(file.path(dir, "one"))$root), norm_path(dir))
   expect_equal(
-    proj_get_dirs(file.path(dir, "one", "two"))$root, normalizePath(dir))
+    norm_path(proj_get_dirs(file.path(dir, "one", "two"))$root), norm_path(dir))
   expect_equal(
-    proj_get_dirs(file.path(dir, "one", "two", "three"))$root,
-    normalizePath(dir))
+    norm_path(proj_get_dirs(file.path(dir, "one", "two", "three"))$root),
+    norm_path(dir))
 })
 
 test_that("add_refs_to_description", {
@@ -85,7 +85,7 @@ test_that("add_refs_to_description", {
   expect_equal(deps$package, c("mypackage", "mypackage2"))
   expect_equal(deps$type, c("Imports", "Imports"))
   expect_identical(dsc2$get_remotes(), "user/mypackage2@badcafe")
-  
+
 
 })
 
