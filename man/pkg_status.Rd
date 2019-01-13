@@ -14,3 +14,8 @@ pkg_status(pkg, lib = .libPaths())
 \description{
 Display installed locations of a package
 }
+\examples{
+\dontrun{
+pkg_status("MASS")
+}
+}

@@ -11,6 +11,14 @@
 #' @return Data frame, with information about the installed package(s).
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' pkg_install("dplyr")
+#' pkg_install("dplyr", upgrade = TRUE)
+#'
+#' ## Package from GitHub
+#' pkg_install("r-lib/pkgconfig")
+#' }
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         ask = interactive()) {
@@ -78,6 +86,10 @@ pkg_install_do_plan <- function(remotes, lib) {
 #' @param lib One or more library paths to lookup package status in.
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' pkg_status("MASS")
+#' }
 
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))

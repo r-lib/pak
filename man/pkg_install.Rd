@@ -23,3 +23,12 @@ Data frame, with information about the installed package(s).
 \description{
 Install a package and it's dependencies.
 }
+\examples{
+\dontrun{
+pkg_install("dplyr")
+pkg_install("dplyr", upgrade = TRUE)
+
+## Package from GitHub
+pkg_install("r-lib/pkgconfig")
+}
+}
