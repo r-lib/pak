@@ -8,7 +8,8 @@ do <- function() {
   }
   Sys.setenv("R_PKG_CACHE_DIR" = tempfile())
 
-  if (file.exists("pkginstall")) {
+  if (file.exists("pkginstall") &&
+      identical(Sys.getenv("NOT_CRAN"), "true")) {
     library(testthat)
     library(pkgman)
     test <- function() {
