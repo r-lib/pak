@@ -155,3 +155,7 @@ strrep <- function(x, times) {
 testthat_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
+
+norm_path <- function(x) {
+  normalizePath(x, winslash = "/")
+}
