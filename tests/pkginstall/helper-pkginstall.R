@@ -93,3 +93,7 @@ make_install_plan <- function(ref, lib = .libPaths()[1]) {
   r$download_solution()
   r$get_install_plan()
 }
+
+skip_in_covr <- function() {
+  if (Sys.getenv("R_COVR", "") != "") skip("In covr")
+}

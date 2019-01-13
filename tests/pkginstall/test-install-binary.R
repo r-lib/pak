@@ -1,7 +1,7 @@
 context("install_binary")
 
 test_that("install_binary", {
-
+  skip_in_covr()
   pkg <- binary_test_package("foo_0.0.0.9000")
 
   libpath <- create_temp_dir()
