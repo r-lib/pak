@@ -23,7 +23,7 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy"),
 
   lib <- private_lib_dir()
 
-  if (mode == "auto" && !quiet) {
+  if (mode == "auto" && !quiet && !testthat_testing()) {
     message(
       "\n`pkgman` will create its private package library in",
       "\n`", lib, "`. ",

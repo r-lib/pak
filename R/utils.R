@@ -82,6 +82,7 @@ get_os <- function() {
 }
 
 user_cache_dir <- function(appname) {
+  if (nzchar(cache <- Sys.getenv("R_PKG_CACHE_DIR", ""))) return(cache)
   switch(
     get_os(),
     win = file_path(win_path_local(), appname, "Cache"),
@@ -149,4 +150,8 @@ strrep <- function(x, times) {
       return("")
     paste0(replicate(times, x), collapse = "")
   }, list(x = x, times = times), MoreArgs = list()), use.names = FALSE)
+}
+
+testthat_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
 }
