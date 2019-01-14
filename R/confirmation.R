@@ -64,7 +64,9 @@ print_install_details <- function(sol, lib) {
       cliapp::cli_alert(
         "Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}), cached: {n_ch} ({b_ch}).")
     }
-    cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+    if (u_dl > 0) {
+      cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+    }
   }
   cliapp::cli_text(" ")
 
