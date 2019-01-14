@@ -394,8 +394,8 @@ make_trailing_download_msg <- function(bar) {
     paste0("Got ", tab$package[w])
   } else {
     if (all(tab$current == 0, na.rm = TRUE)) return("Starting...")
-    w <- which.max(tab$current)
-    paste0("Getting ", tab$package[w])
+    w <- sample(which(is.na(tab$finished_at)), 1)
+    if (w == 0) "" else paste0("Getting ", tab$package[w])
   }
 }
 
