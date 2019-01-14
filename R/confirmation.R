@@ -34,14 +34,38 @@ print_install_details <- function(sol, lib) {
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
 
-  w_dl <- sol$cache_status == "miss"
-  w_ch <- sol$cache_status == "hit"
+  w_dl <- sol$cache_status == "miss" & !is.na(sol$cache_status)
+  w_ch <- sol$cache_status == "hit" & !is.na(sol$cache_status)
   n_dl <- sum(w_dl, na.rm = TRUE)
+  u_dl <- sum(is.na(sol$filesize[w_dl]))
   n_ch <- sum(w_ch, na.rm = TRUE)
   b_dl <- prettyunits::pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
   b_ch <- prettyunits::pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
 
-  cliapp::cli_alert("Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+  any_unk <- length(u_dl) > 0
+
+  if (n_dl == 0) {
+    cliapp::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
+
+  } else if (n_ch == 0) {
+    if (n_dl -  u_dl > 0) {
+      cliapp::cli_alert("Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}}.")
+    }
+    if (u_dl > 0) {
+      cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+    }
+
+  } else if (!any_unk) {
+    cliapp::cli_alert(
+      "Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+
+  } else {
+    if (n_dl - u_dl > 0) {
+      cliapp::cli_alert(
+        "Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+    }
+    cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+  }
   cliapp::cli_text(" ")
 
   invisible(TRUE)
