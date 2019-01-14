@@ -672,7 +672,7 @@ update_progress_bar <- function(state, tick = 0) {
 
   chars <- progress_chars()
   tokens <- list(
-    xbar = make_bar(installed / total, built/total, width =  15),
+    xbar = make_bar_pkginstall(installed / total, built/total, width =  15),
     xbuilt = make_progress_block(chars$build, built, total, building),
     xinst = make_progress_block(chars$inst, installed, total, installing),
     xmsg = make_trailing_progress_msg(state)
@@ -683,7 +683,7 @@ update_progress_bar <- function(state, tick = 0) {
 
 ## p1 <= p2 must hold
 
-make_bar <- function(p1, p2, width) {
+make_bar_pkginstall <- function(p1, p2, width) {
   width <- width - 2L
 
   w1 <- if (isTRUE(all.equal(p1, 1))) width else trunc(width * p1)

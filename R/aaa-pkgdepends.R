@@ -329,7 +329,7 @@ remotes__show_progress_bar <- function(self, private) {
   unknown <- sum(is.na(what$filesize) & is.na(what$status))
 
   tokens <- list(
-    xbar = make_bar(bar$chars, percent, width = 15),
+    xbar = make_bar_pkgdepends(bar$chars, percent, width = 15),
     xpkgs = make_progress_packages(pkg_done, pkg_total),
     xbytes = make_progress_bytes(bytes_done, bytes_total, unknown),
     xspin = make_spinner(private),
@@ -1598,7 +1598,7 @@ res__update_progress_bar <- function(self, private) {
   direct_done <- sum(!is.na(private$state$status) & private$state$direct)
 
   bar <- if (direct >= 5) {
-    make_bar(private$bar$chars, direct_done / direct, width = 15)
+    make_bar_pkgdepends(private$bar$chars, direct_done / direct, width = 15)
   }
 
   tokens <- list(
@@ -1611,7 +1611,7 @@ res__update_progress_bar <- function(self, private) {
   private$bar$bar$tick(0, tokens = tokens)
 }
 
-make_bar <- function(chars, p, width =  15) {
+make_bar_pkgdepends <- function(chars, p, width =  15) {
   width <- width - 2L
 
   w <- if (isTRUE(all.equal(p, 1))) width else trunc(width * p)
