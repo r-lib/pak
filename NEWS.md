@@ -1,8 +1,4 @@
 
-# pkgman dev
-
-* Fix download progress bar.
-
-# pkgman 0.1.0
+# pkg 0.1.1
 
 First version on CRAN.

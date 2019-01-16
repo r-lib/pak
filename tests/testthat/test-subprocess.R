@@ -1,7 +1,7 @@
 
 context("subprocess related")
 
-test_that("no dependencies are loaded with pkgman", {
+test_that("no dependencies are loaded with pkg", {
 
   skip_on_cran()
 
@@ -11,9 +11,9 @@ test_that("no dependencies are loaded with pkgman", {
 
   new_pkgs <- callr::r(
     function() {
-      withr::with_options(list(pkgman.subprocess = FALSE), {
+      withr::with_options(list(pkg.subprocess = FALSE), {
         orig <- loadedNamespaces()
-        library(pkgman)
+        library(pkg)
         new <- loadedNamespaces()
       })
       setdiff(new, orig)
@@ -22,13 +22,13 @@ test_that("no dependencies are loaded with pkgman", {
   )
 
   if_fail(
-    expect_true(all(new_pkgs %in% c("pkgman", base_packages()))),
+    expect_true(all(new_pkgs %in% c("pkg", base_packages()))),
     function(e) print(new_pkgs)
   )
 })
 
 test_that("remote", {
   pid <- remote(function() Sys.getpid())
-  expect_equal(pid, pkgman_data$remote$get_pid())
+  expect_equal(pid, pkg_data$remote$get_pid())
   expect_equal(remote(function() 4 + 4), 8)
 })

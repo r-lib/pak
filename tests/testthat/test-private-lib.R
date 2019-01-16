@@ -3,16 +3,16 @@ context("private-lib")
 
 test_that("loading package from private lib", {
   skip_on_cran()
-  on.exit(pkgman_data$ns <- list(), add = TRUE)
-  pkgman_data$ns$processx <- NULL
+  on.exit(pkg_data$ns <- list(), add = TRUE)
+  pkg_data$ns$processx <- NULL
   gc()
 
   ## Load
   load_private_package("processx", create = TRUE)
-  pkgdir <- pkgman_data$ns$processx[["__pkgman-dir__"]]
+  pkgdir <- pkg_data$ns$processx[["__pkg-dir__"]]
 
   ## Check if loaded
-  expect_true(is.function(pkgman_data$ns$processx$run))
+  expect_true(is.function(pkg_data$ns$processx$run))
   expect_true(file.exists(pkgdir))
   paths <- sapply(.dynLibs(), "[[", "path")
   expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
@@ -20,21 +20,21 @@ test_that("loading package from private lib", {
 
 test_that("cleanup of temp files", {
   skip_on_cran()
-  on.exit(pkgman_data$ns <- list(), add = TRUE)
-  pkgman_data$ns$processx <- NULL
+  on.exit(pkg_data$ns <- list(), add = TRUE)
+  pkg_data$ns$processx <- NULL
   gc()
 
   ## Load
   load_private_package("processx", create = TRUE)
-  pkgdir <- pkgman_data$ns$processx[["__pkgman-dir__"]]
+  pkgdir <- pkg_data$ns$processx[["__pkg-dir__"]]
 
   ## Check if loaded
-  expect_true(is.function(pkgman_data$ns$processx$run))
+  expect_true(is.function(pkg_data$ns$processx$run))
   expect_true(file.exists(pkgdir))
   paths <- sapply(.dynLibs(), "[[", "path")
   expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
 
-  pkgman_data$ns$processx <- NULL
+  pkg_data$ns$processx <- NULL
   gc(); gc()
 
   expect_false(file.exists(pkgdir))
@@ -44,8 +44,8 @@ test_that("cleanup of temp files", {
 
 test_that("no interference", {
   skip_on_cran()
-  on.exit(pkgman_data$ns <- list(), add = TRUE)
-  pkgman_data$ns$processx <- NULL
+  on.exit(pkg_data$ns <- list(), add = TRUE)
+  pkg_data$ns$processx <- NULL
   gc()
 
   asNamespace("ps")
@@ -53,10 +53,10 @@ test_that("no interference", {
   expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
 
   load_private_package("ps", create = TRUE)
-  expect_true(is.function(pkgman_data$ns$ps$ps))
+  expect_true(is.function(pkg_data$ns$ps$ps))
   expect_true(is.function(asNamespace("ps")$ps))
 
-  pkgman_data$ns$ps <- NULL
+  pkg_data$ns$ps <- NULL
   gc(); gc()
 
   expect_true("ps" %in% loadedNamespaces())

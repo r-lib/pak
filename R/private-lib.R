@@ -17,12 +17,12 @@ use_private_lib <- function() {
 }
 
 get_private_lib <- function(create = TRUE) {
-  if (!is.null(l <- pkgman_data$private_lib)) return(l)
+  if (!is.null(l <- pkg_data$private_lib)) return(l)
   if (!is.null(l <- check_private_lib())) return(l)
   if (create) {
-    pkgman_install_deps()
+    pkg_create_private_lib()
   } else {
-    stop("No pkgman private library")
+    stop("No pkg private library")
   }
 }
 
@@ -43,7 +43,7 @@ package_needs_update <- function(pkgdir, lib) {
     target_dir <- file.path(lib, basename(pkgdir))
     if (!file.exists(target_dir)) return(TRUE)
 
-    data_rds <- file.path(target_dir, "pkgman-data.rds")
+    data_rds <- file.path(target_dir, "pkg-data.rds")
     if (!file.exists(data_rds)) return(TRUE)
 
     old <- readRDS(data_rds)
@@ -60,30 +60,30 @@ copy_package <- function(from, lib) {
   hash <- get_package_hash(pkgdir)
   saveRDS(
     list(hash = hash, ts = Sys.time()),
-    file = file.path(pkgdir, "pkgman-data.rds")
+    file = file.path(pkgdir, "pkg-data.rds")
   )
 }
 
 create_private_lib <- function() {
   lib <- private_lib_dir()
-  if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
+  if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
   liblock <- lock_private_lib(lib)
   on.exit(unlock_private_lib(liblock), add = TRUE)
-  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
-  pkg_dirs <- pkgman_data$deps
+  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
+  pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
   upd <- vlapply(pkg_dirs, package_needs_update, lib = lib)
   for(i in which(upd)) copy_package(pkg_dirs[i], lib)
 
-  pkgman_data$private_lib <- lib
+  pkg_data$private_lib <- lib
   lib
 }
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
-  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps(.packageName)
-  pkgs <- basename(pkgman_data$deps)
+  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
+  pkgs <- basename(pkg_data$deps)
   if (all(pkgs %in% dir(lib))) lib else NULL
 }
 
@@ -140,20 +140,20 @@ parse_dep_fields <- function(deps) {
 ## Not an issue currently, might be in the future.
 
 base_packages <- function() {
-  if (is.null(pkgman_data$base_packages)) {
-    pkgman_data$base_packages <-
+  if (is.null(pkg_data$base_packages)) {
+    pkg_data$base_packages <-
       rownames(utils::installed.packages(priority = "base"))
   }
-  pkgman_data$base_packages
+  pkg_data$base_packages
 }
 
 download_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
   l <- lock_private_lib(lib, download = TRUE)
   on.exit(unlock_private_lib(l), add = TRUE)
-  if (!is.null(pkgman_data$remote)) pkgman_data$remote$kill()
-  pkgman_data$deps <- pkgman_data$deps %||% lookup_deps("pkgman")
-  pkg_dirs <- pkgman_data$deps
+  if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
+  pkg_data$deps <- pkg_data$deps %||% lookup_deps("pkg")
+  pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   remotes <- utils::packageDescription(.packageName)$Remotes
 
@@ -172,7 +172,7 @@ download_private_lib <- function(quiet = FALSE) {
   if (!is.null(remotes)) {
     remotes <- str_trim(strsplit(remotes, ",\\s*")[[1]])
     if (!quiet) {
-      message("\n! This is a _development_ version of pkgman,\n",
+      message("\n! This is a _development_ version of pkg,\n",
               "! some packages will be installed from *GitHub*\n\n")
     }
     for (rem in remotes) {
@@ -181,7 +181,7 @@ download_private_lib <- function(quiet = FALSE) {
   }
 
   installed <- dir(lib, pattern = "^[a-zA-Z0-9\\.]+$")
-  to_install <- setdiff(basename(pkgman_data$deps), dir(lib))
+  to_install <- setdiff(basename(pkg_data$deps), dir(lib))
   if (length(to_install)) {
     utils::update.packages(oldPkgs = to_install, lib.loc = lib,
                            instlib = lib, ask = FALSE)
@@ -194,10 +194,10 @@ download_private_lib <- function(quiet = FALSE) {
 
 lock_private_lib <- function(path, download = FALSE) {
   lib <- private_lib_dir()
-  lockfile <- file.path(lib, "pkgman-lib.lock")
+  lockfile <- file.path(lib, "pkg-lib.lock")
   load_filelock(download)
   mkdirp(dirname(lockfile))
-  lock <- pkgman_data$ns$filelock$lock(lockfile, timeout = 3000)
+  lock <- pkg_data$ns$filelock$lock(lockfile, timeout = 3000)
   if (is.null(lock)) {
     stop("Cannot lock private library")
   }
@@ -206,25 +206,25 @@ lock_private_lib <- function(path, download = FALSE) {
 
 unlock_private_lib <- function(lock) {
   load_filelock()
-  pkgman_data$ns$filelock$unlock(lock)
+  pkg_data$ns$filelock$unlock(lock)
 }
 
 load_filelock <- function(download = FALSE) {
   ## Maybe we have a useable instance
-  if (!is.null(pkgman_data$ns$filelock)) return()
+  if (!is.null(pkg_data$ns$filelock)) return()
 
   ## Try to load it from the private library
   tryCatch({
     load_private_package("filelock", "c_", create = FALSE)
   }, error = function(e) e)
-  if (!is.null(pkgman_data$ns$filelock)) return()
+  if (!is.null(pkg_data$ns$filelock)) return()
 
   ## Try to load it from the regular library
   tryCatch({
     fl <- find.package("filelock")
     load_private_package("filelock", "c_", lib = dirname(fl))
   }, error = function(e) e)
-  if (!is.null(pkgman_data$ns$filelock)) return()
+  if (!is.null(pkg_data$ns$filelock)) return()
 
   ## Try to download and install it into a temporary directory
   if (download) {
@@ -234,7 +234,7 @@ load_filelock <- function(download = FALSE) {
     load_private_package("filelock", "c_", lib = tmp)
   }
 
-  if (is.null(pkgman_data$ns$filelock)) {
+  if (is.null(pkg_data$ns$filelock)) {
     stop("Cannot lock private library, cannot install filelock package")
   }
 }

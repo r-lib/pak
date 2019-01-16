@@ -1,12 +1,12 @@
-Package: pkgman
-Version: 0.1.0.9000
+Package: pkg
+Version: 0.1.1
 Title: A Fresh Approach to Package Installation
-Description: The goal of 'pkgman' is to make package installation faster and
+Description: The goal of 'pkg' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
     so metadata resolution and package downloads are fast. Metadata and package
-    files are cached on the local disk as well. pkgman has a dependency solver,
+    files are cached on the local disk as well. 'pkg' has a dependency solver,
     so it finds version conflicts before performing the installation. This
-    version of pkgman supports CRAN, BioConductor and GitHub packages as well.
+    version of 'pkg' supports CRAN, 'BioConductor' and 'GitHub' packages as well.
 Authors@R: c(
     person("Jim", "Hester", email = "james.f.hester@gmail.com", role = "aut"),
     person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = c("aut", "cre")),
@@ -48,5 +48,5 @@ Suggests:
     pingr,
     testthat,
     withr
-URL: https://github.com/r-lib/pkgman
-BugReports: https://github.com/r-lib/pkgman/issues
+URL: https://github.com/r-lib/pkg
+BugReports: https://github.com/r-lib/pkg/issues

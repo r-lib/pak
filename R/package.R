@@ -26,7 +26,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   start <- Sys.time()
 
   any <- remote(
-    function(...) get("pkg_install_make_plan", asNamespace("pkgman"))(...),
+    function(...) get("pkg_install_make_plan", asNamespace("pkg"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask, start = start))
 
   if (any && ask) {
@@ -34,7 +34,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   }
 
   inst <- remote(
-    function(...) get("pkg_install_do_plan", asNamespace("pkgman"))(...),
+    function(...) get("pkg_install_do_plan", asNamespace("pkg"))(...),
     list(remotes = NULL, lib = lib))
 
   invisible(inst)
@@ -47,7 +47,7 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
   policy <- if (upgrade) "upgrade" else "lazy"
   r$solve(policy = policy)
   r$stop_for_solve_error()
-  pkgman_data$tmp <- list(remotes = r, start = start)
+  pkg_data$tmp <- list(remotes = r, start = start)
   sol <- r$get_solution()$data
   print_install_details(sol, lib)
 }
@@ -55,9 +55,9 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
 pkg_install_do_plan <- function(remotes, lib) {
 
   num_workers <- get_num_workers()
-  remotes <- remotes %||% pkgman_data$tmp$remotes
-  start  <- pkgman_data$tmp$start
-  pkgman_data$tmp <- NULL
+  remotes <- remotes %||% pkg_data$tmp$remotes
+  start  <- pkg_data$tmp$start
+  pkg_data$tmp <- NULL
 
   # Actually download packages as needed
   remotes$download_solution()
@@ -69,7 +69,7 @@ pkg_install_do_plan <- function(remotes, lib) {
                                num_workers = num_workers)
 
   attr(inst, "total_time") <- Sys.time() - start
-  class(inst) <- c("pkgman_install_result", class(inst))
+  class(inst) <- c("pkg_install_result", class(inst))
 
   ## Remove some largeish columns that we don't really need any more
   inst$extra <- NULL
@@ -95,7 +95,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
   remote(
-    function(...) asNamespace("pkgman")$pkg_status_internal(...),
+    function(...) asNamespace("pkg")$pkg_status_internal(...),
     list(pkg = pkg, lib = lib))
 }
 
@@ -113,7 +113,7 @@ pkg_status_internal <- function(pkg, lib) {
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   remote(
     function(...) {
-      get("pkg_remove_internal", asNamespace("pkgman"))(...)
+      get("pkg_remove_internal", asNamespace("pkg"))(...)
     },
     list(pkg = pkg, lib = lib)
   )

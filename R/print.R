@@ -29,7 +29,7 @@
 
 #' @export
 
-print.pkgman_install_result <- function(x, ...) {
+print.pkg_install_result <- function(x, ...) {
   nice_df_print(x, ...)
 }
 

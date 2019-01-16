@@ -9,7 +9,7 @@
 proj_create <- function(project_root = ".") {
   remote(
     function(...) {
-      asNamespace("pkgman")$proj_create_internal(...)
+      asNamespace("pkg")$proj_create_internal(...)
     },
     list(project_root = project_root))
   .libPaths(unique(c('r-packages', .libPaths())))
@@ -91,7 +91,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
 
   any <- remote(
     function(...) {
-      get("proj_install_make_plan", asNamespace("pkgman"))(...)
+      get("proj_install_make_plan", asNamespace("pkg"))(...)
     },
     list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
          start = start, dev = FALSE))
@@ -99,7 +99,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   inst <- remote(
-    function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
+    function(...) get("proj_install_do_plan", asNamespace("pkg"))(...),
     list(optional = optional))
 
   invisible(inst)
@@ -116,7 +116,7 @@ proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
   r$solve(policy = policy)
   r$stop_for_solve_error()
 
-  pkgman_data$tmp <- list(
+  pkg_data$tmp <- list(
     remotes = r, start = start, lib = dirs$lib, root = dirs$root, pkg = pkg)
 
   sol <- r$get_solution()$data
@@ -124,7 +124,7 @@ proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
 }
 
 proj_install_do_plan <- function(optional) {
-  tmp <- pkgman_data$tmp
+  tmp <- pkg_data$tmp
 
   res <- pkg_install_do_plan(remotes = tmp$remotes, lib = tmp$lib)
 
@@ -150,7 +150,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
 
   any <- remote(
     function(...) {
-      get("proj_install_make_plan", asNamespace("pkgman"))(...)
+      get("proj_install_make_plan", asNamespace("pkg"))(...)
     },
     list(pkg = NULL, root = root, upgrade = upgrade, ask = ask,
          start = start, dev = TRUE))
@@ -158,7 +158,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   inst <- remote(
-    function(...) get("proj_install_do_plan", asNamespace("pkgman"))(...),
+    function(...) get("proj_install_do_plan", asNamespace("pkg"))(...),
     list(optional = FALSE))
 
   invisible(inst)
@@ -170,7 +170,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
 #' Note that it does not remove dependencies that are not needed any more.
 #'
 #' @param pkg Package(s) to remove. These can be package names or general
-#'   remote references, e.g. `github::r-lib/pkgman`. The packages are also
+#'   remote references, e.g. `github::r-lib/pkg`. The packages are also
 #'   removed from `DESCRIPTION`.
 #' @inheritParams proj_install
 #'
@@ -180,14 +180,14 @@ proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
   any <-  remote(
     function(...) {
-      get("proj_remove_internal", asNamespace("pkgman"))(...)
+      get("proj_remove_internal", asNamespace("pkg"))(...)
     },
     list(pkg = pkg, root = root, ask = ask))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   remo <- remote(
-    function(...) get("proj_remove_internal_do", asNamespace("pkgman"))(...),
+    function(...) get("proj_remove_internal_do", asNamespace("pkg"))(...),
     list())
 
   invisible(remo)
@@ -199,14 +199,14 @@ proj_remove_internal <-  function(pkg, root, ask) {
   packages <- vcapply(parsed, "[[", "package")
   cliapp::cli_alert("Will {emph remove} {length(pkg)} packages:")
   print_package_list(packages)
-  pkgman_data$tmp <- list(
+  pkg_data$tmp <- list(
     packages = packages, lib = dirs$lib, root = dirs$root, refs = pkg,
     parsed = parsed)
   length(parsed) > 0
 }
 
 proj_remove_internal_do <- function() {
-  tmp <- pkgman_data$tmp
+  tmp <- pkg_data$tmp
   suppressMessages(utils::remove.packages(tmp$packages, tmp$lib))
   remove_refs_from_description(tmp$root, tmp$parsed)
 }
@@ -221,7 +221,7 @@ proj_remove_internal_do <- function() {
 
 proj_status <- function(root = ".") {
   remote(
-    function(...) asNamespace("pkgman")$proj_status_internal(...),
+    function(...) asNamespace("pkg")$proj_status_internal(...),
     list(root = root))
 }
 

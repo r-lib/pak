@@ -10,12 +10,12 @@ test_that("proj_install from DESCRIPTION", {
   dsc$write(file = file.path(dir, "DESCRIPTION"))
   add_refs_to_description(dir, c("cli", "cran/pkgconfig@2.0.2"), FALSE)
 
-  pkgman_data$tmp <- NULL
+  pkg_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = NULL, root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time(), dev = FALSE)
   expect_true(plan)
 
-  data <- pkgman_data$tmp
+  data <- pkg_data$tmp
   expect_s3_class(data$remotes, "remotes")
   expect_silent(data$remotes$get_solution())
   expect_s3_class(data$start, "POSIXct")
@@ -23,7 +23,7 @@ test_that("proj_install from DESCRIPTION", {
   expect_true(file.exists(data$lib))
 
   res <- proj_install_do_plan(optional = FALSE)
-  expect_s3_class(res, "pkgman_install_result")
+  expect_s3_class(res, "pkg_install_result")
   expect_true(all(
     c("assertthat", "cli", "crayon", "cran/pkgconfig@2.0.2") %in% res$ref))
   expect_true(file.exists(file.path(data$lib, "pkgconfig")))
@@ -33,7 +33,7 @@ test_that("proj_install from DESCRIPTION", {
   expect_true(all(
     c("assertthat", "cli", "crayon", "pkgconfig") %in% stat$package))
 
-  pkgman_data$tmp <- NULL
+  pkg_data$tmp <- NULL
   ret <- proj_remove_internal("pkgconfig", dir, ask = FALSE)
   expect_true(ret)
   proj_remove_internal_do()
@@ -56,13 +56,13 @@ test_that("proj_install with new package", {
   dir <- test_temp_dir()
   dsc$write(file = file.path(dir, "DESCRIPTION"))
 
-  pkgman_data$tmp <- NULL
+  pkg_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = c("cli", "cran/pkgconfig@2.0.2"),
                                  root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time(), dev = FALSE)
   expect_true(plan)
 
-  data <- pkgman_data$tmp
+  data <- pkg_data$tmp
   expect_s3_class(data$remotes, "remotes")
   expect_silent(data$remotes$get_solution())
   expect_s3_class(data$start, "POSIXct")
@@ -70,7 +70,7 @@ test_that("proj_install with new package", {
   expect_true(file.exists(data$lib))
 
   res <- proj_install_do_plan(optional = FALSE)
-  expect_s3_class(res, "pkgman_install_result")
+  expect_s3_class(res, "pkg_install_result")
   expect_true(all(
     c("assertthat", "cli", "crayon", "cran/pkgconfig@2.0.2") %in% res$ref))
   expect_true(file.exists(file.path(data$lib, "pkgconfig")))

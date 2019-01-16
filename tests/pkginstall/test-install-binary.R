@@ -43,7 +43,7 @@ test_that("install_binary works for simultaneous installs", {
   expect_equal(foo::foo(), NULL)
   processes <- replicate(num, simplify = FALSE,
     callr::r_bg(args = list(pkg, libpath),
-      function(pkg, libpath) pkgman:::install_binary(pkg, lib = libpath))
+      function(pkg, libpath) pkg:::install_binary(pkg, lib = libpath))
   )
 
   repeat {

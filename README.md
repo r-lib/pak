@@ -1,36 +1,36 @@
 
-# pkgman
+# pkg
 
 > Manage Package Libraries
 
 ![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
-[![Linux Build Status](https://travis-ci.org/r-lib/pkgman.svg?branch=master)](https://travis-ci.org/r-lib/pkgman)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pkgman)
-[![](https://www.r-pkg.org/badges/version/pkgman)](https://cran.r-project.org/package=pkgman)
-[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/pkgman)](https://www.r-pkg.org/pkg/pkgman)
-[![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pkgman/master.svg)](https://codecov.io/github/r-lib/pkgman?branch=master)
+[![Linux Build Status](https://travis-ci.org/r-lib/pkg.svg?branch=master)](https://travis-ci.org/r-lib/pkg)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pkg)
+[![](https://www.r-pkg.org/badges/version/pkg)](https://cran.r-project.org/package=pkg)
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/pkg)](https://www.r-pkg.org/pkg/pkg)
+[![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pkg/master.svg)](https://codecov.io/github/r-lib/pkg?branch=master)
 
-pkgman installs R packages from various sources.
+pkg installs R packages from various sources.
 
 ## Installation
 
 Install the package from CRAN:
 
 ``` r
-install.packages("pkgman")
-pkgman::pkgman_install_deps()
+install.packages("pkg")
+pkg::pkg_create_private_lib()
 ```
 
-The second line creates pkgman's own package library, to avoid interference
-between pkgman's dependencies and the user's regular packages. Run this
-command any time to update pkgman's package library.
+The second line creates pkg's own package library, to avoid interference
+between pkg's dependencies and the user's regular packages. Run this
+command any time to update pkg's package library.
 
 ## Usage
 
 Simply call `pkg_install` to install packages:
 
 ```r
-pkgman::pkg_install("dplyr", lib = "/tmp/lib")
+pkg::pkg_install("dplyr", lib = "/tmp/lib")
 ```
 
 All dependencies will be installed as well, to the same library.
@@ -56,10 +56,10 @@ All dependencies will be installed as well, to the same library.
 
 ### Safety features
 
-* Private library (pkgman's own dependencies do not affect your "regular"
+* Private library (pkg's own dependencies do not affect your "regular"
   packages and vice versa).
 
-* Do load any package in the main process (except for pkgman itself).
+* Do load any package in the main process (except for pkg itself).
   Every operation runs in the sub-process, and the packages are loaded
   from the private library.
 

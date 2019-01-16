@@ -1,5 +1,5 @@
 library(testthat)
-library(pkgman)
+library(pkg)
 
 do <- function() {
   old <- Sys.getenv("R_PKG_CACHE_DIR", NA_character_)
@@ -10,7 +10,7 @@ do <- function() {
   }
   Sys.setenv("R_PKG_CACHE_DIR" = tempfile())
 
-  test_check("pkgman")
+  test_check("pkg")
 }
 
 do()

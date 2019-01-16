@@ -4,7 +4,7 @@
 ## ----------------------------------------------------------------------
 
 remote_is_alive <- function() {
-  inherits(rs <- pkgman_data$remote, "process") && rs$is_alive()
+  inherits(rs <- pkg_data$remote, "process") && rs$is_alive()
 }
 
 remote <- function(func, args = list()) {
@@ -12,10 +12,10 @@ remote <- function(func, args = list()) {
   load_private_packages()
   on.exit(restart_remote_if_needed(), add = TRUE)
 
-  rs <- pkgman_data$remote
+  rs <- pkg_data$remote
   state <- rs$get_state()
   if (state %in% c("busy", "starting")) {
-    pr <- pkgman_data$ns$processx$poll(list(rs$get_poll_connection()), 5000)[[1]]
+    pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), 5000)[[1]]
     state <- rs$get_state()
     if (state == "starting") {
       rs$read()
@@ -60,18 +60,18 @@ remote <- function(func, args = list()) {
 new_remote_session <- function(create = TRUE) {
   get_private_lib(create = create)
   load_private_packages(create = create)
-  callr <- pkgman_data$ns$callr
-  crayon <- pkgman_data$ns$crayon
+  callr <- pkg_data$ns$callr
+  crayon <- pkg_data$ns$crayon
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
   opts$env <- c(
     opts$env, R_PKG_SHOW_PROGRESS = is_verbose(),
-    R_PKG_PKGMAN_WORKER = "true",
-    R_PKG_PKGMAN_COLORS = as.character(crayon$has_color()),
-    R_PKG_PKGMAN_NUM_COLORS = as.character(crayon$num_colors()))
+    R_PKG_PKG_WORKER = "true",
+    R_PKG_PKG_COLORS = as.character(crayon$has_color()),
+    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors()))
   opts$load_hook <- quote({
     cliapp::start_app(theme = cliapp::simple_theme())
   })
-  pkgman_data$remote <- callr$r_session$new(opts, wait = FALSE)
+  pkg_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }
 
 try_new_remote_session <- function() {
@@ -84,7 +84,7 @@ try_new_remote_session <- function() {
 
 restart_remote_if_needed <- function() {
   "!DEBUG Restarting background process"
-  rs <- pkgman_data$remote
+  rs <- pkg_data$remote
   if (inherits(rs, "r_session") &&
       rs$is_alive() &&
       rs$get_state() != "busy") return()
@@ -109,7 +109,7 @@ load_private_packages <- function(create = TRUE) {
 
 load_private_package <- function(package, reg_prefix = "", create = TRUE,
                                  lib = get_private_lib(create = create))  {
-  if (!is.null(pkgman_data$ns[[package]])) return()
+  if (!is.null(pkg_data$ns[[package]])) return()
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
@@ -118,11 +118,11 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   pkg_dir <- normalizePath(pkg_dir)
   file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)
   pkg_env[[".packageName"]] <- package
-  pkg_env[["__pkgman-dir__"]] <- pkg_dir
+  pkg_env[["__pkg-dir__"]] <- pkg_dir
 
   reg.finalizer(pkg_env, onexit = TRUE, function(x) {
     tryCatch({
-      pkg_dir <- pkg_env[["__pkgman-dir__"]]
+      pkg_dir <- pkg_env[["__pkg-dir__"]]
       if (!is.null(pkg_env[[".onUnload"]])) {
         tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
       }
@@ -147,7 +147,7 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
                         paste0(package, .Platform$dynlib.ext))
   if (file.exists(dll_file)) {
     dll <- dyn.load(dll_file)
-    dll[["name"]] <- paste0("pkgman-", dll[["name"]])
+    dll[["name"]] <- paste0("pkg-", dll[["name"]])
     .dynLibs(c(.dynLibs(), list(dll)))
     natfuns <- getDLLRegisteredRoutines(dll)$.Call
     for (natfun in natfuns) {
@@ -158,8 +158,8 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   pkg_env[["::"]] <- function(pkg, name) {
     pkg <- as.character(substitute(pkg))
     name <- as.character(substitute(name))
-    if (pkg %in% names(pkgman_data$ns)) {
-      pkgman_data$ns[[pkg]][[name]]
+    if (pkg %in% names(pkg_data$ns)) {
+      pkg_data$ns[[pkg]][[name]]
     } else {
       getExportedValue(pkg, name)
     }
@@ -167,8 +167,8 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   environment(pkg_env[["::"]]) <- pkg_env
 
   pkg_env[["asNamespace"]] <- function(ns, ...) {
-    if (ns %in% names(pkgman_data$ns)) {
-      pkgman_data$ns[[ns]]
+    if (ns %in% names(pkg_data$ns)) {
+      pkg_data$ns[[ns]]
     } else {
       base::asNamespace(ns, ...)
     }
@@ -183,11 +183,11 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   ## We add the env before calling .onLoad, because .onLoad might refer
   ## to the package env via asNamespace(), e.g. the ps package does that.
   ## In theory we should handle errors in .onLoad...
-  pkgman_data$ns[[package]] <- pkg_env
+  pkg_data$ns[[package]] <- pkg_env
   if (".onLoad" %in% names(pkg_env)) {
     withCallingHandlers(
       pkg_env$.onLoad(pkg_dir, package),
-      error = function(e) pkgman_data$ns[[package]] <<- NULL
+      error = function(e) pkg_data$ns[[package]] <<- NULL
     )
   }
 

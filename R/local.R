@@ -58,7 +58,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 
   any <- remote(
     function(...) {
-      get("local_install_dev_deps_make_plan", asNamespace("pkgman"))(...)
+      get("local_install_dev_deps_make_plan", asNamespace("pkg"))(...)
     },
     list(root = root, lib = lib, upgrade = upgrade, start = start))
 
@@ -66,7 +66,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 
   inst <- remote(
     function(...) {
-      get("local_install_dev_deps_do_plan", asNamespace("pkgman"))(...)
+      get("local_install_dev_deps_do_plan", asNamespace("pkg"))(...)
     },
     list(lib = lib))
 
@@ -85,7 +85,7 @@ local_install_dev_deps_make_plan <- function(root, lib, upgrade, start) {
   policy <- if (upgrade) "upgrade" else "lazy"
   r$solve(policy = policy)
   r$stop_for_solve_error()
-  pkgman_data$tmp <- list(remotes = r, start = start)
+  pkg_data$tmp <- list(remotes = r, start = start)
   sol <- r$get_solution()$data
   print_install_details(sol, lib)
 }

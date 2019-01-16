@@ -11,9 +11,9 @@ do <- function() {
   if (file.exists("pkginstall") &&
       identical(Sys.getenv("NOT_CRAN"), "true")) {
     library(testthat)
-    library(pkgman)
+    library(pkg)
     test <- function() {
-      package <- "pkgman"
+      package <- "pkg"
       env_test <- asNamespace("testthat")$env_test
       env_test$in_test <- TRUE
       env_test$package <- package

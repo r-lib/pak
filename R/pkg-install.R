@@ -1,9 +1,9 @@
 
-#' Install pkgman's dependencies into its private library
+#' Install pkg's dependencies into its private library
 #'
-#' To avoid interference between your regular R packages and pkgman's
-#' dependencies, pkgman works off a private library, which can be created
-#' by `pkgman_install_deps()`.
+#' To avoid interference between your regular R packages and pkg's
+#' dependencies, pkg works off a private library, which can be created
+#' by `pkg_create_private_lib()`.
 #'
 #' @param mode Where to get the packages from. "download" will try to
 #'   download them from CRAN. "copy" will try to copy them from your
@@ -12,11 +12,11 @@
 #' @param quiet Whether to omit messages.
 #' @return The path to the private library, invisibly.
 #'
-#' @seealso [pkgman_sitrep()].
+#' @seealso [pkg_sitrep()].
 #'
 #' @export
 
-pkgman_install_deps <- function(mode = c("auto", "download", "copy"),
+pkg_create_private_lib <- function(mode = c("auto", "download", "copy"),
                                 quiet = FALSE) {
 
   mode <- match.arg(mode)
@@ -25,10 +25,10 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy"),
 
   if (mode == "auto" && !quiet && !testthat_testing()) {
     message(
-      "\n`pkgman` will create its private package library in",
+      "\n`pkg` will create its private package library in",
       "\n`", lib, "`. ",
       "\nIt will try to copy packages from your regular library",
-      "\nSee `?pkgman_install_deps()` for alternatives.\n")
+      "\nSee `?pkg_create_private_lib()` for alternatives.\n")
 
     ans <- readline("Do you want to continue (Y/n)? ")
     if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
@@ -61,22 +61,22 @@ pkgman_install_deps <- function(mode = c("auto", "download", "copy"),
   invisible(lib)
 }
 
-#' pkgman SITuation REPort
+#' pkg SITuation REPort
 #'
 #' It prints
-#' * pkgman version,
+#' * pkg version,
 #' * the current library path,
 #' * location of the private library,
-#' * whether the pkgman private library exists,
-#' * whether the pkgman private library is functional.
+#' * whether the pkg private library exists,
+#' * whether the pkg private library is functional.
 #'
 #' @export
 
-pkgman_sitrep <- function() {
+pkg_sitrep <- function() {
 
   ## version
-  ver <- as.character(utils::packageVersion("pkgman"))
-  cat0("* pkgman version:\n- ", ver, "\n")
+  ver <- as.character(utils::packageVersion("pkg"))
+  cat0("* pkg version:\n- ", ver, "\n")
 
   ## library path
   cat0("* Library path:\n")
@@ -92,7 +92,7 @@ pkgman_sitrep <- function() {
 
   } else {
     cat0("! Private library does not exist (create with ",
-         "`pkgman_install_deps()`)\n")
+         "`pkg_create_private_lib()`)\n")
   }
 
   if (has_lib) {
@@ -100,8 +100,8 @@ pkgman_sitrep <- function() {
       check_for_private_lib()
       check_private_lib()
       new_remote_session(create = FALSE)
-      deps <- utils::packageDescription("pkgman")$Imports
-      deps <- c("pkgman", parse_dep_fields(deps))
+      deps <- utils::packageDescription("pkg")$Imports
+      deps <- c("pkg", parse_dep_fields(deps))
       remote(args = list(deps = deps), function(deps) {
         for (d in deps) library(d, character.only = TRUE)
       })
@@ -112,7 +112,7 @@ pkgman_sitrep <- function() {
       cat0("* Private library is functional\n")
     } else {
       cat0("! Private library is not functional, re-create with ",
-           "`pkgman_install_deps()`\n")
+           "`pkg_create_private_lib()`\n")
       print(ret)
     }
   }
