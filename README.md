@@ -59,7 +59,7 @@ All dependencies will be installed as well, to the same library.
 * Private library (pkg's own dependencies do not affect your "regular"
   packages and vice versa).
 
-* Do load any package in the main process (except for pkg itself).
+* Do not load any package in the main process (except for pkg itself).
   Every operation runs in the sub-process, and the packages are loaded
   from the private library.
 
