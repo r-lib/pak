@@ -1,7 +1,7 @@
 
 #' Install a package
 #'
-#' Install a package and it's dependencies.
+#' Install a package and its dependencies.
 #'
 #' @param pkg Package names or remote package specifications to install.
 #' @param lib Package library to install the packages to.
@@ -136,4 +136,4 @@ pkg_remove_internal <- function(pkg, lib) {
 ## Like lib_status(), but for a single package and its dependencies
 
 ## TODO: pkg_update()
-## Like  lib_update(), but fir a single package and dependencies
+## Like  lib_update(), but for a single package and dependencies
