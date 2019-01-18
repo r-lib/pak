@@ -117,6 +117,7 @@ pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
     },
     list(pkg = pkg, lib = lib)
   )
+  invisible()
 }
 
 pkg_remove_internal <- function(pkg, lib) {
