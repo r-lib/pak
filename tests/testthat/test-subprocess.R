@@ -22,7 +22,7 @@ test_that("no dependencies are loaded with pkg", {
   )
 
   if_fail(
-    expect_true(all(new_pkgs %in% c("pkg", base_packages()))),
+    expect_true(all(new_pkgs %in% c("pkg", "rstudioapi", base_packages()))),
     function(e) print(new_pkgs)
   )
 })
