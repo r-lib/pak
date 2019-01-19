@@ -49,7 +49,7 @@ print_install_details <- function(sol, lib) {
 
   } else if (n_ch == 0) {
     if (n_dl -  u_dl > 0) {
-      cliapp::cli_alert("Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}}.")
+      cliapp::cli_alert("Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}).")
     }
     if (u_dl > 0) {
       cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
