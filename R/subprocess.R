@@ -123,11 +123,13 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   reg.finalizer(pkg_env, onexit = TRUE, function(x) {
     tryCatch({
       pkg_dir <- pkg_env[["__pkg-dir__"]]
+      if (!is.null(pkg_dir)) pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
       if (!is.null(pkg_env[[".onUnload"]])) {
         tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
       }
       libs <- .dynLibs()
-      matchidx <- grepl(pkg_dir, vcapply(libs, "[[", "path"), fixed = TRUE)
+      paths <- suppressWarnings(normalizePath(vcapply(libs, "[[", "path")))
+      matchidx <- grepl(pkg_dir, paths, fixed = TRUE)
       if (any(matchidx)) {
         pkglibs <- libs[matchidx]
         for (lib in pkglibs) dyn.unload(lib[["path"]])

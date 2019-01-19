@@ -9,12 +9,12 @@ test_that("loading package from private lib", {
 
   ## Load
   load_private_package("processx", create = TRUE)
-  pkgdir <- pkg_data$ns$processx[["__pkg-dir__"]]
+  pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
 
   ## Check if loaded
   expect_true(is.function(pkg_data$ns$processx$run))
   expect_true(file.exists(pkgdir))
-  paths <- sapply(.dynLibs(), "[[", "path")
+  paths <- normalizePath(sapply(.dynLibs(), "[[", "path"))
   expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
 })
 
@@ -26,14 +26,15 @@ test_that("cleanup of temp files", {
 
   ## Load
   load_private_package("processx", create = TRUE)
-  pkgdir <- pkg_data$ns$processx[["__pkg-dir__"]]
+  pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
 
   ## Check if loaded
   expect_true(is.function(pkg_data$ns$processx$run))
   expect_true(file.exists(pkgdir))
-  paths <- sapply(.dynLibs(), "[[", "path")
+  paths <- normalizePath(sapply(.dynLibs(), "[[", "path"))
   expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
 
+  pkg_data <- asNamespace("pkg")$pkg_data
   pkg_data$ns$processx <- NULL
   gc(); gc()
 
