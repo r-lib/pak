@@ -1598,6 +1598,7 @@ remotes_async_resolve <- function(self, private) {
   private$solution <- NULL
 
   private$dirty <- TRUE
+  private$cache$metadata$check_update()
   private$resolution <- resolution()$new(
     config = private$config, cache = private$cache,
     library = private$library, remote_types = private$remote_types)
