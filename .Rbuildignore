@@ -5,3 +5,5 @@
 ^r-packages$
 ^tests/pkginstall/foo/src/.*\.so$
 ^tests/pkginstall/foo/src/.*\.o$
+^.*\.Rproj$
+^\.Rproj\.user$
