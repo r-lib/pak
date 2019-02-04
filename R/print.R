@@ -71,7 +71,7 @@ warn_for_loaded_packages <- function(pkgs, lib) {
       function(x) dirname(getNamespaceInfo(x, "path"))
     )
     bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
-    bad <- setdiff(bad, "pkg")
+    bad <- setdiff(bad, "pak")
     if (length(bad)) {
       cliapp::cli_alert_warning(
         "Package(s) {format_items(bad)} are already loaded, installing \\

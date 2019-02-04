@@ -1,36 +1,36 @@
 
-# pkg
+# pak
 
 > Manage Package Libraries
 
 ![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
-[![Linux Build Status](https://travis-ci.org/r-lib/pkg.svg?branch=master)](https://travis-ci.org/r-lib/pkg)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pkg)
-[![](https://www.r-pkg.org/badges/version/pkg)](https://cran.r-project.org/package=pkg)
-[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/pkg)](https://www.r-pkg.org/pkg/pkg)
-[![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pkg/master.svg)](https://codecov.io/github/r-lib/pkg?branch=master)
+[![Linux Build Status](https://travis-ci.org/r-lib/pak.svg?branch=master)](https://travis-ci.org/r-lib/pak)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pak)
+[![](https://www.r-pkg.org/badges/version/pak)](https://cran.r-project.org/package=pak)
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak)
+[![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pak/master.svg)](https://codecov.io/github/r-lib/pak?branch=master)
 
-pkg installs R packages from various sources.
+pak installs R packages from various sources.
 
 ## Installation
 
 Install the package from CRAN:
 
 ``` r
-install.packages("pkg")
-pkg::pkg_create_private_lib()
+install.packages("pak")
+pak::pak_create_private_lib()
 ```
 
-The second line creates pkg's own package library, to avoid interference
-between pkg's dependencies and the user's regular packages. Run this
-command any time to update pkg's package library.
+The second line creates pak's own package library, to avoid interference
+between pak's dependencies and the user's regular packages. Run this
+command any time to update pak's package library.
 
 ## Usage
 
 Simply call `pkg_install` to install packages:
 
 ```r
-pkg::pkg_install("dplyr", lib = "/tmp/lib")
+pak::pkg_install("dplyr", lib = "/tmp/lib")
 ```
 
 All dependencies will be installed as well, to the same library.
@@ -56,10 +56,10 @@ All dependencies will be installed as well, to the same library.
 
 ### Safety features
 
-* Private library (pkg's own dependencies do not affect your "regular"
+* Private library (pak's own dependencies do not affect your "regular"
   packages and vice versa).
 
-* Do not load any package in the main process (except for pkg itself).
+* Do not load any package in the main process (except for pak itself).
   Every operation runs in the sub-process, and the packages are loaded
   from the private library.
 

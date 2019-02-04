@@ -612,7 +612,7 @@ format.remotes_downloads <- function(x, ...) {
   direct <- unique(x$ref[x$direct])
   dt <- prettyunits::pretty_dt(meta$download_end - meta$download_start)
   head <- glue::glue(
-    "PKG DOWNLOADS, {length(direct)} refs, downloaded in {dt} ")
+    "PAK DOWNLOADS, {length(direct)} refs, downloaded in {dt} ")
   width <- getOption("width") - crayon::col_nchar(head, type = "width") - 1
   head <- paste0(head, strrep(cli::symbol$line, max(width, 0)))
   push(crayon::blue(crayon::bold(head)), sep = "\n")
@@ -1409,7 +1409,7 @@ format.remotes_resolution <- function(x, ...) {
   direct <- unique(x$ref[x$direct])
   dt <- prettyunits::pretty_dt(meta$resolution_end - meta$resolution_start)
   head <- glue::glue(
-    "PKG RESOLUTION, {length(direct)} refs, resolved in {dt} ")
+    "PAK RESOLUTION, {length(direct)} refs, resolved in {dt} ")
   width <- getOption("width") - crayon::col_nchar(head, type = "width") - 1
   head <- paste0(head, strrep(cli::symbol$line, max(width, 0)))
   push(crayon::blue(crayon::bold(head)), sep = "\n")
@@ -2718,7 +2718,7 @@ format.remotes_solution <- function(x, ...) {
   dt2 <- prettyunits::pretty_dt(meta$solution_end - meta$solution_start)
   sol <- if (x$status == "OK") "SOLUTION" else "FAILED SOLUTION"
   head <- glue::glue(
-    "PKG {sol}, {length(direct)} refs, resolved in {dt}, ",
+    "PAK {sol}, {length(direct)} refs, resolved in {dt}, ",
     "solved in {dt2} ")
   width <- getOption("width") - crayon::col_nchar(head, type = "width") - 1
   head <- paste0(head, strrep(cli::symbol$line, max(width, 0)))

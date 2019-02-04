@@ -34,7 +34,7 @@ test_that("cleanup of temp files", {
   paths <- normalizePath(sapply(.dynLibs(), "[[", "path"))
   expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
 
-  pkg_data <- asNamespace("pkg")$pkg_data
+  pkg_data <- asNamespace("pak")$pkg_data
   pkg_data$ns$processx <- NULL
   gc(); gc()
 

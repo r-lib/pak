@@ -21,7 +21,7 @@ latest available version.}
 Data frame, with information about the installed package(s).
 }
 \description{
-Install a package and it's dependencies.
+Install a package and its dependencies.
 }
 \examples{
 \dontrun{

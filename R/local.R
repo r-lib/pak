@@ -58,7 +58,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 
   any <- remote(
     function(...) {
-      get("local_install_dev_deps_make_plan", asNamespace("pkg"))(...)
+      get("local_install_dev_deps_make_plan", asNamespace("pak"))(...)
     },
     list(root = root, lib = lib, upgrade = upgrade, start = start))
 
@@ -66,7 +66,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 
   inst <- remote(
     function(...) {
-      get("local_install_dev_deps_do_plan", asNamespace("pkg"))(...)
+      get("local_install_dev_deps_do_plan", asNamespace("pak"))(...)
     },
     list(lib = lib))
 

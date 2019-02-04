@@ -1,6 +1,6 @@
 
-# pkg dev
+# pak dev
 
-# pkg 0.1.1
+# pak 0.1.1
 
 First version on CRAN.

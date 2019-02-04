@@ -9,7 +9,7 @@
 proj_create <- function(project_root = ".") {
   remote(
     function(...) {
-      asNamespace("pkg")$proj_create_internal(...)
+      asNamespace("pak")$proj_create_internal(...)
     },
     list(project_root = project_root))
   .libPaths(unique(c('r-packages', .libPaths())))
@@ -91,7 +91,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
 
   any <- remote(
     function(...) {
-      get("proj_install_make_plan", asNamespace("pkg"))(...)
+      get("proj_install_make_plan", asNamespace("pak"))(...)
     },
     list(pkg = pkg, root = root, upgrade = upgrade, ask = ask,
          start = start, dev = FALSE))
@@ -99,7 +99,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   inst <- remote(
-    function(...) get("proj_install_do_plan", asNamespace("pkg"))(...),
+    function(...) get("proj_install_do_plan", asNamespace("pak"))(...),
     list(optional = optional))
 
   invisible(inst)
@@ -150,7 +150,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
 
   any <- remote(
     function(...) {
-      get("proj_install_make_plan", asNamespace("pkg"))(...)
+      get("proj_install_make_plan", asNamespace("pak"))(...)
     },
     list(pkg = NULL, root = root, upgrade = upgrade, ask = ask,
          start = start, dev = TRUE))
@@ -158,7 +158,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   inst <- remote(
-    function(...) get("proj_install_do_plan", asNamespace("pkg"))(...),
+    function(...) get("proj_install_do_plan", asNamespace("pak"))(...),
     list(optional = FALSE))
 
   invisible(inst)
@@ -170,7 +170,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
 #' Note that it does not remove dependencies that are not needed any more.
 #'
 #' @param pkg Package(s) to remove. These can be package names or general
-#'   remote references, e.g. `github::r-lib/pkg`. The packages are also
+#'   remote references, e.g. `github::r-lib/pak`. The packages are also
 #'   removed from `DESCRIPTION`.
 #' @inheritParams proj_install
 #'
@@ -180,14 +180,14 @@ proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
   any <-  remote(
     function(...) {
-      get("proj_remove_internal", asNamespace("pkg"))(...)
+      get("proj_remove_internal", asNamespace("pak"))(...)
     },
     list(pkg = pkg, root = root, ask = ask))
 
   if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
 
   remo <- remote(
-    function(...) get("proj_remove_internal_do", asNamespace("pkg"))(...),
+    function(...) get("proj_remove_internal_do", asNamespace("pak"))(...),
     list())
 
   invisible(remo)
@@ -221,7 +221,7 @@ proj_remove_internal_do <- function() {
 
 proj_status <- function(root = ".") {
   remote(
-    function(...) asNamespace("pkg")$proj_status_internal(...),
+    function(...) asNamespace("pak")$proj_status_internal(...),
     list(root = root))
 }
 

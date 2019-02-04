@@ -1,7 +1,7 @@
 
 context("subprocess related")
 
-test_that("no dependencies are loaded with pkg", {
+test_that("no dependencies are loaded with pak", {
 
   skip_on_cran()
 
@@ -13,7 +13,7 @@ test_that("no dependencies are loaded with pkg", {
     function() {
       withr::with_options(list(pkg.subprocess = FALSE), {
         orig <- loadedNamespaces()
-        library(pkg)
+        library(pak)
         new <- loadedNamespaces()
       })
       setdiff(new, orig)
@@ -22,7 +22,7 @@ test_that("no dependencies are loaded with pkg", {
   )
 
   if_fail(
-    expect_true(all(new_pkgs %in% c("pkg", "rstudioapi", base_packages()))),
+    expect_true(all(new_pkgs %in% c("pak", "rstudioapi", base_packages()))),
     function(e) print(new_pkgs)
   )
 })

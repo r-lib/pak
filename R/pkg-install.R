@@ -1,9 +1,9 @@
 
-#' Install pkg's dependencies into its private library
+#' Install pak's dependencies into its private library
 #'
-#' To avoid interference between your regular R packages and pkg's
-#' dependencies, pkg works off a private library, which can be created
-#' by `pkg_create_private_lib()`.
+#' To avoid interference between your regular R packages and pak's
+#' dependencies, pak works off a private library, which can be created
+#' by `pak_create_private_lib()`.
 #'
 #' @param mode Where to get the packages from. "download" will try to
 #'   download them from CRAN. "copy" will try to copy them from your
@@ -12,11 +12,11 @@
 #' @param quiet Whether to omit messages.
 #' @return The path to the private library, invisibly.
 #'
-#' @seealso [pkg_sitrep()].
+#' @seealso [pak_sitrep()].
 #'
 #' @export
 
-pkg_create_private_lib <- function(mode = c("auto", "download", "copy"),
+pak_create_private_lib <- function(mode = c("auto", "download", "copy"),
                                 quiet = FALSE) {
 
   mode <- match.arg(mode)
@@ -25,10 +25,10 @@ pkg_create_private_lib <- function(mode = c("auto", "download", "copy"),
 
   if (mode == "auto" && !quiet && !testthat_testing()) {
     message(
-      "\n`pkg` will create its private package library in",
+      "\n`pak` will create its private package library in",
       "\n`", lib, "`. ",
       "\nIt will try to copy packages from your regular library",
-      "\nSee `?pkg_create_private_lib()` for alternatives.\n")
+      "\nSee `?pak_create_private_lib()` for alternatives.\n")
 
     ans <- readline("Do you want to continue (Y/n)? ")
     if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
@@ -61,22 +61,22 @@ pkg_create_private_lib <- function(mode = c("auto", "download", "copy"),
   invisible(lib)
 }
 
-#' pkg SITuation REPort
+#' pak SITuation REPort
 #'
 #' It prints
-#' * pkg version,
+#' * pak version,
 #' * the current library path,
 #' * location of the private library,
-#' * whether the pkg private library exists,
-#' * whether the pkg private library is functional.
+#' * whether the pak private library exists,
+#' * whether the pak private library is functional.
 #'
 #' @export
 
-pkg_sitrep <- function() {
+pak_sitrep <- function() {
 
   ## version
-  ver <- as.character(utils::packageVersion("pkg"))
-  cat0("* pkg version:\n- ", ver, "\n")
+  ver <- as.character(utils::packageVersion("pak"))
+  cat0("* pak version:\n- ", ver, "\n")
 
   ## library path
   cat0("* Library path:\n")
@@ -92,7 +92,7 @@ pkg_sitrep <- function() {
 
   } else {
     cat0("! Private library does not exist (create with ",
-         "`pkg_create_private_lib()`)\n")
+         "`pak_create_private_lib()`)\n")
   }
 
   if (has_lib) {
@@ -100,8 +100,8 @@ pkg_sitrep <- function() {
       check_for_private_lib()
       check_private_lib()
       new_remote_session(create = FALSE)
-      deps <- utils::packageDescription("pkg")$Imports
-      deps <- c("pkg", parse_dep_fields(deps))
+      deps <- utils::packageDescription("pak")$Imports
+      deps <- c("pak", parse_dep_fields(deps))
       remote(args = list(deps = deps), function(deps) {
         for (d in deps) library(d, character.only = TRUE)
       })
@@ -112,7 +112,7 @@ pkg_sitrep <- function() {
       cat0("* Private library is functional\n")
     } else {
       cat0("! Private library is not functional, re-create with ",
-           "`pkg_create_private_lib()`\n")
+           "`pak_create_private_lib()`\n")
       print(ret)
     }
   }

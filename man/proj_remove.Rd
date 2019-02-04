@@ -8,7 +8,7 @@ proj_remove(pkg, root = ".", ask = interactive())
 }
 \arguments{
 \item{pkg}{Package(s) to remove. These can be package names or general
-remote references, e.g. \code{github::r-lib/pkg}. The packages are also
+remote references, e.g. \code{github::r-lib/pak}. The packages are also
 removed from \code{DESCRIPTION}.}
 
 \item{root}{Path to the project directory. A subdirectory can be given

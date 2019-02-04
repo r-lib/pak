@@ -26,7 +26,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   start <- Sys.time()
 
   any <- remote(
-    function(...) get("pkg_install_make_plan", asNamespace("pkg"))(...),
+    function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask, start = start))
 
   if (any && ask) {
@@ -34,7 +34,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   }
 
   inst <- remote(
-    function(...) get("pkg_install_do_plan", asNamespace("pkg"))(...),
+    function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
     list(remotes = NULL, lib = lib))
 
   invisible(inst)
@@ -95,7 +95,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
   remote(
-    function(...) asNamespace("pkg")$pkg_status_internal(...),
+    function(...) asNamespace("pak")$pkg_status_internal(...),
     list(pkg = pkg, lib = lib))
 }
 
@@ -113,7 +113,7 @@ pkg_status_internal <- function(pkg, lib) {
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   remote(
     function(...) {
-      get("pkg_remove_internal", asNamespace("pkg"))(...)
+      get("pkg_remove_internal", asNamespace("pak"))(...)
     },
     list(pkg = pkg, lib = lib)
   )

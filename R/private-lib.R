@@ -20,9 +20,9 @@ get_private_lib <- function(create = TRUE) {
   if (!is.null(l <- pkg_data$private_lib)) return(l)
   if (!is.null(l <- check_private_lib())) return(l)
   if (create) {
-    pkg_create_private_lib()
+    pak_create_private_lib()
   } else {
-    stop("No pkg private library")
+    stop("No pak private library")
   }
 }
 
@@ -172,7 +172,7 @@ download_private_lib <- function(quiet = FALSE) {
   if (!is.null(remotes)) {
     remotes <- str_trim(strsplit(remotes, ",\\s*")[[1]])
     if (!quiet) {
-      message("\n! This is a _development_ version of pkg,\n",
+      message("\n! This is a _development_ version of pak,\n",
               "! some packages will be installed from *GitHub*\n\n")
     }
     for (rem in remotes) {

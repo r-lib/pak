@@ -10,7 +10,7 @@
 
 lib_status <- function(lib = .libPaths()[1]) {
   remote(
-    function(...) asNamespace("pkg")$lib_status_internal(...),
+    function(...) asNamespace("pak")$lib_status_internal(...),
     list(lib = lib))
 }
 
