@@ -1,1 +1,27 @@
 url: http://pak.r-lib.org
+
+reference:
+- title: Packages
+  contents:
+  - pak_package_sources
+  - pkg_install
+  - pkg_remove
+  - pkg_status
+
+- title: Local Package Trees
+  contents:
+  - local_package_trees
+  - local_install
+  - local_install_deps
+  - local_install_dev_deps
+
+- title: Libraries
+  contents:
+  - lib_status
+
+- title: pak housekeeping
+  contents:
+  - pak_private_library
+  - pak_sitrep
+  - pak_create_private_lib
+  - pak_cleanup
