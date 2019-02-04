@@ -1,6 +1,4 @@
 
-# pak dev
-
-# pak 0.1.1
+# pak 0.1.2
 
 First version on CRAN.
