@@ -1,4 +1,23 @@
 
+#' Local package trees
+#'
+#' pak can install packages from local package trees. This is convenient
+#' for package development. See the following functions:
+#' * [local_install()] installs a package from a package tree and all of its
+#'   (hard) dependencies (i.e. `Includes`, `Depends`, `LinkingTo`.
+#' * [local_install_deps()] installs all hard dependencies of a package.
+#' * [local_install_dev_deps()] installs all hard and soft dependencies
+#'   of a package. This function is intended for active package development.
+#'
+#' Note that the last two functions do not install the package in the
+#' specified package tree itself, only its dependencies. This is convenient
+#' if the package itself is loaded via some other means, e.g.
+#' `devtools::load_all()`, for development.
+#'
+#' @name local_package_trees
+#' @family local package trees
+ NULL
+
 #' Install a package tree
 #'
 #' Installs a package tree (or source package file), together with its
@@ -10,7 +29,7 @@
 #' @inheritParams pkg_install
 #' @return Data frame, with information about the installed package(s).
 #'
-#' @family local packages
+#' @family local package trees
 #' @export
 
 local_install <- function(root = ".", lib = .libPaths()[1], upgrade = FALSE,
@@ -24,14 +43,14 @@ local_install <- function(root = ".", lib = .libPaths()[1], upgrade = FALSE,
 #' Installs the hard dependencies of a package tree (or source package file),
 #' without installing the package tree itself.
 #'
-#' Note that development (and optional) dependendies, under `Suggests` in
+#' Note that development (and optional) dependencies, under `Suggests` in
 #' `DESCRIPTION`, are not installed. If you want to install them as well,
 #' use [local_install_dev_deps()].
 #'
 #' @inheritParams local_install
 #' @return Data frame, with information about the installed package(s).
 #'
-#' @family local packages
+#' @family local package trees
 #' @export
 
 local_install_deps <- function(root = ".", lib = .libPaths()[1],
@@ -49,7 +68,7 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 #'
 #' @inheritParams local_install
 #' 
-#' @family local packages
+#' @family local package trees
 #' @export
 
 local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],

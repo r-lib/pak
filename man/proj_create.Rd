@@ -19,3 +19,4 @@ Other project functions: \code{\link{proj_install_dev}},
   \code{\link{proj_status}}
 }
 \concept{project functions}
+\keyword{internal}

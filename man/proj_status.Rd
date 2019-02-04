@@ -23,3 +23,4 @@ Other project functions: \code{\link{proj_create}},
   \code{\link{proj_install}}, \code{\link{proj_remove}}
 }
 \concept{project functions}
+\keyword{internal}

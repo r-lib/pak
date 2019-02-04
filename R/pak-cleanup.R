@@ -1,14 +1,37 @@
 
+#' The pak private library
+#'
+#' pak is an R package, and needs other R packages to do its job. These
+#' dependencies should be kept separate from the user's "regular" package
+#' libraries, to avoid the situation when pak needs a different version
+#' of a package than the one in the regular library.
+#'
+#' To accomplish this, pak keeps all of its dependencies in a separate
+#' library. This library is usually in the user's cache directory.
+#'
+#' pak creates and updates its private library, as needed: every time
+#' pak cannot load a package from the private library, including the
+#' obvious case when the user does not have a private library, pak will
+#' create one.
+#'
+#' You can use [pak_sitrep()] to list the location of the pak private
+#' library, and [pak_cleanup()] to clean it up.
+#'
+#' @name pak_private_library
+#' @family pak housekeeping
+NULL
+
 #' Clean up pak caches and/or the pak library
 #'
 #' @param package_cache Whether to clean up the cache of package files.
 #' @param metadata_cache Whether to clean up the cache of package meta
 #'   data.
-#' @param pak_lib Whethe to clean up the pak package library.
+#' @param pak_lib Whether to clean up the pak package library.
 #' @param force Do not ask for confirmation. Note that to use this function
 #'   in non-interactive mode, you have to specify `force = FALSE`.
 #'
 #' @export
+#' @family pak housekeeping
 
 pak_cleanup <- function(package_cache = TRUE, metadata_cache = TRUE,
                            pak_lib = TRUE, force = FALSE) {

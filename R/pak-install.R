@@ -12,9 +12,8 @@
 #' @param quiet Whether to omit messages.
 #' @return The path to the private library, invisibly.
 #'
-#' @seealso [pak_sitrep()].
-#'
 #' @export
+#' @family pak housekeeping
 
 pak_create_private_lib <- function(mode = c("auto", "download", "copy"),
                                 quiet = FALSE) {
@@ -71,6 +70,7 @@ pak_create_private_lib <- function(mode = c("auto", "download", "copy"),
 #' * whether the pak private library is functional.
 #'
 #' @export
+#' @family pak housekeeping
 
 pak_sitrep <- function() {
 

@@ -10,10 +10,15 @@ local_install_deps(root = ".", lib = .libPaths()[1], upgrade = FALSE,
 \arguments{
 \item{root}{Path to the package tree.}
 
-\item{lib}{Package library to install the packages to.}
+\item{lib}{Package library to install the packages to. Note that \emph{all}
+dependent packages will the be installed here, even if they are
+already installed in another library.}
 
 \item{upgrade}{Whether to upgrade already installed packages to the
-latest available version.}
+latest available version. If this is \code{FALSE}, then only packages
+that need updates to satisfy version requirements, will be updated.
+If it is \code{TRUE}, all specified or dependent packages will be updated
+to the latest available version.}
 
 \item{ask}{Whether to ask for confirmation.}
 }
@@ -25,12 +30,13 @@ Installs the hard dependencies of a package tree (or source package file),
 without installing the package tree itself.
 }
 \details{
-Note that development (and optional) dependendies, under \code{Suggests} in
+Note that development (and optional) dependencies, under \code{Suggests} in
 \code{DESCRIPTION}, are not installed. If you want to install them as well,
 use \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.
 }
 \seealso{
-Other local packages: \code{\link{local_install_dev_deps}},
-  \code{\link{local_install}}
+Other local package trees: \code{\link{local_install_dev_deps}},
+  \code{\link{local_install}},
+  \code{\link{local_package_trees}}
 }
-\concept{local packages}
+\concept{local package trees}

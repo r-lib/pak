@@ -5,6 +5,7 @@
 #'   exist, it will be created.
 #'
 #' @family project functions
+#' @keywords internal
 
 proj_create <- function(project_root = ".") {
   remote(
@@ -83,6 +84,7 @@ proj_create_desc <- function(project_root) {
 #'   packages.
 #'
 #' @family project functions
+#' @keywords internal
 
 proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
                          optional = FALSE, ask = interactive()) {
@@ -135,7 +137,7 @@ proj_install_do_plan <- function(optional) {
   res
 }
 
-#' Install project dependencies, including dev dependencies into
+#' Install project dependencies, including development dependencies, into
 #' private project library
 #'
 #' @inheritParams proj_install
@@ -143,6 +145,7 @@ proj_install_do_plan <- function(optional) {
 #'   packages.
 #'
 #' @family project functions
+#' @keywords internal
 
 proj_install_dev <-  function(root = ".", upgrade = FALSE,
                               ask = interactive()) {
@@ -175,6 +178,7 @@ proj_install_dev <-  function(root = ".", upgrade = FALSE,
 #' @inheritParams proj_install
 #'
 #' @family project functions
+#' @keywords internal
 
 proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
@@ -218,6 +222,7 @@ proj_remove_internal_do <- function() {
 #'   installed in the project library.
 #'
 #' @family project functions
+#' @keywords internal
 
 proj_status <- function(root = ".") {
   remote(

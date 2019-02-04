@@ -38,3 +38,4 @@ Other project functions: \code{\link{proj_create}},
   \code{\link{proj_remove}}, \code{\link{proj_status}}
 }
 \concept{project functions}
+\keyword{internal}

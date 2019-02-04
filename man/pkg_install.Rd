@@ -10,10 +10,15 @@ pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.}
 
-\item{lib}{Package library to install the packages to.}
+\item{lib}{Package library to install the packages to. Note that \emph{all}
+dependent packages will the be installed here, even if they are
+already installed in another library.}
 
 \item{upgrade}{Whether to upgrade already installed packages to the
-latest available version.}
+latest available version. If this is \code{FALSE}, then only packages
+that need updates to satisfy version requirements, will be updated.
+If it is \code{TRUE}, all specified or dependent packages will be updated
+to the latest available version.}
 
 \item{ask}{Whether to ask for confirmation.}
 }
@@ -21,7 +26,7 @@ latest available version.}
 Data frame, with information about the installed package(s).
 }
 \description{
-Install a package and its dependencies.
+Install a package and its dependencies, into a single package library.
 }
 \examples{
 \dontrun{
@@ -32,3 +37,8 @@ pkg_install("dplyr", upgrade = TRUE)
 pkg_install("r-lib/pkgconfig")
 }
 }
+\seealso{
+Other package functions: \code{\link{pak_package_sources}},
+  \code{\link{pkg_remove}}, \code{\link{pkg_status}}
+}
+\concept{package functions}

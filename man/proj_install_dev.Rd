@@ -2,7 +2,7 @@
 % Please edit documentation in R/proj.R
 \name{proj_install_dev}
 \alias{proj_install_dev}
-\title{Install project dependencies, including dev dependencies into
+\title{Install project dependencies, including development dependencies, into
 private project library}
 \usage{
 proj_install_dev(root = ".", upgrade = FALSE, ask = interactive())
@@ -22,7 +22,7 @@ Data frame containing data about the installed / updated
 packages.
 }
 \description{
-Install project dependencies, including dev dependencies into
+Install project dependencies, including development dependencies, into
 private project library
 }
 \seealso{
@@ -31,3 +31,4 @@ Other project functions: \code{\link{proj_create}},
   \code{\link{proj_status}}
 }
 \concept{project functions}
+\keyword{internal}
