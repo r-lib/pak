@@ -1,6 +1,6 @@
 Package: pak
 Version: 0.1.2
-Title: Another approach to Package Installation
+Title: Another Approach to Package Installation
 Description: The goal of 'pak' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
     so metadata resolution and package downloads are fast. Metadata and package
