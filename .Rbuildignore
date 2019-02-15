@@ -9,3 +9,6 @@
 ^tests/pkginstall/foo/src/.*\.o$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^README\.html$
+^Makefile$
