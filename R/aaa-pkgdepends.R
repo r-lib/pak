@@ -118,6 +118,7 @@ is_r_version_list <- assertthat::`on_failure<-`(
   })
 
 build_package <- function(path, build_args = list()) {
+  fix_package_permissions(path)
   default_args <- list(
     path = path, dest_path = NULL, binary = FALSE, vignettes = TRUE,
     manual = TRUE, args = NULL, quiet = TRUE
@@ -3903,6 +3904,16 @@ rbind_expand <- function(..., .list = list()) {
   }
 
   do.call(rbind, data)
+}
+
+fix_package_permissions <- function(pkgdir) {
+  files <- c("configure", "cleanup")
+  for (f in file.path(pkgdir, files)) {
+    if (file.exists(f)) {
+      mode <- file.info(f)$mode
+      if ((mode & "111") != as.octmode("111")) Sys.chmod(f, mode | "111")
+    }
+  }
 }
 
 version_satisfies <- function(ver, op, cond) {
