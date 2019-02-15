@@ -26,75 +26,91 @@ knitr::opts_chunk$set(
 [![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/pak/master.svg)](https://codecov.io/github/r-lib/pak?branch=master)
 <!-- badges: end -->
 
-pak installs R packages from various sources.
+pak installs R packages from various sources. It is a replacement for
+`install.packages()` and `devtools::install_github()`.
+pak is fast, safe and convenient.
+
+<p align="center">
+	<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@readme/tools/images/install-2.svg">
+</p>
+
 
 ## Installation
 
 Install the package from CRAN:
 
-``` r
+```r
 install.packages("pak")
 pak::pak_create_private_lib()
 ```
 
 The second line creates pak's own package library, to avoid interference
-between pak's dependencies and the user's regular packages. Run this
-command any time to update pak's package library.
+between pak's dependencies and the user's regular packages.
 
 ## Usage
 
-Simply call `pkg_install` to install packages:
+Simply call `pkg_install()` to install CRAN or BioConductor packages:
 
 ```r
-pak::pkg_install("dplyr", lib = "/tmp/lib")
+pak::pkg_install("usethis")
+```
+
+To install GitHub packages, use the `user/repo` syntax:
+
+```r
+pak::pkg_install("r-lib/usethis")
 ```
 
 All dependencies will be installed as well, to the same library.
 
-## Goals
+## Why pak?
 
-* Make package installation cheaper and more reliable.
+### Fast
 
-* Cheaper, reliable package installation allows safer, more convenient
-  workflows.
+* Fast downloads and HTTP queries. pak performs all HTTP requests
+  concurrently.
 
-## Features
+* Fast installs. pak builds and installs packages concurrently.
 
-### Speedy Features
+* Metadata and package cache. pak caches package metadata and all downloaded
+  packages locally. It does not download the same package files over and
+  over again.
 
-* Fast downloads and queries (all HTTP is concurrent).
+* Lazy installation. pak only installs the packages that are really needed
+  to be installed. If the requested package and its dependencies are
+  already installed, pak does nothing.
 
-* Fast installs (package installations and builds are concurrent).
+### Safe
 
-* Package cache (all downloaded and locally built packages are cached).
+* Private library (pak's own package dependencies do not affect your
+  regular package libraries and vice versa).
 
-* Lazy downloads, only download metadata and package files if needed.
+* Dependency solver. pak makes sure that you end up in a consistent, working
+  state of dependencies. It finds conflicts up front, before actually
+  installing anything. pak fixes installations, i.e. if a downsteam
+  dependency is missing, it installs it, even if the requested package is
+  already installed.
 
-### Safety features
+* pak avoids loading packages from your regular package libraries.
+  These package files would be locked on some systems, and locked packages
+  cannot be updated. pak does not load any package in the main process
+  (except for pak itself). Every pak operation runs in a sub-process, and
+  the packages are loaded from the private library.
 
-* Private library (pak's own dependencies do not affect your "regular"
-  packages and vice versa).
+* To avoid updating locked packages, pak warns and requests confirmation
+  for loaded packages.
 
-* Do not load any package in the main process (except for pak itself).
-  Every operation runs in the sub-process, and the packages are loaded
-  from the private library.
+### Convenient
 
-* Dependency solver: makes sure that you end up in a consistent, working
-  state of dependencies. Find conflicts up front, before actually installing
-  anything.
+* BioC packages. pak supports BioConductor packages out of the box. It
+  uses the BioConductor version that is appropriate for your R version.
 
-* Confirmation, warning for overwriting loaded packages.
+* GitHub packages. pak supports GitHub packages out of the box. It also
+  supports the `Remotes` entry in `DESCRIPTION` files (see e.g.
+  https://cran.rstudio.com/web/packages/remotes/vignettes/dependencies.html).
 
-* Concurrency safe, locks library, locks caches. Lock is released when the
-  process terminates.
-
-### Convenience features
-
-* GitHub packages.
-
-* BioC packages.
-
-* Show download sizes.
+* Package sizes. For CRAN packages pak shows the total sizes of packages
+  it needs to download.
 
 ## License
 
