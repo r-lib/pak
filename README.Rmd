@@ -108,7 +108,7 @@ All dependencies will be installed as well, to the same library.
   supports the `Remotes` entry in `DESCRIPTION` files,
   so that GitHub dependencies of GitHub packages will also get installed.
   See e.g.
-  <https://cran.rstudio.com/web/packages/remotes/vignettes/dependencies.html>.
+  <https://cran.r-project.org/package=remotes/vignettes/dependencies.html>
 
 * Package sizes. For CRAN packages pak shows the total sizes of packages
   it needs to download.
