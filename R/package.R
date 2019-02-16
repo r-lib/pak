@@ -5,7 +5,7 @@
 #'
 #' pak can install packages from various package sources. By default,
 #' a package name without the specification of its source, refers to a
-#' CRAN or BioConductor package. pak calls these _standard_ packages.
+#' CRAN or Bioconductor package. pak calls these _standard_ packages.
 #' For example:
 #'
 #' ```r
@@ -16,7 +16,7 @@
 #' ```
 #' When considering a standard package, the calling version of R is used
 #' to determine the available source and binary packages on CRAN and the
-#' BioConductor repositories.
+#' Bioconductor repositories.
 #'
 #' The full specification of standard packages is simply
 #' ```
@@ -105,7 +105,7 @@
 #'   r-lib/testthat@c67018fa4970
 #' ```
 #'
-#' The CRAN and BioConductor repositories do not support the `Remotes`
+#' The CRAN and Bioconductor repositories do not support the `Remotes`
 #' field, so you need to remove this field, before submitting your package
 #' to either of them.
 #'

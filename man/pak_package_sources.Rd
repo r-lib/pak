@@ -11,7 +11,7 @@ Package sources
 
 pak can install packages from various package sources. By default,
 a package name without the specification of its source, refers to a
-CRAN or BioConductor package. pak calls these \emph{standard} packages.
+CRAN or Bioconductor package. pak calls these \emph{standard} packages.
 For example:\preformatted{## CRAN package
 pkg_install("glue")
 ## BioC package
@@ -20,7 +20,7 @@ pkg_install("limma")
 
 When considering a standard package, the calling version of R is used
 to determine the available source and binary packages on CRAN and the
-BioConductor repositories.
+Bioconductor repositories.
 
 The full specification of standard packages is simply\preformatted{[standard::]<package>
 }
@@ -95,7 +95,7 @@ Remotes: `r-lib/glue,
   r-lib/testthat@c67018fa4970
 }
 
-The CRAN and BioConductor repositories do not support the \code{Remotes}
+The CRAN and Bioconductor repositories do not support the \code{Remotes}
 field, so you need to remove this field, before submitting your package
 to either of them.
 }

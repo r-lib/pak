@@ -3,8 +3,8 @@
 
 # pak
 
-> Manage Package
-Libraries
+> A Fresh Approach to R Package
+Installation
 
 <!-- badges: start -->
 
@@ -20,9 +20,9 @@ downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak
 Status](https://img.shields.io/codecov/c/github/r-lib/pak/master.svg)](https://codecov.io/github/r-lib/pak?branch=master)
 <!-- badges: end -->
 
-pak installs R packages from various sources. It is a replacement for
-`install.packages()` and `devtools::install_github()`. pak is fast, safe
-and
+pak installs R packages from CRAN, Bioconductor, GitHub, and local files
+and directories. It is an alternative to `install.packages()` and
+`devtools::install_github()`. pak is fast, safe and
 convenient.
 
 <p align="center">
@@ -37,15 +37,15 @@ Install the package from CRAN:
 
 ``` r
 install.packages("pak")
-pak::pak_create_private_lib()
 ```
 
-The second line creates pak’s own package library, to avoid interference
-between pak’s dependencies and the user’s regular packages.
+(After installation, you might also want to run `pak::pak_setup()`;
+it’ll be run automatically when needed but you might want to do it now
+to save some time later.)
 
 ## Usage
 
-Simply call `pkg_install()` to install CRAN or BioConductor packages:
+Call `pkg_install()` to install CRAN or Bioconductor packages:
 
 ``` r
 pak::pkg_install("usethis")
@@ -73,7 +73,7 @@ All dependencies will be installed as well, to the same library.
     files over and over again.
 
   - Lazy installation. pak only installs the packages that are really
-    needed to be installed. If the requested package and its
+    necessary for the installation. If the requested package and its
     dependencies are already installed, pak does nothing.
 
 ### Safe
@@ -81,33 +81,46 @@ All dependencies will be installed as well, to the same library.
   - Private library (pak’s own package dependencies do not affect your
     regular package libraries and vice versa).
 
-  - Dependency solver. pak makes sure that you end up in a consistent,
-    working state of dependencies. It finds conflicts up front, before
-    actually installing anything. pak fixes installations, i.e. if a
-    downsteam dependency is missing, it installs it, even if the
-    requested package is already installed.
-
-  - pak avoids loading packages from your regular package libraries.
-    These package files would be locked on some systems, and locked
-    packages cannot be updated. pak does not load any package in the
-    main process (except for pak itself). Every pak operation runs in a
-    sub-process, and the packages are loaded from the private library.
+  - Every pak operation runs in a sub-process, and the packages are
+    loaded from the private library. pak avoids loading packages from
+    your regular package libraries. (These package files would be locked
+    on some systems, and locked packages cannot be updated. pak does not
+    load any package in the main process, except for pak itself).
 
   - To avoid updating locked packages, pak warns and requests
     confirmation for loaded packages.
 
+  - Dependency solver. pak makes sure that you end up in a consistent,
+    working state of dependencies. If finds conflicts up front, before
+    attempting installation.
+
 ### Convenient
 
-  - BioC packages. pak supports BioConductor packages out of the box. It
-    uses the BioConductor version that is appropriate for your R
+  - BioC packages. pak supports Bioconductor packages out of the box. It
+    uses the Bioconductor version that is appropriate for your R
     version.
 
   - GitHub packages. pak supports GitHub packages out of the box. It
-    also supports the `Remotes` entry in `DESCRIPTION` files (see
-    e.g. <https://cran.rstudio.com/web/packages/remotes/vignettes/dependencies.html>).
+    also supports the `Remotes` entry in `DESCRIPTION` files, so that
+    GitHub dependencies of GitHub packages will also get installed. See
+    e.g.
+    <https://cran.rstudio.com/web/packages/remotes/vignettes/dependencies.html>.
 
   - Package sizes. For CRAN packages pak shows the total sizes of
     packages it needs to download.
+
+## Roadmap
+
+  - Support GitLab repositories
+  - Support Bitbuckets repositories
+  - Support package URLs
+  - Support system requirements
+  - Support older CRAN package versions
+  - Support older BioConductor package versions
+  - Support GitHub pull requests
+  - Support local CRAN mirrors
+  - Support the `Additional_repositories` `DESCRIPTION` field
+  - Support SVN repos
 
 ## License
 

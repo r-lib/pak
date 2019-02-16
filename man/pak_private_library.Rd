@@ -23,7 +23,6 @@ library, and \code{\link[=pak_cleanup]{pak_cleanup()}} to clean it up.
 }
 \seealso{
 Other pak housekeeping: \code{\link{pak_cleanup}},
-  \code{\link{pak_create_private_lib}},
-  \code{\link{pak_sitrep}}
+  \code{\link{pak_setup}}, \code{\link{pak_sitrep}}
 }
 \concept{pak housekeeping}

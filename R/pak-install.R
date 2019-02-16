@@ -3,7 +3,7 @@
 #'
 #' To avoid interference between your regular R packages and pak's
 #' dependencies, pak works off a private library, which can be created
-#' by `pak_create_private_lib()`.
+#' by `pak_setup()`.
 #'
 #' @param mode Where to get the packages from. "download" will try to
 #'   download them from CRAN. "copy" will try to copy them from your
@@ -15,8 +15,8 @@
 #' @export
 #' @family pak housekeeping
 
-pak_create_private_lib <- function(mode = c("auto", "download", "copy"),
-                                quiet = FALSE) {
+pak_setup <- function(mode = c("auto", "download", "copy"),
+                      quiet = FALSE) {
 
   mode <- match.arg(mode)
 
@@ -27,7 +27,7 @@ pak_create_private_lib <- function(mode = c("auto", "download", "copy"),
       "\n`pak` will create its private package library in",
       "\n`", lib, "`. ",
       "\nIt will try to copy packages from your regular library",
-      "\nSee `?pak_create_private_lib()` for alternatives.\n")
+      "\nSee `?pak_setup()` for alternatives.\n")
 
     ans <- readline("Do you want to continue (Y/n)? ")
     if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
@@ -92,7 +92,7 @@ pak_sitrep <- function() {
 
   } else {
     cat0("! Private library does not exist (create with ",
-         "`pak_create_private_lib()`)\n")
+         "`pak_setup()`)\n")
   }
 
   if (has_lib) {
@@ -112,7 +112,7 @@ pak_sitrep <- function() {
       cat0("* Private library is functional\n")
     } else {
       cat0("! Private library is not functional, re-create with ",
-           "`pak_create_private_lib()`\n")
+           "`pak_setup()`\n")
       print(ret)
     }
   }

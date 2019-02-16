@@ -6,7 +6,7 @@ Description: The goal of 'pak' is to make package installation faster and
     so metadata resolution and package downloads are fast. Metadata and package
     files are cached on the local disk as well. 'pak' has a dependency solver,
     so it finds version conflicts before performing the installation. This
-    version of 'pak' supports CRAN, 'BioConductor' and 'GitHub' packages as well.
+    version of 'pak' supports CRAN, 'Bioconductor' and 'GitHub' packages as well.
 Authors@R: c(
     person("Jim", "Hester", email = "james.f.hester@gmail.com", role = "aut"),
     person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = c("aut", "cre")),

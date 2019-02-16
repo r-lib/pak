@@ -2844,7 +2844,7 @@ type_bioc_matching_bioc_version <- function(r_version) {
   } else if (r_version >= "2.15" && r_version <= "2.16") {
     "2.11"
   } else {
-    stop("Cannot get matching BioConductor version for ", r_version)
+    stop("Cannot get matching Bioconductor version for ", r_version)
   }
 }
 

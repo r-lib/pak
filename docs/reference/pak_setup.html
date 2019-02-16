@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install pak's dependencies into its private library — pak_create_private_lib • pak</title>
+<title>Install pak's dependencies into its private library — pak_setup • pak</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,11 @@
 
 
 
-<meta property="og:title" content="Install pak's dependencies into its private library — pak_create_private_lib" />
+<meta property="og:title" content="Install pak's dependencies into its private library — pak_setup" />
 
 <meta property="og:description" content="To avoid interference between your regular R packages and pak's
 dependencies, pak works off a private library, which can be created
-by pak_create_private_lib()." />
+by pak_setup()." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -105,19 +105,18 @@ by pak_create_private_lib()." />
     <div class="page-header">
     <h1>Install pak's dependencies into its private library</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/pak-install.R'><code>R/pak-install.R</code></a></small>
-    <div class="hidden name"><code>pak_create_private_lib.Rd</code></div>
+    <div class="hidden name"><code>pak_setup.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>To avoid interference between your regular R packages and pak's
 dependencies, pak works off a private library, which can be created
-by <code>pak_create_private_lib()</code>.</p>
+by <code>pak_setup()</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pak_create_private_lib</span>(<span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"auto"</span>, <span class='st'>"download"</span>, <span class='st'>"copy"</span>),
-  <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>pak_setup</span>(<span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"auto"</span>, <span class='st'>"download"</span>, <span class='st'>"copy"</span>), <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
