@@ -112,7 +112,7 @@ All dependencies will be installed as well, to the same library.
 ## Roadmap
 
   - Support GitLab repositories
-  - Support Bitbuckets repositories
+  - Support Bitbucket repositories
   - Support package URLs
   - Support system requirements
   - Support older CRAN package versions
