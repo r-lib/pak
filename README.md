@@ -12,7 +12,7 @@ Installation
 [![Linux Build
 Status](https://travis-ci.org/r-lib/pak.svg?branch=master)](https://travis-ci.org/r-lib/pak)
 [![Windows Build
-status](https://ci.appveyor.com/api/projects/status/4sir94ye38nwgxpx/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pak)
+status](https://ci.appveyor.com/api/projects/status/vu03c1csxutwq1mr/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pak)
 [![](https://www.r-pkg.org/badges/version/pak)](https://cran.r-project.org/package=pak)
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak)
