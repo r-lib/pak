@@ -118,7 +118,7 @@
     
     <p>pak can install packages from various package sources. By default,
 a package name without the specification of its source, refers to a
-CRAN or BioConductor package. pak calls these <em>standard</em> packages.
+CRAN or Bioconductor package. pak calls these <em>standard</em> packages.
 For example:</p><pre>## CRAN package
 pkg_install("glue")
 ## BioC package
@@ -126,7 +126,7 @@ pkg_install("limma")
 </pre>
     <p>When considering a standard package, the calling version of R is used
 to determine the available source and binary packages on CRAN and the
-BioConductor repositories.</p>
+Bioconductor repositories.</p>
 <p>The full specification of standard packages is simply</p><pre>[standard::]&lt;package&gt;
 </pre>
     <p>If you know the exact source of the package, you can also write</p><pre>cran::&lt;package&gt;
@@ -190,7 +190,7 @@ Remotes: `r-lib/glue,
   klutometis/roxygen#142,
   r-lib/testthat@c67018fa4970
 </pre>
-    <p>The CRAN and BioConductor repositories do not support the <code>Remotes</code>
+    <p>The CRAN and Bioconductor repositories do not support the <code>Remotes</code>
 field, so you need to remove this field, before submitting your package
 to either of them.</p>
     

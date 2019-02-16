@@ -20,7 +20,7 @@ get_private_lib <- function(create = TRUE) {
   if (!is.null(l <- pkg_data$private_lib)) return(l)
   if (!is.null(l <- check_private_lib())) return(l)
   if (create) {
-    pak_create_private_lib()
+    pak_setup()
   } else {
     stop("No pak private library")
   }

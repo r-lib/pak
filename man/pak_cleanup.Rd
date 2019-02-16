@@ -22,8 +22,7 @@ in non-interactive mode, you have to specify \code{force = FALSE}.}
 Clean up pak caches and/or the pak library
 }
 \seealso{
-Other pak housekeeping: \code{\link{pak_create_private_lib}},
-  \code{\link{pak_private_library}},
-  \code{\link{pak_sitrep}}
+Other pak housekeeping: \code{\link{pak_private_library}},
+  \code{\link{pak_setup}}, \code{\link{pak_sitrep}}
 }
 \concept{pak housekeeping}
