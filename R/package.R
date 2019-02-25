@@ -205,7 +205,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
-  r <- remotes()$new(pkg, library = lib)
+  r <- pkgdepends::remotes()$new(pkg, library = lib)
 
   ## Solve the dependency graph
   policy <- if (upgrade) "upgrade" else "lazy"
@@ -229,8 +229,8 @@ pkg_install_do_plan <- function(remotes, lib) {
 
   # Get the installation plan and hand it over to pkginstall
   plan <- remotes$get_install_plan()
-  inst <- install_package_plan(plan = plan, lib = lib,
-                               num_workers = num_workers)
+  inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
+                                           num_workers = num_workers)
 
   attr(inst, "total_time") <- Sys.time() - start
   class(inst) <- c("pkg_install_result", class(inst))
@@ -265,7 +265,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
 }
 
 pkg_status_internal <- function(pkg, lib) {
-  st <- lapply(lib, pkgdepends_lib_status, packages = pkg)
+  st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
   do.call(rbind, st)
 }
 
@@ -287,7 +287,7 @@ pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
 }
 
 pkg_remove_internal <- function(pkg, lib) {
-  pr <- parse_remotes(pkg)[[1]]
+  pr <- pkgdepends::parse_remotes(pkg)[[1]]
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }

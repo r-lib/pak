@@ -97,7 +97,7 @@ test_that("remove_refs_from_description", {
   expect_equal(dsc$get_deps()$package, "mypackage")
 
   ## Package is not there
-  remove_refs_from_description(dir, parse_remotes("mypackage2"))
+  remove_refs_from_description(dir, pkgdepends::parse_remotes("mypackage2"))
   dsc2 <- desc::desc(dir)
   expect_equal(dsc2$get_deps()$package, "mypackage")
   expect_equal(dsc2$get_deps()$type, "Imports")
@@ -106,7 +106,7 @@ test_that("remove_refs_from_description", {
   ## Package is there
   dsc$set_dep("mypackage2")
   dsc$write(file = file.path(dir, "DESCRIPTION"))
-  remove_refs_from_description(dir, parse_remotes("mypackage2"))
+  remove_refs_from_description(dir, pkgdepends::parse_remotes("mypackage2"))
   dsc2 <- desc::desc(dir)
   expect_equal(dsc2$get_deps()$package, "mypackage")
   expect_equal(dsc2$get_deps()$type, "Imports")
@@ -114,7 +114,7 @@ test_that("remove_refs_from_description", {
 
   ## Remote ref that refers to package, is removed as well
   add_refs_to_description(dir, "user/mypackage2", FALSE)
-  remove_refs_from_description(dir, parse_remotes("mypackage2"))
+  remove_refs_from_description(dir, pkgdepends::parse_remotes("mypackage2"))
   dsc2 <- desc::desc(dir)
   expect_equal(dsc2$get_deps()$package, "mypackage")
   expect_equal(dsc2$get_deps()$type, "Imports")
@@ -123,7 +123,7 @@ test_that("remove_refs_from_description", {
   ## Remote ref can be removed
   add_refs_to_description(dir, "user/mypackage2", FALSE)
   remove_refs_from_description(
-    dir, parse_remotes("user/mypackage2"))
+    dir, pkgdepends::parse_remotes("user/mypackage2"))
   dsc2 <- desc::desc(dir)
   expect_equal(dsc2$get_deps()$package, "mypackage")
   expect_equal(dsc2$get_deps()$type, "Imports")

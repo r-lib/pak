@@ -159,3 +159,16 @@ testthat_testing <- function() {
 norm_path <- function(x) {
   normalizePath(x, winslash = "/")
 }
+
+drop_nulls <- function(x) {
+  is_null <- vlapply(x, is.null)
+  x[!is_null]
+}
+
+mkdirp <- function(dir, msg = NULL) {
+  s <- vlapply(dir, dir.create, recursive = TRUE, showWarnings = FALSE)
+  if (any(s) && !is.null(msg) && is_verbose()) {
+    cliapp::cli_alert_info("{msg}: {path {format_items(dir[s])}}")
+  }
+  invisible(s)
+}
