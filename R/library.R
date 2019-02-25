@@ -29,5 +29,5 @@ lib_status <- function(lib = .libPaths()[1]) {
 ## ----------------------------------------------------------------------
 
 lib_status_internal <- function(lib) {
-  pkgdepends_lib_status(lib)
+  pkgdepends::lib_status(lib)
 }

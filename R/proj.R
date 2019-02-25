@@ -110,7 +110,7 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
 proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
   dirs <- proj_get_dirs(root)
 
-  r <- remotes()$new(
+  r <- pkgdepends::remotes()$new(
     pkg %||% paste0("deps::", dirs$root), library = dirs$lib,
     config = if (dev) list(dependencies = TRUE) else list())
 
@@ -199,7 +199,7 @@ proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
 proj_remove_internal <-  function(pkg, root, ask) {
   dirs <- proj_get_dirs(root)
-  parsed <- parse_remotes(pkg)
+  parsed <- pkgdepends::parse_remotes(pkg)
   packages <- vcapply(parsed, "[[", "package")
   cliapp::cli_alert("Will {emph remove} {length(pkg)} packages:")
   print_package_list(packages)
@@ -277,7 +277,7 @@ proj_crit <- function() {
 add_refs_to_description <- function(root, refs, optional) {
   dsc <- desc::desc(root)
 
-  parsed <- parse_remotes(refs)
+  parsed <- pkgdepends::parse_remotes(refs)
 
   for (i in seq_along(refs)) {
     ref <- refs[[i]]
@@ -288,7 +288,7 @@ add_refs_to_description <- function(root, refs, optional) {
 
     ## Remove remotes that refer to the same package
     proj_remotes <- dsc$get_remotes()
-    proj_remotes_parsed <- parse_remotes(proj_remotes)
+    proj_remotes_parsed <- pkgdepends::parse_remotes(proj_remotes)
     proj_remotes_pkgs <- vcapply(proj_remotes_parsed, "[[", "package")
     remotes_to_del <- proj_remotes[proj_remotes_pkgs == pkg]
     if (length(remotes_to_del)) dsc$del_remotes(remotes_to_del)
@@ -323,7 +323,7 @@ remove_refs_from_description <- function(root, parsed) {
   ## Remove all refs from Remotes that refer to the one of these
   ## packages
   proj_remotes <- dsc$get_remotes()
-  proj_remotes_parsed <- parse_remotes(proj_remotes)
+  proj_remotes_parsed <- pkgdepends::parse_remotes(proj_remotes)
   proj_remotes_pkgs <- vcapply(proj_remotes_parsed, "[[", "package")
   remotes_to_del <- proj_remotes[proj_remotes_pkgs %in% pkgs]
   if (length(remotes_to_del)) dsc$del_remotes(remotes_to_del)
