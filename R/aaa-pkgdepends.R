@@ -270,6 +270,33 @@ interpret_dependencies <- function(dp) {
   res
 }
 
+progress_chars <- function() {
+  if (is.null(pkg_data$chars)) {
+    if (cli::is_utf8_output()) {
+      pkg_data$chars <- list(
+        build = "\U0001f4e6",
+        inst = "\u2705",
+        lpar = "\u2e28",
+        rpar = "\u2e29",
+        fill = "\u2588",
+        half = "\u2592"
+
+      )
+    } else {
+      pkg_data$chars <- list(
+        build = crayon::bgGreen(" B "),
+        inst = crayon::bgGreen(" I "),
+        lpar = "(",
+        rpar = ")",
+        fill = "#",
+        half = "-"
+      )
+    }
+  }
+
+  pkg_data$chars
+}
+
 remotes__create_progress_bar <- function(self, private, what) {
   if (!is_verbose()) return(NULL)
   bar <- list()

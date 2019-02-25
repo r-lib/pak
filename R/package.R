@@ -229,8 +229,8 @@ pkg_install_do_plan <- function(remotes, lib) {
 
   # Get the installation plan and hand it over to pkginstall
   plan <- remotes$get_install_plan()
-  inst <- install_package_plan(plan = plan, lib = lib,
-                               num_workers = num_workers)
+  inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
+                                           num_workers = num_workers)
 
   attr(inst, "total_time") <- Sys.time() - start
   class(inst) <- c("pkg_install_result", class(inst))

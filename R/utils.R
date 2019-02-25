@@ -159,3 +159,8 @@ testthat_testing <- function() {
 norm_path <- function(x) {
   normalizePath(x, winslash = "/")
 }
+
+drop_nulls <- function(x) {
+  is_null <- vlapply(x, is.null)
+  x[!is_null]
+}
