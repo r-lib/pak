@@ -18,7 +18,7 @@ ByteCompile: true
 RoxygenNote: 6.1.1
 Imports:
     callr (>= 3.0.0.9002),
-    cli (>= 1.0.0),
+    cli (>= 1.0.1),
     cliapp (>= 0.0.0.9002),
     crayon (>= 1.3.4),
     desc (>= 1.2.0),
