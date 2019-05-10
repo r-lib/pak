@@ -27,10 +27,6 @@ print_install_details <- function(sol, lib) {
     cliapp::cli_alert("Will {emph update} {n_upd} packages:")
     print_package_list(sol$ref[upd])
   }
-  if (n_curr + n_noupd) {
-    cliapp::cli_alert("Will {emph not update} {n_curr + n_noupd} packages.")
-    cliapp::cli_text(" ")
-  }
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
 
