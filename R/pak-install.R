@@ -22,24 +22,26 @@ pak_setup <- function(mode = c("auto", "download", "copy"),
 
   lib <- private_lib_dir()
 
-  if (mode == "auto" && !quiet && !testthat_testing()) {
-    message(
-      "\n`pak` will create its private package library in",
-      "\n`", lib, "`. ",
-      "\nIt will try to copy packages from your regular library",
-      "\nSee `?pak_setup()` for alternatives.\n")
+  # Only ask if private library doesn't already exist
+  if (!file.exists(lib)) {
+    if (mode == "auto" && !quiet && !testthat_testing()) {
+      message(
+        "\n`pak` needs to create a private package library in",
+        "\n`", lib, "`. ",
+        "\nIt will try to copy packages from your regular library",
+        "\nSee `?pak_setup()` for alternatives.\n")
 
-    ans <- readline("Do you want to continue (Y/n)? ")
-    if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
+      ans <- readline("Do you want to continue (Y/n)? ")
+      if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
+    }
+
+    dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   }
 
-  if (!quiet) message("\nCreating private lib in `", lib, "`...")
-
   done <- FALSE
-
   if (mode %in% c("auto", "copy")) {
     tryCatch({
-      create_private_lib()
+      create_private_lib(quiet = quiet)
       done <- TRUE
     }, error = function(e) {
       if (mode == "copy") stop(e) else if (!quiet) print(e)
@@ -47,15 +49,9 @@ pak_setup <- function(mode = c("auto", "download", "copy"),
   }
 
   if (!done) {
-    tryCatch({
-      download_private_lib(quiet = quiet)
-      return(invisible())
-    }, error = function(e) {
-      stop(e)
-    })
+    if (!quiet) message("\nInstalling packages into private lib")
+    download_private_lib(quiet = quiet)
   }
-
-  if (!quiet) message("\nCreated private lib in `", lib, "`...")
 
   invisible(lib)
 }
