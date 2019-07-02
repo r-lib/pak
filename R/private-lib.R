@@ -54,7 +54,6 @@ package_needs_update <- function(pkgdir, lib) {
 }
 
 copy_package <- function(from, lib) {
-  message("Copying package `", basename(from), "`")
   file.copy(from, lib, recursive = TRUE)
   pkgdir <- file.path(lib, basename(from))
   hash <- get_package_hash(pkgdir)
@@ -64,7 +63,7 @@ copy_package <- function(from, lib) {
   )
 }
 
-create_private_lib <- function() {
+create_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
   liblock <- lock_private_lib(lib)
@@ -74,6 +73,14 @@ create_private_lib <- function() {
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
   upd <- vlapply(pkg_dirs, package_needs_update, lib = lib)
+
+  if (!quiet && any(upd)) {
+    pkg_names <- basename(pkg_dirs[upd])
+    message(
+      "Copying packages into private lib: ",
+      paste0("`", pkg_names, "`", collapse = ", ")
+    )
+  }
   for(i in which(upd)) copy_package(pkg_dirs[i], lib)
 
   pkg_data$private_lib <- lib
