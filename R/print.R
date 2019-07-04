@@ -57,6 +57,7 @@ print_install_summary <- function(x) {
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
   total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% "???s"
 
+  if (upd + newly == 0) cliapp::cli_alert_success("No changes needed")
   cliapp::cli_alert_success(paste0(
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
