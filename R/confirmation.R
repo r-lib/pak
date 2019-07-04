@@ -1,8 +1,16 @@
 
-print_package_list <- function(x) {
+print_package_list <- function(x, new_version = NULL, old_version = NULL) {
   cliapp::cli_div(
     class = "pkglist",
     theme = list(div.pkglist = list("margin-left" = 2)))
+
+  if (!is.null(new_version) && !is.null(old_version)) {
+    x <- paste0(x, " (", old_version, " ", cli::symbol$arrow_right, " ",
+                new_version, ")")
+  } else if (!is.null(new_version)) {
+    x <- paste0(x, " (", new_version, ")")
+  }
+
   cliapp::cli_text(paste(x, collapse = ", "))
   cliapp::cli_text()
 }
@@ -21,11 +29,11 @@ print_install_details <- function(sol, lib) {
   cliapp::cli_text(" ")
   if (n_newly) {
     cliapp::cli_alert("Will {emph install} {n_newly} packages:")
-    print_package_list(sol$ref[newly])
+    print_package_list(sol$ref[newly], sol$version[newly])
   }
   if (n_upd) {
     cliapp::cli_alert("Will {emph update} {n_upd} packages:")
-    print_package_list(sol$ref[upd])
+    print_package_list(sol$ref[upd], sol$version[upd], sol$old_version[upd])
   }
 
   warn_for_loaded_packages(sol$package[newly | upd], lib)
