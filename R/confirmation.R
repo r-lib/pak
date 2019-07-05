@@ -15,6 +15,14 @@ print_package_list <- function(x, new_version = NULL, old_version = NULL) {
   cliapp::cli_text()
 }
 
+should_ask_confirmation <- function(sol) {
+  # We should ask if at least one of these are true:
+  # - some direct refs are updated (not newly installed!)
+  # - some dependencies are newly installed or updated
+  any(sol$direct & sol$lib_status == "update") ||
+    any((!sol$direct) & sol$lib_status %in% c("new", "update"))
+}
+
 print_install_details <- function(sol, lib) {
   direct <- sum(sol$direct)
   deps <- sum(! sol$direct)
@@ -24,7 +32,11 @@ print_install_details <- function(sol, lib) {
   n_curr  <- sum(curr  <- sol$lib_status == "current")
   n_noupd <- sum(noupd <- sol$lib_status == "no-update")
 
+  # Nothing to do?
   if (! (n_newly + n_upd)) return(FALSE)
+
+  # Should we ask?
+  should_ask <- should_ask_confirmation(sol)
 
   cliapp::cli_text(" ")
   if (n_newly) {
@@ -74,7 +86,7 @@ print_install_details <- function(sol, lib) {
   }
   cliapp::cli_text(" ")
 
-  invisible(TRUE)
+  invisible(should_ask)
 }
 
 get_confirmation <-  function(q, msg = "Aborted.") {
