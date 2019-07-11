@@ -7,6 +7,7 @@ pkg_data <- new.env(parent = emptyenv())
   worker <- Sys.getenv("R_PKG_PKG_WORKER", "")
   if (worker == "") {
     ## In the main process
+    fix_macos_path_in_rstudio()
     try_new_remote_session()
 
   } else if (worker == "true") {

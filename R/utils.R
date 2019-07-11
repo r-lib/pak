@@ -172,3 +172,18 @@ mkdirp <- function(dir, msg = NULL) {
   }
   invisible(s)
 }
+
+fix_macos_path_in_rstudio <- function() {
+  ## Only in RStudio
+  if (Sys.getenv("RSTUDIO") != "1") return()
+  ## Only on macOS
+  if (Sys.info()["sysname"] != "Darwin") return()
+
+  if (!file.exists("/etc/paths")) return()
+
+  path <- Sys.getenv("PATH")
+  new_path <- readLines("/etc/paths", n = 1000)
+  Sys.setenv(PATH = paste0(path, paste(new_path, collapse = ":")))
+
+  invisible()
+}
