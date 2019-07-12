@@ -13,7 +13,7 @@ test_that("proj_install from DESCRIPTION", {
   pkg_data$tmp <- NULL
   plan <- proj_install_make_plan(pkg = NULL, root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time(), dev = FALSE)
-  expect_true(plan)
+  expect_false(plan)
 
   data <- pkg_data$tmp
   expect_s3_class(data$remotes, "remotes")
@@ -60,7 +60,7 @@ test_that("proj_install with new package", {
   plan <- proj_install_make_plan(pkg = c("cli", "cran/pkgconfig@2.0.2"),
                                  root = dir, upgrade = FALSE,
                                  ask = FALSE, start = Sys.time(), dev = FALSE)
-  expect_true(plan)
+  expect_false(plan)
 
   data <- pkg_data$tmp
   expect_s3_class(data$remotes, "remotes")
