@@ -183,7 +183,7 @@ fix_macos_path_in_rstudio <- function() {
 
   path <- Sys.getenv("PATH")
   new_path <- readLines("/etc/paths", n = 1000)
-  Sys.setenv(PATH = paste0(path, paste(new_path, collapse = ":")))
+  Sys.setenv(PATH = paste0(path, ":", paste(new_path, collapse = ":")))
 
   invisible()
 }
