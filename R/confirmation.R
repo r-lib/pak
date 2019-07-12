@@ -16,11 +16,8 @@ print_package_list <- function(x, new_version = NULL, old_version = NULL) {
 }
 
 should_ask_confirmation <- function(sol) {
-  # We should ask if at least one of these are true:
-  # - some direct refs are updated (not newly installed!)
-  # - some dependencies are newly installed or updated
-  any(sol$direct & sol$lib_status == "update") ||
-    any((!sol$direct) & sol$lib_status %in% c("new", "update"))
+  # We should ask if at least one package is updated
+  any(sol$lib_status == "update")
 }
 
 print_install_details <- function(sol, lib) {

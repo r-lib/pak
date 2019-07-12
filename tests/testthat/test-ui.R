@@ -17,7 +17,22 @@ test_that("should_ask_confirmation", {
     # install direct refs, deps are current: no
     tibble::tibble(
       direct = c(TRUE, FALSE, FALSE),
-      lib_status = c("new", "no-update", "current"))
+      lib_status = c("new", "no-update", "current")),
+
+    # install direct ref, newly install dep: no
+    tibble::tibble(
+      direct = c(TRUE, FALSE),
+      lib_status = c("new", "new")),
+
+    # keep direct ref, newly install dep: no
+    tibble::tibble(
+      direct = c(TRUE, FALSE),
+      lib_status = c("current", "new")),
+
+    # keep direct ref, update dep: no
+    tibble::tibble(
+      direct = c(TRUE, FALSE),
+      lib_status = c("current", "new"))
   )
 
   for (x in neg) expect_false(should_ask_confirmation(x))
@@ -31,22 +46,7 @@ test_that("should_ask_confirmation", {
     # install direct ref, update deps: yes
     tibble::tibble(
       direct = c(TRUE, FALSE),
-      lib_status = c("new", "update")),
-
-    # install direct ref, newly install dep: yes
-    tibble::tibble(
-      direct = c(TRUE, FALSE),
-      lib_status = c("new", "new")),
-
-    # keep direct ref, newly install dep: yes
-    tibble::tibble(
-      direct = c(TRUE, FALSE),
-      lib_status = c("current", "new")),
-
-    # keep direct ref, update dep: yes
-    tibble::tibble(
-      direct = c(TRUE, FALSE),
-      lib_status = c("current", "new"))
+      lib_status = c("new", "update"))
   )
 
   for (x in pos) expect_true(should_ask_confirmation(x))
