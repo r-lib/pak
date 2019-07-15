@@ -66,6 +66,67 @@ proj_create_desc <- function(project_root) {
   dsc$write(descfile)
 }
 
+#' Load a project
+#'
+#' It uses [pkgload::load_all()] to load the project, after making sure that
+#' all dependencies of the project are loaded from the private library.
+#'
+#' @param root Project root.
+#' @param ... Additional arguments to pass to [pkgload::load_all()].
+#'
+#' @keywords internal
+
+proj_load <- function(root = ".", ...) {
+
+  libpath <- file.path(root, "r-packages")
+  if (!file.exists(libpath)) {
+    stop("Private library does not exist, call `proj_create()`")
+  }
+  libpath <- normalizePath(libpath)
+  if (! libpath %in% normalizePath(.libPaths())) {
+    stop("Private library is not on the library path, call `proj_create()`")
+  }
+
+  deps <- remote(
+    function(...) {
+      get("proj_get_missing_deps", asNamespace("pak"))(...)
+    },
+    list(root = root))
+
+  missing <- setdiff(deps$deps, deps$private)
+
+  if (length(missing)) {
+    stop("Dependencies missing from private library: ",
+         paste(missing, collapse = ", "), ".")
+  }
+
+  if (length(loaded <- intersect(loadedNamespaces(), deps$deps))) {
+    paths <- vcapply(loaded, getNamespaceInfo, "path")
+    if (any(deleted <- ! file.exists(paths))) {
+      stop("Some loaded dependencies do not exist on disk: ",
+           paste(deleted, collapse = ", "), ".")
+    }
+    paths <- normalizePath(paths)
+    mismatch <- paths != normalizePath(file.path(libpath, loaded))
+    if (any(mismatch)) {
+      stop("Packages already loaded from outside the private library: ",
+           paste(loaded[mismatch], collapse = ", "), ".")
+    }
+  }
+
+  ## TODO: we should not load pkgload here, ideally. But that would require
+  ## big changes in pkgload
+  pkgload::load_all(root, ...)
+}
+
+proj_get_missing_deps <- function(root) {
+  deps <- desc::desc_get_deps(root)
+  status <- lib_status_internal(file.path(root, "r-packages"))
+  list(
+    deps = setdiff(deps$package, base_packages()),
+    private = status$package)
+}
+
 #' Install project dependencies into the project library
 #'
 #' The project library is in `r-packages`, within the project directory.
