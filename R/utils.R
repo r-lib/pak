@@ -187,3 +187,23 @@ fix_macos_path_in_rstudio <- function() {
 
   invisible()
 }
+
+append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
+  lines <- readLines(path)
+  new_cnt <- setdiff(cnt, lines)
+  if (length(new_cnt)) {
+    new_lines <- c(lines, new_cnt)
+    if (!is.null(msg_new)) cliapp::cli_alert_success(msg_new)
+    writeLines(new_lines, path)
+  } else {
+    if (!is.null(msg_done)) cliapp::cli_alert_success(msg_done)
+  }
+  invisible()
+}
+
+try_add_to_git <- function(path) {
+  tryCatch({
+    processx::run("git", c("add", path), timeout = 10)
+    cliapp::cli_alert_success("Add {path {path}} to git.")
+  }, error = function(x) x)
+}

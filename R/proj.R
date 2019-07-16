@@ -33,7 +33,21 @@ proj_create_internal <- function(project_root) {
       cliapp::cli_alert_success("Created {path DESCRIPTION} file.")
     }
     cliapp::cli_alert_success("Created {path .Rprofile} at {path {prof}}.")
+    try_add_to_git(prof)
   }
+
+  git_ignore <- file.path(project_root, ".gitignore")
+  append_union(git_ignore, "/r-packages", "Set up {path .gitignore}.",
+               "{path .gitignore} was already set up.")
+
+  r_build_ignore <- file.path(project_root, ".Rbuildignore")
+  append_union(r_build_ignore, c("^\\.Rprofile$", "^r-packages$"),
+               "Set up {path .Rbuildignore}.",
+               "{path .Rbuildignore} was already set up.")
+
+  cliapp::cli_text(
+    "Project is set up. Call {code pak:::proj_install_dev()} to install ",
+    "all dev dependencies into the project library.")
 }
 
 proj_rprofile <- function() {
