@@ -137,7 +137,7 @@ proj_get_missing_deps <- function(root) {
   deps <- desc::desc_get_deps(root)
   status <- lib_status_internal(file.path(root, "r-packages"))
   list(
-    deps = setdiff(deps$package, base_packages()),
+    deps = setdiff(deps$package, c("R", base_packages())),
     private = status$package)
 }
 
