@@ -27,7 +27,7 @@ convenient.
 
 <p align="center">
 
-<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@master/tools/images/install-2.svg">
+<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@master/tools/images/fast.svg">
 
 </p>
 
