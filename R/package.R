@@ -227,9 +227,9 @@ pkg_install_do_plan <- function(remotes, lib) {
   remotes$download_solution()
   remotes$stop_for_solution_download_error()
 
-  # Get the installation plan and hand it over to pkginstall
+  # Get the installation plan and hand it over to pkgdepends
   plan <- remotes$get_install_plan()
-  inst <- pkginstall::install_package_plan(plan = plan, lib = lib,
+  inst <- pkgdepends::install_package_plan(plan = plan, lib = lib,
                                            num_workers = num_workers)
 
   attr(inst, "total_time") <- Sys.time() - start
