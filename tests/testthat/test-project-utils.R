@@ -10,7 +10,8 @@ test_that("proj_get_dirs", {
 
   expect_equal(norm_path(proj_get_dirs(dir)$root), norm_path(dir))
   expect_equal(
-    norm_path(proj_get_dirs(dir)$lib), norm_path(file.path(dir, "r-packages")))
+    norm_path(proj_get_dirs(dir)$lib),
+    norm_path(file.path(dir, proj_lib_dir())))
   expect_equal(
     norm_path(proj_get_dirs(file.path(dir, "one"))$root), norm_path(dir))
   expect_equal(
