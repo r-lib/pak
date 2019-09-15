@@ -193,10 +193,10 @@ append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
   new_cnt <- setdiff(cnt, lines)
   if (length(new_cnt)) {
     new_lines <- c(lines, new_cnt)
-    if (!is.null(msg_new)) cliapp::cli_alert_success(msg_new)
+    if (!is.null(msg_new)) cliapp::cli_alert_info(msg_new)
     writeLines(new_lines, path)
   } else {
-    if (!is.null(msg_done)) cliapp::cli_alert_success(msg_done)
+    if (!is.null(msg_done)) cliapp::cli_alert_info(msg_done)
   }
   invisible()
 }
@@ -204,6 +204,6 @@ append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
 try_add_to_git <- function(path) {
   tryCatch({
     processx::run("git", c("add", path), timeout = 10)
-    cliapp::cli_alert_success("Add {path {path}} to git.")
+    cliapp::cli_alert_info("Add {path {path}} to git.")
   }, error = function(x) x)
 }
