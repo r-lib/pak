@@ -64,8 +64,10 @@ proj_rprofile <- function() {
         file.path('r-packages', R.version$platform, getRversion()[,1:2]),
         .libPaths())))
       if (file.exists('~/.Rprofile')) source('~/.Rprofile')
-      cat("-> Call `pak:::proj_install_dev()` to install/update dependencies.\n")
-      cat("-> Call `pak:::proj_load()` to load the package.\n")
+      if (interactive()) {
+        cat("-> Call `pak:::proj_install_dev()` to install/update dependencies.\n")
+        cat("-> Call `pak:::proj_load()` to load the package.\n")
+      }
     }))
   )
 }
