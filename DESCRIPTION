@@ -33,7 +33,7 @@ Imports:
     rprojroot (>= 1.3.2),
     utils
 Remotes:
-    r-lib/pkgdepends@feature/better-api
+    r-lib/pkgdepends
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.2)
