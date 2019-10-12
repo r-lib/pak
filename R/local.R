@@ -97,20 +97,21 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 ## Almost the same as a "regular" install, but need to set dependencies
 
 local_install_dev_deps_make_plan <- function(root, lib, upgrade, start) {
-  r <- pkgdepends::remotes()$new(
-    paste0("deps::", root), library = lib,
-    config = list(dependencies = TRUE))
+  prop <- pkgdepends::new_pkg_installation_proposal(
+    paste0("deps::", root),
+    config = list(library = lib, dependencies = TRUE)
+  )
 
-  policy <- if (upgrade) "upgrade" else "lazy"
-  r$solve(policy = policy)
-  r$stop_for_solve_error()
-  pkg_data$tmp <- list(remotes = r, start = start)
-  sol <- r$get_solution()$data
+  prop$set_solve_policy(if (upgrade) "upgrade" else "lazy")
+  prop$solve()
+  prop$stop_for_solution_error()
+  pkg_data$tmp <- list(proposal = prop, start = start)
+  sol <- prop$get_solution()$data
   print_install_details(sol, lib)
 }
 
 ## This is the same as a regular install
 
 local_install_dev_deps_do_plan <- function(lib) {
-  pkg_install_do_plan(remotes = NULL, lib = lib)
+  pkg_install_do_plan(proposal = NULL, lib = lib)
 }

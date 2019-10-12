@@ -203,25 +203,29 @@ proj_install <- function(pkg = NULL, root = ".", upgrade = FALSE,
 proj_install_make_plan <- function(pkg, root, upgrade, ask, start, dev) {
   dirs <- proj_get_dirs(root)
 
-  r <- pkgdepends::remotes()$new(
-    pkg %||% paste0("deps::", dirs$root), library = dirs$lib,
-    config = if (dev) list(dependencies = TRUE) else list())
+  config <- list(library = dirs$lib)
+  if (dev) config$dependencies <- TRUE
 
-  policy <- if (upgrade) "upgrade" else "lazy"
-  r$solve(policy = policy)
-  r$stop_for_solve_error()
+  prop <- pkgdepends::new_pkg_installation_proposal(
+    pkg %||% paste0("deps::", dirs$root),
+    config = config
+  )
+
+  prop$set_solve_policy(if (upgrade) "upgrade" else "lazy")
+  prop$solve()
+  prop$stop_for_solution_error()
 
   pkg_data$tmp <- list(
-    remotes = r, start = start, lib = dirs$lib, root = dirs$root, pkg = pkg)
+    proposal = prop, start = start, lib = dirs$lib, root = dirs$root, pkg = pkg)
 
-  sol <- r$get_solution()$data
+  sol <- prop$get_solution()$data
   print_install_details(sol, dirs$lib)
 }
 
 proj_install_do_plan <- function(optional) {
   tmp <- pkg_data$tmp
 
-  res <- pkg_install_do_plan(remotes = tmp$remotes, lib = tmp$lib)
+  res <- pkg_install_do_plan(proposal = tmp$proposal, lib = tmp$lib)
 
   if (!is.null(tmp$pkg)) {
     add_refs_to_description(tmp$root, tmp$pkg, optional)
@@ -294,7 +298,7 @@ proj_remove <- function(pkg, root = ".", ask = interactive()) {
 
 proj_remove_internal <-  function(pkg, root, ask) {
   dirs <- proj_get_dirs(root)
-  parsed <- pkgdepends::parse_remotes(pkg)
+  parsed <- pkgdepends::parse_pkg_refs(pkg)
   packages <- vcapply(parsed, "[[", "package")
   cliapp::cli_alert("Will {emph remove} {length(pkg)} packages:")
   print_package_list(packages)
@@ -372,7 +376,7 @@ proj_crit <- function() {
 add_refs_to_description <- function(root, refs, optional) {
   dsc <- desc::desc(root)
 
-  parsed <- pkgdepends::parse_remotes(refs)
+  parsed <- pkgdepends::parse_pkg_refs(refs)
 
   for (i in seq_along(refs)) {
     ref <- refs[[i]]
@@ -383,7 +387,7 @@ add_refs_to_description <- function(root, refs, optional) {
 
     ## Remove remotes that refer to the same package
     proj_remotes <- dsc$get_remotes()
-    proj_remotes_parsed <- pkgdepends::parse_remotes(proj_remotes)
+    proj_remotes_parsed <- pkgdepends::parse_pkg_refs(proj_remotes)
     proj_remotes_pkgs <- vcapply(proj_remotes_parsed, "[[", "package")
     remotes_to_del <- proj_remotes[proj_remotes_pkgs == pkg]
     if (length(remotes_to_del)) dsc$del_remotes(remotes_to_del)
@@ -418,7 +422,7 @@ remove_refs_from_description <- function(root, parsed) {
   ## Remove all refs from Remotes that refer to the one of these
   ## packages
   proj_remotes <- dsc$get_remotes()
-  proj_remotes_parsed <- pkgdepends::parse_remotes(proj_remotes)
+  proj_remotes_parsed <- pkgdepends::parse_pkg_refs(proj_remotes)
   proj_remotes_pkgs <- vcapply(proj_remotes_parsed, "[[", "package")
   remotes_to_del <- proj_remotes[proj_remotes_pkgs %in% pkgs]
   if (length(remotes_to_del)) dsc$del_remotes(remotes_to_del)

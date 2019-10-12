@@ -199,36 +199,39 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(remotes = NULL, lib = lib))
+    list(proposal = NULL, lib = lib))
 
   invisible(inst)
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
-  r <- pkgdepends::remotes()$new(pkg, library = lib)
+  prop <- pkgdepends::new_pkg_installation_proposal(
+    pkg,
+    config = list(library = lib)
+  )
 
   ## Solve the dependency graph
-  policy <- if (upgrade) "upgrade" else "lazy"
-  r$solve(policy = policy)
-  r$stop_for_solve_error()
-  pkg_data$tmp <- list(remotes = r, start = start)
-  sol <- r$get_solution()$data
+  prop$set_solve_policy(if (upgrade) "upgrade" else "lazy")
+  prop$solve()
+  prop$stop_for_solution_error()
+  pkg_data$tmp <- list(proposal = prop, start = start)
+  sol <- prop$get_solution()$data
   print_install_details(sol, lib)
 }
 
-pkg_install_do_plan <- function(remotes, lib) {
+pkg_install_do_plan <- function(proposal, lib) {
 
   num_workers <- get_num_workers()
-  remotes <- remotes %||% pkg_data$tmp$remotes
+  proposal <- proposal %||% pkg_data$tmp$proposal
   start  <- pkg_data$tmp$start
   pkg_data$tmp <- NULL
 
   # Actually download packages as needed
-  remotes$download_solution()
-  remotes$stop_for_solution_download_error()
+  proposal$download()
+  proposal$stop_for_download_error()
 
   # Get the installation plan and hand it over to pkgdepends
-  plan <- remotes$get_install_plan()
+  plan <- proposal$get_install_plan()
   inst <- pkgdepends::install_package_plan(plan = plan, lib = lib,
                                            num_workers = num_workers)
 
@@ -287,7 +290,7 @@ pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
 }
 
 pkg_remove_internal <- function(pkg, lib) {
-  pr <- pkgdepends::parse_remotes(pkg)[[1]]
+  pr <- pkgdepends::parse_pkg_ref(pkg)
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }

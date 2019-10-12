@@ -16,8 +16,8 @@ test_that("proj_install from DESCRIPTION", {
   expect_false(plan)
 
   data <- pkg_data$tmp
-  expect_s3_class(data$remotes, "remotes")
-  expect_silent(data$remotes$get_solution())
+  expect_s3_class(data$proposal, "pkg_installation_proposal")
+  expect_silent(data$proposal$get_solution())
   expect_s3_class(data$start, "POSIXct")
   expect_true(file.exists(data$root))
   expect_true(file.exists(data$lib))
@@ -63,8 +63,8 @@ test_that("proj_install with new package", {
   expect_false(plan)
 
   data <- pkg_data$tmp
-  expect_s3_class(data$remotes, "remotes")
-  expect_silent(data$remotes$get_solution())
+  expect_s3_class(data$proposal, "pkg_installation_proposal")
+  expect_silent(data$proposal$get_solution())
   expect_s3_class(data$start, "POSIXct")
   expect_true(file.exists(data$root))
   expect_true(file.exists(data$lib))
