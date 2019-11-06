@@ -96,7 +96,7 @@ All dependencies will be installed as well, to the same library.
   for loaded packages.
 
 * Dependency solver. pak makes sure that you end up in a consistent, working
-  state of dependencies. If finds conflicts up front, before attempting
+  state of dependencies. It finds conflicts up front, before attempting
   installation.
 
 ### Convenient
