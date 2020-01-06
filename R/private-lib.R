@@ -27,6 +27,13 @@ get_private_lib <- function(create = TRUE) {
 }
 
 private_lib_dir <- function()  {
+  mydir <- getNamespaceInfo(asNamespace(.packageName), "path")
+  embedded <- file.path(mydir, "library")
+
+  if (file.exists(embedded)) return(embedded)
+  ppl <- Sys.getenv("PAK_PRIVATE_LIBRARY", NA_character_)
+  if (!is.na(ppl)) return(ppl)
+
   file.path(user_cache_dir("R-pkg"), "lib", get_minor_r_version())
 }
 
@@ -89,16 +96,16 @@ create_private_lib <- function(quiet = FALSE) {
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
-  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
+  pkg_data$deps <- pkg_data$deps %||%
+    lookup_deps(.packageName, lib_path = lib)
   pkgs <- basename(pkg_data$deps)
   if (all(pkgs %in% dir(lib))) lib else NULL
 }
 
 #' @importFrom utils head
 
-lookup_deps <- function(package) {
+lookup_deps <- function(package, lib_path = .libPaths()) {
   path <- getNamespaceInfo(asNamespace(package), "path")
-  lib_path <- .libPaths()
   lib_pkgs <- lapply(lib_path, dir)
   done <- package
   result <- character()
