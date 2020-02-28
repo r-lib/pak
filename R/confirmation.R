@@ -1,6 +1,6 @@
 
 print_package_list <- function(x, new_version = NULL, old_version = NULL) {
-  cliapp::cli_div(
+  cli::cli_div(
     class = "pkglist",
     theme = list(div.pkglist = list("margin-left" = 2)))
 
@@ -11,8 +11,7 @@ print_package_list <- function(x, new_version = NULL, old_version = NULL) {
     x <- paste0(x, " (", new_version, ")")
   }
 
-  cliapp::cli_text(paste(x, collapse = ", "))
-  cliapp::cli_text()
+  cli::cli_text("{x}")
 }
 
 should_ask_confirmation <- function(sol) {
@@ -35,13 +34,12 @@ print_install_details <- function(sol, lib) {
   # Should we ask?
   should_ask <- should_ask_confirmation(sol)
 
-  cliapp::cli_text(" ")
   if (n_newly) {
-    cliapp::cli_alert("Will {emph install} {n_newly} packages:")
+    cli::cli_alert("Will {.emph install} {n_newly} packages:")
     print_package_list(sol$ref[newly], sol$version[newly])
   }
   if (n_upd) {
-    cliapp::cli_alert("Will {emph update} {n_upd} packages:")
+    cli::cli_alert("Will {.emph update} {n_upd} packages:")
     print_package_list(sol$ref[upd], sol$version[upd], sol$old_version[upd])
   }
 
@@ -58,30 +56,29 @@ print_install_details <- function(sol, lib) {
   any_unk <- length(u_dl) > 0
 
   if (n_dl == 0) {
-    cliapp::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
+    cli::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
 
   } else if (n_ch == 0) {
     if (n_dl -  u_dl > 0) {
-      cliapp::cli_alert("Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}).")
+      cli::cli_alert("Will {.emph download} {n_dl - u_dl} CRAN packages ({b_dl}).")
     }
     if (u_dl > 0) {
-      cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+      cli::cli_alert("Will {.emph download} {u_dl} packages with unknown size.")
     }
 
   } else if (!any_unk) {
-    cliapp::cli_alert(
-      "Will {emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+    cli::cli_alert(
+      "Will {.emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
 
   } else {
     if (n_dl - u_dl > 0) {
-      cliapp::cli_alert(
-        "Will {emph download} {n_dl - u_dl} CRAN packages ({b_dl}), cached: {n_ch} ({b_ch}).")
+      cli::cli_alert(
+        "Will {.emph download} {n_dl - u_dl} CRAN packages ({b_dl}), cached: {n_ch} ({b_ch}).")
     }
     if (u_dl > 0) {
-      cliapp::cli_alert("Will {emph download} {u_dl} packages with unknown size.")
+      cli::cli_alert("Will {.emph download} {u_dl} packages with unknown size.")
     }
   }
-  cliapp::cli_text(" ")
 
   invisible(should_ask)
 }

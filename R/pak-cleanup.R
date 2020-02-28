@@ -74,14 +74,14 @@ pak_cleanup_package_cache <- function(force) {
 pak_cleanup_package_cache_print <- function() {
   sum <- pkgcache::pkg_cache_summary()
   size <- prettyunits::pretty_bytes(sum$size)
-  cliapp::cli_alert(
-    "{emph Package cache} is in {path {sum$cachepath}} ({size})")
+  cli::cli_alert(
+    "{.emph Package cache} is in {path {sum$cachepath}} ({size})")
 }
 
 pak_cleanup_package_cache2 <- function() {
   sum <- pkgcache::pkg_cache_summary()
   unlink(sum$cachepath, recursive = TRUE)
-  cliapp::cli_alert_success("Cleaned up package cache")
+  cli::cli_alert_success("Cleaned up package cache")
   invisible()
 }
 
@@ -106,15 +106,15 @@ pak_cleanup_metadata_cache <- function(force) {
 pak_cleanup_metadata_cache_print <- function() {
   sum <- pkgcache::meta_cache_summary()
   size <- prettyunits::pretty_bytes(sum$size)
-  cliapp::cli_alert(
-    "{emph Metadata cache} is in {path {sum$cachepath}} ({size})")
+  cli::cli_alert(
+    "{.emph Metadata cache} is in {path {sum$cachepath}} ({size})")
 }
 
 pak_cleanup_metadata_cache2 <- function() {
   sum <- pkgcache::meta_cache_summary()
   unlink(sum$cachepath, recursive = TRUE)
   unlink(sum$lockfile, recursive = TRUE)
-  cliapp::cli_alert_success("Cleaned up metadata cache")
+  cli::cli_alert_success("Cleaned up metadata cache")
   invisible()
 }
 
@@ -139,13 +139,13 @@ pak_cleanup_lib <- function(force) {
 pak_cleanup_lib_print <- function() {
   lib <- dirname(private_lib_dir())
   num <- viapply(dir(lib, full.names = TRUE), function(x) length(dir(x)))
-  cliapp::cli_alert(
-    "{emph pak library} is in {path {lib}} ({num} packages)")
+  cli::cli_alert(
+    "{.emph pak library} is in {path {lib}} ({num} packages)")
 }
 
 pak_cleanup_lib2 <- function() {
   lib <- dirname(private_lib_dir())
   unlink(lib, recursive = TRUE)
-  cliapp::cli_alert_success("Cleaned up pak library")
+  cli::cli_alert_success("Cleaned up pak library")
   invisible()
 }

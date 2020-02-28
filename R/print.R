@@ -57,12 +57,12 @@ print_install_summary <- function(x) {
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
   total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% "???s"
 
-  if (upd + newly == 0) cliapp::cli_alert_success("No changes needed")
-  cliapp::cli_alert_success(paste0(
+  if (upd + newly == 0) cli::cli_alert_success("No changes needed")
+  cli::cli_alert_success(paste0(
     direct, " + ", deps, " pkgs | ",
     "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
     "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
-    " {timestamp {total_time}}"))
+    " {.timestamp {total_time}}"))
 }
 
 warn_for_loaded_packages <- function(pkgs, lib) {
@@ -74,12 +74,11 @@ warn_for_loaded_packages <- function(pkgs, lib) {
     bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
     bad <- setdiff(bad, "pak")
     if (length(bad)) {
-      cliapp::cli_alert_warning(
+      cli::cli_alert_warning(
         "Package(s) {format_items(bad)} are already loaded, installing \\
-         them may cause problems. Use {code pkgload::unload()} to unload them.",
+         them may cause problems. Use {.code pkgload::unload()} to unload them.",
         wrap = TRUE
       )
-      cliapp::cli_text(" ")
     }
   }
 }
