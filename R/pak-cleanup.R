@@ -75,7 +75,7 @@ pak_cleanup_package_cache_print <- function() {
   sum <- pkgcache::pkg_cache_summary()
   size <- prettyunits::pretty_bytes(sum$size)
   cli::cli_alert(
-    "{.emph Package cache} is in {path {sum$cachepath}} ({size})")
+    "{.emph Package cache} is in {.path {sum$cachepath}} ({size})")
 }
 
 pak_cleanup_package_cache2 <- function() {
@@ -107,7 +107,7 @@ pak_cleanup_metadata_cache_print <- function() {
   sum <- pkgcache::meta_cache_summary()
   size <- prettyunits::pretty_bytes(sum$size)
   cli::cli_alert(
-    "{.emph Metadata cache} is in {path {sum$cachepath}} ({size})")
+    "{.emph Metadata cache} is in {.path {sum$cachepath}} ({size})")
 }
 
 pak_cleanup_metadata_cache2 <- function() {
@@ -140,7 +140,7 @@ pak_cleanup_lib_print <- function() {
   lib <- dirname(private_lib_dir())
   num <- viapply(dir(lib, full.names = TRUE), function(x) length(dir(x)))
   cli::cli_alert(
-    "{.emph pak library} is in {path {lib}} ({num} packages)")
+    "{.emph pak library} is in {.path {lib}} ({num} packages)")
 }
 
 pak_cleanup_lib2 <- function() {

@@ -168,7 +168,7 @@ drop_nulls <- function(x) {
 mkdirp <- function(dir, msg = NULL) {
   s <- vlapply(dir, dir.create, recursive = TRUE, showWarnings = FALSE)
   if (any(s) && !is.null(msg) && is_verbose()) {
-    cli::cli_alert_info("{msg}: {path {format_items(dir[s])}}")
+    cli::cli_alert_info("{msg}: {.path {format_items(dir[s])}}")
   }
   invisible(s)
 }
@@ -204,6 +204,6 @@ append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
 try_add_to_git <- function(path) {
   tryCatch({
     processx::run("git", c("add", path), timeout = 10)
-    cli::cli_alert_info("Add {path {path}} to git.")
+    cli::cli_alert_info("Add {.path {path}} to git.")
   }, error = function(x) x)
 }
