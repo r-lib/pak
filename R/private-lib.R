@@ -30,7 +30,7 @@ private_lib_dir <- function()  {
   mydir <- getNamespaceInfo(asNamespace(.packageName), "path")
   embedded <- file.path(mydir, "library")
 
-  if (file.exists(embedded)) return(embedded)
+  if (file.exists(embedded)) return(c(embedded = embedded))
   ppl <- Sys.getenv("PAK_PRIVATE_LIBRARY", NA_character_)
   if (!is.na(ppl)) return(ppl)
 

@@ -12,3 +12,6 @@
 ^Makefile$
 ^tools$
 ^\.Rprofile$
+^pak_.*\.tgz$
+^pak_.*\.zip$
+^pak_.*\.tar\.gz$
