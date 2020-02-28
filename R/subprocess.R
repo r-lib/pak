@@ -33,10 +33,10 @@ remote <- function(func, args = list()) {
           message = function(mmsg) {
             class(mmsg) <- c("callr_message", "message", "condition")
             signalCondition(mmsg)
-            invokeRestart("muffleMessage")
+            invokeRestart("cli_message_handled")
           }
         )
-        invokeRestart("muffleMessage")
+        invokeRestart("cli_message_handled")
       },
       `__body__`
     )},
@@ -46,8 +46,8 @@ remote <- function(func, args = list()) {
   res <- withCallingHandlers(
     callr_message = function(msg) {
       message(msg)
-      if (!is.null(findRestart("muffleMessage"))) {
-        invokeRestart("muffleMessage")
+      if (!is.null(findRestart("cli_message_handled"))) {
+        invokeRestart("cli_message_handled")
       }
     },
     rs$run_with_output(func2, args)
