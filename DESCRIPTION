@@ -40,7 +40,8 @@ Suggests:
     rprojroot (>= 1.3.2),
     testthat,
     tibble,
-    withr
+    withr,
+    zip
 Remotes:
     r-lib/pkgdepends
 URL: https://pak.r-lib.org/

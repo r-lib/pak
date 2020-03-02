@@ -12,16 +12,8 @@ get_os <- function () {
 }
 
 build_installer <- function() {
-  switch(
-    get_os(),
-    "win" = build_installer_win(),
-    "mac" = build_installer_mac(),
-    "linux" = build_installer_linux(),
-    stop("Unknown OS")
-  )
-}
+  os <- get_os()
 
-build_installer_mac <- function() {
   dir.create(lib <- tempfile())
   on.exit(rimraf(lib), add = TRUE)
 
@@ -45,16 +37,17 @@ build_installer_mac <- function() {
   dsc$del_dep("withr")
   dsc$del_dep("testthat")
   dsc$del_dep("pingr")
+
+  deps <- dsc$get_deps()
+  deps$type[deps$type == "Suggests"] <- "Imports"
+  dsc$set_deps(deps)
   dsc$write(file.path(tmp, "DESCRIPTION"))
 
   cli::cli_h2("Installing dependencies")
   privlib <- file.path(lib, "pak", "library")
   deps <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", tmp),
-    config = list(
-      dependencies = list("Suggests", c("Depends", "Imports", "LinkingTo")),
-      library = privlib
-    )
+    config = list(library = privlib)
   )
   deps$resolve()
   deps$solve()
@@ -70,11 +63,21 @@ build_installer_mac <- function() {
 
   minimize_library(lib)
 
-  pkg_file <- paste0("pak_", dsc$get("Version"), ".tgz")
-  withr::with_dir(
-    lib,
-    utils::tar(pkg_file, files = "pak", tar = "internal", compression = "gzip")
-  )
+  ver <- dsc$get("Version")
+
+  withr::with_dir(lib, {
+    if (os == "mac") {
+      pkg_file <- paste0("pak_", ver, ".tgz")
+      utils::tar(
+        pkg_file, files = "pak", tar = "internal",
+        compression = "gzip")
+    } else if (os == "win") {
+      pkg_file <- paste0("pak_", ver, ".zip")
+      zip::zipr(pkg_file, files = "pak")
+    } else {
+      stop("not yet")
+    }
+  })
 
   file.copy(file.path(lib, pkg_file), pkg_file, overwrite = TRUE)
 
