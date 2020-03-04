@@ -43,6 +43,7 @@ Suggests:
     withr,
     zip
 Remotes:
-    r-lib/pkgdepends
+    r-lib/pkgdepends,
+    r-lib/processx
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

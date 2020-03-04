@@ -23,7 +23,11 @@ build_installer <- function() {
   cli::cli_h2("Installing pak")
   me <- pkgdepends::new_pkg_installation_proposal(
     "local::.",
-    config = list(dependencies = FALSE, library = lib)
+    config = list(
+      dependencies = FALSE,
+      library = lib,
+      `build-vignettes` = FALSE
+    )
   )
   me$resolve()
   me$solve()
@@ -47,7 +51,10 @@ build_installer <- function() {
   privlib <- file.path(lib, "pak", "library")
   deps <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", tmp),
-    config = list(library = privlib)
+    config = list(
+      library = privlib,
+      `build-vignettes` = FALSE
+    )
   )
   deps$resolve()
   deps$solve()
@@ -79,22 +86,25 @@ build_installer <- function() {
     }
   })
 
-  file.copy(file.path(lib, pkg_file), pkg_file, overwrite = TRUE)
+  arch <- R.version$platform
+  rver <- getRversion()
+  major <- paste0(rver$major, ".", rver$minor)
+
+  local <- file.path("bin", arch, major, pkg_file)
+  mkdirp(dirname(local))
+
+  file.copy(file.path(lib, pkg_file), local, overwrite = TRUE)
 
   pkg_file
-}
-
-build_installer_windows <- function() {
-  stop("not yet")
-}
-
-build_installer_linux <- function() {
-  stop("not yet")
 }
 
 rimraf <- function(x) {
   if ("~" %in% x) stop("Cowardly refusing to delete `~`")
   unlink(x, recursive = TRUE, force = TRUE)
+}
+
+mkdirp <- function(x) {
+  dir.create(x, showWarnings = FALSE, recursive = TRUE)
 }
 
 minimize_library <- function(lib) {
@@ -127,3 +137,9 @@ minimize_library <- function(lib) {
   # Remove pak/library/_cache
   rimraf(file.path(lib, "pak", "library", "_cache"))
 }
+
+main <- function() {
+  build_installer()
+}
+
+if (is.null(sys.calls())) main()
