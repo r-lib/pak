@@ -3,8 +3,7 @@
 
 # pak
 
-> A Fresh Approach to R Package
-Installation
+> A Fresh Approach to R Package Installation
 
 <!-- badges: start -->
 
@@ -22,8 +21,7 @@ Status](https://img.shields.io/codecov/c/github/r-lib/pak/master.svg)](https://c
 
 pak installs R packages from CRAN, Bioconductor, GitHub, and local files
 and directories. It is an alternative to `install.packages()` and
-`devtools::install_github()`. pak is fast, safe and
-convenient.
+`devtools::install_github()`. pak is fast, safe and convenient.
 
 <p align="center">
 
@@ -33,7 +31,7 @@ convenient.
 
 ## Installation
 
-Install the package from CRAN:
+Install the released version of the package from CRAN:
 
 ``` r
 install.packages("pak")
@@ -42,6 +40,21 @@ install.packages("pak")
 (After installation, you might also want to run `pak::pak_setup()`;
 it’ll be run automatically when needed but you might want to do it now
 to save some time later.)
+
+Install the development version from our repository on GitHub:
+
+``` r
+install.packages(
+  "pak",
+  repos = "https://r-lib.github.io/p/pak/dev/",
+  type = "binary"
+)
+```
+
+This is currently supported for
+
+  - macOS and R versions 3.4.x, 3.5.x,x and 3.6.x,
+  - Windows and R versions 3.3.x, 3.4.x, 3.5.x, and 3.6.x.
 
 ## Usage
 
@@ -91,7 +104,7 @@ All dependencies will be installed as well, to the same library.
     confirmation for loaded packages.
 
   - Dependency solver. pak makes sure that you end up in a consistent,
-    working state of dependencies. If finds conflicts up front, before
+    working state of dependencies. It finds conflicts up front, before
     attempting installation.
 
 ### Convenient
