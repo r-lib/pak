@@ -295,14 +295,43 @@ pkg_remove_internal <- function(pkg, lib) {
   invisible(pr)
 }
 
-## TODO: pkg_check()
-## Like lib_check(), but for a single package and its dependencies
+#' Draw the dependency tree of a package
+#'
+#' @param pkg Package name or remote package specification to resolve.
+#' @param dependencies Dependency types. Possible values:
+#' - `TRUE`: This means all hard dependencies plus `Suggests` for `pkg`
+#'   and hard dependencies only for dependent packages.
+#' - `FALSE`: no dependencies at all, this does not make too much sense
+#'   for this function.
+#' - `NA` (any atomic type, so `NA_character_`, etc. as well): only hard
+#'   dependencies. See [pkgdepends::pkg_dep_types_hard()].
+#' - If a list with two entries named `direct` and `indirect`, it is taken
+#'   as the requested dependency types, for `pkg` and dependent packages.
+#' - If a character vector, then it is taken as the dependency types
+#'   both for direct installations and dependent packages.
+#' @return A `tree` object from the cli package, see [cli::tree()].
+#'   The tree is also printed to the screen by default
+#'
+#' @export
+#' @examplesIf FALSE
+#' pkg_deps("curl")
+#' pkg_deps("r-lib/fs")
 
-## TODO: pkg_doctor()
-## Like lib_doctor(), but for a single package and its dependencies
+pkg_deps <- function(pkg, dependencies = NULL) {
+  remote(
+    function(...) {
+      get("pkg_deps_internal", asNamespace("pak"))(...)
+    },
+    list(pkg = pkg, dependencies = dependencies)
+  )
+}
 
-## TODO: pkg_update_status()
-## Like lib_status(), but for a single package and its dependencies
-
-## TODO: pkg_update()
-## Like  lib_update(), but for a single package and dependencies
+pkg_deps_internal <- function(pkg, dependencies = NULL) {
+  dir.create(lib <- tempfile())
+  on.exit(rimraf(lib), add = TRUE)
+  config <- list(library = lib)
+  if (!is.null(dependencies)) config$dependencies <- dependencies
+  deps <- pkgdepends::new_pkg_deps(pkg, config = config)
+  deps$solve()
+  deps$draw()
+}

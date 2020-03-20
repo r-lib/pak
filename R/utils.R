@@ -207,3 +207,9 @@ try_add_to_git <- function(path) {
     cli::cli_alert_info("Add {.path {path}} to git.")
   }, error = function(x) x)
 }
+
+rimraf <- function(...) {
+  x <- file.path(...)
+  if ("~" %in% x) stop("Cowardly refusing to delete `~`")
+  unlink(x, recursive = TRUE, force = TRUE)
+}
