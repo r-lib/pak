@@ -7,9 +7,13 @@
 pkg_status(pkg, lib = .libPaths())
 }
 \arguments{
-\item{pkg}{Name of an installed package to display status for.}
+\item{pkg}{Name of one or more installed packages to display status for.}
 
-\item{lib}{One or more library paths to lookup package status in.}
+\item{lib}{One or more library paths to lookup packages status in.}
+}
+\value{
+Data frame (tibble) with data about installations of \code{pkg}.
+Columns include: \code{library}, \code{package}, \code{title}, \code{version}.
 }
 \description{
 Display installed locations of a package
@@ -21,7 +25,9 @@ pkg_status("MASS")
 }
 \seealso{
 Other package functions: 
+\code{\link{lib_status}()},
 \code{\link{pak_package_sources}},
+\code{\link{pkg_deps}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()}
 }

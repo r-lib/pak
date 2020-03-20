@@ -36,3 +36,12 @@ pkg_deps("curl")
 pkg_deps("r-lib/fs")
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other package functions: 
+\code{\link{lib_status}()},
+\code{\link{pak_package_sources}},
+\code{\link{pkg_install}()},
+\code{\link{pkg_remove}()},
+\code{\link{pkg_status}()}
+}
+\concept{package functions}

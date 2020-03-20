@@ -38,7 +38,9 @@ pkg_install("r-lib/pkgconfig")
 }
 \seealso{
 Other package functions: 
+\code{\link{lib_status}()},
 \code{\link{pak_package_sources}},
+\code{\link{pkg_deps}()},
 \code{\link{pkg_remove}()},
 \code{\link{pkg_status}()}
 }

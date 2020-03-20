@@ -249,8 +249,10 @@ pkg_install_do_plan <- function(proposal, lib) {
 
 #' Display installed locations of a package
 #'
-#' @param pkg Name of an installed package to display status for.
-#' @param lib One or more library paths to lookup package status in.
+#' @param pkg Name of one or more installed packages to display status for.
+#' @param lib One or more library paths to lookup packages status in.
+#' @return Data frame (tibble) with data about installations of `pkg`.
+#' Columns include: `library`, `package`, `title`, `version`.
 #'
 #' @export
 #' @family package functions
@@ -267,7 +269,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
     list(pkg = pkg, lib = lib))
 }
 
-pkg_status_internal <- function(pkg, lib) {
+pkg_status_internal <- function(pkg, lib = .libPaths()) {
   st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
   do.call(rbind, st)
 }
