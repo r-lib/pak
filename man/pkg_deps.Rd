@@ -9,19 +9,8 @@ pkg_deps(pkg, dependencies = NULL)
 \arguments{
 \item{pkg}{Package name or remote package specification to resolve.}
 
-\item{dependencies}{Dependency types. Possible values:
-\itemize{
-\item \code{TRUE}: This means all hard dependencies plus \code{Suggests} for \code{pkg}
-and hard dependencies only for dependent packages.
-\item \code{FALSE}: no dependencies at all, this does not make too much sense
-for this function.
-\item \code{NA} (any atomic type, so \code{NA_character_}, etc. as well): only hard
-dependencies. See \code{\link[pkgdepends:pkg_dep_types_hard]{pkgdepends::pkg_dep_types_hard()}}.
-\item If a list with two entries named \code{direct} and \code{indirect}, it is taken
-as the requested dependency types, for \code{pkg} and dependent packages.
-\item If a character vector, then it is taken as the dependency types
-both for direct installations and dependent packages.
-}}
+\item{dependencies}{Dependency types. See
+\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}
 }
 \value{
 A \code{tree} object from the cli package, see \code{\link[cli:tree]{cli::tree()}}.
@@ -40,6 +29,7 @@ pkg_deps("r-lib/fs")
 Other package functions: 
 \code{\link{lib_status}()},
 \code{\link{pak_package_sources}},
+\code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
 \code{\link{pkg_status}()}

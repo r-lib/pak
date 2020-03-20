@@ -300,17 +300,8 @@ pkg_remove_internal <- function(pkg, lib) {
 #' Draw the dependency tree of a package
 #'
 #' @param pkg Package name or remote package specification to resolve.
-#' @param dependencies Dependency types. Possible values:
-#' - `TRUE`: This means all hard dependencies plus `Suggests` for `pkg`
-#'   and hard dependencies only for dependent packages.
-#' - `FALSE`: no dependencies at all, this does not make too much sense
-#'   for this function.
-#' - `NA` (any atomic type, so `NA_character_`, etc. as well): only hard
-#'   dependencies. See [pkgdepends::pkg_dep_types_hard()].
-#' - If a list with two entries named `direct` and `indirect`, it is taken
-#'   as the requested dependency types, for `pkg` and dependent packages.
-#' - If a character vector, then it is taken as the dependency types
-#'   both for direct installations and dependent packages.
+#' @param dependencies Dependency types. See
+#'   [pkgdepends::as_pkg_dependencies()] for possible values.
 #' @return A `tree` object from the cli package, see [cli::tree()].
 #'   The tree is also printed to the screen by default
 #'
@@ -346,4 +337,59 @@ pkg_deps_internal <- function(pkg, dependencies = NULL) {
 
 pkg_list <- function(lib = .libPaths()[1]) {
   lib_status(lib)
+}
+
+#' Download a package and potentially its dependencies as well
+#'
+#' @param pkg Package names or remote package specifications to download.
+#' @param dest_dir Destination directory for the packages. If it does not
+#'   exist, then it will be created.
+#' @param dependencies Dependency types, to download the (recursive)
+#'   dependencies of `pkg` as well. See [pkgdepends::as_pkg_dependencies()]
+#'   for possible values.
+#' @param platforms Types of binary or source packages to download. The
+#'   default is the value of [pkgdepends::default_platforms()].
+#' @param r_versions R version(s) to download packages for. (This does not
+#'   matter for source packages, but it does for binaries.) It defaults to
+#'   the current R version.
+#' @return Data frame (tibble) with information about the downloaded
+#'   packages, invisibly.
+#'
+#' @export
+#' @family package functions
+#' @examplesIf FALSE
+#' pkg_download("forcats")
+#' pkg_download("r-lib/pak", platforms = "source")
+
+pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
+                         platforms = NULL, r_versions = NULL) {
+  args <- list(
+    pkg = pkg,
+    dest_dir = dest_dir,
+    dependencies = dependencies,
+    platforms = platforms,
+    r_versions = r_versions
+  )
+
+  dl <- remote(
+    function(...) {
+      get("pkg_download_internal", asNamespace("pak"))(...)
+    },
+    args
+  )
+
+  invisible(dl)
+}
+
+pkg_download_internal <- function(pkg, dest_dir = ".", dependencies = FALSE,
+                                  platforms = NULL, r_versions = NULL) {
+  mkdirp(dest_dir)
+  config <- list(cache_dir = dest_dir, dependencies = dependencies)
+  if (!is.null(platforms)) config$platforms <- platforms
+  if (!is.null(r_versions)) config$`r-versions` <- r_versions
+  dl <- pkgdepends::new_pkg_download_proposal(pkg, config = config)
+  dl$resolve()
+  dl$download()
+  dl$stop_for_download_error()
+  dl$get_downloads()
 }
