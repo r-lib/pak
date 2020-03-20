@@ -82,7 +82,11 @@ build_installer <- function() {
       pkg_file <- paste0("pak_", ver, ".zip")
       zip::zipr(pkg_file, files = "pak")
     } else {
-      stop("not yet")
+      # curl_4.3_R_x86_64-pc-linux-gnu.tar.gz
+      pkg_file <- paste0("pak_", ver, "_R_x86_64-pc-linux-gnu.tar.gz")
+      utils::tar(
+        pkg_file, files = "pak", tar = "internal",
+        compression = "gzip")
     }
   })
 

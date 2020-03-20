@@ -185,6 +185,10 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   ## In theory we should handle errors in .onLoad...
   pkg_data$ns[[package]] <- pkg_env
   if (".onLoad" %in% names(pkg_env)) {
+    ## We need to change the library temporarily here, so that .onLoad()
+    ## of the package finds the right things
+    lp <- .libPaths()
+    on.exit(.libPaths(lp), add = TRUE)
     withCallingHandlers(
       pkg_env$.onLoad(pkg_dir, package),
       error = function(e) pkg_data$ns[[package]] <<- NULL
