@@ -15,7 +15,10 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
+Roxygen: { library(roxygenlabs); list(markdown = TRUE) }
+Depends:
+    R (>= 3.2)
 Imports:
     callr (>= 3.0.0.9002),
     cli (>= 1.0.1),
@@ -33,9 +36,6 @@ Imports:
     utils
 Remotes:
     r-lib/pkgdepends
-Roxygen: list(markdown = TRUE)
-Depends:
-    R (>= 3.2)
 Suggests:
     covr,
     mockery,

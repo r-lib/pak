@@ -17,8 +17,9 @@ It prints
 }
 }
 \seealso{
-Other pak housekeeping: \code{\link{pak_cleanup}},
-  \code{\link{pak_private_library}},
-  \code{\link{pak_setup}}
+Other pak housekeeping: 
+\code{\link{pak_cleanup}()},
+\code{\link{pak_private_library}},
+\code{\link{pak_setup}()}
 }
 \concept{pak housekeeping}

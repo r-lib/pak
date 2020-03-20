@@ -22,7 +22,9 @@ You can use \code{\link[=pak_sitrep]{pak_sitrep()}} to list the location of the 
 library, and \code{\link[=pak_cleanup]{pak_cleanup()}} to clean it up.
 }
 \seealso{
-Other pak housekeeping: \code{\link{pak_cleanup}},
-  \code{\link{pak_setup}}, \code{\link{pak_sitrep}}
+Other pak housekeeping: 
+\code{\link{pak_cleanup}()},
+\code{\link{pak_setup}()},
+\code{\link{pak_sitrep}()}
 }
 \concept{pak housekeeping}

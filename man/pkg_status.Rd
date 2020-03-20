@@ -20,7 +20,9 @@ pkg_status("MASS")
 }
 }
 \seealso{
-Other package functions: \code{\link{pak_package_sources}},
-  \code{\link{pkg_install}}, \code{\link{pkg_remove}}
+Other package functions: 
+\code{\link{pak_package_sources}},
+\code{\link{pkg_install}()},
+\code{\link{pkg_remove}()}
 }
 \concept{package functions}

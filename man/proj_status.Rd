@@ -18,9 +18,11 @@ installed in the project library.
 Status of packages in the project library
 }
 \seealso{
-Other project functions: \code{\link{proj_create}},
-  \code{\link{proj_install_dev}},
-  \code{\link{proj_install}}, \code{\link{proj_remove}}
+Other project functions: 
+\code{\link{proj_create}()},
+\code{\link{proj_install_dev}()},
+\code{\link{proj_install}()},
+\code{\link{proj_remove}()}
 }
 \concept{project functions}
 \keyword{internal}

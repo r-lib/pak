@@ -4,8 +4,12 @@
 \alias{local_install_deps}
 \title{Install the dependencies of a package tree}
 \usage{
-local_install_deps(root = ".", lib = .libPaths()[1], upgrade = FALSE,
-  ask = interactive())
+local_install_deps(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = FALSE,
+  ask = interactive()
+)
 }
 \arguments{
 \item{root}{Path to the package tree.}
@@ -35,8 +39,9 @@ Note that development (and optional) dependencies, under \code{Suggests} in
 use \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.
 }
 \seealso{
-Other local package trees: \code{\link{local_install_dev_deps}},
-  \code{\link{local_install}},
-  \code{\link{local_package_trees}}
+Other local package trees: 
+\code{\link{local_install_dev_deps}()},
+\code{\link{local_install}()},
+\code{\link{local_package_trees}}
 }
 \concept{local package trees}

@@ -21,8 +21,9 @@ if the package itself is loaded via some other means, e.g.
 \code{devtools::load_all()}, for development.
 }
 \seealso{
-Other local package trees: \code{\link{local_install_deps}},
-  \code{\link{local_install_dev_deps}},
-  \code{\link{local_install}}
+Other local package trees: 
+\code{\link{local_install_deps}()},
+\code{\link{local_install_dev_deps}()},
+\code{\link{local_install}()}
 }
 \concept{local package trees}

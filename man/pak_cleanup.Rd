@@ -4,8 +4,12 @@
 \alias{pak_cleanup}
 \title{Clean up pak caches and/or the pak library}
 \usage{
-pak_cleanup(package_cache = TRUE, metadata_cache = TRUE,
-  pak_lib = TRUE, force = FALSE)
+pak_cleanup(
+  package_cache = TRUE,
+  metadata_cache = TRUE,
+  pak_lib = TRUE,
+  force = FALSE
+)
 }
 \arguments{
 \item{package_cache}{Whether to clean up the cache of package files.}
@@ -22,7 +26,9 @@ in non-interactive mode, you have to specify \code{force = FALSE}.}
 Clean up pak caches and/or the pak library
 }
 \seealso{
-Other pak housekeeping: \code{\link{pak_private_library}},
-  \code{\link{pak_setup}}, \code{\link{pak_sitrep}}
+Other pak housekeeping: 
+\code{\link{pak_private_library}},
+\code{\link{pak_setup}()},
+\code{\link{pak_sitrep}()}
 }
 \concept{pak housekeeping}

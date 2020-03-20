@@ -15,7 +15,9 @@ pkg_remove(pkg, lib = .libPaths()[[1L]])
 Remove installed packages
 }
 \seealso{
-Other package functions: \code{\link{pak_package_sources}},
-  \code{\link{pkg_install}}, \code{\link{pkg_status}}
+Other package functions: 
+\code{\link{pak_package_sources}},
+\code{\link{pkg_install}()},
+\code{\link{pkg_status}()}
 }
 \concept{package functions}

@@ -4,8 +4,12 @@
 \alias{local_install}
 \title{Install a package tree}
 \usage{
-local_install(root = ".", lib = .libPaths()[1], upgrade = FALSE,
-  ask = interactive())
+local_install(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = FALSE,
+  ask = interactive()
+)
 }
 \arguments{
 \item{root}{Path to the package tree.}
@@ -33,8 +37,9 @@ dependencies.
 \code{local_install()} is equivalent to \code{pkg_install("local::.")}.
 }
 \seealso{
-Other local package trees: \code{\link{local_install_deps}},
-  \code{\link{local_install_dev_deps}},
-  \code{\link{local_package_trees}}
+Other local package trees: 
+\code{\link{local_install_deps}()},
+\code{\link{local_install_dev_deps}()},
+\code{\link{local_package_trees}}
 }
 \concept{local package trees}
