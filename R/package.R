@@ -333,5 +333,6 @@ pkg_deps_internal <- function(pkg, dependencies = NULL) {
   if (!is.null(dependencies)) config$dependencies <- dependencies
   deps <- pkgdepends::new_pkg_deps(pkg, config = config)
   deps$solve()
+  deps$stop_for_solution_error()
   deps$draw()
 }
