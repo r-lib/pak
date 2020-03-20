@@ -312,6 +312,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' @return A `tree` object from the cli package, see [cli::tree()].
 #'   The tree is also printed to the screen by default
 #'
+#' @family package functions
 #' @export
 #' @examplesIf FALSE
 #' pkg_deps("curl")
@@ -335,4 +336,12 @@ pkg_deps_internal <- function(pkg, dependencies = NULL) {
   deps$solve()
   deps$stop_for_solution_error()
   deps$draw()
+}
+
+#' @rdname lib_status
+#' @family package functions
+#' @export
+
+pkg_list <- function(lib = .libPaths()[1]) {
+  lib_status(lib)
 }
