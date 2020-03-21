@@ -112,6 +112,10 @@ cat0 <- function(..., sep = "") {
   cat(..., sep = sep)
 }
 
+catln <- function(..., sep = "") {
+  cat(..., "\n", sep = "")
+}
+
 get_num_workers <- function() {
   n <- tryCatch(
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
