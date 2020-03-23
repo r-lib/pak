@@ -37,7 +37,7 @@ Imports:
     utils
 Remotes:
     r-lib/pkgdepends,
-    r-lib/pkgsearch
+    r-hub/pkgsearch
 Suggests:
     covr,
     mockery,
