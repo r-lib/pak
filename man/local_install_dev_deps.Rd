@@ -4,8 +4,12 @@
 \alias{local_install_dev_deps}
 \title{Install all dependencies of a package tree}
 \usage{
-local_install_dev_deps(root = ".", lib = .libPaths()[1],
-  upgrade = FALSE, ask = interactive())
+local_install_dev_deps(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = FALSE,
+  ask = interactive()
+)
 }
 \arguments{
 \item{root}{Path to the package tree.}
@@ -29,8 +33,9 @@ dependencies as well, specified in the \code{Suggests} field of
 \code{DESCRIPTION}.
 }
 \seealso{
-Other local package trees: \code{\link{local_install_deps}},
-  \code{\link{local_install}},
-  \code{\link{local_package_trees}}
+Other local package trees: 
+\code{\link{local_install_deps}()},
+\code{\link{local_install}()},
+\code{\link{local_package_trees}}
 }
 \concept{local package trees}

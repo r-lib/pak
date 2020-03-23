@@ -249,8 +249,10 @@ pkg_install_do_plan <- function(proposal, lib) {
 
 #' Display installed locations of a package
 #'
-#' @param pkg Name of an installed package to display status for.
-#' @param lib One or more library paths to lookup package status in.
+#' @param pkg Name of one or more installed packages to display status for.
+#' @param lib One or more library paths to lookup packages status in.
+#' @return Data frame (tibble) with data about installations of `pkg`.
+#' Columns include: `library`, `package`, `title`, `version`.
 #'
 #' @export
 #' @family package functions
@@ -267,7 +269,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
     list(pkg = pkg, lib = lib))
 }
 
-pkg_status_internal <- function(pkg, lib) {
+pkg_status_internal <- function(pkg, lib = .libPaths()) {
   st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
   do.call(rbind, st)
 }
@@ -295,14 +297,99 @@ pkg_remove_internal <- function(pkg, lib) {
   invisible(pr)
 }
 
-## TODO: pkg_check()
-## Like lib_check(), but for a single package and its dependencies
+#' Draw the dependency tree of a package
+#'
+#' @param pkg Package name or remote package specification to resolve.
+#' @param dependencies Dependency types. See
+#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @return A `tree` object from the cli package, see [cli::tree()].
+#'   The tree is also printed to the screen by default
+#'
+#' @family package functions
+#' @export
+#' @examplesIf FALSE
+#' pkg_deps("curl")
+#' pkg_deps("r-lib/fs")
 
-## TODO: pkg_doctor()
-## Like lib_doctor(), but for a single package and its dependencies
+pkg_deps <- function(pkg, dependencies = NULL) {
+  remote(
+    function(...) {
+      get("pkg_deps_internal", asNamespace("pak"))(...)
+    },
+    list(pkg = pkg, dependencies = dependencies)
+  )
+}
 
-## TODO: pkg_update_status()
-## Like lib_status(), but for a single package and its dependencies
+pkg_deps_internal <- function(pkg, dependencies = NULL) {
+  dir.create(lib <- tempfile())
+  on.exit(rimraf(lib), add = TRUE)
+  config <- list(library = lib)
+  if (!is.null(dependencies)) config$dependencies <- dependencies
+  deps <- pkgdepends::new_pkg_deps(pkg, config = config)
+  deps$solve()
+  deps$stop_for_solution_error()
+  deps$draw()
+}
 
-## TODO: pkg_update()
-## Like  lib_update(), but for a single package and dependencies
+#' @rdname lib_status
+#' @family package functions
+#' @export
+
+pkg_list <- function(lib = .libPaths()[1]) {
+  lib_status(lib)
+}
+
+#' Download a package and potentially its dependencies as well
+#'
+#' @param pkg Package names or remote package specifications to download.
+#' @param dest_dir Destination directory for the packages. If it does not
+#'   exist, then it will be created.
+#' @param dependencies Dependency types, to download the (recursive)
+#'   dependencies of `pkg` as well. See [pkgdepends::as_pkg_dependencies()]
+#'   for possible values.
+#' @param platforms Types of binary or source packages to download. The
+#'   default is the value of [pkgdepends::default_platforms()].
+#' @param r_versions R version(s) to download packages for. (This does not
+#'   matter for source packages, but it does for binaries.) It defaults to
+#'   the current R version.
+#' @return Data frame (tibble) with information about the downloaded
+#'   packages, invisibly.
+#'
+#' @export
+#' @family package functions
+#' @examplesIf FALSE
+#' pkg_download("forcats")
+#' pkg_download("r-lib/pak", platforms = "source")
+
+pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
+                         platforms = NULL, r_versions = NULL) {
+  args <- list(
+    pkg = pkg,
+    dest_dir = dest_dir,
+    dependencies = dependencies,
+    platforms = platforms,
+    r_versions = r_versions
+  )
+
+  dl <- remote(
+    function(...) {
+      get("pkg_download_internal", asNamespace("pak"))(...)
+    },
+    args
+  )
+
+  invisible(dl)
+}
+
+pkg_download_internal <- function(pkg, dest_dir = ".", dependencies = FALSE,
+                                  platforms = NULL, r_versions = NULL) {
+  mkdirp(dest_dir)
+  config <- list(cache_dir = dest_dir, dependencies = dependencies)
+  if (!is.null(platforms)) config$platforms <- platforms
+  if (!is.null(r_versions)) config$`r-versions` <- r_versions
+  dl <- pkgdepends::new_pkg_download_proposal(pkg, config = config)
+  dl$resolve()
+  dl$download()
+  dl$stop_for_download_error()
+  dl$get_downloads()
+}

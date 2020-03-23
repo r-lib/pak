@@ -4,8 +4,7 @@
 \alias{pkg_install}
 \title{Install a package}
 \usage{
-pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-  ask = interactive())
+pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE, ask = interactive())
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.}
@@ -38,7 +37,12 @@ pkg_install("r-lib/pkgconfig")
 }
 }
 \seealso{
-Other package functions: \code{\link{pak_package_sources}},
-  \code{\link{pkg_remove}}, \code{\link{pkg_status}}
+Other package functions: 
+\code{\link{lib_status}()},
+\code{\link{pak_package_sources}},
+\code{\link{pkg_deps}()},
+\code{\link{pkg_download}()},
+\code{\link{pkg_remove}()},
+\code{\link{pkg_status}()}
 }
 \concept{package functions}

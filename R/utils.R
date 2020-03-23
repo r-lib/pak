@@ -112,6 +112,10 @@ cat0 <- function(..., sep = "") {
   cat(..., sep = sep)
 }
 
+catln <- function(..., sep = "") {
+  cat(..., "\n", sep = "")
+}
+
 get_num_workers <- function() {
   n <- tryCatch(
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
@@ -124,8 +128,8 @@ get_num_workers <- function() {
   }
 
   if (is.na(n)) n <- 1L
-  
-  n    
+
+  n
 }
 
 to_package_name <- function(x) {
@@ -206,4 +210,38 @@ try_add_to_git <- function(path) {
     processx::run("git", c("add", path), timeout = 10)
     cli::cli_alert_info("Add {.path {path}} to git.")
   }, error = function(x) x)
+}
+
+rimraf <- function(...) {
+  x <- file.path(...)
+  if ("~" %in% x) stop("Cowardly refusing to delete `~`")
+  unlink(x, recursive = TRUE, force = TRUE)
+}
+
+msg <- function(..., domain = NULL, appendLF = TRUE) {
+  msg <- .makeMessage(..., domain = domain, appendLF = appendLF)
+
+  output <- if (is_interactive()) stdout() else stderr()
+
+  withRestarts(muffleMessage = function() NULL, {
+    signalCondition(simpleMessage(msg))
+    cat(msg, file = output, sep = "")
+  })
+}
+
+is_interactive <- function() {
+  opt <- getOption("rlib_interactive")
+  if (isTRUE(opt)) {
+    TRUE
+  } else if (identical(opt, FALSE)) {
+    FALSE
+  } else if (tolower(getOption("knitr.in.progress", "false")) == "true") {
+    FALSE
+  } else if (tolower(getOption("rstudio.notebook.executing", "false")) == "true") {
+    FALSE
+  } else if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    FALSE
+  } else {
+    interactive()
+  }
 }
