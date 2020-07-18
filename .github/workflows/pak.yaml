@@ -9,4 +9,4 @@ jobs:
     runs-on: macOS-latest
     steps:
      - uses: actions/checkout@v1
-     - uses: ./.github/actions/pak-builder
+     - uses: r-hub/actions/pak-builder@feature/pak-builder
