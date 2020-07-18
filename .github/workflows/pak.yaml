@@ -1,0 +1,12 @@
+on:
+  push:
+    branches: installer
+
+name: pak-builder
+
+jobs:
+  pak:
+    runs-on: macOS-latest
+    steps:
+     - uses: actions/checkout@v1
+     - uses: ./.github/actions/pak-builder

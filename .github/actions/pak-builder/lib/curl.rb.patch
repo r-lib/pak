@@ -1,0 +1,29 @@
+diff --git a/Formula/curl.rb b/Formula/curl.rb
+index 337dbf5b75..52355cf0f4 100644
+--- a/Formula/curl.rb
++++ b/Formula/curl.rb
+@@ -33,6 +33,8 @@ class Curl < Formula
+     system "./buildconf" if build.head?
+
+     args = %W[
++      --enable-static
++      --disable-shared
+       --disable-debug
+       --disable-dependency-tracking
+       --disable-silent-rules
+@@ -40,6 +42,15 @@ class Curl < Formula
+       --with-secure-transport
+       --without-ca-bundle
+       --without-ca-path
++      --without-ssl
++      --disable-ldap
++      --disable-ldaps
++      --with-nghttp2=/usr/local/opt/nghttp2
++      --with-zlib=/usr/local/opt/zlib
++      --enable-ares
++      --without-librtmp
++      --without-libidn2
++      --without-libpsl
+     ]
+
+     system "./configure", *args

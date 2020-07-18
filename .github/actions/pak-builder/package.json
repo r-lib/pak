@@ -1,0 +1,21 @@
+{
+  "name": "pak-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0",
+    "execa": "^4.0.3",
+    "install-rstats": "^1.1.0",
+    "mkdirp": "^1.0.4",
+    "rimraf": "^3.0.2",
+    "temp-dir": "^2.0.0"
+  }
+}

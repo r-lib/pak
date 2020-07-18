@@ -1,0 +1,17 @@
+PKG_CFLAGS=$(C_VISIBILITY) -mmacosx-version-min=10.9
+
+PKG_CPPFLAGS=-DSTRICT_R_HEADERS -mmacosx-version-min=10.9 \
+		-I/usr/local/Cellar/curl/7.70.0/include
+
+PKG_LIBS=-mmacosx-version-min=10.9 \
+		/usr/local/Cellar/curl/7.71.1/lib/libcurl.a \
+		/usr/local/Cellar/brotli/1.0.7/lib/libbrotlidec-static.a \
+		/usr/local/Cellar/brotli/1.0.7/lib/libbrotlicommon-static.a \
+		/usr/local/Cellar/c-ares/1.16.1/lib/libcares.a \
+		/usr/local/Cellar/nghttp2/1.41.0/lib/libnghttp2.a \
+		-framework Security
+
+all: clean
+
+clean:
+		rm -f $(SHLIB) $(OBJECTS)

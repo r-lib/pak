@@ -1,0 +1,5 @@
+name: 'pak builder'
+description: 'Build a pak binary on macOS, Windows or Linux'
+runs:
+  using: 'node12'
+  main: 'index.js'
