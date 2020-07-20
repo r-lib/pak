@@ -1,6 +1,8 @@
+name: Daily pak build
+
 on:
-  push:
-    branches: installer
+  schedule:
+    - cron:  '55 6 * * *'
 
 name: pak-builder
 
