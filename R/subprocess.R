@@ -45,7 +45,11 @@ remote <- function(func, args = list()) {
 
   res <- withCallingHandlers(
     callr_message = function(msg) {
-      message(msg)
+      withRestarts({
+        signalCondition(msg)
+        out <- if (is_interactive() || sink.number() > 0) stdout() else stderr()
+        cat(conditionMessage(msg), file = out, sep = "")
+      }, muffleMessage = function() NULL)
       if (!is.null(findRestart("cli_message_handled"))) {
         invokeRestart("cli_message_handled")
       }
