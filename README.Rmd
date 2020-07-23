@@ -50,17 +50,14 @@ some time later.)
 Install the development version from our repository on GitHub:
 
 ```r
-install.packages(
-  "pak",
-  repos = "https://r-lib.github.io/p/pak/dev/",
-  type = "binary"
-)
+install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 ```
 
 This is currently supported for
 
-* macOS and R versions 3.4.x, 3.5.x,x and 3.6.x,
-* Windows and R versions 3.3.x, 3.4.x, 3.5.x, and 3.6.x.
+* macOS and R 3.3.x or later, including R-devel
+* Windows and R 3.3.x, 3.4.x, 3.5.x, and 3.6.x.
+* Linux (any 64-bit distribution) and R 3.3.x or later, including R-devel
 
 ## Usage
 
