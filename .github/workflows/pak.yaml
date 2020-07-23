@@ -1,16 +1,25 @@
 name: Daily pak build
 
+# For now we build on push, because we can't trigger a built otherwise
 on:
-  schedule:
-    - cron:  '55 6 * * *'
+  push:
 
-name: pak-builder
+# on:
+#   schedule:
+#    - cron:  '55 6 * * *'
 
 jobs:
   pak:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macOS-latest }
+          - { os: ubuntu-latest }
+
     steps:
-     - uses: actions/checkout@v1
-     - uses: r-hub/actions/pak-builder@feature/pak-builder
-       with:
-         token: ${{ secrets.TOKEN }}
+      - uses: actions/checkout@v1
+      - uses: r-hub/actions/pak-builder@feature/pak-builder
+        with:
+          token: ${{ secrets.TOKEN }}
