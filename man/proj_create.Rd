@@ -14,9 +14,11 @@ exist, it will be created.}
 Create a project that has a private package library
 }
 \seealso{
-Other project functions: \code{\link{proj_install_dev}},
-  \code{\link{proj_install}}, \code{\link{proj_remove}},
-  \code{\link{proj_status}}
+Other project functions: 
+\code{\link{proj_install_dev}()},
+\code{\link{proj_install}()},
+\code{\link{proj_remove}()},
+\code{\link{proj_status}()}
 }
 \concept{project functions}
 \keyword{internal}

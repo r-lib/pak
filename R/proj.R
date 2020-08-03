@@ -24,35 +24,35 @@ proj_create_internal <- function(project_root) {
   mkdirp(file.path(project_root, proj_lib_dir()))
   prof <- file.path(project_root, ".Rprofile")
   if (file.exists(prof)) {
-    cliapp::cli_alert_danger(
-      "{path .Rprofile} already exist at {path {prof}}, remove it first")
+    cli::cli_alert_danger(
+      "{.path .Rprofile} already exist at {.path {prof}}, remove it first")
     stop("Could not create .Rprofile, already exists")
   } else {
     writeLines(proj_rprofile(), con = prof)
     descfile <- file.path(project_root, "DESCRIPTION")
     if (file.exists(descfile)) {
-      cliapp::cli_alert_info("{path DESCRIPTION} file already exists.")
+      cli::cli_alert_info("{.path DESCRIPTION} file already exists.")
     } else {
       proj_create_desc(project_root)
-      cliapp::cli_alert_info("Created {path DESCRIPTION} file.")
+      cli::cli_alert_info("Created {.path DESCRIPTION} file.")
     }
-    cliapp::cli_alert_info("Created {path .Rprofile} at {path {prof}}.")
+    cli::cli_alert_info("Created {.path .Rprofile} at {.path {prof}}.")
     try_add_to_git(prof)
   }
 
   git_ignore <- file.path(project_root, ".gitignore")
-  append_union(git_ignore, "/r-packages", "Set up {path .gitignore}.",
-               "{path .gitignore} was already set up.")
+  append_union(git_ignore, "/r-packages", "Set up {.path .gitignore}.",
+               "{.path .gitignore} was already set up.")
 
   r_build_ignore <- file.path(project_root, ".Rbuildignore")
   append_union(r_build_ignore, c("^\\.Rprofile$", "^r-packages$"),
-               "Set up {path .Rbuildignore}.",
-               "{path .Rbuildignore} was already set up.")
+               "Set up {.path .Rbuildignore}.",
+               "{.path .Rbuildignore} was already set up.")
 
-  cliapp::cli_alert_success("Project is set up")
-  cliapp::cli_alert(
-    "Call {code pak:::proj_install_dev()} to install all dev dependencies")
-  cliapp::cli_alert("Call {code pak:::proj_load()} to load the package.")
+  cli::cli_alert_success("Project is set up")
+  cli::cli_alert(
+    "Call {.code pak:::proj_install_dev()} to install all dev dependencies")
+  cli::cli_alert("Call {.code pak:::proj_load()} to load the package.")
 }
 
 proj_rprofile <- function() {
@@ -231,7 +231,7 @@ proj_install_do_plan <- function(optional) {
     add_refs_to_description(tmp$root, tmp$pkg, optional)
   }
 
-  cliapp::cli_alert("Call {code pak:::proj_load()} to (re)load the package")
+  cli::cli_alert("Call {.code pak:::proj_load()} to (re)load the package")
 
   res
 }
@@ -300,7 +300,7 @@ proj_remove_internal <-  function(pkg, root, ask) {
   dirs <- proj_get_dirs(root)
   parsed <- pkgdepends::parse_pkg_refs(pkg)
   packages <- vcapply(parsed, "[[", "package")
-  cliapp::cli_alert("Will {emph remove} {length(pkg)} packages:")
+  cli::cli_alert("Will {.emph remove} {length(pkg)} packages:")
   print_package_list(packages)
   pkg_data$tmp <- list(
     packages = packages, lib = dirs$lib, root = dirs$root, refs = pkg,

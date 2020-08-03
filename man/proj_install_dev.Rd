@@ -26,9 +26,11 @@ Install project dependencies, including development dependencies, into
 private project library
 }
 \seealso{
-Other project functions: \code{\link{proj_create}},
-  \code{\link{proj_install}}, \code{\link{proj_remove}},
-  \code{\link{proj_status}}
+Other project functions: 
+\code{\link{proj_create}()},
+\code{\link{proj_install}()},
+\code{\link{proj_remove}()},
+\code{\link{proj_status}()}
 }
 \concept{project functions}
 \keyword{internal}

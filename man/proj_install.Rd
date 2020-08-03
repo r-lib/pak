@@ -4,8 +4,13 @@
 \alias{proj_install}
 \title{Install project dependencies into the project library}
 \usage{
-proj_install(pkg = NULL, root = ".", upgrade = FALSE,
-  optional = FALSE, ask = interactive())
+proj_install(
+  pkg = NULL,
+  root = ".",
+  upgrade = FALSE,
+  optional = FALSE,
+  ask = interactive()
+)
 }
 \arguments{
 \item{pkg}{Package(s) to install. By default (if \code{NULL}), they are
@@ -33,9 +38,11 @@ packages.
 The project library is in \code{r-packages}, within the project directory.
 }
 \seealso{
-Other project functions: \code{\link{proj_create}},
-  \code{\link{proj_install_dev}},
-  \code{\link{proj_remove}}, \code{\link{proj_status}}
+Other project functions: 
+\code{\link{proj_create}()},
+\code{\link{proj_install_dev}()},
+\code{\link{proj_remove}()},
+\code{\link{proj_status}()}
 }
 \concept{project functions}
 \keyword{internal}

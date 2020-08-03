@@ -23,8 +23,9 @@ dependencies, pak works off a private library, which can be created
 by \code{pak_setup()}.
 }
 \seealso{
-Other pak housekeeping: \code{\link{pak_cleanup}},
-  \code{\link{pak_private_library}},
-  \code{\link{pak_sitrep}}
+Other pak housekeeping: 
+\code{\link{pak_cleanup}()},
+\code{\link{pak_private_library}},
+\code{\link{pak_sitrep}()}
 }
 \concept{pak housekeeping}

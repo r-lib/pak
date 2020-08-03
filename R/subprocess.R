@@ -27,16 +27,16 @@ remote <- function(func, args = list()) {
   func2 <- func
   body(func2) <- substitute({
     withCallingHandlers(
-      cliapp_message = function(msg) {
+      cli_message = function(msg) {
         withCallingHandlers(
-          asNamespace("cliapp")$cli_server_default(msg),
+          asNamespace("cli")$cli_server_default(msg),
           message = function(mmsg) {
             class(mmsg) <- c("callr_message", "message", "condition")
             signalCondition(mmsg)
-            invokeRestart("muffleMessage")
+            invokeRestart("cli_message_handled")
           }
         )
-        invokeRestart("muffleMessage")
+        invokeRestart("cli_message_handled")
       },
       `__body__`
     )},
@@ -45,9 +45,13 @@ remote <- function(func, args = list()) {
 
   res <- withCallingHandlers(
     callr_message = function(msg) {
-      message(msg)
-      if (!is.null(findRestart("muffleMessage"))) {
-        invokeRestart("muffleMessage")
+      withRestarts({
+        signalCondition(msg)
+        out <- if (is_interactive() || sink.number() > 0) stdout() else stderr()
+        cat(conditionMessage(msg), file = out, sep = "")
+      }, muffleMessage = function() NULL)
+      if (!is.null(findRestart("cli_message_handled"))) {
+        invokeRestart("cli_message_handled")
       }
     },
     rs$run_with_output(func2, args)
@@ -67,10 +71,8 @@ new_remote_session <- function(create = TRUE) {
     opts$env, R_PKG_SHOW_PROGRESS = is_verbose(),
     R_PKG_PKG_WORKER = "true",
     R_PKG_PKG_COLORS = as.character(crayon$has_color()),
-    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors()))
-  opts$load_hook <- quote({
-    cliapp::start_app(theme = cliapp::simple_theme())
-  })
+    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors())
+  )
   pkg_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }
 

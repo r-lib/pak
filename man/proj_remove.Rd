@@ -22,9 +22,11 @@ Removes it both from the project library and the \code{DESCRIPTION} file.
 Note that it does not remove dependencies that are not needed any more.
 }
 \seealso{
-Other project functions: \code{\link{proj_create}},
-  \code{\link{proj_install_dev}},
-  \code{\link{proj_install}}, \code{\link{proj_status}}
+Other project functions: 
+\code{\link{proj_create}()},
+\code{\link{proj_install_dev}()},
+\code{\link{proj_install}()},
+\code{\link{proj_status}()}
 }
 \concept{project functions}
 \keyword{internal}
