@@ -27,3 +27,4 @@ jobs:
       - uses: r-hub/actions/pak-builder@feature/pak-builder
         with:
           token: ${{ secrets.TOKEN }}
+          rversions: "3.6, 4.0, devel/4.1"
