@@ -1,5 +1,14 @@
 url: http://pak.r-lib.org
 
+authors:
+  "Jim Hester":
+    href: https://jimhester.com
+
+destination: docs
+
+development:
+  mode: auto
+
 reference:
 - title: Packages
   contents:
