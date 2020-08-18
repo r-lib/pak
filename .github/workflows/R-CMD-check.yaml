@@ -47,16 +47,12 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
+      - uses: r-lib/actions/setup-pandoc@master
+
       - name: Install pak
         run: |
-          # Install pak binary
           install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
-
-          # Install local pak
-          install.packages(".", repos = NULL)
         shell: Rscript {0}
-
-      - uses: r-lib/actions/setup-pandoc@master
 
       - name: Store R version
         run: |
