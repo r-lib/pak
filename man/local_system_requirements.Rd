@@ -4,14 +4,14 @@
 \alias{local_system_requirements}
 \title{Query the system requirements for a dev package (and its dependencies)}
 \usage{
-local_system_requirements(root = ".", os, os_release)
+local_system_requirements(os, os_release, root = ".")
 }
 \arguments{
-\item{root}{Path to the package tree.}
-
 \item{os, os_release}{The operating system and operating system release version, see
 \url{https://github.com/rstudio/r-system-requirements#operating-systems} for the
 list of supported operating systems.}
+
+\item{root}{Path to the package tree.}
 }
 \value{
 A character vector of commands needed to install the system requirements for the package.

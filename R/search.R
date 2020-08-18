@@ -2,11 +2,12 @@
 #' Search CRAN packages
 #'
 #' Search the indexed database of current CRAN packages. It uses the
-#' pkgcache package. See that package for more details and also
-#' [pkgcache::advanced_search()] for pagination, more advanced searching,
+#' pkgsearch package. See that package for more details and also
+#' [pkgsearch::pkg_search()] for pagination, more advanced searching,
 #' etc.
 #'
 #' @param query Search query string.
+#' @param ... Additional arguments passed to [pkgsearch::pkg_search()]
 #' @return A data frame (tibble), that is also a `pak_search_result`
 #' object with a custom print method. To see the underlying table, you
 #' can use `[]` to drop the extra classes. See examples below.

@@ -8,6 +8,8 @@ pkg_search(query, ...)
 }
 \arguments{
 \item{query}{Search query string.}
+
+\item{...}{Additional arguments passed to \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}}}
 }
 \value{
 A data frame (tibble), that is also a \code{pak_search_result}
@@ -16,8 +18,8 @@ can use \verb{[]} to drop the extra classes. See examples below.
 }
 \description{
 Search the indexed database of current CRAN packages. It uses the
-pkgcache package. See that package for more details and also
-\code{\link[pkgcache:advanced_search]{pkgcache::advanced_search()}} for pagination, more advanced searching,
+pkgsearch package. See that package for more details and also
+\code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}} for pagination, more advanced searching,
 etc.
 }
 \examples{
