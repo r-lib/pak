@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">pak</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.2.9001</span>
       </span>
     </div>
 
@@ -91,17 +91,25 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>Install the package from CRAN:</p>
+<p>Install the released version of the package from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"pak"</span>)</pre></div>
 <p>(After installation, you might also want to run <code><a href="reference/pak_setup.html">pak::pak_setup()</a></code>; it’ll be run automatically when needed but you might want to do it now to save some time later.)</p>
+<p>Install the development version from our repository on GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"pak"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="st">"https://r-lib.github.io/p/pak/dev/"</span>)</pre></div>
+<p>This is currently supported for</p>
+<ul>
+<li>macOS and R 3.3.x or later, including R-devel</li>
+<li>Windows and R 3.3.x, 3.4.x, 3.5.x, and 3.6.x.</li>
+<li>Linux (any 64-bit distribution) and R 3.3.x or later, including R-devel</li>
+</ul>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>Call <code><a href="reference/pkg_install.html">pkg_install()</a></code> to install CRAN or Bioconductor packages:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">pak</span><span class="kw ns">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span>(<span class="st">"usethis"</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">pak</span><span class="kw ns">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span>(<span class="st">"usethis"</span>)</pre></div>
 <p>To install GitHub packages, use the <code>user/repo</code> syntax:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">pak</span><span class="kw ns">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span>(<span class="st">"r-lib/usethis"</span>)</pre></div>
+<div class="sourceCode" id="cb4"><pre class="r"><span class="kw pkg">pak</span><span class="kw ns">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span>(<span class="st">"r-lib/usethis"</span>)</pre></div>
 <p>All dependencies will be installed as well, to the same library.</p>
 </div>
 <div id="why-pak" class="section level2">
