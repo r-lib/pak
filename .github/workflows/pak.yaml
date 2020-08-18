@@ -2,7 +2,10 @@ name: Daily pak build
 
 # For now we build on push, because we can't trigger a built otherwise
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - installer
 
 # on:
 #   schedule:
