@@ -122,20 +122,20 @@ requirements for the queried operating system." />
 requirements for the queried operating system.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>local_system_requirements</span>(<span class='kw'>root</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='no'>os</span>, <span class='no'>os_release</span>)</pre>
+    <pre class="usage"><span class='fu'>local_system_requirements</span>(<span class='no'>os</span>, <span class='no'>os_release</span>, <span class='kw'>root</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>root</th>
-      <td><p>Path to the package tree.</p></td>
-    </tr>
-    <tr>
       <th>os, os_release</th>
       <td><p>The operating system and operating system release version, see
 <a href='https://github.com/rstudio/r-system-requirements#operating-systems'>https://github.com/rstudio/r-system-requirements#operating-systems</a> for the
 list of supported operating systems.</p></td>
+    </tr>
+    <tr>
+      <th>root</th>
+      <td><p>Path to the package tree.</p></td>
     </tr>
     </table>
 
