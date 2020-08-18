@@ -29,7 +29,7 @@ and directories. It is an alternative to `install.packages()` and
 
 ## Installation
 
-Install the package from CRAN:
+Install the released version of the package from CRAN:
 
 ``` r
 install.packages("pak")
@@ -38,6 +38,19 @@ install.packages("pak")
 (After installation, you might also want to run `pak::pak_setup()`;
 it’ll be run automatically when needed but you might want to do it now
 to save some time later.)
+
+Install the development version from our repository on GitHub:
+
+``` r
+install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+```
+
+This is currently supported for
+
+  - macOS and R 3.3.x or later, including R-devel
+  - Windows and R 3.3.x, 3.4.x, 3.5.x, and 3.6.x.
+  - Linux (any 64-bit distribution) and R 3.3.x or later, including
+    R-devel
 
 ## Usage
 

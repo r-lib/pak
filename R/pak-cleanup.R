@@ -119,6 +119,9 @@ pak_cleanup_metadata_cache2 <- function() {
 }
 
 pak_cleanup_lib <- function(force) {
+  lib <- private_lib_dir()
+  if (identical(names(lib), "embedded")) return()
+
   if (!force) {
     remote(
       function(...) {
@@ -137,7 +140,11 @@ pak_cleanup_lib <- function(force) {
 }
 
 pak_cleanup_lib_print <- function() {
-  lib <- dirname(private_lib_dir())
+  lib <- private_lib_dir()
+  if (identical(names(lib), "embedded")) {
+    cli::cli_alert("{.emph pak library} is embedded")
+  }
+  lib <- dirname(lib)
   num <- viapply(dir(lib, full.names = TRUE), function(x) length(dir(x)))
   cli::cli_alert(
     "{.emph pak library} is in {.path {lib}} ({num} packages)")
@@ -145,6 +152,8 @@ pak_cleanup_lib_print <- function() {
 
 pak_cleanup_lib2 <- function() {
   lib <- dirname(private_lib_dir())
+  if (identical(names(lib), "embedded")) return()
+
   unlink(lib, recursive = TRUE)
   cli::cli_alert_success("Cleaned up pak library")
   invisible()

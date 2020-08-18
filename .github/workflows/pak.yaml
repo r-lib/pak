@@ -1,0 +1,33 @@
+name: Daily pak build
+
+# For now we build on push, because we can't trigger a built otherwise
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - installer
+
+# on:
+#   schedule:
+#    - cron:  '55 6 * * *'
+
+jobs:
+  pak:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macOS-latest }
+          - { os: ubuntu-latest }
+          - { os: windows-2016 }
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: r-hub/actions/pak-builder@feature/pak-builder
+        with:
+          token: ${{ secrets.TOKEN }}
+          rversions: "3.6, 4.0, devel/4.1"

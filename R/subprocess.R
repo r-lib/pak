@@ -56,7 +56,9 @@ remote <- function(func, args = list()) {
     },
     rs$run_with_output(func2, args)
   )
-  if (!is.null(res$error)) stop(res$error)
+  if (!is.null(res$error)) {
+    err$throw(res$error$parent, parent = res$error$parent$error)
+  }
 
   res$result
 }
@@ -189,8 +191,12 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   ## In theory we should handle errors in .onLoad...
   pkg_data$ns[[package]] <- pkg_env
   if (".onLoad" %in% names(pkg_env)) {
+    if (package == "callr") {
+      px <- pkg_data$ns$processx[["__pkg-dir__"]]
+      Sys.setenv(CALLR_PROCESSX_CLIENT_LIB = px)
+    }
     withCallingHandlers(
-      pkg_env$.onLoad(pkg_dir, package),
+      pkg_env$.onLoad(dirname(pkg_dir), package),
       error = function(e) pkg_data$ns[[package]] <<- NULL
     )
   }

@@ -22,6 +22,11 @@ pak_setup <- function(mode = c("auto", "download", "copy"),
 
   lib <- private_lib_dir()
 
+  if (identical(names(lib), "embedded")) {
+    message("Private library is embedded, pak is ready to go.")
+    return(invisible())
+  }
+
   # Only ask if private library doesn't already exist
   if (!file.exists(lib)) {
     if (mode == "auto" && !quiet && !testthat_testing()) {
@@ -80,36 +85,42 @@ pak_sitrep <- function() {
 
   ## private library location
   lib <- private_lib_dir()
-  cat0("* Private library location:\n- ", lib, "\n")
 
-  ## Whether it exists
-  if (has_lib <- file.exists(lib)) {
-    cat0("* Private library exists.\n")
+  if (identical(names(lib), "embedded")) {
+    cat0("* Pricate library is embedded.\n")
 
   } else {
-    cat0("! Private library does not exist (create with ",
-         "`pak_setup()`)\n")
-  }
+    cat0("* Private library location:\n- ", lib, "\n")
 
-  if (has_lib) {
-    ret <- tryCatch({
-      check_for_private_lib()
-      check_private_lib()
-      new_remote_session(create = FALSE)
-      deps <- utils::packageDescription("pak")$Imports
-      deps <- c("pak", parse_dep_fields(deps))
-      remote(args = list(deps = deps), function(deps) {
-        for (d in deps) library(d, character.only = TRUE)
-      })
-      TRUE
-    }, error = function(e) e )
+    ## Whether it exists
+    if (has_lib <- file.exists(lib)) {
+      cat0("* Private library exists.\n")
 
-    if (isTRUE(ret)) {
-      cat0("* Private library is functional\n")
     } else {
-      cat0("! Private library is not functional, re-create with ",
-           "`pak_setup()`\n")
-      print(ret)
+      cat0("! Private library does not exist (create with ",
+           "`pak_setup()`)\n")
+    }
+
+    if (has_lib) {
+      ret <- tryCatch({
+        check_for_private_lib()
+        check_private_lib()
+        new_remote_session(create = FALSE)
+        deps <- utils::packageDescription("pak")$Imports
+        deps <- c("pak", parse_dep_fields(deps))
+        remote(args = list(deps = deps), function(deps) {
+          for (d in deps) library(d, character.only = TRUE)
+        })
+        TRUE
+      }, error = function(e) e )
+
+      if (isTRUE(ret)) {
+        cat0("* Private library is functional\n")
+      } else {
+        cat0("! Private library is not functional, re-create with ",
+             "`pak_setup()`\n")
+        print(ret)
+      }
     }
   }
 

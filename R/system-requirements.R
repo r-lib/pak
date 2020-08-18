@@ -13,6 +13,12 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @return A character vector of commands needed to install the system requirements for the package.
 #' @export
 local_system_requirements <- function(os, os_release, root = ".") {
+  remote(
+    function(...) asNamespace("pak")$local_system_requirements_internal(...),
+    list(os = os, os_release = os_release, root = root))
+}
+
+local_system_requirements_internal <- function(os, os_release, root = ".") {
   os_versions <- supported_os_versions()
 
   os <- match.arg(os, names(os_versions))
