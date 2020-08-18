@@ -3,27 +3,23 @@
 
 # pak
 
-> A Fresh Approach to R Package
-Installation
+> A Fresh Approach to R Package Installation
 
 <!-- badges: start -->
 
 ![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
-[![Linux Build
-Status](https://travis-ci.org/r-lib/pak.svg?branch=master)](https://travis-ci.org/r-lib/pak)
-[![Windows Build
-status](https://ci.appveyor.com/api/projects/status/vu03c1csxutwq1mr/branch/master?svg=true)](https://ci.appveyor.com/project/gaborcsardi/pak)
 [![](https://www.r-pkg.org/badges/version/pak)](https://cran.r-project.org/package=pak)
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak)
-[![Coverage
-Status](https://img.shields.io/codecov/c/github/r-lib/pak/master.svg)](https://codecov.io/github/r-lib/pak?branch=master)
+[![Codecov test
+coverage](https://codecov.io/gh/r-lib/pak/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/pak?branch=master)
+[![R build
+status](https://github.com/r-lib/pak/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/pak/actions)
 <!-- badges: end -->
 
 pak installs R packages from CRAN, Bioconductor, GitHub, and local files
 and directories. It is an alternative to `install.packages()` and
-`devtools::install_github()`. pak is fast, safe and
-convenient.
+`devtools::install_github()`. pak is fast, safe and convenient.
 
 <p align="center">
 
@@ -91,7 +87,7 @@ All dependencies will be installed as well, to the same library.
     confirmation for loaded packages.
 
   - Dependency solver. pak makes sure that you end up in a consistent,
-    working state of dependencies. If finds conflicts up front, before
+    working state of dependencies. It finds conflicts up front, before
     attempting installation.
 
 ### Convenient
