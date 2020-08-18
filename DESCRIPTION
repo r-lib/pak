@@ -9,7 +9,7 @@ Description: The goal of 'pak' is to make package installation faster and
     version of 'pak' supports CRAN, 'Bioconductor' and 'GitHub' packages as well.
 Authors@R: c(
     person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = c("aut", "cre")),
-    person("Jim", "Hester", email = "james.f.hester@gmail.com", role = "aut"),
+    person("Jim", "Hester", email = "jim.hester@rstudio.com", role = "aut"),
     person("RStudio", role = "cph"))
 License: GPL-3
 Encoding: UTF-8
