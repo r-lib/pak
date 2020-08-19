@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -81,8 +81,8 @@
 <p>A Fresh Approach to R Package Installation</p>
 </blockquote>
 <!-- badges: start -->
-<p><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"><a href="https://cran.r-project.org/package=pak"><img src="https://www.r-pkg.org/badges/version/pak"></a> <a href="https://www.r-pkg.org/pkg/pak"><img src="https://cranlogs.r-pkg.org/badges/pak" alt="CRAN RStudio mirror downloads"></a> <a href="https://codecov.io/gh/r-lib/pak?branch=master"><img src="https://codecov.io/gh/r-lib/pak/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://github.com/r-lib/pak/actions"><img src="https://github.com/r-lib/pak/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <!-- badges: end --></p>
-<p>pak installs R packages from CRAN, Bioconductor, GitHub, and local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
+<p><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"><a href="https://travis-ci.org/r-lib/pak"><img src="https://travis-ci.org/r-lib/pak.svg?branch=master" alt="Linux Build Status"></a> <a href="https://ci.appveyor.com/project/gaborcsardi/pak"><img src="https://ci.appveyor.com/api/projects/status/vu03c1csxutwq1mr/branch/master?svg=true" alt="Windows Build status"></a> <a href="https://cran.r-project.org/package=pak"><img src="https://www.r-pkg.org/badges/version/pak"></a> <a href="https://www.r-pkg.org/pkg/pak"><img src="https://cranlogs.r-pkg.org/badges/pak" alt="CRAN RStudio mirror downloads"></a> <a href="https://codecov.io/github/r-lib/pak?branch=master"><img src="https://img.shields.io/codecov/c/github/r-lib/pak/master.svg" alt="Coverage Status"></a> <!-- badges: end --></p>
+<p>pak installs R packages from CRAN, Bioconductor, GitHub, and local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> and <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github()</a></code>. pak is fast, safe and convenient.</p>
 <p align="center">
 </p>
 <p><img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@master/tools/images/fast.svg"></p>
@@ -123,7 +123,7 @@
 <li><p>Private library (pak’s own package dependencies do not affect your regular package libraries and vice versa).</p></li>
 <li><p>Every pak operation runs in a sub-process, and the packages are loaded from the private library. pak avoids loading packages from your regular package libraries. (These package files would be locked on some systems, and locked packages cannot be updated. pak does not load any package in the main process, except for pak itself).</p></li>
 <li><p>To avoid updating locked packages, pak warns and requests confirmation for loaded packages.</p></li>
-<li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. It finds conflicts up front, before attempting installation.</p></li>
+<li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. If finds conflicts up front, before attempting installation.</p></li>
 </ul>
 </div>
 <div id="convenient" class="section level3">
@@ -181,8 +181,8 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Jim Hester <br><small class="roles"> Author </small>  </li>
+<li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -192,7 +192,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Gábor Csárdi, Jim Hester.</p>
+  <p>Developed by Jim Hester, Gábor Csárdi.</p>
 </div>
 
 <div class="pkgdown">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -130,10 +130,11 @@
 <p>pak can install packages from various package sources. By default,
 a package name without the specification of its source, refers to a
 CRAN or Bioconductor package. pak calls these <em>standard</em> packages.
-For example:<div class="r"></p><pre><span class='co'>## CRAN package</span>
+For example:</p><pre><span class='co'>## CRAN package</span>
 <span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"glue"</span>)
 <span class='co'>## BioC package</span>
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"limma"</span>)</pre><p></div></p>
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"limma"</span>)</pre>
+
 <p>When considering a standard package, the calling version of R is used
 to determine the available source and binary packages on CRAN and the
 Bioconductor repositories.</p>
@@ -151,8 +152,9 @@ bioc::&amp;lt;package&amp;gt;
 
 <p>pak can install packages from GitHub repositories. Any package that
 is specified in the <code>user/repo</code> notation is taken to be a GitHub package.
-For example:<div class="r"></p><pre><span class='co'>## Package from GitHub</span>
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"r-lib/glue"</span>)</pre><p></div></p>
+For example:</p><pre><span class='co'>## Package from GitHub</span>
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"r-lib/glue"</span>)</pre>
+
 <p>The full specification of GitHub packages is</p><pre>[&amp;lt;package&amp;gt;=][github::]&amp;lt;username&amp;gt;/&amp;lt;repo&amp;gt;[/&amp;lt;subdir&amp;gt;]
     [@&amp;lt;committish&amp;gt; | #&amp;lt;pull&amp;gt; | @[*]release]
 
@@ -178,11 +180,13 @@ to a pull request.</p></li>
 
 <p>pak can install packages from package trees. You can either use the
 <code><a href='local_install.html'>local_install()</a></code> function for this, or specify the <code>local::</code> package
-source. E.g. these are equivalent:<div class="r"></p><pre><span class='fu'><a href='local_install.html'>local_install</a></span>(<span class='st'>"/path/to/my/package"</span>)
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"local::/path/to/my/package"</span>)</pre><p></div></p>
+source. E.g. these are equivalent:</p><pre><span class='fu'><a href='local_install.html'>local_install</a></span>(<span class='st'>"/path/to/my/package"</span>)
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"local::/path/to/my/package"</span>)</pre>
+
 <p>The <code>local::</code> form is handy if you want to mix it with other package
 specifications, e.g. to install a local package, and another standard
-package:<div class="r"></p><pre><span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"local://path/to/my/package"</span>, <span class='st'>"testthat"</span>))</pre><p></div></p>
+package:</p><pre><span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"local://path/to/my/package"</span>, <span class='st'>"testthat"</span>))</pre>
+
     <h2 class="hasAnchor" id="the-remotes-field"><a class="anchor" href="#the-remotes-field"></a>The <code>Remotes</code> field</h2>
 
     
@@ -251,13 +255,8 @@ two different packages with the same cannot be installed into an R
 package library.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other package functions: 
-<code><a href='lib_status.html'>lib_status</a>()</code>,
-<code><a href='pkg_deps.html'>pkg_deps</a>()</code>,
-<code><a href='pkg_download.html'>pkg_download</a>()</code>,
-<code><a href='pkg_install.html'>pkg_install</a>()</code>,
-<code><a href='pkg_remove.html'>pkg_remove</a>()</code>,
-<code><a href='pkg_status.html'>pkg_status</a>()</code></p></div>
+    <div class='dont-index'><p>Other package functions: <code><a href='pkg_install.html'>pkg_install</a></code>,
+  <code><a href='pkg_remove.html'>pkg_remove</a></code>, <code><a href='pkg_status.html'>pkg_status</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -270,7 +269,7 @@ package library.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gábor Csárdi, Jim Hester.</p>
+  <p>Developed by Jim Hester, Gábor Csárdi.</p>
 </div>
 
 <div class="pkgdown">

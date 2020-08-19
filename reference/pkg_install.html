@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -120,7 +120,8 @@
     <p>Install a package and its dependencies, into a single package library.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_install</span>(<span class='no'>pkg</span>, <span class='kw'>lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/libPaths.html'>.libPaths</a></span>()<span class='kw'>[[</span><span class='fl'>1L</span>]], <span class='kw'>upgrade</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ask</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>())</pre>
+    <pre class="usage"><span class='fu'>pkg_install</span>(<span class='no'>pkg</span>, <span class='kw'>lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/libPaths.html'>.libPaths</a></span>()<span class='kw'>[[</span><span class='fl'>1L</span>]], <span class='kw'>upgrade</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ask</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,13 +155,8 @@ to the latest available version.</p></td>
     <p>Data frame, with information about the installed package(s).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other package functions: 
-<code><a href='lib_status.html'>lib_status</a>()</code>,
-<code><a href='pak_package_sources.html'>pak_package_sources</a></code>,
-<code><a href='pkg_deps.html'>pkg_deps</a>()</code>,
-<code><a href='pkg_download.html'>pkg_download</a>()</code>,
-<code><a href='pkg_remove.html'>pkg_remove</a>()</code>,
-<code><a href='pkg_status.html'>pkg_status</a>()</code></p></div>
+    <div class='dont-index'><p>Other package functions: <code><a href='pak_package_sources.html'>pak_package_sources</a></code>,
+  <code><a href='pkg_remove.html'>pkg_remove</a></code>, <code><a href='pkg_status.html'>pkg_status</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -181,7 +177,7 @@ to the latest available version.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gábor Csárdi, Jim Hester.</p>
+  <p>Developed by Jim Hester, Gábor Csárdi.</p>
 </div>
 
 <div class="pkgdown">
