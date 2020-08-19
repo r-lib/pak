@@ -8,7 +8,7 @@ test_that("loading package from private lib", {
   gc()
 
   ## Load
-  load_private_package("processx", create = TRUE)
+  load_private_package("processx", "c_", create = TRUE)
   pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
 
   ## Check if loaded
@@ -25,7 +25,7 @@ test_that("cleanup of temp files", {
   gc()
 
   ## Load
-  load_private_package("processx", create = TRUE)
+  load_private_package("processx", "c_", create = TRUE)
   pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
 
   ## Check if loaded

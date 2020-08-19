@@ -78,7 +78,6 @@ jobs:
         run: |
           pak::local_install_dev_deps()
           pak::pkg_install("rcmdcheck")
-          pak::pak_setup()
         shell: Rscript {0}
 
       - name: Session info
