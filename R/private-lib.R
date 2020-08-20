@@ -70,12 +70,25 @@ copy_package <- function(from, lib) {
   )
 }
 
+pak_soft_dependencies <- c(
+  "covr",
+  "mockery",
+  "withr",
+  "testthat",
+  "pingr"
+)
+
 create_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
   liblock <- lock_private_lib(lib)
   on.exit(unlock_private_lib(liblock), add = TRUE)
-  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
+  pkg_data$deps <- pkg_data$deps %||%
+    setdiff(
+      lookup_deps(.packageName, soft = TRUE),
+      pak_soft_dependencies
+    )
+
   pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 
@@ -96,15 +109,24 @@ create_private_lib <- function(quiet = FALSE) {
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
+  if (file.exists(lib)) {
+    lib_path <- lib
+  } else {
+    lib_path <- .libPaths()
+  }
+
   pkg_data$deps <- pkg_data$deps %||%
-    lookup_deps(.packageName, lib_path = lib)
+    setdiff(
+      lookup_deps(.packageName, soft = TRUE),
+      pak_soft_dependencies
+    )
   pkgs <- basename(pkg_data$deps)
   if (all(pkgs %in% dir(lib))) lib else NULL
 }
 
 #' @importFrom utils head
 
-lookup_deps <- function(package, lib_path = .libPaths()) {
+lookup_deps <- function(package, lib_path = .libPaths(), soft = FALSE) {
   path <- getNamespaceInfo(asNamespace(package), "path")
   lib_pkgs <- lapply(lib_path, dir)
   done <- package
@@ -121,7 +143,8 @@ lookup_deps <- function(package, lib_path = .libPaths()) {
   }
 
   while (length(todo)) {
-    new <- unlist(lapply(todo, extract_deps))
+    new <- unlist(lapply(todo, extract_deps, soft = soft))
+    soft <- FALSE
     new <- setdiff(new, done)
     new_paths <- vcapply(new, find_lib)
     result <- unique(c(result, new_paths))
@@ -132,11 +155,12 @@ lookup_deps <- function(package, lib_path = .libPaths()) {
   result
 }
 
-extract_deps <- function(path) {
+extract_deps <- function(path, soft = FALSE) {
   dcf <- read.dcf(file.path(path, "DESCRIPTION"))
   deps <- paste(c(
     if ("Imports" %in% colnames(dcf)) dcf[, "Imports"],
-    if ("Depends" %in% colnames(dcf)) dcf[, "Depends"]
+    if ("Depends" %in% colnames(dcf)) dcf[, "Depends"],
+    if (soft && "Suggests" %in% colnames(dcf)) dcf[, "Suggests"]
   ), collapse = ", ")
 
   parse_dep_fields(deps)
@@ -166,7 +190,7 @@ download_private_lib <- function(quiet = FALSE) {
   l <- lock_private_lib(lib, download = TRUE)
   on.exit(unlock_private_lib(l), add = TRUE)
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
-  pkg_data$deps <- pkg_data$deps %||% lookup_deps("pkg")
+  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
   pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   remotes <- utils::packageDescription(.packageName)$Remotes
