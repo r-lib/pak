@@ -109,12 +109,6 @@ create_private_lib <- function(quiet = FALSE) {
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
-  if (file.exists(lib)) {
-    lib_path <- lib
-  } else {
-    lib_path <- .libPaths()
-  }
-
   pkg_data$deps <- pkg_data$deps %||%
     setdiff(
       lookup_deps(.packageName, soft = TRUE),
