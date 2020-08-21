@@ -120,7 +120,7 @@ pak_cleanup_metadata_cache2 <- function() {
 
 pak_cleanup_lib <- function(force) {
   lib <- private_lib_dir()
-  if (identical(names(lib), "embedded")) return()
+  if (identical(names(lib), "embedded")) return(FALSE)
 
   if (!force) {
     remote(
