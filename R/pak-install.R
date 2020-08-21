@@ -119,7 +119,7 @@ pak_sitrep <- function() {
       } else {
         cat0("! Private library is not functional, re-create with ",
              "`pak_setup()`\n")
-        print(ret)
+        cat0("Error: ", conditionMessage(ret))
       }
     }
   }
