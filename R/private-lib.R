@@ -111,7 +111,7 @@ check_private_lib <- function() {
 
 #' @importFrom utils head
 
-lookup_deps <- function(package, lib_path = .libPaths(), soft = FALSE) {
+lookup_deps <- function(package, lib_path = .libPaths()) {
   path <- getNamespaceInfo(asNamespace(package), "path")
   lib_pkgs <- lapply(lib_path, dir)
   done <- package
@@ -128,8 +128,7 @@ lookup_deps <- function(package, lib_path = .libPaths(), soft = FALSE) {
   }
 
   while (length(todo)) {
-    new <- unlist(lapply(todo, extract_deps, soft = soft))
-    soft <- FALSE
+    new <- unlist(lapply(todo, extract_deps))
     new <- setdiff(new, done)
     new_paths <- vcapply(new, find_lib)
     result <- unique(c(result, new_paths))
@@ -140,12 +139,11 @@ lookup_deps <- function(package, lib_path = .libPaths(), soft = FALSE) {
   result
 }
 
-extract_deps <- function(path, soft = FALSE) {
+extract_deps <- function(path) {
   dcf <- read.dcf(file.path(path, "DESCRIPTION"))
   deps <- paste(c(
     if ("Imports" %in% colnames(dcf)) dcf[, "Imports"],
-    if ("Depends" %in% colnames(dcf)) dcf[, "Depends"],
-    if (soft && "Suggests" %in% colnames(dcf)) dcf[, "Suggests"]
+    if ("Depends" %in% colnames(dcf)) dcf[, "Depends"]
   ), collapse = ", ")
 
   parse_dep_fields(deps)
