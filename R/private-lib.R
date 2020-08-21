@@ -74,7 +74,7 @@ private_lib_packages <- function() {
   path <- getNamespaceInfo(asNamespace(.packageName), "path")
   dcf <- read.dcf(file.path(path, "DESCRIPTION"))
   top_deps <- parse_dep_fields(dcf[, "Config/pak/dependencies"])
-  unique(unlist(lapply(top_deps, lookup_deps)))
+  unique(unlist(lapply(find.package(top_deps), lookup_deps)))
 }
 
 create_private_lib <- function(quiet = FALSE) {
@@ -111,10 +111,9 @@ check_private_lib <- function() {
 
 #' @importFrom utils head
 
-lookup_deps <- function(package, lib_path = .libPaths()) {
-  path <- getNamespaceInfo(asNamespace(package), "path")
+lookup_deps <- function(path, lib_path = .libPaths()) {
   lib_pkgs <- lapply(lib_path, dir)
-  done <- package
+  done <- character()
   result <- character()
   todo <- path
 
@@ -173,7 +172,7 @@ download_private_lib <- function(quiet = FALSE) {
   l <- lock_private_lib(lib, download = TRUE)
   on.exit(unlock_private_lib(l), add = TRUE)
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
-  pkg_data$deps <- pkg_data$deps %||% lookup_deps(.packageName)
+  pkg_data$deps <- pkg_data$deps %||% private_lib_packages()
   pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   remotes <- utils::packageDescription(.packageName)$Remotes
