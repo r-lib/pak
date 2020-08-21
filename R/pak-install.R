@@ -87,7 +87,7 @@ pak_sitrep <- function() {
   lib <- private_lib_dir()
 
   if (identical(names(lib), "embedded")) {
-    cat0("* Pricate library is embedded.\n")
+    cat0("* Private library is embedded.\n")
 
   } else {
     cat0("* Private library location:\n- ", lib, "\n")
