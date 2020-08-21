@@ -70,24 +70,19 @@ copy_package <- function(from, lib) {
   )
 }
 
-pak_soft_dependencies <- c(
-  "covr",
-  "mockery",
-  "withr",
-  "testthat",
-  "pingr"
-)
+private_lib_packages <- function() {
+  path <- getNamespaceInfo(asNamespace(.packageName), "path")
+  dcf <- read.dcf(file.path(path, "DESCRIPTION"))
+  top_deps <- parse_dep_fields(dcf[, "Config/pak/dependencies"])
+  unique(unlist(lapply(top_deps, lookup_deps)))
+}
 
 create_private_lib <- function(quiet = FALSE) {
   lib <- private_lib_dir()
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
   liblock <- lock_private_lib(lib)
   on.exit(unlock_private_lib(liblock), add = TRUE)
-  pkg_data$deps <- pkg_data$deps %||%
-    setdiff(
-      lookup_deps(.packageName, soft = TRUE),
-      pak_soft_dependencies
-    )
+  pkg_data$deps <- pkg_data$deps %||% private_lib_packages()
 
   pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
@@ -109,11 +104,7 @@ create_private_lib <- function(quiet = FALSE) {
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
-  pkg_data$deps <- pkg_data$deps %||%
-    setdiff(
-      lookup_deps(.packageName, soft = TRUE),
-      pak_soft_dependencies
-    )
+  pkg_data$deps <- pkg_data$deps %||% private_lib_packages()
   pkgs <- basename(pkg_data$deps)
   if (all(pkgs %in% dir(lib))) lib else NULL
 }

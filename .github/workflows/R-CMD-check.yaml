@@ -54,13 +54,12 @@ jobs:
           install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
         shell: Rscript {0}
 
-      - name: Store R version
+      - name: store R version
         run: |
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
       - name: Cache R packages
-        if: runner.os != 'Windows'
         uses: actions/cache@v1
         with:
           path: ${{ env.R_LIBS_USER }}
@@ -72,11 +71,9 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-            done < <(Rscript -e 'cat(pak::local_system_requirements("ubuntu", "16.04"), sep = "\n")')
+          done < <(Rscript -e 'cat(pak::local_system_requirements("ubuntu", "16.04"), sep = "\n")')
 
       - name: Install dependencies
-        env:
-          R_PKG_SHOW_PROGRESS: false
         run: |
           pak::local_install_dev_deps()
           pak::pkg_install("rcmdcheck")
