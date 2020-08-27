@@ -38,9 +38,12 @@ remote <- function(func, args = list()) {
         )
         invokeRestart("cli_message_handled")
       },
-      `__body__`
+      {
+        options(pkg.show_progress = `__verbosity__`)
+        `__body__`
+      }
     )},
-    list("__body__" = body(func))
+    list("__body__" = body(func), "__verbosity__" = is_verbose())
   )
 
   res <- withCallingHandlers(
