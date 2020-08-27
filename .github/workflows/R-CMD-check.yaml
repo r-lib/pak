@@ -75,6 +75,8 @@ jobs:
             done < <(Rscript -e 'cat(pak::local_system_requirements("ubuntu", "16.04"), sep = "\n")')
 
       - name: Install dependencies
+        env:
+          R_PKG_SHOW_PROGRESS: false
         run: |
           pak::local_install_dev_deps()
           pak::pkg_install("rcmdcheck")
