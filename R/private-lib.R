@@ -70,11 +70,11 @@ copy_package <- function(from, lib) {
   )
 }
 
-private_lib_packages <- function(lib) {
+private_lib_packages <- function(lib = .libPaths()) {
   path <- getNamespaceInfo(asNamespace(.packageName), "path")
   dcf <- read.dcf(file.path(path, "DESCRIPTION"))
   top_deps <- parse_dep_fields(dcf[, "Config/pak/dependencies"])
-  unique(unlist(lapply(find.package(top_deps, lib.loc = lib), lookup_deps, lib)))
+  unique(unlist(lapply(top_deps, lookup_deps, lib)))
 }
 
 create_private_lib <- function(quiet = FALSE) {
@@ -82,7 +82,7 @@ create_private_lib <- function(quiet = FALSE) {
   if (!is.null(pkg_data$remote)) pkg_data$remote$kill()
   liblock <- lock_private_lib(lib)
   on.exit(unlock_private_lib(liblock), add = TRUE)
-  pkg_data$deps <- pkg_data$deps %||% private_lib_packages(lib)
+  pkg_data$deps <- pkg_data$deps %||% private_lib_packages()
 
   pkg_dirs <- pkg_data$deps
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
@@ -104,18 +104,26 @@ create_private_lib <- function(quiet = FALSE) {
 
 check_private_lib <- function() {
   lib <- private_lib_dir()
-  pkg_data$deps <- pkg_data$deps %||% private_lib_packages(lib)
+
+  deps <- try(pkg_data$deps %||% private_lib_packages(lib), silent = TRUE)
+
+  if (inherits(deps, "try-error")) {
+    return(NULL)
+  }
+
+  pkg_data$deps <- deps
+
   pkgs <- basename(pkg_data$deps)
+
   if (all(pkgs %in% dir(lib))) lib else NULL
 }
 
 #' @importFrom utils head
 
-lookup_deps <- function(path, lib_path = .libPaths()) {
+lookup_deps <- function(pkg, lib_path = .libPaths()) {
   lib_pkgs <- lapply(lib_path, dir)
   done <- character()
   result <- character()
-  todo <- path
 
   ## TODO: check for version requirements
   find_lib <- function(pkg) {
@@ -125,6 +133,8 @@ lookup_deps <- function(path, lib_path = .libPaths()) {
     }
     file.path(lib_path[w], pkg)
   }
+
+  todo <- find_lib(pkg)
 
   while (length(todo)) {
     new <- unlist(lapply(todo, extract_deps))
