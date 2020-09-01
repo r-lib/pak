@@ -68,7 +68,7 @@ remote <- function(func, args = list()) {
     print(res$error$parent$error)
     opts <- options(show.error.messages = FALSE)
     on.exit(options(opts), add = TRUE)
-    stop(res$error$parent$error)
+    err$throw(res$error$parent$error)
   }
 
   res$result
