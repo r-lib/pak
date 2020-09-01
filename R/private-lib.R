@@ -122,8 +122,6 @@ check_private_lib <- function() {
 
 lookup_deps <- function(pkg, lib_path = .libPaths()) {
   lib_pkgs <- lapply(lib_path, dir)
-  done <- character()
-  result <- character()
 
   ## TODO: check for version requirements
   find_lib <- function(pkg) {
@@ -134,7 +132,9 @@ lookup_deps <- function(pkg, lib_path = .libPaths()) {
     file.path(lib_path[w], pkg)
   }
 
+  result <- find_lib(pkg)
   todo <- find_lib(pkg)
+  done <- character()
 
   while (length(todo)) {
     new <- unlist(lapply(todo, extract_deps))
