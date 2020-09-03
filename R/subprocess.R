@@ -39,7 +39,7 @@ remote <- function(func, args = list()) {
           invokeRestart("cli_message_handled")
         },
         error = function(e) {
-          e$formatted_message <- format(e)
+          e$formatted_message <- capture.output(print(e))
           class(e) <- c("pak_error", class(e))
           stop(e)
         },
@@ -65,10 +65,7 @@ remote <- function(func, args = list()) {
     rs$run_with_output(func2, args)
   )
   if (!is.null(res$error)) {
-    print(res$error$parent$error)
-    opts <- options(show.error.messages = FALSE)
-    on.exit(options(opts), add = TRUE)
-    stop(res$error$parent$error)
+    err$rethrow(stop(res$error$parent$error), res$error$parent)
   }
 
   res$result
