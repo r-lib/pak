@@ -26,24 +26,29 @@ remote <- function(func, args = list()) {
 
   func2 <- func
   body(func2) <- substitute({
-    withCallingHandlers(
-      cli_message = function(msg) {
-        withCallingHandlers(
-          asNamespace("cli")$cli_server_default(msg),
-          message = function(mmsg) {
-            class(mmsg) <- c("callr_message", "message", "condition")
-            signalCondition(mmsg)
-            invokeRestart("cli_message_handled")
-          }
-        )
-        invokeRestart("cli_message_handled")
-      },
-      {
-        options(pkg.show_progress = `__verbosity__`)
-        `__body__`
-      }
-    )},
-    list("__body__" = body(func), "__verbosity__" = is_verbose())
+      withCallingHandlers(
+        cli_message = function(msg) {
+          withCallingHandlers(
+            asNamespace("cli")$cli_server_default(msg),
+            message = function(mmsg) {
+              class(mmsg) <- c("callr_message", "message", "condition")
+              signalCondition(mmsg)
+              invokeRestart("cli_message_handled")
+            }
+          )
+          invokeRestart("cli_message_handled")
+        },
+        error = function(e) {
+          e$formatted_message <- capture.output(print(e))
+          class(e) <- c("pak_error", class(e))
+          stop(e)
+        },
+        {
+          options(pkg.show_progress = `__verbosity__`)
+          `__body__`
+        }
+      )
+    }, list("__body__" = body(func), "__verbosity__" = is_verbose())
   )
 
   res <- withCallingHandlers(
@@ -60,10 +65,15 @@ remote <- function(func, args = list()) {
     rs$run_with_output(func2, args)
   )
   if (!is.null(res$error)) {
-    err$throw(res$error$parent, parent = res$error$parent$error)
+    err$rethrow(stop(res$error$parent$error), res$error$parent)
   }
 
   res$result
+}
+
+#' @export
+print.pak_error <- function(x, ...) {
+  cat(x$formatted_message, sep = "\n")
 }
 
 new_remote_session <- function(create = TRUE) {
