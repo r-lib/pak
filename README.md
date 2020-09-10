@@ -48,7 +48,7 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 This is currently supported for
 
   - macOS and R 3.3.x or later, including R-devel
-  - Windows and R 3.3.x, 3.4.x, 3.5.x, and 3.6.x.
+  - Windows and R 3.3.x or later, including R-devel
   - Linux (any 64-bit distribution) and R 3.3.x or later, including
     R-devel
 
