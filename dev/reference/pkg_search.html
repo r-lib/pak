@@ -126,7 +126,7 @@ pkgsearch package. See that package for more details and also
 etc.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_search</span>(<span class='no'>query</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>pkg_search</span>(<span class='kw'>query</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,14 +148,15 @@ object with a custom print method. To see the underlying table, you
 can use <code>[]</code> to drop the extra classes. See examples below.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Simple search</span>
 <span class='fu'>pkg_search</span>(<span class='st'>"survival"</span>)
 
 <span class='co'># See the underlying tibble</span>
-<span class='no'>psro</span> <span class='kw'>&lt;-</span> <span class='fu'>pkg_search</span>(<span class='st'>"ropensci"</span>)
-<span class='no'>psro</span>[]
-}) <span class='co'># examplesIf</span></div></pre>
+<span class='kw'>psro</span> <span class='op'>&lt;-</span> <span class='fu'>pkg_search</span>(<span class='st'>"ropensci"</span>)
+<span class='kw'>psro</span>[]
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -171,7 +172,7 @@ can use <code>[]</code> to drop the extra classes. See examples below.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

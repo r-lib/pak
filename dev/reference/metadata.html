@@ -124,11 +124,11 @@ See the pkgcache package if you need for control over the metadata cache.</p>
 
     <pre class="usage"><span class='fu'>meta_summary</span>()
 
-<span class='fu'>meta_list</span>(<span class='kw'>pkg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>meta_list</span>(pkg = <span class='kw'>NULL</span>)
 
 <span class='fu'>meta_update</span>()
 
-<span class='fu'>meta_clean</span>(<span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>meta_clean</span>(force = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,24 +171,25 @@ to make sure that they use the latest available metadata.</p>
 <p><code>meta_clean()</code> deletes the whole metadata DB.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Metadata cache summary</span>
 <span class='fu'>meta_cummary</span>()
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># The current metadata DB</span>
 <span class='fu'>meta_list</span>()
 <span class='co'># Selected packages only</span>
-<span class='fu'>meta_list</span>(<span class='kw'>pkg</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"shiny"</span>, <span class='st'>"htmlwidgets"</span>))
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+<span class='fu'>meta_list</span>(pkg = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"shiny"</span>, <span class='st'>"htmlwidgets"</span>))
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Update the metadata DB</span>
 <span class='fu'>meta_update</span>()
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Delete the metadata DB</span>
 <span class='fu'>meta_clean</span>()
-}) <span class='co'># examplesIf</span></div></pre>
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -204,7 +205,7 @@ to make sure that they use the latest available metadata.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

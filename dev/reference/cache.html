@@ -124,9 +124,9 @@ See the pkgcache package if you need for control over the package cache.</p>
 
     <pre class="usage"><span class='fu'>cache_summary</span>()
 
-<span class='fu'>cache_list</span>(<span class='no'>...</span>)
+<span class='fu'>cache_list</span>(<span class='kw'>...</span>)
 
-<span class='fu'>cache_delete</span>(<span class='no'>...</span>)
+<span class='fu'>cache_delete</span>(<span class='kw'>...</span>)
 
 <span class='fu'>cache_clean</span>()</pre>
 
@@ -163,24 +163,25 @@ packages in the package cache.</p>
 <p><code>cache_clean()</code> deletes all files from the cache.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Summary</span>
 <span class='fu'>cache_summary</span>()
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># List packages</span>
 <span class='fu'>cache_list</span>()
-<span class='fu'>cache_list</span>(<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"recipes"</span>)
-<span class='fu'>cache_list</span>(<span class='kw'>platform</span> <span class='kw'>=</span> <span class='st'>"source"</span>)
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+<span class='fu'>cache_list</span>(package = <span class='st'>"recipes"</span>)
+<span class='fu'>cache_list</span>(platform = <span class='st'>"source"</span>)
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Delete packages</span>
-<span class='fu'>cache_delete</span>(<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"knitr"</span>)
-<span class='fu'>cache_delete</span>(<span class='kw'>platform</span> <span class='kw'>=</span> <span class='st'>"macos"</span>)
-}) <span class='co'># examplesIf</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) (<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='kw'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='no'>withAutoprint</span> <span class='kw'>else</span> <span class='no'>force</span>)({ <span class='co'># examplesIf</span>
+<span class='fu'>cache_delete</span>(package = <span class='st'>"knitr"</span>)
+<span class='fu'>cache_delete</span>(platform = <span class='st'>"macos"</span>)
+}
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'>cache_clean</span>()
-}) <span class='co'># examplesIf</span></div></pre>
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -196,7 +197,7 @@ packages in the package cache.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

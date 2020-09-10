@@ -133,15 +133,16 @@ CRAN or Bioconductor package. pak calls these <em>standard</em> packages.
 For example:<div class="r"></p><pre><span class='co'>## CRAN package</span>
 <span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"glue"</span>)
 <span class='co'>## BioC package</span>
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"limma"</span>)</pre><p></div></p>
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"limma"</span>)
+</pre><p></div></p>
 <p>When considering a standard package, the calling version of R is used
 to determine the available source and binary packages on CRAN and the
 Bioconductor repositories.</p>
-<p>The full specification of standard packages is simply</p><pre>[standard::]&amp;lt;package&amp;gt;
+<p>The full specification of standard packages is simply</p><pre>[standard::]&lt;package&gt;
 </pre>
 
-<p>If you know the exact source of the package, you can also write</p><pre>cran::&amp;lt;package&amp;gt;
-bioc::&amp;lt;package&amp;gt;
+<p>If you know the exact source of the package, you can also write</p><pre>cran::&lt;package&gt;
+bioc::&lt;package&gt;
 </pre>
 
     <h2 class="hasAnchor" id="github-packages"><a class="anchor" href="#github-packages"></a>GitHub packages</h2>
@@ -152,9 +153,10 @@ bioc::&amp;lt;package&amp;gt;
 <p>pak can install packages from GitHub repositories. Any package that
 is specified in the <code>user/repo</code> notation is taken to be a GitHub package.
 For example:<div class="r"></p><pre><span class='co'>## Package from GitHub</span>
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"r-lib/glue"</span>)</pre><p></div></p>
-<p>The full specification of GitHub packages is</p><pre>[&amp;lt;package&amp;gt;=][github::]&amp;lt;username&amp;gt;/&amp;lt;repo&amp;gt;[/&amp;lt;subdir&amp;gt;]
-    [@&amp;lt;committish&amp;gt; | #&amp;lt;pull&amp;gt; | @[*]release]
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"r-lib/glue"</span>)
+</pre><p></div></p>
+<p>The full specification of GitHub packages is</p><pre>[&lt;package&gt;=][github::]&lt;username&gt;/&lt;repo&gt;[/&lt;subdir&gt;]
+    [@&lt;committish&gt; | #&lt;pull&gt; | @[*]release]
 
 </pre>
 <ul>
@@ -179,10 +181,12 @@ to a pull request.</p></li>
 <p>pak can install packages from package trees. You can either use the
 <code><a href='local_install.html'>local_install()</a></code> function for this, or specify the <code>local::</code> package
 source. E.g. these are equivalent:<div class="r"></p><pre><span class='fu'><a href='local_install.html'>local_install</a></span>(<span class='st'>"/path/to/my/package"</span>)
-<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"local::/path/to/my/package"</span>)</pre><p></div></p>
+<span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='st'>"local::/path/to/my/package"</span>)
+</pre><p></div></p>
 <p>The <code>local::</code> form is handy if you want to mix it with other package
 specifications, e.g. to install a local package, and another standard
-package:<div class="r"></p><pre><span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"local://path/to/my/package"</span>, <span class='st'>"testthat"</span>))</pre><p></div></p>
+package:<div class="r"></p><pre><span class='fu'><a href='pkg_install.html'>pkg_install</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"local://path/to/my/package"</span>, <span class='st'>"testthat"</span>))
+</pre><p></div></p>
     <h2 class="hasAnchor" id="the-remotes-field"><a class="anchor" href="#the-remotes-field"></a>The <code>Remotes</code> field</h2>
 
     
@@ -194,7 +198,7 @@ location by adding the remote location to <code>Remotes</code> in your
 <code>DESCRIPTION</code> file. This will cause pak to download and install them
 from the specified location, instead of CRAN.</p>
 <p>The remote dependencies specified in <code>Remotes</code> is a comma separated
-list of package sources:</p><pre>Remotes: &amp;lt;pkg-source-1&amp;gt;, &amp;lt;pkg-source-2&amp;gt;, [ ... ]
+list of package sources:</p><pre>Remotes: &lt;pkg-source-1&gt;, &lt;pkg-source-2&gt;, [ ... ]
 </pre>
 
 <p>Note that you will still need add the package to one of the regular
@@ -220,7 +224,7 @@ before starting an installation. For CRAN and BioC packages this is
 usually automatic, because these repositories are generally in a
 consistent state. If packages depend on other other package sources,
 however, this is not the case.</p>
-<p>Here is an example of a conflict detected:</p><pre>&amp;gt; pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
+<p>Here is an example of a conflict detected:</p><pre>&gt; pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
 Error: Cannot install packages:
   * Cannot install `r-lib/pkgcache@conflict`.
     - Cannot install dependency r-lib/cli@master
@@ -274,7 +278,7 @@ package library.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
