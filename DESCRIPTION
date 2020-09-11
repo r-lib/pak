@@ -47,6 +47,7 @@ Suggests:
     zip
 Remotes:
     r-lib/pkgdepends,
+    r-lib/pkgcache,
     r-hub/pkgsearch,
     r-lib/processx,
     r-lib/callr
