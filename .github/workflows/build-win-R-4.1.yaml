@@ -1,5 +1,5 @@
 
-name: pak build, windows-2016, R 4.1
+name: pak build, windows-2016, R devel/4.1
 
 on:
   workflow_dispatch:
@@ -16,4 +16,4 @@ jobs:
     - uses: actions/checkout@v1
     - uses: r-hub/actions/pak-builder@feature/pak-builder
       with:
-        rversions: "4.1"
+        rversions: "devel/4.1"

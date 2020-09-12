@@ -32,7 +32,7 @@ for (i in seq_len(nrow(builds))) {
   ostype   <- builds$ostype[i]
   os       <- builds$os[i]
   rversion <- builds$rversion[i]
-  rversion <- sub("^[a-z]+/", "", rversion)
-  output <- sprintf(".github/workflows/build-%s-R-%s.yaml", ostype, rversion)
+  numver <- sub("^[a-z]+/", "", rversion)
+  output <- sprintf(".github/workflows/build-%s-R-%s.yaml", ostype, numver)
   brew::brew(input, output)
 }
