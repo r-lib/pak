@@ -1,0 +1,18 @@
+
+name: pak build, ubuntu-latest, R 3.3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  pak:
+    runs-on: ubuntu-latest
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+    steps:
+    - uses actions/checkout@v1
+    - uses: r-hub/actions/pak-builder@feature/pak-builder
+      with:
+        rversions: "3.3"
