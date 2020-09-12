@@ -3,6 +3,7 @@ name: pak build, windows-2016, R 3.6
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   pak:

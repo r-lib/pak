@@ -3,6 +3,7 @@ name: pak build, macOS-latest, R 3.3
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   pak:

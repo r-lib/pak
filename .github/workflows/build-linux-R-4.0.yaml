@@ -3,6 +3,7 @@ name: pak build, ubuntu-latest, R 4.0
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   pak:
