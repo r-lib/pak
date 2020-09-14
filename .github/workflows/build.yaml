@@ -21,4 +21,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
           repository: r-lib/pak
           event-type: pak-build
-          client-payload: ${{ toJson(matrix) }}
+          client-payload: '{"os": "${{ matrix.os }}", "rversions": "${{ matrix.r }}"}'
