@@ -23,7 +23,22 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: r-hub/actions/pak-builder@feature/pak-builder
-      with:
-        rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: pak build
+        uses: r-hub/actions/pak-builder@feature/pak-builder
+        with:
+          rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
+
+      - name: Wait for publishing
+        uses: softprops/turnstyle@v1
+        with:
+          same-branch-only: false
+        env:
+         GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Publish
+        uses: r-hub/actions/pak-publisher@feature/pak-builder
+        env:
+         GITHUB_TOKEN: ${{ secrets.TOKEN }}
