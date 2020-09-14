@@ -32,7 +32,7 @@ jobs:
           rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
 
       - name: Wait for publishing
-        uses: softprops/turnstyle@v1
+        uses: r-lib/turnstyle@v1
         with:
           same-branch-only: false
         env:
