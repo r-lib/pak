@@ -40,5 +40,5 @@ jobs:
 
       - name: Publish
         uses: r-hub/actions/pak-publisher@feature/pak-builder
-        env:
-         GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          token: ${{ secrets.TOKEN }}
