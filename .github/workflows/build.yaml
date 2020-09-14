@@ -9,9 +9,9 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: ubuntu-latest, r: '4.0' }
-          - {os: macOS-latest,  r: '4.0' }
-          - {os: windows-2016,  r: '4.0' }
+          - {os: 'ubuntu-latest', r: '4.0' }
+          - {os: 'macOS-latest',  r: '4.0' }
+          - {os: 'windows-2016',  r: '4.0' }
 
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +21,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
           repository: r-lib/pak
           event-type: pak-build
-          client-payload: '{"os":"${{matrix.os}}","rversions":"${{matrix.r}}"}'
+          client-payload: '{ "os": ${{matrix.os}}, "rversions": ${{matrix.r}} }'
