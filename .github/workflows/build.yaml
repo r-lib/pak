@@ -1,0 +1,19 @@
+
+name: Build all pak binaries
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  pak:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: r-lib/pak
+          event-type: pak-build
+          client-payload: '{"rversions": "4.0"}'
