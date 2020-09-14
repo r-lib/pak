@@ -1,5 +1,5 @@
 
-name: Build all pak binaries
+name: Trigger pak builds
 
 on:
   workflow_dispatch:
@@ -15,4 +15,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
           repository: r-lib/pak
           event-type: pak-build
-          client-payload: '{"rversions": "4.0"}'
+          client-payload: '{"os":"ubuntu-latest","rversions":"4.0"}'
