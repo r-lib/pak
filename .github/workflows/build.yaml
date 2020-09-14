@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v1
+        uses: r-lib/repository-dispatch@v1
         with:
           token: ${{ secrets.TOKEN }}
           repository: r-lib/pak
