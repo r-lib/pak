@@ -2,6 +2,12 @@
 name: Build pak binary
 
 on:
+  workflow_dispatch:
+    inputs:
+      rversions:
+        description: 'R versions (e.g. "4.0, devel/4.1")'
+        required: true
+        default: '4.0'
   repository_dispatch:
     types: [pak-build]
 
