@@ -3,7 +3,6 @@ name: Build all pak binaries
 
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   pak:
