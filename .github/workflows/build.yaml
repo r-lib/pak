@@ -5,9 +5,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  pak:
-    runs-on: ubuntu-latest
+  dispatch:
+    strategy:
+      matrix:
+        config:
+          - {os: ubuntu-latest, r: '4.0' }
+          - {os: macOS-latest,  r: '4.0' }
+          - {os: windows-2016,  r: '4.0' }
 
+    runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
@@ -15,4 +21,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
           repository: r-lib/pak
           event-type: pak-build
-          client-payload: '{"os":"ubuntu-latest","rversions":"4.0"}'
+          client-payload: '{"os":"${{matrix.os}}","rversions":"${{matrix.r}}"}'
