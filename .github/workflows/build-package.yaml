@@ -17,12 +17,18 @@ on:
 
 jobs:
   pak:
+    name: "pak build on R ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}, ${{ github.event.client_payload.os }}${{ github.event.inputs.os }}"
     runs-on: ${{ github.event.client_payload.os }}${{ github.event.inputs.os }}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
+      - name: Job information
+        run: |
+          echo "OS: ${{ github.event.client_payload.os }}${{ github.event.inputs.os }}"
+          echo "R versions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}"
+
       - name: Checkout
         uses: actions/checkout@v1
 
