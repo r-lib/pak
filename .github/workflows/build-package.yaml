@@ -35,6 +35,7 @@ jobs:
       - name: pak build
         uses: r-hub/actions/pak-builder@feature/pak-builder
         with:
+          token: ${{ secrets.TOKEN }}
           rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
 
       - name: Wait for publishing
