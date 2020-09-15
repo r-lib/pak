@@ -48,3 +48,4 @@ jobs:
         uses: r-hub/actions/pak-publisher@feature/pak-builder
         with:
           token: ${{ secrets.TOKEN }}
+          rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
