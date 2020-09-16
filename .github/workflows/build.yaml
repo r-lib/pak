@@ -11,24 +11,24 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: 'ubuntu-latest', r: '3.3' }
-          - {os: 'ubuntu-latest', r: '3.4' }
-          - {os: 'ubuntu-latest', r: '3.5' }
-          - {os: 'ubuntu-latest', r: '3.6' }
-          - {os: 'ubuntu-latest', r: '4.0' }
-          - {os: 'ubuntu-latest', r: 'devel/4.1' }
-          - {os: 'macOS-latest',  r: '3.3' }
-          - {os: 'macOS-latest',  r: '3.4' }
-          - {os: 'macOS-latest',  r: '3.5' }
-          - {os: 'macOS-latest',  r: '3.6' }
-          - {os: 'macOS-latest',  r: '4.0' }
-          - {os: 'macOS-latest',  r: 'devel/4.1' }
           - {os: 'windows-2016',  r: '3.3' }
           - {os: 'windows-2016',  r: '3.4' }
           - {os: 'windows-2016',  r: '3.5' }
           - {os: 'windows-2016',  r: '3.6' }
           - {os: 'windows-2016',  r: '4.0' }
           - {os: 'windows-2016',  r: 'devel/4.1' }
+          - {os: 'macOS-latest',  r: '3.3' }
+          - {os: 'macOS-latest',  r: '3.4' }
+          - {os: 'macOS-latest',  r: '3.5' }
+          - {os: 'macOS-latest',  r: '3.6' }
+          - {os: 'macOS-latest',  r: '4.0' }
+          - {os: 'macOS-latest',  r: 'devel/4.1' }
+          - {os: 'ubuntu-latest', r: '3.3' }
+          - {os: 'ubuntu-latest', r: '3.4' }
+          - {os: 'ubuntu-latest', r: '3.5' }
+          - {os: 'ubuntu-latest', r: '3.6' }
+          - {os: 'ubuntu-latest', r: '4.0' }
+          - {os: 'ubuntu-latest', r: 'devel/4.1' }
 
     runs-on: ubuntu-latest
     steps:
