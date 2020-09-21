@@ -11,7 +11,7 @@ Authors@R: c(
     person("Gábor", "Csárdi", email = "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", email = "jim.hester@rstudio.com", role = "aut"),
     person("RStudio", role = "cph"))
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
