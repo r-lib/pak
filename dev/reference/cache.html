@@ -122,13 +122,13 @@ See the pkgcache package if you need for control over the package cache." />
 See the pkgcache package if you need for control over the package cache.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cache_summary</span>()
+    <pre class="usage"><span class='fu'>cache_summary</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>cache_list</span>(<span class='kw'>...</span>)
+<span class='fu'>cache_list</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>cache_delete</span>(<span class='kw'>...</span>)
+<span class='fu'>cache_delete</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>cache_clean</span>()</pre>
+<span class='fu'>cache_clean</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,24 +163,24 @@ packages in the package cache.</p>
 <p><code>cache_clean()</code> deletes all files from the cache.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Summary</span>
-<span class='fu'>cache_summary</span>()
-}
-<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'>cache_summary</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># List packages</span>
-<span class='fu'>cache_list</span>()
-<span class='fu'>cache_list</span>(package = <span class='st'>"recipes"</span>)
-<span class='fu'>cache_list</span>(platform = <span class='st'>"source"</span>)
-}
-<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'>cache_list</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>cache_list</span><span class='op'>(</span>package <span class='op'>=</span> <span class='st'>"recipes"</span><span class='op'>)</span>
+<span class='fu'>cache_list</span><span class='op'>(</span>platform <span class='op'>=</span> <span class='st'>"source"</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Delete packages</span>
-<span class='fu'>cache_delete</span>(package = <span class='st'>"knitr"</span>)
-<span class='fu'>cache_delete</span>(platform = <span class='st'>"macos"</span>)
-}
-<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>cache_clean</span>()
-}
+<span class='fu'>cache_delete</span><span class='op'>(</span>package <span class='op'>=</span> <span class='st'>"knitr"</span><span class='op'>)</span>
+<span class='fu'>cache_delete</span><span class='op'>(</span>platform <span class='op'>=</span> <span class='st'>"macos"</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>cache_clean</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
