@@ -16,14 +16,14 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @param echo If `echo` is `TRUE` and `execute` is `TRUE`, echo the command output.
 #' @return A character vector of commands needed to install the system requirements for the package (invisibly).
 #' @export
-local_system_requirements <- function(os, os_release, root = ".", package = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
+local_system_requirements <- function(os, os_release, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$local_system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root, package = package, execute = execute, sudo = sudo, echo = echo))
+    list(os = os, os_release = os_release, root = root, execute = execute, sudo = sudo, echo = echo))
   invisible(res)
 }
 
-local_system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
+local_system_requirements_internal <- function(os, os_release, root, execute, sudo, echo) {
   os_versions <- supported_os_versions()
 
   os <- match.arg(os, names(os_versions))

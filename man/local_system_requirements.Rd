@@ -8,9 +8,9 @@ local_system_requirements(
   os,
   os_release,
   root = ".",
-  package = NULL,
   execute = FALSE,
-  sudo = execute
+  sudo = execute,
+  echo = FALSE
 )
 }
 \arguments{
@@ -23,9 +23,11 @@ list of supported operating systems.}
 \item{execute, sudo}{If \code{execute} is \code{TRUE}, pak will execute the system
 commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands with
 \href{https://en.wikipedia.org/wiki/Sudo}{sudo}.}
+
+\item{echo}{If \code{echo} is \code{TRUE} and \code{execute} is \code{TRUE}, echo the command output.}
 }
 \value{
-A character vector of commands needed to install the system requirements for the package.
+A character vector of commands needed to install the system requirements for the package (invisibly).
 }
 \description{
 Returns a character vector of commands to run that will install system
