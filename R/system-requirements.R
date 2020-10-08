@@ -71,9 +71,9 @@ local_system_requirements_internal <- function(os, os_release, root, execute, su
 
   commands <- as.character(c(pre_install, install_scripts))
   if (echo) {
-    callback <- function(x, ...) cli::cli_verbatim(trimws(x, "right", "[\r\n]"))
+    callback <- function(x, ...) cli::cli_verbatim(sub("[\r\n]+$", "", x))
   } else {
-    callback <- function(...) invisible()
+    callback <- function(x, ...) invisible()
   }
 
   if (execute) {
