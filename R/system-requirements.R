@@ -10,15 +10,18 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @param os,os_release The operating system and operating system release version, see
 #'   <https://github.com/rstudio/r-system-requirements#operating-systems> for the
 #'   list of supported operating systems.
+#' @param execute,sudo If `execute` is `TRUE`, pak will execute the system
+#'   commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
+#'   [sudo](https://en.wikipedia.org/wiki/Sudo).
 #' @return A character vector of commands needed to install the system requirements for the package.
 #' @export
-local_system_requirements <- function(os, os_release, root = ".") {
+local_system_requirements <- function(os, os_release, root = ".", package = NULL, execute = FALSE, sudo = execute) {
   remote(
     function(...) asNamespace("pak")$local_system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root))
+    list(os = os, os_release = os_release, root = root, package = package, execute = execute, sudo = sudo))
 }
 
-local_system_requirements_internal <- function(os, os_release, root = ".") {
+local_system_requirements_internal <- function(os, os_release, root, package, execute, sudo) {
   os_versions <- supported_os_versions()
 
   os <- match.arg(os, names(os_versions))
@@ -64,7 +67,17 @@ local_system_requirements_internal <- function(os, os_release, root = ".") {
 
   install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
 
-  as.character(c(pre_install, install_scripts))
+  commands <- as.character(c(pre_install, install_scripts))
+
+  if (execute) {
+    for (cmd in commands) {
+      if (sudo) {
+        system(paste("sudo", cmd))
+      } else {
+        system(cmd)
+      }
+    }
+  }
 }
 
 # Adapted from https://github.com/rstudio/r-system-requirements/blob/master/systems.json

@@ -4,7 +4,14 @@
 \alias{local_system_requirements}
 \title{Query the system requirements for a dev package (and its dependencies)}
 \usage{
-local_system_requirements(os, os_release, root = ".")
+local_system_requirements(
+  os,
+  os_release,
+  root = ".",
+  package = NULL,
+  execute = FALSE,
+  sudo = execute
+)
 }
 \arguments{
 \item{os, os_release}{The operating system and operating system release version, see
@@ -12,6 +19,10 @@ local_system_requirements(os, os_release, root = ".")
 list of supported operating systems.}
 
 \item{root}{Path to the package tree.}
+
+\item{execute, sudo}{If \code{execute} is \code{TRUE}, pak will execute the system
+commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands with
+\href{https://en.wikipedia.org/wiki/Sudo}{sudo}.}
 }
 \value{
 A character vector of commands needed to install the system requirements for the package.
