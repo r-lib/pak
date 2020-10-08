@@ -13,15 +13,17 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @param execute,sudo If `execute` is `TRUE`, pak will execute the system
 #'   commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
 #'   [sudo](https://en.wikipedia.org/wiki/Sudo).
-#' @return A character vector of commands needed to install the system requirements for the package.
+#' @param echo If `echo` is `TRUE` and `execute` is `TRUE`, echo the command output.
+#' @return A character vector of commands needed to install the system requirements for the package (invisibly).
 #' @export
-local_system_requirements <- function(os, os_release, root = ".", package = NULL, execute = FALSE, sudo = execute) {
-  remote(
+local_system_requirements <- function(os, os_release, root = ".", package = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
+  res <- remote(
     function(...) asNamespace("pak")$local_system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root, package = package, execute = execute, sudo = sudo))
+    list(os = os, os_release = os_release, root = root, package = package, execute = execute, sudo = sudo, echo = echo))
+  invisible(res)
 }
 
-local_system_requirements_internal <- function(os, os_release, root, package, execute, sudo) {
+local_system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
   os_versions <- supported_os_versions()
 
   os <- match.arg(os, names(os_versions))
@@ -68,16 +70,25 @@ local_system_requirements_internal <- function(os, os_release, root, package, ex
   install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
 
   commands <- as.character(c(pre_install, install_scripts))
+  if (echo) {
+    callback <- function(x, ...) cli::cli_verbatim(trimws(x, "right", "[\r\n]"))
+  } else {
+    callback <- function(...) invisible()
+  }
 
   if (execute) {
     for (cmd in commands) {
       if (sudo) {
-        system(paste("sudo", cmd))
-      } else {
-        system(cmd)
+        cmd <- paste("sudo", cmd)
       }
+      cli::cli_alert_info("Executing {.code {cmd}}")
+
+      words <- strsplit(cmd, "[[:space:]]+")[[1]]
+      processx::run(words[[1]], words[-1], stdout_callback = callback, stderr_to_stdout = TRUE)
     }
   }
+
+  commands
 }
 
 # Adapted from https://github.com/rstudio/r-system-requirements/blob/master/systems.json
