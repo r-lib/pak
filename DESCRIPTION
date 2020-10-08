@@ -48,9 +48,7 @@ Suggests:
 Remotes:
     r-lib/pkgdepends,
     r-lib/pkgcache,
-    r-hub/pkgsearch,
-    r-lib/processx,
-    r-lib/callr
+    r-hub/pkgsearch
 Config/pak/dependencies:
     utils,
     callr (>= 3.4.2.9000),
