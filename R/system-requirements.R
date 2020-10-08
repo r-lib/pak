@@ -83,8 +83,7 @@ local_system_requirements_internal <- function(os, os_release, root, execute, su
       }
       cli::cli_alert_info("Executing {.code {cmd}}")
 
-      words <- strsplit(cmd, "[[:space:]]+")[[1]]
-      processx::run(words[[1]], words[-1], stdout_callback = callback, stderr_to_stdout = TRUE)
+      processx::run("sh", c("-c", cmd), stdout_callback = callback, stderr_to_stdout = TRUE)
     }
   }
 
