@@ -5,8 +5,8 @@
 \title{Query the system requirements for a dev package (and its dependencies)}
 \usage{
 local_system_requirements(
-  os,
-  os_release,
+  os = NULL,
+  os_release = NULL,
   root = ".",
   execute = FALSE,
   sudo = execute,
@@ -16,7 +16,8 @@ local_system_requirements(
 \arguments{
 \item{os, os_release}{The operating system and operating system release version, see
 \url{https://github.com/rstudio/r-system-requirements#operating-systems} for the
-list of supported operating systems.}
+list of supported operating systems. If \code{NULL}, the default, these will be
+looked up using \code{\link[distro:distro]{distro::distro()}}.}
 
 \item{root}{Path to the package tree.}
 
