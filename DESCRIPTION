@@ -47,8 +47,7 @@ Suggests:
     zip
 Remotes:
     r-lib/pkgdepends,
-    r-lib/pkgcache,
-    r-hub/pkgsearch
+    r-lib/pkgcache
 Config/pak/dependencies:
     utils,
     callr (>= 3.4.2.9000),
