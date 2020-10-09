@@ -97,17 +97,6 @@ local_system_requirements_internal <- function(os, os_release, root, execute, su
   commands
 }
 
-pkg_system_requirements <- function(package, os, os_release, execute = FALSE, sudo = execute, echo = FALSE) {
-  res <- remote(
-    function(...) asNamespace("pak")$local_system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root, execute = execute, sudo = sudo, echo = echo))
-  invisible(res)
-}
-
-pkg_system_requirements_internal <- function(os, os_release, execute = FALSE, sudo = execute, echo = FALSE) {
-
-}
-
 # Adapted from https://github.com/rstudio/r-system-requirements/blob/master/systems.json
 # OSs commented out are not currently supported by the API
 supported_os_versions <- function() {
