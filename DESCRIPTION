@@ -28,6 +28,7 @@ Suggests:
     crayon (>= 1.3.4),
     curl,
     desc (>= 1.2.0),
+    distro,
     filelock (>= 1.0.2),
     glue (>= 1.3.0),
     mockery,
