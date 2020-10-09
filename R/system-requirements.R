@@ -9,14 +9,15 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @inheritParams local_install
 #' @param os,os_release The operating system and operating system release version, see
 #'   <https://github.com/rstudio/r-system-requirements#operating-systems> for the
-#'   list of supported operating systems.
+#'   list of supported operating systems. If `NULL`, the default, these will be
+#'   looked up using [distro::distro()].
 #' @param execute,sudo If `execute` is `TRUE`, pak will execute the system
 #'   commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
 #'   [sudo](https://en.wikipedia.org/wiki/Sudo).
 #' @param echo If `echo` is `TRUE` and `execute` is `TRUE`, echo the command output.
 #' @return A character vector of commands needed to install the system requirements for the package (invisibly).
 #' @export
-local_system_requirements <- function(os, os_release, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
+local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$local_system_requirements_internal(...),
     list(os = os, os_release = os_release, root = root, execute = execute, sudo = sudo, echo = echo))
@@ -24,6 +25,12 @@ local_system_requirements <- function(os, os_release, root = ".", execute = FALS
 }
 
 local_system_requirements_internal <- function(os, os_release, root, execute, sudo, echo) {
+  if (is.null(os) || is.null(os_release)) {
+    d <- distro::distro()
+    os <- os %||% d$id
+    os_release <- os_release %||% d$short_version
+  }
+
   os_versions <- supported_os_versions()
 
   os <- match.arg(os, names(os_versions))
