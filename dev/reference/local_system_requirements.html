@@ -122,7 +122,14 @@ requirements for the queried operating system." />
 requirements for the queried operating system.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>local_system_requirements</span><span class='op'>(</span><span class='va'>os</span>, <span class='va'>os_release</span>, root <span class='op'>=</span> <span class='st'>"."</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>local_system_requirements</span><span class='op'>(</span>
+  os <span class='op'>=</span> <span class='cn'>NULL</span>,
+  os_release <span class='op'>=</span> <span class='cn'>NULL</span>,
+  root <span class='op'>=</span> <span class='st'>"."</span>,
+  execute <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sudo <span class='op'>=</span> <span class='va'>execute</span>,
+  echo <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,17 +138,28 @@ requirements for the queried operating system.</p>
       <th>os, os_release</th>
       <td><p>The operating system and operating system release version, see
 <a href='https://github.com/rstudio/r-system-requirements#operating-systems'>https://github.com/rstudio/r-system-requirements#operating-systems</a> for the
-list of supported operating systems.</p></td>
+list of supported operating systems. If <code>NULL</code>, the default, these will be
+looked up using <code><a href='https://rdrr.io/pkg/distro/man/distro.html'>distro::distro()</a></code>.</p></td>
     </tr>
     <tr>
       <th>root</th>
       <td><p>Path to the package tree.</p></td>
     </tr>
+    <tr>
+      <th>execute, sudo</th>
+      <td><p>If <code>execute</code> is <code>TRUE</code>, pak will execute the system
+commands (if any). If <code>sudo</code> is <code>TRUE</code>, pak will prepend the commands with
+<a href='https://en.wikipedia.org/wiki/Sudo'>sudo</a>.</p></td>
+    </tr>
+    <tr>
+      <th>echo</th>
+      <td><p>If <code>echo</code> is <code>TRUE</code> and <code>execute</code> is <code>TRUE</code>, echo the command output.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of commands needed to install the system requirements for the package.</p>
+    <p>A character vector of commands needed to install the system requirements for the package (invisibly).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
