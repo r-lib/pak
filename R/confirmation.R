@@ -2,8 +2,10 @@
 print_package_list <- function(x, new_version = NULL, old_version = NULL) {
   cli::cli_div(
     class = "pkglist",
-    theme = list(div.pkglist = list("margin-left" = 2)))
-
+    theme = list(
+      div.pkglist = list("margin-left" = 2)
+    )
+  )
   if (!is.null(new_version) && !is.null(old_version)) {
     x <- paste0(x, " (", old_version, " ", cli::symbol$arrow_right, " ",
                 new_version, ")")
@@ -19,7 +21,13 @@ should_ask_confirmation <- function(sol) {
   any(sol$lib_status == "update")
 }
 
-print_install_details <- function(sol, lib) {
+print_install_details <- function(sol, lib, loaded) {
+  cli::cli_div(
+    theme = list(
+      "div.alert-warning" = list("margin-top" = 1, "margin-bottom" = 1)
+    )
+  )
+
   direct <- sum(sol$direct)
   deps <- sum(! sol$direct)
 
@@ -42,8 +50,6 @@ print_install_details <- function(sol, lib) {
     cli::cli_alert("Will {.emph update} {n_upd} packages:")
     print_package_list(sol$ref[upd], sol$version[upd], sol$old_version[upd])
   }
-
-  warn_for_loaded_packages(sol$package[newly | upd], lib)
 
   w_dl <- sol$cache_status == "miss" & !is.na(sol$cache_status)
   w_ch <- sol$cache_status == "hit" & !is.na(sol$cache_status)
@@ -78,6 +84,10 @@ print_install_details <- function(sol, lib) {
     if (u_dl > 0) {
       cli::cli_alert("Will {.emph download} {u_dl} packages with unknown size.")
     }
+  }
+
+  if (length(loaded) > 0) {
+    warn_for_loaded_packages(sol$package[newly | upd], lib, loaded)
   }
 
   invisible(should_ask)

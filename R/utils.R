@@ -245,3 +245,12 @@ is_interactive <- function() {
     interactive()
   }
 }
+
+loaded_packages <- function(lib) {
+  lib <- normalizePath(lib)
+  pkgs <- setdiff(loadedNamespaces(), base_packages())
+  libs <- vcapply(pkgs, function(x) dirname(getNamespaceInfo(x, "path")))
+
+  bad <- normalizePath(libs) == lib
+  pkgs[bad]
+}

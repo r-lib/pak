@@ -65,20 +65,15 @@ print_install_summary <- function(x) {
     " {.timestamp {total_time}}"))
 }
 
-warn_for_loaded_packages <- function(pkgs, lib) {
-  if (length(maybe_bad <- intersect(pkgs, loadedNamespaces()))) {
-    loaded_from <- vcapply(
-      maybe_bad,
-      function(x) dirname(getNamespaceInfo(x, "path"))
+warn_for_loaded_packages <- function(pkgs, lib, loaded) {
+  if (is.null(loaded)) return()
+  bad <- intersect(pkgs, loaded)
+  bad <- setdiff(bad, "pak")
+  if (length(bad)) {
+    cli::cli_alert_warning(
+      "{.pkg {bad}} {?is/are} loaded in this session, \\
+       you probably need to restart R after the installation.",
+      wrap = TRUE
     )
-    bad <- maybe_bad[normalizePath(loaded_from) == normalizePath(lib)]
-    bad <- setdiff(bad, "pak")
-    if (length(bad)) {
-      cli::cli_alert_warning(
-        "Package(s) {format_items(bad)} are already loaded, installing \\
-         them may cause problems. Use {.code pkgload::unload()} to unload them.",
-        wrap = TRUE
-      )
-    }
   }
 }
