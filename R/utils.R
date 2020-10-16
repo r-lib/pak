@@ -254,3 +254,7 @@ loaded_packages <- function(lib) {
   bad <- normalizePath(libs) == lib
   pkgs[bad]
 }
+
+lapply_with_names <- function(X, FUN, ...) {
+  structure(lapply(X, FUN, ...), names = X)
+}
