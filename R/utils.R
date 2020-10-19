@@ -258,3 +258,7 @@ loaded_packages <- function(lib) {
 lapply_with_names <- function(X, FUN, ...) {
   structure(lapply(X, FUN, ...), names = X)
 }
+
+na_omit <- function(x) {
+  x[!is.na(x)]
+}

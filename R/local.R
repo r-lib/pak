@@ -67,7 +67,7 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 #' `DESCRIPTION`.
 #'
 #' @inheritParams local_install
-#' 
+#'
 #' @family local package trees
 #' @export
 
@@ -75,14 +75,14 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
                                    upgrade = FALSE, ask = interactive()) {
   start <- Sys.time()
 
-  any <- remote(
+  status <- remote(
     function(...) {
       get("local_install_dev_deps_make_plan", asNamespace("pak"))(...)
     },
     list(root = root, lib = lib, upgrade = upgrade, start = start,
          loaded = loaded_packages(lib)))
 
-  if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
+  handle_status(status, lib, ask)
 
   inst <- remote(
     function(...) {

@@ -189,14 +189,12 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   start <- Sys.time()
 
-  any <- remote(
+  status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
          start = start, loaded = loaded_packages(lib)))
 
-  if (any && ask) {
-    get_confirmation("? Do you want to continue (Y/n) ")
-  }
+  handle_status(status, lib, ask)
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),

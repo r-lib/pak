@@ -57,6 +57,16 @@ unload <- function(packages) {
     unload_dll(pkg)
   }
 
+  # TODO: summary of packages unloaded
+  bad <- intersect(packages, loadedNamespaces())
+  if (length(bad) > 0) {
+    stop(
+      "Could not unload ",
+      if (length(bad) == 1) "one package: " else "some packages: ",
+      paste(bad, collapse = ", ")
+    )
+  }
+
   invisible(packages)
 }
 

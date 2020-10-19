@@ -64,16 +64,3 @@ print_install_summary <- function(x) {
     "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
     " {.timestamp {total_time}}"))
 }
-
-warn_for_loaded_packages <- function(pkgs, lib, loaded) {
-  if (is.null(loaded)) return()
-  bad <- intersect(pkgs, loaded)
-  bad <- setdiff(bad, "pak")
-  if (length(bad)) {
-    cli::cli_alert_warning(
-      "{.pkg {bad}} {?is/are} loaded in this session, \\
-       you probably need to restart R after the installation.",
-      wrap = TRUE
-    )
-  }
-}
