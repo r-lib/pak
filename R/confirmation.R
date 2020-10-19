@@ -2,8 +2,10 @@
 print_package_list <- function(x, new_version = NULL, old_version = NULL) {
   cli::cli_div(
     class = "pkglist",
-    theme = list(div.pkglist = list("margin-left" = 2)))
-
+    theme = list(
+      div.pkglist = list("margin-left" = 2)
+    )
+  )
   if (!is.null(new_version) && !is.null(old_version)) {
     x <- paste0(x, " (", old_version, " ", cli::symbol$arrow_right, " ",
                 new_version, ")")
@@ -19,7 +21,13 @@ should_ask_confirmation <- function(sol) {
   any(sol$lib_status == "update")
 }
 
-print_install_details <- function(sol, lib) {
+print_install_details <- function(sol, lib, loaded) {
+  cli::cli_div(
+    theme = list(
+      "div.alert-warning" = list("margin-top" = 1, "margin-bottom" = 1)
+    )
+  )
+
   direct <- sum(sol$direct)
   deps <- sum(! sol$direct)
 
@@ -27,9 +35,6 @@ print_install_details <- function(sol, lib) {
   n_upd   <- sum(upd   <- sol$lib_status == "update")
   n_curr  <- sum(curr  <- sol$lib_status == "current")
   n_noupd <- sum(noupd <- sol$lib_status == "no-update")
-
-  # Nothing to do?
-  if (! (n_newly + n_upd)) return(FALSE)
 
   # Should we ask?
   should_ask <- should_ask_confirmation(sol)
@@ -42,8 +47,6 @@ print_install_details <- function(sol, lib) {
     cli::cli_alert("Will {.emph update} {n_upd} packages:")
     print_package_list(sol$ref[upd], sol$version[upd], sol$old_version[upd])
   }
-
-  warn_for_loaded_packages(sol$package[newly | upd], lib)
 
   w_dl <- sol$cache_status == "miss" & !is.na(sol$cache_status)
   w_ch <- sol$cache_status == "hit" & !is.na(sol$cache_status)
@@ -80,7 +83,13 @@ print_install_details <- function(sol, lib) {
     }
   }
 
-  invisible(should_ask)
+  if (length(loaded) > 0 || get_os() == "win") {
+    ls <- warn_for_loaded_packages(sol$package[newly | upd], lib, loaded)
+  } else {
+    ls <- list(current = "clean", dlls = "clean")
+  }
+
+  invisible(list(should_ask = should_ask, loaded_status = ls))
 }
 
 get_confirmation <-  function(q, msg = "Aborted.") {
@@ -93,4 +102,14 @@ get_confirmation <-  function(q, msg = "Aborted.") {
 get_confirmation2 <- function(q = "? Do you want to continue (Y/n) ") {
   ans <- readline(q)
   tolower(ans) %in% c("", "y", "yes", "yeah", "yep")
+}
+
+get_answer <- function(answers, prompt = NULL) {
+  prompt <- prompt %||% paste0("? Your choice [", answers[1], "]: ")
+  while (TRUE) {
+    ans <- readline(prompt)
+    ans <- str_trim(ans)
+    if (ans == "") ans <- answers[1]
+    if (ans %in% answers) return(ans)
+  }
 }

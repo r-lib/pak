@@ -189,13 +189,12 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   start <- Sys.time()
 
-  any <- remote(
+  status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
-    list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask, start = start))
+    list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
+         start = start, loaded = loaded_packages(lib)))
 
-  if (any && ask) {
-    get_confirmation("? Do you want to continue (Y/n) ")
-  }
+  handle_status(status, lib, ask)
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
@@ -204,7 +203,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   invisible(inst)
 }
 
-pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
+pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start, loaded) {
   prop <- pkgdepends::new_pkg_installation_proposal(
     pkg,
     config = list(library = lib)
@@ -216,7 +215,7 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start) {
   prop$stop_for_solution_error()
   pkg_data$tmp <- list(proposal = prop, start = start)
   sol <- prop$get_solution()$data
-  print_install_details(sol, lib)
+  print_install_details(sol, lib, loaded)
 }
 
 pkg_install_do_plan <- function(proposal, lib) {

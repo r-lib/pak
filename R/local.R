@@ -67,7 +67,7 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 #' `DESCRIPTION`.
 #'
 #' @inheritParams local_install
-#' 
+#'
 #' @family local package trees
 #' @export
 
@@ -75,13 +75,14 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
                                    upgrade = FALSE, ask = interactive()) {
   start <- Sys.time()
 
-  any <- remote(
+  status <- remote(
     function(...) {
       get("local_install_dev_deps_make_plan", asNamespace("pak"))(...)
     },
-    list(root = root, lib = lib, upgrade = upgrade, start = start))
+    list(root = root, lib = lib, upgrade = upgrade, start = start,
+         loaded = loaded_packages(lib)))
 
-  if (any && ask) get_confirmation("? Do you want to continue (Y/n) ")
+  handle_status(status, lib, ask)
 
   inst <- remote(
     function(...) {
@@ -96,7 +97,8 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 
 ## Almost the same as a "regular" install, but need to set dependencies
 
-local_install_dev_deps_make_plan <- function(root, lib, upgrade, start) {
+local_install_dev_deps_make_plan <- function(root, lib, upgrade, start,
+                                             loaded) {
   prop <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", root),
     config = list(library = lib, dependencies = TRUE)
@@ -107,7 +109,7 @@ local_install_dev_deps_make_plan <- function(root, lib, upgrade, start) {
   prop$stop_for_solution_error()
   pkg_data$tmp <- list(proposal = prop, start = start)
   sol <- prop$get_solution()$data
-  print_install_details(sol, lib)
+  print_install_details(sol, lib, loaded)
 }
 
 ## This is the same as a regular install
