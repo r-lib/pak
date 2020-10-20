@@ -214,8 +214,7 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start, loaded) {
   prop$solve()
   prop$stop_for_solution_error()
   pkg_data$tmp <- list(proposal = prop, start = start)
-  sol <- prop$get_solution()$data
-  print_install_details(sol, lib, loaded)
+  print_install_details(prop, lib, loaded)
 }
 
 pkg_install_do_plan <- function(proposal, lib) {

@@ -108,8 +108,7 @@ local_install_dev_deps_make_plan <- function(root, lib, upgrade, start,
   prop$solve()
   prop$stop_for_solution_error()
   pkg_data$tmp <- list(proposal = prop, start = start)
-  sol <- prop$get_solution()$data
-  print_install_details(sol, lib, loaded)
+  print_install_details(prop, lib, loaded)
 }
 
 ## This is the same as a regular install
