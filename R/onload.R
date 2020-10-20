@@ -9,6 +9,7 @@ pkg_data <- new.env(parent = emptyenv())
     ## In the main process
     fix_macos_path_in_rstudio()
     try_new_remote_session()
+    pkg_data$cli_options <- query_cli_options()
 
   } else if (worker == "true") {
     ## In the worker process

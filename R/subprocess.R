@@ -44,11 +44,14 @@ remote <- function(func, args = list()) {
           stop(e)
         },
         {
-          options(pkg.show_progress = `__verbosity__`)
+          do.call(
+            options,
+            c(pkg.show_progress = `__verbosity__`, `__cli_options__`)
+          )
           `__body__`
         }
       )
-    }, list("__body__" = body(func), "__verbosity__" = is_verbose())
+    }, list("__body__" = body(func), "__verbosity__" = is_verbose(), "__cli_options__" = pkg_data$cli_options)
   )
 
   res <- withCallingHandlers(
@@ -248,6 +251,14 @@ set_function_envs <- function(within, new) {
   })
 
   invisible()
+}
+
+
+query_cli_options <- function() {
+  list(
+    cli.ansi = cli::is_ansi_tty(),
+    cli.dynamic = cli::is_dynamic_tty()
+  )
 }
 
 ## This is a workaround for R CMD check
