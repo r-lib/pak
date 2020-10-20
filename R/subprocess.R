@@ -86,7 +86,8 @@ new_remote_session <- function(create = TRUE) {
     opts$env, R_PKG_SHOW_PROGRESS = is_verbose(),
     R_PKG_PKG_WORKER = "true",
     R_PKG_PKG_COLORS = as.character(crayon$has_color()),
-    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors())
+    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors()),
+    R_PKG_DYNAMIC_TTY = is_dynamic_tty()
   )
   pkg_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }

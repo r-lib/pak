@@ -262,3 +262,56 @@ lapply_with_names <- function(X, FUN, ...) {
 na_omit <- function(x) {
   x[!is.na(x)]
 }
+
+is_dynamic_tty <- function(stream = stdout()) {
+  ## Option?
+  if (!is.null(x <- getOption("cli.dynamic"))) {
+    return(isTRUE(x))
+  }
+
+  ## Env var?
+  if ((x <- Sys.getenv("R_CLI_DYNAMIC", "")) != "") {
+    return(isTRUE(as.logical(x)))
+  }
+
+  ## Autodetect...
+  ## RGui has isatty(stdout()) and isatty(stderr()), so we don't need
+  ## to check that explicitly
+  isatty(stream) ||
+    is_rstudio_dynamic_tty(stream) ||
+    is_rapp_stdx(stream) ||
+    is_rkward_stdx(stream)
+}
+
+is_rstudio_dynamic_tty <- function(stream) {
+  rstudio$detect()[["dynamic_tty"]] &&
+    (is_stdout(stream) || is_stderr(stream))
+}
+
+is_stdout <- function(stream) {
+  identical(stream, stdout()) && sink.number() == 0
+}
+
+is_stderr <- function(stream) {
+  identical(stream, stderr()) && sink.number("message") == 2
+}
+
+is_rapp <- function() {
+  Sys.getenv("R_GUI_APP_VERSION") != ""
+}
+
+is_rapp_stdx <- function(stream) {
+  interactive() &&
+    is_rapp() &&
+    (is_stdout(stream) || is_stderr(stream))
+}
+
+is_rkward <- function() {
+  "rkward" %in% (.packages())
+}
+
+is_rkward_stdx <- function(stream) {
+  interactive() &&
+    is_rkward() &&
+    (is_stdout(stream) || is_stderr(stream))
+}
