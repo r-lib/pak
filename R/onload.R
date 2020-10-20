@@ -15,7 +15,8 @@ pkg_data <- new.env(parent = emptyenv())
     Sys.setenv("R_PKG_PKG_WORKER" = "false")
     options(
       crayon.enabled = (Sys.getenv("R_PKG_PKG_COLORS") == "TRUE"),
-      crayon.colors = as.numeric(Sys.getenv("R_PKG_PKG_NUM_COLORS", "1"))
+      crayon.colors = as.numeric(Sys.getenv("R_PKG_PKG_NUM_COLORS", "1")),
+      rlib_interactive = (Sys.getenv("R_PKG_INTERACTIVE") == "TRUE")
     )
     use_private_lib()
 
