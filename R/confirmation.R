@@ -86,7 +86,7 @@ print_install_details <- function(sol, lib, loaded) {
   if (length(loaded) > 0 || get_os() == "win") {
     ls <- warn_for_loaded_packages(sol$package[newly | upd], lib, loaded)
   } else {
-    ls <- list(current = "clean", dlls = "clean")
+    ls <- list(status = "none-none", pkgs = sol$package, lib = lib)
   }
 
   invisible(list(should_ask = should_ask, loaded_status = ls))
