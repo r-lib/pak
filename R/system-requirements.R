@@ -19,12 +19,22 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @export
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
-    function(...) asNamespace("pak")$local_system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root, execute = execute, sudo = sudo, echo = echo))
+    function(...) asNamespace("pak")$system_requirements_internal(...),
+    list(os = os, os_release = os_release, root = root, package = NULL, execute = execute, sudo = sudo, echo = echo))
   invisible(res)
 }
 
-local_system_requirements_internal <- function(os, os_release, root, execute, sudo, echo) {
+#' @param package The package name to lookup system requirements for.
+#' @rdname local_system_requirements
+#' @export
+pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
+  res <- remote(
+    function(...) asNamespace("pak")$system_requirements_internal(...),
+    list(os = os, os_release = os_release, root = NULL, package = package, execute = execute, sudo = sudo, echo = echo))
+  invisible(res)
+}
+
+system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
   if (is.null(os) || is.null(os_release)) {
     d <- distro::distro()
     os <- os %||% d$id
@@ -41,40 +51,57 @@ local_system_requirements_internal <- function(os, os_release, root, execute, su
   rspm_repo_id <- Sys.getenv("RSPM_REPO_ID", DEFAULT_RSPM_REPO_ID)
   rspm_repo_url <- sprintf("%s/__api__/repos/%s", rspm, rspm_repo_id)
 
-  desc_file <- normalizePath(file.path(root, "DESCRIPTION"), mustWork = FALSE)
-  if (!file.exists(desc_file)) {
-    stop("`", root, "` must contain a package.", call. = FALSE)
+
+  if (!is.null(package)) {
+    req_url <- sprintf(
+      "%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s",
+      rspm_repo_url,
+      package,
+      os,
+      os_release
+    )
+    res <- curl::curl_fetch_memory(req_url)
+    data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+
+    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], function(x) x[["requirements"]][["pre_install"]]))))
+    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], function(x) x[["requirements"]][["install_scripts"]]))))
   }
 
-  req_url <- sprintf(
-    "%s/sysreqs?distribution=%s&release=%s&suggests=true",
-    rspm_repo_url,
-    os,
-    os_release
-  )
+  else {
+    desc_file <- normalizePath(file.path(root, "DESCRIPTION"), mustWork = FALSE)
+    if (!file.exists(desc_file)) {
+      stop("`", root, "` must contain a package.", call. = FALSE)
+    }
 
-  h <- curl::new_handle()
+    req_url <- sprintf(
+      "%s/sysreqs?distribution=%s&release=%s&suggests=true",
+      rspm_repo_url,
+      os,
+      os_release
+    )
 
-  desc_size <- file.size(desc_file)
-  desc_data <- readBin(desc_file, "raw", desc_size)
+    h <- curl::new_handle()
 
-  curl::handle_setheaders(h,
-    customrequest = "POST",
-    "content-type" = "text/plain"
-  )
+    desc_size <- file.size(desc_file)
+    desc_data <- readBin(desc_file, "raw", desc_size)
 
-  curl::handle_setopt(h,
-    postfieldsize = desc_size,
-    postfields = desc_data
-  )
+    curl::handle_setheaders(h,
+      customrequest = "POST",
+      "content-type" = "text/plain"
+    )
 
-  res <- curl::curl_fetch_memory(req_url, h)
+    curl::handle_setopt(h,
+      postfieldsize = desc_size,
+      postfields = desc_data
+    )
 
-  data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+    res <- curl::curl_fetch_memory(req_url, h)
 
-  pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["dependencies"]], `[[`, "pre_install"))))
+    data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
 
-  install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
+    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["dependencies"]], `[[`, "pre_install"))))
+    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
+  }
 
   commands <- as.character(c(pre_install, install_scripts))
   if (echo) {

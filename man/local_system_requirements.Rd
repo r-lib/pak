@@ -2,12 +2,22 @@
 % Please edit documentation in R/system-requirements.R
 \name{local_system_requirements}
 \alias{local_system_requirements}
+\alias{pkg_system_requirements}
 \title{Query the system requirements for a dev package (and its dependencies)}
 \usage{
 local_system_requirements(
   os = NULL,
   os_release = NULL,
   root = ".",
+  execute = FALSE,
+  sudo = execute,
+  echo = FALSE
+)
+
+pkg_system_requirements(
+  package,
+  os = NULL,
+  os_release = NULL,
   execute = FALSE,
   sudo = execute,
   echo = FALSE
@@ -26,6 +36,8 @@ commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands 
 \href{https://en.wikipedia.org/wiki/Sudo}{sudo}.}
 
 \item{echo}{If \code{echo} is \code{TRUE} and \code{execute} is \code{TRUE}, echo the command output.}
+
+\item{package}{The package name to lookup system requirements for.}
 }
 \value{
 A character vector of commands needed to install the system requirements for the package (invisibly).

@@ -138,3 +138,14 @@ test_that("local_system_requirements return the system requirements if 2nd order
     )
   )
 })
+test_that("pkg_system_requirements returns the system requirements", {
+  skip_on_cran()
+  skip_if_offline()
+
+  expect_equal(
+    pkg_system_requirements("curl", "ubuntu", "16.04"),
+    c("apt-get install -y libcurl4-openssl-dev",
+      "apt-get install -y libssl-dev"
+    )
+  )
+})
