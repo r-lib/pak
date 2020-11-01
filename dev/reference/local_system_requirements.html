@@ -129,6 +129,15 @@ requirements for the queried operating system.</p>
   execute <span class='op'>=</span> <span class='cn'>FALSE</span>,
   sudo <span class='op'>=</span> <span class='va'>execute</span>,
   echo <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+
+<span class='fu'>pkg_system_requirements</span><span class='op'>(</span>
+  <span class='va'>package</span>,
+  os <span class='op'>=</span> <span class='cn'>NULL</span>,
+  os_release <span class='op'>=</span> <span class='cn'>NULL</span>,
+  execute <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sudo <span class='op'>=</span> <span class='va'>execute</span>,
+  echo <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -154,6 +163,10 @@ commands (if any). If <code>sudo</code> is <code>TRUE</code>, pak will prepend t
     <tr>
       <th>echo</th>
       <td><p>If <code>echo</code> is <code>TRUE</code> and <code>execute</code> is <code>TRUE</code>, echo the command output.</p></td>
+    </tr>
+    <tr>
+      <th>package</th>
+      <td><p>The package name to lookup system requirements for.</p></td>
     </tr>
     </table>
 
