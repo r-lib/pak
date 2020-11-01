@@ -20,14 +20,12 @@ print_install_details <- function(prop, lib, loaded) {
   n_curr  <- sum(curr  <- sol$lib_status == "current")
   n_noupd <- sum(noupd <- sol$lib_status == "no-update")
 
-  nl <- FALSE
+  cli::cli_verbatim(" ")
 
   if (n_newly) {
-    if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
     cli::cli_alert("Will {.emph install} {n_newly} packages.")
   }
   if (n_upd) {
-    if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
     cli::cli_alert("Will {.emph update} {n_upd} packages.")
   }
 
@@ -43,41 +41,33 @@ print_install_details <- function(prop, lib, loaded) {
 
   if (n_dl == 0) {
     if (n_ch > 0) {
-      if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
       cli::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
     }
 
   } else if (n_ch == 0) {
     if (n_dl -  u_dl > 0) {
-      if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
       cli::cli_alert("Will {.emph download} {n_dl - u_dl} CRAN packages ({b_dl}).")
     }
     if (u_dl > 0) {
-      if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
       cli::cli_alert("Will {.emph download} {u_dl} packages with unknown size.")
     }
 
   } else if (!any_unk) {
-    if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
     cli::cli_alert(
       "Will {.emph download} {n_dl} packages ({b_dl}), cached: {n_ch} ({b_ch}).")
 
   } else {
     if (n_dl - u_dl > 0) {
-      if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
       cli::cli_alert(
         "Will {.emph download} {n_dl - u_dl} CRAN packages ({b_dl}), cached: {n_ch} ({b_ch}).")
     }
     if (u_dl > 0) {
-      if (!nl) { cli::cli_verbatim(" "); nl <- TRUE }
       cli::cli_alert("Will {.emph download} {u_dl} packages with unknown size.")
     }
   }
 
   if (n_newly + n_upd > 0) {
-    if (!nl) cli::cli_verbatim(" ")
     prop$show_solution(key = FALSE)
-    cli::cli_verbatim(" ")
   }
 
   if (length(loaded) > 0 || get_os() == "win") {
