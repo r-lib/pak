@@ -117,7 +117,7 @@ warn_for_loaded_packages_none_locked <- function(others) {
   apps <- ifelse(
     pcs$pid == pcs$app_pid,
     "",
-    glue::glue(", in {pcs$app_name} ({pcs$app_pid})")
+    glue::glue(" in {pcs$app_name} ({pcs$app_pid})")
   )
   sess <- paste0(sess, apps)
   cli::cli_alert_warning(
