@@ -23,7 +23,7 @@
 #'
 #' @noRd
 
-unload <- function(packages) {
+unload <- function(packages, msg = "  Unloading %s...") {
 
   badbase <- intersect(base_packages(), packages)
   if (length(badbase) > 0) {
@@ -53,6 +53,7 @@ unload <- function(packages) {
   gc()
 
   for (pkg in packages) {
+    message(sprintf(msg, pkg))
     unloadNamespace(pkg)
     unload_dll(pkg)
   }
@@ -66,6 +67,7 @@ unload <- function(packages) {
       paste(bad, collapse = ", ")
     )
   }
+  message()
 
   invisible(packages)
 }
