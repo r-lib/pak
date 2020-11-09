@@ -10,6 +10,7 @@ development:
 reference:
 - title: Packages
   contents:
+  - pak
   - pak_package_sources
   - pkg_install
   - pkg_remove

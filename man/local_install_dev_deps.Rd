@@ -36,6 +36,7 @@ dependencies as well, specified in the \code{Suggests} field of
 Other local package trees: 
 \code{\link{local_install_deps}()},
 \code{\link{local_install}()},
-\code{\link{local_package_trees}}
+\code{\link{local_package_trees}},
+\code{\link{pak}()}
 }
 \concept{local package trees}

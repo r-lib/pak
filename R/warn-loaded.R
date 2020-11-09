@@ -212,7 +212,7 @@ r_process_names <- function() {
   c("Rterm.exe", "Rgui.exe", "rsession.exe")
 }
 
-#' @noRD
+#' @noRd
 
 r_app_names <- function() {
   c("Rgui" = "Rgui.exe",

@@ -162,6 +162,7 @@ NULL
 #' Install a package and its dependencies, into a single package library.
 #'
 #' @param pkg Package names or remote package specifications to install.
+#'   See [pak package sources][pak_package_sources] for details.
 #' @param lib Package library to install the packages to. Note that _all_
 #'   dependent packages will the be installed here, even if they are
 #'   already installed in another library.
