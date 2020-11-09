@@ -48,7 +48,6 @@ Suggests:
     zip
 Remotes:
     r-lib/pkgdepends,
-    nealrichardson/distro,
     r-lib/ps
 Config/pak/dependencies:
     utils,
