@@ -7,7 +7,8 @@
 pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE, ask = interactive())
 }
 \arguments{
-\item{pkg}{Package names or remote package specifications to install.}
+\item{pkg}{Package names or remote package specifications to install.
+See \link[=pak_package_sources]{pak package sources} for details.}
 
 \item{lib}{Package library to install the packages to. Note that \emph{all}
 dependent packages will the be installed here, even if they are
@@ -40,6 +41,7 @@ pkg_install("r-lib/pkgconfig")
 Other package functions: 
 \code{\link{lib_status}()},
 \code{\link{pak_package_sources}},
+\code{\link{pak}()},
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_remove}()},
