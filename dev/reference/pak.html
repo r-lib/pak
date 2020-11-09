@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install all dependencies of a package tree — local_install_dev_deps • pak</title>
+<title>Install the required packages — pak • pak</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="Install all dependencies of a package tree — local_install_dev_deps" />
-<meta property="og:description" content="Installs all dependencies of a package tree (or source package file),
-without installing the package tree itself. It installs the development
-dependencies as well, specified in the Suggests field of
-DESCRIPTION." />
+<meta property="og:title" content="Install the required packages — pak" />
+<meta property="og:description" content="Install the specified packages, or the ones requiered by
+the package or project in the current working directory." />
 
 
 <meta name="robots" content="noindex">
@@ -114,59 +112,60 @@ DESCRIPTION." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install all dependencies of a package tree</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/local.R'><code>R/local.R</code></a></small>
-    <div class="hidden name"><code>local_install_dev_deps.Rd</code></div>
+    <h1>Install the required packages</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/pak.R'><code>R/pak.R</code></a></small>
+    <div class="hidden name"><code>pak.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Installs all dependencies of a package tree (or source package file),
-without installing the package tree itself. It installs the development
-dependencies as well, specified in the <code>Suggests</code> field of
-<code>DESCRIPTION</code>.</p>
+    <p>Install the specified packages, or the ones requiered by
+the package or project in the current working directory.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>local_install_dev_deps</span><span class='op'>(</span>
-  root <span class='op'>=</span> <span class='st'>"."</span>,
-  lib <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/libPaths.html'>.libPaths</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,
-  upgrade <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ask <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pak</span><span class='op'>(</span>pkg <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>root</th>
-      <td><p>Path to the package tree.</p></td>
+      <th>pkg</th>
+      <td><p>Package names or remote package specifications to install.
+See <a href='pak_package_sources.html'>pak package sources</a> for details.</p></td>
     </tr>
     <tr>
-      <th>lib</th>
-      <td><p>Package library to install the packages to. Note that <em>all</em>
-dependent packages will the be installed here, even if they are
-already installed in another library.</p></td>
-    </tr>
-    <tr>
-      <th>upgrade</th>
-      <td><p>Whether to upgrade already installed packages to the
-latest available version. If this is <code>FALSE</code>, then only packages
-that need updates to satisfy version requirements, will be updated.
-If it is <code>TRUE</code>, all specified or dependent packages will be updated
-to the latest available version.</p></td>
-    </tr>
-    <tr>
-      <th>ask</th>
-      <td><p>Whether to ask for confirmation.</p></td>
+      <th>...</th>
+      <td><p>Extra arguments are passed to <code><a href='pkg_install.html'>pkg_install()</a></code> or
+<code><a href='local_install_dev_deps.html'>local_install_dev_deps()</a></code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This is a convenience function:</p><ul>
+<li><p>If you want to install some packages, it is easier to type
+than <code><a href='pkg_install.html'>pkg_install()</a></code>.</p></li>
+<li><p>If you want to install all the packages that are needed
+for the development of a package or project, then it is
+easier to type than <code><a href='local_install_dev_deps.html'>local_install_dev_deps()</a></code>.</p></li>
+<li><p>You don't need to remember two functions to install
+packages, just one.</p></li>
+</ul>
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other local package trees: 
+    <div class='dont-index'><p>Other package functions: 
+<code><a href='lib_status.html'>lib_status</a>()</code>,
+<code><a href='pak_package_sources.html'>pak_package_sources</a></code>,
+<code><a href='pkg_deps.html'>pkg_deps</a>()</code>,
+<code><a href='pkg_download.html'>pkg_download</a>()</code>,
+<code><a href='pkg_install.html'>pkg_install</a>()</code>,
+<code><a href='pkg_remove.html'>pkg_remove</a>()</code>,
+<code><a href='pkg_status.html'>pkg_status</a>()</code></p>
+<p>Other local package trees: 
 <code><a href='local_install_deps.html'>local_install_deps</a>()</code>,
+<code><a href='local_install_dev_deps.html'>local_install_dev_deps</a>()</code>,
 <code><a href='local_install.html'>local_install</a>()</code>,
-<code><a href='local_package_trees.html'>local_package_trees</a></code>,
-<code><a href='pak.html'>pak</a>()</code></p></div>
+<code><a href='local_package_trees.html'>local_package_trees</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
