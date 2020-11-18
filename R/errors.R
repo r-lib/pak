@@ -143,6 +143,10 @@ err <- local({
       throw(new_error("Parent condition must be a condition object"))
     }
 
+    if (isTRUE(cond$call)) {
+      cond$call <- sys.call(-1) %||% sys.call()
+    }
+
     # Eventually the nframe numbers will help us print a better trace
     # When a child condition is created, the child will use the parent
     # error object to make note of its own nframe. Here we copy that back
@@ -150,6 +154,7 @@ err <- local({
     if (is.null(cond$`_nframe`)) cond$`_nframe` <- sys.nframe()
     if (!is.null(parent)) {
       cond$parent <- parent
+      cond$call <- cond$parent$`_childcall`
       cond$`_nframe` <- cond$parent$`_childframe`
       cond$`_ignore` <- cond$parent$`_childignore`
     }
