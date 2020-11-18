@@ -188,7 +188,7 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
   pkg_data$ns[[package]] <- pkg_env
   if (".onLoad" %in% names(pkg_env)) {
     withCallingHandlers(
-      pkg_env$.onLoad(pkg_dir, package),
+      pkg_env$.onLoad(dirname(pkg_dir), package),
       error = function(e) pkg_data$ns[[package]] <<- NULL
     )
   }
