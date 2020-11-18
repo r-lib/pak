@@ -154,7 +154,6 @@ err <- local({
     if (is.null(cond$`_nframe`)) cond$`_nframe` <- sys.nframe()
     if (!is.null(parent)) {
       cond$parent <- parent
-      cond$call <- cond$parent$`_childcall`
       cond$`_nframe` <- cond$parent$`_childframe`
       cond$`_ignore` <- cond$parent$`_childignore`
     }
