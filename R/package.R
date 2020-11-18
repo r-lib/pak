@@ -159,32 +159,42 @@ NULL
 
 #' Install a package
 #'
-#' Install a package and its dependencies, into a single package library.
+#' Install a package and its dependencies into a single package library.
 #'
 #' @param pkg Package names or remote package specifications to install.
 #'   See [pak package sources][pak_package_sources] for details.
 #' @param lib Package library to install the packages to. Note that _all_
 #'   dependent packages will the be installed here, even if they are
 #'   already installed in another library.
-#' @param upgrade Whether to upgrade already installed packages to the
-#'   latest available version. If this is `FALSE`, then only packages
-#'   that need updates to satisfy version requirements, will be updated.
-#'   If it is `TRUE`, all specified or dependent packages will be updated
-#'   to the latest available version.
-#' @param ask Whether to ask for confirmation.
-#' @return Data frame, with information about the installed package(s).
+#' @param upgrade When `FALSE`, the default, does the minimum amount of work
+#'   to give you the latest version of `pkg`. It will only upgrade packages if
+#'   `pkg` or one of its explicitly requires a higher version than what you
+#'   currently have.
+#'
+#'   When `upgrade = TRUE`, will do ensure that you have the latest version of
+#'   `pkg` and all its dependencies.
+#' @param ask Whether to ask for confirmation when installing a different
+#'   version of a package that is already installed. Installations that only
+#'   add new packages never require confirmation.
+#' @return (Invisibly) A data frame with information about the installed
+#'   package(s).
 #'
 #' @export
 #' @family package functions
 #' @examples
 #' \dontrun{
 #' pkg_install("dplyr")
+#'
+#' # Upgrade dplyr and all its dependencies
 #' pkg_install("dplyr", upgrade = TRUE)
 #'
-#' ## Package from GitHub
-#' pkg_install("r-lib/pkgconfig")
+#' # Install the development version of dplyr
+#' pkg_install("tidyverse/dplyr")
+#'
+#' # Switch back to the CRAN version. This will be fast because
+#' # pak will have cached the prior install.
+#' pkg_install("dplyr")
 #' }
-
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         ask = interactive()) {
 
