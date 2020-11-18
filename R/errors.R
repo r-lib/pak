@@ -144,7 +144,11 @@ err <- local({
     }
 
     if (isTRUE(cond$call)) {
-      cond$call <- sys.call(-1) %||% sys.call()
+      if (is.null(parent)) {
+        cond$call <- sys.call(-1) %||% sys.call()
+      } else {
+        cond$call <- parent$call
+      }
     }
 
     # Eventually the nframe numbers will help us print a better trace
