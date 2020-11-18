@@ -144,15 +144,18 @@ already installed in another library.</p></td>
     </tr>
     <tr>
       <th>upgrade</th>
-      <td><p>Whether to upgrade already installed packages to the
-latest available version. If this is <code>FALSE</code>, then only packages
-that need updates to satisfy version requirements, will be updated.
-If it is <code>TRUE</code>, all specified or dependent packages will be updated
-to the latest available version.</p></td>
+      <td><p>When <code>FALSE</code>, the default, does the minimum amount of work
+to give you the latest version of <code>pkg</code>. It will only upgrade packages if
+<code>pkg</code> or one of its explicitly requires a higher version than what you
+currently have.</p>
+<p>When <code>upgrade = TRUE</code>, will do ensure that you have the latest version of
+<code>pkg</code> and all its dependencies.</p></td>
     </tr>
     <tr>
       <th>ask</th>
-      <td><p>Whether to ask for confirmation.</p></td>
+      <td><p>Whether to ask for confirmation when installing a different
+version of a package that is already installed. Installations that only
+add new packages never require confirmation.</p></td>
     </tr>
     </table>
 
