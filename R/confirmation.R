@@ -108,7 +108,7 @@ offer_restart <- function(unloaded) {
           "  current R session may be unstable. It is best to restart R now.\n"
   )
 
-  rs <- pak:::rstudio$detect()$type
+  rs <- rstudio$detect()$type
 
   if (rs == "rstudio_console") {
     message(
