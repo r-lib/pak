@@ -101,3 +101,33 @@ get_answer <- function(answers, prompt = NULL) {
     if (ans %in% answers) return(ans)
   }
 }
+
+offer_restart <- function(unloaded) {
+  message("\n",
+          "! pak had to unload some packages before installation, and the\n",
+          "  current R session may be unstable. It is best to restart R now.\n"
+  )
+
+  rs <- pak:::rstudio$detect()$type
+
+  if (rs == "rstudio_console") {
+    message(
+      "  1. Restart R without saving data.\n",
+      "  2. Save data to `.RData` and restart R.\n",
+      "  3. Do not restart R.\n"
+    )
+    ans <- get_answer(1:3)
+    if (ans == "1") {
+      rstudioapi::restartSession()
+
+    } else if (ans == "2") {
+      message("Saving workspace to .RData...")
+      save.image()
+      rstudioapi::restartSession()
+
+    } else if (ans == "3") {
+      invisible("OK")
+
+    }
+  }
+}

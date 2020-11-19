@@ -205,11 +205,13 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
          start = start, loaded = loaded_packages(lib)))
 
-  handle_status(status, lib, ask)
+  unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
     list(proposal = NULL, lib = lib))
+
+  if (length(unloaded) > 0) offer_restart(unloaded)
 
   invisible(inst)
 }

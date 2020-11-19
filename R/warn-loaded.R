@@ -10,11 +10,12 @@ warn_for_loaded_packages <- function(pkgs, lib, loaded, pid = NULL) {
 
 handle_status <- function(status, lib, ask) {
   loaded_status <- status$loaded_status
+  sts <- NULL
   while (ask && grepl("locked", loaded_status$status)) {
     status$should_ask <- FALSE
     ans <- get_answer(loaded_status$answers)
     sts <- loaded_packages_response(loaded_status, ans)
-    if (sts != "try-again") break
+    if (sts$status != "try-again") break
     loaded_status <- remote(
       function(...) get("warn_for_loaded_packages", asNamespace("pak"))(...),
       list(loaded_status$pkgs, lib, loaded_packages(lib))
@@ -25,6 +26,8 @@ handle_status <- function(status, lib, ask) {
   if (any && ask) {
     get_confirmation("? Do you want to continue (Y/n) ")
   }
+
+  invisible(sts)
 }
 
 # -- Unix ------------------------------------------------------------
@@ -387,11 +390,11 @@ loaded_packages_response <- function(status, response) {
         "1" = {
           # Unload
           unload(status$current$locked)
-          "go-on"
+          list(status = "go-on", unloaded = status$current$locked)
         },
         "2" = {
           # Try anyway, nothing to do
-          "go-on"
+          list(status = "go-on")
         },
         "3" = {
           # Abort
@@ -410,7 +413,7 @@ loaded_packages_response <- function(status, response) {
           if (length(status$current$locked) > 0) {
             unload(status$current$locked)
           }
-          "try-again"
+          list(status = "try-again", unloaded = status$current$locked)
         },
         "2" = {
           # Unload (if needed), terminate
@@ -418,11 +421,11 @@ loaded_packages_response <- function(status, response) {
             unload(status$current$locked)
           }
           terminate(status$others)
-          "go-on"
+          list(status = "go-on", unloaded = status$current$locked)
         },
         "3" = {
           # Try anyway
-          "go-on"
+          list(status = "go-on")
         },
         "4" = {
           # Abort

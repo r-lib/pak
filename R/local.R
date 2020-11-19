@@ -83,13 +83,15 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
     list(root = root, lib = lib, upgrade = upgrade, start = start,
          loaded = loaded_packages(lib)))
 
-  handle_status(status, lib, ask)
+  unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) {
       get("local_install_dev_deps_do_plan", asNamespace("pak"))(...)
     },
     list(lib = lib))
+
+  if (length(unloaded) > 0) offer_restart(unloaded)
 
   invisible(inst)
 }
