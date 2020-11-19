@@ -80,6 +80,11 @@
 #   error and highlight it.
 # * Add the rethrow_call_with_cleanup function, to work with embedded
 #   cleancall.
+#
+# ### 1.2.2 -- 2020-11-19
+#
+# * Add the `call` argument to `catch_rethrow()` and `rethrow()`, to be
+#   able to omit calls.
 
 err <- local({
 
@@ -144,11 +149,7 @@ err <- local({
     }
 
     if (isTRUE(cond$call)) {
-      if (is.null(parent)) {
-        cond$call <- sys.call(-1) %||% sys.call()
-      } else {
-        cond$call <- parent$call
-      }
+      cond$call <- sys.call(-1) %||% sys.call()
     }
 
     # Eventually the nframe numbers will help us print a better trace
@@ -158,6 +159,7 @@ err <- local({
     if (is.null(cond$`_nframe`)) cond$`_nframe` <- sys.nframe()
     if (!is.null(parent)) {
       cond$parent <- parent
+      cond$call <- cond$parent$`_childcall`
       cond$`_nframe` <- cond$parent$`_childframe`
       cond$`_ignore` <- cond$parent$`_childignore`
     }
@@ -269,6 +271,8 @@ err <- local({
   #'   [withCallingHandlers()]. You are supposed to call [throw()] from
   #'   the error handler, with a new error object, setting the original
   #'   error object as parent. See examples below.
+  #' @param call Logical flag, whether to add the call to
+  #'   `catch_rethrow()` to the error.
   #' @examples
   #' f <- function() {
   #'   ...
@@ -280,8 +284,8 @@ err <- local({
   #'   )
   #' }
 
-  catch_rethrow <- function(expr, ...) {
-    realcall <- sys.call(-1) %||% sys.call()
+  catch_rethrow <- function(expr, ..., call = TRUE) {
+    realcall <- if (isTRUE(call)) sys.call(-1) %||% sys.call()
     realframe <- sys.nframe()
     parent <- parent.frame()
 
@@ -319,9 +323,11 @@ err <- local({
   #' @param expr Expression to evaluate.
   #' @param ... Condition handler specification, the same way as in
   #'   [withCallingHandlers()].
+  #' @param call Logical flag, whether to add the call to
+  #'   `rethrow()` to the error.
 
-  rethrow <- function(expr, cond) {
-    realcall <- sys.call(-1) %||% sys.call()
+  rethrow <- function(expr, cond, call = TRUE) {
+    realcall <- if (isTRUE(call)) sys.call(-1) %||% sys.call()
     realframe <- sys.nframe()
     withCallingHandlers(
       expr,

@@ -65,7 +65,7 @@ remote <- function(func, args = list()) {
     rs$run_with_output(func2, args)
   )
   if (!is.null(res$error)) {
-    err$rethrow(stop(res$error$parent$error), res$error$parent)
+    err$rethrow(stop(res$error$parent$error), res$error$parent, call = FALSE)
   }
 
   res$result
