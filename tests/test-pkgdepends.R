@@ -15,7 +15,7 @@ do <- function() {
     library(pak)
 
     test_dir(
-      "pkginstall",
+      "pkgdepends",
       env = new.env(parent = asNamespace("pak")),
       reporter = "check"
     )
