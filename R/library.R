@@ -10,6 +10,7 @@
 #' @family library functions
 
 lib_status <- function(lib = .libPaths()[1]) {
+  load_extra("tibble")
   remote(
     function(...) asNamespace("pak")$lib_status_internal(...),
     list(lib = lib))

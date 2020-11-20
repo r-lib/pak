@@ -275,6 +275,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
+  load_extra("tibble")
   remote(
     function(...) asNamespace("pak")$pkg_status_internal(...),
     list(pkg = pkg, lib = lib))
@@ -389,6 +390,7 @@ pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
     args
   )
 
+  load_extra("tibble")
   invisible(dl)
 }
 

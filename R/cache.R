@@ -51,6 +51,7 @@ cache_summary_internal <- function() {
 #' cache_list(platform = "source")
 
 cache_list <- function(...) {
+  load_extra("tibble")
   remote(
     function(...) {
       get("cache_list_internal", asNamespace("pak"))(...)
@@ -169,6 +170,7 @@ meta_summary_internal <- function() {
 #' meta_list(pkg = c("shiny", "htmlwidgets"))
 
 meta_list <- function(pkg = NULL) {
+  load_extra("tibble")
   remote(
     function(...) {
       get("meta_list_internal", asNamespace("pak"))(...)

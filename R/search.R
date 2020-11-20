@@ -22,6 +22,7 @@
 #' psro[]
 
 pkg_search <- function(query, ...) {
+  load_extra("tibble")
   remote(
     function(...) {
       get("pkg_search_internal", asNamespace("pak"))(...)

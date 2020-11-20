@@ -79,6 +79,20 @@ pak_sitrep <- function() {
   ver <- as.character(utils::packageVersion("pak"))
   cat0("* pak version:\n- ", ver, "\n")
 
+  ## recommended packages
+  xpkgs <- extra_packages()
+  if (length(xpkgs)) {
+    xinst <- pkg_is_installed(xpkgs)
+    if (any(xinst)) {
+      cat0("* Optional packages installed:\n")
+      cat0(paste0("- ", xpkgs[xinst], "\n"))
+    }
+    if (any(!xinst)) {
+      cat0("* Optional packages missing:\n")
+      cat0(paste0("- ", xpkgs[!xinst], "\n"))
+    }
+  }
+
   ## library path
   cat0("* Library path:\n")
   cat(paste0("- ", .libPaths()), sep = "\n")
