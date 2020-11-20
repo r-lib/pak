@@ -161,6 +161,11 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
 
   ## Reset environments
   set_function_envs(pkg_env, pkg_env)
+  ## Sometimes a package refers to its env, this is one known instance.
+  ## We could also walk the whole tree, but probably not worth it.
+  if (!is.null(pkg_env$err$.internal$package_env)) {
+    pkg_env$err$.internal$package_env <- pkg_env
+  }
 
   ## Load shared library
   dll_file <- file.path(pkg_dir, "libs", .Platform$r_arch,
