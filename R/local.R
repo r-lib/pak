@@ -32,7 +32,7 @@
 #' @family local package trees
 #' @export
 
-local_install <- function(root = ".", lib = .libPaths()[1], upgrade = FALSE,
+local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
                           ask = interactive()) {
   pkg_install(paste0("local::", root), lib = lib, upgrade = upgrade,
               ask = ask)
@@ -54,7 +54,7 @@ local_install <- function(root = ".", lib = .libPaths()[1], upgrade = FALSE,
 #' @export
 
 local_install_deps <- function(root = ".", lib = .libPaths()[1],
-                               upgrade = FALSE, ask = interactive()) {
+                               upgrade = TRUE, ask = interactive()) {
   pkg_install(paste0("deps::", root), lib = lib, upgrade = upgrade,
               ask = ask)
 }
@@ -73,7 +73,7 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 
 
 local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
-                                   upgrade = FALSE, ask = interactive()) {
+                                   upgrade = TRUE, ask = interactive()) {
   start <- Sys.time()
 
   status <- remote(

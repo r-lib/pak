@@ -7,7 +7,7 @@
 local_install(
   root = ".",
   lib = .libPaths()[1],
-  upgrade = FALSE,
+  upgrade = TRUE,
   ask = interactive()
 )
 }
