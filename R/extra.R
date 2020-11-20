@@ -3,6 +3,18 @@ extra_packages <- function() {
   "tibble"
 }
 
+#' Install all optional dependencies of pak
+#'
+#' These packages are not required for any pak functionality. They are
+#' recommended for some functions that return values that are best
+#' used with these packages. E.g. many functions return tibbles, which
+#' work best with the tibble package.
+#'
+#' Currently only one package is optional: tibble.
+#'
+#' @param upgrade Whether to install or upgrade to the latest versions
+#'   of the optional packages.
+#'
 #' @export
 
 pak_install_extra <- function(upgrade = FALSE) {
