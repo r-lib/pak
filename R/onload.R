@@ -38,10 +38,10 @@ check_platform <- function(libname = dirname(find.package("pak")),
   # Is this during installation?
   if (Sys.getenv("R_PACKAGE_DIR", "") != "") return(TRUE)
 
-  data <- tryCatch(
-    suppressWarnings(read.dcf(
+  pkg_data$pak_version <- data <- tryCatch(
+    suppressWarnings(as.list(read.dcf(
       file.path(libname, pkgname, "pak-version.dcf")
-    )),
+    )[1,])),
     error = function(err) {
       warning(
         "Cannot read pak metadata, broken installation?\n",
@@ -54,7 +54,7 @@ check_platform <- function(libname = dirname(find.package("pak")),
   if (is.null(data)) return()
 
   current <- R.Version()$platform
-  install <- data[, "platform"]
+  install <- data$platform
 
   if (!platform_match(install, current)) {
     warning(
