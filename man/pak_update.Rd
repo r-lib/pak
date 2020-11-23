@@ -4,7 +4,11 @@
 \alias{pak_update}
 \title{Update pak itself}
 \usage{
-pak_update()
+pak_update(force = FALSE)
+}
+\arguments{
+\item{force}{Whether to force an update, even if no newer version is
+available.}
 }
 \value{
 Nothing.
