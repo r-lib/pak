@@ -4,11 +4,20 @@
 \alias{pak}
 \title{Install the required packages}
 \usage{
-pak(pkg = NULL, ...)
+pak(pkg = NULL, upgrade = FALSE, ...)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
-See \link[=pak_package_sources]{pak package sources} for details.}
+See \link[=pak_package_sources]{pak package sources} for details. If \code{NULL},
+will install all development dependencies for the current package.}
+
+\item{upgrade}{When \code{FALSE}, the default, does the minimum amount of work
+to give you the latest version of \code{pkg}. It will only upgrade packages if
+\code{pkg} or one of its explicitly requires a higher version than what you
+currently have.
+
+When \code{upgrade = TRUE}, will do ensure that you have the latest version of
+\code{pkg} and all its dependencies.}
 
 \item{...}{Extra arguments are passed to \code{\link[=pkg_install]{pkg_install()}} or
 \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.}

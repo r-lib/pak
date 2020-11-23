@@ -14,7 +14,9 @@
 #'   packages, just one.
 #'
 #' @param pkg Package names or remote package specifications to install.
-#'   See [pak package sources][pak_package_sources] for details.
+#'   See [pak package sources][pak_package_sources] for details. If `NULL`,
+#'   will install all development dependencies for the current package.
+#' @inheritParams pkg_install
 #' @param ... Extra arguments are passed to [pkg_install()] or
 #'   [local_install_dev_deps()].
 #'
@@ -22,10 +24,10 @@
 #' @family package functions
 #' @family local package trees
 
-pak <- function(pkg = NULL, ...) {
+pak <- function(pkg = NULL, upgrade = FALSE, ...) {
   if (is.null(pkg)) {
-    local_install_dev_deps(...)
+    local_install_dev_deps(upgrade = upgrade, ...)
   } else {
-    pkg_install(pkg, ...)
+    pkg_install(upgrade = upgrade, pkg, ...)
   }
 }
