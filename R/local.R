@@ -74,6 +74,8 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 
 local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
                                    upgrade = TRUE, ask = interactive()) {
+
+  root <- rprojroot::find_package_root_file(path = root)
   start <- Sys.time()
 
   status <- remote(
