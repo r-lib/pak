@@ -203,7 +203,7 @@ warn_for_loaded_packages_locked_locked <- function(current, others) {
   cli::cli_ol(c(
     "Quit the listed R sessions and then have pak unload the \\
     packages from the current R session (Safest option.)",
-    "Terminate the listed R sessions (the may lose data!) and have \\
+    "Terminate the listed R sessions (they may lose data!) and have \\
     pak unload the packages from the current R session.",
     "Try the installation anyway.",
     "Abort the installation."
