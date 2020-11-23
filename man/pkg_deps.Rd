@@ -4,7 +4,7 @@
 \alias{pkg_deps}
 \title{Look up the dependencies of a package}
 \usage{
-pkg_deps(pkg, dependencies = NULL)
+pkg_deps(pkg, dependencies = NA)
 }
 \arguments{
 \item{pkg}{Package name or remote package specification to resolve.}

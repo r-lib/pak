@@ -7,9 +7,9 @@
 \alias{local_dev_deps_tree}
 \title{Dependencies of a package tree}
 \usage{
-local_deps(root = ".", dependencies = NULL)
+local_deps(root = ".", dependencies = NA)
 
-local_deps_tree(root = ".", dependencies = NULL)
+local_deps_tree(root = ".", dependencies = NA)
 
 local_dev_deps(root = ".", dependencies = TRUE)
 

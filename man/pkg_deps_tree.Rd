@@ -4,7 +4,7 @@
 \alias{pkg_deps_tree}
 \title{Draw the dependency tree of a package}
 \usage{
-pkg_deps_tree(pkg, dependencies = NULL)
+pkg_deps_tree(pkg, dependencies = NA)
 }
 \arguments{
 \item{pkg}{Package name or remote package specification to resolve.}
