@@ -64,7 +64,7 @@ pak_update <- function(force = FALSE) {
   utils::download.file(url, tgt)
 
   # Otherwise the subprocess might be locking some DLLs
-  try(pkg_data$remote$kill())
+  try(pkg_data$remote$kill(), silent = TRUE)
 
   lib <- dirname(getNamespaceInfo("pak", "path"))
   utils::install.packages(tgt, repos = NULL, type = "source", lib = lib)
