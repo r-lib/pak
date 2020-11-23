@@ -96,6 +96,46 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
   invisible(inst)
 }
 
+#' Dependencies of a package tree
+#'
+#' @param root Path to the package tree.
+#' @param dependencies Which dependencies to print. Defaults to the hard
+#'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
+#'   dependencies plus the development dependencies for `local_dev_deps()`
+#'   and `local_dev_deps_tree()`.
+#' @return All of these functions return the dependencies in a data
+#'   frame (tibble). `local_deps_tree()` and `local_dev_deps_tree()` also
+#'   print the dependency tree.
+#'
+#' @export
+
+local_deps <- function(root = ".", dependencies = NULL) {
+  ref <- paste0("local::", root)
+  pkg_deps(ref, dependencies = dependencies)
+}
+
+#' @export
+#' @rdname local_deps
+
+local_deps_tree <- function(root = ".", dependencies = NULL) {
+  ref <- paste0("local::", root)
+  pkg_deps_tree(ref, dependencies = dependencies)
+}
+
+#' @export
+#' @rdname local_deps
+
+local_dev_deps <- function(root = ".", dependencies = TRUE) {
+  local_deps(root, dependencies)
+}
+
+#' @export
+#' @rdname local_deps
+
+local_dev_deps_tree <- function(root = ".", dependencies = TRUE) {
+  local_deps_tree(root, dependencies)
+}
+
 ## ----------------------------------------------------------------------
 
 ## Almost the same as a "regular" install, but need to set dependencies
