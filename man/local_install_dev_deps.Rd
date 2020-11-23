@@ -38,6 +38,8 @@ dependencies as well, specified in the \code{Suggests} field of
 }
 \seealso{
 Other local package trees: 
+\code{\link{local_deps_explain}()},
+\code{\link{local_deps}()},
 \code{\link{local_install_deps}()},
 \code{\link{local_install}()},
 \code{\link{local_package_trees}},

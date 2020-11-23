@@ -379,6 +379,7 @@ pkg_deps_tree_internal <- function(pkg, dependencies = NA) {
   tree <- deps$draw()
   data <- deps$get_solution()$data
   list(tree = tree, data = data)
+
 }
 
 #' @rdname lib_status

@@ -42,6 +42,8 @@ dependencies.
 }
 \seealso{
 Other local package trees: 
+\code{\link{local_deps_explain}()},
+\code{\link{local_deps}()},
 \code{\link{local_install_deps}()},
 \code{\link{local_install_dev_deps}()},
 \code{\link{local_package_trees}},

@@ -107,6 +107,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #'   frame (tibble). `local_deps_tree()` and `local_dev_deps_tree()` also
 #'   print the dependency tree.
 #'
+#' @family local package trees
 #' @export
 
 local_deps <- function(root = ".", dependencies = NA) {
@@ -134,6 +135,35 @@ local_dev_deps <- function(root = ".", dependencies = TRUE) {
 
 local_dev_deps_tree <- function(root = ".", dependencies = TRUE) {
   local_deps_tree(root, dependencies)
+}
+
+#' Explain dependencies of a package tree
+#'
+#' These functions are similar to [pkg_deps_explain()], but work on a
+#' local package tree. `local_dev_deps_explain()` also includes development
+#' dependencies.
+#'
+#' @param root Path to the package tree.
+#' @param deps Package names of the dependencies to explain.
+#' @param dependencies Which dependencies to print. Defaults to the hard
+#'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
+#'   dependencies plus the development dependencies for `local_dev_deps()`
+#'   and `local_dev_deps_tree()`.
+#'
+#' @export
+#' @family local package trees
+
+local_deps_explain <- function(deps, root = ".", dependencies = NA) {
+  ref <- paste0("local::", root)
+  pkg_deps_explain(ref, deps, dependencies)
+}
+
+#' @export
+#' @rdname local_deps_explain
+
+local_dev_deps_explain <- function(deps, root = ".", dependencies = TRUE) {
+  ref <- paste0("local::", root)
+  pkg_deps_explain(ref, deps, dependencies)
 }
 
 ## ----------------------------------------------------------------------
