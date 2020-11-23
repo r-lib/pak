@@ -19,6 +19,7 @@ Other package functions:
 \code{\link{lib_status}()},
 \code{\link{pak_package_sources}},
 \code{\link{pak}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},

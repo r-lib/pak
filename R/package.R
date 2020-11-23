@@ -309,13 +309,12 @@ pkg_remove_internal <- function(pkg, lib) {
   invisible(pr)
 }
 
-#' Draw the dependency tree of a package
+#' Look up the dependencies of a package
 #'
 #' @param pkg Package name or remote package specification to resolve.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
-#' @return A `tree` object from the cli package, see [cli::tree()].
-#'   The tree is also printed to the screen by default
+#' @return A data frame (tibble).
 #'
 #' @family package functions
 #' @export
@@ -324,6 +323,8 @@ pkg_remove_internal <- function(pkg, lib) {
 #' pkg_deps("r-lib/fs")
 
 pkg_deps <- function(pkg, dependencies = NULL) {
+  stopifnot(length(pkg == 1) && is.character(pkg))
+  load_extra("tibble")
   remote(
     function(...) {
       get("pkg_deps_internal", asNamespace("pak"))(...)
@@ -333,6 +334,11 @@ pkg_deps <- function(pkg, dependencies = NULL) {
 }
 
 pkg_deps_internal <- function(pkg, dependencies = NULL) {
+  deps <- pkg_deps_internal2(pkg, dependencies)
+  deps$get_solution()$data
+}
+
+pkg_deps_internal2 <- function(pkg, dependencies) {
   dir.create(lib <- tempfile())
   on.exit(rimraf(lib), add = TRUE)
   config <- list(library = lib)
@@ -340,7 +346,39 @@ pkg_deps_internal <- function(pkg, dependencies = NULL) {
   deps <- pkgdepends::new_pkg_deps(pkg, config = config)
   deps$solve()
   deps$stop_for_solution_error()
-  deps$draw()
+  deps
+}
+
+#' Draw the dependency tree of a package
+#'
+#' @param pkg Package name or remote package specification to resolve.
+#' @param dependencies Dependency types. See
+#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @return The same data frame (tibble) as [pkg_deps()], invisibly.
+#'
+#' @family package functions
+#' @export
+#' @examplesIf FALSE
+#' pkg_deps_tree("dplyr")
+#' pkg_deps_tree("r-lib/usethis")
+
+pkg_deps_tree <- function(pkg, dependencies = NULL) {
+  stopifnot(length(pkg == 1) && is.character(pkg))
+  ret <- remote(
+    function(...) {
+      get("pkg_deps_tree_internal", asNamespace("pak"))(...)
+    },
+    list(pkg = pkg, dependencies = dependencies)
+  )
+  cat(ret$tree, sep = "\n")
+  invisible(ret$data)
+}
+
+pkg_deps_tree_internal <- function(pkg, dependencies = NULL) {
+  deps <- pkg_deps_internal2(pkg, dependencies)
+  tree <- deps$draw()
+  data <- deps$get_solution()$data
+  list(tree = tree, data = data)
 }
 
 #' @rdname lib_status
