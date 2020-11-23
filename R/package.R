@@ -322,7 +322,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' pkg_deps("curl")
 #' pkg_deps("r-lib/fs")
 
-pkg_deps <- function(pkg, dependencies = NULL) {
+pkg_deps <- function(pkg, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   load_extra("tibble")
   remote(
@@ -333,7 +333,7 @@ pkg_deps <- function(pkg, dependencies = NULL) {
   )
 }
 
-pkg_deps_internal <- function(pkg, dependencies = NULL) {
+pkg_deps_internal <- function(pkg, dependencies = NA) {
   deps <- pkg_deps_internal2(pkg, dependencies)
   deps$get_solution()$data
 }
@@ -362,7 +362,7 @@ pkg_deps_internal2 <- function(pkg, dependencies) {
 #' pkg_deps_tree("dplyr")
 #' pkg_deps_tree("r-lib/usethis")
 
-pkg_deps_tree <- function(pkg, dependencies = NULL) {
+pkg_deps_tree <- function(pkg, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   ret <- remote(
     function(...) {
@@ -374,7 +374,7 @@ pkg_deps_tree <- function(pkg, dependencies = NULL) {
   invisible(ret$data)
 }
 
-pkg_deps_tree_internal <- function(pkg, dependencies = NULL) {
+pkg_deps_tree_internal <- function(pkg, dependencies = NA) {
   deps <- pkg_deps_internal2(pkg, dependencies)
   tree <- deps$draw()
   data <- deps$get_solution()$data

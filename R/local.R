@@ -109,7 +109,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #'
 #' @export
 
-local_deps <- function(root = ".", dependencies = NULL) {
+local_deps <- function(root = ".", dependencies = NA) {
   ref <- paste0("local::", root)
   pkg_deps(ref, dependencies = dependencies)
 }
@@ -117,7 +117,7 @@ local_deps <- function(root = ".", dependencies = NULL) {
 #' @export
 #' @rdname local_deps
 
-local_deps_tree <- function(root = ".", dependencies = NULL) {
+local_deps_tree <- function(root = ".", dependencies = NA) {
   ref <- paste0("local::", root)
   pkg_deps_tree(ref, dependencies = dependencies)
 }
