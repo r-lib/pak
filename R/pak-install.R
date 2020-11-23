@@ -79,6 +79,31 @@ pak_sitrep <- function() {
   ver <- as.character(utils::packageVersion("pak"))
   cat0("* pak version:\n- ", ver, "\n")
 
+  ## platform data
+  if (is.null(pkg_data$pak_version)) {
+    cat0("* No version information, loaded with `load_all()`?\n")
+  } else {
+    ver <- pkg_data$pak_version
+    plt <- R.Version()$platform
+    comp <- platform_match(ver$platform, plt)
+    cat0("* Version information:\n")
+    cat0(
+      "- pak platform: ", ver$platform,
+      " (current: ", R.Version()$platform, if (comp) ", compatible", ")\n"
+    )
+    if (!comp) cat0("- platform is incompatible!\n")
+    repo <- ver$`github-repository`
+    sha <- ver$`github-sha`
+    if (repo != "r-lib/pak") {
+      cat0(
+        "- pak repository: ", repo,
+        if (repo == "-") " (local install?)",
+        "\n"
+      )
+    }
+    if (repo != "-" || sha != "-") cat0("- pak sha: ", sha, "\n")
+  }
+
   ## recommended packages
   xpkgs <- extra_packages()
   if (length(xpkgs)) {
