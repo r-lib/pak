@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install the required packages — pak • pak</title>
+<title>Explain how a package depends on other packages — pkg_deps_explain • pak</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Install the required packages — pak" />
-<meta property="og:description" content="Install the specified packages, or the ones requiered by
-the package or project in the current working directory." />
+<meta property="og:title" content="Explain how a package depends on other packages — pkg_deps_explain" />
+<meta property="og:description" content="Extract dependency chains from pkg to deps." />
 
 
 <meta name="robots" content="noindex">
@@ -112,64 +111,52 @@ the package or project in the current working directory." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install the required packages</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/pak.R'><code>R/pak.R</code></a></small>
-    <div class="hidden name"><code>pak.Rd</code></div>
+    <h1>Explain how a package depends on other packages</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/deps-explain.R'><code>R/deps-explain.R</code></a></small>
+    <div class="hidden name"><code>pkg_deps_explain.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Install the specified packages, or the ones requiered by
-the package or project in the current working directory.</p>
+    <p>Extract dependency chains from <code>pkg</code> to <code>deps</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pak</span><span class='op'>(</span>pkg <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pkg_deps_explain</span><span class='op'>(</span><span class='va'>pkg</span>, <span class='va'>deps</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>pkg</th>
-      <td><p>Package names or remote package specifications to install.
-See <a href='pak_package_sources.html'>pak package sources</a> for details.</p></td>
+      <td><p>Package name or remote package specification.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Extra arguments are passed to <code><a href='pkg_install.html'>pkg_install()</a></code> or
-<code><a href='local_install_dev_deps.html'>local_install_dev_deps()</a></code>.</p></td>
+      <th>deps</th>
+      <td><p>Package names of the dependencies to explain.</p></td>
+    </tr>
+    <tr>
+      <th>dependencies</th>
+      <td><p>Dependency types. See
+<code><a href='https://rdrr.io/pkg/pkgdepends/man/as_pkg_dependencies.html'>pkgdepends::as_pkg_dependencies()</a></code> for possible values.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A named list with a print method. First entries are the
+function arguments: <code>pkg</code>, <code>deps</code>, <code>dependencies</code>, the last one is
+<code>paths</code> and it contains the results in a named list, the names are
+the package names in <code>deps</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This is a convenience function:</p><ul>
-<li><p>If you want to install some packages, it is easier to type
-than <code><a href='pkg_install.html'>pkg_install()</a></code>.</p></li>
-<li><p>If you want to install all the packages that are needed
-for the development of a package or project, then it is
-easier to type than <code><a href='local_install_dev_deps.html'>local_install_dev_deps()</a></code>.</p></li>
-<li><p>You don't need to remember two functions to install
-packages, just one.</p></li>
-</ul>
+    <p>This function is similar to <code><a href='pkg_deps_tree.html'>pkg_deps_tree()</a></code>, but its output is easier
+to read if you are only interested is certain packages (<code>deps</code>).</p>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other package functions: 
-<code><a href='lib_status.html'>lib_status</a>()</code>,
-<code><a href='pak_package_sources.html'>pak_package_sources</a></code>,
-<code><a href='pkg_deps_tree.html'>pkg_deps_tree</a>()</code>,
-<code><a href='pkg_deps.html'>pkg_deps</a>()</code>,
-<code><a href='pkg_download.html'>pkg_download</a>()</code>,
-<code><a href='pkg_install.html'>pkg_install</a>()</code>,
-<code><a href='pkg_remove.html'>pkg_remove</a>()</code>,
-<code><a href='pkg_status.html'>pkg_status</a>()</code></p>
-<p>Other local package trees: 
-<code><a href='local_deps_explain.html'>local_deps_explain</a>()</code>,
-<code><a href='local_deps.html'>local_deps</a>()</code>,
-<code><a href='local_install_deps.html'>local_install_deps</a>()</code>,
-<code><a href='local_install_dev_deps.html'>local_install_dev_deps</a>()</code>,
-<code><a href='local_install.html'>local_install</a>()</code>,
-<code><a href='local_package_trees.html'>local_package_trees</a></code></p></div>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># How does the GH version of usethis depend on cli and ps?</span>
+<span class='fu'>pkg_deps_explain</span><span class='op'>(</span><span class='st'>"r-lib/usethis"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"cli"</span>, <span class='st'>"ps"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
