@@ -71,3 +71,24 @@ print.pak_search_result <- function(x, ...) {
   class(x) <- setdiff(class(x), c("pak_search_result", "pkg_search_result"))
   NextMethod("[")
 }
+
+
+#' Query the history of a package
+#'
+#' @param pkg Package name.
+#' @return A data frame (tibble), with one row per package version.
+#' @export
+
+pkg_history <- function(pkg) {
+  load_extra("tibble")
+  remote(
+    function(...) {
+      get("pkg_history_internal", asNamespace("pak"))(...)
+    },
+    list(pkg = pkg)
+  )
+}
+
+pkg_history_internal <- function(pkg) {
+  pkgsearch::cran_package_history(pkg)
+}
