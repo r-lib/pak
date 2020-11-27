@@ -48,7 +48,7 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 This is currently supported for
 
   - macOS and R 3.3.x or later, including R-devel
-  - Windows and R 3.3.x or later, including R-devel
+  - Windows and R 3.3.x, or later, including R-devel
   - Linux (any 64-bit distribution) and R 3.3.x or later, including
     R-devel
 
@@ -67,6 +67,19 @@ pak::pkg_install("r-lib/usethis")
 ```
 
 All dependencies will be installed as well, to the same library.
+
+### On GitHub Actions
+
+The [`r-lib/actions`](https://github.com/r-lib/actions) repository has
+an `R CMD check` GitHub Action that uses pak to install packages:
+<https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml>
+To set up this action for your own repository, run
+
+``` r
+usethis::use_github_action("check-pak")
+```
+
+from R.
 
 ## Why pak?
 
