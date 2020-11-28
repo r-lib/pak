@@ -94,7 +94,7 @@ should_update_to <- function(av) {
   if (!is.null(pkg_data$pak_version)) {
     current <-R.Version()$platform
     if (!platform_match(pkg_data$pak_version$platform, current)) {
-      message("\npak platform mismatch, tryig to update to fix this...")
+      message("\npak platform mismatch, trying to update to fix this...")
       return(TRUE)
     }
   }
