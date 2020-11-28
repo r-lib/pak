@@ -110,7 +110,6 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 
 local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
                                    upgrade = TRUE, ask = interactive()) {
-
   start <- Sys.time()
 
   status <- remote(
