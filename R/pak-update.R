@@ -90,8 +90,20 @@ av_filter <- function(av) {
 }
 
 should_update_to <- function(av) {
+  # check if the right platform was installed
+  if (!is.null(pkg_data$pak_version)) {
+    current <-R.Version()$platform
+    if (!platform_match(pkg_data$pak_version$platform, current)) {
+      message("\npak platform mismatch, tryig to update to fix this...")
+      return(TRUE)
+    }
+  }
+
+  # otherwise use version number first
   dsc <- utils::packageDescription("pak")
   if (package_version(dsc$Version) < av[1, "Version"]) return(TRUE)
+
+  # or the build date
   blt_cur <- get_built_date(dsc$Built)
   blt_new <- get_built_date(av[1, "Built"])
   if (blt_cur < blt_new) return(TRUE)
