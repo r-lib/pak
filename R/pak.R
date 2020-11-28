@@ -14,7 +14,8 @@
 #'   packages, just one.
 #'
 #' @param pkg Package names or remote package specifications to install.
-#'   See [pak package sources][pak_package_sources] for details.
+#'   See [pak package sources][pak_package_sources] for details. If `NULL`,
+#'   will install all development dependencies for the current package.
 #' @param ... Extra arguments are passed to [pkg_install()] or
 #'   [local_install_dev_deps()].
 #'

@@ -8,7 +8,8 @@ pak(pkg = NULL, ...)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
-See \link[=pak_package_sources]{pak package sources} for details.}
+See \link[=pak_package_sources]{pak package sources} for details. If \code{NULL},
+will install all development dependencies for the current package.}
 
 \item{...}{Extra arguments are passed to \code{\link[=pkg_install]{pkg_install()}} or
 \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.}
