@@ -101,7 +101,7 @@
 <p>This is currently supported for</p>
 <ul>
 <li>macOS and R 3.3.x or later, including R-devel</li>
-<li>Windows and R 3.3.x or later, including R-devel</li>
+<li>Windows and R 3.3.x, or later, including R-devel</li>
 <li>Linux (any 64-bit distribution) and R 3.3.x or later, including R-devel</li>
 </ul>
 </div>
@@ -115,6 +115,14 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"r-lib/usethis"</span><span class="op">)</span></code></pre></div>
 <p>All dependencies will be installed as well, to the same library.</p>
+<div id="on-github-actions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#on-github-actions" class="anchor"></a>On GitHub Actions</h3>
+<p>The <a href="https://github.com/r-lib/actions"><code>r-lib/actions</code></a> repository has an <code>R CMD check</code> GitHub Action that uses pak to install packages: <a href="https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml" class="uri">https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml</a> To set up this action for your own repository, run</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"check-pak"</span><span class="op">)</span></code></pre></div>
+<p>from R.</p>
+</div>
 </div>
 <div id="why-pak" class="section level2">
 <h2 class="hasAnchor">
