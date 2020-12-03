@@ -14,6 +14,9 @@ local_dev_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = TRUE)
 
 \item{root}{Path to the package tree.}
 
+\item{upgrade}{Whether to use the most recent available package
+versions.}
+
 \item{dependencies}{Which dependencies to print. Defaults to the hard
 dependencies for \code{local_deps()} and \code{local_deps_tree()} and the hard
 dependencies plus the development dependencies for \code{local_dev_deps()}

@@ -187,6 +187,8 @@ local_dev_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = TRUE)
 #'
 #' @param root Path to the package tree.
 #' @param deps Package names of the dependencies to explain.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Which dependencies to print. Defaults to the hard
 #'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
 #'   dependencies plus the development dependencies for `local_dev_deps()`
