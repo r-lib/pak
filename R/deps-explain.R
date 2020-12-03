@@ -8,6 +8,8 @@
 #'
 #' @param pkg Package name or remote package specification.
 #' @param deps Package names of the dependencies to explain.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
 #' @return A named list with a print method. First entries are the
@@ -22,18 +24,19 @@
 #' pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
 #' }
 
-pkg_deps_explain <- function(pkg, deps, dependencies = NA) {
+pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   remote(
     function(...) {
       get("pkg_deps_explain_internal", asNamespace("pak"))(...)
     },
-    list(pkg = pkg, deps = deps, dependencies = dependencies)
+    list(pkg = pkg, deps = deps, upgrade = upgrade,
+         dependencies = dependencies)
   )
 }
 
-pkg_deps_explain_internal <- function(pkg, deps, dependencies = NA) {
-  data <- pkg_deps_internal2(pkg, dependencies)$get_solution()$data
+pkg_deps_explain_internal <- function(pkg, deps, upgrade, dependencies = NA) {
+  data <- pkg_deps_internal2(pkg, upgrade, dependencies)$get_solution()$data
   wpkg <- match(pkg, data$ref)
 
   paths <- structure(vector("list", length(deps)), names = deps)

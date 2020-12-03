@@ -5,14 +5,17 @@
 \alias{local_dev_deps_explain}
 \title{Explain dependencies of a package tree}
 \usage{
-local_deps_explain(deps, root = ".", dependencies = NA)
+local_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = NA)
 
-local_dev_deps_explain(deps, root = ".", dependencies = TRUE)
+local_dev_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = TRUE)
 }
 \arguments{
 \item{deps}{Package names of the dependencies to explain.}
 
 \item{root}{Path to the package tree.}
+
+\item{upgrade}{Whether to use the most recent available package
+versions.}
 
 \item{dependencies}{Which dependencies to print. Defaults to the hard
 dependencies for \code{local_deps()} and \code{local_deps_tree()} and the hard

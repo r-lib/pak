@@ -139,6 +139,8 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #' Dependencies of a package tree
 #'
 #' @param root Path to the package tree.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Which dependencies to print. Defaults to the hard
 #'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
 #'   dependencies plus the development dependencies for `local_dev_deps()`
@@ -150,31 +152,31 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #' @family local package trees
 #' @export
 
-local_deps <- function(root = ".", dependencies = NA) {
+local_deps <- function(root = ".", upgrade = TRUE, dependencies = NA) {
   ref <- paste0("local::", root)
-  pkg_deps(ref, dependencies = dependencies)
+  pkg_deps(ref, upgrade = upgrade, dependencies = dependencies)
 }
 
 #' @export
 #' @rdname local_deps
 
-local_deps_tree <- function(root = ".", dependencies = NA) {
+local_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = NA) {
   ref <- paste0("local::", root)
-  pkg_deps_tree(ref, dependencies = dependencies)
+  pkg_deps_tree(ref, upgrade = upgrade, dependencies = dependencies)
 }
 
 #' @export
 #' @rdname local_deps
 
-local_dev_deps <- function(root = ".", dependencies = TRUE) {
-  local_deps(root, dependencies)
+local_dev_deps <- function(root = ".", upgrade = TRUE, dependencies = TRUE) {
+  local_deps(root, upgrade, dependencies)
 }
 
 #' @export
 #' @rdname local_deps
 
-local_dev_deps_tree <- function(root = ".", dependencies = TRUE) {
-  local_deps_tree(root, dependencies)
+local_dev_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = TRUE) {
+  local_deps_tree(root, upgrade, dependencies)
 }
 
 #' Explain dependencies of a package tree
@@ -185,6 +187,8 @@ local_dev_deps_tree <- function(root = ".", dependencies = TRUE) {
 #'
 #' @param root Path to the package tree.
 #' @param deps Package names of the dependencies to explain.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Which dependencies to print. Defaults to the hard
 #'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
 #'   dependencies plus the development dependencies for `local_dev_deps()`
@@ -193,17 +197,19 @@ local_dev_deps_tree <- function(root = ".", dependencies = TRUE) {
 #' @export
 #' @family local package trees
 
-local_deps_explain <- function(deps, root = ".", dependencies = NA) {
+local_deps_explain <- function(deps, root = ".", upgrade = TRUE,
+                               dependencies = NA) {
   ref <- paste0("local::", root)
-  pkg_deps_explain(ref, deps, dependencies)
+  pkg_deps_explain(ref, deps, upgrade, dependencies)
 }
 
 #' @export
 #' @rdname local_deps_explain
 
-local_dev_deps_explain <- function(deps, root = ".", dependencies = TRUE) {
+local_dev_deps_explain <- function(deps, root = ".", upgrade = TRUE,
+                                   dependencies = TRUE) {
   ref <- paste0("local::", root)
-  pkg_deps_explain(ref, deps, dependencies)
+  pkg_deps_explain(ref, deps, upgrade, dependencies)
 }
 
 ## ----------------------------------------------------------------------
