@@ -120,7 +120,13 @@
     <p>Install a package and its dependencies into a single package library.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_install</span><span class='op'>(</span><span class='va'>pkg</span>, lib <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/libPaths.html'>.libPaths</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1L</span><span class='op'>]</span><span class='op'>]</span>, upgrade <span class='op'>=</span> <span class='cn'>FALSE</span>, ask <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pkg_install</span><span class='op'>(</span>
+  <span class='va'>pkg</span>,
+  lib <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/libPaths.html'>.libPaths</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1L</span><span class='op'>]</span><span class='op'>]</span>,
+  upgrade <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ask <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span>,
+  dependencies <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +156,14 @@ currently have.</p>
       <td><p>Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
 add new packages never require confirmation.</p></td>
+    </tr>
+    <tr>
+      <th>dependencies</th>
+      <td><p>Dependency types. See
+<code><a href='https://rdrr.io/pkg/pkgdepends/man/as_pkg_dependencies.html'>pkgdepends::as_pkg_dependencies()</a></code> for possible values. Note that
+changing this argument from the default might result an installation
+failure, e.g. if you set it to <code>FALSE</code>, packages might not build if
+their dependencies are not already installed.</p></td>
     </tr>
     </table>
 
