@@ -4,12 +4,15 @@
 \alias{pkg_deps_explain}
 \title{Explain how a package depends on other packages}
 \usage{
-pkg_deps_explain(pkg, deps, dependencies = NA)
+pkg_deps_explain(pkg, deps, upgrade = TRUE, dependencies = NA)
 }
 \arguments{
 \item{pkg}{Package name or remote package specification.}
 
 \item{deps}{Package names of the dependencies to explain.}
+
+\item{upgrade}{Whether to use the most recent available package
+versions.}
 
 \item{dependencies}{Dependency types. See
 \code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}

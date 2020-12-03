@@ -7,16 +7,19 @@
 \alias{local_dev_deps_tree}
 \title{Dependencies of a package tree}
 \usage{
-local_deps(root = ".", dependencies = NA)
+local_deps(root = ".", upgrade = TRUE, dependencies = NA)
 
-local_deps_tree(root = ".", dependencies = NA)
+local_deps_tree(root = ".", upgrade = TRUE, dependencies = NA)
 
-local_dev_deps(root = ".", dependencies = TRUE)
+local_dev_deps(root = ".", upgrade = TRUE, dependencies = TRUE)
 
-local_dev_deps_tree(root = ".", dependencies = TRUE)
+local_dev_deps_tree(root = ".", upgrade = TRUE, dependencies = TRUE)
 }
 \arguments{
 \item{root}{Path to the package tree.}
+
+\item{upgrade}{Whether to use the most recent available package
+versions.}
 
 \item{dependencies}{Which dependencies to print. Defaults to the hard
 dependencies for \code{local_deps()} and \code{local_deps_tree()} and the hard

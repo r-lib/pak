@@ -5,9 +5,9 @@
 \alias{local_dev_deps_explain}
 \title{Explain dependencies of a package tree}
 \usage{
-local_deps_explain(deps, root = ".", dependencies = NA)
+local_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = NA)
 
-local_dev_deps_explain(deps, root = ".", dependencies = TRUE)
+local_dev_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = TRUE)
 }
 \arguments{
 \item{deps}{Package names of the dependencies to explain.}

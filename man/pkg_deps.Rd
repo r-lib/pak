@@ -4,10 +4,13 @@
 \alias{pkg_deps}
 \title{Look up the dependencies of a package}
 \usage{
-pkg_deps(pkg, dependencies = NA)
+pkg_deps(pkg, upgrade = TRUE, dependencies = NA)
 }
 \arguments{
 \item{pkg}{Package name or remote package specification to resolve.}
+
+\item{upgrade}{Whether to use the most recent available package
+versions.}
 
 \item{dependencies}{Dependency types. See
 \code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}

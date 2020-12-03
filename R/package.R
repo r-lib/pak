@@ -319,6 +319,8 @@ pkg_remove_internal <- function(pkg, lib) {
 #' Look up the dependencies of a package
 #'
 #' @param pkg Package name or remote package specification to resolve.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
 #' @return A data frame (tibble).
@@ -329,28 +331,29 @@ pkg_remove_internal <- function(pkg, lib) {
 #' pkg_deps("curl")
 #' pkg_deps("r-lib/fs")
 
-pkg_deps <- function(pkg, dependencies = NA) {
+pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   load_extra("tibble")
   remote(
     function(...) {
       get("pkg_deps_internal", asNamespace("pak"))(...)
     },
-    list(pkg = pkg, dependencies = dependencies)
+    list(pkg = pkg, upgrade = upgrade, dependencies = dependencies)
   )
 }
 
-pkg_deps_internal <- function(pkg, dependencies = NA) {
-  deps <- pkg_deps_internal2(pkg, dependencies)
+pkg_deps_internal <- function(pkg, upgrade, dependencies = NA) {
+  deps <- pkg_deps_internal2(pkg, upgrade, dependencies)
   deps$get_solution()$data
 }
 
-pkg_deps_internal2 <- function(pkg, dependencies) {
+pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
   dir.create(lib <- tempfile())
   on.exit(rimraf(lib), add = TRUE)
   config <- list(library = lib)
   if (!is.null(dependencies)) config$dependencies <- dependencies
   deps <- pkgdepends::new_pkg_deps(pkg, config = config)
+  if (upgrade) deps$set_solve_policy("upgrade")
   deps$solve()
   deps$stop_for_solution_error()
   deps
@@ -359,6 +362,8 @@ pkg_deps_internal2 <- function(pkg, dependencies) {
 #' Draw the dependency tree of a package
 #'
 #' @param pkg Package name or remote package specification to resolve.
+#' @param upgrade Whether to use the most recent available package
+#'   versions.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
 #' @return The same data frame (tibble) as [pkg_deps()], invisibly.
@@ -369,20 +374,20 @@ pkg_deps_internal2 <- function(pkg, dependencies) {
 #' pkg_deps_tree("dplyr")
 #' pkg_deps_tree("r-lib/usethis")
 
-pkg_deps_tree <- function(pkg, dependencies = NA) {
+pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   ret <- remote(
     function(...) {
       get("pkg_deps_tree_internal", asNamespace("pak"))(...)
     },
-    list(pkg = pkg, dependencies = dependencies)
+    list(pkg = pkg, upgrade = upgrade, dependencies = dependencies)
   )
   cat(ret$tree, sep = "\n")
   invisible(ret$data)
 }
 
-pkg_deps_tree_internal <- function(pkg, dependencies = NA) {
-  deps <- pkg_deps_internal2(pkg, dependencies)
+pkg_deps_tree_internal <- function(pkg, upgrade, dependencies = NA) {
+  deps <- pkg_deps_internal2(pkg, upgrade, dependencies)
   tree <- deps$draw()
   data <- deps$get_solution()$data
   list(tree = tree, data = data)
