@@ -4,7 +4,13 @@
 \alias{pkg_install}
 \title{Install a package}
 \usage{
-pkg_install(pkg, lib = .libPaths()[[1L]], upgrade = FALSE, ask = interactive())
+pkg_install(
+  pkg,
+  lib = .libPaths()[[1L]],
+  upgrade = FALSE,
+  ask = interactive(),
+  dependencies = NA
+)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
@@ -25,6 +31,12 @@ When \code{upgrade = TRUE}, will do ensure that you have the latest version of
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
 add new packages never require confirmation.}
+
+\item{dependencies}{Dependency types. See
+\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values. Note that
+changing this argument from the default might result an installation
+failure, e.g. if you set it to \code{FALSE}, packages might not build if
+their dependencies are not already installed.}
 }
 \value{
 (Invisibly) A data frame with information about the installed

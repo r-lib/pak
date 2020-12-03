@@ -8,7 +8,8 @@ local_install_dev_deps(
   root = ".",
   lib = .libPaths()[1],
   upgrade = TRUE,
-  ask = interactive()
+  ask = interactive(),
+  dependencies = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,12 @@ When \code{upgrade = TRUE}, will do ensure that you have the latest version of
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
 add new packages never require confirmation.}
+
+\item{dependencies}{Dependency types. See
+\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values. Note that
+changing this argument from the default might result an installation
+failure, e.g. if you set it to \code{FALSE}, packages might not build if
+their dependencies are not already installed.}
 }
 \description{
 Installs all dependencies of a package tree (or source package file),

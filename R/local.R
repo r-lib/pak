@@ -33,14 +33,15 @@
 #' @export
 
 local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
-                          ask = interactive()) {
+                          ask = interactive(), dependencies = NA) {
 
   start <- Sys.time()
 
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
     list("local", root = root, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, loaded = loaded_packages(lib)))
+         start = start, dependencies = dependencies,
+         loaded = loaded_packages(lib)))
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
@@ -54,10 +55,10 @@ local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
 }
 
 local_install_make_plan <- function(type, root, lib, upgrade, ask, start,
-                                    loaded) {
+                                    dependencies, loaded) {
   root <- rprojroot::find_package_root_file(path = root)
   pkg <- paste0(type, "::", root)
-  pkg_install_make_plan(pkg, lib, upgrade, ask, start, loaded)
+  pkg_install_make_plan(pkg, lib, upgrade, ask, start, dependencies, loaded)
 }
 
 #' Install the dependencies of a package tree
@@ -76,13 +77,15 @@ local_install_make_plan <- function(type, root, lib, upgrade, ask, start,
 #' @export
 
 local_install_deps <- function(root = ".", lib = .libPaths()[1],
-                               upgrade = TRUE, ask = interactive()) {
+                               upgrade = TRUE, ask = interactive(),
+                               dependencies = NA) {
   start <- Sys.time()
 
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
     list("deps", root = root, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, loaded = loaded_packages(lib)))
+         start = start, dependencies = dependencies,
+         loaded = loaded_packages(lib)))
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
@@ -109,7 +112,8 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 
 
 local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
-                                   upgrade = TRUE, ask = interactive()) {
+                                   upgrade = TRUE, ask = interactive(),
+                                   dependencies = TRUE) {
   start <- Sys.time()
 
   status <- remote(
@@ -117,7 +121,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
       get("local_install_dev_deps_make_plan", asNamespace("pak"))(...)
     },
     list(root = root, lib = lib, upgrade = upgrade, start = start,
-         loaded = loaded_packages(lib)))
+         dependencies = dependencies, loaded = loaded_packages(lib)))
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
@@ -207,11 +211,11 @@ local_dev_deps_explain <- function(deps, root = ".", dependencies = TRUE) {
 ## Almost the same as a "regular" install, but need to set dependencies
 
 local_install_dev_deps_make_plan <- function(root, lib, upgrade, start,
-                                             loaded) {
+                                             dependencies, loaded) {
   root <- rprojroot::find_package_root_file(path = root)
   prop <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", root),
-    config = list(library = lib, dependencies = TRUE)
+    config = list(library = lib, dependencies = dependencies)
   )
 
   prop$set_solve_policy(if (upgrade) "upgrade" else "lazy")

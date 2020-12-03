@@ -176,6 +176,11 @@ NULL
 #' @param ask Whether to ask for confirmation when installing a different
 #'   version of a package that is already installed. Installations that only
 #'   add new packages never require confirmation.
+#' @param dependencies Dependency types. See
+#'   [pkgdepends::as_pkg_dependencies()] for possible values. Note that
+#'   changing this argument from the default might result an installation
+#'   failure, e.g. if you set it to `FALSE`, packages might not build if
+#'   their dependencies are not already installed.
 #' @return (Invisibly) A data frame with information about the installed
 #'   package(s).
 #'
@@ -196,14 +201,15 @@ NULL
 #' pkg_install("dplyr")
 #' }
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-                        ask = interactive()) {
+                        ask = interactive(), dependencies = NA) {
 
   start <- Sys.time()
 
   status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
     list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, loaded = loaded_packages(lib)))
+         start = start, dependencies = dependencies,
+         loaded = loaded_packages(lib)))
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
@@ -216,10 +222,11 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   invisible(inst)
 }
 
-pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start, loaded) {
+pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
+                                  dependencies, loaded) {
   prop <- pkgdepends::new_pkg_installation_proposal(
     pkg,
-    config = list(library = lib)
+    config = list(library = lib, dependencies = dependencies)
   )
 
   ## Solve the dependency graph
