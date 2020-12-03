@@ -120,7 +120,7 @@
     <p>Look up the dependencies of a package</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_deps</span><span class='op'>(</span><span class='va'>pkg</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pkg_deps</span><span class='op'>(</span><span class='va'>pkg</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +128,11 @@
     <tr>
       <th>pkg</th>
       <td><p>Package name or remote package specification to resolve.</p></td>
+    </tr>
+    <tr>
+      <th>upgrade</th>
+      <td><p>Whether to use the most recent available package
+versions.</p></td>
     </tr>
     <tr>
       <th>dependencies</th>

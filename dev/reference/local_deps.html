@@ -120,13 +120,13 @@
     <p>Dependencies of a package tree</p>
     </div>
 
-    <pre class="usage"><span class='fu'>local_deps</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>local_deps</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
-<span class='fu'>local_deps_tree</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
+<span class='fu'>local_deps_tree</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
-<span class='fu'>local_dev_deps</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, dependencies <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>local_dev_deps</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>local_dev_deps_tree</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, dependencies <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>local_dev_deps_tree</span><span class='op'>(</span>root <span class='op'>=</span> <span class='st'>"."</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +134,11 @@
     <tr>
       <th>root</th>
       <td><p>Path to the package tree.</p></td>
+    </tr>
+    <tr>
+      <th>upgrade</th>
+      <td><p>Whether to use the most recent available package
+versions.</p></td>
     </tr>
     <tr>
       <th>dependencies</th>

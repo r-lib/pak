@@ -120,7 +120,7 @@
     <p>Extract dependency chains from <code>pkg</code> to <code>deps</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_deps_explain</span><span class='op'>(</span><span class='va'>pkg</span>, <span class='va'>deps</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pkg_deps_explain</span><span class='op'>(</span><span class='va'>pkg</span>, <span class='va'>deps</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,6 +132,11 @@
     <tr>
       <th>deps</th>
       <td><p>Package names of the dependencies to explain.</p></td>
+    </tr>
+    <tr>
+      <th>upgrade</th>
+      <td><p>Whether to use the most recent available package
+versions.</p></td>
     </tr>
     <tr>
       <th>dependencies</th>
