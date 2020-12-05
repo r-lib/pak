@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: pak build
-        uses: r-hub/actions/pak-builder
+        uses: r-hub/actions/pak-builder@master
         with:
           token: ${{ secrets.TOKEN }}
           rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
