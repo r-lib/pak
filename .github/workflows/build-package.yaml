@@ -46,7 +46,7 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
       - name: Publish
-        uses: r-hub/actions/pak-publisher@feature/pak-builder
+        uses: r-hub/actions/pak-publisher@master
         with:
           token: ${{ secrets.TOKEN }}
           rversions: ${{ github.event.client_payload.rversions }}${{ github.event.inputs.rversions }}
