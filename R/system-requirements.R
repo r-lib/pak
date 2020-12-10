@@ -7,21 +7,27 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' requirements for the queried operating system.
 #'
 #' @inheritParams local_install
-#' @param os,os_release The operating system and operating system release version, see
-#'   <https://github.com/rstudio/r-system-requirements#operating-systems> for the
-#'   list of supported operating systems. If `NULL`, the default, these will be
-#'   looked up using [distro::distro()].
+#' @param os,os_release The operating system and operating system release
+#'   version, e.g. "ubuntu", "debian", "centos", "redhat". See
+#'   <https://github.com/rstudio/r-system-requirements#operating-systems> for
+#'   all full list of supported operating systems.
+#'
+#'   If `NULL`, the default, these will be looked up using [distro::distro()].
 #' @param execute,sudo If `execute` is `TRUE`, pak will execute the system
 #'   commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
 #'   [sudo](https://en.wikipedia.org/wiki/Sudo).
 #' @param echo If `echo` is `TRUE` and `execute` is `TRUE`, echo the command output.
-#' @return A character vector of commands needed to install the system requirements for the package (invisibly).
+#' @return A character vector of commands needed to install the system
+#'   requirements for the package.
 #' @export
+#' @examples
+#' pkg_system_requirements("pak", "ubuntu", "20.04")
+#' pkg_system_requirements("pak", "redhat", "7")
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
     list(os = os, os_release = os_release, root = root, package = NULL, execute = execute, sudo = sudo, echo = echo))
-  invisible(res)
+  if (execute) invisible(res) else res
 }
 
 #' @param package The package name to lookup system requirements for.
@@ -31,7 +37,7 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
     list(os = os, os_release = os_release, root = NULL, package = package, execute = execute, sudo = sudo, echo = echo))
-  invisible(res)
+  if (execute) invisible(res) else res
 }
 
 system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
