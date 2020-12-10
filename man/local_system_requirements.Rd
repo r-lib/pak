@@ -24,10 +24,12 @@ pkg_system_requirements(
 )
 }
 \arguments{
-\item{os, os_release}{The operating system and operating system release version, see
-\url{https://github.com/rstudio/r-system-requirements#operating-systems} for the
-list of supported operating systems. If \code{NULL}, the default, these will be
-looked up using \code{\link[distro:distro]{distro::distro()}}.}
+\item{os, os_release}{The operating system and operating system release
+version, e.g. "ubuntu", "debian", "centos", "redhat". See
+\url{https://github.com/rstudio/r-system-requirements#operating-systems} for
+all full list of supported operating systems.
+
+If \code{NULL}, the default, these will be looked up using \code{\link[distro:distro]{distro::distro()}}.}
 
 \item{root}{Path to the package tree.}
 
@@ -40,9 +42,14 @@ commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands 
 \item{package}{The package name to lookup system requirements for.}
 }
 \value{
-A character vector of commands needed to install the system requirements for the package (invisibly).
+A character vector of commands needed to install the system
+requirements for the package.
 }
 \description{
 Returns a character vector of commands to run that will install system
 requirements for the queried operating system.
+}
+\examples{
+pkg_system_requirements("pak", "ubuntu", "20.04")
+pkg_system_requirements("pak", "redhat", "7")
 }
