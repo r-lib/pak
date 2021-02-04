@@ -334,11 +334,13 @@ pkg_remove_internal <- function(pkg, lib) {
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
   load_extra("tibble")
-  remote(
-    function(...) {
-      get("pkg_deps_internal", asNamespace("pak"))(...)
-    },
-    list(pkg = pkg, upgrade = upgrade, dependencies = dependencies)
+  suppressWarnings(
+    remote(
+      function(...) {
+        get("pkg_deps_internal", asNamespace("pak"))(...)
+      },
+      list(pkg = pkg, upgrade = upgrade, dependencies = dependencies)
+    )
   )
 }
 
