@@ -344,7 +344,10 @@ pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
 
 pkg_deps_internal <- function(pkg, upgrade, dependencies = NA) {
   deps <- pkg_deps_internal2(pkg, upgrade, dependencies)
-  deps$get_solution()$data
+  data <- deps$get_solution()$data
+  # This refers to the 'desc' package namespace, and we don't really need it
+  data$extra <- NULL
+  data
 }
 
 pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
@@ -390,8 +393,9 @@ pkg_deps_tree_internal <- function(pkg, upgrade, dependencies = NA) {
   deps <- pkg_deps_internal2(pkg, upgrade, dependencies)
   tree <- deps$draw()
   data <- deps$get_solution()$data
+  # This refers to the 'desc' package namespace, and we don't really need it
+  data$extra <- NULL
   list(tree = tree, data = data)
-
 }
 
 #' @rdname lib_status
