@@ -25,6 +25,11 @@ remote <- function(func, args = list()) {
   if (state != "idle") stop("Subprocess is busy or cannot start")
 
   func2 <- func
+  subst_args <- list(
+    "__body__" = body(func),
+    "__verbosity__" = is_verbose(),
+    "__repos__" = getOption("repos")
+  )
   body(func2) <- substitute({
       withCallingHandlers(
         cli_message = function(msg) {
@@ -44,12 +49,11 @@ remote <- function(func, args = list()) {
           stop(e)
         },
         {
-          options(pkg.show_progress = `__verbosity__`)
+          options(pkg.show_progress = `__verbosity__`, repos = `__repos__`)
           `__body__`
         }
       )
-    }, list("__body__" = body(func), "__verbosity__" = is_verbose())
-  )
+  }, subst_args)
 
   res <- withCallingHandlers(
     callr_message = function(msg) {
