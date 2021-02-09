@@ -106,7 +106,7 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 
 #' Query the currently configured CRAN-like repositories
 #'
-#' pak uses the `repos` option, see [?options()]. It also automatically
+#' pak uses the `repos` option, see [options()]. It also automatically
 #' adds a CRAN mirror if none is set up, and the correct version of the
 #' Bioconductor repositores. See the `cran_mirror` and `bioc` arguments.
 #'
