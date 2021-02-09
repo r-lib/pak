@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Show the status of CRAN-like repositories — repo_status • pak</title>
+<title>Query the currently configured CRAN-like repositories — repo_get • pak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Show the status of CRAN-like repositories — repo_status" />
-<meta property="og:description" content="It checks the status of the configured or supplied repositories." />
+<meta property="og:title" content="Query the currently configured CRAN-like repositories — repo_get" />
+<meta property="og:description" content="pak uses the repos option, see ?options(). It also automatically
+adds a CRAN mirror if none is set up, and the correct version of the
+Bioconductor repositores. See the cran_mirror and bioc arguments." />
 
 
 <meta name="robots" content="noindex">
@@ -111,99 +113,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Show the status of CRAN-like repositories</h1>
+    <h1>Query the currently configured CRAN-like repositories</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/repo.R'><code>R/repo.R</code></a></small>
-    <div class="hidden name"><code>repo_status.Rd</code></div>
+    <div class="hidden name"><code>repo_get.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>It checks the status of the configured or supplied repositories.</p>
+    <p>pak uses the <code>repos</code> option, see <code>?options()</code>. It also automatically
+adds a CRAN mirror if none is set up, and the correct version of the
+Bioconductor repositores. See the <code>cran_mirror</code> and <code>bioc</code> arguments.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>repo_status</span><span class='op'>(</span>
-  platforms <span class='op'>=</span> <span class='cn'>NULL</span>,
-  r_version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span><span class='op'>(</span><span class='op'>)</span>,
-  bioc <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  cran_mirror <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
-
-<span class='fu'>repo_ping</span><span class='op'>(</span>
-  platforms <span class='op'>=</span> <span class='cn'>NULL</span>,
-  r_version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span><span class='op'>(</span><span class='op'>)</span>,
-  bioc <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  cran_mirror <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>repo_get</span><span class='op'>(</span>r_version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span><span class='op'>(</span><span class='op'>)</span>, bioc <span class='op'>=</span> <span class='cn'>TRUE</span>, cran_mirror <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>platforms</th>
-      <td><p>Platforms to use, default is the current platform,
-plus source packages.</p></td>
-    </tr>
-    <tr>
       <th>r_version</th>
-      <td><p>R version(s) to use, the default is the current
-R version, via <code><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion()</a></code>.</p></td>
+      <td><p>R version to use to determine the correct Bioconductor
+version, if <code>bioc = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>bioc</th>
-      <td><p>Whether to add the Bioconductor repositories. If you
-already configured them via <code><a href='https://rdrr.io/r/base/options.html'>options(repos)</a></code>, then you can
-set this to <code>FALSE</code>.</p></td>
+      <td><p>Whether to automatically add the Bioconductor repositories
+to the result.</p></td>
     </tr>
     <tr>
       <th>cran_mirror</th>
-      <td><p>The CRAN mirror to use.</p></td>
+      <td><p>CRAN mirror to use. Leave it at <code>NULL</code> to use the
+mirror in <code><a href='https://rdrr.io/r/base/options.html'>getOption("repos")</a></code> or an automatically selected one.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A tibble that has a row for every repository, on every
-queried platform and R version. It has these columns:</p><ul>
-<li><p><code>name</code>: the name of the repository. This comes from the names
-of the configured repositories in <code><a href='https://rdrr.io/r/base/options.html'>options("repos")</a></code>, or
-added by pkgcache. It is typically <code>CRAN</code> for CRAN, and the
-current Bioconductor repositories are <code>BioCsoft</code>, <code>BioCann</code>,
-<code>BioCexp</code>, <code>BioCworkflows</code>.</p></li>
-<li><p><code>url</code>: base URL of the repository.</p></li>
-<li><p><code>bioc_version</code>: Bioconductor version, or <code>NA</code> for
-non-Bioconductor repositories.</p></li>
-<li><p><code>platform</code>: platform, possible values are <code>source</code>, <code>macos</code> and
-<code>windows</code> currently.</p></li>
-<li><p><code>path</code>: the path to the packages within the base URL, for a
-given platform and R version.</p></li>
-<li><p><code>r_version</code>: R version, one of the specified R versions.</p></li>
-<li><p><code>ok</code>: Logical flag, whether the repository contains a metadata
-file for the given platform and R version.</p></li>
-<li><p><code>ping</code>: HTTP response time of the repository in seconds. If
-the <code>ok</code> column is <code>FALSE</code>, then this columns in <code>NA</code>.</p></li>
-<li><p><code>error</code>: the error object if the HTTP query failed for this
-repository, platform and R version.</p></li>
-</ul>
-
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>repo_ping()</code> is similar to <code>repo_status()</code> but also prints a short
-summary of the data, and it returns its result invisibly.</p>
+    <p><code>repo_get()</code> returns the table of the currently configured repositories.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other repository functions: 
 <code><a href='repo_add.html'>repo_add</a>()</code>,
-<code><a href='repo_get.html'>repo_get</a>()</code></p></div>
+<code><a href='repo_status.html'>repo_status</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>repo_status</span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'>repo_status</span><span class='op'>(</span>
-  platforms <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"windows"</span>, <span class='st'>"macos"</span><span class='op'>)</span>,
-  r_version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"4.0"</span>, <span class='st'>"4.1"</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='fu'>repo_ping</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>repo_get</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 5 x 5</span><span>
+#&gt;   name        url                                   type  r_version bioc_version
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       
+#&gt; </span><span style='color: #555555;'>1</span><span> CRAN        https://cloud.r-project.org           cran  *         </span><span style='color: #BB0000;'>NA</span><span>          
+#&gt; </span><span style='color: #555555;'>2</span><span> BioCsoft    https://bioconductor.org/packages/3.… bioc  4.0.3     3.12        
+#&gt; </span><span style='color: #555555;'>3</span><span> BioCann     https://bioconductor.org/packages/3.… bioc  4.0.3     3.12        
+#&gt; </span><span style='color: #555555;'>4</span><span> BioCexp     https://bioconductor.org/packages/3.… bioc  4.0.3     3.12        
+#&gt; </span><span style='color: #555555;'>5</span><span> BioCworkfl… https://bioconductor.org/packages/3.… bioc  4.0.3     3.12        </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
