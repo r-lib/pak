@@ -64,3 +64,19 @@ It checks the status of the configured or supplied repositories.
 \code{repo_ping()} is similar to \code{repo_status()} but also prints a short
 summary of the data, and it returns its result invisibly.
 }
+\examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+repo_status()
+repo_status(
+  platforms = c("windows", "macos"),
+  r_version = c("4.0", "4.1")
+)
+repo_ping()
+\dontshow{\}) # examplesIf}
+}
+\seealso{
+Other repository functions: 
+\code{\link{repo_add}()},
+\code{\link{repo_get}()}
+}
+\concept{repository functions}

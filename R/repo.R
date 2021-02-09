@@ -36,7 +36,15 @@
 #' * `error`: the error object if the HTTP query failed for this
 #'   repository, platform and R version.
 #'
+#' @family repository functions
 #' @export
+#' @examplesIf FALSE
+#' repo_status()
+#' repo_status(
+#'   platforms = c("windows", "macos"),
+#'   r_version = c("4.0", "4.1")
+#' )
+#' repo_ping()
 
 repo_status <- function(platforms = NULL, r_version = getRversion(),
                         bioc = TRUE, cran_mirror = NULL) {
@@ -94,4 +102,138 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
   fmt <- utils::capture.output(summary(tab))
   class(tab) <- setdiff(class(tab), "pkgcache_repo_status")
   list(fmt = fmt, data = tab)
+}
+
+#' Query the currently configured CRAN-like repositories
+#'
+#' pak uses the `repos` option, see [?options()]. It also automatically
+#' adds a CRAN mirror if none is set up, and the correct version of the
+#' Bioconductor repositores. See the `cran_mirror` and `bioc` arguments.
+#'
+#' `repo_get()` returns the table of the currently configured repositories.
+#'
+#' @param r_version R version to use to determine the correct Bioconductor
+#' version, if `bioc = TRUE`.
+#' @param bioc Whether to automatically add the Bioconductor repositories
+#' to the result.
+#' @param cran_mirror CRAN mirror to use. Leave it at `NULL` to use the
+#' mirror in `getOption("repos")` or an automatically selected one.
+#'
+#' @family repository functions
+#' @export
+#' @examples
+#' repo_get()
+
+repo_get <- function(r_version = getRversion(),
+                     bioc = TRUE, cran_mirror = NULL) {
+  load_extra("tibble")
+  remote(
+    function(...) asNamespace("pak")$repo_get_internal(...),
+    list(r_version, bioc, cran_mirror)
+  )
+}
+
+repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
+                              cran_mirror = NULL) {
+  cran_mirror = cran_mirror %||% pkgcache::default_cran_mirror()
+  pkgcache::repo_get(r_version, bioc, cran_mirror)
+}
+
+#' Add a new CRAN-like repository
+#'
+#' Add a new repository to the list of repositories that pak uses to
+#' look for packages.
+#'
+#' `repo_add()` adds new repositories. It resolves the specified
+#' repositories using `repo_resolve()` and then modifies the `repos`
+#' global option.
+#'
+#' `repo_add()` only has an effect in the current R session. If you
+#' want to keep your configuration between R sessions, then set the
+#' `repos` option to the desired value in your user or project `.Rprofile`
+#' file.
+#'
+#' @param ... Repository specifications, possibly named character vectors.
+#' See details below.
+#' @param .list List or character vector of repository specifications.
+#' This argument is easier to use programmatically than `...`. See
+#' details below.
+#'
+#' @details
+#' # Repository specifications
+#'
+#' The format of a repository specification is a named or unnamed
+#' character scalar. If the name is missing, pak adds a name
+#' automatically. The repository named `CRAN` is the main CRAN repository,
+#' but otherwise names are informational.
+#'
+#' Currently supported repository specifications:
+#' - URL pointing to the root of the CRAN-like repository. Example:
+#'   ```
+#'   https://cloud.r-project.org
+#'   ```
+#' - `RSPM@<date>`, RSPM (RStudio Package Manager) snapshot, at the
+#'   specified date.
+#' - `RSPM@<package>-<version>` RSPM snapshot, for the day after the
+#'   release of `<version>` of `<package>`.
+#' - `RSPM@R-<version>` RSPM snapshot, for the day afer R `<version>`
+#'   was released.
+#' - `MRAN@<date>`, MRAN (Microsoft R Application Network) snapshot, at
+#'   the specified date.
+#' - `MRAN@<package>-<version>` MRAN snapshot, for the
+#'   day after the release of `<version>` of `<package>`.
+#' - `MRAN@R-<version>` MRAN snapshot, for the day
+#'   afer R `<version>` was released.
+#'
+#'
+#' Notes:
+#' * See more about RSPM at <https://packagemanager.rstudio.com/client/#/>.
+#' * See more about MRAN snapshots at
+#'   <https://mran.microsoft.com/timemachine>.
+#' * All dates (or times) can be specified in the ISO 8601 format.
+#' * If RSPM does not have a snapshot available for a date, the next
+#'   available date is used.
+#' * Dates that are before the first, or after the last RSPM snapshot
+#'   will trigger an error.
+#' * Dates before the first, or after the last MRAN snapshot will trigger
+#'   an error.
+#' * Unknown R or package versions will trigger an error.
+#'
+#' @family repository functions
+#' @export
+#' @examplesIf FALSE
+#' repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
+#' repo_get()
+#'
+#' repo_resolve("MRAN@2020-01-21")
+#' repo_resolve("RSPM@2020-01-21")
+#' repo_resolve("MRAN@dplyr-1.0.0")
+#' repo_resolve("RSPM@dplyr-1.0.0")
+#' repo_resolve("MRAN@R-4.0.0")
+#' repo_resolve("RSPM@R-4.0.0")
+
+repo_add <- function(..., .list = NULL) {
+  new <- c(list(...), .list)
+  ret <- remote(
+    function(...) asNamespace("pak")$repo_add_internal(...),
+    list(.list = new)
+  )
+  options(repos = ret$option)
+  invisible(ret$tab)
+}
+
+repo_add_internal <- function(.list) {
+  tab <- pkgcache::repo_add(.list = .list)
+  list(option = getOption("repos"), tab = tab)
+}
+
+#' @param spec Repository specification, a possibly named character
+#' scalar.
+#' @return `repo_resolve()` returns a named character scalar, the URL
+#' of the repository.
+#' @rdname repo_add
+#' @export
+
+repo_resolve <- function(spec) {
+  remote(function(spec) pkgcache::repo_resolve(spec), list(spec))
 }
