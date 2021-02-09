@@ -35,7 +35,7 @@ Suggests:
     mockery,
     pingr,
     jsonlite,
-    pkgcache (>= 1.1.1),
+    pkgcache (>= 1.1.1.9000),
     pkgdepends (>= 0.0.0.9007),
     pkgload,
     pkgsearch (>= 3.0.2.9000),
@@ -50,6 +50,7 @@ Suggests:
     zip
 Remotes:
     r-lib/pkgdepends,
+    r-lib/pkgcache,
     r-lib/ps
 Config/pak/dependencies:
     utils,
@@ -62,7 +63,7 @@ Config/pak/dependencies:
     filelock (>= 1.0.2),
     glue (>= 1.3.0),
     jsonlite,
-    pkgcache (>= 1.1.1),
+    pkgcache (>= 1.1.1.9000),
     pkgdepends (>= 0.0.0.9006),
     pkgload,
     pkgsearch (>= 3.0.2.9000),
