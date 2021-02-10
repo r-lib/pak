@@ -76,6 +76,14 @@ pak_update <- function(force = FALSE) {
   loadNamespace("pak")
   if (attached) library(pak)
 
+  # Try to use it to see if it was successful
+  tryCatch(
+    suppressWarnings(tools::Rd_db(package = "pak")),
+    error = function(err) {
+      message("\nFailed to reload pak. Please restart your R session.")
+    }
+  )
+
   invisible()
 }
 
