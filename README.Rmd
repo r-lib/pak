@@ -135,6 +135,59 @@ from R.
 * Package sizes. For CRAN packages pak shows the total sizes of packages
   it needs to download.
 
+## Caching package compilation
+
+Some packages require compilation of source files to work. This
+compilation process is relatively time consuming and will be repeated
+every time package is re-installed or upgraded. Linux and Mac users
+can use the tool ccache to cache the results of the initial
+compilation and skip most of the compilation time the next time a
+package is installed through pak (or other means).
+
+
+### Setting up ccache
+
+The first step is to install ccache through your package manager or
+[manually](https://ccache.dev/documentation.html). Successful
+installation can be verified by running the command
+
+```
+ccache -V
+```
+
+from the command line. This will show the version of ccache installed
+on your system.
+
+R can be instructed which files to use for compilation of packages
+through the Makevars file in `~/.R/Makevars`. This can be done as follows:
+
+```
+CCACHE=ccache
+CC=$(CCACHE) gcc$(VER)
+CXX=$(CCACHE) g++$(VER)
+CXX11=$(CCACHE) g++$(VER)
+CXX14=$(CCACHE) g++$(VER)
+FC=$(CCACHE) gfortran$(VER)
+F77=$(CCACHE) gfortran$(VER)
+```
+
+and by adding the following to your ccache configuration in
+`~/.ccache/ccache.conf`:
+
+```
+max_size = 1.0G
+# Important for R CMD INSTALL *.tar.gz as tarballs are expanded again and again
+# and therefore appear new to ccache.
+sloppiness = include_file_ctime
+# The packages will be unpacked into temporary directories with random file
+# names. Therefore it is important to ignore the file path of the file that is
+# being compiled.
+hash_dir = false
+```
+
+ccache will now start building a cache of compiled source files and
+then speed up package installation.
+
 ## Roadmap
 
 * Support GitLab repositories
