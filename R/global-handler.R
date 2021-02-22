@@ -43,23 +43,27 @@ handle_package_not_found <- function(err) {
   if (sink.number() != 0) return()
 
   pkg <- err$package
-  lib <- err$lib.loc
+  lib <- err$lib.loc %||% .libPaths()[1]
 
-  cat0("\nFailed to load package: '", pkg, "'. Do you want to install it?")
+  cat0("\nx Failed to load package: '", pkg, "'. Do you want to install it?")
   cat0(
-    "\n\n  1. Install '", pkg, "' from the configured repositories into\n",
-    "    '", lib[1], "'.\n")
+    "\n\n1. Install '", pkg, "' from the configured repositories into\n",
+    "   '", lib[1], "'.\n")
   cat(
-    "  2. No, not this time.\n\n")
+    "2. No, not this time.\n\n")
 
   ans <- get_answer(c("1", "2"))
+
+  cat("\n")
 
   if (ans == "2") return()
 
   pkg_install(pkg, lib = lib[1])
 
   if (!is.null(findRestart("retry_loadNamespace"))) {
-    cfm <- get_confirmation2("? Do you want to continue (Y/n) ")
+    cfm <- get_confirmation2("\n? Do you want to continue (Y/n) ")
     if (cfm) invokeRestart("retry_loadNamespace")
+  } else {
+    cat("\n")
   }
 }
