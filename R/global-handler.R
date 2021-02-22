@@ -21,6 +21,10 @@
 #'
 #' Global error handlers are only supported in R 4.0.0 and later.
 #'
+#' Currently `handle_package_not_found()` does not do anything in
+#' non-interactive mode (including in knitr, testthat and RStudio
+#' notebooks), this might change in the future.
+#'
 #' In some cases it is possible to remedy the original computation that
 #' tried to load the missing package, and pak will offer you to do so
 #' after a successful installation. Currently, in R 4.0.4, it is not
@@ -32,6 +36,9 @@
 #' @export
 
 handle_package_not_found <- function(err) {
+  # TODO: is this what we want? Or refine this? E.g. testthat, knitr?
+  if (!is_interactive()) return()
+
   # TODO: what if message output is redirected? we ignore for now
   if (sink.number() != 0) return()
 
