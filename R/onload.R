@@ -10,6 +10,12 @@ pkg_data <- new.env(parent = emptyenv())
     ## In the main process
     fix_macos_path_in_rstudio()
     try_new_remote_session()
+    if (interactive()) {
+      addTaskCallback(function(...) {
+        setup_global_handler()
+        FALSE
+      })
+    }
 
   } else if (worker == "true") {
     ## In the worker process
@@ -28,6 +34,14 @@ pkg_data <- new.env(parent = emptyenv())
   }
 
   invisible()
+}
+
+.onUnload <- function(libname) {
+  if (interactive()) {
+    fun <- remove_global_handler
+    environment(fun) <- .GlobalEnv
+    addTaskCallback(fun)
+  }
 }
 
 check_platform <- function(libname = dirname(find.package("pak")),
