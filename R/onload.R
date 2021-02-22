@@ -20,6 +20,8 @@ pkg_data <- new.env(parent = emptyenv())
       rlib_interactive = (Sys.getenv("R_PKG_INTERACTIVE") == "TRUE"),
       cli.dynamic = (Sys.getenv("R_PKG_DYNAMIC_TTY") == "TRUE")
     )
+    ca_path <- system.file(package = "pak", "curl-ca-bundle.crt")
+    if (ca_path != "") options(async_http_cainfo = ca_path)
     use_private_lib()
 
   } else {
