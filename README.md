@@ -47,10 +47,11 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 
 This is currently supported for
 
-  - macOS and R 3.3.x or later, including R-devel
-  - Windows and R 3.3.x, or later, including R-devel
+  - macOS (Mojave or later) and R 3.3.x or later, including R-devel (but
+    no native M1 support yet).
+  - Windows and R 3.3.x, or later, including R-devel,
   - Linux (any 64-bit distribution) and R 3.3.x or later, including
-    R-devel
+    R-devel.
 
 ## Usage
 
@@ -109,8 +110,9 @@ from R.
     on some systems, and locked packages cannot be updated. pak does not
     load any package in the main process, except for pak itself).
 
-  - To avoid updating locked packages, pak warns and requests
-    confirmation for loaded packages.
+  - To avoid updating locked packages, pak offers the choice of
+    unloading them from the current R session, and/or killing other R
+    sessions locking them.
 
   - Dependency solver. pak makes sure that you end up in a consistent,
     working state of dependencies. It finds conflicts up front, before
@@ -128,18 +130,25 @@ from R.
     e.g.
     <https://cran.r-project.org/package=remotes/vignettes/dependencies.html>
 
+  - Easy time travel with [MRAN](https://mran.microsoft.com/timemachine)
+    and [RSPM](https://packagemanager.rstudio.com/client/#/), to a
+    specific date or when a certain R or package version was released.
+
   - Package sizes. For CRAN packages pak shows the total sizes of
     packages it needs to download.
+
+  - Other package sources:
+    
+      - local package files and directories,
+      - URLs to package files or package tree archives.
 
 ## Roadmap
 
   - Support GitLab repositories
   - Support Bitbucket repositories
-  - Support package URLs
   - Support system requirements
   - Support older CRAN package versions
   - Support older BioConductor package versions
-  - Support GitHub pull requests
   - Support local CRAN mirrors
   - Support the `Additional_repositories` `DESCRIPTION` field
   - Support SVN repos
