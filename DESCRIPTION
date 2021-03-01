@@ -41,7 +41,7 @@ Suggests:
     pkgsearch (>= 3.0.2.9000),
     prettyunits,
     processx,
-    ps (>= 1.4.0.9000),
+    ps (>= 1.6.0),
     rprojroot (>= 1.3-2),
     rstudioapi,
     testthat,
@@ -50,8 +50,7 @@ Suggests:
     zip
 Remotes:
     r-lib/pkgdepends,
-    r-lib/pkgcache,
-    r-lib/ps
+    r-lib/pkgcache
 Config/pak/dependencies:
     utils,
     callr (>= 3.4.2.9000),
@@ -69,7 +68,7 @@ Config/pak/dependencies:
     pkgsearch (>= 3.0.2.9000),
     prettyunits,
     processx,
-    ps (>= 1.4.0.9000),
+    ps (>= 1.6.0)
     rprojroot (>= 1.3-2),
     tibble,
     zip
