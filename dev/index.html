@@ -100,9 +100,9 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="st">"https://r-lib.github.io/p/pak/dev/"</span><span class="op">)</span></code></pre></div>
 <p>This is currently supported for</p>
 <ul>
-<li>macOS and R 3.3.x or later, including R-devel</li>
-<li>Windows and R 3.3.x, or later, including R-devel</li>
-<li>Linux (any 64-bit distribution) and R 3.3.x or later, including R-devel</li>
+<li>macOS (Mojave or later) and R 3.3.x or later, including R-devel (but no native M1 support yet).</li>
+<li>Windows and R 3.3.x, or later, including R-devel,</li>
+<li>Linux (any 64-bit distribution) and R 3.3.x or later, including R-devel.</li>
 </ul>
 </div>
 <div id="usage" class="section level2">
@@ -143,7 +143,7 @@
 <ul>
 <li><p>Private library (pak’s own package dependencies do not affect your regular package libraries and vice versa).</p></li>
 <li><p>Every pak operation runs in a sub-process, and the packages are loaded from the private library. pak avoids loading packages from your regular package libraries. (These package files would be locked on some systems, and locked packages cannot be updated. pak does not load any package in the main process, except for pak itself).</p></li>
-<li><p>To avoid updating locked packages, pak warns and requests confirmation for loaded packages.</p></li>
+<li><p>To avoid updating locked packages, pak offers the choice of unloading them from the current R session, and/or killing other R sessions locking them.</p></li>
 <li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. It finds conflicts up front, before attempting installation.</p></li>
 </ul>
 </div>
@@ -153,7 +153,15 @@
 <ul>
 <li><p>BioC packages. pak supports Bioconductor packages out of the box. It uses the Bioconductor version that is appropriate for your R version.</p></li>
 <li><p>GitHub packages. pak supports GitHub packages out of the box. It also supports the <code>Remotes</code> entry in <code>DESCRIPTION</code> files, so that GitHub dependencies of GitHub packages will also get installed. See e.g. <a href="https://cran.r-project.org/package=remotes/vignettes/dependencies.html" class="uri">https://cran.r-project.org/package=remotes/vignettes/dependencies.html</a></p></li>
+<li><p>Easy time travel with <a href="https://mran.microsoft.com/timemachine">MRAN</a> and <a href="https://packagemanager.rstudio.com/client/#/">RSPM</a>, to a specific date or when a certain R or package version was released.</p></li>
 <li><p>Package sizes. For CRAN packages pak shows the total sizes of packages it needs to download.</p></li>
+<li>
+<p>Other package sources:</p>
+<ul>
+<li>local package files and directories,</li>
+<li>URLs to package files or package tree archives.</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -163,11 +171,9 @@
 <ul>
 <li>Support GitLab repositories</li>
 <li>Support Bitbucket repositories</li>
-<li>Support package URLs</li>
 <li>Support system requirements</li>
 <li>Support older CRAN package versions</li>
 <li>Support older BioConductor package versions</li>
-<li>Support GitHub pull requests</li>
 <li>Support local CRAN mirrors</li>
 <li>Support the <code>Additional_repositories</code> <code>DESCRIPTION</code> field</li>
 <li>Support SVN repos</li>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Query the currently configured CRAN-like repositories — repo_get • pak</title>
+<title>Install missing packages on the fly — handle_package_not_found • pak</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,11 @@
 
 
 
-<meta property="og:title" content="Query the currently configured CRAN-like repositories — repo_get" />
-<meta property="og:description" content="pak uses the repos option, see options(). It also automatically
-adds a CRAN mirror if none is set up, and the correct version of the
-Bioconductor repositores. See the cran_mirror and bioc arguments." />
+<meta property="og:title" content="Install missing packages on the fly — handle_package_not_found" />
+<meta property="og:description" content="Use this function to set up a global error handler, that is called
+if R fails to load a package. This handler will offer yout the choice
+of installing the missing package (and all its dependencies),
+and in some cases it can also remedy the error and restart the code." />
 
 
 <meta name="robots" content="noindex">
@@ -113,58 +114,52 @@ Bioconductor repositores. See the cran_mirror and bioc arguments." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Query the currently configured CRAN-like repositories</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/repo.R'><code>R/repo.R</code></a></small>
-    <div class="hidden name"><code>repo_get.Rd</code></div>
+    <h1>Install missing packages on the fly</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/global-handler.R'><code>R/global-handler.R</code></a></small>
+    <div class="hidden name"><code>handle_package_not_found.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>pak uses the <code>repos</code> option, see <code><a href='https://rdrr.io/r/base/options.html'>options()</a></code>. It also automatically
-adds a CRAN mirror if none is set up, and the correct version of the
-Bioconductor repositores. See the <code>cran_mirror</code> and <code>bioc</code> arguments.</p>
+    <p>Use this function to set up a global error handler, that is called
+if R fails to load a package. This handler will offer yout the choice
+of installing the missing package (and all its dependencies),
+and in some cases it can also remedy the error and restart the code.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>repo_get</span><span class='op'>(</span>r_version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span><span class='op'>(</span><span class='op'>)</span>, bioc <span class='op'>=</span> <span class='cn'>TRUE</span>, cran_mirror <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>handle_package_not_found</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>r_version</th>
-      <td><p>R version to use to determine the correct Bioconductor
-version, if <code>bioc = TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>bioc</th>
-      <td><p>Whether to automatically add the Bioconductor repositories
-to the result.</p></td>
-    </tr>
-    <tr>
-      <th>cran_mirror</th>
-      <td><p>CRAN mirror to use. Leave it at <code>NULL</code> to use the
-mirror in <code><a href='https://rdrr.io/r/base/options.html'>getOption("repos")</a></code> or an automatically selected one.</p></td>
+      <th>err</th>
+      <td><p>The error object, of class <code>packageNotFoundError</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Nothing.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>repo_get()</code> returns the table of the currently configured repositories.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>You are not supposed to call this function directly. Instead, set it
+up as a global error handler, possibly in your <code>.Rprofile</code> file:<div class="r"></p><pre><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&amp;&amp;</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&gt;=</span> <span class='st'>"4.0.0"</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/conditions.html'>globalCallingHandlers</a></span><span class='op'>(</span>
+    packageNotFoundError <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span> <span class='op'>{</span>
+      <span class='kw'><a href='https://rdrr.io/r/base/try.html'>try</a></span><span class='op'>(</span><span class='fu'>pak</span><span class='fu'>::</span><span class='fu'>handle_package_not_found</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span><span class='op'>)</span>
+    <span class='op'>}</span>
+  <span class='op'>)</span>
+<span class='op'>}</span>
+</pre><p></div></p>
+<p>Global error handlers are only supported in R 4.0.0 and later.</p>
+<p>Currently <code>handle_package_not_found()</code> does not do anything in
+non-interactive mode (including in knitr, testthat and RStudio
+notebooks), this might change in the future.</p>
+<p>In some cases it is possible to remedy the original computation that
+tried to load the missing package, and pak will offer you to do so
+after a successful installation. Currently, in R 4.0.4, it is not
+possible to continue a failed <code><a href='https://rdrr.io/r/base/library.html'>library()</a></code> call.</p>
 
-    <div class='dont-index'><p>Other repository functions: 
-<code><a href='repo_add.html'>repo_add</a>()</code>,
-<code><a href='repo_status.html'>repo_status</a>()</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>repo_get</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 x 5</span><span>
-#&gt;   name        url                                   type  r_version bioc_version
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                 </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> CRAN        https://cloud.r-project.org           cran  *         </span><span style='color: #BB0000;'>NA</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> BioCsoft    https://bioconductor.org/packages/3.… bioc  4.0.4     3.12        
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> BioCann     https://bioconductor.org/packages/3.… bioc  4.0.4     3.12        
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> BioCexp     https://bioconductor.org/packages/3.… bioc  4.0.4     3.12        
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> BioCworkfl… https://bioconductor.org/packages/3.… bioc  4.0.4     3.12        </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
