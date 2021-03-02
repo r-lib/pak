@@ -116,11 +116,12 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     callback <- function(x, ...) invisible()
   }
 
+  if (sudo) {
+    cmd <- paste("sudo", cmd)
+  }
+
   if (execute) {
     for (cmd in commands) {
-      if (sudo) {
-        cmd <- paste("sudo", cmd)
-      }
       cli::cli_alert_info("Executing {.code {cmd}}")
 
       processx::run("sh", c("-c", cmd), stdout_callback = callback, stderr_to_stdout = TRUE)
