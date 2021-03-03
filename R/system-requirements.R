@@ -116,7 +116,7 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     callback <- function(x, ...) invisible()
   }
 
-  if (all(sudo, length(commands))) {
+  if (sudo && length(commands) > 0) {
     commands <- paste("sudo", commands)
   }
 
