@@ -78,9 +78,11 @@ To set up this action for your own repository, run
 
 ``` r
 usethis::use_github_action("check-pak")
+usethis::use_github_action("test-coverage-pak")
+usethis::use_github_action("pkgdown-pak")
 ```
 
-from R.
+from R. The last two are a test coverage action and a pkgdown action.
 
 ## Why pak?
 
