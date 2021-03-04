@@ -120,8 +120,10 @@
 <a href="#on-github-actions" class="anchor"></a>On GitHub Actions</h3>
 <p>The <a href="https://github.com/r-lib/actions"><code>r-lib/actions</code></a> repository has an <code>R CMD check</code> GitHub Action that uses pak to install packages: <a href="https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml" class="uri">https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml</a> To set up this action for your own repository, run</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"check-pak"</span><span class="op">)</span></code></pre></div>
-<p>from R.</p>
+<code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"check-pak"</span><span class="op">)</span>
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"test-coverage-pak"</span><span class="op">)</span>
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"pkgdown-pak"</span><span class="op">)</span></code></pre></div>
+<p>from R. The last two are a test coverage action and a pkgdown action.</p>
 </div>
 </div>
 <div id="why-pak" class="section level2">
