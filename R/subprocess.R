@@ -123,7 +123,7 @@ restart_remote_if_needed <- function() {
 }
 
 load_private_packages <- function(create = TRUE) {
-  load_private_package("crayon", create = create)
+  load_private_package("cli", create = create)
   load_private_package("ps", create = create)
   load_private_package("processx", "c_", create = create)
   load_private_package("callr", create = create)

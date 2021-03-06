@@ -22,7 +22,7 @@
 #   the error, e.g. `.Last.error$trace`. The trace of the last error is
 #   also at `.Last.error.trace`.
 # - Can merge errors and traces across multiple processes.
-# - Pretty-print errors and traces, if the crayon package is loaded.
+# - Pretty-print errors and traces, if the cli package is loaded.
 # - Automatically hides uninformative parts of the stack trace when
 #   printing.
 #
@@ -85,6 +85,10 @@
 #
 # * Add the `call` argument to `catch_rethrow()` and `rethrow()`, to be
 #   able to omit calls.
+#
+# ### 1.2.3 -- 2021-03-06
+#
+# * Use cli instead of crayon
 
 err <- local({
 
@@ -590,8 +594,8 @@ err <- local({
   }
 
   capture_output <- function(expr) {
-    if (has_crayon()) {
-      opts <- options(crayon.enabled = crayon::has_color())
+    if (has_cli()) {
+      opts <- options(cli.num_colors = cli::num_ansi_colors())
       on.exit(options(opts), add = TRUE)
     }
 
@@ -698,22 +702,22 @@ err <- local({
 
   # -- printing, styles -------------------------------------------------
 
-  has_crayon <- function() "crayon" %in% loadedNamespaces()
+  has_cli <- function() "cli" %in% loadedNamespaces()
 
   style_numbers <- function(x) {
-    if (has_crayon()) crayon::silver(x) else x
+    if (has_cli()) cli::col_silver(x) else x
   }
 
   style_advice <- function(x) {
-    if (has_crayon()) crayon::silver(x) else x
+    if (has_cli()) cli::col_silver(x) else x
   }
 
   style_srcref <- function(x) {
-    if (has_crayon()) crayon::italic(crayon::cyan(x))
+    if (has_cli()) cli::style_italic(cli::col_cyan(x))
   }
 
   style_error <- function(x) {
-    if (has_crayon()) crayon::bold(crayon::red(x)) else x
+    if (has_cli()) cli::style_bold(cli::col_ed(x)) else x
   }
 
   style_error_msg <- function(x) {
@@ -726,15 +730,15 @@ err <- local({
   }
 
   style_process <- function(x) {
-    if (has_crayon()) crayon::bold(x) else x
+    if (has_cli()) cli::style_bold(x) else x
   }
 
   style_call <- function(x) {
-    if (!has_crayon()) return(x)
+    if (!has_cli()) return(x)
     call <- sub("^([^(]+)[(].*$", "\\1", x)
     rest <- sub("^[^(]+([(].*)$", "\\1", x)
     if (call == x || rest == x) return(x)
-    paste0(crayon::yellow(call), rest)
+    paste0(cli::col_yellow(call), rest)
   }
 
   err_env <- environment()
