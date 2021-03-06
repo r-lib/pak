@@ -84,14 +84,13 @@ new_remote_session <- function(create = TRUE) {
   get_private_lib(create = create)
   load_private_packages(create = create)
   callr <- pkg_data$ns$callr
-  crayon <- pkg_data$ns$crayon
+  cli <- pkg_data$ns$cli
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
   opts$env <- c(
     opts$env, R_PKG_SHOW_PROGRESS = is_verbose(),
     R_PKG_PKG_WORKER = "true",
-    R_PKG_PKG_COLORS = as.character(crayon$has_color()),
-    R_PKG_PKG_NUM_COLORS = as.character(crayon$num_colors()),
-    R_PKG_DYNAMIC_TTY = is_dynamic_tty()
+    R_PKG_NUM_COLORS = as.character(cli$num_ansi_colors()),
+    R_PKG_DYNAMIC_TTY = cli$is_dynamic_tty()
   )
   pkg_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }
@@ -123,6 +122,7 @@ restart_remote_if_needed <- function() {
 }
 
 load_private_packages <- function(create = TRUE) {
+  load_private_package("glue", create = create)
   load_private_package("cli", create = create)
   load_private_package("ps", create = create)
   load_private_package("processx", "c_", create = create)
@@ -263,9 +263,9 @@ set_function_envs <- function(within, new) {
 ## This is a workaround for R CMD check
 
 r_cmd_check_fix <- function() {
+  glue::glue
   callr::r
   cli::rule
-  crayon::red
   filelock::lock
   invisible()
 }
