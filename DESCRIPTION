@@ -46,7 +46,8 @@ Suggests:
     tibble,
     withr
 Remotes:
-    r-lib/pkgdepends
+    r-lib/pkgdepends,
+    r-lib/processx
 Config/pak/dependencies:
     callr (>= 3.5.0),
     cli (>= 2.3.1),
