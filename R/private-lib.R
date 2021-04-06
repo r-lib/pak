@@ -170,9 +170,13 @@ parse_dep_fields <- function(deps) {
 ## Not an issue currently, might be in the future.
 
 base_packages <- function() {
+
   if (is.null(pkg_data$base_packages)) {
     pkg_data$base_packages <-
-      rownames(utils::installed.packages(priority = "base"))
+      c("base", "compiler", "datasets", "graphics", "grDevices", "grid",
+        "methods", "parallel", "splines", "stats", "stats4", "tcltk",
+        "tools", "utils"
+        )
   }
   pkg_data$base_packages
 }
