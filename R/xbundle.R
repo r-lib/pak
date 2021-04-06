@@ -20,20 +20,32 @@ bundle_install_deps <- function() {
     deps <- utils::packageDescription("pak")$`Config/pak/dependencies`
   }
 
+  # In case the CRAN repo is not set
+  repos <- getOption("repos")
+  if ("@CRAN@" %in% repos) {
+    repos[repos == "@CRAN@"] <- c(CRAN = "https://cloud.r-project.org")
+    o1 <- options(repos = repos)
+    on.exit(options(o1), add = TRUE)
+  } else if (! "CRAN" %in% names(repos)) {
+    repos <- c(repos, c(CRAN = "https://cloud.r-project.org"))
+    o1 <- options(repos = repos)
+    on.exit(options(o1), add = TRUE)
+  }
+
   pkgs <- bundle_parse_deps(deps)
 
   lib <- file.path(pkgdir, "library")
   dir.create(lib, showWarnings = FALSE, recursive = TRUE)
 
-  old <- options(install.packages.compile.from.source = "always")
-  on.exit(options(old), add = TRUE)
-  
+  o2 <- options(install.packages.compile.from.source = "always")
+  on.exit(options(o2), add = TRUE)
+
   for (pkg in pkgs) {
-    utils::install.packages(
+    suppressMessages(capture.output(utils::install.packages(
       pkg, lib = lib, quiet = TRUE,
-      INSTALL_opts = "--no-staged-install",
+      INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
       dependencies = FALSE
-    )
+    )))
   }
 
   bundle_cleanup_library(lib)
@@ -96,7 +108,7 @@ bundle_parse_deps <- function (str) {
   pkgs <- mtc$package
 
   db <- utils::available.packages()
-  
+
   deps <- tools::package_dependencies(pkgs, db = db)
   repeat {
     nxt <- unlist(unique(deps))
@@ -126,5 +138,15 @@ bundle <- function() {
 }
 
 if (should_bundle()) {
+  out <- NULL
+  try(if (file.exists("/dev/tty")) {
+        out <- file("/dev/tty", open = "w", raw = TRUE)
+        cat(
+          "** bundling dependencies, this will take several minutes\n",
+          file = out
+        )
+      })
+  try(close(out))
+
   bundle()
 }
