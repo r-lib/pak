@@ -15,13 +15,6 @@ pak_repo <- function() {
 #' @export
 
 pak_update <- function(force = FALSE) {
-  if (is.null(pkg_data$pak_version)) {
-    stop(
-      "Cannot find pak version data, are your trying to update a package ",
-      "loaded with `load_all()`?"
-    )
-  }
-
   repo <- pak_repo()
 
   os <- get_os()
@@ -99,12 +92,10 @@ av_filter <- function(av) {
 
 should_update_to <- function(av) {
   # check if the right platform was installed
-  if (!is.null(pkg_data$pak_version)) {
-    current <-R.Version()$platform
-    if (!platform_match(pkg_data$pak_version$platform, current)) {
-      message("\npak platform mismatch, trying to update to fix this...")
-      return(TRUE)
-    }
+  current <-R.Version()$platform
+  if (!platform_match(pak_sitrep_data$platform, current)) {
+    message("\npak platform mismatch, trying to update to fix this...")
+    return(TRUE)
   }
 
   # otherwise use version number first

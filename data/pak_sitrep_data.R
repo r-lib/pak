@@ -1,5 +1,5 @@
 
-.about <- list()
+pak_sitrep_data <- list(deps = logical())
 
 local({
 
@@ -57,7 +57,7 @@ local({
          INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
          dependencies = FALSE
       )))
-      .about[[pkg]] <<- file.exists(file.path(lib, pkg))
+      pak_sitrep_data$deps[[pkg]] <<- file.exists(file.path(lib, pkg))
       cat(".")
       if (!n %% 10) cat(n)
       n <- n + 1
@@ -180,6 +180,11 @@ local({
   bundle <- function() {
     bundle_install_deps()
   }
+
+  pak_sitrep_data$platform <<- R.Version()$platform
+  pak_sitrep_data$`github-repository` <<- Sys.getenv("GITHUB_REPOSITORY", "-")
+  pak_sitrep_data$`github-sha` <<- Sys.getenv("GITHUB_SHA", "-")
+  pak_sitrep_data$`github-ref` <<- Sys.getenv("GITHUB_REF", "-")
 
   if (should_bundle()) {
     cat("** building pak dependency data, this can take several minutes\n")
