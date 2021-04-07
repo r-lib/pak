@@ -120,21 +120,13 @@ test_that("check_platform", {
     expect_silent(check_platform(".", "."))
   )
 
-  # broken installation
-  mockery::stub(check_platform, "read.dcf", function(...) stop("nope"))
-  expect_warning(check_platform(".", "."), "broken installation")
-
   # clean
   current <- R.Version()$platform
-  mockery::stub(check_platform, "read.dcf", function(file, ...) {
-    base::read.dcf(textConnection(paste0("platform: ", current, "\n")))
-  })
-  expect_silent(check_platform(".", "."))
+  expect_silent(check_platform(".", ".", data = list(platform = current)))
 
   # warn for non-match
-  mockery::stub(check_platform, "read.dcf", function(file, ...) {
-    base::read.dcf(textConnection(paste0("platform: this-is-nothing\n")))
-  })
-  expect_warning(check_platform(".", "."), "Wrong OS or architecture")
-
+  expect_warning(
+    check_platform(".", ".", data = list(platform = "not-this-time")),
+    "Wrong OS or architecture"
+  )
 })
