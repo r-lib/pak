@@ -8,6 +8,15 @@ local({
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir == "") return(FALSE)
 
+    # Another test for pkgload::load_all(), just in case
+    if (!file.exists(file.path(pkgdir, "Meta"))) return(FALSE)
+
+    # Do not bundle when building binary on GHA. GHA uses its own
+    # bundling for now.
+    if (Sys.getenv("GITHUB_WORKFLOW", "") == "Build pak binary") {
+      return(FALSE)
+    }
+
     if (Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "") != "") {
       return(FALSE)
     }
