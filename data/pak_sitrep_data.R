@@ -61,10 +61,12 @@ local({
     cat("** deps data (", length(pkgs), "): ", sep = "")
     n <- 1
     for (pkg in pkgs) {
-      suppressMessages(utils::capture.output(utils::install.packages(
-         pkg, lib = lib, quiet = TRUE,
-         INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
-         dependencies = FALSE
+      suppressWarnings(suppressMessages(utils::capture.output(
+        utils::install.packages(
+          pkg, lib = lib, quiet = TRUE,
+          INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
+          dependencies = FALSE
+        )
       )))
       pak_sitrep_data$deps[[pkg]] <<- file.exists(file.path(lib, pkg))
       cat(".")
