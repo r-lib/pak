@@ -26,7 +26,6 @@ Suggests:
     callr (>= 3.5.0),
     cli (>= 2.3.1),
     covr,
-    crayon (>= 1.4.1),
     curl,
     distro,
     filelock (>= 1.0.2),
@@ -48,7 +47,6 @@ Suggests:
 Config/pak/dependencies:
     callr (>= 3.5.0),
     cli (>= 2.3.1),
-    crayon (>= 1.4.1),
     curl,
     distro,
     filelock (>= 1.0.2),

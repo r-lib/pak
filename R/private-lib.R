@@ -1,6 +1,6 @@
 
 check_for_private_lib <- function(
-    pkgs = c("crayon", "ps", "processx", "callr")) {
+    pkgs = c("glue", "cli", "ps", "processx", "callr")) {
   lib <- private_lib_dir()
   if (!file.exists(lib) || !is_dir(lib)) stop("No private lib")
   for (pkg in pkgs) {
