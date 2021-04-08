@@ -67,8 +67,11 @@ local({
           INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
           dependencies = FALSE
         )
-      )))
-      pak_sitrep_data$deps[[pkg]] <<- file.exists(file.path(lib, pkg))
+        )))
+      if (!file.exists(file.path(lib, pkg))) {
+        stop("Failed to bundle deps data (", pkg, ")")
+      }
+      pak_sitrep_data$deps[[pkg]] <<- TRUE
       cat(".")
       if (!n %% 10) cat(n)
       n <- n + 1
