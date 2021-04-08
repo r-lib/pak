@@ -1,10 +1,17 @@
 
 pak_sitrep_data <- list(deps = logical())
 
+# It seems that it is not possible to share these scripts with the package,
+# except for source()-ing the collated package code, which I decided not
+# to do for now, as it depends on an implementation detail.
+
 local({
 
   should_bundle <- function() {
     # Do not bundle in pkgload::load_all()
+    if (Sys.getenv("R_PACKAGE_NAME", "") != "pak") return(FALSE)
+
+    # This must be set in R CMD INSTALL
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir == "") return(FALSE)
 
