@@ -121,7 +121,7 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #'
 #' @family repository functions
 #' @export
-#' @examples
+#' @examplesIf FALSE
 #' repo_get()
 
 repo_get <- function(r_version = getRversion(),

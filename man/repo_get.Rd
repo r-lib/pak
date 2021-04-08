@@ -25,7 +25,9 @@ Bioconductor repositores. See the \code{cran_mirror} and \code{bioc} arguments.
 \code{repo_get()} returns the table of the currently configured repositories.
 }
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 repo_get()
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other repository functions: 
