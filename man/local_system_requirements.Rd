@@ -50,6 +50,8 @@ Returns a character vector of commands to run that will install system
 requirements for the queried operating system.
 }
 \examples{
+\dontrun{
 pkg_system_requirements("pak", "ubuntu", "20.04")
 pkg_system_requirements("pak", "redhat", "7")
+}
 }

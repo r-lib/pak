@@ -21,8 +21,10 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #'   requirements for the package.
 #' @export
 #' @examples
+#' \dontrun{
 #' pkg_system_requirements("pak", "ubuntu", "20.04")
 #' pkg_system_requirements("pak", "redhat", "7")
+#' }
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),

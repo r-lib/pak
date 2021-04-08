@@ -2,6 +2,7 @@
 % Please edit documentation in R/pak-install.R
 \name{pak_sitrep}
 \alias{pak_sitrep}
+\alias{pak_sitrep_data}
 \title{pak SITuation REPort}
 \usage{
 pak_sitrep()

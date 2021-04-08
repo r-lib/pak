@@ -2,6 +2,12 @@
 pkg_data <- new.env(parent = emptyenv())
 
 .onLoad <- function(libname, pkgname) {
+  utils::data(
+    pak_sitrep_data,
+    package = pkgname,
+    envir = environment(.onLoad)
+  )
+
   check_platform(libname, pkgname)
   pkg_data$ns <- list()
 
@@ -33,27 +39,12 @@ pkg_data <- new.env(parent = emptyenv())
 }
 
 check_platform <- function(libname = dirname(find.package("pak")),
-                           pkgname = "pak") {
+                           pkgname = "pak", data = pak_sitrep_data) {
   # Is this load_all()?
   if (!file.exists(file.path(libname, pkgname, "help"))) return(TRUE)
 
   # Is this during installation?
   if (Sys.getenv("R_PACKAGE_DIR", "") != "") return(TRUE)
-
-  pkg_data$pak_version <- data <- tryCatch(
-    suppressWarnings(as.list(read.dcf(
-      file.path(libname, pkgname, "pak-version.dcf")
-    )[1,])),
-    error = function(err) {
-      warning(
-        "Cannot read pak metadata, broken installation?\n",
-        "Error message: ", conditionMessage(err),
-        call. = FALSE
-      )
-      NULL
-    }
-  )
-  if (is.null(data)) return()
 
   current <- R.Version()$platform
   install <- data$platform
