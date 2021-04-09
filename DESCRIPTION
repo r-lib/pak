@@ -60,5 +60,7 @@ Config/needs/dependencies:
     ps,
     rprojroot,
     tibble
+Remotes:
+    r-lib/pkgdepends
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

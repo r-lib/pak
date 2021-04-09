@@ -19,8 +19,6 @@ It prints
 }
 \seealso{
 Other pak housekeeping: 
-\code{\link{pak_cleanup}()},
-\code{\link{pak_private_library}},
-\code{\link{pak_setup}()}
+\code{\link{pak_cleanup}()}
 }
 \concept{pak housekeeping}
