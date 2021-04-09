@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set up private pak library (deprecated) — pak_setup • pak</title>
+<title>Install pak's dependencies into its private library — pak_setup • pak</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Set up private pak library (deprecated) — pak_setup" />
-<meta property="og:description" content="This function is deprecated and does nothing.
-Recent versions of pak do not need a pak_setup() call." />
+<meta property="og:title" content="Install pak's dependencies into its private library — pak_setup" />
+<meta property="og:description" content="To avoid interference between your regular R packages and pak's
+dependencies, pak works off a private library, which can be created
+by pak_setup()." />
 
 
 <meta name="robots" content="noindex">
@@ -112,14 +113,15 @@ Recent versions of pak do not need a pak_setup() call." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set up private pak library (deprecated)</h1>
+    <h1>Install pak's dependencies into its private library</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/pak-install.R'><code>R/pak-install.R</code></a></small>
     <div class="hidden name"><code>pak_setup.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function is deprecated and does nothing.
-Recent versions of pak do not need a <code>pak_setup()</code> call.</p>
+    <p>To avoid interference between your regular R packages and pak's
+dependencies, pak works off a private library, which can be created
+by <code>pak_setup()</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>pak_setup</span><span class='op'>(</span>mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"download"</span>, <span class='st'>"copy"</span><span class='op'>)</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -143,6 +145,12 @@ and if that fails, then it tries to download.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The path to the private library, invisibly.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other pak housekeeping: 
+<code><a href='pak_cleanup.html'>pak_cleanup</a>()</code>,
+<code><a href='pak_private_library.html'>pak_private_library</a></code>,
+<code><a href='pak_sitrep.html'>pak_sitrep</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
