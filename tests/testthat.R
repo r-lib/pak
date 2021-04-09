@@ -8,10 +8,14 @@ do <- function() {
   }
   Sys.setenv("R_PKG_CACHE_DIR" = tempfile())
 
-  print(asNamespace("pak")$pak_sitrep_data)
-  library(testthat)
-  library(pak)
-  test_check("pak")
+  try({
+    pkg_dir <- find.package("pak")
+    lib <- file.path(pkg_dir, "library")
+    library(testthat)
+    library(pak)
+    asNamespace("pak")$create_dev_lib(lib)
+    test_check("pak")
+  })
 }
 
 do()

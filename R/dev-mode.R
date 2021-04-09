@@ -1,8 +1,8 @@
 
 # These functions are only used for pak development
 
-create_dev_lib <- function() {
-  lib <- private_lib_dir()
+create_dev_lib <- function(lib = NULL) {
+  lib <- lib %||% private_lib_dir()
 
   if (identical(names(lib), "embedded")) stop("Private lib is embedded")
 
@@ -13,9 +13,9 @@ create_dev_lib <- function() {
   pkg_dirs <- private_lib_packages()
 
   pkg_names <- basename(pkg_dirs)
-  message(
-    "Copying packages into private lib: ",
-    paste0("`", pkg_names, "`", collapse = ", ")
+  cli::cli_alert_info(
+    "Copying packages into private lib: {.pkg {pkg_names}}.",
+    wrap = TRUE
   )
 
   for(i in seq_along(pkg_dirs)) copy_package(pkg_dirs[i], lib)
