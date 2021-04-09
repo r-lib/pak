@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set up private pak library (deprecated) — pak_setup • pak</title>
+<title>Check if an R package name is available — pkg_name_check • pak</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Set up private pak library (deprecated) — pak_setup" />
-<meta property="og:description" content="This function is deprecated and does nothing.
-Recent versions of pak do not need a pak_setup() call." />
+<meta property="og:title" content="Check if an R package name is available — pkg_name_check" />
+<meta property="og:description" content="Additionally, look up the candidate name in a number of
+dictionaries, to make sure that it does not have a negative
+meaning." />
 
 
 <meta name="robots" content="noindex">
@@ -112,38 +113,81 @@ Recent versions of pak do not need a pak_setup() call." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set up private pak library (deprecated)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/pak-install.R'><code>R/pak-install.R</code></a></small>
-    <div class="hidden name"><code>pak_setup.Rd</code></div>
+    <h1>Check if an R package name is available</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/name-check.R'><code>R/name-check.R</code></a></small>
+    <div class="hidden name"><code>pkg_name_check.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function is deprecated and does nothing.
-Recent versions of pak do not need a <code>pak_setup()</code> call.</p>
+    <p>Additionally, look up the candidate name in a number of
+dictionaries, to make sure that it does not have a negative
+meaning.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pak_setup</span><span class='op'>(</span>mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"download"</span>, <span class='st'>"copy"</span><span class='op'>)</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>pkg_name_check</span><span class='op'>(</span><span class='va'>name</span>, dictionaries <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mode</th>
-      <td><p>Where to get the packages from. "download" will try to
-download them from CRAN. "copy" will try to copy them from your
-current "regular" package library. "auto" will try to copy first,
-and if that fails, then it tries to download.</p></td>
+      <th>name</th>
+      <td><p>Package name candidate.</p></td>
     </tr>
     <tr>
-      <th>quiet</th>
-      <td><p>Whether to omit messages.</p></td>
+      <th>dictionaries</th>
+      <td><p>Character vector, the dictionaries to query.
+Available dictionaries:
+* <code>wikipedia</code>
+* <code>wiktionary</code>,
+* <code>acromine</code> (<a href='http://www.nactem.ac.uk/software/acromine/'>http://www.nactem.ac.uk/software/acromine/</a>),
+* <code>sentiment</code> (<a href='https://github.com/fnielsen/afinn'>https://github.com/fnielsen/afinn</a>),
+* <code>urban</code> (Urban Dictionary).
+If <code>NULL</code> (by default), the Urban Dictionary is omitted, as it
+is often offensive.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The path to the private library, invisibly.</p>
+    <p><code>pkg_name_check</code> object with a custom print method.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Valid package name check</h3>
+
+
+<p>Check the validity of <code>name</code> as a package name. See 'Writing R
+Extensions' for the allowed package names. Also checked against a list
+of names that are known to cause problems.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>CRAN checks</h3>
+
+
+<p>Check <code>name</code> against the names of all past and current packages on
+CRAN, including base and recommended packages.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Bioconductor checks</h3>
+
+
+<p>Check <code>name</code> against all past and current Bioconductor packages.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Profanity check</h3>
+
+
+<p>Check <code>name</code> with <a href='https://www.purgomalum.com/service/containsprofanity'>https://www.purgomalum.com/service/containsprofanity</a>
+to make sure it is not a profanity.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Dictionaries</h3>
+
+
+<p>See the <code>dictionaries</code> argument.</p>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>pkg_name_check</span><span class='op'>(</span><span class='st'>"cli"</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
