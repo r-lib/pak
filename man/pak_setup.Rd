@@ -2,7 +2,7 @@
 % Please edit documentation in R/pak-install.R
 \name{pak_setup}
 \alias{pak_setup}
-\title{Install pak's dependencies into its private library}
+\title{Set up private pak library (deprecated)}
 \usage{
 pak_setup(mode = c("auto", "download", "copy"), quiet = FALSE)
 }
@@ -18,14 +18,6 @@ and if that fails, then it tries to download.}
 The path to the private library, invisibly.
 }
 \description{
-To avoid interference between your regular R packages and pak's
-dependencies, pak works off a private library, which can be created
-by \code{pak_setup()}.
+This function is deprecated and does nothing.
+Recent versions of pak do not need a \code{pak_setup()} call.
 }
-\seealso{
-Other pak housekeeping: 
-\code{\link{pak_cleanup}()},
-\code{\link{pak_private_library}},
-\code{\link{pak_sitrep}()}
-}
-\concept{pak housekeeping}
