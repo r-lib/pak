@@ -717,7 +717,7 @@ err <- local({
   }
 
   style_error <- function(x) {
-    if (has_cli()) cli::style_bold(cli::col_ed(x)) else x
+    if (has_cli()) cli::style_bold(cli::col_red(x)) else x
   }
 
   style_error_msg <- function(x) {
