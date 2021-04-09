@@ -262,3 +262,19 @@ lapply_with_names <- function(X, FUN, ...) {
 na_omit <- function(x) {
   x[!is.na(x)]
 }
+
+## TODO: in theory the set of base packages can change over time,
+## so we would need an R version specific vector here.
+## Not an issue currently, might be in the future.
+
+base_packages <- function() {
+
+  if (is.null(pkg_data$base_packages)) {
+    pkg_data$base_packages <-
+      c("base", "compiler", "datasets", "graphics", "grDevices", "grid",
+        "methods", "parallel", "splines", "stats", "stats4", "tcltk",
+        "tools", "utils"
+        )
+  }
+  pkg_data$base_packages
+}

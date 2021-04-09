@@ -36,13 +36,13 @@ local({
     TRUE
   }
 
-  bundle_install_deps <- function() {
+  bundle <- function() {
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir != "") {
       desc <- file.path(pkgdir, "DESCRIPTION")
-      deps <- read.dcf(desc)[, "Config/pak/dependencies"]
+      deps <- read.dcf(desc)[, "Config/needs/dependencies"]
     } else {
-      deps <- utils::packageDescription("pak")$`Config/pak/dependencies`
+      deps <- utils::packageDescription("pak")$`Config/needs/dependencies`
     }
 
     # In case the CRAN repo is not set
@@ -198,10 +198,55 @@ local({
     rownames(utils::installed.packages(.Library, priority="base"))
   }
 
-  bundle <- function() {
-    bundle_install_deps()
+  should_copy <- function() {
+    # Do not bundle in pkgload::load_all()
+    if (Sys.getenv("R_PACKAGE_NAME", "") != "pak") return(FALSE)
+
+    # This must be set in R CMD INSTALL
+    pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
+    if (pkgdir == "") return(FALSE)
+
+    # Another test for pkgload::load_all(), just in case
+    if (!file.exists(file.path(pkgdir, "Meta"))) return(FALSE)
+
+    # Do not copy when building binary on GHA. GHA uses its own
+    # bundling for now.
+    if (Sys.getenv("GITHUB_WORKFLOW", "") == "Build pak binary") {
+      return(FALSE)
+    }
+
+    pid <- Sys.getpid()
+    mark <- file.path(tempdir(), paste0(pid, ".log"))
+    if (file.exists(mark)) return(FALSE)
+
+    file.create(mark)
+    TRUE
   }
 
+  bundle_copy <- function() {
+    pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
+    if (pkgdir != "") {
+      desc <- file.path(pkgdir, "DESCRIPTION")
+      deps <- read.dcf(desc)[, "Config/needs/dependencies"]
+    } else {
+      deps <- utils::packageDescription("pak")$`Config/needs/dependencies`
+    }
+
+    pkgs <- bundle_parse_deps(deps)
+
+    lib <- file.path(pkgdir, "library")
+    dir.create(lib, showWarnings = FALSE, recursive = TRUE)
+
+    for (pkg in pkgs) {
+      pak_sitrep_data$deps[[pkg]] <<- FALSE
+      tryCatch({
+        src <- find.package(pkg)
+        file.copy(src, lib, recursive = TRUE)
+        pak_sitrep_data$deps[[pkg]] <<- TRUE
+      }, error = function(err) NULL)
+    }
+  }
+  
   pak_sitrep_data$platform <<- R.Version()$platform
   pak_sitrep_data$`github-repository` <<- Sys.getenv("GITHUB_REPOSITORY", "-")
   pak_sitrep_data$`github-sha` <<- Sys.getenv("GITHUB_SHA", "-")
@@ -211,5 +256,10 @@ local({
     cat("** building pak dependency data, this can take several minutes\n")
     bundle()
     cat("** pak dependency data is embedded\n")
+  }
+
+  if (should_copy()) {
+    cat("** building pak dependency data\n")
+    bundle_copy()
   }
 })

@@ -80,9 +80,8 @@ print.pak_error <- function(x, ...) {
   cat(x$formatted_message, sep = "\n")
 }
 
-new_remote_session <- function(create = TRUE) {
-  get_private_lib(create = create)
-  load_private_packages(create = create)
+new_remote_session <- function() {
+  load_private_packages()
   callr <- pkg_data$ns$callr
   cli <- pkg_data$ns$cli
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
@@ -97,9 +96,8 @@ new_remote_session <- function(create = TRUE) {
 
 try_new_remote_session <- function() {
   tryCatch({
-    check_for_private_lib()
-    load_private_packages(create = FALSE)
-    new_remote_session(create = FALSE)
+    load_private_packages()
+    new_remote_session()
   }, error = function(e) e)
 }
 
@@ -121,20 +119,23 @@ restart_remote_if_needed <- function() {
   new_remote_session()
 }
 
-load_private_packages <- function(create = TRUE) {
-  load_private_package("glue", create = create)
-  load_private_package("cli", create = create)
-  load_private_package("ps", create = create)
-  load_private_package("processx", "c_", create = create)
-  load_private_package("callr", create = create)
+load_private_packages <- function() {
+  load_private_package("glue")
+  load_private_package("cli")
+  load_private_package("ps")
+  load_private_package("processx", "c_")
+  load_private_package("callr")
 }
 
-load_private_package <- function(package, reg_prefix = "", create = TRUE,
-                                 lib = get_private_lib(create = create))  {
+load_private_package <- function(package, reg_prefix = "",
+                                 lib = private_lib_dir()) {
   if (!is.null(pkg_data$ns[[package]])) return()
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
+  if (!file.exists(file.path(lib, package))) {
+    stop("Cannot load ", package, " from the private library")
+  }
   pkg_dir0 <- normalizePath(file.path(lib, package))
   mkdirp(pkg_dir <- file.path(tempfile(), package))
   pkg_dir <- normalizePath(pkg_dir)
@@ -161,7 +162,16 @@ load_private_package <- function(package, reg_prefix = "", create = TRUE,
     }, error = function(e) e)
   })
 
-  lazyLoad(file.path(pkg_dir, "R", package), envir = pkg_env)
+  tryCatch(
+    suppressWarnings(lazyLoad(file.path(pkg_dir, "R", package), envir = pkg_env)),
+    error = function(err) {
+      err$message <- paste0(
+        "Cannot load ", package, " from the private library: ",
+        err$message
+      )
+      stop(err)
+    }
+  )
 
   ## Reset environments
   set_function_envs(pkg_env, pkg_env)

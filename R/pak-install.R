@@ -1,9 +1,8 @@
 
-#' Install pak's dependencies into its private library
+#' Set up private pak library (deprecated)
 #'
-#' To avoid interference between your regular R packages and pak's
-#' dependencies, pak works off a private library, which can be created
-#' by `pak_setup()`.
+#' This function is deprecated and does nothing.
+#' Recent versions of pak do not need a `pak_setup()` call.
 #'
 #' @param mode Where to get the packages from. "download" will try to
 #'   download them from CRAN. "copy" will try to copy them from your
@@ -13,52 +12,10 @@
 #' @return The path to the private library, invisibly.
 #'
 #' @export
-#' @family pak housekeeping
 
-pak_setup <- function(mode = c("auto", "download", "copy"),
-                      quiet = FALSE) {
-
-  mode <- match.arg(mode)
-
-  lib <- private_lib_dir()
-
-  if (identical(names(lib), "embedded")) {
-    message("Private library is embedded, pak is ready to go.")
-    return(invisible())
-  }
-
-  # Only ask if private library doesn't already exist
-  if (!file.exists(lib)) {
-    if (mode == "auto" && !quiet && !testthat_testing()) {
-      message(
-        "\n`pak` needs to create a private package library in",
-        "\n`", lib, "`. ",
-        "\nIt will try to copy packages from your regular library",
-        "\nSee `?pak_setup()` for alternatives.\n")
-
-      ans <- readline("Do you want to continue (Y/n)? ")
-      if (! ans %in% c("", "y", "Y")) stop("Aborted", call. = FALSE)
-    }
-
-    dir.create(lib, recursive = TRUE, showWarnings = FALSE)
-  }
-
-  done <- FALSE
-  if (mode %in% c("auto", "copy")) {
-    tryCatch({
-      create_private_lib(quiet = quiet)
-      done <- TRUE
-    }, error = function(e) {
-      if (mode == "copy") stop(e) else if (!quiet) print(e)
-    })
-  }
-
-  if (!done) {
-    if (!quiet) message("\nInstalling packages into private lib")
-    download_private_lib(quiet = quiet)
-  }
-
-  invisible(lib)
+pak_setup <- function(mode = c("auto", "download", "copy"), quiet = FALSE) {
+  warning("`pak_setup()` is deprecated and does nothing.")
+  return(invisible())
 }
 
 #' pak SITuation REPort
@@ -134,19 +91,13 @@ pak_sitrep <- function() {
 
     } else {
       cat0("! Private library does not exist (create with ",
-           "`pak_setup()`)\n")
+           "`craete_dev_lib()`)\n")
     }
 
     if (has_lib) {
       ret <- tryCatch({
-        check_for_private_lib()
-        check_private_lib()
-        new_remote_session(create = FALSE)
-        deps <- utils::packageDescription("pak")$Imports
-        deps <- c("pak", parse_dep_fields(deps))
-        remote(args = list(deps = deps), function(deps) {
-          for (d in deps) library(d, character.only = TRUE)
-        })
+        new_remote_session()
+        # TODO: check that all packages can be loaded in subprocess
         TRUE
       }, error = function(e) e )
 
@@ -154,7 +105,7 @@ pak_sitrep <- function() {
         cat0("* Private library is functional\n")
       } else {
         cat0("! Private library is not functional, re-create with ",
-             "`pak_setup()`\n")
+             "`create_dev_lib(clean = TRUE)`\n")
         cat0("Error: ", conditionMessage(ret))
       }
     }

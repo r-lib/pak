@@ -44,21 +44,21 @@ Suggests:
     testthat,
     tibble,
     withr
-Config/pak/dependencies:
-    callr (>= 3.5.0),
-    cli (>= 2.3.1),
+Config/needs/dependencies:
+    callr,
+    cli,
     curl,
     distro,
-    filelock (>= 1.0.2),
-    glue (>= 1.3.0),
+    filelock,
+    glue,
     jsonlite,
-    pkgcache (>= 1.2.0),
-    pkgdepends (>= 0.0.0.9006),
-    pkgsearch (>= 3.0.3),
+    pkgcache,
+    pkgdepends,
+    pkgsearch,
     prettyunits,
     processx,
-    ps (>= 1.6.0),
-    rprojroot (>= 1.3-2),
+    ps,
+    rprojroot,
     tibble
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
