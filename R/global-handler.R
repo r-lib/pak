@@ -45,25 +45,38 @@ handle_package_not_found <- function(err) {
   pkg <- err$package
   lib <- err$lib.loc %||% .libPaths()[1]
 
-  cat0("\nx Failed to load package: '", pkg, "'. Do you want to install it?")
-  cat0(
-    "\n\n1. Install '", pkg, "' from the configured repositories into\n",
-    "   '", lib[1], "'.\n")
-  cat(
-    "2. No, not this time.\n\n")
+  can_cont <- !is.null(findRestart("retry_loadNamespace"))
 
-  ans <- get_answer(c("1", "2"))
+  cli <- load_private_cli()
+  cli$cli_text()
+  cli$cli_alert_danger(
+    c("Failed to load package {.pkg {pkg}}. Do you want to install it ",
+      "into the default library at {.path {lib}}?"),
+    wrap = TRUE
+    )
+  cli$cli_text()
+
+  dv <- cli$cli_div(theme = list(ol = list("margin-left" = 2)))
+  cli$cli_ol()
+  if (can_cont) {
+    cli$cli_li("Yes, install it, and continue the original computation.")
+  } else {
+    cli$cli_li("Yes, install it.")
+  }
+  cli$cli_li("No, stop now, and I'll handle it myself.")
+  cli$cli_text()
+  cli$cli_end(dv)
+
+  ans <- get_answer(c("1", "2"), "  ? Your choice [1]: ")
 
   cat("\n")
 
   if (ans == "2") return()
 
+  cli$cli_rule("start installation")
   pkg_install(pkg, lib = lib[1])
+  cli$cli_rule("end installation")
+  cli$cli_text()
 
-  if (!is.null(findRestart("retry_loadNamespace"))) {
-    cfm <- get_confirmation2("\n? Do you want to continue (Y/n) ")
-    if (cfm) invokeRestart("retry_loadNamespace")
-  } else {
-    cat("\n")
-  }
+  if (can_cont) invokeRestart("retry_loadNamespace")
 }

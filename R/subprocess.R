@@ -119,6 +119,12 @@ restart_remote_if_needed <- function() {
   new_remote_session()
 }
 
+load_private_cli <- function() {
+  load_private_package("glue")
+  load_private_package("cli")
+  pkg_data$ns$cli
+}
+
 load_private_packages <- function() {
   load_private_package("glue")
   load_private_package("cli")
@@ -172,6 +178,16 @@ load_private_package <- function(package, reg_prefix = "",
       stop(err)
     }
   )
+
+  sysdata <- file.path(pkg_dir, "R", "sysdata.rdb")
+  if (file.exists(sysdata)) {
+    lazyLoad(file.path(pkg_dir, "R", "sysdata"), envir = pkg_env)
+  }
+
+  # Hack to avoid S3 dispatch
+  if (package == "glue") {
+    pkg_env$as_glue <- pkg_env$as_glue.character
+  }
 
   ## Reset environments
   set_function_envs(pkg_env, pkg_env)
