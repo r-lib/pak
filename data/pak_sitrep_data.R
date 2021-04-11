@@ -40,10 +40,27 @@ local({
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir != "") {
       desc <- file.path(pkgdir, "DESCRIPTION")
-      deps <- read.dcf(desc)[, "Config/needs/dependencies"]
+      dcf <- read.dcf(desc)
+      deps <- dcf[, "Config/needs/dependencies"]
+      rmts <- if ("Remotes" %in% colnames(dcf)) dcf[, "Remotes"]
     } else {
-      deps <- utils::packageDescription("pak")$`Config/needs/dependencies`
+      dcf <- utils::packageDescription("pak")
+      deps <- dcf$`Config/needs/dependencies`
+      rmts <- dcf$Remotes
     }
+
+    if (!is.null(rmts)) {
+      cat(
+        "** -----------------------------------------------------------------------------\n",
+        "** Found 'Remotes', **NOT** bundling dependencies, ",
+        "use `pak:::create_dev_lib()`.\n",
+        "** -----------------------------------------------------------------------------\n",
+        sep = ""
+      )
+      return()
+    }
+
+    cat("** building pak dependency data, this can take several minutes\n")
 
     # In case the CRAN repo is not set
     repos <- getOption("repos")
@@ -86,6 +103,8 @@ local({
     cat(length(pkgs), "\n", sep = "")
 
     bundle_cleanup_library(lib)
+
+    cat("** pak dependency data is embedded\n")
   }
 
   rimraf <- function(...) {
@@ -204,8 +223,6 @@ local({
   pak_sitrep_data$`github-ref` <<- Sys.getenv("GITHUB_REF", "-")
 
   if (should_bundle()) {
-    cat("** building pak dependency data, this can take several minutes\n")
     bundle()
-    cat("** pak dependency data is embedded\n")
   }
 })
