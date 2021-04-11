@@ -1,6 +1,4 @@
 
-context("ui")
-
 test_that("should_ask_confirmation", {
 
   neg <- list(

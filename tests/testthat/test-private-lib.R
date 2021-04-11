@@ -1,6 +1,4 @@
 
-context("private-lib")
-
 test_that("loading package from private lib", {
   skip_on_cran()
   on.exit(pkg_data$ns <- list(), add = TRUE)

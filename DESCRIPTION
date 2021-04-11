@@ -63,5 +63,6 @@ Config/needs/dependencies:
 Remotes:
     r-lib/cli,
     r-lib/pkgdepends
+Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

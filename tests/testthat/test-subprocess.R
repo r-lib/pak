@@ -1,6 +1,4 @@
 
-context("subprocess related")
-
 test_that("no dependencies are loaded with pak", {
 
   skip_on_cran()
