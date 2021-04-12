@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Draw the dependency tree of a package — pkg_deps_tree • pak</title>
+<title>Articles • pak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Draw the dependency tree of a package — pkg_deps_tree" />
-<meta property="og:description" content="Draw the dependency tree of a package" />
+<meta property="og:title" content="Articles" />
 
 
 <meta name="robots" content="noindex">
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-article-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -123,62 +122,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Draw the dependency tree of a package</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/package.R'><code>R/package.R</code></a></small>
-    <div class="hidden name"><code>pkg_deps_tree.Rd</code></div>
+      <h1>Articles</h1>
     </div>
 
-    <div class="ref-description">
-    <p>Draw the dependency tree of a package</p>
+    <div class="section ">
+      <h3>All vignettes</h3>
+      <p class="section-desc"></p>
+
+      <dl>
+        <dt><a href="internals.html">pak internals</a></dt>
+        <dd></dt>
+      </dl>
     </div>
-
-    <pre class="usage"><span class='fu'>pkg_deps_tree</span><span class='op'>(</span><span class='va'>pkg</span>, upgrade <span class='op'>=</span> <span class='cn'>TRUE</span>, dependencies <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>pkg</th>
-      <td><p>Package name or remote package specification to resolve.</p></td>
-    </tr>
-    <tr>
-      <th>upgrade</th>
-      <td><p>Whether to use the most recent available package
-versions.</p></td>
-    </tr>
-    <tr>
-      <th>dependencies</th>
-      <td><p>Dependency types. See
-<code><a href='https://rdrr.io/pkg/pkgdepends/man/as_pkg_dependencies.html'>pkgdepends::as_pkg_dependencies()</a></code> for possible values.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>The same data frame (tibble) as <code><a href='pkg_deps.html'>pkg_deps()</a></code>, invisibly.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other package functions: 
-<code><a href='lib_status.html'>lib_status</a>()</code>,
-<code><a href='pak_package_sources.html'>pak_package_sources</a></code>,
-<code><a href='pak.html'>pak</a>()</code>,
-<code><a href='pkg_deps.html'>pkg_deps</a>()</code>,
-<code><a href='pkg_download.html'>pkg_download</a>()</code>,
-<code><a href='pkg_install.html'>pkg_install</a>()</code>,
-<code><a href='pkg_remove.html'>pkg_remove</a>()</code>,
-<code><a href='pkg_status.html'>pkg_status</a>()</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>pkg_deps_tree</span><span class='op'>(</span><span class='st'>"dplyr"</span><span class='op'>)</span>
-<span class='fu'>pkg_deps_tree</span><span class='op'>(</span><span class='st'>"r-lib/usethis"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top">
-      <h2 data-toc-skip>Contents</h2>
-    </nav>
   </div>
 </div>
 
