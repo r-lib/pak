@@ -280,7 +280,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 #' }
 
 pkg_status <- function(pkg, lib = .libPaths()) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
 
   load_extra("tibble")
   remote(
@@ -332,7 +332,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' pkg_deps("r-lib/fs")
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   load_extra("tibble")
   remote(
     function(...) {
@@ -378,7 +378,7 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #' pkg_deps_tree("r-lib/usethis")
 
 pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   ret <- remote(
     function(...) {
       get("pkg_deps_tree_internal", asNamespace("pak"))(...)
