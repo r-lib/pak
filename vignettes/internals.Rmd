@@ -1,0 +1,67 @@
+---
+title: "pak internals"
+output: github_document
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
+---
+
+## The embedded library
+
+pak bundles its dependencies into the installed package, or into the user's cache directory.
+This can happen several ways:
+
+1.  If not running inside `R CMD check`, `R CMD INSTALL` installs all dependencies when installing package data, into `/library` within the installed package.
+    Downloading and installing the (currently) 37 dependencies takes about 1-1.5 minutes for platforms with binaries, and about 4 minutes for platforms that compile everything from source (measured on Linux).
+    The goal of this is to create self-contained binaries on CRAN.
+
+2.  The main advantage of doing this in the data step is that we can show the progress and/or other messages to the user.
+
+3.  If the bundling fails, pak errors.
+    This is to avoid creating a non-functional binary package.
+    Hopefully CRAN will just try creating the binary again, later.
+
+4.  This also works well on platforms that do not (yet) have binaries, e.g.
+    M1 macs, Linux or the new experimental Windows platform.
+
+5.  When running inside `R CMD check`, pak does not bundle its dependencies, to make the checks faster.
+
+6.  Unlike the traditional `R CMD check` setup, CRAN does not install the package during the check.
+    Instead, they pre-install it, and then refer to the install log in the check.
+    They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.
+
+7.  When pak is installed from GitHub, using `remotes::install_github()` or similar, the same dependency bundling happens.
+    This is nice on platforms for which we do not build a self-contained binary.
+    But see also the next item.
+
+8.  If `DESCRIPTION` has a `Remotes` field, then pak does not bundle its dependencies, only emits a message that suggests using `create_dev_lib()`.
+    This is because we can't easily install from GitHub using base R functions only.
+
+9.  When running `R CMD check`, pak uses `testthat.R` to bundle the dependencies into the temporary installation that is used in the check.
+    However, pak *copies* the dependencies in this case, to make the check faster.
+    If copying the dependencies fails, then pak skips the test suite.
+    The reason for copying in `testthat.R` instead of install time is that this way we avoid the check warning about the large `/library` directory.
+
+10. If the pak installation currently being tested does not have bundled dependencies, then `setup.R` bundles them, but into the user's cache directory.
+    This is to make sure that we can still use `devtools::test()` and alike for development.
+
+11. When developing pak interactively, e.g. using `load_all()`, use `create_dev_lib()` to copy dependencies into the user's cache directory.
+
+In summary, these are the various bundling modes:
+
+1.  `install.packages()` binary pkg from CRAN → pak is ready to use
+
+2.  `install.packages()` source pkg from CRAN → install into `/library`
+
+3.  `R CMD INSTALL` on CRAN (to build binaries) → install into `/library`
+
+4.  `R CMD INSTALL` (on CRAN) for `R CMD check` → no not bundle
+
+5.  `R CMD check` → copy into `/library`, ignore errors
+
+6.  `remotes::install_github()` without `Remotes` → install into `/library`
+
+7.  `remotes::install_github()` with `Remotes` → no not bundle
+
+8.  `devtools::test()` and similar → copy into user's cache directory
