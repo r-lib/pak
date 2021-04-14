@@ -3,11 +3,7 @@ test_that("pkg_upgrade errors", {
   # Only for one package for now
   expect_error(pkg_upgrade(c("f", "b")), "length(pkg) == 1", fixed = TRUE)
 
-  # Only package names
-  expect_error(pkg_upgrade("foo/bar"), "not a valid package name")
-
-  # Not installed, cannot upgrade
-  expect_error(pkg_upgrade(basename(tempfile())), "not currently installed")
+  # The rest is tested in get_installed_ref_internal
 })
 
 cli::test_that_cli("pkg_upgrade", {
