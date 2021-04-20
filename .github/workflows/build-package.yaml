@@ -9,7 +9,7 @@ on:
         required: true
         default: 'ubuntu-latest'
       rversions:
-        description: 'R versions (e.g. "4.0, devel/4.1")'
+        description: 'R versions (e.g. "4.0, devel/4.2")'
         required: true
         default: '4.0'
   repository_dispatch:
