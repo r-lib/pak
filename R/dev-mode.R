@@ -39,7 +39,7 @@ lookup_deps <- function(pkg, lib_path = .libPaths()) {
 
   ## TODO: check for version requirements
   find_lib <- function(pkg) {
-    w <- head(which(vlapply(lib_pkgs, `%in%`, x = pkg)), 1)
+    w <- utils::head(which(vlapply(lib_pkgs, `%in%`, x = pkg)), 1)
     if (!length(w)) {
       stop("Required package `", pkg, "` is not available")
     }
