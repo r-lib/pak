@@ -184,17 +184,17 @@ load_private_package <- function(package, reg_prefix = "",
     lazyLoad(file.path(pkg_dir, "R", "sysdata"), envir = pkg_env)
   }
 
-  # Hack to avoid S3 dispatch
-  if (package == "glue") {
-    pkg_env$as_glue <- pkg_env$as_glue.character
-  }
-
   ## Reset environments
   set_function_envs(pkg_env, pkg_env)
   ## Sometimes a package refers to its env, this is one known instance.
   ## We could also walk the whole tree, but probably not worth it.
   if (!is.null(pkg_env$err$.internal$package_env)) {
     pkg_env$err$.internal$package_env <- pkg_env
+  }
+
+  # Hack to avoid S3 dispatch
+  if (package == "glue") {
+    pkg_env$as_glue <- pkg_env$as_glue.character
   }
 
   ## Load shared library
