@@ -16,6 +16,7 @@ jobs:
           - {os: 'windows-2016',  r: '3.5' }
           - {os: 'windows-2016',  r: '3.6' }
           - {os: 'windows-2016',  r: '4.0' }
+          - {os: 'windows-2016',  r: '4.1' }
           - {os: 'windows-2016',  r: 'devel/4.2' }
           - {os: 'macOS-latest',  r: '3.3' }
           - {os: 'macOS-latest',  r: '3.4' }
@@ -28,6 +29,7 @@ jobs:
           - {os: 'ubuntu-latest', r: '3.5' }
           - {os: 'ubuntu-latest', r: '3.6' }
           - {os: 'ubuntu-latest', r: '4.0' }
+          - {os: 'ubuntu-latest', r: '4.1' }
           - {os: 'ubuntu-latest', r: 'devel/4.2' }
 
     runs-on: ubuntu-latest
