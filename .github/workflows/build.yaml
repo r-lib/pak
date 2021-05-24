@@ -23,6 +23,7 @@ jobs:
           - {os: 'macOS-latest',  r: '3.5' }
           - {os: 'macOS-latest',  r: '3.6' }
           - {os: 'macOS-latest',  r: '4.0' }
+          - {os: 'macOS-latest',  r: '4.1' }
           - {os: 'macOS-latest',  r: 'devel/4.2' }
           - {os: 'ubuntu-latest', r: '3.3' }
           - {os: 'ubuntu-latest', r: '3.4' }
