@@ -24,7 +24,7 @@ Imports:
     utils
 Suggests:
     callr (>= 3.5.0),
-    cli (>= 2.3.1),
+    cli (>= 3.0.0),
     covr,
     curl,
     distro,
@@ -34,7 +34,7 @@ Suggests:
     pingr,
     jsonlite,
     pkgcache (>= 1.2.0),
-    pkgdepends (>= 0.0.0.9007),
+    pkgdepends (>= 0.1.2),
     pkgsearch (>= 3.0.3),
     prettyunits,
     processx (>= 3.5.1),
@@ -60,9 +60,6 @@ Config/needs/dependencies:
     ps,
     rprojroot,
     tibble
-Remotes:
-    r-lib/cli,
-    r-lib/pkgdepends
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
