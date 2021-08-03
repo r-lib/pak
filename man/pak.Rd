@@ -15,7 +15,7 @@ will install all development dependencies for the current package.}
 \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.}
 }
 \description{
-Install the specified packages, or the ones requiered by
+Install the specified packages, or the ones required by
 the package or project in the current working directory.
 }
 \details{
