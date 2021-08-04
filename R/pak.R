@@ -1,7 +1,7 @@
 
 #' Install the required packages
 #'
-#' Install the specified packages, or the ones requiered by
+#' Install the specified packages, or the ones required by
 #' the package or project in the current working directory.
 #'
 #' This is a convenience function:

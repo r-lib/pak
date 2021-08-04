@@ -19,7 +19,7 @@ mirror in \code{getOption("repos")} or an automatically selected one.}
 \description{
 pak uses the \code{repos} option, see \code{\link[=options]{options()}}. It also automatically
 adds a CRAN mirror if none is set up, and the correct version of the
-Bioconductor repositores. See the \code{cran_mirror} and \code{bioc} arguments.
+Bioconductor repositories. See the \code{cran_mirror} and \code{bioc} arguments.
 }
 \details{
 \code{repo_get()} returns the table of the currently configured repositories.

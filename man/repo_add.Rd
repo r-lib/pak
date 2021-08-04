@@ -52,14 +52,14 @@ Currently supported repository specifications:
 specified date.
 \item \verb{RSPM@<package>-<version>} RSPM snapshot, for the day after the
 release of \verb{<version>} of \verb{<package>}.
-\item \verb{RSPM@R-<version>} RSPM snapshot, for the day afer R \verb{<version>}
+\item \verb{RSPM@R-<version>} RSPM snapshot, for the day after R \verb{<version>}
 was released.
 \item \verb{MRAN@<date>}, MRAN (Microsoft R Application Network) snapshot, at
 the specified date.
 \item \verb{MRAN@<package>-<version>} MRAN snapshot, for the
 day after the release of \verb{<version>} of \verb{<package>}.
 \item \verb{MRAN@R-<version>} MRAN snapshot, for the day
-afer R \verb{<version>} was released.
+after R \verb{<version>} was released.
 }
 
 Notes:

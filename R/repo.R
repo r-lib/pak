@@ -108,7 +108,7 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #'
 #' pak uses the `repos` option, see [options()]. It also automatically
 #' adds a CRAN mirror if none is set up, and the correct version of the
-#' Bioconductor repositores. See the `cran_mirror` and `bioc` arguments.
+#' Bioconductor repositories. See the `cran_mirror` and `bioc` arguments.
 #'
 #' `repo_get()` returns the table of the currently configured repositories.
 #'
@@ -176,14 +176,14 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #'   specified date.
 #' - `RSPM@<package>-<version>` RSPM snapshot, for the day after the
 #'   release of `<version>` of `<package>`.
-#' - `RSPM@R-<version>` RSPM snapshot, for the day afer R `<version>`
+#' - `RSPM@R-<version>` RSPM snapshot, for the day after R `<version>`
 #'   was released.
 #' - `MRAN@<date>`, MRAN (Microsoft R Application Network) snapshot, at
 #'   the specified date.
 #' - `MRAN@<package>-<version>` MRAN snapshot, for the
 #'   day after the release of `<version>` of `<package>`.
 #' - `MRAN@R-<version>` MRAN snapshot, for the day
-#'   afer R `<version>` was released.
+#'   after R `<version>` was released.
 #'
 #'
 #' Notes:
