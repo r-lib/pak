@@ -30,7 +30,7 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
   if (execute) invisible(res) else res
 }
 
-#' @param package The package name to lookup system requirements for.
+#' @param package One or more package names to lookup system requirements for.
 #' @rdname local_system_requirements
 #' @export
 pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
@@ -62,7 +62,7 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     req_url <- sprintf(
       "%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s",
       rspm_repo_url,
-      package,
+      paste0(package, collapse = ","),
       os,
       os_release
     )
