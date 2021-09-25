@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       os:
-        description: 'OS (ubuntu-latest, macOS-latest, windows-2016)'
+        description: 'OS (ubuntu-18.04, macos-10.15, windows-2016)'
         required: true
-        default: 'ubuntu-latest'
+        default: 'ubuntu-18.04'
       rversions:
         description: 'R versions (e.g. "4.0, devel/4.2")'
         required: true
