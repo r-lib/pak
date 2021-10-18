@@ -47,11 +47,11 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 
 This is currently supported for
 
-  - macOS (Mojave or later) and R 3.3.x or later, including R-devel (but
-    no native M1 support yet).
+  - macOS (High Sierra or later) and R 3.3.x or later on Intel and R 4.1
+    or later on arm64, including R-devel.
   - Windows and R 3.3.x, or later, including R-devel,
-  - Linux (any 64-bit distribution) and R 3.3.x or later, including
-    R-devel.
+  - Linux (any 64-bit x86\_64 distribution) and R 3.3.x or later,
+    including R-devel.
 
 ## Usage
 
