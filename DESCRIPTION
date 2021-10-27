@@ -60,7 +60,10 @@ Config/needs/dependencies:
     ps,
     rprojroot,
     tibble
-Remotes: r-lib/cli
+Remotes: 
+    r-lib/cli,
+    r-lib/pkgcache,
+    r-lib/pkgcache
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
