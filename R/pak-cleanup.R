@@ -22,11 +22,6 @@ pak_cleanup <- function(package_cache = TRUE, metadata_cache = TRUE,
   if (metadata_cache) metadata_cache <- pak_cleanup_metadata_cache(force)
   all <- package_cache && metadata_cache
 
-  if (all) {
-    root <- user_cache_dir("R-pkg")
-    if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
-  }
-
   invisible()
 }
 
@@ -58,6 +53,8 @@ pak_cleanup_package_cache_print <- function() {
 pak_cleanup_package_cache2 <- function() {
   sum <- pkgcache::pkg_cache_summary()
   unlink(sum$cachepath, recursive = TRUE)
+  root <- dirname(sum$cachepath)
+  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
   cli::cli_alert_success("Cleaned up package cache")
   invisible()
 }
@@ -91,6 +88,8 @@ pak_cleanup_metadata_cache2 <- function() {
   sum <- pkgcache::meta_cache_summary()
   unlink(sum$cachepath, recursive = TRUE)
   unlink(sum$lockfile, recursive = TRUE)
+  root <- dirname(sum$cachepath)
+  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
   cli::cli_alert_success("Cleaned up metadata cache")
   invisible()
 }
