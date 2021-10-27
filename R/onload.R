@@ -62,7 +62,7 @@ platform_match <- function(install, current) {
   # Example platform strings:
   # - x86_64-w64-mingw32            (Windows Server 2008, 64 bit build)
   # - i386-w64-mingw32              (Windows Server 2008, 32 bit build)
-  # - x86_64-apple-darwin17.0       (macOS Mojave)
+  # - x86_64-apple-darwin17.0       (macOS High Sierra)
   # - x86_64-pc-linux-gnu           (Fedora Linux, older Alpine Linux)
   # - x86_64-pc-linux-musl          (newer Alpine Linux)
   # - s390x-ibm-linux-gnu           (Ubuntu on S390x)
