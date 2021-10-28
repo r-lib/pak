@@ -12,7 +12,7 @@
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak)
 [![Codecov test
-coverage](https://codecov.io/gh/r-lib/pak/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/pak?branch=master)
+coverage](https://codecov.io/gh/r-lib/pak/branch/main/graph/badge.svg)](https://codecov.io/gh/r-lib/pak?branch=main)
 [![R build
 status](https://github.com/r-lib/pak/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/pak/actions)
 <!-- badges: end -->
@@ -23,7 +23,7 @@ and directories. It is an alternative to `install.packages()` and
 
 <p align="center">
 
-<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@master/tools/images/fast.svg">
+<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@main/tools/images/fast.svg">
 
 </p>
 

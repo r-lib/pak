@@ -123,12 +123,12 @@
 #' > pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
 #' Error: Cannot install packages:
 #'   * Cannot install `r-lib/pkgcache@conflict`.
-#'     - Cannot install dependency r-lib/cli@master
-#'   * Cannot install `r-lib/cli@master`.
+#'     - Cannot install dependency r-lib/cli@main
+#'   * Cannot install `r-lib/cli@main`.
 #' - Conflicts r-lib/cli@message
 #' ```
 #'
-#' `r-lib/pkgcache@conflict` depends on the master branch of `r-lib/cli`,
+#' `r-lib/pkgcache@conflict` depends on the main branch of `r-lib/cli`,
 #' whereas, we explicitly requested the `message` branch. Since it cannot
 #' install both versions into a single library, pak quits.
 #'

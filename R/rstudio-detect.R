@@ -79,7 +79,7 @@ rstudio <- local({
                new$envs[["R_PDFVIEWER"]] == "false" &&
                is_build_pane_command(new$args)) {
       # 5. R in the RStudio build pane
-      # https://github.com/rstudio/rstudio/blob/master/src/cpp/session/
+      # https://github.com/rstudio/rstudio/blob/main/src/cpp/session/
       # modules/build/SessionBuild.cpp#L231-L240
       "rstudio_build_pane"
 

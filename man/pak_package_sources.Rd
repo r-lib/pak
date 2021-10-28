@@ -113,12 +113,12 @@ however, this is not the case.
 Here is an example of a conflict detected:\preformatted{> pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
 Error: Cannot install packages:
   * Cannot install `r-lib/pkgcache@conflict`.
-    - Cannot install dependency r-lib/cli@master
-  * Cannot install `r-lib/cli@master`.
+    - Cannot install dependency r-lib/cli@main
+  * Cannot install `r-lib/cli@main`.
 - Conflicts r-lib/cli@message
 }
 
-\code{r-lib/pkgcache@conflict} depends on the master branch of \code{r-lib/cli},
+\code{r-lib/pkgcache@conflict} depends on the main branch of \code{r-lib/cli},
 whereas, we explicitly requested the \code{message} branch. Since it cannot
 install both versions into a single library, pak quits.
 

@@ -5,7 +5,7 @@
 # using rlang's functions for errors.
 #
 # The canonical location of this file is in the processx package:
-# https://github.com/r-lib/processx/master/R/errors.R
+# https://github.com/r-lib/processx/main/R/errors.R
 #
 # ## Features
 #
