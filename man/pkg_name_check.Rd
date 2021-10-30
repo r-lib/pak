@@ -58,7 +58,7 @@ See the \code{dictionaries} argument.
 }
 }
 \examples{
-\dontshow{if (pkgdepends:::is_online()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontrun{
 pkg_name_check("cli")
-\dontshow{\}) # examplesIf}
+}
 }
