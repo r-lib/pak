@@ -12,7 +12,7 @@ Package sources
 pak can install packages from various package sources. By default,
 a package name without the specification of its source, refers to a
 CRAN or Bioconductor package. pak calls these \emph{standard} packages.
-For example:\if{html}{\out{<div class="r">}}\preformatted{## CRAN package
+For example:\if{html}{\out{<div class="sourceCode r">}}\preformatted{## CRAN package
 pkg_install("glue")
 ## BioC package
 pkg_install("limma")
@@ -35,7 +35,7 @@ bioc::<package>
 
 pak can install packages from GitHub repositories. Any package that
 is specified in the \code{user/repo} notation is taken to be a GitHub package.
-For example:\if{html}{\out{<div class="r">}}\preformatted{## Package from GitHub
+For example:\if{html}{\out{<div class="sourceCode r">}}\preformatted{## Package from GitHub
 pkg_install("r-lib/glue")
 }\if{html}{\out{</div>}}
 
@@ -63,13 +63,13 @@ to a pull request.
 
 pak can install packages from package trees. You can either use the
 \code{\link[=local_install]{local_install()}} function for this, or specify the \verb{local::} package
-source. E.g. these are equivalent:\if{html}{\out{<div class="r">}}\preformatted{local_install("/path/to/my/package")
+source. E.g. these are equivalent:\if{html}{\out{<div class="sourceCode r">}}\preformatted{local_install("/path/to/my/package")
 pkg_install("local::/path/to/my/package")
 }\if{html}{\out{</div>}}
 
 The \verb{local::} form is handy if you want to mix it with other package
 specifications, e.g. to install a local package, and another standard
-package:\if{html}{\out{<div class="r">}}\preformatted{pkg_install(c("local://path/to/my/package", "testthat"))
+package:\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install(c("local://path/to/my/package", "testthat"))
 }\if{html}{\out{</div>}}
 }
 
