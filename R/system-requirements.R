@@ -71,8 +71,8 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     res <- curl::curl_fetch_memory(req_url)
     data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
 
-    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], function(x) x[["requirements"]][["pre_install"]]))))
-    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], function(x) x[["requirements"]][["install_scripts"]]))))
+    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], `[[`, c("requirements", "pre_install")))))
+    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], `[[`, c("requirements", "install_scripts")))))
   }
 
   else {
