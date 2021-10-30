@@ -64,7 +64,7 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     req_url <- sprintf(
       "%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s",
       rspm_repo_url,
-      package,
+      paste(package, collapse = "&pkgname="),
       os,
       os_release
     )
