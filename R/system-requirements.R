@@ -20,11 +20,8 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @return A character vector of commands needed to install the system
 #'   requirements for the package.
 #' @export
-#' @examples
-#' \dontrun{
-#' pkg_system_requirements("pak", "ubuntu", "20.04")
-#' pkg_system_requirements("pak", "redhat", "7")
-#' }
+#' @examplesIf FALSE
+#' local_system_requirements("ubuntu", "20.04")
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
@@ -35,6 +32,13 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 #' @param package The package name to lookup system requirements for.
 #' @rdname local_system_requirements
 #' @export
+#' @examplesIf FALSE
+#' pkg_system_requirements("pak", "ubuntu", "20.04")
+#' pkg_system_requirements("pak", "redhat", "7")
+#' pkg_system_requirements("config", "ubuntu", "20.04") # no sys reqs
+#' pkg_system_requirements("curl", "ubuntu", "20.04")
+#' pkg_system_requirements("git2r", "ubuntu", "20.04")
+#' pkg_system_requirements(c("config", "git2r", "curl"), "ubuntu", "20.04")
 pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
