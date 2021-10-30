@@ -1,10 +1,14 @@
 DEFAULT_RSPM_REPO_ID <-  "1" # cran
 DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 
-#' Query the system requirements for a dev package (and its dependencies)
+#' Query system requirements
 #'
+#' @description
 #' Returns a character vector of commands to run that will install system
 #' requirements for the queried operating system.
+#'
+#' `local_system_requirements()` queries system requirements for a dev package
+#' (and its dependencies) given its `root` path.
 #'
 #' @inheritParams local_install
 #' @param os,os_release The operating system and operating system release
@@ -29,7 +33,10 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
   if (execute) invisible(res) else res
 }
 
-#' @param package The package name to lookup system requirements for.
+#' @description
+#' `pkg_system_requirements()` queries system requirements for existing packages
+#' (and their dependencies).
+#' @param package Package names to lookup system requirements for.
 #' @rdname local_system_requirements
 #' @export
 #' @examplesIf FALSE
