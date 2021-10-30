@@ -46,6 +46,9 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 #' pkg_system_requirements("curl", "ubuntu", "20.04")
 #' pkg_system_requirements("git2r", "ubuntu", "20.04")
 #' pkg_system_requirements(c("config", "git2r", "curl"), "ubuntu", "20.04")
+#' # queried packages must exist
+#' pkg_system_requirements("iDontExist", "ubuntu", "20.04")
+#' pkg_system_requirements(c("curl", "iDontExist"), "ubuntu", "20.04")
 pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
@@ -81,6 +84,9 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     )
     res <- curl::curl_fetch_memory(req_url)
     data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+    if (!is.null(data$error)) {
+      stop(data$error)
+    }
 
     pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], `[[`, c("requirements", "pre_install")))))
     install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], `[[`, c("requirements", "install_scripts")))))
