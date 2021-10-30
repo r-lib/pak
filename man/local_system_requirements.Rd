@@ -3,7 +3,7 @@
 \name{local_system_requirements}
 \alias{local_system_requirements}
 \alias{pkg_system_requirements}
-\title{Query the system requirements for a dev package (and its dependencies)}
+\title{Query system requirements}
 \usage{
 local_system_requirements(
   os = NULL,
@@ -39,7 +39,7 @@ commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands 
 
 \item{echo}{If \code{echo} is \code{TRUE} and \code{execute} is \code{TRUE}, echo the command output.}
 
-\item{package}{The package name to lookup system requirements for.}
+\item{package}{Package names to lookup system requirements for.}
 }
 \value{
 A character vector of commands needed to install the system
@@ -48,6 +48,12 @@ requirements for the package.
 \description{
 Returns a character vector of commands to run that will install system
 requirements for the queried operating system.
+
+\code{local_system_requirements()} queries system requirements for a dev package
+(and its dependencies) given its \code{root} path.
+
+\code{pkg_system_requirements()} queries system requirements for existing packages
+(and their dependencies).
 }
 \examples{
 \dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
