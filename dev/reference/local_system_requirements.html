@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Query the system requirements for a dev package (and its dependencies) — local_system_requirements • pak</title>
+<title>Query system requirements — local_system_requirements • pak</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,13 @@
 
 
 
-<meta property="og:title" content="Query the system requirements for a dev package (and its dependencies) — local_system_requirements" />
+<meta property="og:title" content="Query system requirements — local_system_requirements" />
 <meta property="og:description" content="Returns a character vector of commands to run that will install system
-requirements for the queried operating system." />
+requirements for the queried operating system.
+local_system_requirements() queries system requirements for a dev package
+(and its dependencies) given its root path.
+pkg_system_requirements() queries system requirements for existing packages
+(and their dependencies)." />
 
 
 <meta name="robots" content="noindex">
@@ -124,7 +128,7 @@ requirements for the queried operating system." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Query the system requirements for a dev package (and its dependencies)</h1>
+    <h1>Query system requirements</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/system-requirements.R'><code>R/system-requirements.R</code></a></small>
     <div class="hidden name"><code>local_system_requirements.Rd</code></div>
     </div>
@@ -132,6 +136,10 @@ requirements for the queried operating system." />
     <div class="ref-description">
     <p>Returns a character vector of commands to run that will install system
 requirements for the queried operating system.</p>
+<p><code>local_system_requirements()</code> queries system requirements for a dev package
+(and its dependencies) given its <code>root</code> path.</p>
+<p><code>pkg_system_requirements()</code> queries system requirements for existing packages
+(and their dependencies).</p>
     </div>
 
     <pre class="usage"><span class='fu'>local_system_requirements</span><span class='op'>(</span>
@@ -179,7 +187,7 @@ commands (if any). If <code>sudo</code> is <code>TRUE</code>, pak will prepend t
     </tr>
     <tr>
       <th>package</th>
-      <td><p>The package name to lookup system requirements for.</p></td>
+      <td><p>Package names to lookup system requirements for.</p></td>
     </tr>
     </table>
 
@@ -189,11 +197,21 @@ commands (if any). If <code>sudo</code> is <code>TRUE</code>, pak will prepend t
 requirements for the package.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"pak"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span>
-<span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"pak"</span>, <span class='st'>"redhat"</span>, <span class='st'>"7"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>local_system_requirements</span><span class='op'>(</span><span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"pak"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"pak"</span>, <span class='st'>"redhat"</span>, <span class='st'>"7"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"config"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span> <span class='co'># no sys reqs</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"curl"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"git2r"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"config"</span>, <span class='st'>"git2r"</span>, <span class='st'>"curl"</span><span class='op'>)</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># queried packages must exist</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='st'>"iDontExist"</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>pkg_system_requirements</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"curl"</span>, <span class='st'>"iDontExist"</span><span class='op'>)</span>, <span class='st'>"ubuntu"</span>, <span class='st'>"20.04"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
