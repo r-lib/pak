@@ -1,9 +1,9 @@
 
-#' Create a lock file for the dependencies of a package tree
+#' Create a lock file
 #'
 #' The lock file can be used later, possibly in a new R session, to carry
 #' out the installation of the dependencies, with
-#' [local_install_lockfile()].
+#' [lockfile_install()].
 #'
 #' Note, since the URLs of CRAN and most CRAN-like repositories change
 #' over time, in practice you cannot use the lock file _much_ later.
@@ -16,32 +16,39 @@
 #' for caching systems.
 #'
 #' @param lockfile Path to the lock file.
-#' @param lib Library to base the lock file on. In most cases (e.g. on a
-#'   CI system, or at deployment), this is an empty library. Supply
-#'   `tempfile()` to make sure the lock file is based on an empty library.
-#' @inheritParams local_install
+#' @inheritParams pkg_install
+#'
 #' @family lock files
 #' @export
 
-local_create_lockfile <- function(root = ".", lockfile = "pkg.lock",
-                                  lib = .libPaths()[1], upgrade = TRUE,
-                                  dependencies = TRUE) {
+lockfile_create <- function(pkg = "deps::.", lockfile = "pkg.lock", lib = NULL,
+                            upgrade = FALSE, dependencies = NA) {
   ret <- remote(
     function(...) {
-      get("local_create_lockfile_internal", asNamespace("pak"))(...)
+      get("lockfile_create_internal", asNamespace("pak"))(...)
     },
-    list(root = root, lockfile = lockfile, lib = lib, upgrade = upgrade,
+    list(pkg = pkg, lockfile = lockfile, lib = lib, upgrade = upgrade,
          dependencies = dependencies)
   )
 
   invisible(ret)
 }
 
-local_create_lockfile_internal <- function(root, lockfile, lib, upgrade,
-                                           dependencies) {
-  root <- rprojroot::find_package_root_file(path = root)
+lockfile_create_internal <- function(pkg, lockfile, lib, upgrade,
+                                     dependencies) {
+  if (is.null(lib)) {
+    lib <- tempfile()
+    mkdirp(lib)
+    on.exit(unlink(lib, recursive = TRUE), add = TRUE)
+  }
+
+  cli::cli_progress_step(
+    "Creating lockfile {.path {lockfile}}",
+    msg_done = "Created lockfile {.path {lockfile}}"
+  )
+
   prop <- pkgdepends::new_pkg_installation_proposal(
-    paste0("deps::", root),
+    pkg,
     config = list(library = lib, dependencies = dependencies)
   )
   prop$set_solve_policy(if (upgrade) "upgrade" else "lazy")
@@ -53,30 +60,45 @@ local_create_lockfile_internal <- function(root, lockfile, lib, upgrade,
 
 #' Install packages based on a lock file
 #'
-#' Install a lock file that was created with [local_create_lockfile()].
+#' Install a lock file that was created with [lockfile_create()].
 #'
 #' @param lockfile Path to the lock file.
 #' @param lib Library to carry out the installation on.
+#' @param update Whether to online install the packages that
+#'   either not installed in `lib`, or a different version is installed
+#'   for them.
+#'
 #' @family lock files
 #' @export
 
-local_install_lockfile <- function(lockfile = "pkg.lock",
-                                   lib = .libPaths()[1]) {
+lockfile_install <- function(lockfile = "pkg.lock",
+                             lib = .libPaths()[1], update = TRUE) {
 
   start <- Sys.time()
+  mkdirp(lib)
   ret <- remote(
     function(...) {
-      get("local_install_lockfile_internal", asNamespace("pak"))(...)
+      get("lockfile_install_internal", asNamespace("pak"))(...)
     },
-    list(lockfile = lockfile, lib = lib, start = start)
+    list(lockfile = lockfile, lib = lib, update = update, start = start,
+         loaded = loaded_packages(lib))
   )
 
   invisible(ret)
 }
 
-local_install_lockfile_internal <- function(lockfile, lib, start) {
+lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
+  cli::cli_progress_step(
+     "Intalling lockfile {.path {lockfile}}",
+     msg_done = "Installed lockfile {.path {lockfile}}",
+  )
+
   config <- list(library = lib)
   plan <- pkgdepends::new_pkg_installation_plan(lockfile, config = config)
+  if (update) plan$update()
+
+  print_install_details(plan, lib, loaded)
+
   plan$download()
   inst <- plan$install()
   attr(inst, "total_time") <- Sys.time() - start
