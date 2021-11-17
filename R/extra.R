@@ -41,7 +41,8 @@ load_extra <- function(pkg) {
 }
 
 show_extra <- function() {
-  !isTRUE(getOption("pak.no_extra_messages", FALSE))
+  Sys.getenv("CI") != "true" &&
+    !isTRUE(getOption("pak.no_extra_messages", FALSE))
 }
 
 hash <- function(obj) {
