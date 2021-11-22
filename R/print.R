@@ -41,26 +41,48 @@ nice_df_print <- function(x, ...) {
 }
 
 print_install_summary <- function(x) {
-  direct <- sum(x$direct)
+  direct <- sum(x$direct & x$type != "deps")
   deps <- sum(! x$direct)
 
-  newly <- sum(x$lib_status == "new")
-  upd   <- sum(x$lib_status == "update")
-  curr  <- sum(x$lib_status == "current")
+  newly <- sum(x$lib_status == "new" & x$type != "deps")
+  upd   <- sum(x$lib_status == "update" & ! x$type %in% c("installed", "deps"))
+  curr  <- sum(x$lib_status == "current" & x$type != "deps")
+  # Not used currently. The packages we could have updated but did not
   noupd <- sum(x$lib_status == "no-update")
 
   downloaded <- sum(x$download_status == "Got")
   cached <- sum(x$download_status == "Had" &
                 ! x$type %in% c("installed", "deps"))
   dlbytes <- sum(x$file_size[x$download_status == "Got"])
-  build_time <- sum(unlist(x$build_time), na.rm = TRUE)
-  inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
-  total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% "???s"
+  total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% ""
 
-  if (upd + newly == 0) cli::cli_alert_success("No changes are needed")
-  cli::cli_alert_success(paste0(
-    direct, " + ", deps, " pkgs | ",
-    "kept ", curr, ", updated ", upd, ", new ", newly, " | ",
-    "downloaded ", downloaded, " (", prettyunits::pretty_bytes(dlbytes), ")",
-    " {.timestamp {total_time}}"))
+  pkgsum <- paste0(
+    if (direct > 0) "{direct} pkg{?s}",
+    if (direct > 0 && deps > 0) " + ",
+    if (deps > 0) "{deps} dep{?s}"
+  )
+  updsum <- paste0(c(
+    if (curr > 0) "kept {curr}",
+    if (upd > 0) "upd {upd}",
+    if (newly > 0) "added {newly}"
+  ), collapse = ", ")
+
+  dlsum <- if (downloaded > 0) {
+    bytes <- prettyunits::pretty_bytes(dlbytes)
+    paste0(
+      ", dld {downloaded}",
+      if (!is.na(bytes) && bytes != 0) " ({bytes})"
+    )
+  } else {
+    ""
+  }
+  ts <- if (nzchar(total_time)) " {.timestamp {total_time}}" else ""
+
+  cli::cli_alert_success(c(
+    pkgsum,
+    ": ",
+    updsum,
+    dlsum,
+    ts
+  ))
 }

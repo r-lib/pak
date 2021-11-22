@@ -57,8 +57,3 @@ to make sure it is not a profanity.
 See the \code{dictionaries} argument.
 }
 }
-\examples{
-\dontrun{
-pkg_name_check("cli")
-}
-}
