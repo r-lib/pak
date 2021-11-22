@@ -89,7 +89,7 @@ lockfile_install <- function(lockfile = "pkg.lock",
 
 lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
   cli::cli_progress_step(
-     "Intalling lockfile {.path {lockfile}}",
+     "Installing lockfile {.path {lockfile}}",
      msg_done = "Installed lockfile {.path {lockfile}}",
   )
 
