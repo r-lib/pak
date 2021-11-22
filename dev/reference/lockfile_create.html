@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check if an R package name is available — pkg_name_check • pak</title>
+<title>Create a lock file — lockfile_create • pak</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Check if an R package name is available — pkg_name_check" />
-<meta property="og:description" content="Additionally, look up the candidate name in a number of
-dictionaries, to make sure that it does not have a negative
-meaning." />
+<meta property="og:title" content="Create a lock file — lockfile_create" />
+<meta property="og:description" content="The lock file can be used later, possibly in a new R session, to carry
+out the installation of the dependencies, with
+lockfile_install()." />
 
 
 <meta name="robots" content="noindex">
@@ -125,75 +125,76 @@ meaning." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check if an R package name is available</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/name-check.R'><code>R/name-check.R</code></a></small>
-    <div class="hidden name"><code>pkg_name_check.Rd</code></div>
+    <h1>Create a lock file</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/pak/blob/master/R/lockfile.R'><code>R/lockfile.R</code></a></small>
+    <div class="hidden name"><code>lockfile_create.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Additionally, look up the candidate name in a number of
-dictionaries, to make sure that it does not have a negative
-meaning.</p>
+    <p>The lock file can be used later, possibly in a new R session, to carry
+out the installation of the dependencies, with
+<code><a href='lockfile_install.html'>lockfile_install()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pkg_name_check</span><span class='op'>(</span><span class='va'>name</span>, dictionaries <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>lockfile_create</span><span class='op'>(</span>
+  pkg <span class='op'>=</span> <span class='st'>"deps::."</span>,
+  lockfile <span class='op'>=</span> <span class='st'>"pkg.lock"</span>,
+  lib <span class='op'>=</span> <span class='cn'>NULL</span>,
+  upgrade <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  dependencies <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>name</th>
-      <td><p>Package name candidate.</p></td>
+      <th>pkg</th>
+      <td><p>Package names or remote package specifications to install.
+See <a href='pak_package_sources.html'>pak package sources</a> for details.</p></td>
     </tr>
     <tr>
-      <th>dictionaries</th>
-      <td><p>Character vector, the dictionaries to query.
-Available dictionaries:
-* <code>wikipedia</code>
-* <code>wiktionary</code>,
-* <code>acromine</code> (<a href='http://www.nactem.ac.uk/software/acromine/'>http://www.nactem.ac.uk/software/acromine/</a>),
-* <code>sentiment</code> (<a href='https://github.com/fnielsen/afinn'>https://github.com/fnielsen/afinn</a>),
-* <code>urban</code> (Urban Dictionary).
-If <code>NULL</code> (by default), the Urban Dictionary is omitted, as it
-is often offensive.</p></td>
+      <th>lockfile</th>
+      <td><p>Path to the lock file.</p></td>
+    </tr>
+    <tr>
+      <th>lib</th>
+      <td><p>Package library to install the packages to. Note that <em>all</em>
+dependent packages will the be installed here, even if they are
+already installed in another library.</p></td>
+    </tr>
+    <tr>
+      <th>upgrade</th>
+      <td><p>When <code>FALSE</code>, the default, does the minimum amount of work
+to give you the latest version of <code>pkg</code>. It will only upgrade packages if
+<code>pkg</code> or one of its explicitly requires a higher version than what you
+currently have.</p>
+<p>When <code>upgrade = TRUE</code>, will do ensure that you have the latest version of
+<code>pkg</code> and all its dependencies.</p></td>
+    </tr>
+    <tr>
+      <th>dependencies</th>
+      <td><p>Dependency types. See
+<code><a href='https://rdrr.io/pkg/pkgdepends/man/as_pkg_dependencies.html'>pkgdepends::as_pkg_dependencies()</a></code> for possible values. Note that
+changing this argument from the default might result an installation
+failure, e.g. if you set it to <code>FALSE</code>, packages might not build if
+their dependencies are not already installed.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p><code>pkg_name_check</code> object with a custom print method.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Valid package name check</h3>
+    <p>Note, since the URLs of CRAN and most CRAN-like repositories change
+over time, in practice you cannot use the lock file <em>much</em> later.
+For example, binary packages of older package version
+might be deleted from the repository, breaking the URLs in the
+lock file.</p>
+<p>Currently the intended use case of lock files in on CI systems, to
+facilitate caching. The (hash of the) lock file provides a good key
+for caching systems.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-
-<p>Check the validity of <code>name</code> as a package name. See 'Writing R
-Extensions' for the allowed package names. Also checked against a list
-of names that are known to cause problems.</p>
-
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>CRAN checks</h3>
-
-
-<p>Check <code>name</code> against the names of all past and current packages on
-CRAN, including base and recommended packages.</p>
-
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Bioconductor checks</h3>
-
-
-<p>Check <code>name</code> against all past and current Bioconductor packages.</p>
-
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Profanity check</h3>
-
-
-<p>Check <code>name</code> with <a href='https://www.purgomalum.com/service/containsprofanity'>https://www.purgomalum.com/service/containsprofanity</a>
-to make sure it is not a profanity.</p>
-
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Dictionaries</h3>
-
-
-<p>See the <code>dictionaries</code> argument.</p>
-
+    <div class='dont-index'><p>Other lock files: 
+<code><a href='lockfile_install.html'>lockfile_install</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

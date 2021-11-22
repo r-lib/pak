@@ -13,9 +13,6 @@
     <loc>http://pak.r-lib.org/reference/lib_status.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/local_create_lockfile.html</loc>
-  </url>
-  <url>
     <loc>http://pak.r-lib.org/reference/local_deps.html</loc>
   </url>
   <url>
@@ -31,13 +28,16 @@
     <loc>http://pak.r-lib.org/reference/local_install_dev_deps.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/local_install_lockfile.html</loc>
-  </url>
-  <url>
     <loc>http://pak.r-lib.org/reference/local_package_trees.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/local_system_requirements.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/lockfile_create.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/lockfile_install.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/metadata.html</loc>
