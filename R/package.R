@@ -248,6 +248,9 @@ pkg_install_do_plan <- function(proposal, lib) {
   proposal$download()
   proposal$stop_for_download_error()
 
+  # sysreqs
+  proposal$install_sysreqs()
+
   # Get the installation plan and hand it over to pkgdepends
   plan <- proposal$get_install_plan()
   inst <- pkgdepends::install_package_plan(plan = plan, lib = lib,

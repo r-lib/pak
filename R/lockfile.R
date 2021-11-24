@@ -100,6 +100,7 @@ lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
   print_install_details(plan, lib, loaded)
 
   plan$download()
+  plan$install_sysreqs()
   inst <- plan$install()
   attr(inst, "total_time") <- Sys.time() - start
   class(inst) <- c("pkg_install_result", class(inst))
