@@ -88,10 +88,7 @@ lockfile_install <- function(lockfile = "pkg.lock",
 }
 
 lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
-  cli::cli_progress_step(
-     "Installing lockfile {.path {lockfile}}",
-     msg_done = "Installed lockfile {.path {lockfile}}",
-  )
+  cli::cli_alert_info("Installing lockfile {.path {lockfile}}")
 
   config <- list(library = lib)
   plan <- pkgdepends::new_pkg_installation_plan(lockfile, config = config)
@@ -110,6 +107,8 @@ lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
 
   ## One line summary of the install
   print_install_summary(inst)
+
+  cli::cli_alert_success("Installed lockfile {.path {lockfile}}")
 
   inst
 }
