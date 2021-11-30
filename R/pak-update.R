@@ -1,6 +1,11 @@
 
-pak_repo <- function() {
-  "https://r-lib.github.io/p/pak/dev/"
+pak_repos <- function() {
+  base <- "https://r-lib.github.io/p/pak/"
+  list(
+    stable = paste0(base, "stable"),
+    rc     = paste0(base, "rc"),
+    devel  = paste0(base, "devel")
+  )
 }
 
 #' Update pak itself
@@ -14,7 +19,13 @@ pak_repo <- function() {
 #'
 #' @export
 
-pak_update <- function(force = FALSE) {
+pak_update <- function(
+  force = FALSE,
+  channel = c("auto", "cran", "stable", "rc", "devel")) {
+
+  stopifnot(is_flag(force))
+  channel <- match.arg(channel)
+
   repo <- pak_repo()
 
   os <- get_os()

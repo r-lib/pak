@@ -46,8 +46,8 @@ check_platform <- function(libname = dirname(find.package("pak")),
   # Is this during installation?
   if (Sys.getenv("R_PACKAGE_DIR", "") != "") return(TRUE)
 
-  current <- R.Version()$platform
-  install <- data$platform
+  current <- current_r_platform_data()
+  install <- parse_platform(data$platform)
 
   if (!platform_match(install, current)) {
     warning(
@@ -60,34 +60,70 @@ check_platform <- function(libname = dirname(find.package("pak")),
 
 platform_match <- function(install, current) {
   # Example platform strings:
-  # - x86_64-w64-mingw32            (Windows Server 2008, 64 bit build)
-  # - i386-w64-mingw32              (Windows Server 2008, 32 bit build)
-  # - x86_64-apple-darwin17.0       (macOS High Sierra)
-  # - x86_64-pc-linux-gnu           (Fedora Linux, older Alpine Linux)
-  # - x86_64-pc-linux-musl          (newer Alpine Linux)
-  # - s390x-ibm-linux-gnu           (Ubuntu on S390x)
-  # - powerpc64le-unknown-linux-gnu (Ubuntu on ppc64le)
-  # - aarch64-unknown-linux-gnu     (Ubuntu on arm)
-  # - i386-pc-solaris2.10           (32 bit Solaris 10, gcc)
-  # - i386-pc-solaris2.10           (64 bit Solaris 10, gcc, by mistake)
-  # - i386-pc-solaris2.10           (32 bit Solaris 10, ods)
-  # - amd64-portbld-freebsd12.1     (x86_64 FreeBSD 12.x, R from ports)
+  # - x86_64-w64-mingw32                         (Windows Server 2008, 64 bit build)
+  # - i386-w64-mingw32                           (Windows Server 2008, 32 bit build)
+  # - x86_64-apple-darwin17.0                    (macOS High Sierra)
+  # - aarch64-apple-darwin20                     (macOS amd64 Big Sur)
+  # - aarch64-apple-darwin21                     (macOS amd64 Monterey)
+  # - x86_64-pc-linux-gnu-fedora-33              (Fedora Linux)
+  # - x86_64-pc-linux-gnu-alpine-3.11.11         (Alpine Linux, older R)
+  # - x86_64-pc-linux-musl-alpine-3.14.1         (Alpine Linux, newer R)  
+  # - s390x-ibm-linux-gnu-ubuntu-18.04           (Ubuntu on S390x)
+  # - powerpc64le-unknown-linux-gnu-ubuntu-18.04 (Ubuntu on ppc64le)
+  # - aarch64-unknown-linux-gnu-ubuntu-18.04     (Ubuntu on arm)
+  # - i386-pc-solaris2.10                        (32 bit Solaris 10, gcc)
+  # - i386-pc-solaris2.10                        (64 bit Solaris 10, gcc, by mistake)
+  # - i386-pc-solaris2.10                        (32 bit Solaris 10, ods)
+  # - amd64-portbld-freebsd12.1                  (x86_64 FreeBSD 12.x, R from ports)
 
-  os_ins <- get_os_from_platform(install)
-  os_cur <- get_os_from_platform(current)
-  arch_ins <- get_arch_from_platform(install)
-  arch_cur <- get_arch_from_platform(current)
+  # Shortcut, this happens quite often
+  if (install$platform == current$platform) return(TRUE)
 
-  # OS must match in the first place
-  if (os_ins != os_cur) return(FALSE)
+  if (current$os == "linux" || grepl("linux-", current$os)) {
+    platform_match_linux(install, current)
+  } else if (grepl("darwin", current$os)) {
+    platform_match_macos(install, current)
+  } else if (current$os == "mingw32") {
+    platform_match_windows(install, current)
+  } else {
+    platform_match_other(install, current)
+  }
+}
 
-  # If it is Windows, then all should be good in general, but check if
-  # both 32 bit or 64 bit
-  if (os_ins == "windows") return(install == current)
+platform_match_linux <- function(install, current) {
 
-  # If it is macOS, then all should be good, still, but as a preparation
-  # for arm, we check the arch
-  if (os_ins == "macos") return(arch_ins == arch_cur)
+
+}
+
+platform_match_macos <- function(install, current) {
+
+}
+
+platform_match_windows <- function(install, current) {
+
+}
+
+platform_match_other <- function(install, current) {
+
+}
+
+  # OS must match, but linux-musl might be good for linux-gnu
+  os_ins <- install$os
+  os_cur <- current$os
+  ins_linux <- install$os == "linux" || grepl("linux-", install$os)
+  cur_linux <- current$os == "linux" || grepl("linux-", current$os)
+  both_linux <- ins_linux && cur_linux
+  if (install$os != current$os && !both_linux) return(FALSE)
+
+  # If it is Windows, then all should be good in general, but on 32 bit
+  # R we need to check that 32bit Windows is supported by this pak build.
+  if (os_ins == "mingw32") return(TODO)
+
+  # On macOS we need to check the arch, and current must not be older
+  ins_darwin <- grepl("^darwin", install$os)
+  cur_darwin <- grepl("^darwin", current$os)
+  both_darwin <- ins_darwin && cur_darwin
+  if (both_darwin) return(arch_ins == arch_cur)
 
   # If it is Solaris, then arch must match. Btw. our 64 bit build has the
   # same platform string as the 32 bit build, which is probably a bug.
@@ -106,15 +142,6 @@ platform_match <- function(install, current) {
   # Otherwise, the whole platform string must match. We might improve
   # this in the future.
   install == current
-}
-
-get_os_from_platform <- function(x) {
-  pcs <- strsplit(x, "-", fixed = TRUE)[[1]]
-  if (pcs[3] == "mingw32") return("windows")
-  if (pcs[2] == "apple") return("macos")
-  if (pcs[3] == "linux") return("linux")
-  if (grepl("^solaris", pcs[3])) return("solaris")
-  sub("[0-9.]*$", "", pcs[3])
 }
 
 get_arch_from_platform <- function(x) {
