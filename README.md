@@ -22,9 +22,7 @@ and directories. It is an alternative to `install.packages()` and
 `devtools::install_github()`. pak is fast, safe and convenient.
 
 <p align="center">
-
 <img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@main/tools/images/fast.svg">
-
 </p>
 
 ## Installation
@@ -47,10 +45,10 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 
 This is currently supported for
 
-  - macOS (High Sierra or later) and R 3.3.x or later on Intel and R 4.1
+-   macOS (High Sierra or later) and R 3.3.x or later on Intel and R 4.1
     or later on arm64, including R-devel.
-  - Windows and R 3.3.x, or later, including R-devel,
-  - Linux (any 64-bit x86\_64 distribution) and R 3.3.x or later,
+-   Windows and R 3.3.x, or later, including R-devel,
+-   Linux (any 64-bit x86_64 distribution) and R 3.3.x or later,
     including R-devel.
 
 ## Usage
@@ -88,72 +86,72 @@ from R. The last two are a test coverage action and a pkgdown action.
 
 ### Fast
 
-  - Fast downloads and HTTP queries. pak performs all HTTP requests
+-   Fast downloads and HTTP queries. pak performs all HTTP requests
     concurrently.
 
-  - Fast installs. pak builds and installs packages concurrently.
+-   Fast installs. pak builds and installs packages concurrently.
 
-  - Metadata and package cache. pak caches package metadata and all
+-   Metadata and package cache. pak caches package metadata and all
     downloaded packages locally. It does not download the same package
     files over and over again.
 
-  - Lazy installation. pak only installs the packages that are really
+-   Lazy installation. pak only installs the packages that are really
     necessary for the installation. If the requested package and its
     dependencies are already installed, pak does nothing.
 
 ### Safe
 
-  - Private library (pak’s own package dependencies do not affect your
+-   Private library (pak’s own package dependencies do not affect your
     regular package libraries and vice versa).
 
-  - Every pak operation runs in a sub-process, and the packages are
+-   Every pak operation runs in a sub-process, and the packages are
     loaded from the private library. pak avoids loading packages from
     your regular package libraries. (These package files would be locked
     on some systems, and locked packages cannot be updated. pak does not
     load any package in the main process, except for pak itself).
 
-  - To avoid updating locked packages, pak offers the choice of
+-   To avoid updating locked packages, pak offers the choice of
     unloading them from the current R session, and/or killing other R
     sessions locking them.
 
-  - Dependency solver. pak makes sure that you end up in a consistent,
+-   Dependency solver. pak makes sure that you end up in a consistent,
     working state of dependencies. It finds conflicts up front, before
     attempting installation.
 
 ### Convenient
 
-  - BioC packages. pak supports Bioconductor packages out of the box. It
+-   BioC packages. pak supports Bioconductor packages out of the box. It
     uses the Bioconductor version that is appropriate for your R
     version.
 
-  - GitHub packages. pak supports GitHub packages out of the box. It
+-   GitHub packages. pak supports GitHub packages out of the box. It
     also supports the `Remotes` entry in `DESCRIPTION` files, so that
     GitHub dependencies of GitHub packages will also get installed. See
     e.g.
     <https://cran.r-project.org/package=remotes/vignettes/dependencies.html>
 
-  - Easy time travel with [MRAN](https://mran.microsoft.com/timemachine)
+-   Easy time travel with [MRAN](https://mran.microsoft.com/timemachine)
     and [RSPM](https://packagemanager.rstudio.com/client/#/), to a
     specific date or when a certain R or package version was released.
 
-  - Package sizes. For CRAN packages pak shows the total sizes of
+-   Package sizes. For CRAN packages pak shows the total sizes of
     packages it needs to download.
 
-  - Other package sources:
-    
-      - local package files and directories,
-      - URLs to package files or package tree archives.
+-   Other package sources:
+
+    -   local package files and directories,
+    -   URLs to package files or package tree archives.
 
 ## Roadmap
 
-  - Support GitLab repositories
-  - Support Bitbucket repositories
-  - Support system requirements
-  - Support older CRAN package versions
-  - Support older BioConductor package versions
-  - Support local CRAN mirrors
-  - Support the `Additional_repositories` `DESCRIPTION` field
-  - Support SVN repos
+-   Support GitLab repositories
+-   Support Bitbucket repositories
+-   Support system requirements
+-   Support older CRAN package versions
+-   Support older BioConductor package versions
+-   Support local CRAN mirrors
+-   Support the `Additional_repositories` `DESCRIPTION` field
+-   Support SVN repos
 
 ## License
 
