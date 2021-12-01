@@ -91,66 +91,40 @@ platform_match <- function(install, current) {
 }
 
 platform_match_linux <- function(install, current) {
+  # Must be Linux, the same arch
+  if (install$os != "linux" && !grepl("linux-", install$os)) return(FALSE)
+  if (install$cpu != current$cpu) return(FALSE)
 
-
+  # Distros must match, but accept alpine
+  libc_ins <- get_libc_from_os(install$os)
+  install$os == current$os || identical(libc_ins, "musl")
 }
 
 platform_match_macos <- function(install, current) {
+  if (! grepl("darwin", install$os)) return(FALSE)
+  if (install$cpu != current$cpu) return(FALSE)
 
+  # An older build on newer darwin is probably fine,
+  # e.g. darwin17.0 vs darwin20
+  install$os <= current$os
 }
 
 platform_match_windows <- function(install, current) {
+  if (install$os != "windows") return (FALSE)
 
+  # Usually OK, but if there is a CPU mismatch, we'd ideally check if
+  # the current cpu is also supported, but we don't have a good way of
+  # doing that currently.
+  TRUE
 }
 
 platform_match_other <- function(install, current) {
-
+  # Must match exactly?
+  install$platform == current$platform
 }
 
-  # OS must match, but linux-musl might be good for linux-gnu
-  os_ins <- install$os
-  os_cur <- current$os
-  ins_linux <- install$os == "linux" || grepl("linux-", install$os)
-  cur_linux <- current$os == "linux" || grepl("linux-", current$os)
-  both_linux <- ins_linux && cur_linux
-  if (install$os != current$os && !both_linux) return(FALSE)
-
-  # If it is Windows, then all should be good in general, but on 32 bit
-  # R we need to check that 32bit Windows is supported by this pak build.
-  if (os_ins == "mingw32") return(TODO)
-
-  # On macOS we need to check the arch, and current must not be older
-  ins_darwin <- grepl("^darwin", install$os)
-  cur_darwin <- grepl("^darwin", current$os)
-  both_darwin <- ins_darwin && cur_darwin
-  if (both_darwin) return(arch_ins == arch_cur)
-
-  # If it is Solaris, then arch must match. Btw. our 64 bit build has the
-  # same platform string as the 32 bit build, which is probably a bug.
-  if (os_ins == "solaris") return(arch_ins == arch_cur)
-
-  # If it is Linux, then arch must match, if libc is musl, that's ok,
-  # because that's probably our static build
-  if (os_ins == "linux") {
-    if (arch_ins != arch_cur) return(FALSE)
-    libc_ins <- get_libc_from_platform(install)
-    libc_cur <- get_libc_from_platform(current)
-    same <- !is.na(libc_ins) && !is.na(libc_cur) && libc_ins == libc_cur
-    return(same || identical(libc_ins,  "musl"))
-  }
-
-  # Otherwise, the whole platform string must match. We might improve
-  # this in the future.
-  install == current
-}
-
-get_arch_from_platform <- function(x) {
+get_libc_from_os <- function(x) {
   pcs <- strsplit(x, "-", fixed = TRUE)[[1]]
-  pcs[1]
-}
-
-get_libc_from_platform <- function(x) {
-  pcs <- strsplit(x, "-", fixed = TRUE)[[1]]
-  if (pcs[3] != "linux") return(NA_character_)
-  pcs[4]
+  if (pcs[1] != "linux") return(NA_character_)
+  pcs[2]
 }

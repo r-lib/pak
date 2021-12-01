@@ -1,62 +1,16 @@
 
-test_that("get_os_from_platform", {
-
+test_that("get_libc_from_os", {
   cases <- list(
-    c("x86_64-w64-mingw32", "windows"),
-    c("i386-w64-mingw32", "windows"),
-    c("x86_64-apple-darwin17.0", "macos"),
-    c("x86_64-pc-linux-gnu", "linux"),
-    c("x86_64-pc-linux-musl", "linux"),
-    c("s390x-ibm-linux-gnu", "linux"),
-    c("powerpc64le-unknown-linux-gnu", "linux"),
-    c("aarch64-unknown-linux-gnu", "linux"),
-    c("i386-pc-solaris2.10", "solaris"),
-    c("x86_64-pc-solaris2.10", "solaris"),
-    c("amd64-portbld-freebsd12.1", "freebsd")
+    c("mingw32", NA_character_),
+    c("darwin17.0", NA_character_),
+    c("linux-gnu-ubuntu-18.04", "gnu"),
+    c("linux-musl-alpine-3.11.11", "musl"),
+    c("solaris2.10", NA_character_),
+    c("freebsd12.1", NA_character_)
   )
 
   for (case in cases) {
-    expect_equal(get_os_from_platform(case[[1]]), case[[2]])
-  }
-})
-
-test_that("get_arch_from_platform", {
-  cases <- list(
-    c("x86_64-w64-mingw32", "x86_64"),
-    c("i386-w64-mingw32", "i386"),
-    c("x86_64-apple-darwin17.0", "x86_64"),
-    c("x86_64-pc-linux-gnu", "x86_64"),
-    c("x86_64-pc-linux-musl", "x86_64"),
-    c("s390x-ibm-linux-gnu", "s390x"),
-    c("powerpc64le-unknown-linux-gnu", "powerpc64le"),
-    c("aarch64-unknown-linux-gnu", "aarch64"),
-    c("i386-pc-solaris2.10", "i386"),
-    c("x86_64-pc-solaris2.10", "x86_64"),
-    c("amd64-portbld-freebsd12.1", "amd64")
-  )
-
-  for (case in cases) {
-    expect_equal(get_arch_from_platform(case[[1]]), case[[2]])
-  }
-})
-
-test_that("get_libc_from_platform", {
-  cases <- list(
-    c("x86_64-w64-mingw32", NA_character_),
-    c("i386-w64-mingw32", NA_character_),
-    c("x86_64-apple-darwin17.0", NA_character_),
-    c("x86_64-pc-linux-gnu", "gnu"),
-    c("x86_64-pc-linux-musl", "musl"),
-    c("s390x-ibm-linux-gnu", "gnu"),
-    c("powerpc64le-unknown-linux-gnu", "gnu"),
-    c("aarch64-unknown-linux-gnu", "gnu"),
-    c("i386-pc-solaris2.10", NA_character_),
-    c("x86_64-pc-solaris2.10", NA_character_),
-    c("amd64-portbld-freebsd12.1", NA_character_)
-  )
-
-  for (case in cases) {
-    expect_equal(get_libc_from_platform(case[[1]]), case[[2]])
+    expect_equal(get_libc_from_os(case[[1]]), case[[2]])
   }
 })
 
@@ -65,7 +19,8 @@ test_that("platform_match", {
     # Identical is always good
     c("x86_64-w64-mingw32", "x86_64-w64-mingw32"),
     c("x86_64-apple-darwin17.0", "x86_64-apple-darwin17.0"),
-    c("x86_64-pc-linux-gnu", "x86_64-pc-linux-gnu"),
+    c("x86_64-pc-linux-musl-alpine-3.11.11", "x86_64-pc-linux-gnu-18.04"),
+    c("x86_64-pc-linux-gnu-ubuntu-18.04", "x86_64-pc-linux-gnu-18.04"),
     c("i386-pc-solaris2.10", "i386-pc-solaris2.10"),
     c("amd64-portbld-freebsd12.1", "amd64-portbld-freebsd12.1"),
 
@@ -78,7 +33,7 @@ test_that("platform_match", {
   )
 
   for (case in good) {
-    expect_true(platform_match(case[[1]], case[[2]]))
+    expect_true(platform_match(parse_platform(case[[1]]), parse_platform(case[[2]])))
   }
 
   bad <- list(
