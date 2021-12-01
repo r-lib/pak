@@ -12,12 +12,21 @@ reference:
   contents:
   - pak
   - pak_package_sources
+  - pkg_deps
+  - pkg_deps_explain
+  - pkg_deps_tree
+  - pkg_download
+  - pkg_history
   - pkg_install
+  - pkg_name_check
   - pkg_remove
+  - pkg_search
   - pkg_status
 
 - title: Local Package Trees
   contents:
+  - local_deps
+  - local_deps_explain
   - local_package_trees
   - local_install
   - local_install_deps
@@ -27,9 +36,26 @@ reference:
   contents:
   - lib_status
 
+- title: Repositories
+  contents:
+  - repo_add
+  - repo_get
+  - repo_status
+  
+- title: Auto-install missing packages
+  contents:
+  - handle_package_not_found
+
+- title: Lock files
+  contents:
+  - lockfile_create
+  - lockfile_install
+  
 - title: pak housekeeping
   contents:
-  - pak_private_library
+  - cache_summary
+  - meta_summary
+  - pak_install_extra
   - pak_sitrep
-  - pak_setup
   - pak_cleanup
+  - pak_update
