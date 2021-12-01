@@ -69,6 +69,9 @@ test_that("platform_match", {
     c("i386-pc-solaris2.10", "i386-pc-solaris2.10"),
     c("amd64-portbld-freebsd12.1", "amd64-portbld-freebsd12.1"),
 
+    # Windows, archs don't matter
+    c("x86_64-w64-mingw32", "i386-w64-mingw32"),
+
     # All matches for macOS if arch matches
     c("x86_64-apple-darwin17.0", "x86_64-apple-darwin13.4.0"),
     c("x86_64-apple-darwin13.4.0", "x86_64-apple-darwin17.0"),
@@ -84,9 +87,6 @@ test_that("platform_match", {
   bad <- list(
     # OS must match
     c("x86_64-pc-linux-gnu", "x86_64-pc-solaris2.10"),
-
-    # Windows, arch must match
-    c("x86_64-w64-mingw32", "i386-w64-mingw32"),
 
     # macOS arch must match
     c("arm64-apple-darwin17.0", "x86_64-apple-darwin13.4.0"),
