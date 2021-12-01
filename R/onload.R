@@ -81,9 +81,10 @@ platform_match <- function(install, current) {
   # OS must match in the first place
   if (os_ins != os_cur) return(FALSE)
 
-  # If it is Windows, then all should be good in general, but check if
+  # If it is Windows, then all should be good in general. Ideally we would
+  # check if the current arch is really available.
   # both 32 bit or 64 bit
-  if (os_ins == "windows") return(install == current)
+  if (os_ins == "windows") return(TRUE)
 
   # If it is macOS, then all should be good, still, but as a preparation
   # for arm, we check the arch
