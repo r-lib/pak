@@ -54,8 +54,10 @@ reference:
 - title: pak housekeeping
   contents:
   - cache_summary
+  - local_system_requirements
   - meta_summary
   - pak_install_extra
+  - pak_setup
   - pak_sitrep
   - pak_cleanup
   - pak_update
