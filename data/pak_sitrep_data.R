@@ -79,6 +79,7 @@ local({
     lib <- file.path(pkgdir, "library")
     dir.create(lib, showWarnings = FALSE, recursive = TRUE)
 
+    Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
     o2 <- options(install.packages.compile.from.source = "always")
     on.exit(options(o2), add = TRUE)
 
