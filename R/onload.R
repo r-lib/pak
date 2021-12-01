@@ -8,7 +8,9 @@ pkg_data <- new.env(parent = emptyenv())
     envir = environment(.onLoad)
   )
 
-  check_platform(libname, pkgname)
+  if (Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") == "") {
+    check_platform(libname, pkgname)
+  }
   pkg_data$ns <- list()
 
   worker <- Sys.getenv("R_PKG_PKG_WORKER", "")
