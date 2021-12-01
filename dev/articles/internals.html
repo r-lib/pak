@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,12 +40,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -65,7 +61,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/r-lib/pak/">
+  <a href="https://github.com/r-lib/pak/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -86,16 +82,16 @@
       <h1 data-toc-skip>pak internals</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/master/vignettes/internals.Rmd"><code>vignettes/internals.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/HEAD/vignettes/internals.Rmd" class="external-link"><code>vignettes/internals.Rmd</code></a></small>
       <div class="hidden name"><code>internals.Rmd</code></div>
 
     </div>
 
     
     
-<div id="the-embedded-library" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-embedded-library" class="anchor"></a>The embedded library</h2>
+<div class="section level2">
+<h2 id="the-embedded-library">The embedded library<a class="anchor" aria-label="anchor" href="#the-embedded-library"></a>
+</h2>
 <p>pak bundles its dependencies into the installed package, or into the user’s cache directory. This can happen several ways:</p>
 <ol style="list-style-type: decimal">
 <li><p>If not running inside <code>R CMD check</code>, <code>R CMD INSTALL</code> installs all dependencies when installing package data, into <code>/library</code> within the installed package. Downloading and installing the (currently) 37 dependencies takes about 1-1.5 minutes for platforms with binaries, and about 4 minutes for platforms that compile everything from source (measured on Linux). The goal of this is to create self-contained binaries on CRAN.</p></li>
@@ -104,7 +100,7 @@
 <li><p>This also works well on platforms that do not (yet) have binaries, e.g. M1 macs, Linux or the new experimental Windows platform.</p></li>
 <li><p>When running inside <code>R CMD check</code>, pak does not bundle its dependencies, to make the checks faster.</p></li>
 <li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does not install the package during the check. Instead, they pre-install it, and then refer to the install log in the check. They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.</p></li>
-<li><p>When pak is installed from GitHub, using <code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github()</a></code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
+<li><p>When pak is installed from GitHub, using <code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
 <li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field, then pak does not bundle its dependencies, only emits a message that suggests using <code>create_dev_lib()</code>. This is because we can’t easily install from GitHub using base R functions only.</p></li>
 <li><p>When running <code>R CMD check</code>, pak uses <code>testthat.R</code> to bundle the dependencies into the temporary installation that is used in the check. However, pak <em>copies</em> the dependencies in this case, to make the check faster. If copying the dependencies fails, then pak skips the test suite. The reason for copying in <code>testthat.R</code> instead of install time is that this way we avoid the check warning about the large <code>/library</code> directory.</p></li>
 <li><p>If the pak installation currently being tested does not have bundled dependencies, then <code>setup.R</code> bundles them, but into the user’s cache directory. This is to make sure that we can still use <code>devtools::test()</code> and alike for development.</p></li>
@@ -112,13 +108,13 @@
 </ol>
 <p>In summary, these are the various bundling modes:</p>
 <ol style="list-style-type: decimal">
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> binary pkg from CRAN → pak is ready to use</p></li>
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> source pkg from CRAN → install into <code>/library</code></p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is ready to use</p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install into <code>/library</code></p></li>
 <li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install into <code>/library</code></p></li>
 <li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code> → no not bundle</p></li>
 <li><p><code>R CMD check</code> → copy into <code>/library</code>, ignore errors</p></li>
-<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github()</a></code> without <code>Remotes</code> → install into <code>/library</code></p></li>
-<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github()</a></code> with <code>Remotes</code> → no not bundle</p></li>
+<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> without <code>Remotes</code> → install into <code>/library</code></p></li>
+<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> with <code>Remotes</code> → no not bundle</p></li>
 <li><p><code>devtools::test()</code> and similar → copy into user’s cache directory</p></li>
 </ol>
 </div>
@@ -135,11 +131,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Gábor Csárdi, <a href="https://jimhester.com">Jim Hester</a>.</p>
+  <p></p>
+<p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -147,6 +145,8 @@
 
   
 
+
+  
 
   </body>
 </html>

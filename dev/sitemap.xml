@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://pak.r-lib.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/articles/internals.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/authors.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/news/index.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/cache.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/handle_package_not_found.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/index.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/lib_status.html</loc>
@@ -101,8 +116,5 @@
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/repo_status.html</loc>
-  </url>
-  <url>
-    <loc>http://pak.r-lib.org/articles/internals.html</loc>
   </url>
 </urlset>
