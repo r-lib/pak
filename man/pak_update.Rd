@@ -4,11 +4,16 @@
 \alias{pak_update}
 \title{Update pak itself}
 \usage{
-pak_update(force = FALSE)
+pak_update(force = FALSE, type = getOption("pkgType"))
 }
 \arguments{
 \item{force}{Whether to force an update, even if no newer version is
 available.}
+
+\item{type}{Package type. Like the \code{type} argument of
+\code{\link[utils:install.packages]{utils::install.packages()}}. You can set this to \code{mac.binary} or
+\code{mac.binary.big-sur-arm64} if you have a non-CRAN R build, but want
+to install a binary pak package.}
 }
 \value{
 Nothing.

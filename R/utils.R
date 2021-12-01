@@ -283,3 +283,11 @@ base_packages <- function() {
   }
   pkg_data$base_packages
 }
+
+is_flag <- function(x) {
+  is.logical(x) && length(x) == 1 && !is.na(x)
+}
+
+is_string <- function(x) {
+  is.character(x) && length(x) == 1 && !is.na(x)
+}

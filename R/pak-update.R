@@ -1,6 +1,11 @@
 
 pak_repo <- function() {
-  "https://r-lib.github.io/p/pak/dev/"
+  base <- "https://r-lib.github.io/p/pak/"
+  if (tolower(Sys.getenv("PAK_DEVEL")) == "true") {
+    paste0(base, "devel")
+  } else {
+    paste0(base, "stable")
+  }
 }
 
 #' Update pak itself
@@ -9,19 +14,51 @@ pak_repo <- function() {
 #'
 #' @param force Whether to force an update, even if no newer version is
 #'   available.
+#' @param type Package type. Like the `type` argument of
+#'   [utils::install.packages()]. You can set this to `mac.binary` or
+#'   `mac.binary.big-sur-arm64` if you have a non-CRAN R build, but want
+#'   to install a binary pak package.
 #'
 #' @return Nothing.
 #'
 #' @export
 
-pak_update <- function(force = FALSE) {
+pak_update <- function(
+  force = FALSE,
+  type = getOption("pkgType")) {
+
+  stopifnot(is_flag(force), is_string(type))
+
   repo <- pak_repo()
 
+  if (!is.null(.getNamespace("pak")$.__DEVTOOLS__)) {
+    warning(
+      "`load_all()`-d pak package, updating in default library",
+      immediate. = TRUE
+    )
+    lib <- .libPaths()[1]
+  } else {
+    lib <- dirname(getNamespaceInfo("pak", "path"))
+  }
+
   os <- get_os()
-  if (os %in% c("win", "mac")) {
+  arch <- Sys.info()["machine"]
+  if (os == "win") {
     av <- utils::available.packages(
       repos = repo,
-      type = "binary",
+      type = "win.binary",
+      fields = c("Built", "File")
+    )
+  } else if (os == "mac" && arch == "x86_64") {
+    av <- utils::available.packages(
+      repos = repo,
+      type = "mac.binary",
+      fields = c("Built", "File")
+    )
+  } else if (os == "mac" && arch == "arm64") {
+    av <- utils::available.packages(
+      repos = repo,
+      type = "mac.binary.big-sur-arm64",
       fields = c("Built", "File")
     )
   } else {
@@ -59,7 +96,6 @@ pak_update <- function(force = FALSE) {
   # Otherwise the subprocess might be locking some DLLs
   try(pkg_data$remote$kill(), silent = TRUE)
 
-  lib <- dirname(getNamespaceInfo("pak", "path"))
   utils::install.packages(tgt, repos = NULL, type = "source", lib = lib)
 
   attached <- "package:pak" %in% search()
@@ -92,7 +128,7 @@ av_filter <- function(av) {
 
 should_update_to <- function(av) {
   # check if the right platform was installed
-  current <-R.Version()$platform
+  current <- R.Version()$platform
   if (!platform_match(pak_sitrep_data$platform, current)) {
     message("\npak platform mismatch, trying to update to fix this...")
     return(TRUE)
@@ -105,11 +141,12 @@ should_update_to <- function(av) {
   # or the build date
   blt_cur <- get_built_date(dsc$Built)
   blt_new <- get_built_date(av[1, "Built"])
-  if (blt_cur < blt_new) return(TRUE)
+  if (is.na(blt_cur) || blt_cur < blt_new) return(TRUE)
   FALSE
 }
 
 get_built_date <- function(x) {
+  if (!is_string(x)) return(NA_character_)
   # We can compare these dates as strings, so no need to parse
   strsplit(x, "[ ]*;[ ]*")[[1]][3]
 }
