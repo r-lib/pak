@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://pak.r-lib.org/404.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/articles/internals.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/authors.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/index.html</loc>
   </url>
   <url>
+    <loc>http://pak.r-lib.org/news/index.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/cache.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/handle_package_not_found.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/index.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/reference/lib_status.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/local_deps.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/local_deps_explain.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/local_install.html</loc>
@@ -19,13 +49,28 @@
     <loc>http://pak.r-lib.org/reference/local_package_trees.html</loc>
   </url>
   <url>
+    <loc>http://pak.r-lib.org/reference/local_system_requirements.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/lockfile_create.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/lockfile_install.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/metadata.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pak.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/reference/pak_cleanup.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/pak_package_sources.html</loc>
+    <loc>http://pak.r-lib.org/reference/pak_install_extra.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/pak_private_library.html</loc>
+    <loc>http://pak.r-lib.org/reference/pak_package_sources.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/pak_setup.html</loc>
@@ -34,27 +79,45 @@
     <loc>http://pak.r-lib.org/reference/pak_sitrep.html</loc>
   </url>
   <url>
+    <loc>http://pak.r-lib.org/reference/pak_update.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_deps.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_deps_explain.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_deps_tree.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_download.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_history.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/reference/pkg_install.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pkg_name_check.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/pkg_remove.html</loc>
   </url>
   <url>
+    <loc>http://pak.r-lib.org/reference/pkg_search.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/reference/pkg_status.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/proj_create.html</loc>
+    <loc>http://pak.r-lib.org/reference/repo_add.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/proj_install.html</loc>
+    <loc>http://pak.r-lib.org/reference/repo_get.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/proj_install_dev.html</loc>
-  </url>
-  <url>
-    <loc>http://pak.r-lib.org/reference/proj_remove.html</loc>
-  </url>
-  <url>
-    <loc>http://pak.r-lib.org/reference/proj_status.html</loc>
+    <loc>http://pak.r-lib.org/reference/repo_status.html</loc>
   </url>
 </urlset>
