@@ -1,5 +1,5 @@
 
-# pak development version
+# pak 0.2.0
 
 Lots of news, too much to list. This is a completely new package now.
 
