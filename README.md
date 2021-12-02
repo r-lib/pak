@@ -33,10 +33,6 @@ Install the released version of the package from CRAN:
 install.packages("pak")
 ```
 
-(After installation, you might also want to run `pak::pak_setup()`;
-it’ll be run automatically when needed but you might want to do it now
-to save some time later.)
-
 Install the development version from our repository on GitHub:
 
 ``` r
