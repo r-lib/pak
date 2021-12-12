@@ -36,7 +36,7 @@ install.packages("pak")
 Install the development version from our repository on GitHub:
 
 ``` r
-install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+install.packages("pak", repos = "https://r-lib.github.io/p/pak/devel/")
 ```
 
 This is currently supported for
