@@ -44,6 +44,7 @@ Suggests:
     testthat,
     tibble,
     withr
+Remotes: r-lib/pkgdepends
 Config/needs/dependencies:
     callr,
     cli,
