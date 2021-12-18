@@ -11,21 +11,18 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: 'windows-2016',  r: '3.3' }
           - {os: 'windows-2016',  r: '3.4' }
           - {os: 'windows-2016',  r: '3.5' }
           - {os: 'windows-2016',  r: '3.6' }
           - {os: 'windows-2016',  r: '4.0' }
           - {os: 'windows-2016',  r: '4.1' }
           - {os: 'windows-2016',  r: 'devel/4.2' }
-          - {os: 'macos-10.15',  r: '3.3' }
           - {os: 'macos-10.15',  r: '3.4' }
           - {os: 'macos-10.15',  r: '3.5' }
           - {os: 'macos-10.15',  r: '3.6' }
           - {os: 'macos-10.15',  r: '4.0' }
           - {os: 'macos-10.15',  r: '4.1' }
           - {os: 'macos-10.15',  r: 'devel/4.2' }
-          - {os: 'ubuntu-18.04', r: '3.3' }
           - {os: 'ubuntu-18.04', r: '3.4' }
           - {os: 'ubuntu-18.04', r: '3.5' }
           - {os: 'ubuntu-18.04', r: '3.6' }
