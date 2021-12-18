@@ -41,10 +41,10 @@ install.packages("pak", repos = "https://r-lib.github.io/p/pak/devel/")
 
 This is currently supported for
 
--   macOS (High Sierra or later) and R 3.3.x or later on Intel and R 4.1
+-   macOS (High Sierra or later) and R 3.4.x or later on Intel and R 4.1
     or later on arm64, including R-devel.
--   Windows and R 3.3.x, or later, including R-devel,
--   Linux (any 64-bit x86_64 distribution) and R 3.3.x or later,
+-   Windows and R 3.4.x, or later, including R-devel,
+-   Linux (any 64-bit x86_64 distribution) and R 3.4.x or later,
     including R-devel.
 
 ## Usage
