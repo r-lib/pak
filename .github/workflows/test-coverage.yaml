@@ -2,9 +2,11 @@ on:
   push:
     branches:
       - main
+      - 'cran-*'
   pull_request:
     branches:
       - main
+      - 'cran-*'
 
 name: test-coverage
 

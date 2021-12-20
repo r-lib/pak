@@ -1,6 +1,10 @@
 on:
   push:
-    branches: main
+    branches:
+      - main
+  release:
+    types: [published]
+  workflow_dispatch:
 
 name: pkgdown
 
