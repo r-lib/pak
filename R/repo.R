@@ -187,7 +187,7 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #'
 #'
 #' Notes:
-#' * See more about RSPM at <https://packagemanager.rstudio.com/client/#/>.
+#' * See more about RSPM at `https://packagemanager.rstudio.com/client/#/`.
 #' * See more about MRAN snapshots at
 #'   <https://mran.microsoft.com/timemachine>.
 #' * All dates (or times) can be specified in the ISO 8601 format.

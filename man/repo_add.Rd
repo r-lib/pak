@@ -64,7 +64,7 @@ after R \verb{<version>} was released.
 
 Notes:
 \itemize{
-\item See more about RSPM at \url{https://packagemanager.rstudio.com/client/#/}.
+\item See more about RSPM at \verb{https://packagemanager.rstudio.com/client/#/}.
 \item See more about MRAN snapshots at
 \url{https://mran.microsoft.com/timemachine}.
 \item All dates (or times) can be specified in the ISO 8601 format.
