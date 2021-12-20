@@ -1,5 +1,5 @@
 
-pak_sitrep_data <- list(deps = logical())
+pak_sitrep_data <- list(deps = logical(), bundledata = list())
 
 # It seems that it is not possible to share these scripts with the package,
 # except for source()-ing the collated package code, which I decided not
@@ -7,12 +7,24 @@ pak_sitrep_data <- list(deps = logical())
 
 local({
 
+  rot1 <- function(x) {
+    as.integer(charToRaw(as.character(x)))
+  }
+
   should_bundle <- function() {
+    pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
+    pak_sitrep_data$bundledata <<- list(
+      rpkgname = rot1(Sys.getenv("R_PACKAGE_NAME", "")),
+      pkgdir = rot1(Sys.getenv("R_PACKAGE_DIR", "")),
+      meta = rot1(file.exists(file.path(pkgdir, "Meta"))),
+      ghworkflow = rot1(Sys.getenv("GITHUB_WORKFLOW", "")),
+      shost = rot1(Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", ""))
+    )
+
     # Do not bundle in pkgload::load_all()
     if (Sys.getenv("R_PACKAGE_NAME", "") != "pak") return(FALSE)
 
     # This must be set in R CMD INSTALL
-    pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir == "") return(FALSE)
 
     # Another test for pkgload::load_all(), just in case
@@ -28,11 +40,6 @@ local({
       return(FALSE)
     }
 
-    pid <- Sys.getpid()
-    mark <- file.path(tempdir(), paste0(pid, ".log"))
-    if (file.exists(mark)) return(FALSE)
-
-    file.create(mark)
     TRUE
   }
 
