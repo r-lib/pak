@@ -83,16 +83,32 @@ local({
     o2 <- options(install.packages.compile.from.source = "always")
     on.exit(options(o2), add = TRUE)
 
+    Sys.setenv(R_PROFILE_USER = tempfile())
+
     cat("** deps data (", length(pkgs), "): ", sep = "")
     n <- 1
     for (pkg in pkgs) {
-      suppressWarnings(suppressMessages(utils::capture.output(
-        utils::install.packages(
-          pkg, lib = lib, quiet = TRUE,
-          INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
-          dependencies = FALSE
-        )
+      tryCatch(
+        suppressWarnings(suppressMessages(utils::capture.output(
+          utils::install.packages(
+            pkg, lib = lib, quiet = TRUE,
+            INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
+            dependencies = FALSE,
+            type = .Platform$pkgType
+          )
+        ))),
+        error = function(err) NULL
+      )
+      if (!file.exists(file.path(lib, pkg)) && getOption("pkgType") != "source") {
+        suppressWarnings(suppressMessages(utils::capture.output(
+          utils::install.packages(
+            pkg, lib = lib, quiet = TRUE,
+            INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
+            dependencies = FALSE,
+            type = "source"
+            )
         )))
+      }
       if (!file.exists(file.path(lib, pkg))) {
         stop("Failed to bundle deps data (", pkg, ")")
       }
@@ -223,7 +239,16 @@ local({
   pak_sitrep_data$`github-sha` <<- Sys.getenv("GITHUB_SHA", "-")
   pak_sitrep_data$`github-ref` <<- Sys.getenv("GITHUB_REF", "-")
 
-  if (should_bundle()) {
-    bundle()
-  }
+  tryCatch(
+    if (Sys.getenv("PAK_DATA_BUNDLER") != "true" && should_bundle()) {
+      bundle()
+    },
+    error = function(err) {
+      cat("Failed\n")
+    }
+  )
+
+  Sys.setenv("PAK_DATA_BUNDLER" = "true")
 })
+
+pak_sitrep_data
