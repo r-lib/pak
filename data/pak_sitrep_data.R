@@ -241,7 +241,9 @@ local({
 
   tryCatch(
     if (Sys.getenv("PAK_DATA_BUNDLER") != "true" && should_bundle()) {
+      pak_sitrep_data$bundled <<- FALSE
       bundle()
+      pak_sitrep_data$bundled <<- TRUE
     },
     error = function(err) {
       cat("Failed\n")
