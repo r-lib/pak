@@ -27,6 +27,8 @@ Suggests:
     cli (>= 3.0.0),
     covr,
     curl,
+    desc,
+    digest,
     distro,
     filelock (>= 1.0.2),
     glue (>= 1.3.0),
