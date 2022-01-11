@@ -195,7 +195,9 @@ push_packages <- local({
   }
 
   read_metadata <- function(dir, tag) {
-    mnft <- jsonlite::fromJSON(file.path(dir, "manifest.json"))
+    path <- file.path(dir, "manifest.json")
+    if (!file.exists(path)) return(NULL)
+    mnft <- jsonlite::fromJSON(path)
     if (tag %in% mnft$tags$tag) {
       pfms <- mnft$tags$platforms[[ mnft$tags$tag == tag ]]
       pfms$path <- NA_character_
@@ -224,7 +226,11 @@ push_packages <- local({
   update_metadata <- function(dir, tag, pkgs) {
     old <- read_metadata(dir, tag)
     new <- parse_metadata(pkgs)
-    update_df(old, new, by = c("r.platform", "r.version"))
+    if (is.null(old)) {
+      new
+    } else {
+      update_df(old, new, by = c("r.platform", "r.version"))
+    }
   }
 
   write_files <- function(txts, paths) {
