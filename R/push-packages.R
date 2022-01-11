@@ -1,6 +1,31 @@
 
 push_packages <- local({
 
+  const_annotations <- list(
+    com.github.package.type = "r_package",
+    org.opencontainers.image.authors = "Gabor Csardi",
+    org.opencontainers.image.url = "https://github.com/r-lib/pak",
+    org.opencontainers.image.documentation = "https://pak.r-lib.org/",
+    org.opencontainers.image.source = "https://github.com/r-lib/pak",
+    org.opencontainers.image.title = "pak R package",
+    org.opencontainers.image.description = "Package manager for R",
+    org.opencontainers.image.licenses = "GPL-3"
+  )
+
+  const_annotations_js <- function() {
+    paste0(
+      glue::glue('"{names(const_annotations)}": "{const_annotations}"'),
+      collapse = ",\n      "
+    )
+  }
+
+  ghcr_uri <- function() {
+    Sys.getenv(
+      "PAK_GHCR_URI",
+      "docker://ghcr.io/gaborcsardi/playground/pak"
+    )
+  }
+
   package_dir <- function() {
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
@@ -23,14 +48,8 @@ push_packages <- local({
     digest::digest(path, algo = "sha256", file = TRUE)
   }
 
-  diff_id <- function(path) {
-    con <- gzfile(path, open = "rb")
-    on.exit(close(con), add = TRUE)
-    digest::digest(
-      serialize = FALSE,
-      algo="sha256",
-      readBin(con, n = 100000000, what = "raw")
-    )
+  sha256str <- function(str) {
+    vapply(str, digest::digest, character(1), algo = "sha256", serialize=FALSE)
   }
 
   mkdirp <- function(dir, msg = NULL) {
@@ -64,24 +83,12 @@ push_packages <- local({
     format(as.POSIXlt(date, tz = "UTC"), "%Y-%m-%dT%H:%M:%S+00:00")
   }
 
-  image_config <- function(path, meta) {
-    U <- jsonlite::unbox
-    diff_ids <- diff_id(path)
-    config <- list(
-      architecture = U(meta$platform$architecture),
-      os = U(meta$platform$os),
-      os.version = U(meta$platform$os.version),
-      r.version = U(meta$platform$r.version),
-      r.platform = U(meta$platform$r.platform),
-      rootfs = list(
-        type = U("layers"),
-        diff_ids = paste0("sha256:", diff_ids)
-      )
-    )
-
-    paste0(jsonlite::toJSON(config, pretty = TRUE), "\n")
+  # This is not empty for brew, but it is not useful for us
+  image_config <- function(pkgs) {
+    rep("{}", nrow(pkgs))
   }
 
+  # Extension from path, but keep .tar.gz
   get_ext <- function(path) {
     pcs <- strsplit(path, ".", fixed = TRUE)
     vapply(pcs, function(x) {
@@ -95,95 +102,20 @@ push_packages <- local({
     }, character(1))
   }
 
-  image_title <- function(path, meta) {
+  image_title <- function(pkgs) {
     paste0(
       "pak--",
-      gsub(".", "-", meta$platform$r.version, fixed = TRUE),
+      gsub(".", "-", pkgs$r.version, fixed = TRUE),
       "--",
-      meta$platform$r.platform,
+      pkgs$r.platform,
       "--",
-      meta$annotations$org.opencontainers.image.version,
+      pkgs$pak.version,
       ".",
-      get_ext(path)
+      vapply(pkgs$path, get_ext, character(1))
     )
   }
 
-  image_manifest <- function(path, sha, meta, image_config, image_config_hash,
-                             image_title) {
-    U <- jsonlite::unbox
-    manifest <- list(
-      schemaVersion = U(2L),
-      config = list(
-        mediaType = U("application/vnd.oci.image.config.v1+json"),
-        digest = U(paste0("sha256:", image_config_hash)),
-        size = U(nchar(image_config, "bytes"))
-      ),
-      layers = list(
-        list(
-          mediaType = U("application/vnd.oci.image.layer.v1.tar+gzip"),
-          digest = U(paste0("sha256:", sha)),
-          size = U(file.size(path)),
-          annotations = list(
-            org.opencontainers.image.title = U(image_title)
-          )
-        )
-      ),
-      annotations = lapply(meta$annotations, U)
-    )
-
-    paste0(jsonlite::toJSON(manifest, pretty = TRUE), "\n")
-  }
-
-  image_index <- function(pkgs) {
-    U <- jsonlite::unbox
-
-    mfst <- function(meta, sha, manifest, manifest_hash) {
-      list(
-        mediaType = U("application/vnd.oci.image.manifest.v1+json"),
-        digest = U(paste0("sha256:", manifest_hash)),
-        size = U(nchar(manifest, "bytes")),
-        platform = list(
-          architecture = U(meta$platform$architecture),
-          os = U(meta$platform$os),
-          os.version = U(meta$platform$os.version),
-          r.version = U(meta$platform$r.version),
-          r.platform = U(meta$platform$r.platform)
-        ),
-        annotations = list(
-          org.opencontainers.image.ref.name =
-            U(meta$annotations$org.opencontainers.image.ref.name),
-          "io.r-hub.package.digest" = U(sha)
-        )
-      )
-    }
-
-    manifests <- mapply(
-      "mfst", SIMPLIFY = FALSE,
-      pkgs$meta, pkgs$sha,  pkgs$manifest, pkgs$manifest_hash
-    )
-
-    annotations <- pkgs$meta[[1]]$annotations
-    tss <- vapply(
-      pkgs$meta,
-      function(x) x$annotations$org.opencontainers.image.created,
-      character(1)
-    )
-    annotations$org.opencontainers.image.created <- max(tss)
-
-    idx <- list(
-      schemaVersion = U(2L),
-      manifests = manifests,
-      annotations = lapply(annotations, U)
-    )
-
-    paste0(jsonlite::toJSON(idx, pretty = TRUE), "\n")
-  }
-
-  sha256str <- function(str) {
-    vapply(str, digest::digest, character(1), algo = "sha256", serialize=FALSE)
-  }
-
-  get_metadata <- function(pkg, tag) {
+  extract_info <- function(pkg) {
     mkdirp(tmp <- tempfile())
     on.exit(rimraf(tmp), add = TRUE)
 
@@ -199,101 +131,197 @@ push_packages <- local({
       file = file.path(tmp, "pak", "library", "curl", "DESCRIPTION")
     )
 
-    platform_string <- curldsc$get_built()$Platform
-
-    platform <- list(
-      architecture = canonize_arch(platform_string),
-      os = canonize_os(platform_string),
-      os.version = get_os_version(platform_string),
+    data.frame(
+      stringsAsFactors = FALSE,
+      r.platform = curldsc$get_built()$Platform,
       r.version = as.character(pakdsc$get_built()$R[,1:2]),
-      r.platform = platform_string
-    )
-
-    annotations <- list(
-      com.github.package.type = "r_package",
-      org.opencontainers.image.created =
-        format_iso_8601(file.info(pkg)$mtime),
-      org.opencontainers.image.authors = "Gabor Csardi",
-      org.opencontainers.image.url = "https://github.com/r-lib/pak",
-      org.opencontainers.image.documentation = "https://pak.r-lib.org/",
-      org.opencontainers.image.source = "https://github.com/r-lib/pak",
-      org.opencontainers.image.version = pakdsc$get_field("Version"),
-      org.opencontainers.image.ref.name = tag,
-      # org.opencontainers.image.revision =
-      org.opencontainers.image.licenses = pakdsc$get_field("License"),
-      org.opencontainers.image.title = "pak R package",
-      org.opencontainers.image.description = "Package manager for R"
-    )
-
-    list(
-      platform = platform,
-      annotations = annotations
+      pak.version = pakdsc$get_field("Version"),
+      pak.revision = "TODO",
+      buildtime = format_iso_8601(file.info(pkg)$mtime),
+      digest = paste0("sha256:", sha256(pkg)),
+      size = file.size(pkg),
+      path = pkg
     )
   }
 
-  function(pkgs, tag = "devel") {
+  parse_metadata <- function(pkgs) {
+    empty <- data.frame(
+      stringsAsFactors = FALSE,
+      r.platform = character(),
+      r.version = character(),
+      pak.version = character(),
+      pak.revision = character(),
+      buildtime = character(),
+      digest = character(),
+      size = integer(),
+      path = character()
+    )
+    rbind(
+      empty,
+      do.call(rbind, lapply(pkgs, extract_info))
+    )
+  }
+
+  read_metadata <- function(dir, tag) {
+    mnft <- jsonlite::fromJSON(file.path(dir, "manifest.json"))
+    if (tag %in% mnft$tags$tag) {
+      pfms <- mnft$tags$platforms[[ mnft$tags$tag == tag ]]
+      pfms$path <- NA_character_
+    } else {
+      pfms <- parse_metadata(character())
+    }
+    pfms
+  }
+
+  update_df <- function(old, new, by) {
+    clp <- function(df) {
+      vapply(seq_len(nrow(df)),
+        function(i) paste0(df[i, ], collapse = ";"),
+        character(1)
+      )
+    }
+    oldkey <- clp(old[, by])
+    newkey <- clp(new[, by])
+
+    mch <- match(newkey, oldkey)
+    old[na.omit(mch), ] <- new[!is.na(mch), ]
+    old <- rbind(old, new[is.na(mch), ])
+    old
+  }
+
+  update_metadata <- function(dir, tag, pkgs) {
+    old <- read_metadata(dir, tag)
+    new <- parse_metadata(pkgs)
+    update_df(old, new, by = c("r.platform", "r.version"))
+  }
+
+  write_files <- function(txts, paths) {
+    invisible(mapply(cat, txts, file = paths, sep = ""))
+  }
+
+  image_manifest <- function(pkgs) {
+
+    tmpl <- '
+      {
+        "schemaVersion": 2,
+        "config": {
+          "mediaType": "application/vnd.oci.image.config.v1+json",
+          "digest": "sha256:<<image_config_hash>>",
+          "size": <<nchar(image_config, "bytes")>>
+        },
+        "layers": [
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "<<digest>>",
+            "size": <<size>>,
+            "annotations": {
+              "org.opencontainers.image.title": "<<image_title>>"
+            }
+          }
+        ],
+        "annotations": {
+           <<const_annotations_js()>>,
+           "org.opencontainers.image.created": "<<buildtime>>",
+           "org.opencontainers.image.version": "<<pak.version>>"
+        }
+     }'
+
+    glue::glue_data(pkgs, tmpl, .open = "<<", .close = ">>")
+  }
+
+  image_index <- function(pkgs) {
+    tmpl <- '
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:<<manifest_hash>>",
+        "size": <<nchar(manifest, "bytes")>>,
+        "platform": {
+          "architecture": "<<canonize_arch(r.platform)>>",
+          "os": "<<canonize_os(r.platform)>>",
+          "os.version": "R <<r.version>>",
+          "r.version": "<<r.version>>",
+          "r.platform": "<<r.platform>>"
+        },
+        "annotations": {
+          "org.opencontainers.image.ref.name": "<<pak.version>>--<<r.version>>--<<r.platform>>",
+          "io.r-hub.package.digest": "<<digest>>"
+        }
+      }'
+    mnfts <- glue::glue_data(pkgs, tmpl, .open = "<<", .close = ">>")
+
+    buildtime <- max(pkgs$buildtime)
+    pak.version <- pkgs$pak.version[1]
+
+    tmpl2 <- '
+      {
+        "schemaVersion": 2,
+        "manifests": [
+           <<paste0(mnfts, collapse = ",\n")>>
+        ],
+        "annotations": {
+           <<const_annotations_js()>>,
+           "org.opencontainers.image.created": "<<buildtime>>",
+           "org.opencontainers.image.version": "<<pak.version>>"
+        }
+      }'
+
+    jsonlite::prettify(glue::glue(tmpl2, .open = "<<", .close = ">>"))
+  }
+
+  check_skopeo <- function() {
+    if (Sys.which("skopeo") == "") stop("Need skopeo to push packages")
+  }
+
+  function(paths, tag = "devel", keep_old = TRUE) {
     dir <- init_package_dir()
     shadir <- file.path(dir, "blobs", "sha256")
     mkdirp(shadir)
 
+    if (keep_old) {
+      pkgs <- update_metadata(dir, tag, paths)
+    } else {
+      pkgs <- parse_metadata(paths)
+    }
+
     # Copy package files
-    pkgs <- data.frame(path = pkgs, stringsAsFactors = FALSE)
-    pkgs$sha <- vapply(pkgs$path, "sha256", character(1))
-    file.copy(pkgs$path, file.path(shadir, pkgs$sha))
+    file.copy(paths, file.path(shadir, sub("^sha256:", "", pkgs$digest)))
 
-    # Extract metadata
-    pkgs$meta <- I(lapply(pkgs$path, "get_metadata", tag = tag))
-
-    # Create image config files
-    pkgs$image_config <- mapply("image_config", pkgs$path, pkgs$meta)
+    # Create image config files. These are dummy files currenty ({}),
+    # but in case we switch to proper files, we write them out properly
+    pkgs$image_config <- image_config(pkgs)
     pkgs$image_config_hash <- sha256str(pkgs$image_config)
-    mapply(
-      cat,
-      pkgs$image_config,
-      file = file.path(shadir, pkgs$image_config_hash),
-      sep = ""
-    )
+    write_files(pkgs$image_config, file.path(shadir, pkgs$image_config_hash))
 
     # Image manifests
-    pkgs$image_title <- mapply("image_title", pkgs$path, pkgs$meta)
-    pkgs$manifest <- mapply(
-      "image_manifest",
-      pkgs$path,
-      pkgs$sha,
-      pkgs$meta,
-      pkgs$image_config,
-      pkgs$image_config_hash,
-      pkgs$image_title
-    )
+    pkgs$image_title <- image_title(pkgs)
+    pkgs$manifest <- image_manifest(pkgs)
     pkgs$manifest_hash <- sha256str(pkgs$manifest)
-    mapply(
-      cat,
-      pkgs$manifest,
-      file = file.path(shadir, pkgs$manifest_hash),
-      sep = ""
-    )
+    write_files(pkgs$manifest, file.path(shadir, pkgs$manifest_hash))
 
     # Image index
-    idx <- image_index(pkgs)
-    idx_hash <- sha256str(idx)
-    cat(idx, file = file.path(shadir, idx_hash))
+    imidx <- image_index(pkgs)
+    imidx_hash <- sha256str(imidx)
+    write_files(imidx, file.path(shadir, imidx_hash))
 
     # index.json
-    U <- jsonlite::unbox
-    idx2 <- list(
-      schemaVersion = U(2L),
-      manifests = list(
-        list(
-          mediaType = U("application/vnd.oci.image.index.v1+json"),
-          digest = U(paste0("sha256:", idx_hash)),
-          size = U(nchar(idx, "bytes"))
-        )
-      )
+    idxjs <- jsonlite::prettify(glue::glue(
+      '{
+         "schemaVersion": 2,
+         "manifests": [
+            {
+              "mediaType": "application/vnd.oci.image.index.v1+json",
+              "digest": "sha256:<<imidx_hash>>",
+              "size": <<nchar(imidx, "bytes")>>
+            }
+         ]
+       }', .open = "<<", .close = ">>"
+    ))
+    write_files(idxjs, file.path(dir, "index.json"))
+
+    # OCI version
+    cat(
+      '{"imageLayoutVersion": "1.0.0"}\n',
+      file = file.path(dir, "oci-layout")
     )
-
-    idx2txt <- paste0(jsonlite::toJSON(idx2, pretty = TRUE), "\n")
-    cat(idx2txt, file = file.path(dir, "index.json"))
-
-    invisible(dir)
   }
 })
