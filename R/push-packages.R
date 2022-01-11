@@ -38,23 +38,42 @@ push_packages <- local({
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
 
-  git <- function (..., echo_cmd = TRUE, echo = TRUE) {
-    processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo)
+  git <- function (..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE) {
+    if (dry_run) {
+      cat("git", c(...), "\n")
+    } else {
+      processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo)
+    }
   }
 
-  init_package_dir <- function() {
-    dir <- package_dir()
-    if (!file.exists(dir)) {
-      git("remote", "set-branches", "--add", "origin", "packages")
-      git("fetch", remote, branch)
-      github_worktree_add(dir, "origin", "packages")
-    }
+  git_pull <- function(dir, dry_run = FALSE) {
     old <- getwd()
     on.exit(setwd(old), add = TRUE)
     setwd(dir)
-    git("pull")
+    git("pull", dry_run = dry_run)
+  }
 
+  git_worktree_add <- function(dir, remote, branch, dry_run = FALSE) {
+    commit <- paste0(remote, "/", branch)
+    git("worktree", "add", "--track", "-B", branch, dir, commit, dry_run = dry_run)
+  }
+
+  git_worktree_remove <- function(dir, dry_run = FALSE) {
+    git("worktree", "remove", "--force", dir, dry_run = dry_run)
+  }
+
+  init_package_dir <- function(dir, dry_run = FALSE) {
+    remote <- "origin"
+    branch <- "packages"
+    git("remote", "set-branches", "--add", remote, branch, dry_run = dry_run)
+    git("fetch", remote, branch, dry_run = dry_run)
+    if (dry_run) mkdirp(dir)
+    git_worktree_add(dir, remote, branch, dry_run = dry_run)
     dir
+  }
+
+  cleanup_package_dir <- function(dir, dry_run = FALSE) {
+    git_worktree_remove(dir, dry_run = dry_run)
   }
 
   sha256 <- function(path) {
@@ -151,8 +170,8 @@ push_packages <- local({
       pak.version = pakdsc$get_field("Version"),
       pak.revision = "TODO",
       buildtime = format_iso_8601(file.info(pkg)$mtime),
-      digest = paste0("sha256:", sha256(pkg)),
       size = file.size(pkg),
+      digest = paste0("sha256:", sha256(pkg)),
       path = pkg
     )
   }
@@ -165,8 +184,8 @@ push_packages <- local({
       pak.version = character(),
       pak.revision = character(),
       buildtime = character(),
-      digest = character(),
       size = integer(),
+      digest = character(),
       path = character()
     )
     rbind(
@@ -393,13 +412,28 @@ push_packages <- local({
   }
 
   push_manifest <- function(workdir, dry_run = FALSE) {
-
+    old <- getwd()
+    on.exit(setwd(old), add = TRUE)
+    setwd(workdir)
+    git("add", "manifest.json", dry_run = dry_run)
+    git("commit", "--allow-empty", "-m", "Auto-update packages", dry_run = dry_run)
+    git("push", "origin", dry_run = dry_run)
   }
 
   function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE) {
-    workdir <- init_package_dir()
+    dry_run
+    workdir <- package_dir()
+
+    if (!file.exists(workdir)) {
+      init_package_dir(workdir, dry_run = dry_run)
+      on.exit(cleanup_package_dir(workdir, dry_run = dry_run), add = TRUE)
+    }
+    git_pull(workdir, dry_run = dry_run)
+
     pkgs <- update_packages(paths, workdir = workdir, tag, keep_old, dry_run)
     update_manifest(workdir, tag, pkgs)
     push_manifest(workdir, dry_run = dry_run)
+
+    invisible(pkgs)
   }
 })
