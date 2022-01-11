@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "tags": [
+    {
+      "tag": "devel",
+      "platforms": [
+        {
+          "r.platform": "x86_64-apple-darwin17.0",
+          "r.version": "4.1",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-01-06T10:43:26+00:00",
+          "size": 7721560,
+          "digest": "sha256:0ef2bc97c939b9e63e2e6f6d33a45d6688149c976b08701f81f32e14b9515e5b"
+        },
+        {
+          "r.platform": "aarch64-apple-darwin20",
+          "r.version": "4.1",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-01-10T12:44:14+00:00",
+          "size": 7644418,
+          "digest": "sha256:5793129221730ec67a1390b16c99f024cb72bbc90797e3e5adb9a0cb69693cf7"
+        },
+        {
+          "r.platform": "x86_64-apple-darwin15.6.0",
+          "r.version": "3.4",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-01-06T10:43:24+00:00",
+          "size": 14215031,
+          "digest": "sha256:d3ce73ff1dc4d0e9c4c69d34681fec1e8bb04874a151f46191fc1546c6233093"
+        }
+      ]
+    }
+  ]
+}
