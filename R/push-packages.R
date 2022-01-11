@@ -26,6 +26,14 @@ push_packages <- local({
     )
   }
 
+  ghcr_user <- function() {
+    Sys.getenv("PAK_GHCR_USER", "gaborcsardi")
+  }
+
+  ghcr_token <- function() {
+    Sys.getenv("PAK_GHCR_TOKEN", gitcreds::gitcreds_get()$password)
+  }
+
   package_dir <- function() {
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
@@ -41,6 +49,11 @@ push_packages <- local({
       git("fetch", remote, branch)
       github_worktree_add(dir, "origin", "packages")
     }
+    old <- getwd()
+    on.exit(setwd(old), add = TRUE)
+    setwd(dir)
+    git("pull")
+
     dir
   }
 
@@ -230,14 +243,16 @@ push_packages <- local({
   }
 
   image_index <- function(pkgs) {
+    arch <- vapply(pkgs$r.platform, canonize_arch, character(1))
+    os <- vapply(pkgs$r.platform, canonize_os, character(1))
     tmpl <- '
       {
         "mediaType": "application/vnd.oci.image.manifest.v1+json",
         "digest": "sha256:<<manifest_hash>>",
         "size": <<nchar(manifest, "bytes")>>,
         "platform": {
-          "architecture": "<<canonize_arch(r.platform)>>",
-          "os": "<<canonize_os(r.platform)>>",
+          "architecture": "<<arch>>",
+          "os": "<<os>>",
           "os.version": "R <<r.version>>",
           "r.version": "<<r.version>>",
           "r.platform": "<<r.platform>>"
@@ -272,13 +287,18 @@ push_packages <- local({
     if (Sys.which("skopeo") == "") stop("Need skopeo to push packages")
   }
 
-  function(paths, tag = "devel", keep_old = TRUE) {
-    dir <- init_package_dir()
-    shadir <- file.path(dir, "blobs", "sha256")
+  update_packages <- function(
+    paths,
+    workdir,
+    tag = "devel",
+    keep_old = TRUE,
+    dry_run = FALSE) {
+
+    shadir <- file.path(workdir, "blobs", "sha256")
     mkdirp(shadir)
 
     if (keep_old) {
-      pkgs <- update_metadata(dir, tag, paths)
+      pkgs <- update_metadata(workdir, tag, paths)
     } else {
       pkgs <- parse_metadata(paths)
     }
@@ -316,12 +336,70 @@ push_packages <- local({
          ]
        }', .open = "<<", .close = ">>"
     ))
-    write_files(idxjs, file.path(dir, "index.json"))
+    write_files(idxjs, file.path(workdir, "index.json"))
 
     # OCI version
     cat(
       '{"imageLayoutVersion": "1.0.0"}\n',
-      file = file.path(dir, "oci-layout")
+      file = file.path(workdir, "oci-layout")
     )
+
+    args <- c("copy", "--all")
+    args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
+    args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
+    if (dry_run) {
+      cat("skopeo", args, "\n")
+    } else {
+      processx::run("skopeo", args, echo_cmd = TRUE, echo = TRUE)
+    }
+
+    invisible(pkgs)
+  }
+
+  update_manifest <- function(workdir, tag, pkgs) {
+    cols <- c("r.platform", "r.version", "pak.version", "pak.revision",
+              "buildtime", "size", "digest")
+    pfms <- pkgs[,cols]
+    newtags <- data.frame(
+      stringsAsFactors = FALSE,
+      tag = tag,
+      platforms = I(list(pfms))
+    )
+
+    path <- file.path(workdir, "manifest.json")
+    if (file.exists(path)) {
+      old <- jsonlite::fromJSON(path)
+    } else {
+      old <- jsonlite::fromJSON('{ "schemaVersion": 1, "tags": [] }')
+    }
+    if (length(old$tags) == 0) {
+      old$tags <- data.frame(
+        stringsAsFactors = FALSE,
+        tag = character(),
+        platforms = I(list())
+      )
+    }
+
+    wh <- match(tag, old$tags$tag)
+    if (!is.na(wh)) {
+      old$tags[[wh, "platforms"]] <- newtags$platforms[[1]]
+    } else {
+      old$tags <- rbind(old$tags, newtags)
+    }
+    old$schemaVersion <- jsonlite::unbox(old$schemaVersion)
+
+    json <- jsonlite::toJSON(old, pretty = TRUE)
+    cat(json, file = path)
+  }
+
+  push_manifest <- function(workdir, dry_run = FALSE) {
+
+  }
+
+  function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE) {
+    workdir <- init_package_dir()
+    pkgs <- update_packages(paths, workdir = workdir, tag, keep_old, dry_run)
+    update_manifest(workdir, tag, pkgs)
+    push_manifest(workdir, dry_run = dry_run)
   }
 })

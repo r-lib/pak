@@ -31,6 +31,7 @@ Suggests:
     digest,
     distro,
     filelock (>= 1.0.2),
+    gitcreds,
     glue (>= 1.3.0),
     mockery,
     pingr,
