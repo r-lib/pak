@@ -9,12 +9,13 @@ on:
   - cron: '30 5 * * *'
 
 # =========================================================================
-    
+
 jobs:
 
   # -----------------------------------------------------------------------
   macos:
-    runs-on: macos-11.0
+    runs-on: macos-11
+    if: false
     steps:
 
     - name: Checkout
@@ -39,7 +40,7 @@ jobs:
     - name: Install skopeo
       run: |
         brew install skopeo
-        
+
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
@@ -47,10 +48,27 @@ jobs:
     - name: Run tests
       run: |
         cd tools/build/macos && make test
-        
+
     - name: Deploy packages
       run: |
         cd tools/build/macos && make deploy
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+  # -----------------------------------------------------------------------
+  windows:
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Build pak binaries
+      uses: r-hub/actions/pak-builder@master
+      with:
+        token: ${{ secrets.TOKEN }}
+        rversions: 3.4,3.5,3.6,4.0,4.1,devel/4.2
