@@ -1,0 +1,52 @@
+name: Nighly build
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '30 5 * * *'
+
+# =========================================================================
+    
+jobs:
+
+  # -----------------------------------------------------------------------
+  macos:
+    runs-on: macos-11.0
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-deptch: 10
+
+    - name: Install rim
+      run: |
+        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.1.4/rim-0.1.4-macOS-x86_64.pkg
+        sudo installer -pkg rim-0.1.4-macOS-x86_64.pkg -target /
+
+    - name: Install R
+      run: |
+        sudo rim add 3.4
+        sudo rim add 3.5
+        sudo rim add 3.6
+        sudo rim add 4.0
+        sudo rim add 4.1
+        sudo rim add devel
+
+    - name: Install skopeo
+      run: |
+        brew install skopeo
+        
+    - name: Build pak binaries
+      run: |
+        cd tools/build/macos && make build
+
+    - name: Run tests
+      run: |
+        cd tools/build/macos && make test
+        
+    - name: Deploy packages
+      run: |
+        cd tools/build/macos && make deploy
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
