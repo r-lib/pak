@@ -1,7 +1,8 @@
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= 3.4 3.5 3.6 4.0 4.1 4.2 4.1-arm64 4.2-arm64
+RVERSIONS ?= $(shell rim list)
+RVERSION_DEFAULT=4.1
 
 PKGCONFIGVERSION=0.29.2
 PKGCONFIGURLS=https://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIGVERSION).tar.gz \
@@ -46,9 +47,6 @@ PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 
 RVERSIONSARM=$(filter %-arm64,$(RVERSIONS))
 RVERSIONSX86=$(filter-out %-arm64,$(RVERSIONS))
-
-# PKGFILESARM=$(patsubst %-arm64,bin/macosx/big-sur-arm64/contrib/%/pak_$(PAKVERSION).tgz,$(RVERSIONSARM))
-# PKGFILES=$(PKGFILESARM)
 
 DONE=$(patsubst %,lib/R-%.done,$(RVERSIONS))
 
@@ -293,18 +291,37 @@ $(ROOT)/lib/%/_pak.done: $(ROOT)/lib/%/_curl.done $(ROOT)/lib/%/pkgdepends
 		'pak:::embed_lib("$(PKGROOT)")'
 	touch $@
 
-.PRECIOUS: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done \
-	   $(ROOT)/lib/%/pkgdepends $(ROOT)/lib/%/_pak.done
+# ------------------------------------------------------------------------
 
+TESTS=$(patsubst %,$(ROOT)/lib/R-%.tested,$(RVERSIONS))
+
+test: $(TESTS)
+
+$(ROOT)/lib/R-%.tested: $(ROOT)/lib/%/_pak.done
+	@echo "----- TESTING ($*) -----------------------------------------"
+	rm -rf $@
+	echo TODO
+	touch $@
 
 # ------------------------------------------------------------------------
 
-repo: build
-	@echo "----- DEPLYING package ($*) --------------------------------"
+R=/usr/local/bin/R-$(RVERSION_DEFAULT)
+RLIB=$(ROOT)/lib/$(RVERSION_DEFAULT)
+export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).tgz,$(RVERSIONS))
+
+deploy: test
+	@echo "----- DEPLOYING packages -----------------------------------"
+	R_LIBS=$(RLIB) $(R) -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = TRUE)'
+	R_LIBS=$(RLIB) $(R) -q -e \
+		'pak:::push_packages(strsplit(Sys.getenv("PKGFILES"), " ")[[1]])'
 
 # ------------------------------------------------------------------------
 
 clean:
 	rm -rf src opt lib *.tar.gz *.tar.bz2
 
-.PHONY: all build deploy clean R-%
+.PRECIOUS: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done \
+	   $(ROOT)/lib/%/pkgdepends $(ROOT)/lib/%/_pak.done \
+	   $(ROOT)/lib/R-%.tested
+
+.PHONY: all build test deploy clean R-%
