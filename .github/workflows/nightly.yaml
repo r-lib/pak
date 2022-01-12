@@ -2,6 +2,9 @@ name: Nighly build
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - 'feature/build-macos'
   schedule:
   - cron: '30 5 * * *'
 
