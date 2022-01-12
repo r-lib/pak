@@ -59,7 +59,7 @@ LIBSARM=$(patsubst %,opt/arm64/%.done,$(LIBNAMES))
 LIBSX86=$(patsubst %,opt/x86_64/%.done,$(LIBNAMES))
 
 LIBS=$(LIBSX86)
-ifeq ($(strip $(RVRESIONSARM)),)
+ifneq ($(strip $(RVERSIONSARM)),)
   LIBS+=$(LIBSARM)
 endif
 
@@ -90,7 +90,7 @@ opt/x86_64/pkgconfig.done: $(PKGCONFIGFILE)
 	mkdir -p src/x86_64
 	tar xzf $(PKGCONFIGFILE) -C src/x86_64
 	cd src/x86_64/pkg-config-$(PKGCONFIGVERSION) && \
-	./configure CFLAGS=-mmacosx-version-min=11.0 \
+	./configure CFLAGS=-mmacosx-version-min=10.13 \
 		--prefix=$(ROOT)/opt/x86_64 \
 		--disable-debug \
 		--disable-host-tool \
@@ -196,6 +196,7 @@ opt/arm64/libcurl.done: $(LIBCURLFILE) opt/arm64/pkgconfig.done \
 		--without-zstd \
 		--without-librtmp \
 		--without-libidn2 \
+		--without-brotli \
 		--without-libssh2 && \
 	make && \
 	make install
@@ -227,6 +228,7 @@ opt/x86_64/libcurl.done: $(LIBCURLFILE) opt/x86_64/pkgconfig.done \
 		--without-zstd \
 		--without-librtmp \
 		--without-libidn2 \
+		--without-brotli \
 		--without-libssh2 && \
 	arch --x86_64 make && \
 	arch --x86_64 make install
