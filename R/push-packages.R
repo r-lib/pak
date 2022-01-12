@@ -54,8 +54,7 @@ push_packages <- local({
   }
 
   git_worktree_add <- function(dir, remote, branch, dry_run = FALSE) {
-    commit <- paste0(remote, "/", branch)
-    git("worktree", "add", "--track", "-B", branch, dir, commit, dry_run = dry_run)
+    git("worktree", "add", dir, branch, dry_run = dry_run)
   }
 
   git_worktree_remove <- function(dir, dry_run = FALSE) {
@@ -308,8 +307,12 @@ push_packages <- local({
     jsonlite::prettify(glue::glue(tmpl2, .open = "<<", .close = ">>"))
   }
 
-  check_skopeo <- function() {
-    if (Sys.which("skopeo") == "") stop("Need skopeo to push packages")
+  find_skopeo <- function() {
+    path <- Sys.which("skopeo")
+    if (path != "") return(path)
+    if (file.exists(cand <- "/usr/local/bin/skopeo")) return(cand)
+    if (file.exists(cand <- "/opt/homebrew/bin/skopeo")) return(cand)
+    stop("Need skopeo to push packages")
   }
 
   update_packages <- function(
@@ -372,10 +375,11 @@ push_packages <- local({
     args <- c("copy", "--all")
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
+    skopeo <- find_skopeo()
     if (dry_run) {
-      cat("skopeo", args, "\n")
+      cat(skopeo, args, "\n")
     } else {
-      processx::run("skopeo", args, echo_cmd = TRUE, echo = TRUE)
+      processx::run(skopeo, args, echo_cmd = TRUE, echo = TRUE)
     }
 
     invisible(pkgs)
