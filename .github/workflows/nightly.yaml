@@ -20,7 +20,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        fetch-deptch: 10
+        fetch-depth: 10
 
     - name: Install rim
       run: |
