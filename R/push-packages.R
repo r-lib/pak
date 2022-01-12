@@ -434,13 +434,15 @@ push_packages <- local({
     git("push", "origin", dry_run = dry_run)
   }
 
-  function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE) {
+  function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE, cleanup = FALSE) {
     dry_run
     workdir <- package_dir()
 
     if (!file.exists(workdir)) {
       init_package_dir(workdir, dry_run = dry_run)
-      on.exit(cleanup_package_dir(workdir, dry_run = dry_run), add = TRUE)
+      if (cleanup) {
+        on.exit(cleanup_package_dir(workdir, dry_run = dry_run), add = TRUE)
+      }
     }
     git_pull(workdir, dry_run = dry_run)
 
