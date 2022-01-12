@@ -275,7 +275,7 @@ $(ROOT)/lib/%/_curl.done: curl.tar.gz $(LIBS) $(eval PATH := $(X86PATH))
 
 curl.tar.gz:
 	@echo "----- DOWNLOADING curl -------------------------------------"
-	/usr/local/bin/R -q -e 'download.packages("curl", ".")' && \
+	/usr/local/bin/R -q -e 'options(repos = c(CRAN = "https://cran.rstudio.com")); download.packages("curl", ".")' && \
 	mv curl_*.tar.gz curl.tar.gz
 
 $(ROOT)/lib/%/pkgdepends: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done
