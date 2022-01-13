@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------
 
 RVERSIONS ?= $(shell rim list)
-RVERSION_DEFAULT=4.1
+RVERSION_DEFAULT ?= $(shell R -s  -e 'cat(as.character(getRversion()[,1:2]))')
 
 PKGCONFIGVERSION=0.29.2
 PKGCONFIGURLS=https://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIGVERSION).tar.gz \
