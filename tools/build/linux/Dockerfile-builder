@@ -1,6 +1,5 @@
 
 ARG R_MAJOR=4.1
-ARG GITHUB_PAT=dummy
 
 FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} as build
 
@@ -67,7 +66,7 @@ WORKDIR /root
 # -------------------------------------------------------------------------
 
 RUN mkdir -p /root/.R
-COPY Makevars-builder /root/.R/Makevars
+COPY tools/build/linux/Makevars-builder /root/.R/Makevars
 
 # -------------------------------------------------------------------------
 # pak
