@@ -1,0 +1,49 @@
+
+name: Linux builder containers
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - 'feature/build-macos'
+  schedule:
+  - cron: '30 4 * * 1'
+
+# =========================================================================
+
+jobs:
+
+  # -----------------------------------------------------------------------
+  containers:
+    runs-on: ubuntu-18.04
+    name: Build pak builder containers
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: '4.2' }
+          - { r: '4.1' }
+#          - { r: '4.0' }
+#          - { r: '3.6' }
+#          - { r: '3.5' }
+#          - { r: '3.4' }
+
+    steps:
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: tools/build/linux
+        file: Dockerfile-builder
+        push: true
+        tags: |
+          ghcr.io/r-lib/pak-builder:${{ matrix.config.r }}
+        build-args: |
+          R_MAJOR=${{ matrix.config.r }}
