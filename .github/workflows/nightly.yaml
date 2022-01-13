@@ -59,7 +59,23 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
+    if: false
+    steps:
 
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Build pak binaries
+      uses: r-hub/actions/pak-builder@master
+      with:
+        token: ${{ secrets.TOKEN }}
+        rversions: 3.4,3.5,3.6,4.0,4.1,devel/4.2
+
+  # -----------------------------------------------------------------------
+  linux:
+    runs-on: ubuntu-18.04
     steps:
 
     - name: Checkout
