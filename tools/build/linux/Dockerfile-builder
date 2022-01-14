@@ -1,7 +1,7 @@
 
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} as build
+FROM ghcr.io/r-hub/r-minimal/r-minimal:alpine315-${R_MAJOR} as build
 
 WORKDIR /root
 
@@ -20,13 +20,13 @@ RUN cd zlib-* &&                                    \
 
 # openssl -----------------------------------------------------------------
 
-RUN wget https://www.openssl.org/source/openssl-1.1.1d.tar.gz
+RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 RUN tar xzf openssl-*.tar.gz
 RUN apk add perl linux-headers
 RUN cd openssl-* &&                                 \
-    ./config no-shared &&                           \
+    CFLAGS=-fPIC ./config -fPIC no-shared &&        \
     make &&                                         \
-    make install &&                                 \
+    make install_sw &&                              \
     rm -rf /usr/local/bin/openssl                   \
        /usr/local/share/{man/doc}
 
@@ -55,7 +55,7 @@ RUN cd curl-* && \
 
 # =========================================================================
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
+FROM ghcr.io/r-hub/r-minimal/r-minimal:alpine315-${R_MAJOR}
 
 COPY --from=build /usr/local /usr/local
 

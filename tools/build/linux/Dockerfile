@@ -2,6 +2,7 @@
 ARG R_MAJOR=4.1
 
 FROM ghcr.io/r-lib/pak-builder:${R_MAJOR}
+ARG TOKEN=dummy
 
 # Need the copy of the package --------------------------------------------
 
@@ -52,6 +53,15 @@ RUN apk add skopeo
 
 # Deploy
 
+RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", "desc"))'
+
 RUN apk add git
-RUN R -q -e 'pak::pkg_install("deps::.")'
-RUN R -q -e 'pak:::push_packages(dir("/tmp/", patter = "pak_.*.tar.gz", full.names=TRUE))'
+RUN git config --global user.email "csardi.gabor@gmail.com"
+RUN git config --global user.name "Gabor Csardi"
+RUN git config credential.helper cache
+
+ENV GITHUB_PAT=${TOKEN}
+
+# This has to be in one step, because the cache credential helper is
+# very ephemeral.
+RUN R -q -e 'gitcreds::gitcreds_approve(list(url = "https://github.com", username = "PersonalAccessToken", password = Sys.getenv("GITHUB_PAT"))); pak:::push_packages(dir("/tmp/", patter = "pak_.*.tar.gz", full.names=TRUE))'
