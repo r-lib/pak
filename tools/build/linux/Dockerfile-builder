@@ -7,7 +7,7 @@ WORKDIR /root
 
 # system requirements -----------------------------------------------------
 
-RUN installr -c -a "linux-headers bash"
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf
 
 # zlib --------------------------------------------------------------------
 
@@ -69,10 +69,7 @@ RUN mkdir -p /root/.R
 COPY tools/build/linux/Makevars-builder /root/.R/Makevars
 
 # -------------------------------------------------------------------------
-# pak
+# Need a proper cp command for older R versions
 # -------------------------------------------------------------------------
 
-# Need a proper cp command for older R versions
 RUN apk add --no-cache coreutils findutils
-
-RUN installr -p
