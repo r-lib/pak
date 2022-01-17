@@ -114,6 +114,4 @@ jobs:
         push: false
         build-args: |
           R_MAJOR=${{ matrix.config.r }}
-      env:
-        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN=${{ secrets.PAK_GHCR_TOKEN }}
