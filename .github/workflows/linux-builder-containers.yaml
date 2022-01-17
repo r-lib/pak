@@ -3,6 +3,10 @@ name: Linux builder containers
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - 'feature/build-macos'
+
   schedule:
   - cron: '30 4 * * 1'
 
