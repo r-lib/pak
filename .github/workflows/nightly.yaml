@@ -84,12 +84,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-#          - { r: '4.2' }
+          - { r: '4.2' }
           - { r: '4.1' }
           - { r: '4.0' }
-#          - { r: '3.6' }
-#          - { r: '3.5' }
-#          - { r: '3.4' }
+          - { r: '3.6' }
+          - { r: '3.5' }
+          - { r: '3.4' }
 
     steps:
 
@@ -109,8 +109,7 @@ jobs:
       with:
         context: .
         file: tools/build/linux/Dockerfile
-#        platforms: linux/amd64,linux/arm64
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         push: false
         build-args: |
           R_MAJOR=${{ matrix.config.r }}
