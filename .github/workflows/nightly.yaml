@@ -109,8 +109,7 @@ jobs:
       with:
         context: .
         file: tools/build/linux/Dockerfile
-#        platforms: linux/amd64,linux/arm64
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         push: false
         build-args: |
           R_MAJOR=${{ matrix.config.r }}
