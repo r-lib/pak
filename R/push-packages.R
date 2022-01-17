@@ -38,11 +38,13 @@ push_packages <- local({
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
 
-  git <- function (..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE) {
+  git <- function (..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE,
+                   stderr_to_stdout = FALSE) {
     if (dry_run) {
       cat("git", c(...), "\n")
     } else {
-      processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo)
+      processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo,
+                    stderr_to_stdout = stderr_to_stdout)
     }
   }
 
@@ -431,7 +433,7 @@ push_packages <- local({
     setwd(workdir)
     git("add", "manifest.json", dry_run = dry_run)
     git("commit", "--allow-empty", "-m", "Auto-update packages", dry_run = dry_run)
-    git("push", "origin", dry_run = dry_run)
+    git("push", "--porcelain", "origin", stderr_to_stdout = TRUE, dry_run = dry_run)
   }
 
   function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE, cleanup = FALSE) {
@@ -444,11 +446,26 @@ push_packages <- local({
         on.exit(cleanup_package_dir(workdir, dry_run = dry_run), add = TRUE)
       }
     }
-    git_pull(workdir, dry_run = dry_run)
 
-    pkgs <- update_packages(paths, workdir = workdir, tag, keep_old, dry_run)
-    update_manifest(workdir, tag, pkgs)
-    push_manifest(workdir, dry_run = dry_run)
+    # We need to try the update several times, because other processes
+    # might be updating the git repo as well at the same time, so we might
+    # not be able to push.
+    repeat {
+      git_pull(workdir, dry_run = dry_run)
+      pkgs <- update_packages(paths, workdir = workdir, tag, keep_old, dry_run)
+      update_manifest(workdir, tag, pkgs)
+      tryCatch({
+        push_manifest(workdir, dry_run = dry_run)
+        break
+      }, error = function(err) {
+        if (!grepl("non-fast-forward", err$stderr)) stop(err)
+        old <- getwd()
+        on.exit(setwd(old), add = TRUE)
+        setwd(workdir)
+        git("reset", "HEAD^", dry_run = dry_run)
+        git("checkout", "--", ".", dry_run = dry_run)
+      })
+    }
 
     invisible(pkgs)
   }
