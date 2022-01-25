@@ -60,7 +60,6 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
-    if: false
     name: Windows pak binaries
     steps:
 
@@ -69,16 +68,34 @@ jobs:
       with:
         fetch-depth: 10
 
-    - name: Build pak binaries
-      uses: r-hub/actions/pak-builder@master
-      with:
-        token: ${{ secrets.TOKEN }}
-        rversions: 3.4,3.5,3.6,4.0,4.1,devel/4.2
+    - name: Install rim
+      run: |
+        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
+        .\rim.exe /verysilent /suppressmsgboxes
+
+    - name: Add rim to PATH
+      run: |
+        echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+    # We use the pre-installed R 4.1.2 + Rtools40 for now, to speed this up
+    - name: Install R and RTools
+      run: |
+        New-Item "C:\Program Files\R\bin" -ItemType Directory
+        echo $env:path
+        rim add 3.4
+        rim add 3.5
+        rim add 3.6
+        rim add 4.0
+        # rim add 4.1
+        rim add devel
+        rim add rtools35
 
   # -----------------------------------------------------------------------
   linux:
     runs-on: ubuntu-18.04
-    name: Linux static x86_64 pak binary for R ${{ matrix.config.r }}
+    if: false
+    name: Linux static pak binaries for R ${{ matrix.config.r }}
 
     strategy:
       fail-fast: false
