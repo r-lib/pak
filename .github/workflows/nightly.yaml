@@ -72,11 +72,19 @@ jobs:
       run: |
         Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
         .\rim.exe /verysilent /suppressmsgboxes
-
-    - name: Add rim to PATH
-      run: |
         echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+    - name: Install skopeo
+      run: |
+        Invoke-WebRequest -Uri https://github.com/gaborcsardi/skopeo/releases/download/v1.4.1/skopeo-1.4.1.zip -OutFile skopeo.zip
+        New-Item "C:\Tools" -Force -ItemType Directory
+        Expand-Archive skopeo.zip -DestinationPath C:\Tools
+        echo "C:\Tools\skopeo" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+    - name: Test skopeo
+      run: |
+        skopeo --version
 
     # We use the pre-installed R 4.1.2 + Rtools40 for now, to speed this up
     - name: Install R and RTools
