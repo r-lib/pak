@@ -4,6 +4,11 @@
 safe_cran_install <- local({
 
   install_one <- function(pkg, lib = .libPaths()[1], INSTALL_opts = "", ...) {
+
+    rcmd <- sprintf("loadNamespace('%s', lib.loc = '%s')", pkg, lib)
+    cmd <- sprintf("R -q -e \"%s\"", rcmd)
+    if (system(cmd) == 0) return()
+
     old <- options(
       warn = 2,
       repos = default_cran_mirror(),

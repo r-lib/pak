@@ -234,8 +234,14 @@ push_packages <- local({
     }
   }
 
+  write_file <- function(txt, path) {
+    out <- file(path, open = "wb")
+    on.exit(close(out), add = TRUE)
+    cat(txt, file = out, sep = "")
+  }
+
   write_files <- function(txts, paths) {
-    invisible(mapply(cat, txts, file = paths, sep = ""))
+    invisible(mapply(write_file, txts, paths))
   }
 
   image_manifest <- function(pkgs) {
@@ -378,7 +384,7 @@ push_packages <- local({
       file = file.path(workdir, "oci-layout")
     )
 
-    args <- c("copy", "--all")
+    args <- c("copy", "--all", "--insecure-policy")
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
     skopeo <- find_skopeo()
@@ -424,7 +430,9 @@ push_packages <- local({
     old$schemaVersion <- jsonlite::unbox(old$schemaVersion)
 
     json <- jsonlite::toJSON(old, pretty = TRUE)
-    cat(json, file = path)
+    out <- file(path, open = "wb")
+    on.exit(close(out), add = TRUE)
+    cat(json, file = out)
   }
 
   push_manifest <- function(workdir, dry_run = FALSE) {

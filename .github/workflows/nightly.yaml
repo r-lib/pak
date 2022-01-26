@@ -74,6 +74,7 @@ jobs:
         .\rim.exe /verysilent /suppressmsgboxes
         echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Install skopeo
       run: |
@@ -98,6 +99,21 @@ jobs:
         # rim add 4.1
         rim add devel
         rim add rtools35
+
+    - name: Build pak binaries
+      run: |
+        cd tools/build/windows && make build
+
+    - name: Run tests
+      run: |
+        cd tools/build/windows && make test
+
+    - name: Deploy packages
+      run: |
+        cd tools/build/windows && make deploy
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
   # -----------------------------------------------------------------------
   linux:
