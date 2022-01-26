@@ -1,6 +1,6 @@
 
 RVERSIONS ?= $(shell rim list)
-RVERSION_DEFAULT ?= $(shell RS.bat -s  -e 'cat(as.character(getRversion()))')
+RVERSION_DEFAULT ?= $(shell R.bat -s  -e 'cat(as.character(getRversion()))')
 
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 PKGROOT=../../..
