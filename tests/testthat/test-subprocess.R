@@ -9,11 +9,9 @@ test_that("no dependencies are loaded with pak", {
 
   new_pkgs <- callr::r(
     function() {
-      withr::with_options(list(pkg.subprocess = FALSE), {
-        orig <- loadedNamespaces()
-        library(pak)
-        new <- loadedNamespaces()
-      })
+      orig <- loadedNamespaces()
+      library(pak)
+      new <- loadedNamespaces()
       setdiff(new, orig)
     },
     timeout = 5

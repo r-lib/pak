@@ -23,6 +23,7 @@ Other package functions:
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
-\code{\link{pkg_status}()}
+\code{\link{pkg_status}()},
+\code{\link{pkg_upgrade}()}
 }
 \concept{package functions}

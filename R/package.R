@@ -283,7 +283,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 #' }
 
 pkg_status <- function(pkg, lib = .libPaths()) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
 
   load_extra("tibble")
   remote(
@@ -335,7 +335,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' pkg_deps("r-lib/fs")
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   load_extra("tibble")
   remote(
     function(...) {
@@ -381,7 +381,7 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #' pkg_deps_tree("r-lib/usethis")
 
 pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   ret <- remote(
     function(...) {
       get("pkg_deps_tree_internal", asNamespace("pak"))(...)
@@ -463,4 +463,87 @@ pkg_download_internal <- function(pkg, dest_dir = ".", dependencies = FALSE,
   dl$download()
   dl$stop_for_download_error()
   dl$get_downloads()
+}
+
+#' Upgrade an installed package, and its dependencies
+#'
+#' pak will try to upgrade the package from the same source as the
+#' one used for the original installation E.g. if you installed the package
+#' from a branch of a GitHub repository, then it will try to upgrade from
+#' the same branch.
+#'
+#' @param pkg Package name to upgrade. Must be a package name, general
+#' remote specifications are not allowed here.
+#' @param lib Library to find the installed package in. The new version
+#' of the package(s) will be installed into the same library.
+#' @param upgrade Whether to upgrade the dependencies of `pkg` as well.
+#' @param ... Additional arguments are passed to [pkg_install()].
+#'
+#' @family package functions
+#' @export
+
+pkg_upgrade <- function(pkg, lib = .libPaths()[[1L]], upgrade = TRUE, ...) {
+  stopifnot(length(pkg) == 1, is.character(pkg), !is.na(pkg))
+  ref <- get_installed_ref(pkg, lib)
+
+  if (is.null(ref)) {
+    stop("'", pkg, "' is not currently installed, cannot upgrade it.")
+
+  } else if (identical(ref, NA_character_)) {
+    cli <- load_private_cli()
+    cli$cli_alert_warning(
+      c("Cannot find source of {.pkg {pkg}}, trying to upgrade it from ",
+        "the configured repositories."),
+      wrap = TRUE
+    )
+    ref <- pkg
+  } else if (!is.null(names(ref))) {
+    cli <- load_private_cli()
+    cli$cli_alert_info(
+      "Updating {.emph {names(ref)}} package {.pkg {ref}}.",
+      wrap = TRUE
+    )
+  } else if (pkg != ref){
+    cli <- load_private_cli()
+    cli$cli_alert_info(
+      "Updating package {.pkg {pkg}} from {.pkg {ref}}.",
+      wrap = TRUE
+    )
+  }
+
+  pkg_install(ref, lib = lib, upgrade = upgrade, ...)
+}
+
+get_installed_ref <- function(pkg, lib) {
+  remote(
+    function(...) get("get_installed_ref_internal", asNamespace("pak"))(...),
+    list(pkg = pkg, lib = lib)
+  )
+}
+
+get_installed_ref_internal <- function(pkg, lib) {
+  name <- paste0("^", pkgdepends::pkg_rx()$pkg_name, "$")
+  if (!grepl(name, pkg)) stop("'", pkg, "' is not a valid package name")
+
+  pkg_dir <- tryCatch(
+    find.package(pkg, lib.loc = lib),
+    error = function(err) NULL
+  )
+
+  if (is.null(pkg_dir)) return(NULL)
+
+  dsc <- desc::desc(pkg_dir)
+  ref <- dsc$get("RemotePkgRef")[[1]]
+  repo <- dsc$get("Repository")[[1]]
+  bioc <- dsc$get("biocViews")[[1]]
+
+  if (!is.na(ref)) {
+    ref
+  } else if (!is.na(repo) && repo == "CRAN") {
+    c(CRAN = pkg)
+  } else if (!is.na(bioc)) {
+    c(Bioconductor = pkg)
+  } else {
+    NA_character_
+  }
 }
