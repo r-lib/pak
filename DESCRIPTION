@@ -44,7 +44,7 @@ Suggests:
     testthat,
     tibble,
     withr
-Remotes: r-lib/pkgdepends, jeroen/jsonlite
+Remotes: r-lib/pkgdepends, jeroen/jsonlite, cran/rlang@0.4.12
 Config/needs/dependencies:
     callr,
     cli,
