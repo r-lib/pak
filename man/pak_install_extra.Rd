@@ -13,9 +13,9 @@ of the optional packages.}
 \description{
 These packages are not required for any pak functionality. They are
 recommended for some functions that return values that are best
-used with these packages. E.g. many functions return tibbles, which
-work best with the tibble package.
+used with these packages. E.g. many functions return data frames, which
+are printed nicer is the pillar package is available.
 }
 \details{
-Currently only one package is optional: tibble.
+Currently only one package is optional: pillar.
 }

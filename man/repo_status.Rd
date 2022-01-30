@@ -33,7 +33,7 @@ set this to \code{FALSE}.}
 \item{cran_mirror}{The CRAN mirror to use.}
 }
 \value{
-A tibble that has a row for every repository, on every
+A data frame that has a row for every repository, on every
 queried platform and R version. It has these columns:
 \itemize{
 \item \code{name}: the name of the repository. This comes from the names

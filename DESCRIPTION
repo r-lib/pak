@@ -31,8 +31,9 @@ Suggests:
     filelock (>= 1.0.2),
     glue (>= 1.3.0),
     mockery,
+    pillar,
     pingr,
-    jsonlite,
+    jsonlite (>= 1.7.3),
     pkgcache (>= 1.2.0),
     pkgdepends (>= 0.1.2.9001),
     pkgsearch (>= 3.0.3),
@@ -45,7 +46,10 @@ Suggests:
     testthat,
     tibble,
     withr
-Remotes: r-lib/pkgdepends, jeroen/jsonlite, cran/rlang@0.4.12
+Remotes:
+    r-lib/pkgdepends,
+    r-lib/pkgcache,
+    r-hub/pkgsearch
 Config/needs/dependencies:
     callr,
     cli,
@@ -60,9 +64,7 @@ Config/needs/dependencies:
     prettyunits,
     processx,
     ps,
-    rlang,
-    rprojroot,
-    tibble
+    rprojroot
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

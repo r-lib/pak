@@ -32,7 +32,7 @@ It is currently an RDS file, but this might change in the future.
 \item \code{size}: total size of the metadata cache.
 }
 
-\code{meta_list()} returns a data frame (tibble) of all available
+\code{meta_list()} returns a data frame of all available
 packages in the configured repositories.
 
 \code{meta_update()} returns nothing.

@@ -12,7 +12,7 @@ pkg_status(pkg, lib = .libPaths())
 \item{lib}{One or more library paths to lookup packages status in.}
 }
 \value{
-Data frame (tibble) with data about installations of \code{pkg}.
+Data frame with data about installations of \code{pkg}.
 Columns include: \code{library}, \code{package}, \code{title}, \code{version}.
 }
 \description{

@@ -16,7 +16,7 @@ versions.}
 \code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}
 }
 \value{
-A data frame (tibble).
+A data frame.
 }
 \description{
 Look up the dependencies of a package

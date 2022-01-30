@@ -146,7 +146,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #'   dependencies plus the development dependencies for `local_dev_deps()`
 #'   and `local_dev_deps_tree()`.
 #' @return All of these functions return the dependencies in a data
-#'   frame (tibble). `local_deps_tree()` and `local_dev_deps_tree()` also
+#'   frame. `local_deps_tree()` and `local_dev_deps_tree()` also
 #'   print the dependency tree.
 #'
 #' @family local package trees

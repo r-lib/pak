@@ -13,7 +13,7 @@ pkg_list(lib = .libPaths()[1])
 \item{lib}{Path to library.}
 }
 \value{
-Data frame (tibble) the contains data about the packages
+Data frame the contains data about the packages
 installed in the library.
 }
 \description{

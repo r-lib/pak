@@ -16,7 +16,7 @@ versions.}
 \code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}
 }
 \value{
-The same data frame (tibble) as \code{\link[=pkg_deps]{pkg_deps()}}, invisibly.
+The same data frame as \code{\link[=pkg_deps]{pkg_deps()}}, invisibly.
 }
 \description{
 Draw the dependency tree of a package
