@@ -395,7 +395,7 @@ push_packages <- local({
     )
 
     workdir <- normalizePath(workdir, winslash = "/")
-    args <- c("copy", "--all", "--insecure-policy")
+    args <- c("copy", "--all")
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
     skopeo <- find_skopeo()
