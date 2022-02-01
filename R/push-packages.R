@@ -364,7 +364,7 @@ push_packages <- local({
     write_files(pkgs$manifest, file.path(shadir, pkgs$manifest_hash))
 
     if (is_gha()) {
-      for (i in 1:nrow(pkgs)) {
+      for (i in seq_len(nrow(pkgs))) {
         cat("IMAGE MANIFEST ", pkgs$manifest_hash[[i]], "\n")
         cat(pkgs$manifest[[i]])
         cat("\n\n")
@@ -402,8 +402,26 @@ push_packages <- local({
       file = file.path(workdir, "oci-layout")
     )
 
+    policy_file <- file.path(workdir, "policy.json")
+    policy <- jsonlite::prettify(
+      '{
+         "default": [
+           {
+             "type": "insecureAcceptAnything"
+           }
+         ],
+         "transports":
+           {
+             "docker-daemon":
+               {
+                 "": [{"type":"insecureAcceptAnything"}]
+               }
+           }
+       }')
+    write_files(policy, policy_file)
+
     workdir <- normalizePath(workdir, winslash = "/")
-    args <- c("copy", "--all")
+    args <- c("copy", "--all", "--policy", policy_file)
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
     skopeo <- find_skopeo()
