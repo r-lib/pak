@@ -341,10 +341,11 @@ push_packages <- local({
 
     # Copy package files
     tocopy <- match(paths, pkgs$path)
-    file.copy(
+    ret <- file.copy(
       paths,
       file.path(shadir, sub("^sha256:", "", pkgs$digest[tocopy]))
     )
+    if (any(!ret)) stop("Failed to copy package file(s)")
 
     # Create image config files. These are dummy files currenty ({}),
     # but in case we switch to proper files, we write them out properly
