@@ -68,6 +68,11 @@ jobs:
       with:
         fetch-depth: 10
 
+    - name: git config
+      run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
     - name: Install rim
       run: |
         Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
