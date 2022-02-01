@@ -189,9 +189,27 @@
           "r.version": "4.1",
           "pak.version": "0.2.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-02-01T21:58:30+00:00",
-          "size": 14847888,
-          "digest": "sha256:d4bbedaf7dea265bcb700d6a47133382dcca899fc672bc24e88ee79a4e4946e5"
+          "buildtime": "2022-02-01T22:35:13+00:00",
+          "size": 14847415,
+          "digest": "sha256:66499fa7a001d10a955d55c1008d6e02266924fcf390976c9df6fef6e72b8c02"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "3.4",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-01T22:33:04+00:00",
+          "size": 11672310,
+          "digest": "sha256:54f8ee24a2de4353bca1c6bb952275124f137bf5db2f7d8e5b7ba11f09ad53c2"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "4.2",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-01T22:39:31+00:00",
+          "size": 10573315,
+          "digest": "sha256:fc04400fd9d79250d3d8d238911bd4fa2960c8b2d520896015e25aec5bdbe791"
         }
       ]
     }
