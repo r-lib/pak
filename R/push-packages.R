@@ -12,6 +12,10 @@ push_packages <- local({
     org.opencontainers.image.licenses = "GPL-3"
   )
 
+  is_gha <- function() {
+    Sys.getenv("GITHUB_ACTIONS") == "true"
+  }
+
   const_annotations_js <- function() {
     paste0(
       glue::glue('"{names(const_annotations)}": "{const_annotations}"'),
@@ -364,6 +368,11 @@ push_packages <- local({
     imidx_hash <- sha256str(imidx)
     write_files(imidx, file.path(shadir, imidx_hash))
 
+    if (is_gha()) {
+      cat("IMAGE INDEX:\n")
+      cat(imidx)
+    }
+
     # index.json
     idxjs <- jsonlite::prettify(glue::glue(
       '{
@@ -391,10 +400,12 @@ push_packages <- local({
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
     skopeo <- find_skopeo()
 
-    cat("BLOBS:\n")
-    print(
-      file.info(dir(shadir, full.names=TRUE))[, c("size"), drop = FALSE]
-    )
+    if (is_gha()) {
+      cat("BLOBS:\n")
+      print(
+        file.info(dir(shadir, full.names=TRUE))[, c("size"), drop = FALSE]
+      )
+    }
 
     if (dry_run) {
       cat(skopeo, args, "\n")
