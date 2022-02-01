@@ -71,7 +71,7 @@ jobs:
     - name: Install rim
       run: |
         Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
-        .\rim.exe /verysilent /suppressmsgboxes
+        Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
         echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
