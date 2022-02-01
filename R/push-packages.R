@@ -363,6 +363,14 @@ push_packages <- local({
     pkgs$manifest_hash <- sha256str(pkgs$manifest)
     write_files(pkgs$manifest, file.path(shadir, pkgs$manifest_hash))
 
+    if (is_gha()) {
+      for (i in 1:nrow(pkgs)) {
+        cat("IMAGE MANIFEST ", pkgs$manifest_hash[[i]], "\n")
+        cat(pkgs$manifest[[i]])
+        cat("\n\n")
+      }
+    }
+
     # Image index
     imidx <- image_index(pkgs)
     imidx_hash <- sha256str(imidx)
