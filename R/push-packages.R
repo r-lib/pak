@@ -388,6 +388,10 @@ push_packages <- local({
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
     skopeo <- find_skopeo()
+
+    cat("BLOBS:\n")
+    file.info(dir(shadir, full.names=TRUE))[, c("size"), drop = FALSE]
+
     if (dry_run) {
       cat(skopeo, args, "\n")
     } else {
