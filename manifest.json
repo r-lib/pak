@@ -183,7 +183,16 @@
           "buildtime": "2022-01-17T15:44:18+00:00",
           "size": 10238384,
           "digest": "sha256:78856ddfbf0226608a13c85866897a9fd0deef41d64b5aa0dae0d9af3b457cd1"
-       }
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "4.1",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-01T21:58:30+00:00",
+          "size": 14847888,
+          "digest": "sha256:d4bbedaf7dea265bcb700d6a47133382dcca899fc672bc24e88ee79a4e4946e5"
+        }
       ]
     }
   ]
