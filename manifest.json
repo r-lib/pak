@@ -183,61 +183,7 @@
           "buildtime": "2022-01-17T15:44:18+00:00",
           "size": 10238384,
           "digest": "sha256:78856ddfbf0226608a13c85866897a9fd0deef41d64b5aa0dae0d9af3b457cd1"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.4",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-01-26T12:38:21+00:00",
-          "size": 11280713,
-          "digest": "sha256:6a787ed4e32378477d79b72a7147aa01d377a37c652e12f8960abff0e16544e2"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.5",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-01-26T12:38:51+00:00",
-          "size": 14166935,
-          "digest": "sha256:386415ac0baef4882cc4ec71ef08782a55ed853fd78bdb71ee4110e9189b7218"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.6",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-01-26T11:16:21+00:00",
-          "size": 13960654,
-          "digest": "sha256:f8ccd523785f1d755135e6e95ed5da56c75ae5143f421e3f0e9b085c8440cef8"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "4.0",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-01-26T11:16:01+00:00",
-          "size": 14506620,
-          "digest": "sha256:532b476cb6f90e7f80572def195026e9d73d2b4188fd015ce3ffc7ea8e106c52"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "4.1",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-01T19:39:47+00:00",
-          "size": 14871950,
-          "digest": "sha256:924e1c44eda8844a277811437578fede886d4795e9b9256f5748f0e86d9bd2af"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "4.2",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-01-26T12:18:46+00:00",
-          "size": 10280939,
-          "digest": "sha256:fb35b48694b1fcaab9d8532d577f5eed8cd04b4cff132324a0ac5b76512ceb48"
-        }
+       }
       ]
     }
   ]
