@@ -97,12 +97,13 @@ jobs:
       run: |
         New-Item "C:\Program Files\R\bin" -ItemType Directory
         rim add 3.4
-        # rim add 3.5
-        # rim add 3.6
-        # rim add 4.0
-        # # rim add 4.1
+        rim add 3.5
+        rim add 3.6
+        rim add 4.0
+        # rim add 4.1 # already installed
         rim add devel
         rim add rtools35
+        # rim add rtools40 # already installed
         rim default 4.1.2
 
     - name: Build pak binaries
