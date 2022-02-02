@@ -189,27 +189,54 @@
           "r.version": "4.1",
           "pak.version": "0.2.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-02-01T22:35:13+00:00",
-          "size": 14847415,
-          "digest": "sha256:66499fa7a001d10a955d55c1008d6e02266924fcf390976c9df6fef6e72b8c02"
+          "buildtime": "2022-02-02T09:09:56+00:00",
+          "size": 14847861,
+          "digest": "sha256:66ae0f226c7419b0a442a5436fc760a64d60ec96f6718f37b4421e96a7e3a160"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.4",
           "pak.version": "0.2.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-02-01T22:33:04+00:00",
-          "size": 11672310,
-          "digest": "sha256:54f8ee24a2de4353bca1c6bb952275124f137bf5db2f7d8e5b7ba11f09ad53c2"
+          "buildtime": "2022-02-02T08:47:23+00:00",
+          "size": 11672767,
+          "digest": "sha256:d366f4514c0f3bc0f8dcd8a1a5776a26f21d0676a5c0c74ee3855c85bcad9b36"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
           "pak.version": "0.2.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-02-01T22:39:31+00:00",
-          "size": 10573315,
-          "digest": "sha256:fc04400fd9d79250d3d8d238911bd4fa2960c8b2d520896015e25aec5bdbe791"
+          "buildtime": "2022-02-02T09:13:30+00:00",
+          "size": 10525821,
+          "digest": "sha256:87fba5d6850191e356ff5041598bde88cb617d09a5748323b561371cb3c3d752"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "3.5",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-02T08:57:24+00:00",
+          "size": 14565437,
+          "digest": "sha256:c3da157cc6be60176c3219a3cf582a07ef5d34287235b834ec095980faf33a27"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "3.6",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-02T09:05:24+00:00",
+          "size": 14377097,
+          "digest": "sha256:4a245a9321c285ff3d70e35212ded11d64413c10ced3b2a8e2560ce68e130e18"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "4.0",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-02T09:07:20+00:00",
+          "size": 14827369,
+          "digest": "sha256:43ef4e4a6cfcdb14e8912272f3856b233461c7bd6070cb0d6eb049dd7168b624"
         }
       ]
     }
