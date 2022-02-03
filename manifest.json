@@ -77,24 +77,6 @@
           "digest": "sha256:6275aa5f6f039ea916363deb6cbc60e3b574b30bdb9ee1d2aaa2f54450d2ddb9"
         },
         {
-          "r.platform": "x86_64-apple-darwin13.4.0",
-          "r.version": "3.3",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:25+00:00",
-          "size": 4607634,
-          "digest": "sha256:3044edaf7e9fef990f89400ab570654fdbe0bdb864c8ed1e7c26226dae69be3f"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.3",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:25+00:00",
-          "size": 9701601,
-          "digest": "sha256:95ea6e357ab709fda4169fcb03d7be7913675b0e349bbcbe2071dfca941fba54"
-        },
-        {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.4",
           "pak.version": "0.2.0.9000",
@@ -147,15 +129,6 @@
           "buildtime": "2022-02-02T10:04:26+00:00",
           "size": 12010131,
           "digest": "sha256:5d8191bf47f8869824b039fcfeb26f44a8da19d46c7f2affc1693237d8be3803"
-        },
-        {
-          "r.platform": "x86_64-pc-linux-gnu",
-          "r.version": "3.3",
-          "pak.version": "0.2.0.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:26+00:00",
-          "size": 7237382,
-          "digest": "sha256:2a1b8a180be95cf779dd22bb431d7e1f05f50dc067573994a49f967a167ce45b"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
@@ -289,24 +262,6 @@
           "digest": "sha256:74fc1f8310d85997e11390e0c883ffc271cce23ea758ff9a58e087310a67e918"
         },
         {
-          "r.platform": "x86_64-apple-darwin13.4.0",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:26+00:00",
-          "size": 4399120,
-          "digest": "sha256:b1bc566798b1d731be26bdfa807006bad36888b36ce2547afd961dbc48437298"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-03T13:25:47+00:00",
-          "size": 9611465,
-          "digest": "sha256:9b456f0d83ea3248732860c35c5bd25d1325fc04659fb2771dae5e2ecbc0d0db"
-        },
-        {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.4",
           "pak.version": "0.1.2.9001",
@@ -359,15 +314,6 @@
           "buildtime": "2022-02-02T10:04:27+00:00",
           "size": 11545315,
           "digest": "sha256:2254f0d6e4e349ceceaf391e8e148860a6079924d62fdd432930dfd1b7e21b13"
-        },
-        {
-          "r.platform": "x86_64-pc-linux-gnu",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:27+00:00",
-          "size": 7157314,
-          "digest": "sha256:5756513df6770807723024fe87e73a1a57103a1ebae9613422141857595f3e6e"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
@@ -501,24 +447,6 @@
           "digest": "sha256:74fc1f8310d85997e11390e0c883ffc271cce23ea758ff9a58e087310a67e918"
         },
         {
-          "r.platform": "x86_64-apple-darwin13.4.0",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:26+00:00",
-          "size": 4399120,
-          "digest": "sha256:b1bc566798b1d731be26bdfa807006bad36888b36ce2547afd961dbc48437298"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-03T13:25:47+00:00",
-          "size": 9611465,
-          "digest": "sha256:9b456f0d83ea3248732860c35c5bd25d1325fc04659fb2771dae5e2ecbc0d0db"
-        },
-        {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.4",
           "pak.version": "0.1.2.9001",
@@ -571,15 +499,6 @@
           "buildtime": "2022-02-02T10:04:27+00:00",
           "size": 11545315,
           "digest": "sha256:2254f0d6e4e349ceceaf391e8e148860a6079924d62fdd432930dfd1b7e21b13"
-        },
-        {
-          "r.platform": "x86_64-pc-linux-gnu",
-          "r.version": "3.3",
-          "pak.version": "0.1.2.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:27+00:00",
-          "size": 7157314,
-          "digest": "sha256:5756513df6770807723024fe87e73a1a57103a1ebae9613422141857595f3e6e"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
