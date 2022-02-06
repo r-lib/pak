@@ -83,7 +83,7 @@ jobs:
 
     - name: Install skopeo
       run: |
-        Invoke-WebRequest -Uri https://github.com/gaborcsardi/skopeo/releases/download/v1.4.1/skopeo-1.4.1.zip -OutFile skopeo.zip
+        Invoke-WebRequest -Uri https://github.com/gaborcsardi/skopeo/releases/download/v1.6.0/skopeo-1.6.0.zip -OutFile skopeo.zip
         New-Item "C:\Tools" -Force -ItemType Directory
         Expand-Archive skopeo.zip -DestinationPath C:\Tools
         echo "C:\Tools\skopeo" | Out-File -Append -FilePath $env:GITHUB_PATH
