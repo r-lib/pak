@@ -190,7 +190,8 @@ jobs:
 
     - name: Create repository
       run: |
-        pak:::create_pak_repo()
+        dir.create("repo")
+        pak:::create_pak_repo("repo/p")
       shell: Rscript {0}
 
     - name: Deploy to GitHub pages 🚀
@@ -199,6 +200,7 @@ jobs:
       with:
         repository-name: gaborcsardi/playground
         token: ${{ secrets.PAK_GHCR_TOKEN }}
+        single-commit: true
         clean: true
         branch: gh-pages
-        folder: p
+        folder: repo

@@ -612,69 +612,79 @@ create_pak_repo <- local({
 
   links <- c(
     # Make sure all Linux maps to the same place since we fully static pkgs
-    "linux-gnu" = "linux",
-    "linux-musl" = "linux",
-    "linux-uclibc" = "linux",
-    "linux-dietlibc" = "linux",
-    "linux-unknown" = "linux",
+    "linux-gnu/x86_64"       = "../../linux/x86_64",
+    "linux-musl/x86_54"      = "../../linux/x86_64",
+    "linux-uclibc/x86_64"    = "../../linux/x86_64",
+    "linux-dietlibc/x86_64"  = "../../linux/x86_64",
+    "linux-unknown/x86_64"   = "../../linux/x86_64",
+
+    "linux-gnu/aarch64"      = "../../linux/aarch64",
+    "linux-musl/x86_54"      = "../../linux/aarch64",
+    "linux-uclibc/aarch64"   = "../../linux/aarch64",
+    "linux-dietlibc/aarch64" = "../../linux/aarch64",
+    "linux-unknown/aarch64"  = "../../linux/aarch64",
 
     # On Windows we server bi-arch packages:
-    "mingw32/i386" = "x86_64",
+    "mingw32/i386" = "../x86_64",
 
     # Map the pkgType/os/arch packages to os/arch on Linux, because on
     # Linux we serve binaries as sources, but on other OSes not.
-    "source/linux-gnu" = "linux",
-    "source/linux-musl" = "linux",
-    "source/linux-uclibc" = "linux",
-    "source/linux-dietlibc" = "linux",
-    "source/linux-unknown" = "linux",
-    "source/linux/x86_64" = "../../linux/x86_64",
-    "source/linux/aarch64" = "../../linux/aarch64",
+    "source/linux/x86_64/src/contrib"           = "../../../../../linux/x86_64",
+    "source/linux-gnu/x86_64/src/contrib"       = "../../../../../linux/x86_64",
+    "source/linux-musl/x86_64/src/contrib"      = "../../../../../linux/x86_64",
+    "source/linux-uclibc/x86_64/src/contrib"    = "../../../../../linux/x86_64",
+    "source/linux-dietlibc/x86_64/src/contrib"  = "../../../../../linux/x86_64",
+    "source/linux-unknown/x86_64/src/contrib"   = "../../../../../linux/x86_64",
+
+    "source/linux/aarch64/src/contrib"          = "../../../../../linux/aarch64",
+    "source/linux-gnu/aarch64/src/contrib"      = "../../../../../linux/aarch64",
+    "source/linux-musl/aarch64/src/contrib"     = "../../../../../linux/aarch64",
+    "source/linux-uclibc/aarch64/src/contrib"   = "../../../../../linux/aarch64",
+    "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
+    "source/linux-unknown/aarch64/src/contrib"  = "../../../../../linux/aarch64",
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
-    # We can't just map a prefix of this because there is now arm windows
-    "win.binary/mingw32/x86_64" = "../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/3.4" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/3.5" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/3.6" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/4.0" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/4.1" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/4.2" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/x86_64/bin/windows/contrib/4.3" = "../../../../../../../mingw32/x86_64",
 
-    "mac.binary.big-sur-arm64/darwin20/aarch64" = "../../darwin20/aarch64",
-    "mac.binary/darwin17.0/x86_64" = "../../darwin17.0/x86_64",
-    "mac.binary.el-capitan/darwin15.6.0/x86_64" = "../../darwin15.6.0/x86_64",
-
-    # Map the src/contrib and the bin/.../contrib subdirectories back
-    "linux/x86_64/src/contrib" = "..",
-    "linux/aarch64/src/contrib" = "..",
-    "darwin15.6.0/x86_64/bin/macosx/el-capitan/contrib" = "../../..",
-    "darwin17.0/x86_64/bin/macosx/contrib" = "../../",
-    "darwin20/aarch64/bin/macosx/big-sur-arm64/contrib" = "../../..",
-    "mingw32/x86_64/bin/windows/contrib" = "../..",
-
-    # Map the R versions to the same directory
-    "darwin15.6.0/x86_64/3.4" = ".",
-    "darwin15.6.0/x86_64/3.5" = ".",
-    "darwin15.6.0/x86_64/3.6" = ".",
-    "darwin17.0/x86_64/4.0" = ".",
-    "darwin17.0/x86_64/4.1" = ".",
-    "darwin17.0/x86_64/4.2" = ".",
-    "darwin17.0/x86_64/4.3" = ".",
-    "darwin20/aarch64/4.1" = ".",
-    "darwin20/aarch64/4.2" = ".",
-    "darwin20/aarch64/4.3" = ".",
-    "mingw32/x86_64/3.4" = ".",
-    "mingw32/x86_64/3.5" = ".",
-    "mingw32/x86_64/3.6" = ".",
-    "mingw32/x86_64/4.0" = ".",
-    "mingw32/x86_64/4.1" = ".",
-    "mingw32/x86_64/4.2" = ".",
-    "mingw32/x86_64/4.3" = ".",
+    "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.1" = "../../../../../../../../darwin20/aarch64",
+    "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.2" = "../../../../../../../../darwin20/aarch64",
+    "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.3" = "../../../../../../../../darwin20/aarch64",
+    "mac.binary/darwin17.0/x86_64/bin/macosx/contrib/4.0" = "../../../../../../../darwin17.0/x86_64",
+    "mac.binary/darwin17.0/x86_64/bin/macosx/contrib/4.1" = "../../../../../../../darwin17.0/x86_64",
+    "mac.binary/darwin17.0/x86_64/bin/macosx/contrib/4.2" = "../../../../../../../darwin17.0/x86_64",
+    "mac.binary/darwin17.0/x86_64/bin/macosx/contrib/4.3" = "../../../../../../../darwin17.0/x86_64",
+    "mac.binary.el-capitan/darwin15.6.0/x86_64/bin/macosx/el-capitan/contrib/3.4" = "../../../../../../../../darwin15.6.0/x86_64",
+    "mac.binary.el-capitan/darwin15.6.0/x86_64/bin/macosx/el-capitan/contrib/3.5" = "../../../../../../../../darwin15.6.0/x86_64",
+    "mac.binary.el-capitan/darwin15.6.0/x86_64/bin/macosx/el-capitan/contrib/3.6" = "../../../../../../../../darwin15.6.0/x86_64",
 
     # Now the compatibility maps, these are for the old
     # repos = "https://r-lib.github.io/p/pak/stable" form
-    "bin/macosx/big-sur-arm64/contrib" = "../../../darwin20/aarch64",
-    "bin/macosx/contrib" = "../../darwin17.0/x86_64",
-    "bin/macosx/el-capitan/contrib" =  "../../../darwin15.6.0/x86_64",
+    "bin/windows/contrib/3.4" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/3.5" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/3.6" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/4.0" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/4.1" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/4.2" = "../../../../mingw32/x86_64",
+    "bin/windows/contrib/4.3" = "../../../../mingw32/x86_64",
 
-    "bin/windows/contrib" = "../../mingw32/x86_64/",
+    "bin/macosx/big-sur-arm64/contrib/4.1" = "../../../../../darwin20/aarch64",
+    "bin/macosx/big-sur-arm64/contrib/4.2" = "../../../../../darwin20/aarch64",
+    "bin/macosx/big-sur-arm64/contrib/4.3" = "../../../../../darwin20/aarch64",
+    "bin/macosx/contrib/4.0" = "../../../../darwin17.0/x86_64",
+    "bin/macosx/contrib/4.1" = "../../../../darwin17.0/x86_64",
+    "bin/macosx/contrib/4.2" = "../../../../darwin17.0/x86_64",
+    "bin/macosx/contrib/4.3" = "../../../../darwin17.0/x86_64",
+    "bin/macosx/el-capitan/contrib/3.4" = "../../../../../darwin15.6.0/x86_64",
+    "bin/macosx/el-capitan/contrib/3.5" = "../../../../../darwin15.6.0/x86_64",
+    "bin/macosx/el-capitan/contrib/3.6" = "../../../../../darwin15.6.0/x86_64",
 
-    "src/contrib" = "../linux/x86_64"
+    "src/contrib" = "../../linux/x86_64"
   )
 
   download_uri <- function() {
@@ -708,23 +718,31 @@ create_pak_repo <- local({
     ifelse(
       x == "mingw32",
       ".zip",
-           ifelse(grepl("^darwin", x), ".tgz", ".tar.gz")
+      ifelse(grepl("^darwin", x), ".tgz", ".tar.gz")
     )
   }
 
   add_repo_links <- function(root, tag) {
     repo_root <- file.path(root, tag)
     for (idx in seq_along(links)) {
-      lnk <- file.path(repo_root, names(links)[idx])
-      tgt <- links[[idx]]
-      unlink(lnk)
-      mkdirp(dirname(lnk))
-      file.symlink(tgt, lnk)
+      link <- file.path(repo_root, names(links)[idx])
+      orig <- file.path(link, links[[idx]])
+      mkdirp(link)
+      origfile <- file.path(orig, "PACKAGES")
+      linkfile <- file.path(link, "PACKAGES")
+      file.copy(origfile, linkfile, overwrite = TRUE)
+      # TODO: properly update the file
+      lines <- c(readLines(linkfile), "")
+      entry <- paste0("Path: ", links[[idx]], "\n")
+      lines[nchar(lines) == 0] <- entry
+      writeLines(lines, linkfile)
+      tab <- read.dcf(linkfile, all = TRUE)
+      write_dcf(tab, linkfile, quiet = TRUE)
     }
   }
 
-  write_dcf <- function(meta, PACKAGES) {
-    cat("Writing ", PACKAGES, "\n")
+  write_dcf <- function(meta, PACKAGES, quiet = FALSE) {
+    if (!quiet) cat("Writing ", PACKAGES, "\n")
     meta <- as.matrix(meta)
     write.dcf(meta, PACKAGES, width = 200)
     con <- gzfile(paste0(PACKAGES, ".gz"), "wt")
@@ -798,9 +816,9 @@ create_pak_repo <- local({
       curl::curl_download(url, data$path[idx], handle = h, quiet = FALSE)
     }
 
-    add_repo_links(root, tag)
-
     create_packages_files(data)
+
+    add_repo_links(root, tag)
   }
 
   function(path = "p", dry_run = FALSE, cleanup = TRUE) {
