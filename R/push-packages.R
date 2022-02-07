@@ -644,6 +644,11 @@ create_pak_repo <- local({
     "source/linux-unknown/aarch64/src/contrib"  = "../../../../../linux/aarch64",
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
+    "win.binary/mingw32/x86_64/src/contrib" = "../../../../../mingw32/x86_64",
+    "mac.binary.big-sur-arm64/darwin20/aarch64/src/contrib" = "../../../../../darwin20/aarch64",
+    "mac.binary/darwin17.0/x86_64/src/contrib" = "../../../../../darwin17.0/x86_64",
+    "mac.binary.el-capitan/darwin15.6.0/x86_64/src/contrib" = "../../../../../darwin15.6.0/x86_64",
+
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.4" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.5" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.6" = "../../../../../../../mingw32/x86_64",
