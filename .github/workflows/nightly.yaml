@@ -60,6 +60,7 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
+    if: false
     name: Windows pak binaries
     steps:
 
@@ -161,3 +162,43 @@ jobs:
         build-args: |
           R_MAJOR=${{ matrix.config.r }}
           TOKEN=${{ secrets.PAK_GHCR_TOKEN }}
+
+  # ------------------------------------------------------------------------
+
+  deploy:
+    runs-on: ubuntu-18.04
+    if: always()
+    needs: [ macos, windows, linux ]
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Create user library
+      run: |
+        dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
+      shell: Rscript {0}
+
+    - name: Dependencies
+      uses: r-lib/actions/setup-r-dependencies@v2
+
+    - name: Install local pak tree
+      run: R CMD INSTALL .
+
+    - name: Create repository
+      run: |
+        pak:::create_pak_repo()
+      shell: Rscript {0}
+
+    - name: Deploy to GitHub pages 🚀
+      if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        repository-name: gaborcsardi/playground
+        token: ${{ secrets.PAK_GHCR_TOKEN }}
+        clean: true
+        branch: gh-pages
+        folder: p
