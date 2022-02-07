@@ -726,13 +726,14 @@ create_pak_repo <- local({
     repo_root <- file.path(root, tag)
     for (idx in seq_along(links)) {
       link <- file.path(repo_root, names(links)[idx])
-      orig <- file.path(link, links[[idx]])
       mkdirp(link)
+      orig <- file.path(link, links[[idx]])
       origfile <- file.path(orig, "PACKAGES")
       linkfile <- file.path(link, "PACKAGES")
+      if (!file.exists(origfile)) next
       file.copy(origfile, linkfile, overwrite = TRUE)
       # TODO: properly update the file
-      lines <- c(readLines(linkfile), "")
+      lines <- c(readLines(origfile), "")
       entry <- paste0("Path: ", links[[idx]], "\n")
       lines[nchar(lines) == 0] <- entry
       writeLines(lines, linkfile)
