@@ -190,8 +190,7 @@ jobs:
 
     - name: Create repository
       run: |
-        dir.create("repo")
-        pak:::create_pak_repo("repo/p")
+        pak:::create_pak_repo("repo")
       shell: Rscript {0}
 
     - name: Deploy to GitHub pages 🚀

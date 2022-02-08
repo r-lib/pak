@@ -827,7 +827,7 @@ create_pak_repo <- local({
     add_repo_links(root, tag)
   }
 
-  function(path = "p", dry_run = FALSE, cleanup = TRUE) {
+  function(path = "repo", dry_run = FALSE, cleanup = TRUE) {
     workdir <- package_dir()
     if (!file.exists(workdir)) {
       init_package_dir(workdir, dry_run = dry_run)
@@ -837,7 +837,7 @@ create_pak_repo <- local({
     }
 
     git_pull(workdir, dry_run = dry_run)
-    root <- file.path(path, "pak")
+    root <- file.path(path, "p", "pak")
     mkdirp(root)
 
     cat("\n", file = file.path(path, ".nojekyll"))
