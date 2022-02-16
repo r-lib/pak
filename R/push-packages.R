@@ -332,7 +332,8 @@ push_packages <- local({
   }
 
   skopeo_version <- function() {
-    out <- processx::run("skopeo", "--version")
+    skopeo <- find_skopeo()
+    out <- processx::run(skopeo, "--version")
     re_ver <- "[ ]([0-9]+[.][0-9]+[.][0-9]+)"
     if (!grepl(re_ver, out$stdout)) stop("Cannot determine skopeo version")
     mch <- regexpr(re_ver, out$stdout, perl = TRUE)
