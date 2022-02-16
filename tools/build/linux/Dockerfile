@@ -45,7 +45,10 @@ RUN R -q -e 'pak:::build_pak_binary_linux()'
 
 # Install skopeo ----------------------------------------------------------
 
-RUN apk add skopeo
+# Temporarily, to get skopeo 1.6.0, once this is in a stable Alpine,
+# we should get it from there, and eventually from the current version
+
+RUN apk add skopeo --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 # Test --------------------------------------------------------------------
 
