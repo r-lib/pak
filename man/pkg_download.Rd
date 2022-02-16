@@ -30,7 +30,7 @@ matter for source packages, but it does for binaries.) It defaults to
 the current R version.}
 }
 \value{
-Data frame (tibble) with information about the downloaded
+Data frame with information about the downloaded
 packages, invisibly.
 }
 \description{

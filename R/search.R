@@ -8,7 +8,7 @@
 #'
 #' @param query Search query string.
 #' @param ... Additional arguments passed to [pkgsearch::pkg_search()]
-#' @return A data frame (tibble), that is also a `pak_search_result`
+#' @return A data frame, that is also a `pak_search_result`
 #' object with a custom print method. To see the underlying table, you
 #' can use `[]` to drop the extra classes. See examples below.
 #'
@@ -17,12 +17,12 @@
 #' # Simple search
 #' pkg_search("survival")
 #'
-#' # See the underlying tibble
+#' # See the underlying data frame
 #' psro <- pkg_search("ropensci")
 #' psro[]
 
 pkg_search <- function(query, ...) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) {
       get("pkg_search_internal", asNamespace("pak"))(...)
@@ -76,11 +76,11 @@ print.pak_search_result <- function(x, ...) {
 #' Query the history of a package
 #'
 #' @param pkg Package name.
-#' @return A data frame (tibble), with one row per package version.
+#' @return A data frame, with one row per package version.
 #' @export
 
 pkg_history <- function(pkg) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) {
       get("pkg_history_internal", asNamespace("pak"))(...)

@@ -1,16 +1,16 @@
 
 extra_packages <- function() {
-  "tibble"
+  "pillar"
 }
 
 #' Install all optional dependencies of pak
 #'
 #' These packages are not required for any pak functionality. They are
 #' recommended for some functions that return values that are best
-#' used with these packages. E.g. many functions return tibbles, which
-#' work best with the tibble package.
+#' used with these packages. E.g. many functions return data frames, which
+#' are printed nicer is the pillar package is available.
 #'
-#' Currently only one package is optional: tibble.
+#' Currently only one package is optional: pillar.
 #'
 #' @param upgrade Whether to install or upgrade to the latest versions
 #'   of the optional packages.

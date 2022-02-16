@@ -30,7 +30,7 @@ it will delete all cached files.}
 \item \code{size}: total size of package cache in bytes
 }
 
-\code{cache_list()} returns a tibble with the data about the cache.
+\code{cache_list()} returns a data frame with the data about the cache.
 
 \code{cache_delete()} returns nothing.
 

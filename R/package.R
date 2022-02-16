@@ -272,7 +272,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 #'
 #' @param pkg Name of one or more installed packages to display status for.
 #' @param lib One or more library paths to lookup packages status in.
-#' @return Data frame (tibble) with data about installations of `pkg`.
+#' @return Data frame with data about installations of `pkg`.
 #' Columns include: `library`, `package`, `title`, `version`.
 #'
 #' @export
@@ -285,7 +285,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$pkg_status_internal(...),
     list(pkg = pkg, lib = lib))
@@ -326,7 +326,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #'   versions.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
-#' @return A data frame (tibble).
+#' @return A data frame.
 #'
 #' @family package functions
 #' @export
@@ -336,7 +336,7 @@ pkg_remove_internal <- function(pkg, lib) {
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) {
       get("pkg_deps_internal", asNamespace("pak"))(...)
@@ -372,7 +372,7 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #'   versions.
 #' @param dependencies Dependency types. See
 #'   [pkgdepends::as_pkg_dependencies()] for possible values.
-#' @return The same data frame (tibble) as [pkg_deps()], invisibly.
+#' @return The same data frame as [pkg_deps()], invisibly.
 #'
 #' @family package functions
 #' @export
@@ -422,7 +422,7 @@ pkg_list <- function(lib = .libPaths()[1]) {
 #' @param r_versions R version(s) to download packages for. (This does not
 #'   matter for source packages, but it does for binaries.) It defaults to
 #'   the current R version.
-#' @return Data frame (tibble) with information about the downloaded
+#' @return Data frame with information about the downloaded
 #'   packages, invisibly.
 #'
 #' @export
@@ -448,7 +448,7 @@ pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
     args
   )
 
-  load_extra("tibble")
+  load_extra("pillar")
   invisible(dl)
 }
 

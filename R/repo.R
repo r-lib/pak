@@ -14,7 +14,7 @@
 #'   already configured them via `options(repos)`, then you can
 #'   set this to `FALSE`.
 #' @param cran_mirror The CRAN mirror to use.
-#' @return A tibble that has a row for every repository, on every
+#' @return A data frame that has a row for every repository, on every
 #' queried platform and R version. It has these columns:
 #' * `name`: the name of the repository. This comes from the names
 #'   of the configured repositories in `options("repos")`, or
@@ -48,7 +48,7 @@
 
 repo_status <- function(platforms = NULL, r_version = getRversion(),
                         bioc = TRUE, cran_mirror = NULL) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_status_internal(...),
     list(platforms, r_version, bioc, cran_mirror)
@@ -126,7 +126,7 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 
 repo_get <- function(r_version = getRversion(),
                      bioc = TRUE, cran_mirror = NULL) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_get_internal(...),
     list(r_version, bioc, cran_mirror)

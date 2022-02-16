@@ -69,7 +69,16 @@ remote <- function(func, args = list()) {
     rs$run_with_output(func2, args)
   )
   if (!is.null(res$error)) {
-    err$rethrow(stop(res$error$parent$error), res$error$parent, call = FALSE)
+    if (inherits(res$error$parent$error, "condition") &&
+        inherits(res$error$parent, "condition")) {
+      err$rethrow(stop(res$error$parent$error), res$error$parent, call = FALSE)
+    } else {
+      print(res$error)
+      print(res$error$parent)
+      print(res$error$parent$error)
+      if (inherits(res$error, "condition")) err$throw(res$error)
+      stop("Unknown error from subprocess")
+    }
   }
 
   res$result

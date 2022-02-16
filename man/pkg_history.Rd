@@ -10,7 +10,7 @@ pkg_history(pkg)
 \item{pkg}{Package name.}
 }
 \value{
-A data frame (tibble), with one row per package version.
+A data frame, with one row per package version.
 }
 \description{
 Query the history of a package

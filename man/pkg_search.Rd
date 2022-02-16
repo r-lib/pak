@@ -12,7 +12,7 @@ pkg_search(query, ...)
 \item{...}{Additional arguments passed to \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}}}
 }
 \value{
-A data frame (tibble), that is also a \code{pak_search_result}
+A data frame, that is also a \code{pak_search_result}
 object with a custom print method. To see the underlying table, you
 can use \verb{[]} to drop the extra classes. See examples below.
 }
@@ -27,7 +27,7 @@ etc.
 # Simple search
 pkg_search("survival")
 
-# See the underlying tibble
+# See the underlying data frame
 psro <- pkg_search("ropensci")
 psro[]
 \dontshow{\}) # examplesIf}

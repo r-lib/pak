@@ -3,8 +3,8 @@ name: Trigger pak builds
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '55 5 * * *'
+#  schedule:
+#    - cron:  '55 5 * * *'
 
 jobs:
   dispatch:

@@ -40,7 +40,7 @@ cache_summary_internal <- function() {
 #' available column names. If you call `cache_delete()` without arguments,
 #' it will delete all cached files.
 #'
-#' @return `cache_list()` returns a tibble with the data about the cache.
+#' @return `cache_list()` returns a data frame with the data about the cache.
 #'
 #' @rdname cache
 #' @export
@@ -51,7 +51,7 @@ cache_summary_internal <- function() {
 #' cache_list(platform = "source")
 
 cache_list <- function(...) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) {
       get("cache_list_internal", asNamespace("pak"))(...)
@@ -158,7 +158,7 @@ meta_summary_internal <- function() {
 #'
 #' @param pkg Package names, if specified then only entries for `pkg`
 #' are returned.
-#' @return `meta_list()` returns a data frame (tibble) of all available
+#' @return `meta_list()` returns a data frame of all available
 #' packages in the configured repositories.
 #'
 #' @export
@@ -170,7 +170,7 @@ meta_summary_internal <- function() {
 #' meta_list(pkg = c("shiny", "htmlwidgets"))
 
 meta_list <- function(pkg = NULL) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) {
       get("meta_list_internal", asNamespace("pak"))(...)

@@ -28,7 +28,7 @@ and \code{local_dev_deps_tree()}.}
 }
 \value{
 All of these functions return the dependencies in a data
-frame (tibble). \code{local_deps_tree()} and \code{local_dev_deps_tree()} also
+frame. \code{local_deps_tree()} and \code{local_dev_deps_tree()} also
 print the dependency tree.
 }
 \description{

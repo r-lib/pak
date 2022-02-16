@@ -3,14 +3,14 @@
 #' Status of packages in a library
 #'
 #' @param lib Path to library.
-#' @return Data frame (tibble) the contains data about the packages
+#' @return Data frame the contains data about the packages
 #'   installed in the library.
 #'
 #' @export
 #' @family library functions
 
 lib_status <- function(lib = .libPaths()[1]) {
-  load_extra("tibble")
+  load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$lib_status_internal(...),
     list(lib = lib))
