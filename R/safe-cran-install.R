@@ -5,8 +5,12 @@ safe_cran_install <- local({
 
   install_one <- function(pkg, lib = .libPaths()[1], INSTALL_opts = "", ...) {
 
+    # On Windows, system() knows to handle "R", so we just use that, otherwise
+    # the escaping might be tricky. On Unix, system() does not know about "R",
+    # so we need the full path, and the full path probably does not have a space.
+    rbin <- if (.Platform$OS.type == "unix") file.path(R.home("bin"), "R") else "R"
     rcmd <- sprintf("loadNamespace('%s', lib.loc = '%s')", pkg, lib)
-    cmd <- sprintf("R -q -e \"%s\"", rcmd)
+    cmd <- sprintf("%s -q -e \"%s\"", rbin, rcmd)
     if (system(cmd) == 0) return()
 
     old <- options(
