@@ -445,7 +445,7 @@ push_packages <- local({
     }
 
     workdir <- normalizePath(workdir, winslash = "/")
-    args <- c("copy", "--all")
+    args <- c("copy", "--all", "--retry-times", 20)
     if (skopeo_ver >= "1.6.0") args <- c(args, "--preserve-digests")
     args <- c(args, "--policy", policy_file)
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
