@@ -61,7 +61,6 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
-    if: false
     name: Windows pak binaries
     steps:
 
@@ -126,7 +125,6 @@ jobs:
   # -----------------------------------------------------------------------
   linux:
     runs-on: ubuntu-18.04
-    if: false
     name: Linux static pak binaries for R ${{ matrix.config.r }}
 
     strategy:
@@ -199,7 +197,7 @@ jobs:
       if: github.event_name != 'pull_request'
       uses: JamesIves/github-pages-deploy-action@v4.2.3
       with:
-        repository-name: gaborcsardi/playground
+        repository-name: r-lib/r-lib.github.io
         token: ${{ secrets.PAK_GHCR_TOKEN }}
         single-commit: true
         clean: true

@@ -30,7 +30,7 @@ push_packages <- local({
   ghcr_uri <- function() {
     Sys.getenv(
       "PAK_GHCR_URI",
-      "docker://ghcr.io/gaborcsardi/playground/pak"
+      "docker://ghcr.io/r-lib/pak"
     )
   }
 
@@ -696,7 +696,7 @@ create_pak_repo <- local({
   download_uri <- function() {
     Sys.getenv(
       "PAK_GHCP_DOWNLOAD_URI",
-      "https://ghcr.io/v2/gaborcsardi/playground/pak/blobs"
+      "https://ghcr.io/v2/r-lib/pak/blobs"
     )
   }
 
