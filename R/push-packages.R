@@ -362,7 +362,8 @@ push_packages <- local({
     tocopy <- match(paths, pkgs$path)
     ret <- file.copy(
       paths,
-      file.path(shadir, sub("^sha256:", "", pkgs$digest[tocopy]))
+      file.path(shadir, sub("^sha256:", "", pkgs$digest[tocopy])),
+      overwrite = TRUE
     )
     if (any(!ret)) stop("Failed to copy package file(s)")
 
