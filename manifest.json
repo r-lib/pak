@@ -228,6 +228,15 @@
           "buildtime": "2022-02-16T16:21:05+00:00",
           "size": 7884801,
           "digest": "sha256:9a1e7330f8c5da06ef0d5f70ea6addbae103370d8352455620517248d5249a3c"
+        },
+        {
+          "r.platform": "aarch64-unknown-linux-gnu",
+          "r.version": "3.5",
+          "pak.version": "0.2.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2022-02-17T10:34:34+00:00",
+          "size": 7980453,
+          "digest": "sha256:c7a88b2e177efbf3812a9b71cca7f93cee0f1f353aaaa5a9447fe0535d0ce785"
         }
       ]
     },
