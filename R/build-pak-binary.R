@@ -1,6 +1,6 @@
 
 build_pak_binary_linux <- function() {
-  ver <- as.character(packageVersion("pak"))
+  ver <- as.character(utils::packageVersion("pak"))
   rver <- paste0("R", gsub(".", "-", getRversion()[,1:2], fixed = TRUE))
   platform <- R.Version()$platform
   platform <- sub("-(gnu|musl)$", "", platform)
