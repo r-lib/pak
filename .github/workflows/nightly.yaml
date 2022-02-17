@@ -216,8 +216,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Deploy to GitHub Pages (prod)
-      if: false
-#      if: github.event_name != "pull_request"
+      if: github.event_name != 'pull_request'
       uses: JamesIves/github-pages-deploy-action@v4.2.3
       with:
         repository-name: r-lib/r-lib.github.io
