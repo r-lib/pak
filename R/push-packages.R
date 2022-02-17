@@ -786,7 +786,6 @@ create_pak_repo <- local({
         Sha256 = local$sha,
         NeedsCompilation = "no",
         Built = fix_built(field("Built"), local$r.platform),
-        Packaged = field("Packaged"),
         File = basename(local$path),
         DownloadURL = paste0(baseuri, "/", local$digest)
       )
