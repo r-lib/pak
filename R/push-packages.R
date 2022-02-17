@@ -615,13 +615,13 @@ create_pak_repo <- local({
   links <- c(
     # Make sure all Linux maps to the same place since we fully static pkgs
     "linux-gnu/x86_64"       = "../../linux/x86_64",
-    "linux-musl/x86_54"      = "../../linux/x86_64",
+    "linux-musl/x86_64"      = "../../linux/x86_64",
     "linux-uclibc/x86_64"    = "../../linux/x86_64",
     "linux-dietlibc/x86_64"  = "../../linux/x86_64",
     "linux-unknown/x86_64"   = "../../linux/x86_64",
 
     "linux-gnu/aarch64"      = "../../linux/aarch64",
-    "linux-musl/x86_54"      = "../../linux/aarch64",
+    "linux-musl/aarch64"     = "../../linux/aarch64",
     "linux-uclibc/aarch64"   = "../../linux/aarch64",
     "linux-dietlibc/aarch64" = "../../linux/aarch64",
     "linux-unknown/aarch64"  = "../../linux/aarch64",
