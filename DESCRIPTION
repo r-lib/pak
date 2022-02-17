@@ -47,7 +47,6 @@ Suggests:
     rprojroot (>= 1.3-2),
     rstudioapi,
     testthat,
-    tibble,
     withr
 Config/needs/dependencies:
     callr,
