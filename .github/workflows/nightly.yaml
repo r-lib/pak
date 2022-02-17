@@ -199,8 +199,24 @@ jobs:
         pak:::create_pak_repo("repo")
       shell: Rscript {0}
 
-    - name: Deploy to GitHub pages 🚀
+    - name: Deploy to GitHub pages (test)
       if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@v4.2.3
+      with:
+        repository-name: r-lib/r-lib.github.io
+        token: ${{ secrets.PAK_GHCR_TOKEN }}
+        single-commit: true
+        clean: true
+        branch: test
+        folder: repo
+
+    - name: Run tests
+      run: |
+        echo TODO
+
+    - name: Deploy to GitHub Pages (prod)
+      if: false
+#      if: github.event_name != "pull_request"
       uses: JamesIves/github-pages-deploy-action@v4.2.3
       with:
         repository-name: r-lib/r-lib.github.io
