@@ -49,10 +49,6 @@ Suggests:
     testthat,
     tibble,
     withr
-Remotes:
-    r-lib/pkgdepends,
-    r-lib/pkgcache,
-    r-hub/pkgsearch
 Config/needs/dependencies:
     callr,
     cli,
@@ -61,9 +57,9 @@ Config/needs/dependencies:
     filelock,
     glue,
     jsonlite,
-    r-lib/pkgcache,
-    r-lib/pkgdepends,
-    r-hub/pkgsearch,
+    pkgcache,
+    pkgdepends,
+    pkgsearch,
     prettyunits,
     processx,
     ps,
