@@ -13,8 +13,7 @@
 downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak)
 [![Codecov test
 coverage](https://codecov.io/gh/r-lib/pak/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/pak?branch=main)
-[![R build
-status](https://github.com/r-lib/pak/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/pak/actions)
+[![R-CMD-check](https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 pak installs R packages from CRAN, Bioconductor, GitHub, and local files
