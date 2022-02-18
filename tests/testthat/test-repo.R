@@ -1,6 +1,8 @@
 
 if (Sys.getenv("NOT_CRAN") != "true") return()
 
+if (Sys.getenv("PAK_TESTS") != "true") return()
+
 repo_url <- Sys.getenv(
   "PAK_TEST_REPO_URL",
   "https://raw.githubusercontent.com/r-lib/r-lib.github.io/test/p/pak/"

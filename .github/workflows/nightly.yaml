@@ -210,6 +210,8 @@ jobs:
       run: |
         testthat::test_local(filter = "^repo$")
       shell: Rscript {0}
+      env:
+        PAK_TESTS: true
 
     - name: Deploy to GitHub Pages (prod)
       if: github.event_name != 'pull_request'
