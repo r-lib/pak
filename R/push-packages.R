@@ -846,5 +846,7 @@ create_pak_repo <- local({
     for (tag in tags) {
       create_package_repo_tag(root, workdir, tag = tag, dry_run = dry_run)
     }
+
+    file.symlink("stable", file.path(root, "dev"))
   }
 })
