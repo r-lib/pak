@@ -27,11 +27,13 @@ Suggests:
     cli (>= 3.0.0),
     covr,
     curl,
+    desc,
+    digest,
     distro,
     filelock (>= 1.0.2),
+    gitcreds,
     glue (>= 1.3.0),
     mockery,
-    pillar,
     pingr,
     jsonlite (>= 1.7.3),
     pkgcache (>= 1.2.0),
@@ -40,16 +42,10 @@ Suggests:
     prettyunits,
     processx (>= 3.5.1),
     ps (>= 1.6.0),
-    rlang,
     rprojroot (>= 1.3-2),
     rstudioapi,
     testthat,
-    tibble,
     withr
-Remotes:
-    r-lib/pkgdepends,
-    r-lib/pkgcache,
-    r-hub/pkgsearch
 Config/needs/dependencies:
     callr,
     cli,

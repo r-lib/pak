@@ -1,0 +1,223 @@
+name: Nighly build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - 'feature/build-macos'
+  schedule:
+  - cron: '30 5 * * *'
+
+# =========================================================================
+
+jobs:
+
+  # -----------------------------------------------------------------------
+  macos:
+    runs-on: macos-11
+    name: macOS x86_64 pak binaries
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Install rim
+      run: |
+        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.1.4/rim-0.1.4-macOS-x86_64.pkg
+        sudo installer -pkg rim-0.1.4-macOS-x86_64.pkg -target /
+
+    - name: Install R
+      run: |
+        sudo rim add 3.4
+        sudo rim add 3.5
+        sudo rim add 3.6
+        sudo rim add 4.0
+        sudo rim add 4.1
+        sudo rim add devel
+
+    - name: Install skopeo
+      run: |
+        brew install skopeo
+        brew link skopeo
+        skopeo --version
+
+    - name: Build pak binaries
+      run: |
+        cd tools/build/macos && make build
+
+    - name: Run tests
+      run: |
+        cd tools/build/macos && make test
+
+    - name: Deploy packages
+      run: |
+        cd tools/build/macos && make deploy
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+  # -----------------------------------------------------------------------
+  windows:
+    runs-on: windows-latest
+    name: Windows pak binaries
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: git config
+      run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+    - name: Install rim
+      run: |
+        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
+        Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
+        echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+    - name: Install skopeo
+      run: |
+        Invoke-WebRequest -Uri https://github.com/gaborcsardi/skopeo/releases/download/v1.6.0/skopeo-1.6.0.zip -OutFile skopeo.zip
+        New-Item "C:\Tools" -Force -ItemType Directory
+        Expand-Archive skopeo.zip -DestinationPath C:\Tools
+        echo "C:\Tools\skopeo" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+    - name: Test skopeo
+      run: |
+        skopeo --version
+
+    # We use the pre-installed R 4.1.2 + Rtools40 for now, to speed this up
+    - name: Install R and RTools
+      run: |
+        New-Item "C:\Program Files\R\bin" -ItemType Directory
+        rim add 3.4
+        rim add 3.5
+        rim add 3.6
+        rim add 4.0
+        # rim add 4.1 # already installed
+        rim add devel
+        rim add rtools35
+        # rim add rtools40 # already installed
+        rim default 4.1.2
+
+    - name: Build pak binaries
+      run: |
+        cd tools/build/windows && make build
+
+    - name: Run tests
+      run: |
+        cd tools/build/windows && make test
+
+    - name: Deploy packages
+      run: |
+        cd tools/build/windows && make deploy
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+  # -----------------------------------------------------------------------
+  linux:
+    runs-on: ubuntu-18.04
+    name: Linux static pak binaries for R ${{ matrix.config.r }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: '4.2', platform: 'linux/amd64' }
+          - { r: '4.1', platform: 'linux/amd64' }
+          - { r: '4.0', platform: 'linux/amd64' }
+          - { r: '3.6', platform: 'linux/amd64' }
+          - { r: '3.5', platform: 'linux/amd64' }
+          - { r: '3.4', platform: 'linux/amd64' }
+#          - { r: '4.2', platform: 'linux/arm64' }
+#          - { r: '4.1', platform: 'linux/arm64' }
+#          - { r: '4.0', platform: 'linux/arm64' }
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: tools/build/linux/Dockerfile
+        platforms: ${{ matrix.config.platform }}
+        push: false
+        build-args: |
+          R_MAJOR=${{ matrix.config.r }}
+          TOKEN=${{ secrets.PAK_GHCR_TOKEN }}
+
+  # ------------------------------------------------------------------------
+
+  deploy:
+    runs-on: ubuntu-18.04
+    if: always()
+    needs: [ macos, windows, linux ]
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Create user library
+      run: |
+        dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
+      shell: Rscript {0}
+
+    - name: Dependencies
+      uses: r-lib/actions/setup-r-dependencies@v2
+
+    - name: Install local pak tree
+      run: R CMD INSTALL .
+
+    - name: Create repository
+      run: |
+        pak:::create_pak_repo("repo")
+      shell: Rscript {0}
+
+    - name: Deploy to GitHub pages (test)
+      if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@v4.2.3
+      with:
+        repository-name: r-lib/r-lib.github.io
+        token: ${{ secrets.PAK_GHCR_TOKEN }}
+        single-commit: true
+        clean: true
+        branch: test
+        folder: repo
+
+    - name: Run tests
+      run: |
+        testthat::test_local(filter = "^repo$")
+      shell: Rscript {0}
+
+    - name: Deploy to GitHub Pages (prod)
+      if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@v4.2.3
+      with:
+        repository-name: r-lib/r-lib.github.io
+        token: ${{ secrets.PAK_GHCR_TOKEN }}
+        single-commit: true
+        clean: true
+        branch: gh-pages
+        folder: repo

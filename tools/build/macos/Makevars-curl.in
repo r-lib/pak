@@ -1,0 +1,24 @@
+ARCH=$(shell arch)
+
+ifeq ($(ARCH),arm64)
+CURL_FLAGS=-mmacosx-version-min=11.0
+else
+CURL_FLAGS=-mmacosx-version-min=10.13
+ARCH=x86_64
+endif
+
+PKG_CFLAGS+=$(C_VISIBILITY) $(CURL_FLAGS)
+
+PKG_CPPFLAGS+=-DSTRICT_R_HEADERS $(CURL_FLAGS) \
+	    -I$(PAK_ROOT)/opt/$(ARCH)/include
+
+PKG_LIBS=$(CURL_FLAGS) \
+         $(PAK_ROOT)/opt/$(ARCH)/lib/libcurl.a \
+         $(PAK_ROOT)/opt/$(ARCH)/lib/libcares.a \
+         $(PAK_ROOT)/opt/$(ARCH)/lib/libnghttp2.a \
+	 -framework Security
+
+all: clean
+
+clean:
+		rm -f $(SHLIB) $(OBJECTS)

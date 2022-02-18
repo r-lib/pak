@@ -8,6 +8,9 @@ pak_sitrep_data <- list(deps = logical())
 local({
 
   should_bundle <- function() {
+    # So we can opt out explicitly
+    if (tolower(Sys.getenv("PAK_BUNDLE")) %in% c("no", "false")) return(FALSE)
+
     # Do not bundle in pkgload::load_all()
     if (Sys.getenv("R_PACKAGE_NAME", "") != "pak") return(FALSE)
 
