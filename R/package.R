@@ -99,7 +99,7 @@
 #'
 #' ```
 #' Imports: glue
-#' Remotes: `r-lib/glue,
+#' Remotes: r-lib/glue,
 #'   r-lib/httr@v0.4,
 #'   klutometis/roxygen#142,
 #'   r-lib/testthat@c67018fa4970
