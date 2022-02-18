@@ -76,7 +76,7 @@
 
       
 
-      </header><script src="internals_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>pak internals</h1>
@@ -100,7 +100,7 @@
 <li><p>This also works well on platforms that do not (yet) have binaries, e.g. M1 macs, Linux or the new experimental Windows platform.</p></li>
 <li><p>When running inside <code>R CMD check</code>, pak does not bundle its dependencies, to make the checks faster.</p></li>
 <li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does not install the package during the check. Instead, they pre-install it, and then refer to the install log in the check. They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.</p></li>
-<li><p>When pak is installed from GitHub, using <code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
+<li><p>When pak is installed from GitHub, using <code>remotes::install_github()</code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
 <li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field, then pak does not bundle its dependencies, only emits a message that suggests using <code>create_dev_lib()</code>. This is because we can’t easily install from GitHub using base R functions only.</p></li>
 <li><p>When running <code>R CMD check</code>, pak uses <code>testthat.R</code> to bundle the dependencies into the temporary installation that is used in the check. However, pak <em>copies</em> the dependencies in this case, to make the check faster. If copying the dependencies fails, then pak skips the test suite. The reason for copying in <code>testthat.R</code> instead of install time is that this way we avoid the check warning about the large <code>/library</code> directory.</p></li>
 <li><p>If the pak installation currently being tested does not have bundled dependencies, then <code>setup.R</code> bundles them, but into the user’s cache directory. This is to make sure that we can still use <code>devtools::test()</code> and alike for development.</p></li>
@@ -113,8 +113,8 @@
 <li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install into <code>/library</code></p></li>
 <li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code> → no not bundle</p></li>
 <li><p><code>R CMD check</code> → copy into <code>/library</code>, ignore errors</p></li>
-<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> without <code>Remotes</code> → install into <code>/library</code></p></li>
-<li><p><code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code> with <code>Remotes</code> → no not bundle</p></li>
+<li><p><code>remotes::install_github()</code> without <code>Remotes</code> → install into <code>/library</code></p></li>
+<li><p><code>remotes::install_github()</code> with <code>Remotes</code> → no not bundle</p></li>
 <li><p><code>devtools::test()</code> and similar → copy into user’s cache directory</p></li>
 </ol>
 </div>
