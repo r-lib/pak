@@ -135,9 +135,9 @@ jobs:
           - { r: '3.6', platform: 'linux/amd64' }
           - { r: '3.5', platform: 'linux/amd64' }
           - { r: '3.4', platform: 'linux/amd64' }
-#          - { r: '4.2', platform: 'linux/arm64' }
-#          - { r: '4.1', platform: 'linux/arm64' }
-#          - { r: '4.0', platform: 'linux/arm64' }
+          - { r: '4.2', platform: 'linux/arm64' }
+          - { r: '4.1', platform: 'linux/arm64' }
+          - { r: '4.0', platform: 'linux/arm64' }
 
     steps:
 
