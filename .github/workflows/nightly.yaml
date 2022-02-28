@@ -182,6 +182,11 @@ jobs:
       with:
         fetch-depth: 10
 
+    - name: git config
+      run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
