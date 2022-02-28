@@ -15,6 +15,7 @@ jobs:
   # -----------------------------------------------------------------------
   macos:
     runs-on: macos-11
+    if: false()
     name: macOS x86_64 pak binaries
     steps:
 
@@ -61,6 +62,7 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
+    if: false()
     name: Windows pak binaries
     steps:
 
@@ -123,6 +125,7 @@ jobs:
   # -----------------------------------------------------------------------
   linux:
     runs-on: ubuntu-18.04
+    if: false()
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
     strategy:
@@ -165,9 +168,33 @@ jobs:
 
   # ------------------------------------------------------------------------
 
+  # ------------------------------------------------------------------------
+
+  macos-m1:
+    runs-on: [self-hosted, macOS, arm64]
+    name: macos arm64 pak binaries
+    defaults:
+      run:
+        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
+    - name: Build pake binaries
+      run: |
+        cd tools/build/macos && make build
+      env:
+        RVERSIONS: 4.1-arm64 4.2-arm64
+        RVERSION_DEFAULT: 4.1-arm64
+
   deploy:
     runs-on: ubuntu-18.04
-    if: always()
+    if: false()
+#     if: always()
     needs: [ macos, windows, linux ]
 
     steps:
