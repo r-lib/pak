@@ -25,8 +25,8 @@ jobs:
 
     - name: Install rim
       run: |
-        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.1.4/rim-0.1.4-macOS-x86_64.pkg
-        sudo installer -pkg rim-0.1.4-macOS-x86_64.pkg -target /
+        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.2.0/rim-0.2.0-macOS-x86_64.pkg
+        sudo installer -pkg rim-0.2.0-macOS-x86_64.pkg -target /
 
     - name: Install R
       run: |
@@ -76,10 +76,9 @@ jobs:
 
     - name: Install rim
       run: |
-        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.1.5/rim-0.1.5.exe -OutFile rim.exe
+        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.2.0/rim-windows-0.2.0.exe -OutFile rim.exe
         Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
-        echo "C:\Program Files\rim" | Out-File -Append -FilePath $env:GITHUB_PATH
-        echo "C:\Program Files\R\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+        # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Install skopeo
@@ -96,7 +95,6 @@ jobs:
     # We use the pre-installed R 4.1.2 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
-        New-Item "C:\Program Files\R\bin" -ItemType Directory
         rim add 3.4
         rim add 3.5
         rim add 3.6
