@@ -2,9 +2,6 @@ name: Nighly build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - 'feature/build-macos'
   schedule:
   - cron: '30 5 * * *'
 
@@ -15,7 +12,6 @@ jobs:
   # -----------------------------------------------------------------------
   macos:
     runs-on: macos-11
-    if: false
     name: macOS x86_64 pak binaries
     steps:
 
@@ -62,7 +58,6 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
-    if: false
     name: Windows pak binaries
     steps:
 
@@ -125,7 +120,6 @@ jobs:
   # -----------------------------------------------------------------------
   linux:
     runs-on: ubuntu-18.04
-    if: false
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
     strategy:
@@ -214,8 +208,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-18.04
-    if: false
-#     if: always()
+    if: always()
     needs: [ macos, windows, linux ]
 
     steps:
