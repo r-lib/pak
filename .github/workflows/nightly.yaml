@@ -233,7 +233,7 @@ jobs:
     run: |
       docker build \
           --build-arg R_MAJOR=${{ matrix.config.r }} \
-          --build-arg TOKEN=${{ secrete.PAK_GHCR_TOKEN }} \
+          --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
           --build-arg PAK_ROOT=. \
           -f tools/build/linux/Dockerfile .
 
