@@ -6,7 +6,8 @@ ARG TOKEN=dummy
 
 # Need the copy of the package --------------------------------------------
 
-COPY ../../.. /root/pak
+ARG PAK_ROOT=../../..
+COPY ${PAK_ROOT} /root/pak
 
 WORKDIR /root/pak
 
