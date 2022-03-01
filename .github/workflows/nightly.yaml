@@ -215,27 +215,27 @@ jobs:
       fail-fast: false
       matrix:
         config:
-#          - { r: '4.2', platform: 'linux/arm64' }
+          - { r: '4.2', platform: 'linux/arm64' }
           - { r: '4.1', platform: 'linux/arm64' }
 #          - { r: '4.0', platform: 'linux/arm64' }
 #          - { r: '3.6', platform: 'linux/arm64' }
 #          - { r: '3.5', platform: 'linux/arm64' }
 #          - { r: '3.4', platform: 'linux/arm64' }
 
-  steps:
+    steps:
 
-  - name: Checkout
-    uses: actions/checkout@v2
-    with:
-      fetch-depth: 10
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
 
-  - name: Build and push
-    run: |
-      docker build \
-          --build-arg R_MAJOR=${{ matrix.config.r }} \
-          --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
-          --build-arg PAK_ROOT=. \
-          -f tools/build/linux/Dockerfile .
+    - name: Build and push
+      run: |
+        docker build \
+            --build-arg R_MAJOR=${{ matrix.config.r }} \
+            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
+            --build-arg PAK_ROOT=. \
+            -f tools/build/linux/Dockerfile .
 
   # ------------------------------------------------------------------------
 
