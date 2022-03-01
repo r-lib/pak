@@ -14,10 +14,11 @@ downloads](https://cranlogs.r-pkg.org/badges/pak)](https://www.r-pkg.org/pkg/pak
 [![Codecov test
 coverage](https://codecov.io/gh/r-lib/pak/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/pak?branch=main)
 [![R-CMD-check](https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
-pak installs R packages from CRAN, Bioconductor, GitHub, and local files
-and directories. It is an alternative to `install.packages()` and
+pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local
+files and directories. It is an alternative to `install.packages()` and
 `devtools::install_github()`. pak is fast, safe and convenient.
 
 <p align="center">
@@ -26,25 +27,45 @@ and directories. It is an alternative to `install.packages()` and
 
 ## Installation
 
-Install the released version of the package from CRAN:
+### Pre-built binaries
+
+Install a binary build of pak from our repository on GitHub:
+
+``` r
+install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+```
+
+This is supported for the following systems:
+
+| OS (`R.Version()$os)`                             | Architecture (`R.Version()$arch)` | R version         |
+|---------------------------------------------------|-----------------------------------|-------------------|
+| Linux (`linux-*`)                                 | x86_64                            | R 3.4.0 - R-devel |
+| Linux (`linux-x)`                                 | aarch64                           | R 3.4.0 - R-devel |
+| macOS High Sierra+ (`darwin15.6.0`, `darwin17.0`) | x86_64                            | R 3.4.0 - R-devel |
+| macOS Big Sur+ (`darwin20`)                       | aarch64                           | R 4.1.0 - R-devel |
+| Windows (`mingw32`)                               | x86_64                            | R 3.4.0 - R-devel |
+
+For macOS we only support the official CRAN R build. Other builds, e.g.
+Homebrew R, are not supported.
+
+### Install from CRAN
+
+Install the released version of the package from CRAN as usual:
 
 ``` r
 install.packages("pak")
 ```
 
-Install the development version from our repository on GitHub:
+This potentially needs a C compiler on platforms CRAN does not have
+binaries packages for.
+
+### Nightly builds
+
+We have nightly binary builds, for the same systems as the table above:
 
 ``` r
-install.packages("pak", repos = "https://r-lib.github.io/p/pak/devel/")
+install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
 ```
-
-This is currently supported for
-
--   macOS (High Sierra or later) and R 3.4.x or later on Intel and R 4.1
-    or later on arm64, including R-devel.
--   Windows and R 3.4.x, or later, including R-devel,
--   Linux (any 64-bit x86_64 distribution) and R 3.4.x or later,
-    including R-devel.
 
 ## Usage
 
@@ -54,7 +75,7 @@ Call `pkg_install()` to install CRAN or Bioconductor packages:
 pak::pkg_install("usethis")
 ```
 
-To install GitHub packages, use the `user/repo` syntax:
+To install packages from GitHub, use the `user/repo` syntax:
 
 ``` r
 pak::pkg_install("r-lib/usethis")
@@ -64,18 +85,12 @@ All dependencies will be installed as well, to the same library.
 
 ### On GitHub Actions
 
-The [`r-lib/actions`](https://github.com/r-lib/actions) repository has
-an `R CMD check` GitHub Action that uses pak to install packages:
-<https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml>
-To set up this action for your own repository, run
-
-``` r
-usethis::use_github_action("check-pak")
-usethis::use_github_action("test-coverage-pak")
-usethis::use_github_action("pkgdown-pak")
-```
-
-from R. The last two are a test coverage action and a pkgdown action.
+The
+[`setup-r-dependencies`](https://github.com/r-lib/actions/tree/v2/setup-r-dependencies#setup-r-dependencies)
+action at [`r-lib/actions`](https://github.com/r-lib/actions) uses pak
+to install packages. See the
+[`examples`](https://github.com/r-lib/actions/tree/v2/examples)
+directory for example workflows.
 
 ## Why pak?
 
@@ -113,6 +128,9 @@ from R. The last two are a test coverage action and a pkgdown action.
     working state of dependencies. It finds conflicts up front, before
     attempting installation.
 
+-   System package support. pak automatically installs system
+    dependencies on several Linux distributions.
+
 ### Convenient
 
 -   BioC packages. pak supports Bioconductor packages out of the box. It
@@ -139,14 +157,13 @@ from R. The last two are a test coverage action and a pkgdown action.
 
 ## Roadmap
 
--   Support GitLab repositories
--   Support Bitbucket repositories
--   Support system requirements
--   Support older CRAN package versions
--   Support older BioConductor package versions
--   Support local CRAN mirrors
--   Support the `Additional_repositories` `DESCRIPTION` field
--   Support SVN repos
+-   Cache locally installed packages.
+-   Update installed packages.
+-   Better integration with renv.
+-   Support more package sources: Enterprise GitHub, GitLab, Bitbucket
+    and SVN repositories.
+-   Support older CRAN and Bioconductor packages.
+-   More comprehensive system requirements support.
 
 ## License
 
