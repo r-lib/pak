@@ -52,13 +52,13 @@ install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s
 
 This is supported for the following systems:
 
-| OS (`R.Version()$os)`                             | Architecture (`R.Version()$arch)` | R version         |
-|--------------------------------|----------------------|------------------|
-| Linux (`linux-*`)                                 | x86_64                            | R 3.4.0 - R-devel |
-| Linux (`linux-x)`                                 | aarch64                           | R 3.4.0 - R-devel |
-| macOS High Sierra+ (`darwin15.6.0`, `darwin17.0`) | x86_64                            | R 3.4.0 - R-devel |
-| macOS Big Sur+ (`darwin20`)                       | aarch64                           | R 4.1.0 - R-devel |
-| Windows (`mingw32`)                               | x86_64                            | R 3.4.0 - R-devel |
+| OS                  | CPU       | R version         |
+|---------------------|-----------|-------------------|
+| Linux               | x86_64    | R 3.4.0 - R-devel |
+| Linux               | aarch64   | R 3.4.0 - R-devel |
+| macOS High Sierra+  | x86_64    | R 3.4.0 - R-devel |
+| macOS Big Sur+      | aarch64   | R 4.1.0 - R-devel |
+| Windows             | x86_64    | R 3.4.0 - R-devel |
 
 For macOS we only support the official CRAN R build. Other builds, e.g.
 Homebrew R, are not supported.
