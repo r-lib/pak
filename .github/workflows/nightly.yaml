@@ -209,7 +209,7 @@ jobs:
   deploy:
     runs-on: ubuntu-18.04
     if: always()
-    needs: [ macos, windows, linux ]
+    needs: [ macos, windows, linux, macos-m1 ]
 
     steps:
 
