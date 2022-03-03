@@ -462,7 +462,17 @@ push_packages <- local({
     if (dry_run) {
       cat(skopeo, args, "\n")
     } else {
-      processx::run(skopeo, args, echo_cmd = TRUE, echo = TRUE)
+      tries <- 10
+      repeat {
+        tries <- tries - 1
+        tryCatch({
+          processx::run(skopeo, args, echo_cmd = TRUE, echo = TRUE)
+          break;
+        }, error = function(e) {
+          if (tries == 0) stop(e)
+          tries <<- tries - 1
+        })
+      }
     }
 
     invisible(pkgs)
