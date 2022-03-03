@@ -22,7 +22,7 @@ files and directories. It is an alternative to `install.packages()` and
 `devtools::install_github()`. pak is fast, safe and convenient.
 
 <p align="center">
-<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@images/pak-demo.svg">
+<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@images/pak-demo.svg?version=2">
 </p>
 
 ## Installation
