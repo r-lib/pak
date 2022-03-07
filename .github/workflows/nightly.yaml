@@ -331,6 +331,8 @@ jobs:
 
     - name: Install local pak tree
       run: R CMD INSTALL .
+      env:
+        PAK_BUNDLE: false
 
     - name: Create repository
       run: |
