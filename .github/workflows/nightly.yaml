@@ -34,6 +34,20 @@ on:
 
 jobs:
 
+  debug:
+    runs-on: ubuntu-latest
+    if: always()
+    name: Parameters
+    steps:
+      - name: Input parameters
+        run: |
+          echo "macos: ${{ github.event.inputs.macos }}"
+          echo "windows: ${{ github.event.inputs.windows }}"
+          echo "linux: ${{ github.event.inputs.linux }}"
+          echo "macos-m1: ${{ github.event.inputs.macos-m1 }}"
+          echo "linux-arm64: ${{ github.event.inputs.linux-arm64 }}"
+          echo "deploy: ${{ github.event.inputs.deploy }}"
+
   # -----------------------------------------------------------------------
   macos:
     runs-on: macos-11
