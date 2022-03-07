@@ -71,6 +71,12 @@ jobs:
           echo "macos-m1: ${{ github.event.inputs.macos-m1 }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 }}"
           echo "deploy: ${{ github.event.inputs.deploy }}"
+          echo "macos: ${{ github.event.inputs.macos == 'yes' }}"
+          echo "windows: ${{ github.event.inputs.windows == 'yes' }}"
+          echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
+          echo "macos-m1: ${{ github.event.inputs.macos-m1 == 'yes' }}"
+          echo "linux-arm64: ${{ github.event.inputs.linux-arm64 == 'yes' }}"
+          echo "deploy: ${{ github.event.inputs.deploy == 'yes' }}"
 
   # -----------------------------------------------------------------------
   macos:
