@@ -769,7 +769,7 @@ create_pak_repo <- local({
     saveRDS(meta, paste0(PACKAGES, ".rds"), compress = "xz", version = 2)
   }
 
-  create_packages_files <- function(data) {
+  create_packages_files <- function(data, root, tag) {
     data$dir <- dirname(data$path)
     data$sha <- unname(vapply(data$path, sha256, ""))
     if (any(data$digest != paste0("sha256:", data$sha))) stop("SHA mismatch")
@@ -778,28 +778,41 @@ create_pak_repo <- local({
     fix_built <- function(built, platform) {
       mapply("; ;", paste0("; ", platform, ";"), built, FUN = sub)
     }
+
+    dscs <- lapply(data$path, desc::desc)
+    data$Package <- field("Package")
+    data$Version <- field("Version")
+    data$Depends <- paste0(
+      "R (>= ", data$r.version, "), R (<= ", data$r.version, ".99)"
+    )
+    data$Imports <- field("Imports")
+    data$MD5sum <- unname(tools::md5sum(data$path))
+    data$Sha256 <- data$sha
+    data$NeedsCompilation <- "no"
+    data$License <- field("License")
+    data$Built <- fix_built(field("Built"), data$r.platform)
+    data$File <- basename(data$path)
+    data$DownloadURL <- paste0(baseuri, "/", data$digest)
+    plat <- parse_platform(data$r.platform)
+    data$OS <- os_map[plat$os] %NA% plat$os
+    data$Arch <- cpu_map[plat$cpu] %NA% plat$cpu
+
+    cols <- c("Package", "Version", "Depends", "Imports", "License",
+              "MD5sum", "Sha256", "NeedsCompilation", "Built", "File",
+              "DownloadURL", "OS", "Arch")
+    meta <- main <- data[, cols]
+
+    main_file <- file.path(root, tag, "metadata.json")
+    json <- jsonlite::toJSON(main, pretty = TRUE)
+    out <- file(main_file, open = "wb")
+    on.exit(close(out), add = TRUE)
+    cat(json, file = out)
+
     for (dir in unique(data$dir)) {
       PACKAGES <- file.path(dir, "PACKAGES")
       unlink(PACKAGES)
-      local <- data[dir == data$dir, ]
-      dscs <- lapply(local$path, desc::desc)
-      meta <- data.frame(
-        stringsAsFactors = FALSE,
-        row.names = NULL,
-        Package = field("Package"),
-        Version = field("Version"),
-        Depends = paste0(
-          "R (>= ", local$r.version, "), R (<= ", local$r.version, ".99)"),
-        Imports = field("Imports"),
-        License = field("License"),
-        MD5sum = unname(tools::md5sum(local$path)),
-        Sha256 = local$sha,
-        NeedsCompilation = "no",
-        Built = fix_built(field("Built"), local$r.platform),
-        File = basename(local$path),
-        DownloadURL = paste0(baseuri, "/", local$digest)
-      )
-      write_dcf(meta, PACKAGES)
+      local <- meta[dir == data$dir, ]
+      write_dcf(local, PACKAGES)
     }
   }
 
@@ -833,7 +846,7 @@ create_pak_repo <- local({
       curl::curl_download(url, data$path[idx], handle = h, quiet = FALSE)
     }
 
-    create_packages_files(data)
+    create_packages_files(data, root, tag)
 
     add_repo_links(root, tag)
   }
