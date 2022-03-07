@@ -6,33 +6,51 @@ on:
       macos:
         description: 'Build x86_64 macOS packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
       windows:
         description: 'Build Windows packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
       linux:
         description: 'Build x86_64 Linux packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
       macos-m1:
         description: 'Build arm64 macOS packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
       linux-arm64:
         description: 'Build arm64 Linux packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
       deploy:
         description: 'Deploy packages'
         required: true
-        type: boolean
-        default: true
+        type: choice
+        options:
+        - yes
+        - no
+        default: yes
   schedule:
   - cron: '30 5 * * *'
 
