@@ -8,49 +8,49 @@ on:
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
       windows:
         description: 'Build Windows packages'
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
       linux:
         description: 'Build x86_64 Linux packages'
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
       macos-m1:
         description: 'Build arm64 macOS packages'
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
       linux-arm64:
         description: 'Build arm64 Linux packages'
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
       deploy:
         description: 'Deploy packages'
         required: true
         type: choice
         options:
-        - yes
-        - no
-        default: yes
+        - 'yes'
+        - 'no'
+        default: 'yes'
   schedule:
   - cron: '30 5 * * *'
 
@@ -75,7 +75,7 @@ jobs:
   # -----------------------------------------------------------------------
   macos:
     runs-on: macos-11
-    if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos }}
+    if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
     name: macOS x86_64 pak binaries
     steps:
 
@@ -122,7 +122,7 @@ jobs:
   # -----------------------------------------------------------------------
   windows:
     runs-on: windows-latest
-    if: ${{ github.event.inputs.windows == '' || github.event.inputs.windows }}
+    if: ${{ github.event.inputs.windows == '' || github.event.inputs.windows == 'yes' }}
     name: Windows pak binaries
     steps:
 
@@ -185,7 +185,7 @@ jobs:
   # -----------------------------------------------------------------------
   linux:
     runs-on: ubuntu-18.04
-    if: ${{ github.event.inputs.linux == '' || github.event.inputs.linux }}
+    if: ${{ github.event.inputs.linux == '' || github.event.inputs.linux == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
     strategy:
@@ -227,7 +227,7 @@ jobs:
 
   macos-m1:
     runs-on: [self-hosted, macOS, arm64]
-    if: ${{ github.event.inputs.macos-m1 == '' || github.event.inputs.macos-m1 }}
+    if: ${{ github.event.inputs.macos-m1 == '' || github.event.inputs.macos-m1 == 'yes' }}
     name: macos arm64 pak binaries
     defaults:
       run:
@@ -272,7 +272,7 @@ jobs:
 
   linux-arm64:
     runs-on: [self-hosted, Linux, arm64]
-    if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 }}
+    if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
     strategy:
@@ -305,7 +305,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-18.04
-    if: ${{ github.event.inputs.deploy == '' || github.event.inputs.deploy }}
+    if: ${{ github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes' }}
     needs: [ macos, windows, linux, macos-m1, linux-arm64 ]
 
     steps:
