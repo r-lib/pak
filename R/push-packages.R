@@ -529,7 +529,7 @@ push_packages <- local({
     dry_run
 
     if (tag == "auto") {
-      version <- unclass(package_version(packageVersion("pak")))[[1]]
+      version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
       tag <- if (length(version) >= 4 && version[4] == 9999) {
         "rc"
       } else if (length(version) >= 4 && version[4] >= 9000) {
