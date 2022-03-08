@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pak_update</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"pkgType"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pak_update</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span>, stream <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"stable"</span>, <span class="st">"rc"</span>, <span class="st">"devel"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,11 +71,13 @@
     <dl><dt>force</dt>
 <dd><p>Whether to force an update, even if no newer version is
 available.</p></dd>
-<dt>type</dt>
-<dd><p>Package type. Like the <code>type</code> argument of
-<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. You can set this to <code>mac.binary</code> or
-<code>mac.binary.big-sur-arm64</code> if you have a non-CRAN R build, but want
-to install a binary pak package.</p></dd>
+<dt>stream</dt>
+<dd><p>Whether to update to the</p><ul><li><p><code>"stable"</code>,</p></li>
+<li><p><code>"rc"</code> (release candidate) or</p></li>
+<li><p><code>"devel"</code> (development) version.</p></li>
+<li><p><code>"auto"</code> updates to the same stream as the current one.</p></li>
+</ul><p>Often there is no release candidate version, then <code>"rc"</code> also
+installs the stable version.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
