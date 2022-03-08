@@ -1,11 +1,48 @@
 
-pak_repo <- function() {
-  base <- "https://r-lib.github.io/p/pak/"
-  if (tolower(Sys.getenv("PAK_DEVEL")) == "true") {
-    paste0(base, "devel")
-  } else {
-    paste0(base, "stable")
+detect_platform <- function() {
+  me <- list(
+    os = R.Version()$os,
+    arch = R.Version()$arch,
+    rver = get_minor_r_version(getRversion())
+  )
+
+  if (me$os %in% c("linux-dietlibc", "linux-gnu", "linux-musl",
+                   "linux-uclibc", "linux-unknown")) {
+    me$os <- "linux"
   }
+  me
+}
+
+pak_stream <- function(stream) {
+  if (stream == "auto") {
+    version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
+    stream <- if (length(version) >= 4 && version[4] == 9999) {
+      "rc"
+    } else if (length(version) >= 4 && version[4] >= 9000) {
+      "devel"
+    } else {
+      "stable"
+    }
+  }
+  stream
+}
+
+pak_repo <- function(stream = "auto") {
+  stream <- pak_stream(stream)
+  paste0("https://r-lib.github.io/p/pak/", stream, "/")
+}
+
+pak_repo_metadata <- function(repo = NULL, stream = "auto") {
+  repo <- repo %||% pak_repo(stream)
+  url <- paste0(repo, "metadata.json")
+  tmp <- tempfile()
+  on.exit(unlink(tmp), add = TRUE)
+  utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
+  df <- json$parse_file(tmp)
+  meta <- do.call(rbind, lapply(df, as.data.frame, stringsAsFactors = FALSE))
+  rver <- sub("R ", "", sapply(strsplit(meta$Built, ";"), "[[", 1))
+  meta$RVersion <- get_minor_r_version(rver)
+  meta
 }
 
 #' Update pak itself
@@ -14,10 +51,14 @@ pak_repo <- function() {
 #'
 #' @param force Whether to force an update, even if no newer version is
 #'   available.
-#' @param type Package type. Like the `type` argument of
-#'   [utils::install.packages()]. You can set this to `mac.binary` or
-#'   `mac.binary.big-sur-arm64` if you have a non-CRAN R build, but want
-#'   to install a binary pak package.
+#' @param stream Whether to update to the
+#'   * `"stable"`,
+#'   * `"rc"` (release candidate) or
+#'   * `"devel"` (development) version.
+#'   * `"auto"` updates to the same stream as the current one.
+#'
+#'   Often there is no release candidate version, then `"rc"` also
+#'   installs the stable version.
 #'
 #' @return Nothing.
 #'
@@ -25,73 +66,56 @@ pak_repo <- function() {
 
 pak_update <- function(
   force = FALSE,
-  type = getOption("pkgType")) {
+  stream = c("auto", "stable", "rc", "devel")) {
 
-  stopifnot(is_flag(force), is_string(type))
+  stopifnot(is_flag(force))
+  stream <- match.arg(stream)
+  stream <- pak_stream(stream)
 
   repo <- pak_repo()
 
   if (!is.null(.getNamespace("pak")$.__DEVTOOLS__)) {
+    lib <- .libPaths()[1]
     warning(
-      "`load_all()`-d pak package, updating in default library",
+      "`load_all()`-d pak package, updating in default library at\n  ",
+      "`", lib, "`",
       immediate. = TRUE
     )
-    lib <- .libPaths()[1]
   } else {
     lib <- dirname(getNamespaceInfo("pak", "path"))
   }
 
-  os <- get_os()
-  arch <- Sys.info()["machine"]
-  if (os == "win") {
-    av <- utils::available.packages(
-      repos = repo,
-      type = "win.binary",
-      fields = c("Built", "File")
-    )
-  } else if (os == "mac" && arch == "x86_64") {
-    av <- utils::available.packages(
-      repos = repo,
-      type = "mac.binary",
-      fields = c("Built", "File")
-    )
-  } else if (os == "mac" && arch == "arm64") {
-    av <- utils::available.packages(
-      repos = repo,
-      type = "mac.binary.big-sur-arm64",
-      fields = c("Built", "File")
-    )
-  } else {
-    av <- utils::available.packages(
-      repos = repo,
-      type = "source",
-      filters = list(
-        add = TRUE,
-        "R_version",
-        "OS_type",
-        "subarch",
-        av_filter,
-        "duplicates"
-      ),
-      fields = c("Built", "File")
-    )
-  }
+  repo <- pak_repo(stream)
+  meta <- pak_repo_metadata(repo)
 
-  if (nrow(av) == 0) {
-    stop("Cannot find a pak binary for this platform. :(")
-  }
+  me <- detect_platform()
+  cand <- which(
+    meta$OS == me$os &
+    meta$Arch == me$arch &
+    meta$RVersion == me$rver
+  )
 
-  upd <- should_update_to(av)
+  if (length(cand) == 0) {
+    pak_update_unsupported_platform(stream, me, meta)
+  } else if (length(cand) > 1) {
+    warning("Multiple pak candidates are available for this platform, ",
+            "this should not happen. Using the first one.")
+    cand <- cand[1]
+  }
+  check_mac_cran_r(me, meta)
+
+  upd <- should_update_to(meta[cand, , drop = FALSE])
   if (!upd && !force) {
     message("\nCurrent version is the latest, no need to update.")
     return(invisible())
   }
 
-  message("\nUpdating to version ", av[1, "Version"], "\n")
+  url <- paste0(repo, me$os, "/", me$arch, "/", meta$File[cand])
+  tgt <- file.path(tempdir(), meta$File[cand])
+  utils::download.file(url, tgt, mode = "wb")
 
-  url <- paste0(av[1, "Repository"], "/", av[1, "File"])
-  tgt <- file.path(tempdir(), av[1, "File"])
-  utils::download.file(url, tgt)
+  date <- get_built_date(meta$Built[cand])
+  message("\nUpdating to version ", meta$Version[cand], " (", date, ")\n")
 
   # Otherwise the subprocess might be locking some DLLs
   try(pkg_data$remote$kill(), silent = TRUE)
@@ -100,33 +124,53 @@ pak_update <- function(
 
   attached <- "package:pak" %in% search()
   message("\nReloading pak.")
-  eapply(asNamespace("pak"), force, all.names = TRUE)
-  unloadNamespace("pak")
-  loadNamespace("pak")
-  if (attached) library(pak)
 
   # Try to use it to see if it was successful
-  tryCatch(
-    suppressWarnings(tools::Rd_db(package = "pak")),
-    error = function(err) {
-      message("\nFailed to reload pak. Please restart your R session.")
-    }
-  )
+  suppressWarnings(tryCatch({
+    eapply(asNamespace("pak"), base::force, all.names = TRUE)
+    unloadNamespace("pak")
+    loadNamespace("pak")
+    if (attached) library(pak)
+    suppressWarnings(tools::Rd_db(package = "pak"))
+  }, error = function(err) {
+    message("\nFailed to reload pak. Please restart your R session.")
+  }))
 
   invisible()
 }
 
-av_filter <- function(av) {
-  if (! "File" %in% colnames(av)) return(av)
-  file <- sub("[.]tar[.]gz$", "", av[, "File"])
-  pcs <- strsplit(file, "_", fixed = TRUE)
-  arch <- vcapply(pcs, function(x) paste(x[-(1:3)], collapse = "_"))
-  curr <- R.Version()$platform
-  mtch <- vlapply(arch, platform_match, curr)
-  av[mtch, , drop = FALSE]
+pak_update_unsupported_platform <- function(stream, me, meta) {
+  message("pak has ", stream, " binaries for the following platforms:")
+  meta$OS <- sub("^darwin", "macOS darwin", meta$OS)
+  meta$OS <- sub("^mingw32", "Windows (mingw32)", meta$OS)
+  pl <- paste0(meta$OS, ", ", meta$Arch)
+  rv <- tapply(
+    meta$RVersion,
+    pl,
+    function(x) paste0("R ", sort(x), ".x"),
+    simplify = FALSE
+  )
+  pl2 <- sapply(rv, paste, collapse = ", ")
+  message(paste0(" * ", names(pl2), ", ", pl2, "\n"))
+  stop(
+    "pak is not available for ", me$os, ", ",
+    me$arch, ", R ", me$rver, ".x. Aborting now"
+  )
+  # TODO: tell how to install from source
 }
 
-should_update_to <- function(av) {
+check_mac_cran_r <- function(me, meta) {
+  if (! grepl("^darwin", me$os)) return()
+  if (.Platform$pkgType == "source") {
+    stop(
+      "pak only has binaries for the CRAN build of R, and this ",
+      "seems to be a brew or another non-CRAN build."
+    )
+    # TODO: tell how to install from source
+  }
+}
+
+should_update_to <- function(new) {
   # check if the right platform was installed
   current <- R.Version()$platform
   if (!platform_match(pak_sitrep_data$platform, current)) {
@@ -136,11 +180,11 @@ should_update_to <- function(av) {
 
   # otherwise use version number first
   dsc <- utils::packageDescription("pak")
-  if (package_version(dsc$Version) < av[1, "Version"]) return(TRUE)
+  if (package_version(dsc$Version) < new$Version) return(TRUE)
 
   # or the build date
   blt_cur <- get_built_date(dsc$Built)
-  blt_new <- get_built_date(av[1, "Built"])
+  blt_new <- get_built_date(new$Built)
   if (is.na(blt_cur) || blt_cur < blt_new) return(TRUE)
   FALSE
 }

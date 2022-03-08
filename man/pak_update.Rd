@@ -4,16 +4,22 @@
 \alias{pak_update}
 \title{Update pak itself}
 \usage{
-pak_update(force = FALSE, type = getOption("pkgType"))
+pak_update(force = FALSE, stream = c("auto", "stable", "rc", "devel"))
 }
 \arguments{
 \item{force}{Whether to force an update, even if no newer version is
 available.}
 
-\item{type}{Package type. Like the \code{type} argument of
-\code{\link[utils:install.packages]{utils::install.packages()}}. You can set this to \code{mac.binary} or
-\code{mac.binary.big-sur-arm64} if you have a non-CRAN R build, but want
-to install a binary pak package.}
+\item{stream}{Whether to update to the
+\itemize{
+\item \code{"stable"},
+\item \code{"rc"} (release candidate) or
+\item \code{"devel"} (development) version.
+\item \code{"auto"} updates to the same stream as the current one.
+}
+
+Often there is no release candidate version, then \code{"rc"} also
+installs the stable version.}
 }
 \value{
 Nothing.

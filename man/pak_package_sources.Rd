@@ -89,7 +89,7 @@ list of package sources:\preformatted{Remotes: <pkg-source-1>, <pkg-source-2>, [
 Note that you will still need add the package to one of the regular
 dependency fields, i.e. \code{Imports}, \code{Suggests}, etc. Here is a concrete
 example that specifies the \code{r-lib/glue} package:\preformatted{Imports: glue
-Remotes: `r-lib/glue,
+Remotes: r-lib/glue,
   r-lib/httr@v0.4,
   klutometis/roxygen#142,
   r-lib/testthat@c67018fa4970
