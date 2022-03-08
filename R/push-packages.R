@@ -525,8 +525,20 @@ push_packages <- local({
     git("push", "--porcelain", "origin", stderr_to_stdout = TRUE, dry_run = dry_run)
   }
 
-  function(paths, tag = "devel", keep_old = TRUE, dry_run = FALSE, cleanup = TRUE) {
+  function(paths, tag = "auto", keep_old = TRUE, dry_run = FALSE, cleanup = TRUE) {
     dry_run
+
+    if (tag == "auto") {
+      version <- unclass(package_version(packageVersion("pak")))[[1]]
+      tag <- if (length(version) >= 4 && version[4] == 9999) {
+        "rc"
+      } else if (length(version) >= 4 && version[4] >= 9000) {
+        "devel"
+      } else {
+        "stable"
+      }
+    }
+
     workdir <- package_dir()
 
     if (!file.exists(workdir)) {
