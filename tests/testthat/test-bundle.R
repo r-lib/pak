@@ -59,9 +59,10 @@ test_that("bundle_deps", {
   deps <- bnd$bundle_deps()
   dsc <- desc::desc(pkg)
   # seems like a useless test case...
+  std <- function(x) unname(gsub("[ \n]", "", x))
   expect_equal(
-    deps$deps,
-    trimws(gsub(" ", "", unname(dsc$get("Config/needs/dependencies"))))
+    std(deps$deps),
+    std(dsc$get("Config/needs/dependencies"))
   )
 })
 
@@ -102,7 +103,9 @@ test_that("bundle_download with local repo", {
   for (type in types) {
     pkgdir <- paste0(repo, contrib.url(repos = "", type = type))
     mkdirp(pkgdir)
-    utils::download.packages(pkgs, pkgdir, type = type, quiet = TRUE)
+    utils::download.packages(
+      pkgs, pkgdir, type = type, quiet = TRUE, repos = default_cran_mirror()
+    )
     ptype <- type
     if (grepl("^mac.binary", type)) ptype <- "mac.binary"
     tools::write_PACKAGES(pkgdir, type = ptype)
