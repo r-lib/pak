@@ -120,6 +120,17 @@ pak_update <- function(
   # Otherwise the subprocess might be locking some DLLs
   try(pkg_data$remote$kill(), silent = TRUE)
 
+  # Windows cannot install binaries with arbitrary names, apparently.
+  ext <- tools::file_ext(tgt)
+  if (.Platform$OS.type == "windows" && ext == "zip") {
+    dir.create(tmp <- tempfile(), recursive = TRUE)
+    on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+    tgt2 <- file.path(tmp, "pak.zip")
+    if (!file.copy(tgt, tgt2)) {
+      stop("Failed to copy downloaded file :(")
+    }
+    tgt <- tgt2
+  }
   utils::install.packages(tgt, repos = NULL, type = "source", lib = lib)
 
   attached <- "package:pak" %in% search()
