@@ -312,4 +312,7 @@ local({
   } else if (mthd == "double") {
     # nothing
   }
+
+  # This is needed so we can eval(parse()) this for testing
+  environment()
 })
