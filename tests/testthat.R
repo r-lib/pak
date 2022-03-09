@@ -13,4 +13,6 @@ do <- function() {
   test_check("pak", reporter = "summary")
 }
 
-do()
+if (Sys.getenv("NOT_CRAN") == "true") {
+  do()
+}
