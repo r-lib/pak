@@ -288,7 +288,7 @@ local({
   bundle_download <- function() {
     deps <- bundle_deps()
     cat("**** building pak dependency data, this can take several minutes\n")
-    lib <- file.path(deps$pkgdir, "library")
+    lib <- Sys.getenv("PAK_LIBRARY_DIR", file.path(deps$pkgdir, "library"))
     pkgs <- trimws(strsplit(deps$deps, ",")[[1]])
     cat("**** deps data ")
     safe_cran_install(pkgs, lib = lib, quiet = TRUE)
