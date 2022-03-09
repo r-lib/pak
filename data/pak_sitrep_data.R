@@ -1,5 +1,10 @@
 
-pak_sitrep_data <- list(deps = logical(), failed = FALSE, fails = list())
+pak_sitrep_data <- list(
+  deps = logical(),
+  failed = FALSE,
+  fails = list(),
+  method = NULL
+)
 
 # It seems that it is not possible to share these scripts with the package,
 # except for source()-ing the collated package code, which I decided not
@@ -216,29 +221,15 @@ local({
       remotes <- dcf$Remotes
     }
 
-    # source()?
-    if (pkgdir == "" && !load_all) return("source")
-
-    # Avoid calling this twice in one install. I am not sure why it happens
-    # at all, but it does happen. We need to avoid it differently in
-    # load_all()
-    if (load_all) {
-      if (isTRUE(asNamespace("pak")$.bundled)) return("double")
-      assign(".bundled", TRUE, asNamespace("pak"))
-    } else {
-      pid <- Sys.getpid()
-      mark <- file.path(tempdir(), paste0(pid, ".log"))
-      if (file.exists(mark)) return("double")
-      file.create(mark)
-    }
-
-    # Wait with this until we detected double runs
-    env <- tolower(Sys.getenv("PAK_BUNDLE"))
-    if (env %in% c("no", "false", "none")) return("none")
-    if (env %in% c("none", "copy", "download", "double")) return(env)
-
     # The table above boils down to this
-    if (load_all) {
+    env <- tolower(Sys.getenv("PAK_BUNDLE"))
+    result <- if (pkgdir == "" && !load_all) {
+      "source"
+    } else if (env %in% c("no", "false", "none")) {
+      "none"
+    } else if (env %in% c("none", "copy", "download", "double")) {
+      env
+    } else if (load_all) {
       "copy"
     } else if (!is.null(remotes)) {
       "none"
@@ -249,6 +240,24 @@ local({
     } else {
       "download"
     }
+
+    # Record this
+    pak_sitrep_data$method <<- result
+
+    # Avoid calling this twice in one install. I am not sure why it happens
+    # at all, but it does happen. We need to avoid it differently in
+    # load_all()
+    if (load_all) {
+      if (!is.null(asNamespace("pak")$.bundled)) return("double")
+      assign(".bundled", "copy", asNamespace("pak"))
+    } else {
+      pid <- Sys.getpid()
+      mark <- file.path(tempdir(), paste0(pid, ".log"))
+      if (file.exists(mark)) return("double")
+      file.create(mark)
+    }
+
+    result
   }
 
   bundle_deps <- function() {
