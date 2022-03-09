@@ -14,7 +14,7 @@ create_dev_lib <- function(lib = NULL) {
 
   pkg_names <- basename(pkg_dirs)
   cli::cli_alert_info(
-    "Copying packages into private lib: {.pkg {pkg_names}}.",
+    "Copying {length(pkg_dirs)} package{?s} into private lib: {.pkg {pkg_names}}.",
     wrap = TRUE
   )
 

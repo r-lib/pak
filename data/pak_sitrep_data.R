@@ -1,5 +1,5 @@
 
-pak_sitrep_data <- list(deps = logical())
+pak_sitrep_data <- list(deps = logical(), failed = FALSE, fails = list())
 
 # It seems that it is not possible to share these scripts with the package,
 # except for source()-ing the collated package code, which I decided not
@@ -7,218 +7,282 @@ pak_sitrep_data <- list(deps = logical())
 
 local({
 
-  should_bundle <- function() {
-    # So we can opt out explicitly
-    if (tolower(Sys.getenv("PAK_BUNDLE")) %in% c("no", "false")) return(FALSE)
+  safe_cran_install <- local({
 
-    # Do not bundle in pkgload::load_all()
-    if (Sys.getenv("R_PACKAGE_NAME", "") != "pak") return(FALSE)
+    default_cran_mirror <- function() {
+      mirror <- getOption("repos")["CRAN"]
+      if (is.null(mirror) || is.na(mirror) || mirror == "@CRAN@") {
+        c(CRAN = "https://cran.rstudio.com")
+      } else {
+        c(CRAN = unname(mirror))
+      }
+    }
 
-    # This must be set in R CMD INSTALL
+    cran_install_order <- local({
+
+      base_packages <- function() {
+        c("base", "compiler", "datasets", "graphics", "grDevices", "grid",
+          "methods", "parallel", "splines", "stats", "stats4", "tcltk",
+          "tools", "utils"
+          )
+      }
+
+      parse_dep_fields <- function(flds) {
+        flds[is.na(flds)] <- ""
+        flds <- gsub("\\s+", "", flds)
+        flds <- gsub("\\([^)]+\\)", "", flds)
+        notempty <- nzchar(flds)
+        res <- replicate(length(flds), character())
+        flds <- flds[notempty]
+        flds <- strsplit(flds, ",", fixed = TRUE)
+
+        base <- base_packages()
+        flds <- lapply(flds, setdiff, y = c("R", base))
+
+        res[notempty] <- flds
+        res
+      }
+
+      extract_deps <- function(pkg, db) {
+        dep_types <- c("Depends", "Imports", "LinkingTo")
+        fields <- db[ db[, "Package"] %in% pkg, dep_types]
+        unlist(parse_dep_fields(fields))
+      }
+
+
+      calculate_deps <- function(pkgs) {
+        db <- available.packages(repos = default_cran_mirror())
+        current <- character()
+        deps <- list()
+        new <- pkgs
+        while (length(new) > 0) {
+          deps[new] <- lapply(new, extract_deps, db = db)
+          new <- setdiff(unlist(deps[new]), names(deps))
+        }
+        deps
+      }
+
+      topo_deps <- function(deps) {
+        pkgs <- character()
+        while (length(deps) > 0) {
+          ndeps <- vapply(deps, length, integer(1))
+          nxt <- names(deps)[ndeps == 0]
+          pkgs <- c(pkgs, nxt)
+          deps <- deps[! names(deps) %in% nxt]
+          deps[] <- lapply(deps, setdiff, nxt)
+        }
+        pkgs
+      }
+
+      function(pkgs) {
+        deps <- calculate_deps(pkgs)
+        topo_deps(deps)
+      }
+
+    })
+
+    install_one <- function(pkg, lib = .libPaths()[1], INSTALL_opts = "", ...) {
+      old <- options(
+        repos = default_cran_mirror(),
+        install.packages.compile.from.source = "always"
+      )
+      on.exit(options(old), add = TRUE)
+
+      done <- FALSE
+      # try binary first, this might be an older version, but never mind
+      if (getOption("pkgType") != "source") {
+        tryCatch({
+          install.packages(
+            pkg,
+            lib = lib,
+            dependencies = FALSE,
+            INSTALL_opts = INSTALL_opts,
+            ...
+          )
+          done <- TRUE
+        }, error = function(err) print(err))
+      }
+
+      # try the canonical macos mirror as well, on macOS
+      if (!done &&
+          Sys.info()[["sysname"]] == "Darwin" &&
+          getOption("pkgType") != "source") {
+        options(repos = c(CRAN = "https://mac.r-project.org"))
+        tryCatch({
+          install.packages(
+            pkg,
+            lib = lib,
+            dependencies = FALSE,
+            INSTALL_opts = INSTALL_opts,
+            ...
+          )
+          done <- TRUE
+        }, error = function(err) print(err))
+        options(repos = default_cran_mirror())
+      }
+
+      # source
+      if (!done) {
+        tryCatch({
+          install.packages(
+            pkg,
+            lib = lib,
+            dependencies = FALSE,
+            type = "source",
+            INSTALL_opts = INSTALL_opts,
+            ...
+          )
+          done <- TRUE
+        }, error = function(e) {
+          err <<- e
+          print(e)
+        })
+      }
+
+      if (!done) {
+        unlink(file.path(lib, pkg), recursive = TRUE)
+        pak_sitrep_data$fails[[pkg]] <<- conditionMessage(err)
+        pak_sitrep_data$failed <<- TRUE
+        stop("Failure in ", pkg)
+      }
+    }
+
+    function(pkgs, lib = .libPaths()[1], exclude = character(), ...) {
+      dir.create(lib, showWarnings = FALSE, recursive = TRUE)
+      alldeps <- cran_install_order(pkgs)
+      alldeps0 <- setdiff(alldeps, exclude)
+      cat("(", length(alldeps0), "): ", sep = "")
+
+      opts <- paste(
+        "--without-keep.source",
+        "--no-html",
+        "--no-help",
+        "--no-data",
+        "--strip",
+        "--no-test-load",
+        if (getRversion() >= "3.6") "--no-staged-install"
+      )
+
+      n <- 1
+      for (pkg in alldeps0) {
+        cat(".")
+        if (!n %% 10) cat(n)
+        n <- n + 1
+        suppressWarnings(suppressMessages(utils::capture.output(install_one(
+          pkg,
+          lib = lib,
+          INSTALL_opts = opts,
+          ...
+        ))))
+      }
+      cat(length(alldeps0), "\n", sep = "")
+    }
+  })
+
+  # --------------------------------------------------
+  # OS-type    check   load_all()   Remotes   mode
+  # --------------------------------------------------
+  # Windows    no      no           no        download
+  # Windows    no      no           yes       none
+  # Windows    no      yes          no        copy
+  # Windows    no      yes          yes       copy
+  # Windows    yes     no           no        download
+  # Windows    yes     no           yes       none
+  # Windows    yes     yes          no        copy
+  # Windows    yes     yes          yes       copy
+  # Unix       no      no           no        download
+  # Unix       no      no           yes       none
+  # Unix       no      yes          no        copy
+  # Unix       no      yes          yes       copy
+  # Unix       yes     no           no        none
+  # Unix       yes     no           yes       none
+  # Unix       yes     yes          no        copy
+  # Unix       yes     yes          yes       copy
+  # --------------------------------------------------
+
+  bundle_method <- function() {
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
-    if (pkgdir == "") return(FALSE)
 
-    # Another test for pkgload::load_all(), just in case
-    if (!file.exists(file.path(pkgdir, "Meta"))) return(FALSE)
-
-    # Do not bundle when building binary on GHA. GHA uses its own
-    # bundling for now.
-    if (Sys.getenv("GITHUB_WORKFLOW", "") == "Build pak binary") {
-      return(FALSE)
+    # data
+    ostype <- .Platform$OS.type
+    load_all <- pkgdir == "" && !is.null(asNamespace("pak")$.__DEVTOOLS__)
+    check <- Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "") != ""
+    if (pkgdir != "") {
+      desc <- file.path(pkgdir, "DESCRIPTION")
+      dcf <- read.dcf(desc)
+      remotes <- if ("Remotes" %in% colnames(dcf)) dcf[, "Remotes"]
+    } else {
+      dcf <- utils::packageDescription("pak")
+      remotes <- dcf$Remotes
     }
 
-    if (Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "") != "") {
-      return(FALSE)
+    # source()?
+    if (pkgdir == "" && !load_all) return("source")
+
+    # Avoid calling this twice in one install. I am not sure why it happens
+    # at all, but it does happen. We need to avoid it differently in
+    # load_all()
+    if (load_all) {
+      if (isTRUE(asNamespace("pak")$.bundled)) return("double")
+      assign(".bundled", TRUE, asNamespace("pak"))
+    } else {
+      pid <- Sys.getpid()
+      mark <- file.path(tempdir(), paste0(pid, ".log"))
+      if (file.exists(mark)) return("double")
+      file.create(mark)
     }
 
-    pid <- Sys.getpid()
-    mark <- file.path(tempdir(), paste0(pid, ".log"))
-    if (file.exists(mark)) return(FALSE)
+    # Wait with this until we detected double runs
+    env <- tolower(Sys.getenv("PAK_BUNDLE"))
+    if (env %in% c("no", "false", "none")) return("none")
+    if (env %in% c("none", "copy", "download", "double")) return(env)
 
-    file.create(mark)
-    TRUE
+    # The table above boils down to this
+    if (load_all) {
+      "copy"
+    } else if (!is.null(remotes)) {
+      "none"
+    } else if (ostype == "windows") {
+      "download"
+    } else if (check) {
+      "none"
+    } else {
+      "download"
+    }
   }
 
-  bundle <- function() {
+  bundle_deps <- function() {
     pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
     if (pkgdir != "") {
       desc <- file.path(pkgdir, "DESCRIPTION")
       dcf <- read.dcf(desc)
       deps <- dcf[, "Config/needs/dependencies"]
-      rmts <- if ("Remotes" %in% colnames(dcf)) dcf[, "Remotes"]
     } else {
       dcf <- utils::packageDescription("pak")
       deps <- dcf$`Config/needs/dependencies`
-      rmts <- dcf$Remotes
     }
+    list(deps = deps, pkgdir = pkgdir)
+  }
 
-    if (!is.null(rmts)) {
-      cat(
-        "** -----------------------------------------------------------------------------\n",
-        "** Found 'Remotes', **NOT** bundling dependencies, ",
-        "use `pak:::create_dev_lib()`.\n",
-        "** -----------------------------------------------------------------------------\n",
-        sep = ""
-      )
-      return()
-    }
-
-    cat("** building pak dependency data, this can take several minutes\n")
-
-    # In case the CRAN repo is not set
-    repos <- getOption("repos")
-    if ("@CRAN@" %in% repos) {
-      repos[repos == "@CRAN@"] <- c(CRAN = "https://cloud.r-project.org")
-      o1 <- options(repos = repos)
-      on.exit(options(o1), add = TRUE)
-    } else if (! "CRAN" %in% names(repos)) {
-      repos <- c(repos, c(CRAN = "https://cloud.r-project.org"))
-      o1 <- options(repos = repos)
-      on.exit(options(o1), add = TRUE)
-    }
-
-    pkgs <- bundle_parse_deps(deps)
-
-    lib <- file.path(pkgdir, "library")
-    dir.create(lib, showWarnings = FALSE, recursive = TRUE)
-
-    Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
-    o2 <- options(install.packages.compile.from.source = "always")
-    on.exit(options(o2), add = TRUE)
-
-    cat("** deps data (", length(pkgs), "): ", sep = "")
-    n <- 1
-    for (pkg in pkgs) {
-      suppressWarnings(suppressMessages(utils::capture.output(
-        utils::install.packages(
-          pkg, lib = lib, quiet = TRUE,
-          INSTALL_opts = "--no-staged-install --no-test-load --without-keep.source --no-help --no-html --strip --no-data",
-          dependencies = FALSE
-        )
-        )))
-      if (!file.exists(file.path(lib, pkg))) {
-        stop("Failed to bundle deps data (", pkg, ")")
+  bundle_copy <- function() {
+    if (file.exists("../R/pak")) {
+      sys.source("../R/pak", envir = environment())
+    } else {
+      for (src in dir("../R", full.names = TRUE, pattern = "[.][rR]$")) {
+        sys.source(src, envir = environment())
       }
-      pak_sitrep_data$deps[[pkg]] <<- TRUE
-      cat(".")
-      if (!n %% 10) cat(n)
-      n <- n + 1
     }
-    cat(length(pkgs), "\n", sep = "")
-
-    bundle_cleanup_library(lib)
-
-    cat("** pak dependency data is embedded\n")
+    .packageName <- "pak"
+    create_dev_lib()
   }
 
-  rimraf <- function(...) {
-    x <- file.path(...)
-    unlink(x, recursive = TRUE, force = TRUE)
-  }
-
-  bundle_cleanup_library <- function(lib) {
-    pkgs <- dir(lib)
-    rimraf(file.path(lib, pkgs, "help"))
-    rimraf(file.path(lib, pkgs, "doc"))
-
-    # Remove .so.dSYM junk files
-    rimraf(dir(
-      lib,
-      full.names = TRUE,
-      recursive = TRUE,
-      pattern = "\\.so\\.dSYM$",
-      include.dirs = TRUE
-    ))
-
-    # NEWS files
-    rimraf(dir(
-      lib,
-      full.names = TRUE,
-      recursive=TRUE,
-      pattern = "(NEWS|NEWS.md)",
-      include.dirs=TRUE
-    ))
-
-    # no need for tests
-    rimraf(file.path(lib, "digest", "tinytest"))
-
-    # logos
-    rimraf(dir(
-      lib,
-      full.names = TRUE,
-      recursive = TRUE,
-      pattern = "logo.*[.](png|svg)"
-    ))
-  }
-
-  bundle_re_match <- function(text, pattern, perl = TRUE, ...) {
-    text <- as.character(text)
-    match <- regexpr(pattern, text, perl = perl, ...)
-    start <- as.vector(match)
-    length <- attr(match, "match.length")
-    end <- start + length - 1L
-    matchstr <- substring(text, start, end)
-    matchstr[start == -1] <- NA_character_
-
-    res <- data.frame(
-      stringsAsFactors = FALSE,
-      .text = text,
-      .match = matchstr
-    )
-
-    if (!is.null(attr(match, "capture.start"))) {
-      gstart <- attr(match, "capture.start")
-      glength <- attr(match, "capture.length")
-      gend <- gstart + glength - 1L
-      groupstr <- substring(text, gstart, gend)
-      groupstr[gstart == -1] <- NA_character_
-      dim(groupstr) <- dim(gstart)
-      res <- cbind(groupstr, res, stringsAsFactors = FALSE)
-    }
-
-    names(res) <- c(attr(match, "capture.names"), ".text", ".match")
-
-    res
-  }
-
-  bundle_parse_deps <- function (str) {
-    strs <- unname(vapply(strsplit(str, ",")[[1]], trimws, character(1)))
-    rx <- paste0(
-      "(?<package>[^\\s]+)",
-      "\\s*", "(?:[(](?<op>>|>=|==|<|<=)\\s*(?<version>[-0-9\\.]+)[)])?\\s*$"
-    )
-    mtc <- bundle_re_match(strs, rx)
-    pkgs <- mtc$package
-
-    db <- utils::available.packages()
-
-    deps <- tools::package_dependencies(pkgs, db = db)
-    repeat {
-      nxt <- unlist(unique(deps))
-      mss <- setdiff(nxt, names(deps))
-      if (length(mss) == 0) break
-      deps <- c(deps, tools::package_dependencies(mss, db = db))
-    }
-
-    base <- bundle_base_packages()
-    deps <- deps[setdiff(names(deps), base)]
-    deps[] <- lapply(deps, setdiff, base)
-
-    # Now create a topological order
-    pkgs <- character()
-    while (length(deps) > 0) {
-      nxt <- vapply(deps, length, integer(1)) == 0
-      pnxt <- names(deps)[nxt]
-      pkgs <- c(pkgs, pnxt)
-      deps <- deps[! nxt]
-      deps[] <- lapply(deps, setdiff, pnxt)
-    }
-
-    pkgs
-  }
-
-  bundle_base_packages <- function() {
-    rownames(utils::installed.packages(.Library, priority="base"))
+  bundle_download <- function() {
+    deps <- bundle_deps()
+    cat("**** building pak dependency data, this can take several minutes\n")
+    lib <- file.path(deps$pkgdir, "library")
+    pkgs <- trimws(strsplit(deps$deps, ",")[[1]])
+    cat("**** deps data ")
+    safe_cran_install(pkgs, lib = lib, quiet = TRUE)
   }
 
   pak_sitrep_data$platform <<- R.Version()$platform
@@ -226,7 +290,17 @@ local({
   pak_sitrep_data$`github-sha` <<- Sys.getenv("GITHUB_SHA", "-")
   pak_sitrep_data$`github-ref` <<- Sys.getenv("GITHUB_REF", "-")
 
-  if (should_bundle()) {
-    bundle()
+  mthd <- bundle_method()
+  if (mthd == "none") {
+    cat("**** not bundling dependency data (call pak:::create_dev_lib())\n")
+  } else if (mthd == "copy") {
+    bundle_copy()
+  } else if (mthd == "download") {
+    tryCatch(
+      bundle_download(),
+      error = function(err) { cat(" failed!\n") }
+    )
+  } else if (mthd == "double") {
+    # nothing
   }
 })
