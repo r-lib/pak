@@ -8,6 +8,8 @@ do <- function() {
   }
   Sys.setenv("R_PKG_CACHE_DIR" = tempfile())
 
+  library(pak)
+  library(testthat)
   test_check("pak", reporter = "summary")
 }
 
