@@ -111,7 +111,12 @@ test_that("bundle_download with local repo", {
     tools::write_PACKAGES(pkgdir, type = ptype)
   }
 
-  withr::local_options(repos = c(CRAN = paste0("file://", normalizePath(repo, "/"))))
+  proto <- if (.Platform$OS.type == "windows") {
+    "file:///"
+  } else {
+    "file://"
+  }
+  withr::local_options(repos = c(CRAN = paste0(proto, normalizePath(repo, "/"))))
   withr::local_envvar(PAK_LIBRARY_DIR = lib)
   bnd$bundle_download()
 
