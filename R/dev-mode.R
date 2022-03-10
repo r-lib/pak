@@ -14,7 +14,7 @@ create_dev_lib <- function(lib = NULL) {
 
   pkg_names <- basename(pkg_dirs)
   cli::cli_alert_info(
-    "Copying packages into private lib: {.pkg {pkg_names}}.",
+    "Copying {length(pkg_dirs)} package{?s} into private lib: {.pkg {pkg_names}}.",
     wrap = TRUE
   )
 
@@ -76,5 +76,9 @@ parse_dep_fields <- function(deps) {
   deps <- str_trim(strsplit(deps, ",")[[1]])
   deps <- lapply(strsplit(deps, "\\("), str_trim)
   deps <- lapply(deps, sub, pattern = "\\)$", replacement = "")
-  setdiff(vapply(deps, "[", "", 1), c("R", base_packages()))
+  deps <- setdiff(vapply(deps, "[", "", 1), c("R", base_packages()))
+  # Edit GH remotes
+  deps <- sub("^[^/]*/", "", deps)
+  deps <- sub("@[^@]*$", "", deps)
+  deps
 }

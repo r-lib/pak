@@ -80,7 +80,11 @@ pak_sitrep <- function() {
   lib <- private_lib_dir()
 
   if (identical(names(lib), "embedded")) {
-    cat0("* Private library is embedded.\n")
+    if (ver$failed) {
+      cat0("* Private library is embedded, but dysfunctional, try `pak_update()` to repair.\n")
+    } else {
+      cat0("* Private library is embedded.\n")
+    }
 
   } else {
     cat0("* Private library location:\n- ", lib, "\n")

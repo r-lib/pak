@@ -15,7 +15,12 @@ private_lib_dir <- function()  {
   ppl <- Sys.getenv("PAK_PRIVATE_LIBRARY", NA_character_)
   if (!is.na(ppl)) return(ppl)
 
-  file.path(user_cache_dir("pak"), "lib", get_minor_r_version())
+  file.path(
+    user_cache_dir("pak"),
+    "lib",
+    get_minor_r_version(),
+    R.Version()$arch
+  )
 }
 
 #' Attach pak's internal library to the search path
@@ -29,4 +34,9 @@ use_private_lib <- function() {
   old <- .libPaths()
   new <- c(lib, old[old != lib])
   .libPaths(new)
+}
+
+is_private_lib_embedded <- function() {
+  lib <- private_lib_dir()
+  identical(names(lib), "embedded")
 }
