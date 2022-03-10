@@ -66,3 +66,4 @@ Config/needs/dependencies:
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
+BuildResaveData: no
