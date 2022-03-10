@@ -54,6 +54,7 @@ test_package_root <- function() {
 
 test_that("bundle_deps", {
   skip_on_cran()
+  skip_on_covr()
   pkg <- test_package_root()
   bnd <- eval(parse(file.path(pkg, "data", "pak_sitrep_data.R")))
   deps <- bnd$bundle_deps()
@@ -68,6 +69,7 @@ test_that("bundle_deps", {
 
 test_that("bundle_download", {
   skip_on_cran()
+  skip_on_covr()
   rmts <- "Remotes" %in% names(packageDescription("pak"))
   if (rmts) skip("Has Remotes")
 
@@ -86,6 +88,7 @@ test_that("bundle_download", {
 
 test_that("bundle_download with local repo", {
   skip_on_cran()
+  skip_on_covr()
   rmts <- "Remotes" %in% names(packageDescription("pak"))
   if (rmts) skip("Has Remotes")
 
