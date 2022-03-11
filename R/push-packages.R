@@ -559,7 +559,10 @@ push_packages <- local({
         push_manifest(workdir, dry_run = dry_run)
         break
       }, error = function(err) {
-        if (!grepl("(non-fast-forward|fetch first)", err$stderr)) stop(err)
+        if (!grepl("(non-fast-forward|fetch first|cannot lock ref)",
+                   err$stderr)) {
+          stop(err)
+        }
         old <- getwd()
         on.exit(setwd(old), add = TRUE)
         setwd(workdir)
