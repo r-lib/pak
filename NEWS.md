@@ -1,5 +1,5 @@
 
-# development version
+# 0.2.1.9999 (rc)
 
 * pak functions that used to return tibbles return data frames now.
   While data frames and tibbles are very similar, they are not completely
