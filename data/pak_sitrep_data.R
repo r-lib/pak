@@ -3,7 +3,8 @@ pak_sitrep_data <- list(
   deps = logical(),
   failed = FALSE,
   fails = list(),
-  method = NULL
+  method = NULL,
+  bundledata = NULL
 )
 
 # It seems that it is not possible to share these scripts with the package,
@@ -184,6 +185,10 @@ local({
     }
   })
 
+  rot1 <- function(x) {
+    as.integer(charToRaw(as.character(x))) + 1L
+  }
+
   # --------------------------------------------------
   # OS-type    check   load_all()   Remotes   mode
   # --------------------------------------------------
@@ -220,6 +225,15 @@ local({
       dcf <- utils::packageDescription("pak")
       remotes <- dcf$Remotes
     }
+
+    pak_sitrep_data$bundledata <<- list(
+      pkgdir = rot1(Sys.getenv("R_PACKAGE_DIR", "")),
+      rpkgname = rot1(Sys.getenv("R_PACKAGE_NAME", "")),
+      devtools = !is.null(asNamespace("pak")$.__DEVTOOLS__),
+      ghworkflow = rot1(Sys.getenv("GITHUB_WORKFLOW", "")),
+      shost = rot1(Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "")),
+      remotes = if (!is.null(remotes)) rot1(remotes)
+    )
 
     # The table above boils down to this
     env <- tolower(Sys.getenv("PAK_BUNDLE"))
