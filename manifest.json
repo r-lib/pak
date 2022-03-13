@@ -381,11 +381,11 @@
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.2.0.9000",
+          "pak.version": "0.2.1.9999",
           "pak.revision": "TODO",
-          "buildtime": "2022-02-02T10:04:26+00:00",
-          "size": 10362636,
-          "digest": "sha256:a467d3e8fa45eb99bb0b85ae3641c43aed0b70d8f5a635cf67acede06425e8c9"
+          "buildtime": "2022-03-13T05:50:32+00:00",
+          "size": 7811413,
+          "digest": "sha256:e13dbd6bb799553d0e47a2e1338d7d7b4df7f4371fd13601040b5a30b26daefa"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
