@@ -1,6 +1,5 @@
 
 test_that("add_repo_links", {
-  skip_on_os("windows")
 
   oldwd <- getwd()
   on.exit(setwd(oldwd), add = TRUE)
