@@ -53,7 +53,8 @@ test_that("add_repo_links", {
     source                   darwin15.6.0 x86_64  3.6  NA
   "))
 
-  base <- paste0("file://", normalizePath("p/pak/stable"))
+  pref <- if (.Platform$OS.type == "windows") "file:///" else "file://"
+  base <- paste0(pref, normalizePath("p/pak/stable"))
   repo <- paste0(base, "/", tsts$pkg_type, "/", tsts$os, "/", tsts$arch)
   for (i in seq_len(nrow(tsts))) {
     curl <- utils::contrib.url(repo[i], tsts$pkg_type[i])
