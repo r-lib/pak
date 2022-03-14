@@ -216,7 +216,8 @@ local({
     # data
     ostype <- .Platform$OS.type
     load_all <- pkgdir == "" && !is.null(asNamespace("pak")$.__DEVTOOLS__)
-    check <- Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "") != ""
+    check <- Sys.getenv("NOT_CRAN", "") != "true" &&
+      Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "") != ""
     if (pkgdir != "") {
       desc <- file.path(pkgdir, "DESCRIPTION")
       dcf <- read.dcf(desc)
@@ -231,6 +232,7 @@ local({
       rpkgname = rot1(Sys.getenv("R_PACKAGE_NAME", "")),
       devtools = !is.null(asNamespace("pak")$.__DEVTOOLS__),
       ghworkflow = rot1(Sys.getenv("GITHUB_WORKFLOW", "")),
+      notc = rot1(Sys.getenv("NOT_CRAN", "")),
       shost = rot1(Sys.getenv("_R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES_", "")),
       remotes = if (!is.null(remotes)) rot1(remotes)
     )
