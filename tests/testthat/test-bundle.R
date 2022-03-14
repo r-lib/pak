@@ -18,7 +18,10 @@ test_that("do not embed on check, except windows", {
   if ( win &&  chk &&  load && !rmts) expect_equal(mthd, "copy")     # L
   if ( win &&  chk &&  load &&  rmts) expect_equal(mthd, "copy")     # L
 
-  if (!win && !chk && !load && !rmts) expect_equal(mthd, "download") # !L !R !W !C
+  if (!win && !chk && !load && !rmts) {                              # !L !R !W !C
+    # chk is not detected properly on R 3.4.x
+    if (getRversion() >= "3.5.0") expect_equal(mthd, "download")
+  }
   if (!win && !chk && !load &&  rmts) expect_equal(mthd, "none")     # !L  R
   if (!win && !chk &&  load && !rmts) expect_equal(mthd, "copy")     # L
   if (!win && !chk &&  load &&  rmts) expect_equal(mthd, "copy")     # L
