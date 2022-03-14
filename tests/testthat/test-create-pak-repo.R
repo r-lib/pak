@@ -59,7 +59,11 @@ test_that("add_repo_links", {
     curl <- utils::contrib.url(repo[i], tsts$pkg_type[i])
     curl <- sub("[0-9]+[.][0-9]+$", tsts$rver[i], curl)
     pkgs <- suppressWarnings(tryCatch(
-      utils::available.packages(curl, ignore_repo_cache = TRUE),
+      if (getRversion() >= "3.5.0") {
+        utils::available.packages(curl, ignore_repo_cache = TRUE)
+      } else {
+        utils::available.packages(curl)
+      },
       error = function(err) NULL
     ))
     if (is.na(tsts$result[i])) {
@@ -84,7 +88,11 @@ test_that("add_repo_links", {
   for (i in seq_len(nrow(tsts2))) {
     curl <- utils::contrib.url(base, tsts2$pkg_type[i])
     curl <- sub("[0-9]+[.][0-9]+$", tsts2$rver[i], curl)
-    pkgs <- utils::available.packages(curl, ignore_repo_cache = TRUE)
+    if (getRversion() >= "3.5.0") {
+      pkgs <- utils::available.packages(curl, ignore_repo_cache = TRUE)
+    } else {
+      pkgs <- utils::available.packages(curl)
+    }
     expect_equal(pkgs[, "Depends"], tsts2$result[i])
   }
 })
