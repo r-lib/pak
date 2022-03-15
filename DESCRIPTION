@@ -47,7 +47,9 @@ Suggests:
     rstudioapi,
     testthat,
     withr
-Note: This field has Remotes syntax
+Remotes:
+    r-lib/pkgdepends
+Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
     cli,
