@@ -36,6 +36,11 @@
 * pak now handles all version requirement types properly:
   '<', '<=', `==`, `>=`, `>`.
 
+* The dependency solver now uses better heuristics and does not
+  (effectively) freeze if multiple repositories have multiple versions of
+  the same packages (e.g. RSPM and CRAN)
+  (https://github.com/r-lib/pkgdepends/pull/277)
+
 # pak 0.2.1
 
 No user visible changes.
