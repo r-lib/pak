@@ -24,7 +24,7 @@ RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
 RUN apk add perl linux-headers
 RUN cd openssl-* &&                                 \
-    CFLAGS=-fPIC ./config -fPIC no-shared &&        \
+    CFLAGS=-fPIC ./config -fPIC no-shared no-asm && \
     make &&                                         \
     make install_sw &&                              \
     rm -rf /usr/local/bin/openssl                   \
