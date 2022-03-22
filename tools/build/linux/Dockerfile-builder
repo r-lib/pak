@@ -13,9 +13,9 @@ RUN apk add linux-headers bash gcc musl-dev g++ pkgconf
 
 RUN wget https://www.zlib.net/zlib-1.2.11.tar.gz
 RUN tar xzf zlib-*.tar.gz && rm zlib-*.tar.gz
-RUN cd zlib-* &&                                    \
-    CFLAGS=-fPIC ./configure --static &&            \
-    make &&                                         \
+RUN cd zlib-* &&                                                     \
+    CFLAGS=-fPIC ./configure --static &&                             \
+    make &&                                                          \
     make install
 
 # openssl -----------------------------------------------------------------
@@ -23,22 +23,12 @@ RUN cd zlib-* &&                                    \
 RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
 RUN apk add perl linux-headers
-RUN cd openssl-* &&                                 \
-    CFLAGS=-fPIC ./config -fPIC no-shared no-asm && \
-    make &&                                         \
-    make install_sw &&                              \
-    rm -rf /usr/local/bin/openssl                   \
+RUN cd openssl-* &&                                                  \
+    CFLAGS="-fPIC -static -U__GNUC__" ./config -fPIC no-shared &&    \
+    make &&                                                          \
+    make install_sw &&                                               \
+    rm -rf /usr/local/bin/openssl                                    \
        /usr/local/share/{man/doc}
-
-# libnghttp2 --------------------------------------------------------------
-
-RUN wget https://github.com/nghttp2/nghttp2/releases/download/v1.40.0/nghttp2-1.40.0.tar.gz
-RUN tar xzf nghttp2-*.tar.gz && rm nghttp2-*.tar.gz
-RUN cd nghttp2-* &&                                 \
-    ./configure --enable-static --disable-shared && \
-    make &&                                         \
-    make install &&                                 \
-    rm -rf /usr/local/share/{man/doc}
 
 # libcurl now -------------------------------------------------------------
 
@@ -46,11 +36,14 @@ RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN apk add pkgconfig
 RUN cd curl-* && \
-    ./configure --enable-static --disable-shared   \
-        --with-nghttp2=/usr/local/ &&              \
-    make &&                                        \
-    make install &&                                \
-    rm -rf /usr/local/bin/curl                     \
+    if [ "`uname -m`" = "aarch64" ]; then                            \
+      ./configure --enable-static --disable-shared --enable-debug;   \
+    else                                                             \
+      ./configure --enable-static --disable-shared;                  \
+    fi &&                                                            \
+    make &&                                                          \
+    make install &&                                                  \
+    rm -rf /usr/local/bin/curl                                       \
        /usr/local/share/{man/doc}
 
 # =========================================================================
