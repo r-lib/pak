@@ -160,7 +160,7 @@ jobs:
       run: |
         skopeo --version
 
-    # We use the pre-installed R 4.1.2 + Rtools40 for now, to speed this up
+    # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
         rim add 3.4
@@ -171,7 +171,7 @@ jobs:
         rim add devel
         rim add rtools35
         # rim add rtools40 # already installed
-        rim default 4.1.2
+        rim default 4.1.3
 
     - name: Build pak binaries
       run: |
