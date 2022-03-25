@@ -812,6 +812,22 @@ create_pak_repo <- local({
     data$OS <- os_map[plat$os] %NA% plat$os
     data$Arch <- cpu_map[plat$cpu] %NA% plat$cpu
 
+    # we need to allow allow newer R versions, in case the
+    # version number of R-devel is increased. This is per
+    # PACKAGES file.
+    for (dir in unique(data$dir)) {
+      idx <- which(dir == data$dir)
+      max_r_version <- as.character(max(package_version(data$r.version[idx])))
+      below_r_version <- ifelse(
+        data$r.version[idx] == max_r_version,
+        "10.0.0",
+        paste0(data$r.version[idx], ".99")
+      )
+      data$Depends[idx] <- paste0(
+        "R (>= ", data$r.version[idx], "), R (<= ", below_r_version, ")"
+      )
+    }
+
     cols <- c("Package", "Version", "Depends", "Imports", "License",
               "MD5sum", "Sha256", "NeedsCompilation", "Built", "File",
               "DownloadURL", "OS", "Arch")
