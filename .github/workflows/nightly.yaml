@@ -198,6 +198,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.3', platform: 'linux/amd64' }
           - { r: '4.2', platform: 'linux/amd64' }
           - { r: '4.1', platform: 'linux/amd64' }
           - { r: '4.0', platform: 'linux/amd64' }
@@ -255,14 +256,14 @@ jobs:
       run: |
         cd tools/build/macos && make build
       env:
-        RVERSIONS: 4.1-arm64 4.2-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
         RVERSION_DEFAULT: 4.1-arm64
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
       env:
-        RVERSIONS: 4.1-arm64 4.2-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
         RVERSION_DEFAULT: 4.1-arm64
 
     - name: Deploy packages
@@ -271,7 +272,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 4.1-arm64 4.2-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
         RVERSION_DEFAULT: 4.1-arm64
 
   # ------------------------------------------------------------------------
@@ -285,6 +286,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.3', platform: 'linux/arm64' }
           - { r: '4.2', platform: 'linux/arm64' }
           - { r: '4.1', platform: 'linux/arm64' }
           - { r: '4.0', platform: 'linux/arm64' }
