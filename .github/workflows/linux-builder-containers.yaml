@@ -4,8 +4,8 @@ name: Linux builder containers
 on:
   workflow_dispatch:
 
-  schedule:
-  - cron: '30 4 * * 1'
+#  schedule:
+#  - cron: '30 4 * * 1'
 
 # =========================================================================
 
