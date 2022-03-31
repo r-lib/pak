@@ -525,7 +525,8 @@ push_packages <- local({
     git("push", "--porcelain", "origin", stderr_to_stdout = TRUE, dry_run = dry_run)
   }
 
-  function(paths, tag = "auto", keep_old = TRUE, dry_run = FALSE, cleanup = TRUE) {
+  push_packages <- function(paths, tag = "auto", keep_old = TRUE,
+                            dry_run = FALSE, cleanup = TRUE) {
     dry_run
 
     if (tag == "auto") {
@@ -888,7 +889,7 @@ create_pak_repo <- local({
     add_repo_links(root, tag)
   }
 
-  function(path = "repo", dry_run = FALSE, cleanup = TRUE) {
+  create_pak_repo <- function(path = "repo", dry_run = FALSE, cleanup = TRUE) {
     workdir <- package_dir()
     if (!file.exists(workdir)) {
       init_package_dir(workdir, dry_run = dry_run)
