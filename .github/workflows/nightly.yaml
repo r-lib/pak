@@ -92,8 +92,8 @@ jobs:
 
     - name: Install rim
       run: |
-        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.2.0/rim-0.2.0-macOS-x86_64.pkg
-        sudo installer -pkg rim-0.2.0-macOS-x86_64.pkg -target /
+        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
+        sudo installer -pkg rim-0.2.2-macOS-x86_64.pkg -target /
 
     - name: Install R
       run: |
@@ -102,6 +102,7 @@ jobs:
         sudo rim add 3.6
         sudo rim add 4.0
         sudo rim add 4.1
+        sudo rim add next
         sudo rim add devel
 
     - name: Install skopeo
@@ -144,7 +145,7 @@ jobs:
 
     - name: Install rim
       run: |
-        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.2.0/rim-windows-0.2.0.exe -OutFile rim.exe
+        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-windows-0.2.2.exe -OutFile rim.exe
         Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
         # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
@@ -168,6 +169,7 @@ jobs:
         rim add 3.6
         rim add 4.0
         # rim add 4.1 # already installed
+        rim add next
         rim add devel
         rim add rtools35
         # rim add rtools40 # already installed
