@@ -227,6 +227,7 @@ jobs:
         context: .
         file: tools/build/linux/Dockerfile
         platforms: ${{ matrix.config.platform }}
+        pull: true
         push: false
         build-args: |
           R_MAJOR=${{ matrix.config.r }}
@@ -306,6 +307,7 @@ jobs:
     - name: Build and push
       run: |
         docker build \
+            --pull \
             --build-arg R_MAJOR=${{ matrix.config.r }} \
             --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
             --build-arg PAK_ROOT=. \
