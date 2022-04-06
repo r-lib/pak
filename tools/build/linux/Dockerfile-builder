@@ -1,7 +1,7 @@
 
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:alpine315-${R_MAJOR} as build
+FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} as build
 
 WORKDIR /root
 
@@ -48,7 +48,7 @@ RUN cd curl-* && \
 
 # =========================================================================
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:alpine315-${R_MAJOR}
+FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
 
 COPY --from=build /usr/local /usr/local
 
