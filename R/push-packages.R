@@ -531,12 +531,17 @@ push_packages <- local({
 
     if (tag == "auto") {
       version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
-      tag <- if (length(version) >= 4 && version[4] == 9999) {
-        "rc"
+      if (length(version) >= 4 && version[4] == 9999) {
+        # rc is also pushed to devel, as devel should be the latest
+        p1 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
+        p2 <- push_packages(paths, "devel", keep_old, dry_run, cleanup)
+        return(invisiblr(rbind(p1, p2)))
+
       } else if (length(version) >= 4 && version[4] >= 9000) {
-        "devel"
+        tag <- "devel"
+
       } else {
-        "stable"
+        tag <- "stable"
       }
     }
 
