@@ -47,8 +47,6 @@ Suggests:
     rstudioapi,
     testthat,
     withr
-Remotes:
-    r-lib/pkgdepends
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
@@ -59,7 +57,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     pkgcache,
-    r-lib/pkgdepends,
+    pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
