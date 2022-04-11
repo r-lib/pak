@@ -3,9 +3,9 @@
 
 * pak functions that used to return tibbles return data frames now.
   While data frames and tibbles are very similar, they are not completely
-  compatible. To convert the output of pkgcache to tibbles call the
+  compatible. To convert the outputs of pak functions to tibbles call the
   `tibble::as_tibble()` function on them. If the pillar package is loaded,
-  that improves the printing of these data frames.
+  it improves the printing of the returned data frames.
 
   Relatedly, `pak::pak_install_extra()` installs pillar now, instead of tibble.
 
