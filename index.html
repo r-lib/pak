@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -48,7 +48,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -90,44 +90,86 @@
 </blockquote>
 <!-- badges: start -->
 
-<p>pak installs R packages from CRAN, Bioconductor, GitHub, and local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
+<!-- badges: end -->
+<p>pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
 <p align="center">
-<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@main/tools/images/fast.svg"></p>
+<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@images/pak-demo.svg?version=2"></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the released version of the package from CRAN:</p>
+<div class="section level3">
+<h3 id="pre-built-binaries">Pre-built binaries<a class="anchor" aria-label="anchor" href="#pre-built-binaries"></a>
+</h3>
+<p>Install a binary build of pak from our repository on GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></code></pre></div>
-<p>Install the development version from our repository on GitHub:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/stable/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>This is supported for the following systems:</p>
+<table class="table">
+<thead><tr class="header">
+<th>OS</th>
+<th>CPU</th>
+<th>R version</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Linux</td>
+<td>x86_64</td>
+<td>R 3.4.0 - R-devel</td>
+</tr>
+<tr class="even">
+<td>Linux</td>
+<td>aarch64</td>
+<td>R 3.4.0 - R-devel</td>
+</tr>
+<tr class="odd">
+<td>macOS High Sierra+</td>
+<td>x86_64</td>
+<td>R 3.4.0 - R-devel</td>
+</tr>
+<tr class="even">
+<td>macOS Big Sur+</td>
+<td>aarch64</td>
+<td>R 4.1.0 - R-devel</td>
+</tr>
+<tr class="odd">
+<td>Windows</td>
+<td>x86_64</td>
+<td>R 3.4.0 - R-devel</td>
+</tr>
+</tbody>
+</table>
+<p>For macOS we only support the official CRAN R build. Other builds, e.g. Homebrew R, are not supported.</p>
+</div>
+<div class="section level3">
+<h3 id="install-from-cran">Install from CRAN<a class="anchor" aria-label="anchor" href="#install-from-cran"></a>
+</h3>
+<p>Install the released version of the package from CRAN as usual:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="st">"https://r-lib.github.io/p/pak/devel/"</span><span class="op">)</span></code></pre></div>
-<p>This is currently supported for</p>
-<ul>
-<li>macOS (High Sierra or later) and R 3.4.x or later on Intel and R 4.1 or later on arm64, including R-devel.</li>
-<li>Windows and R 3.4.x, or later, including R-devel,</li>
-<li>Linux (any 64-bit x86_64 distribution) and R 3.4.x or later, including R-devel.</li>
-</ul>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></code></pre></div>
+<p>This potentially needs a C compiler on platforms CRAN does not have binaries packages for.</p>
+</div>
+<div class="section level3">
+<h3 id="nightly-builds">Nightly builds<a class="anchor" aria-label="anchor" href="#nightly-builds"></a>
+</h3>
+<p>We have nightly binary builds, for the same systems as the table above:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/devel/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <p>Call <code><a href="reference/pkg_install.html">pkg_install()</a></code> to install CRAN or Bioconductor packages:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></code></pre></div>
-<p>To install GitHub packages, use the <code>user/repo</code> syntax:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></code></pre></div>
+<p>To install packages from GitHub, use the <code>user/repo</code> syntax:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"r-lib/usethis"</span><span class="op">)</span></code></pre></div>
 <p>All dependencies will be installed as well, to the same library.</p>
 <div class="section level3">
 <h3 id="on-github-actions">On GitHub Actions<a class="anchor" aria-label="anchor" href="#on-github-actions"></a>
 </h3>
-<p>The <a href="https://github.com/r-lib/actions" class="external-link"><code>r-lib/actions</code></a> repository has an <code>R CMD check</code> GitHub Action that uses pak to install packages: <a href="https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml" class="external-link uri">https://github.com/r-lib/actions/blob/master/examples/check-pak.yaml</a> To set up this action for your own repository, run</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"check-pak"</span><span class="op">)</span>
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"test-coverage-pak"</span><span class="op">)</span>
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_github_action</span><span class="op">(</span><span class="st">"pkgdown-pak"</span><span class="op">)</span></code></pre></div>
-<p>from R. The last two are a test coverage action and a pkgdown action.</p>
+<p>The <a href="https://github.com/r-lib/actions/tree/v2/setup-r-dependencies#setup-r-dependencies" class="external-link"><code>setup-r-dependencies</code></a> action at <a href="https://github.com/r-lib/actions" class="external-link"><code>r-lib/actions</code></a> uses pak to install packages. See the <a href="https://github.com/r-lib/actions/tree/v2/examples" class="external-link"><code>examples</code></a> directory for example workflows.</p>
 </div>
 </div>
 <div class="section level2">
@@ -151,6 +193,7 @@
 <li><p>Every pak operation runs in a sub-process, and the packages are loaded from the private library. pak avoids loading packages from your regular package libraries. (These package files would be locked on some systems, and locked packages cannot be updated. pak does not load any package in the main process, except for pak itself).</p></li>
 <li><p>To avoid updating locked packages, pak offers the choice of unloading them from the current R session, and/or killing other R sessions locking them.</p></li>
 <li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. It finds conflicts up front, before attempting installation.</p></li>
+<li><p>System package support. pak automatically installs system dependencies on several Linux distributions.</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -175,14 +218,12 @@
 <h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
 </h2>
 <ul>
-<li>Support GitLab repositories</li>
-<li>Support Bitbucket repositories</li>
-<li>Support system requirements</li>
-<li>Support older CRAN package versions</li>
-<li>Support older BioConductor package versions</li>
-<li>Support local CRAN mirrors</li>
-<li>Support the <code>Additional_repositories</code> <code>DESCRIPTION</code> field</li>
-<li>Support SVN repos</li>
+<li>Cache locally installed packages.</li>
+<li>Update installed packages.</li>
+<li>Better integration with renv.</li>
+<li>Support more package sources: Enterprise GitHub, GitLab, Bitbucket and SVN repositories.</li>
+<li>Support older CRAN and Bioconductor packages.</li>
+<li>More comprehensive system requirements support.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -224,7 +265,7 @@
 <li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
 <li>
 <a href="https://jimhester.com" class="external-link">Jim Hester</a> <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">More about authors...</a></li>
+<li>RStudio <br><small class="roles"> Copyright holder, funder </small>  </li>
 </ul>
 </div>
 
@@ -234,7 +275,7 @@
 <li><a href="https://cran.r-project.org/package=pak" class="external-link"><img src="https://www.r-pkg.org/badges/version/pak"></a></li>
 <li><a href="https://www.r-pkg.org/pkg/pak" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/pak" alt="CRAN RStudio mirror downloads"></a></li>
 <li><a href="https://app.codecov.io/gh/r-lib/pak?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/pak/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://github.com/r-lib/pak/actions" class="external-link"><img src="https://github.com/r-lib/pak/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
@@ -244,12 +285,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>.</p>
+<p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, RStudio.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pak_update</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"pkgType"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pak_update</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span>, stream <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"stable"</span>, <span class="st">"rc"</span>, <span class="st">"devel"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,11 +71,13 @@
     <dl><dt>force</dt>
 <dd><p>Whether to force an update, even if no newer version is
 available.</p></dd>
-<dt>type</dt>
-<dd><p>Package type. Like the <code>type</code> argument of
-<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. You can set this to <code>mac.binary</code> or
-<code>mac.binary.big-sur-arm64</code> if you have a non-CRAN R build, but want
-to install a binary pak package.</p></dd>
+<dt>stream</dt>
+<dd><p>Whether to update to the</p><ul><li><p><code>"stable"</code>,</p></li>
+<li><p><code>"rc"</code> (release candidate) or</p></li>
+<li><p><code>"devel"</code> (development) version.</p></li>
+<li><p><code>"auto"</code> updates to the same stream as the current one.</p></li>
+</ul><p>Often there is no release candidate version, then <code>"rc"</code> also
+installs the stable version.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -90,11 +92,11 @@ to install a binary pak package.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>.</p>
+  <p></p><p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, RStudio.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

@@ -20,7 +20,7 @@ etc."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@ etc."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathja
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -81,7 +81,7 @@ etc.</p>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame (tibble), that is also a <code>pak_search_result</code>object with a custom print method. To see the underlying table, you
+    <p>A data frame, that is also a <code>pak_search_result</code>object with a custom print method. To see the underlying table, you
 can use <code>[]</code> to drop the extra classes. See examples below.</p>
     </div>
 
@@ -91,7 +91,7 @@ can use <code>[]</code> to drop the extra classes. See examples below.</p>
 <span class="r-in"><span class="co"># Simple search</span></span>
 <span class="r-in"><span class="fu">pkg_search</span><span class="op">(</span><span class="st">"survival"</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># See the underlying tibble</span></span>
+<span class="r-in"><span class="co"># See the underlying data frame</span></span>
 <span class="r-in"><span class="va">psro</span> <span class="op">&lt;-</span> <span class="fu">pkg_search</span><span class="op">(</span><span class="st">"ropensci"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">psro</span><span class="op">[</span><span class="op">]</span></span>
 <span class="r-in"><span class="op">}</span></span>
@@ -105,11 +105,11 @@ can use <code>[]</code> to drop the extra classes. See examples below.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>.</p>
+  <p></p><p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, RStudio.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
