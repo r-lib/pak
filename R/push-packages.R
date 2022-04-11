@@ -541,7 +541,10 @@ push_packages <- local({
         tag <- "devel"
 
       } else {
-        tag <- "stable"
+        # stable is also pushed to rc
+        p1 <- push_packages(paths, "stable", keep_old, dry_run, cleanup)
+        p2 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
+        return(invisible(rbind(p1, p2)))
       }
     }
 
