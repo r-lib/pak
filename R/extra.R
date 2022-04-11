@@ -10,7 +10,7 @@ extra_packages <- function() {
 #' used with these packages. E.g. many functions return data frames, which
 #' print nicer when the pillar package is available.
 #'
-#' Currently only one package is optional: [pillar][pillar::pillar-package].
+#' Currently only one package is optional: **pillar**.
 #'
 #' @param upgrade Whether to install or upgrade to the latest versions
 #'   of the optional packages.
