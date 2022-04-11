@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pak</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.1.9999</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -57,6 +57,27 @@
       <small>Source: <a href="https://github.com/r-lib/pak/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="pak-030">pak 0.3.0<small>2022-04-11</small><a class="anchor" aria-label="anchor" href="#pak-030"></a></h2>
+<ul><li>
+<p>pak functions that used to return tibbles return data frames now. While data frames and tibbles are very similar, they are not completely compatible. To convert the outputs of pak functions to tibbles call the <code><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">tibble::as_tibble()</a></code> function on them. If the pillar package is loaded, it improves the printing of the returned data frames.</p>
+<p>Relatedly, <code><a href="../reference/pak_install_extra.html">pak::pak_install_extra()</a></code> installs pillar now, instead of tibble.</p>
+</li>
+<li><p>pak now supports <code>file://</code> repositories.</p></li>
+<li><p>pak now uses HTTP 1.1 to download packages on Linux, in addition to macOS. This fixes HTTP issues with some servers (<a href="https://github.com/r-lib/pak/issues/358" class="external-link">#358</a>).</p></li>
+<li><p>New <code>?ignore-before-r</code> parameter to ignore optional dependencies that need a newer R version (<a href="https://github.com/r-lib/pkgdepends/issues/243" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/243</a>).</p></li>
+<li><p>New <code>?ignore</code> parameter to ignore an optional dependency.</p></li>
+<li><p>Allow specifying downstream package parameters with the <code>package=?param</code> syntax.</p></li>
+<li><p><code><a href="../reference/lockfile_install.html">lockfile_install()</a></code> now works better for <code>any::</code> refs, and pak always install the version it has planned for.</p></li>
+<li><p>System requirement installation is now more robust and works for Unix shell expressions (<a href="https://github.com/r-lib/pak/issues/347" class="external-link">#347</a>).</p></li>
+<li><p>CRAN-like resolution is more robust now if a repository is missing the usual metadata.</p></li>
+<li><p>The lock file is pretty JSON now.</p></li>
+<li><p>pak now handles all version requirement types properly: ‘&lt;’, ‘&lt;=’, <code>==</code>, <code>&gt;=</code>, <code>&gt;</code>.</p></li>
+<li><p>The dependency solver now uses better heuristics and does not (effectively) freeze if multiple repositories have multiple versions of the same packages (e.g. RSPM and CRAN) (<a href="https://github.com/r-lib/pkgdepends/pull/277" class="external-link uri">https://github.com/r-lib/pkgdepends/pull/277</a>)</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.1" id="pak-021">pak 0.2.1<small>2021-12-20</small><a class="anchor" aria-label="anchor" href="#pak-021"></a></h2>
 <p>No user visible changes.</p>
