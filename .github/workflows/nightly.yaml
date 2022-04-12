@@ -215,23 +215,14 @@ jobs:
       with:
         fetch-depth: 10
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
     - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: tools/build/linux/Dockerfile
-        platforms: ${{ matrix.config.platform }}
-        pull: true
-        push: false
-        build-args: |
-          R_MAJOR=${{ matrix.config.r }}
-          TOKEN=${{ secrets.PAK_GHCR_TOKEN }}
+      run: |
+        docker build \
+            --pull \
+            --build-arg R_MAJOR=${{ matrix.config.r }} \
+            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
+            --build-arg PAK_ROOT=. \
+            -f tools/build/linux/Dockerfile .
 
   # ------------------------------------------------------------------------
 
