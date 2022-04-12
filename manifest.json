@@ -79,56 +79,56 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.4",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T05:47:45+00:00",
-          "size": 8356888,
-          "digest": "sha256:c91770331212593b7799b4a188455f8dae0c3b948aca59f68b85c617b56874e5"
+          "buildtime": "2022-04-12T05:50:14+00:00",
+          "size": 8355558,
+          "digest": "sha256:a3bda0302b709c4e552ddf072095bbdb13c6ebe0d4fea46983188c6196922afb"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.5",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T05:54:38+00:00",
-          "size": 10669827,
-          "digest": "sha256:43dc83d0c2a365b7dd39f01cb92807c1ca994bc3093917c17feac121db25c090"
+          "buildtime": "2022-04-12T05:57:01+00:00",
+          "size": 10669336,
+          "digest": "sha256:22aefeaf4e2cfb6f7c4bfe949b354d90f1b9c9b87108be7ed77a62e4f3125931"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.6",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T06:01:09+00:00",
-          "size": 10604355,
-          "digest": "sha256:b1d2114877d82dce4c7b03459076b8e079b21da16a082c6159f47b8acd65e9f8"
+          "buildtime": "2022-04-12T06:03:13+00:00",
+          "size": 10602038,
+          "digest": "sha256:0fdf5b317c927422de250cd7ff383f8551782c24db0d6dc26594ebbb0901d169"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.0",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T06:02:42+00:00",
-          "size": 11593163,
-          "digest": "sha256:8fba519591346326cc510016b39379e39136f8ed6f771ded2bfef0bc905ccaf6"
+          "buildtime": "2022-04-12T06:04:29+00:00",
+          "size": 11552273,
+          "digest": "sha256:2aa0655689a801a25f1be8859fe1c0d6c4d2f59fa6a92bde8a22e1cb578f02b0"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.1",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T06:04:32+00:00",
-          "size": 11612580,
-          "digest": "sha256:1b99df48ff572cfb9165d3cd3b5d2f65479cc7757d4e5aba5f84ae787f75ffc5"
+          "buildtime": "2022-04-12T06:05:57+00:00",
+          "size": 11570214,
+          "digest": "sha256:1a17eb4753400ae68a7bb78c6d553537385fcc15c2021ada2aa8f230e20fee56"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T06:06:17+00:00",
-          "size": 7883841,
-          "digest": "sha256:f560ec11b21d3b4cd42b2424f444496efd1bd74bcff9725e4b4d1a2e715fa58b"
+          "buildtime": "2022-04-12T06:07:25+00:00",
+          "size": 7882928,
+          "digest": "sha256:0422d298684aeef185e7cc554e5c8e70033b80177619716c8515fa464f30dc5f"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
@@ -259,11 +259,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.2.1.9999",
+          "pak.version": "0.3.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2022-04-11T06:08:00+00:00",
-          "size": 7883523,
-          "digest": "sha256:5565196418acdd419ef9da24902bd680cd484791b27547d1b46c011f8f3545bb"
+          "buildtime": "2022-04-12T06:08:53+00:00",
+          "size": 7882831,
+          "digest": "sha256:a5f07631183138fdf0d22feab925e2234ff96d5d5df3508e79e4111298e5e51f"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
