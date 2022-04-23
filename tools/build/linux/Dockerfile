@@ -1,7 +1,8 @@
 
+ARG ARCH
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-lib/pak-builder:${R_MAJOR}
+FROM ghcr.io/r-lib/pak-builder:${ARCH}-${R_MAJOR}
 ARG TOKEN=dummy
 
 # Need the copy of the package --------------------------------------------

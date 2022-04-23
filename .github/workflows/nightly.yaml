@@ -219,6 +219,7 @@ jobs:
       run: |
         docker build \
             --pull \
+            --build-arg ARCH=x86_64 \
             --build-arg R_MAJOR=${{ matrix.config.r }} \
             --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
             --build-arg PAK_ROOT=. \
@@ -299,6 +300,7 @@ jobs:
       run: |
         docker build \
             --pull \
+            --build-arg ARCH=aarch64 \
             --build-arg R_MAJOR=${{ matrix.config.r }} \
             --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
             --build-arg PAK_ROOT=. \

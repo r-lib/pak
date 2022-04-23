@@ -12,9 +12,9 @@ on:
 jobs:
 
   # -----------------------------------------------------------------------
-  containers:
+  x86_64:
     runs-on: ubuntu-18.04
-    name: Build pak builder containers
+    name: Build pak builder containers, x86_64
     strategy:
       fail-fast: false
       matrix:
@@ -39,21 +39,52 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+    - name: Build
+      run: |
+          docker build --pull \
+	      --build-arg R_MAJOR=${{ matrix.config.r }} \
+	      -t ghcr.io/r-lib/pak-builder:x86_64-${{ matrix.config.r }} \
+	      -f tools/build/linux/Dockerfile-builder .
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    - name: Push
+      run: |
+          docker push ghcr.io/r-lib/pak-builder:x86_64-${{ matrix.config.r }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v2
+  # -----------------------------------------------------------------------
+  aarch64:
+    runs-on: [self-hosted, Linux, arm64]
+    name: Build pak builder containers, aarch64
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: '4.3' }
+          - { r: '4.2' }
+          - { r: '4.1' }
+          - { r: '4.0' }
+          - { r: '3.6' }
+          - { r: '3.5' }
+          - { r: '3.4' }
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
       with:
-        context: .
-        file: tools/build/linux/Dockerfile-builder
-        platforms: linux/amd64
-#        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: |
-          ghcr.io/r-lib/pak-builder:${{ matrix.config.r }}
-        build-args: |
-          R_MAJOR=${{ matrix.config.r }}
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build
+      run: |
+          docker build --pull \
+	      --build-arg R_MAJOR=${{ matrix.config.r }} \
+	      -t ghcr.io/r-lib/pak-builder:aarch64-${{ matrix.config.r }} \
+	      -f tools/build/linux/Dockerfile-builder .
+
+    - name: Push
+      run: |
+          docker push ghcr.io/r-lib/pak-builder:aarch64-${{ matrix.config.r }}
