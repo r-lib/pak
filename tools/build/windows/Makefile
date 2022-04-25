@@ -33,7 +33,7 @@ lib/%/pkgdepends: lib/%/pak
 	@echo "----- INSTALLING pkgdepends ($*) ---------------------------"
 	rm -rf $@
 	R_LIBS="lib/$*" "C:\Program Files\R\R-$*\bin\R.exe" -q -e \
-		"options(repos = 'https://cran.rstudio.com');install.packages('crayon', type = 'win.binary')"
+		"options(repos = 'https://cran.rstudio.com');install.packages('crayon', type = 'source')"
 	R_LIBS="lib/$*" "C:\Program Files\R\R-$*\bin\R.exe" -q -e \
 		"pak:::safe_cran_install('pkgdepends', lib = 'lib/$*', exclude = 'crayon')"
 
