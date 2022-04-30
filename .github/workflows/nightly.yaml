@@ -315,6 +315,10 @@ jobs:
 
     steps:
 
+    - name: Update Ubuntu package db
+      run: |
+        sudo apt-get update
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
