@@ -49,7 +49,7 @@ Suggests:
     withr
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
-    callr,
+    r-lib/callr,
     cli,
     curl,
     distro,
@@ -60,9 +60,12 @@ Config/needs/dependencies:
     pkgdepends,
     pkgsearch,
     prettyunits,
-    processx,
+    r-lib/processx,
     ps,
     rprojroot
+Remotes:
+    r-lib/callr,
+    r-lib/processx
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

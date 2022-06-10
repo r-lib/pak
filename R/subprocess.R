@@ -43,11 +43,6 @@ remote <- function(func, args = list()) {
           )
           invokeRestart("cli_message_handled")
         },
-        error = function(e) {
-          e$formatted_message <- capture.output(print(e))
-          class(e) <- c("pak_error", class(e))
-          stop(e)
-        },
         {
           options(pkg.show_progress = `__verbosity__`, repos = `__repos__`)
           `__body__`
@@ -68,17 +63,12 @@ remote <- function(func, args = list()) {
     },
     rs$run_with_output(func2, args)
   )
+
   if (!is.null(res$error)) {
-    if (inherits(res$error$parent$error, "condition") &&
-        inherits(res$error$parent, "condition")) {
-      err$rethrow(stop(res$error$parent$error), res$error$parent, call = FALSE)
-    } else {
-      print(res$error)
-      print(res$error$parent)
-      print(res$error$parent$error)
-      if (inherits(res$error, "condition")) err$throw(res$error)
-      stop("Unknown error from subprocess")
+    if (inherits(res$error, "callr_status_error")) {
+      res$error$message <- "error in pak subprocess"
     }
+    err$throw(res$error)
   }
 
   res$result
@@ -210,6 +200,25 @@ load_private_package <- function(package, reg_prefix = "",
   ## We could also walk the whole tree, but probably not worth it.
   if (!is.null(pkg_env$err$.internal$package_env)) {
     pkg_env$err$.internal$package_env <- pkg_env
+  }
+
+  # patch processx and callr
+  if (package %in% c("callr", "processx")) {
+    assign("has_cli", function() TRUE, envir = pkg_env$err$.internal)
+  }
+  if (package == "callr") {
+    registerS3method(
+      "format",
+      "callr_status_error",
+      pkg_env$format.callr_status_error,
+      baseenv()
+    )
+    registerS3method(
+      "print",
+      "callr_status_error",
+      pkg_env$print.callr_status_error,
+      baseenv()
+    )
   }
 
   # Hack to avoid S3 dispatch
