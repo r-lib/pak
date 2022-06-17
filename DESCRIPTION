@@ -61,13 +61,14 @@ Config/needs/dependencies:
     pkgsearch,
     prettyunits,
     r-lib/processx,
-    ps,
+    r-lib/ps,
     rprojroot
 Remotes:
     r-lib/callr,
     r-lib/pkgcache,
     r-lib/pkgdepends,
-    r-lib/processx
+    r-lib/processx,
+    r-lib/ps
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
