@@ -83,19 +83,28 @@
     <dl><dt>platforms</dt>
 <dd><p>Platforms to use, default is the current platform,
 plus source packages.</p></dd>
+
+
 <dt>r_version</dt>
 <dd><p>R version(s) to use, the default is the current
 R version, via <code><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion()</a></code>.</p></dd>
+
+
 <dt>bioc</dt>
 <dd><p>Whether to add the Bioconductor repositories. If you
 already configured them via <code>options(repos)</code>, then you can
 set this to <code>FALSE</code>.</p></dd>
+
+
 <dt>cran_mirror</dt>
 <dd><p>The CRAN mirror to use.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that has a row for every repository, on every
+    
+
+<p>A data frame that has a row for every repository, on every
 queried platform and R version. It has these columns:</p><ul><li><p><code>name</code>: the name of the repository. This comes from the names
 of the configured repositories in <code>options("repos")</code>, or
 added by pkgcache. It is typically <code>CRAN</code> for CRAN, and the
@@ -152,7 +161,7 @@ summary of the data, and it returns its result invisibly.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

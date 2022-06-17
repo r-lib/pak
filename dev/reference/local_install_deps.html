@@ -78,10 +78,14 @@ without installing the package tree itself.</p>
     <h2>Arguments</h2>
     <dl><dt>root</dt>
 <dd><p>Path to the package tree.</p></dd>
+
+
 <dt>lib</dt>
 <dd><p>Package library to install the packages to. Note that <em>all</em>
 dependent packages will the be installed here, even if they are
 already installed in another library.</p></dd>
+
+
 <dt>upgrade</dt>
 <dd><p>When <code>FALSE</code>, the default, does the minimum amount of work
 to give you the latest version of <code>pkg</code>. It will only upgrade packages if
@@ -89,20 +93,27 @@ to give you the latest version of <code>pkg</code>. It will only upgrade package
 currently have.</p>
 <p>When <code>upgrade = TRUE</code>, will do ensure that you have the latest version of
 <code>pkg</code> and all its dependencies.</p></dd>
+
+
 <dt>ask</dt>
 <dd><p>Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
 add new packages never require confirmation.</p></dd>
+
+
 <dt>dependencies</dt>
 <dd><p>Dependency types. See
 <code><a href="https://rdrr.io/pkg/pkgdepends/man/as_pkg_dependencies.html" class="external-link">pkgdepends::as_pkg_dependencies()</a></code> for possible values. Note that
 changing this argument from the default might result an installation
 failure, e.g. if you set it to <code>FALSE</code>, packages might not build if
 their dependencies are not already installed.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data frame, with information about the installed package(s).</p>
+    
+
+<p>Data frame, with information about the installed package(s).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -133,7 +144,7 @@ use <code><a href="local_install_dev_deps.html">local_install_dev_deps()</a></co
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

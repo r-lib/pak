@@ -79,21 +79,30 @@ See the pkgcache package if you need for control over the metadata cache.</p>
     <dl><dt>pkg</dt>
 <dd><p>Package names, if specified then only entries for <code>pkg</code>
 are returned.</p></dd>
+
+
 <dt>force</dt>
 <dd><p>If <code>FALSE</code>, then pak will ask for confirmation.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>meta_summary()</code> returns a list with entries:</p><ul><li><p><code>cachepath</code>: absolute path of the metadata cache.</p></li>
+    
+
+<p><code>meta_summary()</code> returns a list with entries:</p><ul><li><p><code>cachepath</code>: absolute path of the metadata cache.</p></li>
 <li><p><code>current_db</code>: the file that contains the current metadata database.
 It is currently an RDS file, but this might change in the future.</p></li>
 <li><p><code>raw_files</code>: the files that are the downloaded <code>PACKAGES*</code> files.</p></li>
 <li><p><code>db_files</code>: all metadata database files.</p></li>
 <li><p><code>size</code>: total size of the metadata cache.</p></li>
 </ul><p><code>meta_list()</code> returns a data frame of all available
-packages in the configured repositories.
-<code>meta_update()</code> returns nothing.
-<code>meta_clean()</code> returns nothing</p>
+packages in the configured repositories.</p>
+
+
+<p><code>meta_update()</code> returns nothing.</p>
+
+
+<p><code>meta_clean()</code> returns nothing</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -141,7 +150,7 @@ to make sure that they use the latest available metadata.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

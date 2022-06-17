@@ -100,20 +100,31 @@ version, e.g. "ubuntu", "debian", "centos", "redhat". See
 <a href="https://github.com/rstudio/r-system-requirements#operating-systems" class="external-link">https://github.com/rstudio/r-system-requirements#operating-systems</a> for
 all full list of supported operating systems.</p>
 <p>If <code>NULL</code>, the default, these will be looked up using <code><a href="https://rdrr.io/pkg/distro/man/distro.html" class="external-link">distro::distro()</a></code>.</p></dd>
+
+
 <dt>root</dt>
 <dd><p>Path to the package tree.</p></dd>
+
+
 <dt>execute, sudo</dt>
 <dd><p>If <code>execute</code> is <code>TRUE</code>, pak will execute the system
 commands (if any). If <code>sudo</code> is <code>TRUE</code>, pak will prepend the commands with
 <a href="https://en.wikipedia.org/wiki/Sudo" class="external-link">sudo</a>.</p></dd>
+
+
 <dt>echo</dt>
 <dd><p>If <code>echo</code> is <code>TRUE</code> and <code>execute</code> is <code>TRUE</code>, echo the command output.</p></dd>
+
+
 <dt>package</dt>
 <dd><p>Package names to lookup system requirements for.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector of commands needed to install the system
+    
+
+<p>A character vector of commands needed to install the system
 requirements for the package.</p>
     </div>
 
@@ -147,7 +158,7 @@ requirements for the package.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
