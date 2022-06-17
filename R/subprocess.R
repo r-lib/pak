@@ -85,10 +85,12 @@ new_remote_session <- function() {
   cli <- pkg_data$ns$cli
   opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
   opts$env <- c(
-    opts$env, R_PKG_SHOW_PROGRESS = is_verbose(),
+    opts$env,
+    R_PKG_SHOW_PROGRESS = is_verbose(),
     R_PKG_PKG_WORKER = "true",
     R_PKG_NUM_COLORS = as.character(cli$num_ansi_colors()),
-    R_PKG_DYNAMIC_TTY = cli$is_dynamic_tty()
+    R_PKG_DYNAMIC_TTY = cli$is_dynamic_tty(),
+    PKGCACHE_NO_PILLAR = "true"
   )
   pkg_data$remote <- callr$r_session$new(opts, wait = FALSE)
 }
