@@ -298,6 +298,7 @@ jobs:
 
     - name: Build and push
       run: |
+        docker system prune -f
         docker build \
             --pull \
             --build-arg ARCH=aarch64 \
