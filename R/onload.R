@@ -21,6 +21,7 @@ pkg_data <- new.env(parent = emptyenv())
   } else if (worker == "true") {
     ## In the worker process
     Sys.setenv("R_PKG_PKG_WORKER" = "false")
+    Sys.setenv("PKGCACHE_NO_PILLAR" = "true")
     # We don't use the env vars that cli supports, on purpose, because
     # they are inherited in the subprocess of the subprocess
     options(
