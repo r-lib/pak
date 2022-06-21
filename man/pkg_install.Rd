@@ -22,8 +22,8 @@ already installed in another library.}
 
 \item{upgrade}{When \code{FALSE}, the default, does the minimum amount of work
 to give you the latest version of \code{pkg}. It will only upgrade packages if
-\code{pkg} or one of its explicitly requires a higher version than what you
-currently have.
+\code{pkg}, or one of its dependencies, explicitly requires a higher version
+than what you currently have.
 
 When \code{upgrade = TRUE}, will do ensure that you have the latest version of
 \code{pkg} and all its dependencies.}
