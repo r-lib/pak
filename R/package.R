@@ -168,8 +168,8 @@ NULL
 #'   already installed in another library.
 #' @param upgrade When `FALSE`, the default, does the minimum amount of work
 #'   to give you the latest version of `pkg`. It will only upgrade packages if
-#'   `pkg` or one of its explicitly requires a higher version than what you
-#'   currently have.
+#'   `pkg`, or one of its dependencies, explicitly requires a higher version
+#'   than what you currently have.
 #'
 #'   When `upgrade = TRUE`, will do ensure that you have the latest version of
 #'   `pkg` and all its dependencies.
