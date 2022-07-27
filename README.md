@@ -69,11 +69,14 @@ install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/
 
 ### `stable`, `rc` and `devel` streams
 
-We have three types of binaries available: \* `stable` corresponds to
-the latest CRAN release of CRAN. \* `rc` is a release candidate build,
-and it is available about 1-2 weeks before a release. Otherwise it is
-the same as the `stable` build. \* `devel` has builds from the
-development tree. Before release it might be the same as the `rc` build.
+We have three types of binaries available:
+
+-   `stable` corresponds to the latest CRAN release of CRAN.
+-   `rc` is a release candidate build, and it is available about 1-2
+    weeks before a release. Otherwise it is the same as the `stable`
+    build.
+-   `devel` has builds from the development tree. Before release it
+    might be the same as the `rc` build.
 
 The streams are available under different repository URLs:
 
