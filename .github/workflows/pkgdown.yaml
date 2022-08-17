@@ -32,6 +32,7 @@ jobs:
         with:
           extra-packages: any::pkgdown
           needs: website
+          pak-version: devel
 
       - name: Build site
         run: |
