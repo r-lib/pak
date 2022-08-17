@@ -12,7 +12,9 @@ Package sources
 pak can install packages from various package sources. By default,
 a package name without the specification of its source, refers to a
 CRAN or Bioconductor package. pak calls these \emph{standard} packages.
-For example:\if{html}{\out{<div class="sourceCode r">}}\preformatted{## CRAN package
+For example:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{## CRAN package
 pkg_install("glue")
 ## BioC package
 pkg_install("limma")
@@ -22,12 +24,16 @@ When considering a standard package, the calling version of R is used
 to determine the available source and binary packages on CRAN and the
 Bioconductor repositories.
 
-The full specification of standard packages is simply\preformatted{[standard::]<package>
-}
+The full specification of standard packages is simply
 
-If you know the exact source of the package, you can also write\preformatted{cran::<package>
+\if{html}{\out{<div class="sourceCode">}}\preformatted{[standard::]<package>
+}\if{html}{\out{</div>}}
+
+If you know the exact source of the package, you can also write
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{cran::<package>
 bioc::<package>
-}
+}\if{html}{\out{</div>}}
 }
 
 \section{GitHub packages}{
@@ -35,14 +41,18 @@ bioc::<package>
 
 pak can install packages from GitHub repositories. Any package that
 is specified in the \code{user/repo} notation is taken to be a GitHub package.
-For example:\if{html}{\out{<div class="sourceCode r">}}\preformatted{## Package from GitHub
+For example:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{## Package from GitHub
 pkg_install("r-lib/glue")
 }\if{html}{\out{</div>}}
 
-The full specification of GitHub packages is\preformatted{[<package>=][github::]<username>/<repo>[/<subdir>]
+The full specification of GitHub packages is
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{[<package>=][github::]<username>/<repo>[/<subdir>]
     [@<committish> | #<pull> | @[*]release]
 
-}
+}\if{html}{\out{</div>}}
 \itemize{
 \item \verb{<package>} is the name of the package. If this is missing, the
 name of the package must match the name of the repository.
@@ -63,13 +73,17 @@ to a pull request.
 
 pak can install packages from package trees. You can either use the
 \code{\link[=local_install]{local_install()}} function for this, or specify the \verb{local::} package
-source. E.g. these are equivalent:\if{html}{\out{<div class="sourceCode r">}}\preformatted{local_install("/path/to/my/package")
+source. E.g. these are equivalent:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{local_install("/path/to/my/package")
 pkg_install("local::/path/to/my/package")
 }\if{html}{\out{</div>}}
 
 The \verb{local::} form is handy if you want to mix it with other package
 specifications, e.g. to install a local package, and another standard
-package:\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install(c("local://path/to/my/package", "testthat"))
+package:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install(c("local://path/to/my/package", "testthat"))
 }\if{html}{\out{</div>}}
 }
 
@@ -83,17 +97,21 @@ location by adding the remote location to \code{Remotes} in your
 from the specified location, instead of CRAN.
 
 The remote dependencies specified in \code{Remotes} is a comma separated
-list of package sources:\preformatted{Remotes: <pkg-source-1>, <pkg-source-2>, [ ... ]
-}
+list of package sources:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{Remotes: <pkg-source-1>, <pkg-source-2>, [ ... ]
+}\if{html}{\out{</div>}}
 
 Note that you will still need add the package to one of the regular
 dependency fields, i.e. \code{Imports}, \code{Suggests}, etc. Here is a concrete
-example that specifies the \code{r-lib/glue} package:\preformatted{Imports: glue
+example that specifies the \code{r-lib/glue} package:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{Imports: glue
 Remotes: r-lib/glue,
   r-lib/httr@v0.4,
   klutometis/roxygen#142,
   r-lib/testthat@c67018fa4970
-}
+}\if{html}{\out{</div>}}
 
 The CRAN and Bioconductor repositories do not support the \code{Remotes}
 field, so you need to remove this field, before submitting your package
@@ -110,13 +128,15 @@ usually automatic, because these repositories are generally in a
 consistent state. If packages depend on other other package sources,
 however, this is not the case.
 
-Here is an example of a conflict detected:\preformatted{> pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
+Here is an example of a conflict detected:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{> pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
 Error: Cannot install packages:
   * Cannot install `r-lib/pkgcache@conflict`.
     - Cannot install dependency r-lib/cli@main
   * Cannot install `r-lib/cli@main`.
 - Conflicts r-lib/cli@message
-}
+}\if{html}{\out{</div>}}
 
 \code{r-lib/pkgcache@conflict} depends on the main branch of \code{r-lib/cli},
 whereas, we explicitly requested the \code{message} branch. Since it cannot

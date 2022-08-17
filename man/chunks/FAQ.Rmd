@@ -1,0 +1,55 @@
+
+# Package installation
+
+```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+dir.create(.lib <- tempfile())
+.libPaths(c(.lib, .libPaths()))
+```
+
+## How do I reinstall a package?
+
+pak does not reinstall a package, if the same version is already installed.
+Sometimes you still want a reinstall, e.g. to fix a broken installation.
+In this case you can delete the package and then install it, or use the
+`?reinstall` parameter:
+
+```{asciicast faq-reinstall}
+pak::pkg_install("tibble")
+```
+
+```{asciicast faq-reinstall-2}
+pak::pkg_install("tibble?reinstall")
+```
+
+## How do I install a package from source?
+
+To force the installation of a source package (instead of a binary
+package), use the `?source` parameter:
+
+```{asciicast faq-source}
+pak::pkg_install("tibble?source")
+```
+
+## How do I ignore an optional dependency?
+
+```{asciicast faq-ignore}
+pak::pkg_install(
+  c("tibble", "DiagrammeR=?ignore", "formattable?=ignore"),
+  dependencies = TRUE
+)
+```
+
+The syntax is
+```
+<packagename>=?ignore
+```
+
+Note that you can only ignore _optional_ dependencies, i.e. packages in
+`Suggests` and `Enhances`.
+
+# Others
+
+## How can I use pak with renv?
+
+You cannot currently, but keep on eye on this issue:
+https://github.com/r-lib/pak/issues/343

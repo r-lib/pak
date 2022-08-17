@@ -1,0 +1,98 @@
+
+# pak is fast
+
+## Parallel HTTP
+
+pak performs HTTP queries concurrently. This is true when
+
+* it downloads package metadata from package repositories,
+* it resolves packages from CRAN, GitHub, URLs, etc,
+* it downloads the actual package files,
+* etc.
+
+## Parallel installation
+
+pak installs packages concurrently, as much as their dependency graph
+allows this.
+
+## Caching
+
+pak caches metadata and package files, so you don't need to re-download
+the same files over and over.
+
+# pak is safe
+
+## Plan installation up front
+
+pak creates an installation plan before downloading any packages.
+If the plan is unsuccessful, then it fails without downloading any
+packages.
+
+## Auto-install missing dependencies
+
+When requesting the installation of a package, pak makes sure that all
+of its dependencies are also installed.
+
+## Keeping binary packages up-to-date
+
+pak automatically discads binary packages from the cache, if a new build
+of the same version is available on CRAN.
+
+## Correct CRAN metadata errors
+
+pak can correct some of CRAN's metadata issues, e.g.:
+
+- New version of the package was released since we obtained the metadata.
+- macOS binary package is only available at https://mac.r-project.org/
+  because of a synchronization issue.
+
+## Graceful handling of locked packaeg DLLs on Windows
+
+pak handles the situation of locked package DLLs, as well as possible.
+It detects which process locked them, and offers the choice of terminating
+these processes. It also unloads packages from the current R session as
+needed.
+
+## pak keeps its own dependencies isolated
+
+pak keeps its own dependencies in a private package library and never
+loads any packages. (Only in background processes).
+
+# pak is convenient
+
+## pak comes as a self-contained binary package
+
+On the most common platforms. No dependencies, no system dependencies,
+no compiler needed. (See also the [installation][install] manual.)
+
+## Install packages from multiple sources
+
+- CRAN, Bioconductor
+- GitHub
+- URLs
+- Local files or directories.
+
+## Ignore certain optional dependencies
+
+pak can ignore certain optional dependencies if requested.
+
+## CRAN package file sizes
+
+pak knows the sizes of CRAN package files, so it can estimate how much
+data you need to download, before the installation.
+
+## Bioconductor version detection
+
+pak automatically selects the Bioconductor version that is appropriate for
+your R version. No need to set any repositories.
+
+## Time travel with MRAN or RSPM
+
+pak can use MRAN (Microsoft R Application Network,
+https://mran.microsoft.com/) or RSPM (RStudio Public Package Manager,
+https://packagemanager.rstudio.com/client/#/) to install from snapshots
+or CRAN.
+
+## pak can install dependencies of local packages
+
+Very handly for package development!

@@ -16,7 +16,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-RoxygenNote: 7.1.2.9000
+RoxygenNote: 7.2.1.9000
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.2)
@@ -69,6 +69,10 @@ Remotes:
     r-lib/pkgdepends,
     r-lib/processx,
     r-lib/ps
+Config/Needs/website:
+    r-lib/asciicast,
+    r-lib/roxygen2@feature/html-blocks,
+    tidyverse/tidytemplate
 Config/testthat/edition: 3
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues

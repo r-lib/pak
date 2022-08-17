@@ -1,5 +1,12 @@
 url: http://pak.r-lib.org
 
+template:
+  package: tidytemplate
+  bootstrap: 5
+  includes:
+    in_header: |
+      <script defer data-domain="/pak.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+
 authors:
   "Jim Hester":
     href: https://jimhester.com
@@ -7,7 +14,26 @@ authors:
 development:
   mode: auto
 
+navbar:
+  structure:
+    left: [TLDR, FAQ, reference, articles, news]
+  components:
+    TLDR:
+      text: TLDR
+      href: reference/tldr.html
+    FAQ:
+      text: FAQ
+      href: reference/faq.html
+
 reference:
+- title: About pak
+  contents:
+  - tldr
+  - faq
+  - install
+  - features
+  - config
+
 - title: Packages
   contents:
   - pak
@@ -41,7 +67,7 @@ reference:
   - repo_add
   - repo_get
   - repo_status
-  
+
 - title: Auto-install missing packages
   contents:
   - handle_package_not_found
@@ -50,7 +76,7 @@ reference:
   contents:
   - lockfile_create
   - lockfile_install
-  
+
 - title: pak housekeeping
   contents:
   - cache_summary

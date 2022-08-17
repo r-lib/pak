@@ -32,12 +32,31 @@ jobs:
         with:
           extra-packages: any::pkgdown
           needs: website
+          pak-version: devel
 
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+      - name: Install local pak
+        run: |
+          install.packages(".", repos = NULL, type = "source")
+          pak:::create_dev_lib()
         shell: Rscript {0}
         env:
-          PAK_BUNDLE: false
+          PAK_BUNDLE: none
+
+      - name: Check if pak works
+        run: |
+          pak::pkg_install("tibble")
+        shell: Rscript {0}
+
+      - name: Build site
+        run: |
+          options(asciicast_timeout = 600)
+          rmarkdown::render("README.Rmd")
+          # roxygen2::roxygenize()
+          pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
+        shell: Rscript {0}
+        env:
+          IN_PKGDOWN: true
+          ASCIICAST_TIMEOUT: 600
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
