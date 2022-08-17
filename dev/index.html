@@ -4,14 +4,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="The goal of pak is to make package installation faster and
+    more reliable. In particular, it performs all HTTP operations in parallel,
+    so metadata resolution and package downloads are fast. Metadata and package
+    files are cached on the local disk as well. pak has a dependency solver,
+    so it finds version conflicts before performing the installation. This
+    version of pak supports CRAN, Bioconductor and GitHub packages as well.">
 <title>Another Approach to Package Installation • pak</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
 <meta property="og:description" content="The goal of pak is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
     so metadata resolution and package downloads are fast. Metadata and package
@@ -22,83 +29,2894 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><script defer data-domain="/pak.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#container" class="visually-hidden-focusable">Skip to content</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">pak</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">pak</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9000</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/tldr.html">TLDR</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/internals.html">pak internals</a>
-    </li>
-  </ul>
+<li class="nav-item">
+  <a class="nav-link" href="reference/faq.html">FAQ</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/r-lib/pak/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/internals.html">pak internals</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/r-lib/pak/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
+    
+  </div>
+</nav><div class="container template-home" id="container">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="pak">pak<a class="anchor" aria-label="anchor" href="#pak"></a>
 </h1></div>
 <blockquote><p>A Fresh Approach to R Package Installation</p></blockquote>
 <!-- badges: start -->
 <!-- badges: end --><p>pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
-<p align="center"><img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@images/pak-demo.svg?version=2"></p>
+<ul>
+<li><a href="#rocket-short-tour"><span class="emoji" data-emoji="rocket">🚀</span> Short tour</a></li>
+<li><a href="#link-quick-links-start-here-if-in-doubt"><span class="emoji" data-emoji="link">🔗</span> Quick links (start here if in doubt!)</a></li>
+<li><a href="#sparkles-features"><span class="emoji" data-emoji="sparkles">✨</span> Features</a></li>
+<li><a href="#arrow_down-installation"><span class="emoji" data-emoji="arrow_down">⬇️</span> Installation</a></li>
+<li><a href="#blue_book-license"><strong><span class="emoji" data-emoji="blue_book">📘</span></strong> License</a></li>
+</ul>
+<!-- README.md is generated from README.Rmd. Please edit that file --><div class="section level2">
+<h2 id="rocket-short-tour">
+<span class="emoji" data-emoji="rocket">🚀</span> Short tour<a class="anchor" aria-label="anchor" href="#rocket-short-tour"></a>
+</h2>
+<div class="section level4">
+<h4 id="install-or-update-packages-from-cran-or-bioconductor">Install or update packages from CRAN or Bioconductor<a class="anchor" aria-label="anchor" href="#install-or-update-packages-from-cran-or-bioconductor"></a>
+</h4>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span></code></pre></div>
+<style type="text/css">
+.ansi-bold         { font-weight: bold;             }
+.ansi-italic       { font-style: italic;            }
+.ansi-underline    { text-decoration: underline;    }
+.ansi-blink        { text-decoration: blink;        }
+.ansi-hide         { visibility: hidden;            }
+.ansi-crossedout   { text-decoration: line-through; }
+.ansi-link:hover   { text-decoration: underline;    }
+.ansi-color-0      { color: #073642 }
+.ansi-color-1      { color: #DC322F }
+.ansi-color-2      { color: #859900 }
+.ansi-color-3      { color: #B58900 }
+.ansi-color-4      { color: #268BD2 }
+.ansi-color-5      { color: #D33682 }
+.ansi-color-6      { color: #2AA198 }
+.ansi-color-7      { color: #EEE8D5 }
+.ansi-color-8      { color: #002B36 }
+.ansi-color-9      { color: #CB4B16 }
+.ansi-color-10     { color: #586E75 }
+.ansi-color-11     { color: #657C83 }
+.ansi-color-12     { color: #839496 }
+.ansi-color-13     { color: #6C71C4 }
+.ansi-color-14     { color: #93A1A1 }
+.ansi-color-15     { color: #FDF6E3 }
+.ansi-bg-color-0   { background-color: #073642 }
+.ansi-bg-color-1   { background-color: #DC322F }
+.ansi-bg-color-2   { background-color: #859900 }
+.ansi-bg-color-3   { background-color: #B58900 }
+.ansi-bg-color-4   { background-color: #268BD2 }
+.ansi-bg-color-5   { background-color: #D33682 }
+.ansi-bg-color-6   { background-color: #2AA198 }
+.ansi-bg-color-7   { background-color: #EEE8D5 }
+.ansi-bg-color-8   { background-color: #002B36 }
+.ansi-bg-color-9   { background-color: #CB4B16 }
+.ansi-bg-color-10  { background-color: #586E75 }
+.ansi-bg-color-11  { background-color: #657C83 }
+.ansi-bg-color-12  { background-color: #839496 }
+.ansi-bg-color-13  { background-color: #6C71C4 }
+.ansi-bg-color-14  { background-color: #93A1A1 }
+.ansi-bg-color-15  { background-color: #FDF6E3 }
+.ansi-color-16     { color: #000000 }
+.ansi-color-52     { color: #330000 }
+.ansi-color-88     { color: #660000 }
+.ansi-color-124    { color: #990000 }
+.ansi-color-160    { color: #cc0000 }
+.ansi-color-196    { color: #ff0000 }
+.ansi-color-22     { color: #003300 }
+.ansi-color-58     { color: #333300 }
+.ansi-color-94     { color: #663300 }
+.ansi-color-130    { color: #993300 }
+.ansi-color-166    { color: #cc3300 }
+.ansi-color-202    { color: #ff3300 }
+.ansi-color-28     { color: #006600 }
+.ansi-color-64     { color: #336600 }
+.ansi-color-100    { color: #666600 }
+.ansi-color-136    { color: #996600 }
+.ansi-color-172    { color: #cc6600 }
+.ansi-color-208    { color: #ff6600 }
+.ansi-color-34     { color: #009900 }
+.ansi-color-70     { color: #339900 }
+.ansi-color-106    { color: #669900 }
+.ansi-color-142    { color: #999900 }
+.ansi-color-178    { color: #cc9900 }
+.ansi-color-214    { color: #ff9900 }
+.ansi-color-40     { color: #00cc00 }
+.ansi-color-76     { color: #33cc00 }
+.ansi-color-112    { color: #66cc00 }
+.ansi-color-148    { color: #99cc00 }
+.ansi-color-184    { color: #cccc00 }
+.ansi-color-220    { color: #ffcc00 }
+.ansi-color-46     { color: #00ff00 }
+.ansi-color-82     { color: #33ff00 }
+.ansi-color-118    { color: #66ff00 }
+.ansi-color-154    { color: #99ff00 }
+.ansi-color-190    { color: #ccff00 }
+.ansi-color-226    { color: #ffff00 }
+.ansi-color-17     { color: #000033 }
+.ansi-color-53     { color: #330033 }
+.ansi-color-89     { color: #660033 }
+.ansi-color-125    { color: #990033 }
+.ansi-color-161    { color: #cc0033 }
+.ansi-color-197    { color: #ff0033 }
+.ansi-color-23     { color: #003333 }
+.ansi-color-59     { color: #333333 }
+.ansi-color-95     { color: #663333 }
+.ansi-color-131    { color: #993333 }
+.ansi-color-167    { color: #cc3333 }
+.ansi-color-203    { color: #ff3333 }
+.ansi-color-29     { color: #006633 }
+.ansi-color-65     { color: #336633 }
+.ansi-color-101    { color: #666633 }
+.ansi-color-137    { color: #996633 }
+.ansi-color-173    { color: #cc6633 }
+.ansi-color-209    { color: #ff6633 }
+.ansi-color-35     { color: #009933 }
+.ansi-color-71     { color: #339933 }
+.ansi-color-107    { color: #669933 }
+.ansi-color-143    { color: #999933 }
+.ansi-color-179    { color: #cc9933 }
+.ansi-color-215    { color: #ff9933 }
+.ansi-color-41     { color: #00cc33 }
+.ansi-color-77     { color: #33cc33 }
+.ansi-color-113    { color: #66cc33 }
+.ansi-color-149    { color: #99cc33 }
+.ansi-color-185    { color: #cccc33 }
+.ansi-color-221    { color: #ffcc33 }
+.ansi-color-47     { color: #00ff33 }
+.ansi-color-83     { color: #33ff33 }
+.ansi-color-119    { color: #66ff33 }
+.ansi-color-155    { color: #99ff33 }
+.ansi-color-191    { color: #ccff33 }
+.ansi-color-227    { color: #ffff33 }
+.ansi-color-18     { color: #000066 }
+.ansi-color-54     { color: #330066 }
+.ansi-color-90     { color: #660066 }
+.ansi-color-126    { color: #990066 }
+.ansi-color-162    { color: #cc0066 }
+.ansi-color-198    { color: #ff0066 }
+.ansi-color-24     { color: #003366 }
+.ansi-color-60     { color: #333366 }
+.ansi-color-96     { color: #663366 }
+.ansi-color-132    { color: #993366 }
+.ansi-color-168    { color: #cc3366 }
+.ansi-color-204    { color: #ff3366 }
+.ansi-color-30     { color: #006666 }
+.ansi-color-66     { color: #336666 }
+.ansi-color-102    { color: #666666 }
+.ansi-color-138    { color: #996666 }
+.ansi-color-174    { color: #cc6666 }
+.ansi-color-210    { color: #ff6666 }
+.ansi-color-36     { color: #009966 }
+.ansi-color-72     { color: #339966 }
+.ansi-color-108    { color: #669966 }
+.ansi-color-144    { color: #999966 }
+.ansi-color-180    { color: #cc9966 }
+.ansi-color-216    { color: #ff9966 }
+.ansi-color-42     { color: #00cc66 }
+.ansi-color-78     { color: #33cc66 }
+.ansi-color-114    { color: #66cc66 }
+.ansi-color-150    { color: #99cc66 }
+.ansi-color-186    { color: #cccc66 }
+.ansi-color-222    { color: #ffcc66 }
+.ansi-color-48     { color: #00ff66 }
+.ansi-color-84     { color: #33ff66 }
+.ansi-color-120    { color: #66ff66 }
+.ansi-color-156    { color: #99ff66 }
+.ansi-color-192    { color: #ccff66 }
+.ansi-color-228    { color: #ffff66 }
+.ansi-color-19     { color: #000099 }
+.ansi-color-55     { color: #330099 }
+.ansi-color-91     { color: #660099 }
+.ansi-color-127    { color: #990099 }
+.ansi-color-163    { color: #cc0099 }
+.ansi-color-199    { color: #ff0099 }
+.ansi-color-25     { color: #003399 }
+.ansi-color-61     { color: #333399 }
+.ansi-color-97     { color: #663399 }
+.ansi-color-133    { color: #993399 }
+.ansi-color-169    { color: #cc3399 }
+.ansi-color-205    { color: #ff3399 }
+.ansi-color-31     { color: #006699 }
+.ansi-color-67     { color: #336699 }
+.ansi-color-103    { color: #666699 }
+.ansi-color-139    { color: #996699 }
+.ansi-color-175    { color: #cc6699 }
+.ansi-color-211    { color: #ff6699 }
+.ansi-color-37     { color: #009999 }
+.ansi-color-73     { color: #339999 }
+.ansi-color-109    { color: #669999 }
+.ansi-color-145    { color: #999999 }
+.ansi-color-181    { color: #cc9999 }
+.ansi-color-217    { color: #ff9999 }
+.ansi-color-43     { color: #00cc99 }
+.ansi-color-79     { color: #33cc99 }
+.ansi-color-115    { color: #66cc99 }
+.ansi-color-151    { color: #99cc99 }
+.ansi-color-187    { color: #cccc99 }
+.ansi-color-223    { color: #ffcc99 }
+.ansi-color-49     { color: #00ff99 }
+.ansi-color-85     { color: #33ff99 }
+.ansi-color-121    { color: #66ff99 }
+.ansi-color-157    { color: #99ff99 }
+.ansi-color-193    { color: #ccff99 }
+.ansi-color-229    { color: #ffff99 }
+.ansi-color-20     { color: #0000cc }
+.ansi-color-56     { color: #3300cc }
+.ansi-color-92     { color: #6600cc }
+.ansi-color-128    { color: #9900cc }
+.ansi-color-164    { color: #cc00cc }
+.ansi-color-200    { color: #ff00cc }
+.ansi-color-26     { color: #0033cc }
+.ansi-color-62     { color: #3333cc }
+.ansi-color-98     { color: #6633cc }
+.ansi-color-134    { color: #9933cc }
+.ansi-color-170    { color: #cc33cc }
+.ansi-color-206    { color: #ff33cc }
+.ansi-color-32     { color: #0066cc }
+.ansi-color-68     { color: #3366cc }
+.ansi-color-104    { color: #6666cc }
+.ansi-color-140    { color: #9966cc }
+.ansi-color-176    { color: #cc66cc }
+.ansi-color-212    { color: #ff66cc }
+.ansi-color-38     { color: #0099cc }
+.ansi-color-74     { color: #3399cc }
+.ansi-color-110    { color: #6699cc }
+.ansi-color-146    { color: #9999cc }
+.ansi-color-182    { color: #cc99cc }
+.ansi-color-218    { color: #ff99cc }
+.ansi-color-44     { color: #00cccc }
+.ansi-color-80     { color: #33cccc }
+.ansi-color-116    { color: #66cccc }
+.ansi-color-152    { color: #99cccc }
+.ansi-color-188    { color: #cccccc }
+.ansi-color-224    { color: #ffcccc }
+.ansi-color-50     { color: #00ffcc }
+.ansi-color-86     { color: #33ffcc }
+.ansi-color-122    { color: #66ffcc }
+.ansi-color-158    { color: #99ffcc }
+.ansi-color-194    { color: #ccffcc }
+.ansi-color-230    { color: #ffffcc }
+.ansi-color-21     { color: #0000ff }
+.ansi-color-57     { color: #3300ff }
+.ansi-color-93     { color: #6600ff }
+.ansi-color-129    { color: #9900ff }
+.ansi-color-165    { color: #cc00ff }
+.ansi-color-201    { color: #ff00ff }
+.ansi-color-27     { color: #0033ff }
+.ansi-color-63     { color: #3333ff }
+.ansi-color-99     { color: #6633ff }
+.ansi-color-135    { color: #9933ff }
+.ansi-color-171    { color: #cc33ff }
+.ansi-color-207    { color: #ff33ff }
+.ansi-color-33     { color: #0066ff }
+.ansi-color-69     { color: #3366ff }
+.ansi-color-105    { color: #6666ff }
+.ansi-color-141    { color: #9966ff }
+.ansi-color-177    { color: #cc66ff }
+.ansi-color-213    { color: #ff66ff }
+.ansi-color-39     { color: #0099ff }
+.ansi-color-75     { color: #3399ff }
+.ansi-color-111    { color: #6699ff }
+.ansi-color-147    { color: #9999ff }
+.ansi-color-183    { color: #cc99ff }
+.ansi-color-219    { color: #ff99ff }
+.ansi-color-45     { color: #00ccff }
+.ansi-color-81     { color: #33ccff }
+.ansi-color-117    { color: #66ccff }
+.ansi-color-153    { color: #99ccff }
+.ansi-color-189    { color: #ccccff }
+.ansi-color-225    { color: #ffccff }
+.ansi-color-51     { color: #00ffff }
+.ansi-color-87     { color: #33ffff }
+.ansi-color-123    { color: #66ffff }
+.ansi-color-159    { color: #99ffff }
+.ansi-color-195    { color: #ccffff }
+.ansi-color-231    { color: #ffffff }
+.ansi-color-232    { color: #0a0a0a }
+.ansi-color-233    { color: #141414 }
+.ansi-color-234    { color: #1f1f1f }
+.ansi-color-235    { color: #292929 }
+.ansi-color-236    { color: #333333 }
+.ansi-color-237    { color: #3d3d3d }
+.ansi-color-238    { color: #474747 }
+.ansi-color-239    { color: #525252 }
+.ansi-color-240    { color: #5c5c5c }
+.ansi-color-241    { color: #666666 }
+.ansi-color-242    { color: #707070 }
+.ansi-color-243    { color: #7a7a7a }
+.ansi-color-244    { color: #858585 }
+.ansi-color-245    { color: #8f8f8f }
+.ansi-color-246    { color: #999999 }
+.ansi-color-247    { color: #a3a3a3 }
+.ansi-color-248    { color: #adadad }
+.ansi-color-249    { color: #b8b8b8 }
+.ansi-color-250    { color: #c2c2c2 }
+.ansi-color-251    { color: #cccccc }
+.ansi-color-252    { color: #d6d6d6 }
+.ansi-color-253    { color: #e0e0e0 }
+.ansi-color-254    { color: #ebebeb }
+.ansi-color-255    { color: #f5f5f5 }
+.ansi-bg-color-16  { background-color: #000000 }
+.ansi-bg-color-52  { background-color: #330000 }
+.ansi-bg-color-88  { background-color: #660000 }
+.ansi-bg-color-124 { background-color: #990000 }
+.ansi-bg-color-160 { background-color: #cc0000 }
+.ansi-bg-color-196 { background-color: #ff0000 }
+.ansi-bg-color-22  { background-color: #003300 }
+.ansi-bg-color-58  { background-color: #333300 }
+.ansi-bg-color-94  { background-color: #663300 }
+.ansi-bg-color-130 { background-color: #993300 }
+.ansi-bg-color-166 { background-color: #cc3300 }
+.ansi-bg-color-202 { background-color: #ff3300 }
+.ansi-bg-color-28  { background-color: #006600 }
+.ansi-bg-color-64  { background-color: #336600 }
+.ansi-bg-color-100 { background-color: #666600 }
+.ansi-bg-color-136 { background-color: #996600 }
+.ansi-bg-color-172 { background-color: #cc6600 }
+.ansi-bg-color-208 { background-color: #ff6600 }
+.ansi-bg-color-34  { background-color: #009900 }
+.ansi-bg-color-70  { background-color: #339900 }
+.ansi-bg-color-106 { background-color: #669900 }
+.ansi-bg-color-142 { background-color: #999900 }
+.ansi-bg-color-178 { background-color: #cc9900 }
+.ansi-bg-color-214 { background-color: #ff9900 }
+.ansi-bg-color-40  { background-color: #00cc00 }
+.ansi-bg-color-76  { background-color: #33cc00 }
+.ansi-bg-color-112 { background-color: #66cc00 }
+.ansi-bg-color-148 { background-color: #99cc00 }
+.ansi-bg-color-184 { background-color: #cccc00 }
+.ansi-bg-color-220 { background-color: #ffcc00 }
+.ansi-bg-color-46  { background-color: #00ff00 }
+.ansi-bg-color-82  { background-color: #33ff00 }
+.ansi-bg-color-118 { background-color: #66ff00 }
+.ansi-bg-color-154 { background-color: #99ff00 }
+.ansi-bg-color-190 { background-color: #ccff00 }
+.ansi-bg-color-226 { background-color: #ffff00 }
+.ansi-bg-color-17  { background-color: #000033 }
+.ansi-bg-color-53  { background-color: #330033 }
+.ansi-bg-color-89  { background-color: #660033 }
+.ansi-bg-color-125 { background-color: #990033 }
+.ansi-bg-color-161 { background-color: #cc0033 }
+.ansi-bg-color-197 { background-color: #ff0033 }
+.ansi-bg-color-23  { background-color: #003333 }
+.ansi-bg-color-59  { background-color: #333333 }
+.ansi-bg-color-95  { background-color: #663333 }
+.ansi-bg-color-131 { background-color: #993333 }
+.ansi-bg-color-167 { background-color: #cc3333 }
+.ansi-bg-color-203 { background-color: #ff3333 }
+.ansi-bg-color-29  { background-color: #006633 }
+.ansi-bg-color-65  { background-color: #336633 }
+.ansi-bg-color-101 { background-color: #666633 }
+.ansi-bg-color-137 { background-color: #996633 }
+.ansi-bg-color-173 { background-color: #cc6633 }
+.ansi-bg-color-209 { background-color: #ff6633 }
+.ansi-bg-color-35  { background-color: #009933 }
+.ansi-bg-color-71  { background-color: #339933 }
+.ansi-bg-color-107 { background-color: #669933 }
+.ansi-bg-color-143 { background-color: #999933 }
+.ansi-bg-color-179 { background-color: #cc9933 }
+.ansi-bg-color-215 { background-color: #ff9933 }
+.ansi-bg-color-41  { background-color: #00cc33 }
+.ansi-bg-color-77  { background-color: #33cc33 }
+.ansi-bg-color-113 { background-color: #66cc33 }
+.ansi-bg-color-149 { background-color: #99cc33 }
+.ansi-bg-color-185 { background-color: #cccc33 }
+.ansi-bg-color-221 { background-color: #ffcc33 }
+.ansi-bg-color-47  { background-color: #00ff33 }
+.ansi-bg-color-83  { background-color: #33ff33 }
+.ansi-bg-color-119 { background-color: #66ff33 }
+.ansi-bg-color-155 { background-color: #99ff33 }
+.ansi-bg-color-191 { background-color: #ccff33 }
+.ansi-bg-color-227 { background-color: #ffff33 }
+.ansi-bg-color-18  { background-color: #000066 }
+.ansi-bg-color-54  { background-color: #330066 }
+.ansi-bg-color-90  { background-color: #660066 }
+.ansi-bg-color-126 { background-color: #990066 }
+.ansi-bg-color-162 { background-color: #cc0066 }
+.ansi-bg-color-198 { background-color: #ff0066 }
+.ansi-bg-color-24  { background-color: #003366 }
+.ansi-bg-color-60  { background-color: #333366 }
+.ansi-bg-color-96  { background-color: #663366 }
+.ansi-bg-color-132 { background-color: #993366 }
+.ansi-bg-color-168 { background-color: #cc3366 }
+.ansi-bg-color-204 { background-color: #ff3366 }
+.ansi-bg-color-30  { background-color: #006666 }
+.ansi-bg-color-66  { background-color: #336666 }
+.ansi-bg-color-102 { background-color: #666666 }
+.ansi-bg-color-138 { background-color: #996666 }
+.ansi-bg-color-174 { background-color: #cc6666 }
+.ansi-bg-color-210 { background-color: #ff6666 }
+.ansi-bg-color-36  { background-color: #009966 }
+.ansi-bg-color-72  { background-color: #339966 }
+.ansi-bg-color-108 { background-color: #669966 }
+.ansi-bg-color-144 { background-color: #999966 }
+.ansi-bg-color-180 { background-color: #cc9966 }
+.ansi-bg-color-216 { background-color: #ff9966 }
+.ansi-bg-color-42  { background-color: #00cc66 }
+.ansi-bg-color-78  { background-color: #33cc66 }
+.ansi-bg-color-114 { background-color: #66cc66 }
+.ansi-bg-color-150 { background-color: #99cc66 }
+.ansi-bg-color-186 { background-color: #cccc66 }
+.ansi-bg-color-222 { background-color: #ffcc66 }
+.ansi-bg-color-48  { background-color: #00ff66 }
+.ansi-bg-color-84  { background-color: #33ff66 }
+.ansi-bg-color-120 { background-color: #66ff66 }
+.ansi-bg-color-156 { background-color: #99ff66 }
+.ansi-bg-color-192 { background-color: #ccff66 }
+.ansi-bg-color-228 { background-color: #ffff66 }
+.ansi-bg-color-19  { background-color: #000099 }
+.ansi-bg-color-55  { background-color: #330099 }
+.ansi-bg-color-91  { background-color: #660099 }
+.ansi-bg-color-127 { background-color: #990099 }
+.ansi-bg-color-163 { background-color: #cc0099 }
+.ansi-bg-color-199 { background-color: #ff0099 }
+.ansi-bg-color-25  { background-color: #003399 }
+.ansi-bg-color-61  { background-color: #333399 }
+.ansi-bg-color-97  { background-color: #663399 }
+.ansi-bg-color-133 { background-color: #993399 }
+.ansi-bg-color-169 { background-color: #cc3399 }
+.ansi-bg-color-205 { background-color: #ff3399 }
+.ansi-bg-color-31  { background-color: #006699 }
+.ansi-bg-color-67  { background-color: #336699 }
+.ansi-bg-color-103 { background-color: #666699 }
+.ansi-bg-color-139 { background-color: #996699 }
+.ansi-bg-color-175 { background-color: #cc6699 }
+.ansi-bg-color-211 { background-color: #ff6699 }
+.ansi-bg-color-37  { background-color: #009999 }
+.ansi-bg-color-73  { background-color: #339999 }
+.ansi-bg-color-109 { background-color: #669999 }
+.ansi-bg-color-145 { background-color: #999999 }
+.ansi-bg-color-181 { background-color: #cc9999 }
+.ansi-bg-color-217 { background-color: #ff9999 }
+.ansi-bg-color-43  { background-color: #00cc99 }
+.ansi-bg-color-79  { background-color: #33cc99 }
+.ansi-bg-color-115 { background-color: #66cc99 }
+.ansi-bg-color-151 { background-color: #99cc99 }
+.ansi-bg-color-187 { background-color: #cccc99 }
+.ansi-bg-color-223 { background-color: #ffcc99 }
+.ansi-bg-color-49  { background-color: #00ff99 }
+.ansi-bg-color-85  { background-color: #33ff99 }
+.ansi-bg-color-121 { background-color: #66ff99 }
+.ansi-bg-color-157 { background-color: #99ff99 }
+.ansi-bg-color-193 { background-color: #ccff99 }
+.ansi-bg-color-229 { background-color: #ffff99 }
+.ansi-bg-color-20  { background-color: #0000cc }
+.ansi-bg-color-56  { background-color: #3300cc }
+.ansi-bg-color-92  { background-color: #6600cc }
+.ansi-bg-color-128 { background-color: #9900cc }
+.ansi-bg-color-164 { background-color: #cc00cc }
+.ansi-bg-color-200 { background-color: #ff00cc }
+.ansi-bg-color-26  { background-color: #0033cc }
+.ansi-bg-color-62  { background-color: #3333cc }
+.ansi-bg-color-98  { background-color: #6633cc }
+.ansi-bg-color-134 { background-color: #9933cc }
+.ansi-bg-color-170 { background-color: #cc33cc }
+.ansi-bg-color-206 { background-color: #ff33cc }
+.ansi-bg-color-32  { background-color: #0066cc }
+.ansi-bg-color-68  { background-color: #3366cc }
+.ansi-bg-color-104 { background-color: #6666cc }
+.ansi-bg-color-140 { background-color: #9966cc }
+.ansi-bg-color-176 { background-color: #cc66cc }
+.ansi-bg-color-212 { background-color: #ff66cc }
+.ansi-bg-color-38  { background-color: #0099cc }
+.ansi-bg-color-74  { background-color: #3399cc }
+.ansi-bg-color-110 { background-color: #6699cc }
+.ansi-bg-color-146 { background-color: #9999cc }
+.ansi-bg-color-182 { background-color: #cc99cc }
+.ansi-bg-color-218 { background-color: #ff99cc }
+.ansi-bg-color-44  { background-color: #00cccc }
+.ansi-bg-color-80  { background-color: #33cccc }
+.ansi-bg-color-116 { background-color: #66cccc }
+.ansi-bg-color-152 { background-color: #99cccc }
+.ansi-bg-color-188 { background-color: #cccccc }
+.ansi-bg-color-224 { background-color: #ffcccc }
+.ansi-bg-color-50  { background-color: #00ffcc }
+.ansi-bg-color-86  { background-color: #33ffcc }
+.ansi-bg-color-122 { background-color: #66ffcc }
+.ansi-bg-color-158 { background-color: #99ffcc }
+.ansi-bg-color-194 { background-color: #ccffcc }
+.ansi-bg-color-230 { background-color: #ffffcc }
+.ansi-bg-color-21  { background-color: #0000ff }
+.ansi-bg-color-57  { background-color: #3300ff }
+.ansi-bg-color-93  { background-color: #6600ff }
+.ansi-bg-color-129 { background-color: #9900ff }
+.ansi-bg-color-165 { background-color: #cc00ff }
+.ansi-bg-color-201 { background-color: #ff00ff }
+.ansi-bg-color-27  { background-color: #0033ff }
+.ansi-bg-color-63  { background-color: #3333ff }
+.ansi-bg-color-99  { background-color: #6633ff }
+.ansi-bg-color-135 { background-color: #9933ff }
+.ansi-bg-color-171 { background-color: #cc33ff }
+.ansi-bg-color-207 { background-color: #ff33ff }
+.ansi-bg-color-33  { background-color: #0066ff }
+.ansi-bg-color-69  { background-color: #3366ff }
+.ansi-bg-color-105 { background-color: #6666ff }
+.ansi-bg-color-141 { background-color: #9966ff }
+.ansi-bg-color-177 { background-color: #cc66ff }
+.ansi-bg-color-213 { background-color: #ff66ff }
+.ansi-bg-color-39  { background-color: #0099ff }
+.ansi-bg-color-75  { background-color: #3399ff }
+.ansi-bg-color-111 { background-color: #6699ff }
+.ansi-bg-color-147 { background-color: #9999ff }
+.ansi-bg-color-183 { background-color: #cc99ff }
+.ansi-bg-color-219 { background-color: #ff99ff }
+.ansi-bg-color-45  { background-color: #00ccff }
+.ansi-bg-color-81  { background-color: #33ccff }
+.ansi-bg-color-117 { background-color: #66ccff }
+.ansi-bg-color-153 { background-color: #99ccff }
+.ansi-bg-color-189 { background-color: #ccccff }
+.ansi-bg-color-225 { background-color: #ffccff }
+.ansi-bg-color-51  { background-color: #00ffff }
+.ansi-bg-color-87  { background-color: #33ffff }
+.ansi-bg-color-123 { background-color: #66ffff }
+.ansi-bg-color-159 { background-color: #99ffff }
+.ansi-bg-color-195 { background-color: #ccffff }
+.ansi-bg-color-231 { background-color: #ffffff }
+.ansi-bg-color-232 { background-color: #0a0a0a }
+.ansi-bg-color-233 { background-color: #141414 }
+.ansi-bg-color-234 { background-color: #1f1f1f }
+.ansi-bg-color-235 { background-color: #292929 }
+.ansi-bg-color-236 { background-color: #333333 }
+.ansi-bg-color-237 { background-color: #3d3d3d }
+.ansi-bg-color-238 { background-color: #474747 }
+.ansi-bg-color-239 { background-color: #525252 }
+.ansi-bg-color-240 { background-color: #5c5c5c }
+.ansi-bg-color-241 { background-color: #666666 }
+.ansi-bg-color-242 { background-color: #707070 }
+.ansi-bg-color-243 { background-color: #7a7a7a }
+.ansi-bg-color-244 { background-color: #858585 }
+.ansi-bg-color-245 { background-color: #8f8f8f }
+.ansi-bg-color-246 { background-color: #999999 }
+.ansi-bg-color-247 { background-color: #a3a3a3 }
+.ansi-bg-color-248 { background-color: #adadad }
+.ansi-bg-color-249 { background-color: #b8b8b8 }
+.ansi-bg-color-250 { background-color: #c2c2c2 }
+.ansi-bg-color-251 { background-color: #cccccc }
+.ansi-bg-color-252 { background-color: #d6d6d6 }
+.ansi-bg-color-253 { background-color: #e0e0e0 }
+.ansi-bg-color-254 { background-color: #ebebeb }
+.ansi-bg-color-255 { background-color: #f5f5f5 }
+div.asciicast      { color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 }
+</style>
+<div class="asciicast"><pre>
+#&gt; <span class="ansi-color-2">✔</span> Updated metadata database: 2.33 MB in 2 files.                                                    
+#&gt; <span class="ansi-color-2">✔</span> Updating metadata database ... done                                                               
+#&gt;                                                                                                     
+#&gt; → Will <span class="ansi-italic">install</span> 11 packages.                                                                         
+#&gt; → Will <span class="ansi-italic">download</span> 11 CRAN packages (4.51 MB).                                                         
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">cli</span>         3.3.0 [bld][cmp][dl] <span class="ansi-color-8">(495.82 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">fansi</span>       1.0.3 [bld][cmp][dl] <span class="ansi-color-8">(481.16 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">glue</span>        1.6.2 [bld][cmp][dl] <span class="ansi-color-8">(106.51 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">lifecycle</span>   1.0.1 [bld][dl] <span class="ansi-color-8">(99.72 kB)</span>                                                            
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">magrittr</span>    2.0.3 [bld][cmp][dl] <span class="ansi-color-8">(267.07 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">pillar</span>      1.8.0 [bld][dl] <span class="ansi-color-8">(479.92 kB)</span>                                                           
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">pkgconfig</span>   2.0.3 [bld][dl] <span class="ansi-color-8">(6.08 kB)</span>                                                             
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">rlang</span>       1.0.4 [bld][cmp][dl] <span class="ansi-color-8">(740.97 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span>      3.1.8 [bld][cmp][dl] <span class="ansi-color-8">(672.34 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">utf8</span>        1.2.2 [bld][cmp][dl] <span class="ansi-color-8">(240.33 kB)</span>                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">vctrs</span>       0.4.1 [bld][cmp][dl] <span class="ansi-color-8">(916.78 kB)</span>                                                      
+#&gt; <span class="ansi-color-6">ℹ</span> Getting 11 pkgs (4.51 MB)                                                                         
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">glue</span> 1.6.2 (source) (106.51 kB)                                                               
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">pkgconfig</span> 2.0.3 (source) (6.08 kB)                                                            
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">lifecycle</span> 1.0.1 (source) (99.72 kB)                                                           
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">utf8</span> 1.2.2 (source) (240.33 kB)                                                               
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">cli</span> 3.3.0 (source) (495.82 kB)                                                                
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">fansi</span> 1.0.3 (source) (481.16 kB)                                                              
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">magrittr</span> 2.0.3 (source) (267.07 kB)                                                           
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">rlang</span> 1.0.4 (source) (740.97 kB)                                                              
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">pillar</span> 1.8.0 (source) (479.92 kB)                                                             
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">tibble</span> 3.1.8 (source) (672.34 kB)                                                             
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">vctrs</span> 0.4.1 (source) (916.78 kB)                                                              
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">fansi</span> 1.0.3                                                                              
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">glue</span> 1.6.2                                                                               
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">glue</span> 1.6.2 <span class="ansi-color-247">(1.6s)</span>                                                                           
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">magrittr</span> 2.0.3                                                                           
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">magrittr</span> 2.0.3 <span class="ansi-color-247">(1.3s)</span>                                                                       
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">pkgconfig</span> 2.0.3                                                                          
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">pkgconfig</span> 2.0.3 <span class="ansi-color-247">(834ms)</span>                                                                     
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">rlang</span> 1.0.4                                                                              
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">fansi</span> 1.0.3 <span class="ansi-color-247">(4.3s)</span>                                                                          
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">utf8</span> 1.2.2                                                                               
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">utf8</span> 1.2.2 <span class="ansi-color-247">(4s)</span>                                                                             
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">fansi</span> 1.0.3  <span class="ansi-color-247">(64ms)</span>                                                                     
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">glue</span> 1.6.2  <span class="ansi-color-247">(26ms)</span>                                                                      
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">cli</span> 3.3.0                                                                                
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">cli</span> 3.3.0 <span class="ansi-color-247">(7.8s)</span>                                                                            
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">cli</span> 3.3.0  <span class="ansi-color-247">(40ms)</span>                                                                       
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">magrittr</span> 2.0.3  <span class="ansi-color-247">(25ms)</span>                                                                  
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">pkgconfig</span> 2.0.3  <span class="ansi-color-247">(21ms)</span>                                                                 
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">utf8</span> 1.2.2  <span class="ansi-color-247">(27ms)</span>                                                                      
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">rlang</span> 1.0.4 <span class="ansi-color-247">(12.9s)</span>                                                                         
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rlang</span> 1.0.4  <span class="ansi-color-247">(47ms)</span>                                                                     
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">lifecycle</span> 1.0.1                                                                          
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">vctrs</span> 0.4.1                                                                              
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">lifecycle</span> 1.0.1 <span class="ansi-color-247">(1.4s)</span>                                                                      
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">lifecycle</span> 1.0.1  <span class="ansi-color-247">(24ms)</span>                                                                 
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">vctrs</span> 0.4.1 <span class="ansi-color-247">(18.7s)</span>                                                                         
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">vctrs</span> 0.4.1  <span class="ansi-color-247">(79ms)</span>                                                                     
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">pillar</span> 1.8.0                                                                             
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">pillar</span> 1.8.0 <span class="ansi-color-247">(3.8s)</span>                                                                         
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">pillar</span> 1.8.0  <span class="ansi-color-247">(32ms)</span>                                                                    
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tibble</span> 3.1.8                                                                             
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tibble</span> 3.1.8 <span class="ansi-color-247">(3.6s)</span>                                                                         
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.8  <span class="ansi-color-247">(34ms)</span>                                                                    
+#&gt; <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: added 11, dld 11 (4.51 MB) <span class="ansi-color-249">[49.6s]</span>                                               
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="install-packages-from-github">Install packages from GItHub<a class="anchor" aria-label="anchor" href="#install-packages-from-github"></a>
+</h4>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"tidyverse/tibble"</span><span class="op">)</span></span></code></pre></div>
+<style type="text/css">
+.ansi-bold         { font-weight: bold;             }
+.ansi-italic       { font-style: italic;            }
+.ansi-underline    { text-decoration: underline;    }
+.ansi-blink        { text-decoration: blink;        }
+.ansi-hide         { visibility: hidden;            }
+.ansi-crossedout   { text-decoration: line-through; }
+.ansi-link:hover   { text-decoration: underline;    }
+.ansi-color-0      { color: #073642 }
+.ansi-color-1      { color: #DC322F }
+.ansi-color-2      { color: #859900 }
+.ansi-color-3      { color: #B58900 }
+.ansi-color-4      { color: #268BD2 }
+.ansi-color-5      { color: #D33682 }
+.ansi-color-6      { color: #2AA198 }
+.ansi-color-7      { color: #EEE8D5 }
+.ansi-color-8      { color: #002B36 }
+.ansi-color-9      { color: #CB4B16 }
+.ansi-color-10     { color: #586E75 }
+.ansi-color-11     { color: #657C83 }
+.ansi-color-12     { color: #839496 }
+.ansi-color-13     { color: #6C71C4 }
+.ansi-color-14     { color: #93A1A1 }
+.ansi-color-15     { color: #FDF6E3 }
+.ansi-bg-color-0   { background-color: #073642 }
+.ansi-bg-color-1   { background-color: #DC322F }
+.ansi-bg-color-2   { background-color: #859900 }
+.ansi-bg-color-3   { background-color: #B58900 }
+.ansi-bg-color-4   { background-color: #268BD2 }
+.ansi-bg-color-5   { background-color: #D33682 }
+.ansi-bg-color-6   { background-color: #2AA198 }
+.ansi-bg-color-7   { background-color: #EEE8D5 }
+.ansi-bg-color-8   { background-color: #002B36 }
+.ansi-bg-color-9   { background-color: #CB4B16 }
+.ansi-bg-color-10  { background-color: #586E75 }
+.ansi-bg-color-11  { background-color: #657C83 }
+.ansi-bg-color-12  { background-color: #839496 }
+.ansi-bg-color-13  { background-color: #6C71C4 }
+.ansi-bg-color-14  { background-color: #93A1A1 }
+.ansi-bg-color-15  { background-color: #FDF6E3 }
+.ansi-color-16     { color: #000000 }
+.ansi-color-52     { color: #330000 }
+.ansi-color-88     { color: #660000 }
+.ansi-color-124    { color: #990000 }
+.ansi-color-160    { color: #cc0000 }
+.ansi-color-196    { color: #ff0000 }
+.ansi-color-22     { color: #003300 }
+.ansi-color-58     { color: #333300 }
+.ansi-color-94     { color: #663300 }
+.ansi-color-130    { color: #993300 }
+.ansi-color-166    { color: #cc3300 }
+.ansi-color-202    { color: #ff3300 }
+.ansi-color-28     { color: #006600 }
+.ansi-color-64     { color: #336600 }
+.ansi-color-100    { color: #666600 }
+.ansi-color-136    { color: #996600 }
+.ansi-color-172    { color: #cc6600 }
+.ansi-color-208    { color: #ff6600 }
+.ansi-color-34     { color: #009900 }
+.ansi-color-70     { color: #339900 }
+.ansi-color-106    { color: #669900 }
+.ansi-color-142    { color: #999900 }
+.ansi-color-178    { color: #cc9900 }
+.ansi-color-214    { color: #ff9900 }
+.ansi-color-40     { color: #00cc00 }
+.ansi-color-76     { color: #33cc00 }
+.ansi-color-112    { color: #66cc00 }
+.ansi-color-148    { color: #99cc00 }
+.ansi-color-184    { color: #cccc00 }
+.ansi-color-220    { color: #ffcc00 }
+.ansi-color-46     { color: #00ff00 }
+.ansi-color-82     { color: #33ff00 }
+.ansi-color-118    { color: #66ff00 }
+.ansi-color-154    { color: #99ff00 }
+.ansi-color-190    { color: #ccff00 }
+.ansi-color-226    { color: #ffff00 }
+.ansi-color-17     { color: #000033 }
+.ansi-color-53     { color: #330033 }
+.ansi-color-89     { color: #660033 }
+.ansi-color-125    { color: #990033 }
+.ansi-color-161    { color: #cc0033 }
+.ansi-color-197    { color: #ff0033 }
+.ansi-color-23     { color: #003333 }
+.ansi-color-59     { color: #333333 }
+.ansi-color-95     { color: #663333 }
+.ansi-color-131    { color: #993333 }
+.ansi-color-167    { color: #cc3333 }
+.ansi-color-203    { color: #ff3333 }
+.ansi-color-29     { color: #006633 }
+.ansi-color-65     { color: #336633 }
+.ansi-color-101    { color: #666633 }
+.ansi-color-137    { color: #996633 }
+.ansi-color-173    { color: #cc6633 }
+.ansi-color-209    { color: #ff6633 }
+.ansi-color-35     { color: #009933 }
+.ansi-color-71     { color: #339933 }
+.ansi-color-107    { color: #669933 }
+.ansi-color-143    { color: #999933 }
+.ansi-color-179    { color: #cc9933 }
+.ansi-color-215    { color: #ff9933 }
+.ansi-color-41     { color: #00cc33 }
+.ansi-color-77     { color: #33cc33 }
+.ansi-color-113    { color: #66cc33 }
+.ansi-color-149    { color: #99cc33 }
+.ansi-color-185    { color: #cccc33 }
+.ansi-color-221    { color: #ffcc33 }
+.ansi-color-47     { color: #00ff33 }
+.ansi-color-83     { color: #33ff33 }
+.ansi-color-119    { color: #66ff33 }
+.ansi-color-155    { color: #99ff33 }
+.ansi-color-191    { color: #ccff33 }
+.ansi-color-227    { color: #ffff33 }
+.ansi-color-18     { color: #000066 }
+.ansi-color-54     { color: #330066 }
+.ansi-color-90     { color: #660066 }
+.ansi-color-126    { color: #990066 }
+.ansi-color-162    { color: #cc0066 }
+.ansi-color-198    { color: #ff0066 }
+.ansi-color-24     { color: #003366 }
+.ansi-color-60     { color: #333366 }
+.ansi-color-96     { color: #663366 }
+.ansi-color-132    { color: #993366 }
+.ansi-color-168    { color: #cc3366 }
+.ansi-color-204    { color: #ff3366 }
+.ansi-color-30     { color: #006666 }
+.ansi-color-66     { color: #336666 }
+.ansi-color-102    { color: #666666 }
+.ansi-color-138    { color: #996666 }
+.ansi-color-174    { color: #cc6666 }
+.ansi-color-210    { color: #ff6666 }
+.ansi-color-36     { color: #009966 }
+.ansi-color-72     { color: #339966 }
+.ansi-color-108    { color: #669966 }
+.ansi-color-144    { color: #999966 }
+.ansi-color-180    { color: #cc9966 }
+.ansi-color-216    { color: #ff9966 }
+.ansi-color-42     { color: #00cc66 }
+.ansi-color-78     { color: #33cc66 }
+.ansi-color-114    { color: #66cc66 }
+.ansi-color-150    { color: #99cc66 }
+.ansi-color-186    { color: #cccc66 }
+.ansi-color-222    { color: #ffcc66 }
+.ansi-color-48     { color: #00ff66 }
+.ansi-color-84     { color: #33ff66 }
+.ansi-color-120    { color: #66ff66 }
+.ansi-color-156    { color: #99ff66 }
+.ansi-color-192    { color: #ccff66 }
+.ansi-color-228    { color: #ffff66 }
+.ansi-color-19     { color: #000099 }
+.ansi-color-55     { color: #330099 }
+.ansi-color-91     { color: #660099 }
+.ansi-color-127    { color: #990099 }
+.ansi-color-163    { color: #cc0099 }
+.ansi-color-199    { color: #ff0099 }
+.ansi-color-25     { color: #003399 }
+.ansi-color-61     { color: #333399 }
+.ansi-color-97     { color: #663399 }
+.ansi-color-133    { color: #993399 }
+.ansi-color-169    { color: #cc3399 }
+.ansi-color-205    { color: #ff3399 }
+.ansi-color-31     { color: #006699 }
+.ansi-color-67     { color: #336699 }
+.ansi-color-103    { color: #666699 }
+.ansi-color-139    { color: #996699 }
+.ansi-color-175    { color: #cc6699 }
+.ansi-color-211    { color: #ff6699 }
+.ansi-color-37     { color: #009999 }
+.ansi-color-73     { color: #339999 }
+.ansi-color-109    { color: #669999 }
+.ansi-color-145    { color: #999999 }
+.ansi-color-181    { color: #cc9999 }
+.ansi-color-217    { color: #ff9999 }
+.ansi-color-43     { color: #00cc99 }
+.ansi-color-79     { color: #33cc99 }
+.ansi-color-115    { color: #66cc99 }
+.ansi-color-151    { color: #99cc99 }
+.ansi-color-187    { color: #cccc99 }
+.ansi-color-223    { color: #ffcc99 }
+.ansi-color-49     { color: #00ff99 }
+.ansi-color-85     { color: #33ff99 }
+.ansi-color-121    { color: #66ff99 }
+.ansi-color-157    { color: #99ff99 }
+.ansi-color-193    { color: #ccff99 }
+.ansi-color-229    { color: #ffff99 }
+.ansi-color-20     { color: #0000cc }
+.ansi-color-56     { color: #3300cc }
+.ansi-color-92     { color: #6600cc }
+.ansi-color-128    { color: #9900cc }
+.ansi-color-164    { color: #cc00cc }
+.ansi-color-200    { color: #ff00cc }
+.ansi-color-26     { color: #0033cc }
+.ansi-color-62     { color: #3333cc }
+.ansi-color-98     { color: #6633cc }
+.ansi-color-134    { color: #9933cc }
+.ansi-color-170    { color: #cc33cc }
+.ansi-color-206    { color: #ff33cc }
+.ansi-color-32     { color: #0066cc }
+.ansi-color-68     { color: #3366cc }
+.ansi-color-104    { color: #6666cc }
+.ansi-color-140    { color: #9966cc }
+.ansi-color-176    { color: #cc66cc }
+.ansi-color-212    { color: #ff66cc }
+.ansi-color-38     { color: #0099cc }
+.ansi-color-74     { color: #3399cc }
+.ansi-color-110    { color: #6699cc }
+.ansi-color-146    { color: #9999cc }
+.ansi-color-182    { color: #cc99cc }
+.ansi-color-218    { color: #ff99cc }
+.ansi-color-44     { color: #00cccc }
+.ansi-color-80     { color: #33cccc }
+.ansi-color-116    { color: #66cccc }
+.ansi-color-152    { color: #99cccc }
+.ansi-color-188    { color: #cccccc }
+.ansi-color-224    { color: #ffcccc }
+.ansi-color-50     { color: #00ffcc }
+.ansi-color-86     { color: #33ffcc }
+.ansi-color-122    { color: #66ffcc }
+.ansi-color-158    { color: #99ffcc }
+.ansi-color-194    { color: #ccffcc }
+.ansi-color-230    { color: #ffffcc }
+.ansi-color-21     { color: #0000ff }
+.ansi-color-57     { color: #3300ff }
+.ansi-color-93     { color: #6600ff }
+.ansi-color-129    { color: #9900ff }
+.ansi-color-165    { color: #cc00ff }
+.ansi-color-201    { color: #ff00ff }
+.ansi-color-27     { color: #0033ff }
+.ansi-color-63     { color: #3333ff }
+.ansi-color-99     { color: #6633ff }
+.ansi-color-135    { color: #9933ff }
+.ansi-color-171    { color: #cc33ff }
+.ansi-color-207    { color: #ff33ff }
+.ansi-color-33     { color: #0066ff }
+.ansi-color-69     { color: #3366ff }
+.ansi-color-105    { color: #6666ff }
+.ansi-color-141    { color: #9966ff }
+.ansi-color-177    { color: #cc66ff }
+.ansi-color-213    { color: #ff66ff }
+.ansi-color-39     { color: #0099ff }
+.ansi-color-75     { color: #3399ff }
+.ansi-color-111    { color: #6699ff }
+.ansi-color-147    { color: #9999ff }
+.ansi-color-183    { color: #cc99ff }
+.ansi-color-219    { color: #ff99ff }
+.ansi-color-45     { color: #00ccff }
+.ansi-color-81     { color: #33ccff }
+.ansi-color-117    { color: #66ccff }
+.ansi-color-153    { color: #99ccff }
+.ansi-color-189    { color: #ccccff }
+.ansi-color-225    { color: #ffccff }
+.ansi-color-51     { color: #00ffff }
+.ansi-color-87     { color: #33ffff }
+.ansi-color-123    { color: #66ffff }
+.ansi-color-159    { color: #99ffff }
+.ansi-color-195    { color: #ccffff }
+.ansi-color-231    { color: #ffffff }
+.ansi-color-232    { color: #0a0a0a }
+.ansi-color-233    { color: #141414 }
+.ansi-color-234    { color: #1f1f1f }
+.ansi-color-235    { color: #292929 }
+.ansi-color-236    { color: #333333 }
+.ansi-color-237    { color: #3d3d3d }
+.ansi-color-238    { color: #474747 }
+.ansi-color-239    { color: #525252 }
+.ansi-color-240    { color: #5c5c5c }
+.ansi-color-241    { color: #666666 }
+.ansi-color-242    { color: #707070 }
+.ansi-color-243    { color: #7a7a7a }
+.ansi-color-244    { color: #858585 }
+.ansi-color-245    { color: #8f8f8f }
+.ansi-color-246    { color: #999999 }
+.ansi-color-247    { color: #a3a3a3 }
+.ansi-color-248    { color: #adadad }
+.ansi-color-249    { color: #b8b8b8 }
+.ansi-color-250    { color: #c2c2c2 }
+.ansi-color-251    { color: #cccccc }
+.ansi-color-252    { color: #d6d6d6 }
+.ansi-color-253    { color: #e0e0e0 }
+.ansi-color-254    { color: #ebebeb }
+.ansi-color-255    { color: #f5f5f5 }
+.ansi-bg-color-16  { background-color: #000000 }
+.ansi-bg-color-52  { background-color: #330000 }
+.ansi-bg-color-88  { background-color: #660000 }
+.ansi-bg-color-124 { background-color: #990000 }
+.ansi-bg-color-160 { background-color: #cc0000 }
+.ansi-bg-color-196 { background-color: #ff0000 }
+.ansi-bg-color-22  { background-color: #003300 }
+.ansi-bg-color-58  { background-color: #333300 }
+.ansi-bg-color-94  { background-color: #663300 }
+.ansi-bg-color-130 { background-color: #993300 }
+.ansi-bg-color-166 { background-color: #cc3300 }
+.ansi-bg-color-202 { background-color: #ff3300 }
+.ansi-bg-color-28  { background-color: #006600 }
+.ansi-bg-color-64  { background-color: #336600 }
+.ansi-bg-color-100 { background-color: #666600 }
+.ansi-bg-color-136 { background-color: #996600 }
+.ansi-bg-color-172 { background-color: #cc6600 }
+.ansi-bg-color-208 { background-color: #ff6600 }
+.ansi-bg-color-34  { background-color: #009900 }
+.ansi-bg-color-70  { background-color: #339900 }
+.ansi-bg-color-106 { background-color: #669900 }
+.ansi-bg-color-142 { background-color: #999900 }
+.ansi-bg-color-178 { background-color: #cc9900 }
+.ansi-bg-color-214 { background-color: #ff9900 }
+.ansi-bg-color-40  { background-color: #00cc00 }
+.ansi-bg-color-76  { background-color: #33cc00 }
+.ansi-bg-color-112 { background-color: #66cc00 }
+.ansi-bg-color-148 { background-color: #99cc00 }
+.ansi-bg-color-184 { background-color: #cccc00 }
+.ansi-bg-color-220 { background-color: #ffcc00 }
+.ansi-bg-color-46  { background-color: #00ff00 }
+.ansi-bg-color-82  { background-color: #33ff00 }
+.ansi-bg-color-118 { background-color: #66ff00 }
+.ansi-bg-color-154 { background-color: #99ff00 }
+.ansi-bg-color-190 { background-color: #ccff00 }
+.ansi-bg-color-226 { background-color: #ffff00 }
+.ansi-bg-color-17  { background-color: #000033 }
+.ansi-bg-color-53  { background-color: #330033 }
+.ansi-bg-color-89  { background-color: #660033 }
+.ansi-bg-color-125 { background-color: #990033 }
+.ansi-bg-color-161 { background-color: #cc0033 }
+.ansi-bg-color-197 { background-color: #ff0033 }
+.ansi-bg-color-23  { background-color: #003333 }
+.ansi-bg-color-59  { background-color: #333333 }
+.ansi-bg-color-95  { background-color: #663333 }
+.ansi-bg-color-131 { background-color: #993333 }
+.ansi-bg-color-167 { background-color: #cc3333 }
+.ansi-bg-color-203 { background-color: #ff3333 }
+.ansi-bg-color-29  { background-color: #006633 }
+.ansi-bg-color-65  { background-color: #336633 }
+.ansi-bg-color-101 { background-color: #666633 }
+.ansi-bg-color-137 { background-color: #996633 }
+.ansi-bg-color-173 { background-color: #cc6633 }
+.ansi-bg-color-209 { background-color: #ff6633 }
+.ansi-bg-color-35  { background-color: #009933 }
+.ansi-bg-color-71  { background-color: #339933 }
+.ansi-bg-color-107 { background-color: #669933 }
+.ansi-bg-color-143 { background-color: #999933 }
+.ansi-bg-color-179 { background-color: #cc9933 }
+.ansi-bg-color-215 { background-color: #ff9933 }
+.ansi-bg-color-41  { background-color: #00cc33 }
+.ansi-bg-color-77  { background-color: #33cc33 }
+.ansi-bg-color-113 { background-color: #66cc33 }
+.ansi-bg-color-149 { background-color: #99cc33 }
+.ansi-bg-color-185 { background-color: #cccc33 }
+.ansi-bg-color-221 { background-color: #ffcc33 }
+.ansi-bg-color-47  { background-color: #00ff33 }
+.ansi-bg-color-83  { background-color: #33ff33 }
+.ansi-bg-color-119 { background-color: #66ff33 }
+.ansi-bg-color-155 { background-color: #99ff33 }
+.ansi-bg-color-191 { background-color: #ccff33 }
+.ansi-bg-color-227 { background-color: #ffff33 }
+.ansi-bg-color-18  { background-color: #000066 }
+.ansi-bg-color-54  { background-color: #330066 }
+.ansi-bg-color-90  { background-color: #660066 }
+.ansi-bg-color-126 { background-color: #990066 }
+.ansi-bg-color-162 { background-color: #cc0066 }
+.ansi-bg-color-198 { background-color: #ff0066 }
+.ansi-bg-color-24  { background-color: #003366 }
+.ansi-bg-color-60  { background-color: #333366 }
+.ansi-bg-color-96  { background-color: #663366 }
+.ansi-bg-color-132 { background-color: #993366 }
+.ansi-bg-color-168 { background-color: #cc3366 }
+.ansi-bg-color-204 { background-color: #ff3366 }
+.ansi-bg-color-30  { background-color: #006666 }
+.ansi-bg-color-66  { background-color: #336666 }
+.ansi-bg-color-102 { background-color: #666666 }
+.ansi-bg-color-138 { background-color: #996666 }
+.ansi-bg-color-174 { background-color: #cc6666 }
+.ansi-bg-color-210 { background-color: #ff6666 }
+.ansi-bg-color-36  { background-color: #009966 }
+.ansi-bg-color-72  { background-color: #339966 }
+.ansi-bg-color-108 { background-color: #669966 }
+.ansi-bg-color-144 { background-color: #999966 }
+.ansi-bg-color-180 { background-color: #cc9966 }
+.ansi-bg-color-216 { background-color: #ff9966 }
+.ansi-bg-color-42  { background-color: #00cc66 }
+.ansi-bg-color-78  { background-color: #33cc66 }
+.ansi-bg-color-114 { background-color: #66cc66 }
+.ansi-bg-color-150 { background-color: #99cc66 }
+.ansi-bg-color-186 { background-color: #cccc66 }
+.ansi-bg-color-222 { background-color: #ffcc66 }
+.ansi-bg-color-48  { background-color: #00ff66 }
+.ansi-bg-color-84  { background-color: #33ff66 }
+.ansi-bg-color-120 { background-color: #66ff66 }
+.ansi-bg-color-156 { background-color: #99ff66 }
+.ansi-bg-color-192 { background-color: #ccff66 }
+.ansi-bg-color-228 { background-color: #ffff66 }
+.ansi-bg-color-19  { background-color: #000099 }
+.ansi-bg-color-55  { background-color: #330099 }
+.ansi-bg-color-91  { background-color: #660099 }
+.ansi-bg-color-127 { background-color: #990099 }
+.ansi-bg-color-163 { background-color: #cc0099 }
+.ansi-bg-color-199 { background-color: #ff0099 }
+.ansi-bg-color-25  { background-color: #003399 }
+.ansi-bg-color-61  { background-color: #333399 }
+.ansi-bg-color-97  { background-color: #663399 }
+.ansi-bg-color-133 { background-color: #993399 }
+.ansi-bg-color-169 { background-color: #cc3399 }
+.ansi-bg-color-205 { background-color: #ff3399 }
+.ansi-bg-color-31  { background-color: #006699 }
+.ansi-bg-color-67  { background-color: #336699 }
+.ansi-bg-color-103 { background-color: #666699 }
+.ansi-bg-color-139 { background-color: #996699 }
+.ansi-bg-color-175 { background-color: #cc6699 }
+.ansi-bg-color-211 { background-color: #ff6699 }
+.ansi-bg-color-37  { background-color: #009999 }
+.ansi-bg-color-73  { background-color: #339999 }
+.ansi-bg-color-109 { background-color: #669999 }
+.ansi-bg-color-145 { background-color: #999999 }
+.ansi-bg-color-181 { background-color: #cc9999 }
+.ansi-bg-color-217 { background-color: #ff9999 }
+.ansi-bg-color-43  { background-color: #00cc99 }
+.ansi-bg-color-79  { background-color: #33cc99 }
+.ansi-bg-color-115 { background-color: #66cc99 }
+.ansi-bg-color-151 { background-color: #99cc99 }
+.ansi-bg-color-187 { background-color: #cccc99 }
+.ansi-bg-color-223 { background-color: #ffcc99 }
+.ansi-bg-color-49  { background-color: #00ff99 }
+.ansi-bg-color-85  { background-color: #33ff99 }
+.ansi-bg-color-121 { background-color: #66ff99 }
+.ansi-bg-color-157 { background-color: #99ff99 }
+.ansi-bg-color-193 { background-color: #ccff99 }
+.ansi-bg-color-229 { background-color: #ffff99 }
+.ansi-bg-color-20  { background-color: #0000cc }
+.ansi-bg-color-56  { background-color: #3300cc }
+.ansi-bg-color-92  { background-color: #6600cc }
+.ansi-bg-color-128 { background-color: #9900cc }
+.ansi-bg-color-164 { background-color: #cc00cc }
+.ansi-bg-color-200 { background-color: #ff00cc }
+.ansi-bg-color-26  { background-color: #0033cc }
+.ansi-bg-color-62  { background-color: #3333cc }
+.ansi-bg-color-98  { background-color: #6633cc }
+.ansi-bg-color-134 { background-color: #9933cc }
+.ansi-bg-color-170 { background-color: #cc33cc }
+.ansi-bg-color-206 { background-color: #ff33cc }
+.ansi-bg-color-32  { background-color: #0066cc }
+.ansi-bg-color-68  { background-color: #3366cc }
+.ansi-bg-color-104 { background-color: #6666cc }
+.ansi-bg-color-140 { background-color: #9966cc }
+.ansi-bg-color-176 { background-color: #cc66cc }
+.ansi-bg-color-212 { background-color: #ff66cc }
+.ansi-bg-color-38  { background-color: #0099cc }
+.ansi-bg-color-74  { background-color: #3399cc }
+.ansi-bg-color-110 { background-color: #6699cc }
+.ansi-bg-color-146 { background-color: #9999cc }
+.ansi-bg-color-182 { background-color: #cc99cc }
+.ansi-bg-color-218 { background-color: #ff99cc }
+.ansi-bg-color-44  { background-color: #00cccc }
+.ansi-bg-color-80  { background-color: #33cccc }
+.ansi-bg-color-116 { background-color: #66cccc }
+.ansi-bg-color-152 { background-color: #99cccc }
+.ansi-bg-color-188 { background-color: #cccccc }
+.ansi-bg-color-224 { background-color: #ffcccc }
+.ansi-bg-color-50  { background-color: #00ffcc }
+.ansi-bg-color-86  { background-color: #33ffcc }
+.ansi-bg-color-122 { background-color: #66ffcc }
+.ansi-bg-color-158 { background-color: #99ffcc }
+.ansi-bg-color-194 { background-color: #ccffcc }
+.ansi-bg-color-230 { background-color: #ffffcc }
+.ansi-bg-color-21  { background-color: #0000ff }
+.ansi-bg-color-57  { background-color: #3300ff }
+.ansi-bg-color-93  { background-color: #6600ff }
+.ansi-bg-color-129 { background-color: #9900ff }
+.ansi-bg-color-165 { background-color: #cc00ff }
+.ansi-bg-color-201 { background-color: #ff00ff }
+.ansi-bg-color-27  { background-color: #0033ff }
+.ansi-bg-color-63  { background-color: #3333ff }
+.ansi-bg-color-99  { background-color: #6633ff }
+.ansi-bg-color-135 { background-color: #9933ff }
+.ansi-bg-color-171 { background-color: #cc33ff }
+.ansi-bg-color-207 { background-color: #ff33ff }
+.ansi-bg-color-33  { background-color: #0066ff }
+.ansi-bg-color-69  { background-color: #3366ff }
+.ansi-bg-color-105 { background-color: #6666ff }
+.ansi-bg-color-141 { background-color: #9966ff }
+.ansi-bg-color-177 { background-color: #cc66ff }
+.ansi-bg-color-213 { background-color: #ff66ff }
+.ansi-bg-color-39  { background-color: #0099ff }
+.ansi-bg-color-75  { background-color: #3399ff }
+.ansi-bg-color-111 { background-color: #6699ff }
+.ansi-bg-color-147 { background-color: #9999ff }
+.ansi-bg-color-183 { background-color: #cc99ff }
+.ansi-bg-color-219 { background-color: #ff99ff }
+.ansi-bg-color-45  { background-color: #00ccff }
+.ansi-bg-color-81  { background-color: #33ccff }
+.ansi-bg-color-117 { background-color: #66ccff }
+.ansi-bg-color-153 { background-color: #99ccff }
+.ansi-bg-color-189 { background-color: #ccccff }
+.ansi-bg-color-225 { background-color: #ffccff }
+.ansi-bg-color-51  { background-color: #00ffff }
+.ansi-bg-color-87  { background-color: #33ffff }
+.ansi-bg-color-123 { background-color: #66ffff }
+.ansi-bg-color-159 { background-color: #99ffff }
+.ansi-bg-color-195 { background-color: #ccffff }
+.ansi-bg-color-231 { background-color: #ffffff }
+.ansi-bg-color-232 { background-color: #0a0a0a }
+.ansi-bg-color-233 { background-color: #141414 }
+.ansi-bg-color-234 { background-color: #1f1f1f }
+.ansi-bg-color-235 { background-color: #292929 }
+.ansi-bg-color-236 { background-color: #333333 }
+.ansi-bg-color-237 { background-color: #3d3d3d }
+.ansi-bg-color-238 { background-color: #474747 }
+.ansi-bg-color-239 { background-color: #525252 }
+.ansi-bg-color-240 { background-color: #5c5c5c }
+.ansi-bg-color-241 { background-color: #666666 }
+.ansi-bg-color-242 { background-color: #707070 }
+.ansi-bg-color-243 { background-color: #7a7a7a }
+.ansi-bg-color-244 { background-color: #858585 }
+.ansi-bg-color-245 { background-color: #8f8f8f }
+.ansi-bg-color-246 { background-color: #999999 }
+.ansi-bg-color-247 { background-color: #a3a3a3 }
+.ansi-bg-color-248 { background-color: #adadad }
+.ansi-bg-color-249 { background-color: #b8b8b8 }
+.ansi-bg-color-250 { background-color: #c2c2c2 }
+.ansi-bg-color-251 { background-color: #cccccc }
+.ansi-bg-color-252 { background-color: #d6d6d6 }
+.ansi-bg-color-253 { background-color: #e0e0e0 }
+.ansi-bg-color-254 { background-color: #ebebeb }
+.ansi-bg-color-255 { background-color: #f5f5f5 }
+div.asciicast      { color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 }
+</style>
+<div class="asciicast"><pre>
+#&gt;                                                                                                     
+#&gt; → Will <span class="ansi-italic">update</span> 1 package.                                                                            
+#&gt; → The package (0 B) is cached.                                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span> 3.1.8 → 3.1.8<span class="ansi-bold">.9000</span> [bld][cmp] (GitHub: c538304)                                            
+#&gt; <span class="ansi-color-6">ℹ</span> No downloads are needed, 1 pkg is cached                                                          
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">tibble</span> 3.1.8.9000 (source) (1.42 MB)                                                          
+#&gt; <span class="ansi-color-6">ℹ</span> Packaging <span class="ansi-color-4">tibble</span> 3.1.8.9000                                                                       
+#&gt; <span class="ansi-color-2">✔</span> Packaged <span class="ansi-color-4">tibble</span> 3.1.8.9000 <span class="ansi-color-247">(503ms)</span>                                                                
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tibble</span> 3.1.8.9000                                                                        
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tibble</span> 3.1.8.9000 <span class="ansi-color-247">(3.4s)</span>                                                                    
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.8.9000 (github::tidyverse/tibble@c538304) <span class="ansi-color-247">(27ms)</span>                             
+#&gt; <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: kept 10, upd 1, dld 1 (NA B) <span class="ansi-color-249">[7.3s]</span>                                              
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="look-up-dependencies">Look up dependencies<a class="anchor" aria-label="anchor" href="#look-up-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_deps_tree.html">pkg_deps_tree</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span></code></pre></div>
+<style type="text/css">
+.ansi-bold         { font-weight: bold;             }
+.ansi-italic       { font-style: italic;            }
+.ansi-underline    { text-decoration: underline;    }
+.ansi-blink        { text-decoration: blink;        }
+.ansi-hide         { visibility: hidden;            }
+.ansi-crossedout   { text-decoration: line-through; }
+.ansi-link:hover   { text-decoration: underline;    }
+.ansi-color-0      { color: #073642 }
+.ansi-color-1      { color: #DC322F }
+.ansi-color-2      { color: #859900 }
+.ansi-color-3      { color: #B58900 }
+.ansi-color-4      { color: #268BD2 }
+.ansi-color-5      { color: #D33682 }
+.ansi-color-6      { color: #2AA198 }
+.ansi-color-7      { color: #EEE8D5 }
+.ansi-color-8      { color: #002B36 }
+.ansi-color-9      { color: #CB4B16 }
+.ansi-color-10     { color: #586E75 }
+.ansi-color-11     { color: #657C83 }
+.ansi-color-12     { color: #839496 }
+.ansi-color-13     { color: #6C71C4 }
+.ansi-color-14     { color: #93A1A1 }
+.ansi-color-15     { color: #FDF6E3 }
+.ansi-bg-color-0   { background-color: #073642 }
+.ansi-bg-color-1   { background-color: #DC322F }
+.ansi-bg-color-2   { background-color: #859900 }
+.ansi-bg-color-3   { background-color: #B58900 }
+.ansi-bg-color-4   { background-color: #268BD2 }
+.ansi-bg-color-5   { background-color: #D33682 }
+.ansi-bg-color-6   { background-color: #2AA198 }
+.ansi-bg-color-7   { background-color: #EEE8D5 }
+.ansi-bg-color-8   { background-color: #002B36 }
+.ansi-bg-color-9   { background-color: #CB4B16 }
+.ansi-bg-color-10  { background-color: #586E75 }
+.ansi-bg-color-11  { background-color: #657C83 }
+.ansi-bg-color-12  { background-color: #839496 }
+.ansi-bg-color-13  { background-color: #6C71C4 }
+.ansi-bg-color-14  { background-color: #93A1A1 }
+.ansi-bg-color-15  { background-color: #FDF6E3 }
+.ansi-color-16     { color: #000000 }
+.ansi-color-52     { color: #330000 }
+.ansi-color-88     { color: #660000 }
+.ansi-color-124    { color: #990000 }
+.ansi-color-160    { color: #cc0000 }
+.ansi-color-196    { color: #ff0000 }
+.ansi-color-22     { color: #003300 }
+.ansi-color-58     { color: #333300 }
+.ansi-color-94     { color: #663300 }
+.ansi-color-130    { color: #993300 }
+.ansi-color-166    { color: #cc3300 }
+.ansi-color-202    { color: #ff3300 }
+.ansi-color-28     { color: #006600 }
+.ansi-color-64     { color: #336600 }
+.ansi-color-100    { color: #666600 }
+.ansi-color-136    { color: #996600 }
+.ansi-color-172    { color: #cc6600 }
+.ansi-color-208    { color: #ff6600 }
+.ansi-color-34     { color: #009900 }
+.ansi-color-70     { color: #339900 }
+.ansi-color-106    { color: #669900 }
+.ansi-color-142    { color: #999900 }
+.ansi-color-178    { color: #cc9900 }
+.ansi-color-214    { color: #ff9900 }
+.ansi-color-40     { color: #00cc00 }
+.ansi-color-76     { color: #33cc00 }
+.ansi-color-112    { color: #66cc00 }
+.ansi-color-148    { color: #99cc00 }
+.ansi-color-184    { color: #cccc00 }
+.ansi-color-220    { color: #ffcc00 }
+.ansi-color-46     { color: #00ff00 }
+.ansi-color-82     { color: #33ff00 }
+.ansi-color-118    { color: #66ff00 }
+.ansi-color-154    { color: #99ff00 }
+.ansi-color-190    { color: #ccff00 }
+.ansi-color-226    { color: #ffff00 }
+.ansi-color-17     { color: #000033 }
+.ansi-color-53     { color: #330033 }
+.ansi-color-89     { color: #660033 }
+.ansi-color-125    { color: #990033 }
+.ansi-color-161    { color: #cc0033 }
+.ansi-color-197    { color: #ff0033 }
+.ansi-color-23     { color: #003333 }
+.ansi-color-59     { color: #333333 }
+.ansi-color-95     { color: #663333 }
+.ansi-color-131    { color: #993333 }
+.ansi-color-167    { color: #cc3333 }
+.ansi-color-203    { color: #ff3333 }
+.ansi-color-29     { color: #006633 }
+.ansi-color-65     { color: #336633 }
+.ansi-color-101    { color: #666633 }
+.ansi-color-137    { color: #996633 }
+.ansi-color-173    { color: #cc6633 }
+.ansi-color-209    { color: #ff6633 }
+.ansi-color-35     { color: #009933 }
+.ansi-color-71     { color: #339933 }
+.ansi-color-107    { color: #669933 }
+.ansi-color-143    { color: #999933 }
+.ansi-color-179    { color: #cc9933 }
+.ansi-color-215    { color: #ff9933 }
+.ansi-color-41     { color: #00cc33 }
+.ansi-color-77     { color: #33cc33 }
+.ansi-color-113    { color: #66cc33 }
+.ansi-color-149    { color: #99cc33 }
+.ansi-color-185    { color: #cccc33 }
+.ansi-color-221    { color: #ffcc33 }
+.ansi-color-47     { color: #00ff33 }
+.ansi-color-83     { color: #33ff33 }
+.ansi-color-119    { color: #66ff33 }
+.ansi-color-155    { color: #99ff33 }
+.ansi-color-191    { color: #ccff33 }
+.ansi-color-227    { color: #ffff33 }
+.ansi-color-18     { color: #000066 }
+.ansi-color-54     { color: #330066 }
+.ansi-color-90     { color: #660066 }
+.ansi-color-126    { color: #990066 }
+.ansi-color-162    { color: #cc0066 }
+.ansi-color-198    { color: #ff0066 }
+.ansi-color-24     { color: #003366 }
+.ansi-color-60     { color: #333366 }
+.ansi-color-96     { color: #663366 }
+.ansi-color-132    { color: #993366 }
+.ansi-color-168    { color: #cc3366 }
+.ansi-color-204    { color: #ff3366 }
+.ansi-color-30     { color: #006666 }
+.ansi-color-66     { color: #336666 }
+.ansi-color-102    { color: #666666 }
+.ansi-color-138    { color: #996666 }
+.ansi-color-174    { color: #cc6666 }
+.ansi-color-210    { color: #ff6666 }
+.ansi-color-36     { color: #009966 }
+.ansi-color-72     { color: #339966 }
+.ansi-color-108    { color: #669966 }
+.ansi-color-144    { color: #999966 }
+.ansi-color-180    { color: #cc9966 }
+.ansi-color-216    { color: #ff9966 }
+.ansi-color-42     { color: #00cc66 }
+.ansi-color-78     { color: #33cc66 }
+.ansi-color-114    { color: #66cc66 }
+.ansi-color-150    { color: #99cc66 }
+.ansi-color-186    { color: #cccc66 }
+.ansi-color-222    { color: #ffcc66 }
+.ansi-color-48     { color: #00ff66 }
+.ansi-color-84     { color: #33ff66 }
+.ansi-color-120    { color: #66ff66 }
+.ansi-color-156    { color: #99ff66 }
+.ansi-color-192    { color: #ccff66 }
+.ansi-color-228    { color: #ffff66 }
+.ansi-color-19     { color: #000099 }
+.ansi-color-55     { color: #330099 }
+.ansi-color-91     { color: #660099 }
+.ansi-color-127    { color: #990099 }
+.ansi-color-163    { color: #cc0099 }
+.ansi-color-199    { color: #ff0099 }
+.ansi-color-25     { color: #003399 }
+.ansi-color-61     { color: #333399 }
+.ansi-color-97     { color: #663399 }
+.ansi-color-133    { color: #993399 }
+.ansi-color-169    { color: #cc3399 }
+.ansi-color-205    { color: #ff3399 }
+.ansi-color-31     { color: #006699 }
+.ansi-color-67     { color: #336699 }
+.ansi-color-103    { color: #666699 }
+.ansi-color-139    { color: #996699 }
+.ansi-color-175    { color: #cc6699 }
+.ansi-color-211    { color: #ff6699 }
+.ansi-color-37     { color: #009999 }
+.ansi-color-73     { color: #339999 }
+.ansi-color-109    { color: #669999 }
+.ansi-color-145    { color: #999999 }
+.ansi-color-181    { color: #cc9999 }
+.ansi-color-217    { color: #ff9999 }
+.ansi-color-43     { color: #00cc99 }
+.ansi-color-79     { color: #33cc99 }
+.ansi-color-115    { color: #66cc99 }
+.ansi-color-151    { color: #99cc99 }
+.ansi-color-187    { color: #cccc99 }
+.ansi-color-223    { color: #ffcc99 }
+.ansi-color-49     { color: #00ff99 }
+.ansi-color-85     { color: #33ff99 }
+.ansi-color-121    { color: #66ff99 }
+.ansi-color-157    { color: #99ff99 }
+.ansi-color-193    { color: #ccff99 }
+.ansi-color-229    { color: #ffff99 }
+.ansi-color-20     { color: #0000cc }
+.ansi-color-56     { color: #3300cc }
+.ansi-color-92     { color: #6600cc }
+.ansi-color-128    { color: #9900cc }
+.ansi-color-164    { color: #cc00cc }
+.ansi-color-200    { color: #ff00cc }
+.ansi-color-26     { color: #0033cc }
+.ansi-color-62     { color: #3333cc }
+.ansi-color-98     { color: #6633cc }
+.ansi-color-134    { color: #9933cc }
+.ansi-color-170    { color: #cc33cc }
+.ansi-color-206    { color: #ff33cc }
+.ansi-color-32     { color: #0066cc }
+.ansi-color-68     { color: #3366cc }
+.ansi-color-104    { color: #6666cc }
+.ansi-color-140    { color: #9966cc }
+.ansi-color-176    { color: #cc66cc }
+.ansi-color-212    { color: #ff66cc }
+.ansi-color-38     { color: #0099cc }
+.ansi-color-74     { color: #3399cc }
+.ansi-color-110    { color: #6699cc }
+.ansi-color-146    { color: #9999cc }
+.ansi-color-182    { color: #cc99cc }
+.ansi-color-218    { color: #ff99cc }
+.ansi-color-44     { color: #00cccc }
+.ansi-color-80     { color: #33cccc }
+.ansi-color-116    { color: #66cccc }
+.ansi-color-152    { color: #99cccc }
+.ansi-color-188    { color: #cccccc }
+.ansi-color-224    { color: #ffcccc }
+.ansi-color-50     { color: #00ffcc }
+.ansi-color-86     { color: #33ffcc }
+.ansi-color-122    { color: #66ffcc }
+.ansi-color-158    { color: #99ffcc }
+.ansi-color-194    { color: #ccffcc }
+.ansi-color-230    { color: #ffffcc }
+.ansi-color-21     { color: #0000ff }
+.ansi-color-57     { color: #3300ff }
+.ansi-color-93     { color: #6600ff }
+.ansi-color-129    { color: #9900ff }
+.ansi-color-165    { color: #cc00ff }
+.ansi-color-201    { color: #ff00ff }
+.ansi-color-27     { color: #0033ff }
+.ansi-color-63     { color: #3333ff }
+.ansi-color-99     { color: #6633ff }
+.ansi-color-135    { color: #9933ff }
+.ansi-color-171    { color: #cc33ff }
+.ansi-color-207    { color: #ff33ff }
+.ansi-color-33     { color: #0066ff }
+.ansi-color-69     { color: #3366ff }
+.ansi-color-105    { color: #6666ff }
+.ansi-color-141    { color: #9966ff }
+.ansi-color-177    { color: #cc66ff }
+.ansi-color-213    { color: #ff66ff }
+.ansi-color-39     { color: #0099ff }
+.ansi-color-75     { color: #3399ff }
+.ansi-color-111    { color: #6699ff }
+.ansi-color-147    { color: #9999ff }
+.ansi-color-183    { color: #cc99ff }
+.ansi-color-219    { color: #ff99ff }
+.ansi-color-45     { color: #00ccff }
+.ansi-color-81     { color: #33ccff }
+.ansi-color-117    { color: #66ccff }
+.ansi-color-153    { color: #99ccff }
+.ansi-color-189    { color: #ccccff }
+.ansi-color-225    { color: #ffccff }
+.ansi-color-51     { color: #00ffff }
+.ansi-color-87     { color: #33ffff }
+.ansi-color-123    { color: #66ffff }
+.ansi-color-159    { color: #99ffff }
+.ansi-color-195    { color: #ccffff }
+.ansi-color-231    { color: #ffffff }
+.ansi-color-232    { color: #0a0a0a }
+.ansi-color-233    { color: #141414 }
+.ansi-color-234    { color: #1f1f1f }
+.ansi-color-235    { color: #292929 }
+.ansi-color-236    { color: #333333 }
+.ansi-color-237    { color: #3d3d3d }
+.ansi-color-238    { color: #474747 }
+.ansi-color-239    { color: #525252 }
+.ansi-color-240    { color: #5c5c5c }
+.ansi-color-241    { color: #666666 }
+.ansi-color-242    { color: #707070 }
+.ansi-color-243    { color: #7a7a7a }
+.ansi-color-244    { color: #858585 }
+.ansi-color-245    { color: #8f8f8f }
+.ansi-color-246    { color: #999999 }
+.ansi-color-247    { color: #a3a3a3 }
+.ansi-color-248    { color: #adadad }
+.ansi-color-249    { color: #b8b8b8 }
+.ansi-color-250    { color: #c2c2c2 }
+.ansi-color-251    { color: #cccccc }
+.ansi-color-252    { color: #d6d6d6 }
+.ansi-color-253    { color: #e0e0e0 }
+.ansi-color-254    { color: #ebebeb }
+.ansi-color-255    { color: #f5f5f5 }
+.ansi-bg-color-16  { background-color: #000000 }
+.ansi-bg-color-52  { background-color: #330000 }
+.ansi-bg-color-88  { background-color: #660000 }
+.ansi-bg-color-124 { background-color: #990000 }
+.ansi-bg-color-160 { background-color: #cc0000 }
+.ansi-bg-color-196 { background-color: #ff0000 }
+.ansi-bg-color-22  { background-color: #003300 }
+.ansi-bg-color-58  { background-color: #333300 }
+.ansi-bg-color-94  { background-color: #663300 }
+.ansi-bg-color-130 { background-color: #993300 }
+.ansi-bg-color-166 { background-color: #cc3300 }
+.ansi-bg-color-202 { background-color: #ff3300 }
+.ansi-bg-color-28  { background-color: #006600 }
+.ansi-bg-color-64  { background-color: #336600 }
+.ansi-bg-color-100 { background-color: #666600 }
+.ansi-bg-color-136 { background-color: #996600 }
+.ansi-bg-color-172 { background-color: #cc6600 }
+.ansi-bg-color-208 { background-color: #ff6600 }
+.ansi-bg-color-34  { background-color: #009900 }
+.ansi-bg-color-70  { background-color: #339900 }
+.ansi-bg-color-106 { background-color: #669900 }
+.ansi-bg-color-142 { background-color: #999900 }
+.ansi-bg-color-178 { background-color: #cc9900 }
+.ansi-bg-color-214 { background-color: #ff9900 }
+.ansi-bg-color-40  { background-color: #00cc00 }
+.ansi-bg-color-76  { background-color: #33cc00 }
+.ansi-bg-color-112 { background-color: #66cc00 }
+.ansi-bg-color-148 { background-color: #99cc00 }
+.ansi-bg-color-184 { background-color: #cccc00 }
+.ansi-bg-color-220 { background-color: #ffcc00 }
+.ansi-bg-color-46  { background-color: #00ff00 }
+.ansi-bg-color-82  { background-color: #33ff00 }
+.ansi-bg-color-118 { background-color: #66ff00 }
+.ansi-bg-color-154 { background-color: #99ff00 }
+.ansi-bg-color-190 { background-color: #ccff00 }
+.ansi-bg-color-226 { background-color: #ffff00 }
+.ansi-bg-color-17  { background-color: #000033 }
+.ansi-bg-color-53  { background-color: #330033 }
+.ansi-bg-color-89  { background-color: #660033 }
+.ansi-bg-color-125 { background-color: #990033 }
+.ansi-bg-color-161 { background-color: #cc0033 }
+.ansi-bg-color-197 { background-color: #ff0033 }
+.ansi-bg-color-23  { background-color: #003333 }
+.ansi-bg-color-59  { background-color: #333333 }
+.ansi-bg-color-95  { background-color: #663333 }
+.ansi-bg-color-131 { background-color: #993333 }
+.ansi-bg-color-167 { background-color: #cc3333 }
+.ansi-bg-color-203 { background-color: #ff3333 }
+.ansi-bg-color-29  { background-color: #006633 }
+.ansi-bg-color-65  { background-color: #336633 }
+.ansi-bg-color-101 { background-color: #666633 }
+.ansi-bg-color-137 { background-color: #996633 }
+.ansi-bg-color-173 { background-color: #cc6633 }
+.ansi-bg-color-209 { background-color: #ff6633 }
+.ansi-bg-color-35  { background-color: #009933 }
+.ansi-bg-color-71  { background-color: #339933 }
+.ansi-bg-color-107 { background-color: #669933 }
+.ansi-bg-color-143 { background-color: #999933 }
+.ansi-bg-color-179 { background-color: #cc9933 }
+.ansi-bg-color-215 { background-color: #ff9933 }
+.ansi-bg-color-41  { background-color: #00cc33 }
+.ansi-bg-color-77  { background-color: #33cc33 }
+.ansi-bg-color-113 { background-color: #66cc33 }
+.ansi-bg-color-149 { background-color: #99cc33 }
+.ansi-bg-color-185 { background-color: #cccc33 }
+.ansi-bg-color-221 { background-color: #ffcc33 }
+.ansi-bg-color-47  { background-color: #00ff33 }
+.ansi-bg-color-83  { background-color: #33ff33 }
+.ansi-bg-color-119 { background-color: #66ff33 }
+.ansi-bg-color-155 { background-color: #99ff33 }
+.ansi-bg-color-191 { background-color: #ccff33 }
+.ansi-bg-color-227 { background-color: #ffff33 }
+.ansi-bg-color-18  { background-color: #000066 }
+.ansi-bg-color-54  { background-color: #330066 }
+.ansi-bg-color-90  { background-color: #660066 }
+.ansi-bg-color-126 { background-color: #990066 }
+.ansi-bg-color-162 { background-color: #cc0066 }
+.ansi-bg-color-198 { background-color: #ff0066 }
+.ansi-bg-color-24  { background-color: #003366 }
+.ansi-bg-color-60  { background-color: #333366 }
+.ansi-bg-color-96  { background-color: #663366 }
+.ansi-bg-color-132 { background-color: #993366 }
+.ansi-bg-color-168 { background-color: #cc3366 }
+.ansi-bg-color-204 { background-color: #ff3366 }
+.ansi-bg-color-30  { background-color: #006666 }
+.ansi-bg-color-66  { background-color: #336666 }
+.ansi-bg-color-102 { background-color: #666666 }
+.ansi-bg-color-138 { background-color: #996666 }
+.ansi-bg-color-174 { background-color: #cc6666 }
+.ansi-bg-color-210 { background-color: #ff6666 }
+.ansi-bg-color-36  { background-color: #009966 }
+.ansi-bg-color-72  { background-color: #339966 }
+.ansi-bg-color-108 { background-color: #669966 }
+.ansi-bg-color-144 { background-color: #999966 }
+.ansi-bg-color-180 { background-color: #cc9966 }
+.ansi-bg-color-216 { background-color: #ff9966 }
+.ansi-bg-color-42  { background-color: #00cc66 }
+.ansi-bg-color-78  { background-color: #33cc66 }
+.ansi-bg-color-114 { background-color: #66cc66 }
+.ansi-bg-color-150 { background-color: #99cc66 }
+.ansi-bg-color-186 { background-color: #cccc66 }
+.ansi-bg-color-222 { background-color: #ffcc66 }
+.ansi-bg-color-48  { background-color: #00ff66 }
+.ansi-bg-color-84  { background-color: #33ff66 }
+.ansi-bg-color-120 { background-color: #66ff66 }
+.ansi-bg-color-156 { background-color: #99ff66 }
+.ansi-bg-color-192 { background-color: #ccff66 }
+.ansi-bg-color-228 { background-color: #ffff66 }
+.ansi-bg-color-19  { background-color: #000099 }
+.ansi-bg-color-55  { background-color: #330099 }
+.ansi-bg-color-91  { background-color: #660099 }
+.ansi-bg-color-127 { background-color: #990099 }
+.ansi-bg-color-163 { background-color: #cc0099 }
+.ansi-bg-color-199 { background-color: #ff0099 }
+.ansi-bg-color-25  { background-color: #003399 }
+.ansi-bg-color-61  { background-color: #333399 }
+.ansi-bg-color-97  { background-color: #663399 }
+.ansi-bg-color-133 { background-color: #993399 }
+.ansi-bg-color-169 { background-color: #cc3399 }
+.ansi-bg-color-205 { background-color: #ff3399 }
+.ansi-bg-color-31  { background-color: #006699 }
+.ansi-bg-color-67  { background-color: #336699 }
+.ansi-bg-color-103 { background-color: #666699 }
+.ansi-bg-color-139 { background-color: #996699 }
+.ansi-bg-color-175 { background-color: #cc6699 }
+.ansi-bg-color-211 { background-color: #ff6699 }
+.ansi-bg-color-37  { background-color: #009999 }
+.ansi-bg-color-73  { background-color: #339999 }
+.ansi-bg-color-109 { background-color: #669999 }
+.ansi-bg-color-145 { background-color: #999999 }
+.ansi-bg-color-181 { background-color: #cc9999 }
+.ansi-bg-color-217 { background-color: #ff9999 }
+.ansi-bg-color-43  { background-color: #00cc99 }
+.ansi-bg-color-79  { background-color: #33cc99 }
+.ansi-bg-color-115 { background-color: #66cc99 }
+.ansi-bg-color-151 { background-color: #99cc99 }
+.ansi-bg-color-187 { background-color: #cccc99 }
+.ansi-bg-color-223 { background-color: #ffcc99 }
+.ansi-bg-color-49  { background-color: #00ff99 }
+.ansi-bg-color-85  { background-color: #33ff99 }
+.ansi-bg-color-121 { background-color: #66ff99 }
+.ansi-bg-color-157 { background-color: #99ff99 }
+.ansi-bg-color-193 { background-color: #ccff99 }
+.ansi-bg-color-229 { background-color: #ffff99 }
+.ansi-bg-color-20  { background-color: #0000cc }
+.ansi-bg-color-56  { background-color: #3300cc }
+.ansi-bg-color-92  { background-color: #6600cc }
+.ansi-bg-color-128 { background-color: #9900cc }
+.ansi-bg-color-164 { background-color: #cc00cc }
+.ansi-bg-color-200 { background-color: #ff00cc }
+.ansi-bg-color-26  { background-color: #0033cc }
+.ansi-bg-color-62  { background-color: #3333cc }
+.ansi-bg-color-98  { background-color: #6633cc }
+.ansi-bg-color-134 { background-color: #9933cc }
+.ansi-bg-color-170 { background-color: #cc33cc }
+.ansi-bg-color-206 { background-color: #ff33cc }
+.ansi-bg-color-32  { background-color: #0066cc }
+.ansi-bg-color-68  { background-color: #3366cc }
+.ansi-bg-color-104 { background-color: #6666cc }
+.ansi-bg-color-140 { background-color: #9966cc }
+.ansi-bg-color-176 { background-color: #cc66cc }
+.ansi-bg-color-212 { background-color: #ff66cc }
+.ansi-bg-color-38  { background-color: #0099cc }
+.ansi-bg-color-74  { background-color: #3399cc }
+.ansi-bg-color-110 { background-color: #6699cc }
+.ansi-bg-color-146 { background-color: #9999cc }
+.ansi-bg-color-182 { background-color: #cc99cc }
+.ansi-bg-color-218 { background-color: #ff99cc }
+.ansi-bg-color-44  { background-color: #00cccc }
+.ansi-bg-color-80  { background-color: #33cccc }
+.ansi-bg-color-116 { background-color: #66cccc }
+.ansi-bg-color-152 { background-color: #99cccc }
+.ansi-bg-color-188 { background-color: #cccccc }
+.ansi-bg-color-224 { background-color: #ffcccc }
+.ansi-bg-color-50  { background-color: #00ffcc }
+.ansi-bg-color-86  { background-color: #33ffcc }
+.ansi-bg-color-122 { background-color: #66ffcc }
+.ansi-bg-color-158 { background-color: #99ffcc }
+.ansi-bg-color-194 { background-color: #ccffcc }
+.ansi-bg-color-230 { background-color: #ffffcc }
+.ansi-bg-color-21  { background-color: #0000ff }
+.ansi-bg-color-57  { background-color: #3300ff }
+.ansi-bg-color-93  { background-color: #6600ff }
+.ansi-bg-color-129 { background-color: #9900ff }
+.ansi-bg-color-165 { background-color: #cc00ff }
+.ansi-bg-color-201 { background-color: #ff00ff }
+.ansi-bg-color-27  { background-color: #0033ff }
+.ansi-bg-color-63  { background-color: #3333ff }
+.ansi-bg-color-99  { background-color: #6633ff }
+.ansi-bg-color-135 { background-color: #9933ff }
+.ansi-bg-color-171 { background-color: #cc33ff }
+.ansi-bg-color-207 { background-color: #ff33ff }
+.ansi-bg-color-33  { background-color: #0066ff }
+.ansi-bg-color-69  { background-color: #3366ff }
+.ansi-bg-color-105 { background-color: #6666ff }
+.ansi-bg-color-141 { background-color: #9966ff }
+.ansi-bg-color-177 { background-color: #cc66ff }
+.ansi-bg-color-213 { background-color: #ff66ff }
+.ansi-bg-color-39  { background-color: #0099ff }
+.ansi-bg-color-75  { background-color: #3399ff }
+.ansi-bg-color-111 { background-color: #6699ff }
+.ansi-bg-color-147 { background-color: #9999ff }
+.ansi-bg-color-183 { background-color: #cc99ff }
+.ansi-bg-color-219 { background-color: #ff99ff }
+.ansi-bg-color-45  { background-color: #00ccff }
+.ansi-bg-color-81  { background-color: #33ccff }
+.ansi-bg-color-117 { background-color: #66ccff }
+.ansi-bg-color-153 { background-color: #99ccff }
+.ansi-bg-color-189 { background-color: #ccccff }
+.ansi-bg-color-225 { background-color: #ffccff }
+.ansi-bg-color-51  { background-color: #00ffff }
+.ansi-bg-color-87  { background-color: #33ffff }
+.ansi-bg-color-123 { background-color: #66ffff }
+.ansi-bg-color-159 { background-color: #99ffff }
+.ansi-bg-color-195 { background-color: #ccffff }
+.ansi-bg-color-231 { background-color: #ffffff }
+.ansi-bg-color-232 { background-color: #0a0a0a }
+.ansi-bg-color-233 { background-color: #141414 }
+.ansi-bg-color-234 { background-color: #1f1f1f }
+.ansi-bg-color-235 { background-color: #292929 }
+.ansi-bg-color-236 { background-color: #333333 }
+.ansi-bg-color-237 { background-color: #3d3d3d }
+.ansi-bg-color-238 { background-color: #474747 }
+.ansi-bg-color-239 { background-color: #525252 }
+.ansi-bg-color-240 { background-color: #5c5c5c }
+.ansi-bg-color-241 { background-color: #666666 }
+.ansi-bg-color-242 { background-color: #707070 }
+.ansi-bg-color-243 { background-color: #7a7a7a }
+.ansi-bg-color-244 { background-color: #858585 }
+.ansi-bg-color-245 { background-color: #8f8f8f }
+.ansi-bg-color-246 { background-color: #999999 }
+.ansi-bg-color-247 { background-color: #a3a3a3 }
+.ansi-bg-color-248 { background-color: #adadad }
+.ansi-bg-color-249 { background-color: #b8b8b8 }
+.ansi-bg-color-250 { background-color: #c2c2c2 }
+.ansi-bg-color-251 { background-color: #cccccc }
+.ansi-bg-color-252 { background-color: #d6d6d6 }
+.ansi-bg-color-253 { background-color: #e0e0e0 }
+.ansi-bg-color-254 { background-color: #ebebeb }
+.ansi-bg-color-255 { background-color: #f5f5f5 }
+div.asciicast      { color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 }
+</style>
+<div class="asciicast"><pre>
+#&gt; <span class="ansi-bold ansi-italic ansi-color-6">tibble </span><span class="ansi-bold ansi-italic ansi-color-8">3.1.8</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                        
+#&gt; ├─fansi <span class="ansi-color-8">1.0.3</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                       
+#&gt; ├─lifecycle <span class="ansi-color-8">1.0.1</span> <span class="ansi-color-2">[new][bld]</span>                                                                        
+#&gt; │ ├─glue <span class="ansi-color-8">1.6.2</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                      
+#&gt; │ └─rlang <span class="ansi-color-8">1.0.4</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                     
+#&gt; ├─magrittr <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                    
+#&gt; ├─pillar <span class="ansi-color-8">1.8.0</span> <span class="ansi-color-2">[new][bld]</span>                                                                           
+#&gt; │ ├─cli <span class="ansi-color-8">3.3.0</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                       
+#&gt; │ │ └─glue                                                                                          
+#&gt; │ ├─fansi                                                                                           
+#&gt; │ ├─glue                                                                                            
+#&gt; │ ├─lifecycle                                                                                       
+#&gt; │ ├─rlang                                                                                           
+#&gt; │ ├─utf8 <span class="ansi-color-8">1.2.2</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                      
+#&gt; │ └─vctrs <span class="ansi-color-8">0.4.1</span> <span class="ansi-color-2">[new][bld][cmp]</span>                                                                     
+#&gt; │   ├─cli                                                                                           
+#&gt; │   ├─glue                                                                                          
+#&gt; │   └─rlang                                                                                         
+#&gt; ├─pkgconfig <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">[new][bld]</span>                                                                        
+#&gt; ├─rlang                                                                                             
+#&gt; └─vctrs                                                                                             
+#&gt;                                                                                                     
+#&gt; Key:  <span class="ansi-color-2">[new]</span> new | <span class="ansi-color-2">[bld]</span> build | <span class="ansi-color-2">[cmp]</span> compile                                                       
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="explain-dependencies">Explain dependencies<a class="anchor" aria-label="anchor" href="#explain-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_deps_explain.html">pkg_deps_explain</a></span><span class="op">(</span><span class="st">"tibble"</span>, <span class="st">"rlang"</span><span class="op">)</span></span></code></pre></div>
+<style type="text/css">
+.ansi-bold         { font-weight: bold;             }
+.ansi-italic       { font-style: italic;            }
+.ansi-underline    { text-decoration: underline;    }
+.ansi-blink        { text-decoration: blink;        }
+.ansi-hide         { visibility: hidden;            }
+.ansi-crossedout   { text-decoration: line-through; }
+.ansi-link:hover   { text-decoration: underline;    }
+.ansi-color-0      { color: #073642 }
+.ansi-color-1      { color: #DC322F }
+.ansi-color-2      { color: #859900 }
+.ansi-color-3      { color: #B58900 }
+.ansi-color-4      { color: #268BD2 }
+.ansi-color-5      { color: #D33682 }
+.ansi-color-6      { color: #2AA198 }
+.ansi-color-7      { color: #EEE8D5 }
+.ansi-color-8      { color: #002B36 }
+.ansi-color-9      { color: #CB4B16 }
+.ansi-color-10     { color: #586E75 }
+.ansi-color-11     { color: #657C83 }
+.ansi-color-12     { color: #839496 }
+.ansi-color-13     { color: #6C71C4 }
+.ansi-color-14     { color: #93A1A1 }
+.ansi-color-15     { color: #FDF6E3 }
+.ansi-bg-color-0   { background-color: #073642 }
+.ansi-bg-color-1   { background-color: #DC322F }
+.ansi-bg-color-2   { background-color: #859900 }
+.ansi-bg-color-3   { background-color: #B58900 }
+.ansi-bg-color-4   { background-color: #268BD2 }
+.ansi-bg-color-5   { background-color: #D33682 }
+.ansi-bg-color-6   { background-color: #2AA198 }
+.ansi-bg-color-7   { background-color: #EEE8D5 }
+.ansi-bg-color-8   { background-color: #002B36 }
+.ansi-bg-color-9   { background-color: #CB4B16 }
+.ansi-bg-color-10  { background-color: #586E75 }
+.ansi-bg-color-11  { background-color: #657C83 }
+.ansi-bg-color-12  { background-color: #839496 }
+.ansi-bg-color-13  { background-color: #6C71C4 }
+.ansi-bg-color-14  { background-color: #93A1A1 }
+.ansi-bg-color-15  { background-color: #FDF6E3 }
+.ansi-color-16     { color: #000000 }
+.ansi-color-52     { color: #330000 }
+.ansi-color-88     { color: #660000 }
+.ansi-color-124    { color: #990000 }
+.ansi-color-160    { color: #cc0000 }
+.ansi-color-196    { color: #ff0000 }
+.ansi-color-22     { color: #003300 }
+.ansi-color-58     { color: #333300 }
+.ansi-color-94     { color: #663300 }
+.ansi-color-130    { color: #993300 }
+.ansi-color-166    { color: #cc3300 }
+.ansi-color-202    { color: #ff3300 }
+.ansi-color-28     { color: #006600 }
+.ansi-color-64     { color: #336600 }
+.ansi-color-100    { color: #666600 }
+.ansi-color-136    { color: #996600 }
+.ansi-color-172    { color: #cc6600 }
+.ansi-color-208    { color: #ff6600 }
+.ansi-color-34     { color: #009900 }
+.ansi-color-70     { color: #339900 }
+.ansi-color-106    { color: #669900 }
+.ansi-color-142    { color: #999900 }
+.ansi-color-178    { color: #cc9900 }
+.ansi-color-214    { color: #ff9900 }
+.ansi-color-40     { color: #00cc00 }
+.ansi-color-76     { color: #33cc00 }
+.ansi-color-112    { color: #66cc00 }
+.ansi-color-148    { color: #99cc00 }
+.ansi-color-184    { color: #cccc00 }
+.ansi-color-220    { color: #ffcc00 }
+.ansi-color-46     { color: #00ff00 }
+.ansi-color-82     { color: #33ff00 }
+.ansi-color-118    { color: #66ff00 }
+.ansi-color-154    { color: #99ff00 }
+.ansi-color-190    { color: #ccff00 }
+.ansi-color-226    { color: #ffff00 }
+.ansi-color-17     { color: #000033 }
+.ansi-color-53     { color: #330033 }
+.ansi-color-89     { color: #660033 }
+.ansi-color-125    { color: #990033 }
+.ansi-color-161    { color: #cc0033 }
+.ansi-color-197    { color: #ff0033 }
+.ansi-color-23     { color: #003333 }
+.ansi-color-59     { color: #333333 }
+.ansi-color-95     { color: #663333 }
+.ansi-color-131    { color: #993333 }
+.ansi-color-167    { color: #cc3333 }
+.ansi-color-203    { color: #ff3333 }
+.ansi-color-29     { color: #006633 }
+.ansi-color-65     { color: #336633 }
+.ansi-color-101    { color: #666633 }
+.ansi-color-137    { color: #996633 }
+.ansi-color-173    { color: #cc6633 }
+.ansi-color-209    { color: #ff6633 }
+.ansi-color-35     { color: #009933 }
+.ansi-color-71     { color: #339933 }
+.ansi-color-107    { color: #669933 }
+.ansi-color-143    { color: #999933 }
+.ansi-color-179    { color: #cc9933 }
+.ansi-color-215    { color: #ff9933 }
+.ansi-color-41     { color: #00cc33 }
+.ansi-color-77     { color: #33cc33 }
+.ansi-color-113    { color: #66cc33 }
+.ansi-color-149    { color: #99cc33 }
+.ansi-color-185    { color: #cccc33 }
+.ansi-color-221    { color: #ffcc33 }
+.ansi-color-47     { color: #00ff33 }
+.ansi-color-83     { color: #33ff33 }
+.ansi-color-119    { color: #66ff33 }
+.ansi-color-155    { color: #99ff33 }
+.ansi-color-191    { color: #ccff33 }
+.ansi-color-227    { color: #ffff33 }
+.ansi-color-18     { color: #000066 }
+.ansi-color-54     { color: #330066 }
+.ansi-color-90     { color: #660066 }
+.ansi-color-126    { color: #990066 }
+.ansi-color-162    { color: #cc0066 }
+.ansi-color-198    { color: #ff0066 }
+.ansi-color-24     { color: #003366 }
+.ansi-color-60     { color: #333366 }
+.ansi-color-96     { color: #663366 }
+.ansi-color-132    { color: #993366 }
+.ansi-color-168    { color: #cc3366 }
+.ansi-color-204    { color: #ff3366 }
+.ansi-color-30     { color: #006666 }
+.ansi-color-66     { color: #336666 }
+.ansi-color-102    { color: #666666 }
+.ansi-color-138    { color: #996666 }
+.ansi-color-174    { color: #cc6666 }
+.ansi-color-210    { color: #ff6666 }
+.ansi-color-36     { color: #009966 }
+.ansi-color-72     { color: #339966 }
+.ansi-color-108    { color: #669966 }
+.ansi-color-144    { color: #999966 }
+.ansi-color-180    { color: #cc9966 }
+.ansi-color-216    { color: #ff9966 }
+.ansi-color-42     { color: #00cc66 }
+.ansi-color-78     { color: #33cc66 }
+.ansi-color-114    { color: #66cc66 }
+.ansi-color-150    { color: #99cc66 }
+.ansi-color-186    { color: #cccc66 }
+.ansi-color-222    { color: #ffcc66 }
+.ansi-color-48     { color: #00ff66 }
+.ansi-color-84     { color: #33ff66 }
+.ansi-color-120    { color: #66ff66 }
+.ansi-color-156    { color: #99ff66 }
+.ansi-color-192    { color: #ccff66 }
+.ansi-color-228    { color: #ffff66 }
+.ansi-color-19     { color: #000099 }
+.ansi-color-55     { color: #330099 }
+.ansi-color-91     { color: #660099 }
+.ansi-color-127    { color: #990099 }
+.ansi-color-163    { color: #cc0099 }
+.ansi-color-199    { color: #ff0099 }
+.ansi-color-25     { color: #003399 }
+.ansi-color-61     { color: #333399 }
+.ansi-color-97     { color: #663399 }
+.ansi-color-133    { color: #993399 }
+.ansi-color-169    { color: #cc3399 }
+.ansi-color-205    { color: #ff3399 }
+.ansi-color-31     { color: #006699 }
+.ansi-color-67     { color: #336699 }
+.ansi-color-103    { color: #666699 }
+.ansi-color-139    { color: #996699 }
+.ansi-color-175    { color: #cc6699 }
+.ansi-color-211    { color: #ff6699 }
+.ansi-color-37     { color: #009999 }
+.ansi-color-73     { color: #339999 }
+.ansi-color-109    { color: #669999 }
+.ansi-color-145    { color: #999999 }
+.ansi-color-181    { color: #cc9999 }
+.ansi-color-217    { color: #ff9999 }
+.ansi-color-43     { color: #00cc99 }
+.ansi-color-79     { color: #33cc99 }
+.ansi-color-115    { color: #66cc99 }
+.ansi-color-151    { color: #99cc99 }
+.ansi-color-187    { color: #cccc99 }
+.ansi-color-223    { color: #ffcc99 }
+.ansi-color-49     { color: #00ff99 }
+.ansi-color-85     { color: #33ff99 }
+.ansi-color-121    { color: #66ff99 }
+.ansi-color-157    { color: #99ff99 }
+.ansi-color-193    { color: #ccff99 }
+.ansi-color-229    { color: #ffff99 }
+.ansi-color-20     { color: #0000cc }
+.ansi-color-56     { color: #3300cc }
+.ansi-color-92     { color: #6600cc }
+.ansi-color-128    { color: #9900cc }
+.ansi-color-164    { color: #cc00cc }
+.ansi-color-200    { color: #ff00cc }
+.ansi-color-26     { color: #0033cc }
+.ansi-color-62     { color: #3333cc }
+.ansi-color-98     { color: #6633cc }
+.ansi-color-134    { color: #9933cc }
+.ansi-color-170    { color: #cc33cc }
+.ansi-color-206    { color: #ff33cc }
+.ansi-color-32     { color: #0066cc }
+.ansi-color-68     { color: #3366cc }
+.ansi-color-104    { color: #6666cc }
+.ansi-color-140    { color: #9966cc }
+.ansi-color-176    { color: #cc66cc }
+.ansi-color-212    { color: #ff66cc }
+.ansi-color-38     { color: #0099cc }
+.ansi-color-74     { color: #3399cc }
+.ansi-color-110    { color: #6699cc }
+.ansi-color-146    { color: #9999cc }
+.ansi-color-182    { color: #cc99cc }
+.ansi-color-218    { color: #ff99cc }
+.ansi-color-44     { color: #00cccc }
+.ansi-color-80     { color: #33cccc }
+.ansi-color-116    { color: #66cccc }
+.ansi-color-152    { color: #99cccc }
+.ansi-color-188    { color: #cccccc }
+.ansi-color-224    { color: #ffcccc }
+.ansi-color-50     { color: #00ffcc }
+.ansi-color-86     { color: #33ffcc }
+.ansi-color-122    { color: #66ffcc }
+.ansi-color-158    { color: #99ffcc }
+.ansi-color-194    { color: #ccffcc }
+.ansi-color-230    { color: #ffffcc }
+.ansi-color-21     { color: #0000ff }
+.ansi-color-57     { color: #3300ff }
+.ansi-color-93     { color: #6600ff }
+.ansi-color-129    { color: #9900ff }
+.ansi-color-165    { color: #cc00ff }
+.ansi-color-201    { color: #ff00ff }
+.ansi-color-27     { color: #0033ff }
+.ansi-color-63     { color: #3333ff }
+.ansi-color-99     { color: #6633ff }
+.ansi-color-135    { color: #9933ff }
+.ansi-color-171    { color: #cc33ff }
+.ansi-color-207    { color: #ff33ff }
+.ansi-color-33     { color: #0066ff }
+.ansi-color-69     { color: #3366ff }
+.ansi-color-105    { color: #6666ff }
+.ansi-color-141    { color: #9966ff }
+.ansi-color-177    { color: #cc66ff }
+.ansi-color-213    { color: #ff66ff }
+.ansi-color-39     { color: #0099ff }
+.ansi-color-75     { color: #3399ff }
+.ansi-color-111    { color: #6699ff }
+.ansi-color-147    { color: #9999ff }
+.ansi-color-183    { color: #cc99ff }
+.ansi-color-219    { color: #ff99ff }
+.ansi-color-45     { color: #00ccff }
+.ansi-color-81     { color: #33ccff }
+.ansi-color-117    { color: #66ccff }
+.ansi-color-153    { color: #99ccff }
+.ansi-color-189    { color: #ccccff }
+.ansi-color-225    { color: #ffccff }
+.ansi-color-51     { color: #00ffff }
+.ansi-color-87     { color: #33ffff }
+.ansi-color-123    { color: #66ffff }
+.ansi-color-159    { color: #99ffff }
+.ansi-color-195    { color: #ccffff }
+.ansi-color-231    { color: #ffffff }
+.ansi-color-232    { color: #0a0a0a }
+.ansi-color-233    { color: #141414 }
+.ansi-color-234    { color: #1f1f1f }
+.ansi-color-235    { color: #292929 }
+.ansi-color-236    { color: #333333 }
+.ansi-color-237    { color: #3d3d3d }
+.ansi-color-238    { color: #474747 }
+.ansi-color-239    { color: #525252 }
+.ansi-color-240    { color: #5c5c5c }
+.ansi-color-241    { color: #666666 }
+.ansi-color-242    { color: #707070 }
+.ansi-color-243    { color: #7a7a7a }
+.ansi-color-244    { color: #858585 }
+.ansi-color-245    { color: #8f8f8f }
+.ansi-color-246    { color: #999999 }
+.ansi-color-247    { color: #a3a3a3 }
+.ansi-color-248    { color: #adadad }
+.ansi-color-249    { color: #b8b8b8 }
+.ansi-color-250    { color: #c2c2c2 }
+.ansi-color-251    { color: #cccccc }
+.ansi-color-252    { color: #d6d6d6 }
+.ansi-color-253    { color: #e0e0e0 }
+.ansi-color-254    { color: #ebebeb }
+.ansi-color-255    { color: #f5f5f5 }
+.ansi-bg-color-16  { background-color: #000000 }
+.ansi-bg-color-52  { background-color: #330000 }
+.ansi-bg-color-88  { background-color: #660000 }
+.ansi-bg-color-124 { background-color: #990000 }
+.ansi-bg-color-160 { background-color: #cc0000 }
+.ansi-bg-color-196 { background-color: #ff0000 }
+.ansi-bg-color-22  { background-color: #003300 }
+.ansi-bg-color-58  { background-color: #333300 }
+.ansi-bg-color-94  { background-color: #663300 }
+.ansi-bg-color-130 { background-color: #993300 }
+.ansi-bg-color-166 { background-color: #cc3300 }
+.ansi-bg-color-202 { background-color: #ff3300 }
+.ansi-bg-color-28  { background-color: #006600 }
+.ansi-bg-color-64  { background-color: #336600 }
+.ansi-bg-color-100 { background-color: #666600 }
+.ansi-bg-color-136 { background-color: #996600 }
+.ansi-bg-color-172 { background-color: #cc6600 }
+.ansi-bg-color-208 { background-color: #ff6600 }
+.ansi-bg-color-34  { background-color: #009900 }
+.ansi-bg-color-70  { background-color: #339900 }
+.ansi-bg-color-106 { background-color: #669900 }
+.ansi-bg-color-142 { background-color: #999900 }
+.ansi-bg-color-178 { background-color: #cc9900 }
+.ansi-bg-color-214 { background-color: #ff9900 }
+.ansi-bg-color-40  { background-color: #00cc00 }
+.ansi-bg-color-76  { background-color: #33cc00 }
+.ansi-bg-color-112 { background-color: #66cc00 }
+.ansi-bg-color-148 { background-color: #99cc00 }
+.ansi-bg-color-184 { background-color: #cccc00 }
+.ansi-bg-color-220 { background-color: #ffcc00 }
+.ansi-bg-color-46  { background-color: #00ff00 }
+.ansi-bg-color-82  { background-color: #33ff00 }
+.ansi-bg-color-118 { background-color: #66ff00 }
+.ansi-bg-color-154 { background-color: #99ff00 }
+.ansi-bg-color-190 { background-color: #ccff00 }
+.ansi-bg-color-226 { background-color: #ffff00 }
+.ansi-bg-color-17  { background-color: #000033 }
+.ansi-bg-color-53  { background-color: #330033 }
+.ansi-bg-color-89  { background-color: #660033 }
+.ansi-bg-color-125 { background-color: #990033 }
+.ansi-bg-color-161 { background-color: #cc0033 }
+.ansi-bg-color-197 { background-color: #ff0033 }
+.ansi-bg-color-23  { background-color: #003333 }
+.ansi-bg-color-59  { background-color: #333333 }
+.ansi-bg-color-95  { background-color: #663333 }
+.ansi-bg-color-131 { background-color: #993333 }
+.ansi-bg-color-167 { background-color: #cc3333 }
+.ansi-bg-color-203 { background-color: #ff3333 }
+.ansi-bg-color-29  { background-color: #006633 }
+.ansi-bg-color-65  { background-color: #336633 }
+.ansi-bg-color-101 { background-color: #666633 }
+.ansi-bg-color-137 { background-color: #996633 }
+.ansi-bg-color-173 { background-color: #cc6633 }
+.ansi-bg-color-209 { background-color: #ff6633 }
+.ansi-bg-color-35  { background-color: #009933 }
+.ansi-bg-color-71  { background-color: #339933 }
+.ansi-bg-color-107 { background-color: #669933 }
+.ansi-bg-color-143 { background-color: #999933 }
+.ansi-bg-color-179 { background-color: #cc9933 }
+.ansi-bg-color-215 { background-color: #ff9933 }
+.ansi-bg-color-41  { background-color: #00cc33 }
+.ansi-bg-color-77  { background-color: #33cc33 }
+.ansi-bg-color-113 { background-color: #66cc33 }
+.ansi-bg-color-149 { background-color: #99cc33 }
+.ansi-bg-color-185 { background-color: #cccc33 }
+.ansi-bg-color-221 { background-color: #ffcc33 }
+.ansi-bg-color-47  { background-color: #00ff33 }
+.ansi-bg-color-83  { background-color: #33ff33 }
+.ansi-bg-color-119 { background-color: #66ff33 }
+.ansi-bg-color-155 { background-color: #99ff33 }
+.ansi-bg-color-191 { background-color: #ccff33 }
+.ansi-bg-color-227 { background-color: #ffff33 }
+.ansi-bg-color-18  { background-color: #000066 }
+.ansi-bg-color-54  { background-color: #330066 }
+.ansi-bg-color-90  { background-color: #660066 }
+.ansi-bg-color-126 { background-color: #990066 }
+.ansi-bg-color-162 { background-color: #cc0066 }
+.ansi-bg-color-198 { background-color: #ff0066 }
+.ansi-bg-color-24  { background-color: #003366 }
+.ansi-bg-color-60  { background-color: #333366 }
+.ansi-bg-color-96  { background-color: #663366 }
+.ansi-bg-color-132 { background-color: #993366 }
+.ansi-bg-color-168 { background-color: #cc3366 }
+.ansi-bg-color-204 { background-color: #ff3366 }
+.ansi-bg-color-30  { background-color: #006666 }
+.ansi-bg-color-66  { background-color: #336666 }
+.ansi-bg-color-102 { background-color: #666666 }
+.ansi-bg-color-138 { background-color: #996666 }
+.ansi-bg-color-174 { background-color: #cc6666 }
+.ansi-bg-color-210 { background-color: #ff6666 }
+.ansi-bg-color-36  { background-color: #009966 }
+.ansi-bg-color-72  { background-color: #339966 }
+.ansi-bg-color-108 { background-color: #669966 }
+.ansi-bg-color-144 { background-color: #999966 }
+.ansi-bg-color-180 { background-color: #cc9966 }
+.ansi-bg-color-216 { background-color: #ff9966 }
+.ansi-bg-color-42  { background-color: #00cc66 }
+.ansi-bg-color-78  { background-color: #33cc66 }
+.ansi-bg-color-114 { background-color: #66cc66 }
+.ansi-bg-color-150 { background-color: #99cc66 }
+.ansi-bg-color-186 { background-color: #cccc66 }
+.ansi-bg-color-222 { background-color: #ffcc66 }
+.ansi-bg-color-48  { background-color: #00ff66 }
+.ansi-bg-color-84  { background-color: #33ff66 }
+.ansi-bg-color-120 { background-color: #66ff66 }
+.ansi-bg-color-156 { background-color: #99ff66 }
+.ansi-bg-color-192 { background-color: #ccff66 }
+.ansi-bg-color-228 { background-color: #ffff66 }
+.ansi-bg-color-19  { background-color: #000099 }
+.ansi-bg-color-55  { background-color: #330099 }
+.ansi-bg-color-91  { background-color: #660099 }
+.ansi-bg-color-127 { background-color: #990099 }
+.ansi-bg-color-163 { background-color: #cc0099 }
+.ansi-bg-color-199 { background-color: #ff0099 }
+.ansi-bg-color-25  { background-color: #003399 }
+.ansi-bg-color-61  { background-color: #333399 }
+.ansi-bg-color-97  { background-color: #663399 }
+.ansi-bg-color-133 { background-color: #993399 }
+.ansi-bg-color-169 { background-color: #cc3399 }
+.ansi-bg-color-205 { background-color: #ff3399 }
+.ansi-bg-color-31  { background-color: #006699 }
+.ansi-bg-color-67  { background-color: #336699 }
+.ansi-bg-color-103 { background-color: #666699 }
+.ansi-bg-color-139 { background-color: #996699 }
+.ansi-bg-color-175 { background-color: #cc6699 }
+.ansi-bg-color-211 { background-color: #ff6699 }
+.ansi-bg-color-37  { background-color: #009999 }
+.ansi-bg-color-73  { background-color: #339999 }
+.ansi-bg-color-109 { background-color: #669999 }
+.ansi-bg-color-145 { background-color: #999999 }
+.ansi-bg-color-181 { background-color: #cc9999 }
+.ansi-bg-color-217 { background-color: #ff9999 }
+.ansi-bg-color-43  { background-color: #00cc99 }
+.ansi-bg-color-79  { background-color: #33cc99 }
+.ansi-bg-color-115 { background-color: #66cc99 }
+.ansi-bg-color-151 { background-color: #99cc99 }
+.ansi-bg-color-187 { background-color: #cccc99 }
+.ansi-bg-color-223 { background-color: #ffcc99 }
+.ansi-bg-color-49  { background-color: #00ff99 }
+.ansi-bg-color-85  { background-color: #33ff99 }
+.ansi-bg-color-121 { background-color: #66ff99 }
+.ansi-bg-color-157 { background-color: #99ff99 }
+.ansi-bg-color-193 { background-color: #ccff99 }
+.ansi-bg-color-229 { background-color: #ffff99 }
+.ansi-bg-color-20  { background-color: #0000cc }
+.ansi-bg-color-56  { background-color: #3300cc }
+.ansi-bg-color-92  { background-color: #6600cc }
+.ansi-bg-color-128 { background-color: #9900cc }
+.ansi-bg-color-164 { background-color: #cc00cc }
+.ansi-bg-color-200 { background-color: #ff00cc }
+.ansi-bg-color-26  { background-color: #0033cc }
+.ansi-bg-color-62  { background-color: #3333cc }
+.ansi-bg-color-98  { background-color: #6633cc }
+.ansi-bg-color-134 { background-color: #9933cc }
+.ansi-bg-color-170 { background-color: #cc33cc }
+.ansi-bg-color-206 { background-color: #ff33cc }
+.ansi-bg-color-32  { background-color: #0066cc }
+.ansi-bg-color-68  { background-color: #3366cc }
+.ansi-bg-color-104 { background-color: #6666cc }
+.ansi-bg-color-140 { background-color: #9966cc }
+.ansi-bg-color-176 { background-color: #cc66cc }
+.ansi-bg-color-212 { background-color: #ff66cc }
+.ansi-bg-color-38  { background-color: #0099cc }
+.ansi-bg-color-74  { background-color: #3399cc }
+.ansi-bg-color-110 { background-color: #6699cc }
+.ansi-bg-color-146 { background-color: #9999cc }
+.ansi-bg-color-182 { background-color: #cc99cc }
+.ansi-bg-color-218 { background-color: #ff99cc }
+.ansi-bg-color-44  { background-color: #00cccc }
+.ansi-bg-color-80  { background-color: #33cccc }
+.ansi-bg-color-116 { background-color: #66cccc }
+.ansi-bg-color-152 { background-color: #99cccc }
+.ansi-bg-color-188 { background-color: #cccccc }
+.ansi-bg-color-224 { background-color: #ffcccc }
+.ansi-bg-color-50  { background-color: #00ffcc }
+.ansi-bg-color-86  { background-color: #33ffcc }
+.ansi-bg-color-122 { background-color: #66ffcc }
+.ansi-bg-color-158 { background-color: #99ffcc }
+.ansi-bg-color-194 { background-color: #ccffcc }
+.ansi-bg-color-230 { background-color: #ffffcc }
+.ansi-bg-color-21  { background-color: #0000ff }
+.ansi-bg-color-57  { background-color: #3300ff }
+.ansi-bg-color-93  { background-color: #6600ff }
+.ansi-bg-color-129 { background-color: #9900ff }
+.ansi-bg-color-165 { background-color: #cc00ff }
+.ansi-bg-color-201 { background-color: #ff00ff }
+.ansi-bg-color-27  { background-color: #0033ff }
+.ansi-bg-color-63  { background-color: #3333ff }
+.ansi-bg-color-99  { background-color: #6633ff }
+.ansi-bg-color-135 { background-color: #9933ff }
+.ansi-bg-color-171 { background-color: #cc33ff }
+.ansi-bg-color-207 { background-color: #ff33ff }
+.ansi-bg-color-33  { background-color: #0066ff }
+.ansi-bg-color-69  { background-color: #3366ff }
+.ansi-bg-color-105 { background-color: #6666ff }
+.ansi-bg-color-141 { background-color: #9966ff }
+.ansi-bg-color-177 { background-color: #cc66ff }
+.ansi-bg-color-213 { background-color: #ff66ff }
+.ansi-bg-color-39  { background-color: #0099ff }
+.ansi-bg-color-75  { background-color: #3399ff }
+.ansi-bg-color-111 { background-color: #6699ff }
+.ansi-bg-color-147 { background-color: #9999ff }
+.ansi-bg-color-183 { background-color: #cc99ff }
+.ansi-bg-color-219 { background-color: #ff99ff }
+.ansi-bg-color-45  { background-color: #00ccff }
+.ansi-bg-color-81  { background-color: #33ccff }
+.ansi-bg-color-117 { background-color: #66ccff }
+.ansi-bg-color-153 { background-color: #99ccff }
+.ansi-bg-color-189 { background-color: #ccccff }
+.ansi-bg-color-225 { background-color: #ffccff }
+.ansi-bg-color-51  { background-color: #00ffff }
+.ansi-bg-color-87  { background-color: #33ffff }
+.ansi-bg-color-123 { background-color: #66ffff }
+.ansi-bg-color-159 { background-color: #99ffff }
+.ansi-bg-color-195 { background-color: #ccffff }
+.ansi-bg-color-231 { background-color: #ffffff }
+.ansi-bg-color-232 { background-color: #0a0a0a }
+.ansi-bg-color-233 { background-color: #141414 }
+.ansi-bg-color-234 { background-color: #1f1f1f }
+.ansi-bg-color-235 { background-color: #292929 }
+.ansi-bg-color-236 { background-color: #333333 }
+.ansi-bg-color-237 { background-color: #3d3d3d }
+.ansi-bg-color-238 { background-color: #474747 }
+.ansi-bg-color-239 { background-color: #525252 }
+.ansi-bg-color-240 { background-color: #5c5c5c }
+.ansi-bg-color-241 { background-color: #666666 }
+.ansi-bg-color-242 { background-color: #707070 }
+.ansi-bg-color-243 { background-color: #7a7a7a }
+.ansi-bg-color-244 { background-color: #858585 }
+.ansi-bg-color-245 { background-color: #8f8f8f }
+.ansi-bg-color-246 { background-color: #999999 }
+.ansi-bg-color-247 { background-color: #a3a3a3 }
+.ansi-bg-color-248 { background-color: #adadad }
+.ansi-bg-color-249 { background-color: #b8b8b8 }
+.ansi-bg-color-250 { background-color: #c2c2c2 }
+.ansi-bg-color-251 { background-color: #cccccc }
+.ansi-bg-color-252 { background-color: #d6d6d6 }
+.ansi-bg-color-253 { background-color: #e0e0e0 }
+.ansi-bg-color-254 { background-color: #ebebeb }
+.ansi-bg-color-255 { background-color: #f5f5f5 }
+div.asciicast      { color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 }
+</style>
+<div class="asciicast"><pre>
+#&gt; tibble -&gt; lifecycle -&gt; rlang                                                                        
+#&gt; tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                                                              
+#&gt; tibble -&gt; pillar -&gt; rlang                                                                           
+#&gt; tibble -&gt; pillar -&gt; vctrs -&gt; rlang                                                                  
+#&gt; tibble -&gt; rlang                                                                                     
+#&gt; tibble -&gt; vctrs -&gt; rlang                                                                            
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="install-a-local-package-and-its-dependencies">Install a local package and its dependencies<a class="anchor" aria-label="anchor" href="#install-a-local-package-and-its-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/local_install.html">local_install</a></span><span class="op">(</span><span class="st">"cli"</span><span class="op">)</span></span></code></pre></div>
+<style type="text/css">
+.ansi-bold         { font-weight: bold;             }
+.ansi-italic       { font-style: italic;            }
+.ansi-underline    { text-decoration: underline;    }
+.ansi-blink        { text-decoration: blink;        }
+.ansi-hide         { visibility: hidden;            }
+.ansi-crossedout   { text-decoration: line-through; }
+.ansi-link:hover   { text-decoration: underline;    }
+.ansi-color-0      { color: #073642 }
+.ansi-color-1      { color: #DC322F }
+.ansi-color-2      { color: #859900 }
+.ansi-color-3      { color: #B58900 }
+.ansi-color-4      { color: #268BD2 }
+.ansi-color-5      { color: #D33682 }
+.ansi-color-6      { color: #2AA198 }
+.ansi-color-7      { color: #EEE8D5 }
+.ansi-color-8      { color: #002B36 }
+.ansi-color-9      { color: #CB4B16 }
+.ansi-color-10     { color: #586E75 }
+.ansi-color-11     { color: #657C83 }
+.ansi-color-12     { color: #839496 }
+.ansi-color-13     { color: #6C71C4 }
+.ansi-color-14     { color: #93A1A1 }
+.ansi-color-15     { color: #FDF6E3 }
+.ansi-bg-color-0   { background-color: #073642 }
+.ansi-bg-color-1   { background-color: #DC322F }
+.ansi-bg-color-2   { background-color: #859900 }
+.ansi-bg-color-3   { background-color: #B58900 }
+.ansi-bg-color-4   { background-color: #268BD2 }
+.ansi-bg-color-5   { background-color: #D33682 }
+.ansi-bg-color-6   { background-color: #2AA198 }
+.ansi-bg-color-7   { background-color: #EEE8D5 }
+.ansi-bg-color-8   { background-color: #002B36 }
+.ansi-bg-color-9   { background-color: #CB4B16 }
+.ansi-bg-color-10  { background-color: #586E75 }
+.ansi-bg-color-11  { background-color: #657C83 }
+.ansi-bg-color-12  { background-color: #839496 }
+.ansi-bg-color-13  { background-color: #6C71C4 }
+.ansi-bg-color-14  { background-color: #93A1A1 }
+.ansi-bg-color-15  { background-color: #FDF6E3 }
+.ansi-color-16     { color: #000000 }
+.ansi-color-52     { color: #330000 }
+.ansi-color-88     { color: #660000 }
+.ansi-color-124    { color: #990000 }
+.ansi-color-160    { color: #cc0000 }
+.ansi-color-196    { color: #ff0000 }
+.ansi-color-22     { color: #003300 }
+.ansi-color-58     { color: #333300 }
+.ansi-color-94     { color: #663300 }
+.ansi-color-130    { color: #993300 }
+.ansi-color-166    { color: #cc3300 }
+.ansi-color-202    { color: #ff3300 }
+.ansi-color-28     { color: #006600 }
+.ansi-color-64     { color: #336600 }
+.ansi-color-100    { color: #666600 }
+.ansi-color-136    { color: #996600 }
+.ansi-color-172    { color: #cc6600 }
+.ansi-color-208    { color: #ff6600 }
+.ansi-color-34     { color: #009900 }
+.ansi-color-70     { color: #339900 }
+.ansi-color-106    { color: #669900 }
+.ansi-color-142    { color: #999900 }
+.ansi-color-178    { color: #cc9900 }
+.ansi-color-214    { color: #ff9900 }
+.ansi-color-40     { color: #00cc00 }
+.ansi-color-76     { color: #33cc00 }
+.ansi-color-112    { color: #66cc00 }
+.ansi-color-148    { color: #99cc00 }
+.ansi-color-184    { color: #cccc00 }
+.ansi-color-220    { color: #ffcc00 }
+.ansi-color-46     { color: #00ff00 }
+.ansi-color-82     { color: #33ff00 }
+.ansi-color-118    { color: #66ff00 }
+.ansi-color-154    { color: #99ff00 }
+.ansi-color-190    { color: #ccff00 }
+.ansi-color-226    { color: #ffff00 }
+.ansi-color-17     { color: #000033 }
+.ansi-color-53     { color: #330033 }
+.ansi-color-89     { color: #660033 }
+.ansi-color-125    { color: #990033 }
+.ansi-color-161    { color: #cc0033 }
+.ansi-color-197    { color: #ff0033 }
+.ansi-color-23     { color: #003333 }
+.ansi-color-59     { color: #333333 }
+.ansi-color-95     { color: #663333 }
+.ansi-color-131    { color: #993333 }
+.ansi-color-167    { color: #cc3333 }
+.ansi-color-203    { color: #ff3333 }
+.ansi-color-29     { color: #006633 }
+.ansi-color-65     { color: #336633 }
+.ansi-color-101    { color: #666633 }
+.ansi-color-137    { color: #996633 }
+.ansi-color-173    { color: #cc6633 }
+.ansi-color-209    { color: #ff6633 }
+.ansi-color-35     { color: #009933 }
+.ansi-color-71     { color: #339933 }
+.ansi-color-107    { color: #669933 }
+.ansi-color-143    { color: #999933 }
+.ansi-color-179    { color: #cc9933 }
+.ansi-color-215    { color: #ff9933 }
+.ansi-color-41     { color: #00cc33 }
+.ansi-color-77     { color: #33cc33 }
+.ansi-color-113    { color: #66cc33 }
+.ansi-color-149    { color: #99cc33 }
+.ansi-color-185    { color: #cccc33 }
+.ansi-color-221    { color: #ffcc33 }
+.ansi-color-47     { color: #00ff33 }
+.ansi-color-83     { color: #33ff33 }
+.ansi-color-119    { color: #66ff33 }
+.ansi-color-155    { color: #99ff33 }
+.ansi-color-191    { color: #ccff33 }
+.ansi-color-227    { color: #ffff33 }
+.ansi-color-18     { color: #000066 }
+.ansi-color-54     { color: #330066 }
+.ansi-color-90     { color: #660066 }
+.ansi-color-126    { color: #990066 }
+.ansi-color-162    { color: #cc0066 }
+.ansi-color-198    { color: #ff0066 }
+.ansi-color-24     { color: #003366 }
+.ansi-color-60     { color: #333366 }
+.ansi-color-96     { color: #663366 }
+.ansi-color-132    { color: #993366 }
+.ansi-color-168    { color: #cc3366 }
+.ansi-color-204    { color: #ff3366 }
+.ansi-color-30     { color: #006666 }
+.ansi-color-66     { color: #336666 }
+.ansi-color-102    { color: #666666 }
+.ansi-color-138    { color: #996666 }
+.ansi-color-174    { color: #cc6666 }
+.ansi-color-210    { color: #ff6666 }
+.ansi-color-36     { color: #009966 }
+.ansi-color-72     { color: #339966 }
+.ansi-color-108    { color: #669966 }
+.ansi-color-144    { color: #999966 }
+.ansi-color-180    { color: #cc9966 }
+.ansi-color-216    { color: #ff9966 }
+.ansi-color-42     { color: #00cc66 }
+.ansi-color-78     { color: #33cc66 }
+.ansi-color-114    { color: #66cc66 }
+.ansi-color-150    { color: #99cc66 }
+.ansi-color-186    { color: #cccc66 }
+.ansi-color-222    { color: #ffcc66 }
+.ansi-color-48     { color: #00ff66 }
+.ansi-color-84     { color: #33ff66 }
+.ansi-color-120    { color: #66ff66 }
+.ansi-color-156    { color: #99ff66 }
+.ansi-color-192    { color: #ccff66 }
+.ansi-color-228    { color: #ffff66 }
+.ansi-color-19     { color: #000099 }
+.ansi-color-55     { color: #330099 }
+.ansi-color-91     { color: #660099 }
+.ansi-color-127    { color: #990099 }
+.ansi-color-163    { color: #cc0099 }
+.ansi-color-199    { color: #ff0099 }
+.ansi-color-25     { color: #003399 }
+.ansi-color-61     { color: #333399 }
+.ansi-color-97     { color: #663399 }
+.ansi-color-133    { color: #993399 }
+.ansi-color-169    { color: #cc3399 }
+.ansi-color-205    { color: #ff3399 }
+.ansi-color-31     { color: #006699 }
+.ansi-color-67     { color: #336699 }
+.ansi-color-103    { color: #666699 }
+.ansi-color-139    { color: #996699 }
+.ansi-color-175    { color: #cc6699 }
+.ansi-color-211    { color: #ff6699 }
+.ansi-color-37     { color: #009999 }
+.ansi-color-73     { color: #339999 }
+.ansi-color-109    { color: #669999 }
+.ansi-color-145    { color: #999999 }
+.ansi-color-181    { color: #cc9999 }
+.ansi-color-217    { color: #ff9999 }
+.ansi-color-43     { color: #00cc99 }
+.ansi-color-79     { color: #33cc99 }
+.ansi-color-115    { color: #66cc99 }
+.ansi-color-151    { color: #99cc99 }
+.ansi-color-187    { color: #cccc99 }
+.ansi-color-223    { color: #ffcc99 }
+.ansi-color-49     { color: #00ff99 }
+.ansi-color-85     { color: #33ff99 }
+.ansi-color-121    { color: #66ff99 }
+.ansi-color-157    { color: #99ff99 }
+.ansi-color-193    { color: #ccff99 }
+.ansi-color-229    { color: #ffff99 }
+.ansi-color-20     { color: #0000cc }
+.ansi-color-56     { color: #3300cc }
+.ansi-color-92     { color: #6600cc }
+.ansi-color-128    { color: #9900cc }
+.ansi-color-164    { color: #cc00cc }
+.ansi-color-200    { color: #ff00cc }
+.ansi-color-26     { color: #0033cc }
+.ansi-color-62     { color: #3333cc }
+.ansi-color-98     { color: #6633cc }
+.ansi-color-134    { color: #9933cc }
+.ansi-color-170    { color: #cc33cc }
+.ansi-color-206    { color: #ff33cc }
+.ansi-color-32     { color: #0066cc }
+.ansi-color-68     { color: #3366cc }
+.ansi-color-104    { color: #6666cc }
+.ansi-color-140    { color: #9966cc }
+.ansi-color-176    { color: #cc66cc }
+.ansi-color-212    { color: #ff66cc }
+.ansi-color-38     { color: #0099cc }
+.ansi-color-74     { color: #3399cc }
+.ansi-color-110    { color: #6699cc }
+.ansi-color-146    { color: #9999cc }
+.ansi-color-182    { color: #cc99cc }
+.ansi-color-218    { color: #ff99cc }
+.ansi-color-44     { color: #00cccc }
+.ansi-color-80     { color: #33cccc }
+.ansi-color-116    { color: #66cccc }
+.ansi-color-152    { color: #99cccc }
+.ansi-color-188    { color: #cccccc }
+.ansi-color-224    { color: #ffcccc }
+.ansi-color-50     { color: #00ffcc }
+.ansi-color-86     { color: #33ffcc }
+.ansi-color-122    { color: #66ffcc }
+.ansi-color-158    { color: #99ffcc }
+.ansi-color-194    { color: #ccffcc }
+.ansi-color-230    { color: #ffffcc }
+.ansi-color-21     { color: #0000ff }
+.ansi-color-57     { color: #3300ff }
+.ansi-color-93     { color: #6600ff }
+.ansi-color-129    { color: #9900ff }
+.ansi-color-165    { color: #cc00ff }
+.ansi-color-201    { color: #ff00ff }
+.ansi-color-27     { color: #0033ff }
+.ansi-color-63     { color: #3333ff }
+.ansi-color-99     { color: #6633ff }
+.ansi-color-135    { color: #9933ff }
+.ansi-color-171    { color: #cc33ff }
+.ansi-color-207    { color: #ff33ff }
+.ansi-color-33     { color: #0066ff }
+.ansi-color-69     { color: #3366ff }
+.ansi-color-105    { color: #6666ff }
+.ansi-color-141    { color: #9966ff }
+.ansi-color-177    { color: #cc66ff }
+.ansi-color-213    { color: #ff66ff }
+.ansi-color-39     { color: #0099ff }
+.ansi-color-75     { color: #3399ff }
+.ansi-color-111    { color: #6699ff }
+.ansi-color-147    { color: #9999ff }
+.ansi-color-183    { color: #cc99ff }
+.ansi-color-219    { color: #ff99ff }
+.ansi-color-45     { color: #00ccff }
+.ansi-color-81     { color: #33ccff }
+.ansi-color-117    { color: #66ccff }
+.ansi-color-153    { color: #99ccff }
+.ansi-color-189    { color: #ccccff }
+.ansi-color-225    { color: #ffccff }
+.ansi-color-51     { color: #00ffff }
+.ansi-color-87     { color: #33ffff }
+.ansi-color-123    { color: #66ffff }
+.ansi-color-159    { color: #99ffff }
+.ansi-color-195    { color: #ccffff }
+.ansi-color-231    { color: #ffffff }
+.ansi-color-232    { color: #0a0a0a }
+.ansi-color-233    { color: #141414 }
+.ansi-color-234    { color: #1f1f1f }
+.ansi-color-235    { color: #292929 }
+.ansi-color-236    { color: #333333 }
+.ansi-color-237    { color: #3d3d3d }
+.ansi-color-238    { color: #474747 }
+.ansi-color-239    { color: #525252 }
+.ansi-color-240    { color: #5c5c5c }
+.ansi-color-241    { color: #666666 }
+.ansi-color-242    { color: #707070 }
+.ansi-color-243    { color: #7a7a7a }
+.ansi-color-244    { color: #858585 }
+.ansi-color-245    { color: #8f8f8f }
+.ansi-color-246    { color: #999999 }
+.ansi-color-247    { color: #a3a3a3 }
+.ansi-color-248    { color: #adadad }
+.ansi-color-249    { color: #b8b8b8 }
+.ansi-color-250    { color: #c2c2c2 }
+.ansi-color-251    { color: #cccccc }
+.ansi-color-252    { color: #d6d6d6 }
+.ansi-color-253    { color: #e0e0e0 }
+.ansi-color-254    { color: #ebebeb }
+.ansi-color-255    { color: #f5f5f5 }
+.ansi-bg-color-16  { background-color: #000000 }
+.ansi-bg-color-52  { background-color: #330000 }
+.ansi-bg-color-88  { background-color: #660000 }
+.ansi-bg-color-124 { background-color: #990000 }
+.ansi-bg-color-160 { background-color: #cc0000 }
+.ansi-bg-color-196 { background-color: #ff0000 }
+.ansi-bg-color-22  { background-color: #003300 }
+.ansi-bg-color-58  { background-color: #333300 }
+.ansi-bg-color-94  { background-color: #663300 }
+.ansi-bg-color-130 { background-color: #993300 }
+.ansi-bg-color-166 { background-color: #cc3300 }
+.ansi-bg-color-202 { background-color: #ff3300 }
+.ansi-bg-color-28  { background-color: #006600 }
+.ansi-bg-color-64  { background-color: #336600 }
+.ansi-bg-color-100 { background-color: #666600 }
+.ansi-bg-color-136 { background-color: #996600 }
+.ansi-bg-color-172 { background-color: #cc6600 }
+.ansi-bg-color-208 { background-color: #ff6600 }
+.ansi-bg-color-34  { background-color: #009900 }
+.ansi-bg-color-70  { background-color: #339900 }
+.ansi-bg-color-106 { background-color: #669900 }
+.ansi-bg-color-142 { background-color: #999900 }
+.ansi-bg-color-178 { background-color: #cc9900 }
+.ansi-bg-color-214 { background-color: #ff9900 }
+.ansi-bg-color-40  { background-color: #00cc00 }
+.ansi-bg-color-76  { background-color: #33cc00 }
+.ansi-bg-color-112 { background-color: #66cc00 }
+.ansi-bg-color-148 { background-color: #99cc00 }
+.ansi-bg-color-184 { background-color: #cccc00 }
+.ansi-bg-color-220 { background-color: #ffcc00 }
+.ansi-bg-color-46  { background-color: #00ff00 }
+.ansi-bg-color-82  { background-color: #33ff00 }
+.ansi-bg-color-118 { background-color: #66ff00 }
+.ansi-bg-color-154 { background-color: #99ff00 }
+.ansi-bg-color-190 { background-color: #ccff00 }
+.ansi-bg-color-226 { background-color: #ffff00 }
+.ansi-bg-color-17  { background-color: #000033 }
+.ansi-bg-color-53  { background-color: #330033 }
+.ansi-bg-color-89  { background-color: #660033 }
+.ansi-bg-color-125 { background-color: #990033 }
+.ansi-bg-color-161 { background-color: #cc0033 }
+.ansi-bg-color-197 { background-color: #ff0033 }
+.ansi-bg-color-23  { background-color: #003333 }
+.ansi-bg-color-59  { background-color: #333333 }
+.ansi-bg-color-95  { background-color: #663333 }
+.ansi-bg-color-131 { background-color: #993333 }
+.ansi-bg-color-167 { background-color: #cc3333 }
+.ansi-bg-color-203 { background-color: #ff3333 }
+.ansi-bg-color-29  { background-color: #006633 }
+.ansi-bg-color-65  { background-color: #336633 }
+.ansi-bg-color-101 { background-color: #666633 }
+.ansi-bg-color-137 { background-color: #996633 }
+.ansi-bg-color-173 { background-color: #cc6633 }
+.ansi-bg-color-209 { background-color: #ff6633 }
+.ansi-bg-color-35  { background-color: #009933 }
+.ansi-bg-color-71  { background-color: #339933 }
+.ansi-bg-color-107 { background-color: #669933 }
+.ansi-bg-color-143 { background-color: #999933 }
+.ansi-bg-color-179 { background-color: #cc9933 }
+.ansi-bg-color-215 { background-color: #ff9933 }
+.ansi-bg-color-41  { background-color: #00cc33 }
+.ansi-bg-color-77  { background-color: #33cc33 }
+.ansi-bg-color-113 { background-color: #66cc33 }
+.ansi-bg-color-149 { background-color: #99cc33 }
+.ansi-bg-color-185 { background-color: #cccc33 }
+.ansi-bg-color-221 { background-color: #ffcc33 }
+.ansi-bg-color-47  { background-color: #00ff33 }
+.ansi-bg-color-83  { background-color: #33ff33 }
+.ansi-bg-color-119 { background-color: #66ff33 }
+.ansi-bg-color-155 { background-color: #99ff33 }
+.ansi-bg-color-191 { background-color: #ccff33 }
+.ansi-bg-color-227 { background-color: #ffff33 }
+.ansi-bg-color-18  { background-color: #000066 }
+.ansi-bg-color-54  { background-color: #330066 }
+.ansi-bg-color-90  { background-color: #660066 }
+.ansi-bg-color-126 { background-color: #990066 }
+.ansi-bg-color-162 { background-color: #cc0066 }
+.ansi-bg-color-198 { background-color: #ff0066 }
+.ansi-bg-color-24  { background-color: #003366 }
+.ansi-bg-color-60  { background-color: #333366 }
+.ansi-bg-color-96  { background-color: #663366 }
+.ansi-bg-color-132 { background-color: #993366 }
+.ansi-bg-color-168 { background-color: #cc3366 }
+.ansi-bg-color-204 { background-color: #ff3366 }
+.ansi-bg-color-30  { background-color: #006666 }
+.ansi-bg-color-66  { background-color: #336666 }
+.ansi-bg-color-102 { background-color: #666666 }
+.ansi-bg-color-138 { background-color: #996666 }
+.ansi-bg-color-174 { background-color: #cc6666 }
+.ansi-bg-color-210 { background-color: #ff6666 }
+.ansi-bg-color-36  { background-color: #009966 }
+.ansi-bg-color-72  { background-color: #339966 }
+.ansi-bg-color-108 { background-color: #669966 }
+.ansi-bg-color-144 { background-color: #999966 }
+.ansi-bg-color-180 { background-color: #cc9966 }
+.ansi-bg-color-216 { background-color: #ff9966 }
+.ansi-bg-color-42  { background-color: #00cc66 }
+.ansi-bg-color-78  { background-color: #33cc66 }
+.ansi-bg-color-114 { background-color: #66cc66 }
+.ansi-bg-color-150 { background-color: #99cc66 }
+.ansi-bg-color-186 { background-color: #cccc66 }
+.ansi-bg-color-222 { background-color: #ffcc66 }
+.ansi-bg-color-48  { background-color: #00ff66 }
+.ansi-bg-color-84  { background-color: #33ff66 }
+.ansi-bg-color-120 { background-color: #66ff66 }
+.ansi-bg-color-156 { background-color: #99ff66 }
+.ansi-bg-color-192 { background-color: #ccff66 }
+.ansi-bg-color-228 { background-color: #ffff66 }
+.ansi-bg-color-19  { background-color: #000099 }
+.ansi-bg-color-55  { background-color: #330099 }
+.ansi-bg-color-91  { background-color: #660099 }
+.ansi-bg-color-127 { background-color: #990099 }
+.ansi-bg-color-163 { background-color: #cc0099 }
+.ansi-bg-color-199 { background-color: #ff0099 }
+.ansi-bg-color-25  { background-color: #003399 }
+.ansi-bg-color-61  { background-color: #333399 }
+.ansi-bg-color-97  { background-color: #663399 }
+.ansi-bg-color-133 { background-color: #993399 }
+.ansi-bg-color-169 { background-color: #cc3399 }
+.ansi-bg-color-205 { background-color: #ff3399 }
+.ansi-bg-color-31  { background-color: #006699 }
+.ansi-bg-color-67  { background-color: #336699 }
+.ansi-bg-color-103 { background-color: #666699 }
+.ansi-bg-color-139 { background-color: #996699 }
+.ansi-bg-color-175 { background-color: #cc6699 }
+.ansi-bg-color-211 { background-color: #ff6699 }
+.ansi-bg-color-37  { background-color: #009999 }
+.ansi-bg-color-73  { background-color: #339999 }
+.ansi-bg-color-109 { background-color: #669999 }
+.ansi-bg-color-145 { background-color: #999999 }
+.ansi-bg-color-181 { background-color: #cc9999 }
+.ansi-bg-color-217 { background-color: #ff9999 }
+.ansi-bg-color-43  { background-color: #00cc99 }
+.ansi-bg-color-79  { background-color: #33cc99 }
+.ansi-bg-color-115 { background-color: #66cc99 }
+.ansi-bg-color-151 { background-color: #99cc99 }
+.ansi-bg-color-187 { background-color: #cccc99 }
+.ansi-bg-color-223 { background-color: #ffcc99 }
+.ansi-bg-color-49  { background-color: #00ff99 }
+.ansi-bg-color-85  { background-color: #33ff99 }
+.ansi-bg-color-121 { background-color: #66ff99 }
+.ansi-bg-color-157 { background-color: #99ff99 }
+.ansi-bg-color-193 { background-color: #ccff99 }
+.ansi-bg-color-229 { background-color: #ffff99 }
+.ansi-bg-color-20  { background-color: #0000cc }
+.ansi-bg-color-56  { background-color: #3300cc }
+.ansi-bg-color-92  { background-color: #6600cc }
+.ansi-bg-color-128 { background-color: #9900cc }
+.ansi-bg-color-164 { background-color: #cc00cc }
+.ansi-bg-color-200 { background-color: #ff00cc }
+.ansi-bg-color-26  { background-color: #0033cc }
+.ansi-bg-color-62  { background-color: #3333cc }
+.ansi-bg-color-98  { background-color: #6633cc }
+.ansi-bg-color-134 { background-color: #9933cc }
+.ansi-bg-color-170 { background-color: #cc33cc }
+.ansi-bg-color-206 { background-color: #ff33cc }
+.ansi-bg-color-32  { background-color: #0066cc }
+.ansi-bg-color-68  { background-color: #3366cc }
+.ansi-bg-color-104 { background-color: #6666cc }
+.ansi-bg-color-140 { background-color: #9966cc }
+.ansi-bg-color-176 { background-color: #cc66cc }
+.ansi-bg-color-212 { background-color: #ff66cc }
+.ansi-bg-color-38  { background-color: #0099cc }
+.ansi-bg-color-74  { background-color: #3399cc }
+.ansi-bg-color-110 { background-color: #6699cc }
+.ansi-bg-color-146 { background-color: #9999cc }
+.ansi-bg-color-182 { background-color: #cc99cc }
+.ansi-bg-color-218 { background-color: #ff99cc }
+.ansi-bg-color-44  { background-color: #00cccc }
+.ansi-bg-color-80  { background-color: #33cccc }
+.ansi-bg-color-116 { background-color: #66cccc }
+.ansi-bg-color-152 { background-color: #99cccc }
+.ansi-bg-color-188 { background-color: #cccccc }
+.ansi-bg-color-224 { background-color: #ffcccc }
+.ansi-bg-color-50  { background-color: #00ffcc }
+.ansi-bg-color-86  { background-color: #33ffcc }
+.ansi-bg-color-122 { background-color: #66ffcc }
+.ansi-bg-color-158 { background-color: #99ffcc }
+.ansi-bg-color-194 { background-color: #ccffcc }
+.ansi-bg-color-230 { background-color: #ffffcc }
+.ansi-bg-color-21  { background-color: #0000ff }
+.ansi-bg-color-57  { background-color: #3300ff }
+.ansi-bg-color-93  { background-color: #6600ff }
+.ansi-bg-color-129 { background-color: #9900ff }
+.ansi-bg-color-165 { background-color: #cc00ff }
+.ansi-bg-color-201 { background-color: #ff00ff }
+.ansi-bg-color-27  { background-color: #0033ff }
+.ansi-bg-color-63  { background-color: #3333ff }
+.ansi-bg-color-99  { background-color: #6633ff }
+.ansi-bg-color-135 { background-color: #9933ff }
+.ansi-bg-color-171 { background-color: #cc33ff }
+.ansi-bg-color-207 { background-color: #ff33ff }
+.ansi-bg-color-33  { background-color: #0066ff }
+.ansi-bg-color-69  { background-color: #3366ff }
+.ansi-bg-color-105 { background-color: #6666ff }
+.ansi-bg-color-141 { background-color: #9966ff }
+.ansi-bg-color-177 { background-color: #cc66ff }
+.ansi-bg-color-213 { background-color: #ff66ff }
+.ansi-bg-color-39  { background-color: #0099ff }
+.ansi-bg-color-75  { background-color: #3399ff }
+.ansi-bg-color-111 { background-color: #6699ff }
+.ansi-bg-color-147 { background-color: #9999ff }
+.ansi-bg-color-183 { background-color: #cc99ff }
+.ansi-bg-color-219 { background-color: #ff99ff }
+.ansi-bg-color-45  { background-color: #00ccff }
+.ansi-bg-color-81  { background-color: #33ccff }
+.ansi-bg-color-117 { background-color: #66ccff }
+.ansi-bg-color-153 { background-color: #99ccff }
+.ansi-bg-color-189 { background-color: #ccccff }
+.ansi-bg-color-225 { background-color: #ffccff }
+.ansi-bg-color-51  { background-color: #00ffff }
+.ansi-bg-color-87  { background-color: #33ffff }
+.ansi-bg-color-123 { background-color: #66ffff }
+.ansi-bg-color-159 { background-color: #99ffff }
+.ansi-bg-color-195 { background-color: #ccffff }
+.ansi-bg-color-231 { background-color: #ffffff }
+.ansi-bg-color-232 { background-color: #0a0a0a }
+.ansi-bg-color-233 { background-color: #141414 }
+.ansi-bg-color-234 { background-color: #1f1f1f }
+.ansi-bg-color-235 { background-color: #292929 }
+.ansi-bg-color-236 { background-color: #333333 }
+.ansi-bg-color-237 { background-color: #3d3d3d }
+.ansi-bg-color-238 { background-color: #474747 }
+.ansi-bg-color-239 { background-color: #525252 }
+.ansi-bg-color-240 { background-color: #5c5c5c }
+.ansi-bg-color-241 { background-color: #666666 }
+.ansi-bg-color-242 { background-color: #707070 }
+.ansi-bg-color-243 { background-color: #7a7a7a }
+.ansi-bg-color-244 { background-color: #858585 }
+.ansi-bg-color-245 { background-color: #8f8f8f }
+.ansi-bg-color-246 { background-color: #999999 }
+.ansi-bg-color-247 { background-color: #a3a3a3 }
+.ansi-bg-color-248 { background-color: #adadad }
+.ansi-bg-color-249 { background-color: #b8b8b8 }
+.ansi-bg-color-250 { background-color: #c2c2c2 }
+.ansi-bg-color-251 { background-color: #cccccc }
+.ansi-bg-color-252 { background-color: #d6d6d6 }
+.ansi-bg-color-253 { background-color: #e0e0e0 }
+.ansi-bg-color-254 { background-color: #ebebeb }
+.ansi-bg-color-255 { background-color: #f5f5f5 }
+div.asciicast      { color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 }
+</style>
+<div class="asciicast"><pre>
+#&gt;                                                                                                     
+#&gt; → Will <span class="ansi-italic">update</span> 1 package.                                                                            
+#&gt; → The package (0 B) is cached.                                                                      
+#&gt; <span class="ansi-color-8">+ </span><span class="ansi-color-4">cli</span> 3.3.0 → 3.3.0 [bld][cmp]                                                                      
+#&gt; <span class="ansi-color-6">ℹ</span> No downloads are needed, 1 pkg is cached                                                          
+#&gt; <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">cli</span> 3.3.0 (source) (495.82 kB)                                                                
+#&gt; <span class="ansi-color-6">ℹ</span> Packaging <span class="ansi-color-4">cli</span> 3.3.0                                                                               
+#&gt; <span class="ansi-color-2">✔</span> Packaged <span class="ansi-color-4">cli</span> 3.3.0 <span class="ansi-color-247">(664ms)</span>                                                                        
+#&gt; <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">cli</span> 3.3.0                                                                                
+#&gt; <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">cli</span> 3.3.0 <span class="ansi-color-247">(7.6s)</span>                                                                            
+#&gt; <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">cli</span> 3.3.0 (local) <span class="ansi-color-247">(37ms)</span>                                                                
+#&gt; <span class="ansi-color-2">✔</span> 1 pkg + 1 dep: kept 1, upd 1, dld 1 (495.82 kB) <span class="ansi-color-249">[8.8s]</span>                                            
+</pre></div>
+</div>
+</div>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="link-quick-links-start-here-if-in-doubt">
+<span class="emoji" data-emoji="link">🔗</span> Quick links (start here if in doubt!)<a class="anchor" aria-label="anchor" href="#link-quick-links-start-here-if-in-doubt"></a>
+</h2>
+<div class="section level3">
+<h3 id="how-do-i--">How do I … ?<a class="anchor" aria-label="anchor" href="#how-do-i--"></a>
+</h3>
+<p>Start with our <a href="https://pak.r-lib.org/dev/articles/tldr.html" class="external-link">our TLDR document</a> to solve specific issues.</p>
+</div>
+<div class="section level3">
+<h3 id="faq">FAQ<a class="anchor" aria-label="anchor" href="#faq"></a>
+</h3>
+<p>Check out <a href="https://pak.r-lib.org/dev/articles/faq.html" class="external-link">list of frequently asked questions</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+</h3>
+<p><a href="https://pak.r-lib.org/dev/reference" class="external-link">The complete reference of pak functions</a> is the most complete source of information about pak.</p>
+</div>
+<div class="section level3">
+<h3 id="i-have-another-question">I have a(nother) question<a class="anchor" aria-label="anchor" href="#i-have-another-question"></a>
+</h3>
+<p>Don’t hesitate to ask at the <a href="https://community.rstudio.com/" class="external-link">RStudio Community forum</a>. Use the <code>pak</code> tag.</p>
+</div>
+<div class="section level3">
+<h3 id="i-would-like-to-report-a-bug">I would like to report a bug<a class="anchor" aria-label="anchor" href="#i-would-like-to-report-a-bug"></a>
+</h3>
+<p>Head to the <a href="https://github.com/r-lib/pak/issues" class="external-link">pak issue tracker</a>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="sparkles-features">
+<span class="emoji" data-emoji="sparkles">✨</span> Features<a class="anchor" aria-label="anchor" href="#sparkles-features"></a>
+</h2>
+<p><span class="emoji" data-emoji="zap">⚡</span> Fast - parallel downloads and installation, caching, etc.</p>
+<p><span class="emoji" data-emoji="safety_vest">🦺</span> Safe - dependency solver, system dependency solver, etc.</p>
+<p><span class="emoji" data-emoji="convenience_store">🏪</span> Convenient - packages from multiple sources, time travel, etc.</p>
+<p>See the <a href="https://pak.r-lib.org/dev/articles/features.html" class="external-link">complete list of awesome features</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="arrow_down-installation">
+<a href="https://github.com/r-lib/rig#%EF%B8%8F--installation" class="external-link"><span class="emoji" data-emoji="arrow_down">⬇️</span></a> Installation<a class="anchor" aria-label="anchor" href="#arrow_down-installation"></a>
 </h2>
 <div class="section level3">
 <h3 id="pre-built-binaries">Pre-built binaries<a class="anchor" aria-label="anchor" href="#pre-built-binaries"></a>
 </h3>
 <p>Install a binary build of pak from our repository on GitHub:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/stable/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/stable/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This is supported for the following systems:</p>
 <table class="table">
 <thead><tr class="header">
@@ -140,108 +2958,24 @@
 <h3 id="install-from-cran">Install from CRAN<a class="anchor" aria-label="anchor" href="#install-from-cran"></a>
 </h3>
 <p>Install the released version of the package from CRAN as usual:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span></code></pre></div>
 <p>This potentially needs a C compiler on platforms CRAN does not have binaries packages for.</p>
 </div>
 <div class="section level3">
-<h3 id="nightly-builds">Nightly builds<a class="anchor" aria-label="anchor" href="#nightly-builds"></a>
+<h3 id="other-platforms-and-nightly-builds">Other platforms and nightly builds<a class="anchor" aria-label="anchor" href="#other-platforms-and-nightly-builds"></a>
 </h3>
-<p>We have nightly binary builds, for the same systems as the table above:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/devel/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="stable-rc-and-devel-streams">
-<code>stable</code>, <code>rc</code> and <code>devel</code> streams<a class="anchor" aria-label="anchor" href="#stable-rc-and-devel-streams"></a>
-</h3>
-<p>We have three types of binaries available: * <code>stable</code> corresponds to the latest CRAN release of CRAN. * <code>rc</code> is a release candidate build, and it is available about 1-2 weeks before a release. Otherwise it is the same as the <code>stable</code> build. * <code>devel</code> has builds from the development tree. Before release it might be the same as the <code>rc</code> build.</p>
-<p>The streams are available under different repository URLs:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">stream</span> <span class="op">&lt;-</span> <span class="st">"rc"</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/%s/%s/%s/%s"</span>, <span class="va">stream</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>See the <a href="https://pak.r-lib.org/dev/articles/install.html" class="external-link">installation page</a>!</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h2>
-<p>Call <code><a href="reference/pkg_install.html">pkg_install()</a></code> to install CRAN or Bioconductor packages:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></code></pre></div>
-<p>To install packages from GitHub, use the <code>user/repo</code> syntax:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"r-lib/usethis"</span><span class="op">)</span></code></pre></div>
-<p>All dependencies will be installed as well, to the same library.</p>
-<div class="section level3">
-<h3 id="on-github-actions">On GitHub Actions<a class="anchor" aria-label="anchor" href="#on-github-actions"></a>
-</h3>
-<p>The <a href="https://github.com/r-lib/actions/tree/v2/setup-r-dependencies#setup-r-dependencies" class="external-link"><code>setup-r-dependencies</code></a> action at <a href="https://github.com/r-lib/actions" class="external-link"><code>r-lib/actions</code></a> uses pak to install packages. See the <a href="https://github.com/r-lib/actions/tree/v2/examples" class="external-link"><code>examples</code></a> directory for example workflows.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="why-pak">Why pak?<a class="anchor" aria-label="anchor" href="#why-pak"></a>
-</h2>
-<div class="section level3">
-<h3 id="fast">Fast<a class="anchor" aria-label="anchor" href="#fast"></a>
-</h3>
-<ul>
-<li><p>Fast downloads and HTTP queries. pak performs all HTTP requests concurrently.</p></li>
-<li><p>Fast installs. pak builds and installs packages concurrently.</p></li>
-<li><p>Metadata and package cache. pak caches package metadata and all downloaded packages locally. It does not download the same package files over and over again.</p></li>
-<li><p>Lazy installation. pak only installs the packages that are really necessary for the installation. If the requested package and its dependencies are already installed, pak does nothing.</p></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="safe">Safe<a class="anchor" aria-label="anchor" href="#safe"></a>
-</h3>
-<ul>
-<li><p>Private library (pak’s own package dependencies do not affect your regular package libraries and vice versa).</p></li>
-<li><p>Every pak operation runs in a sub-process, and the packages are loaded from the private library. pak avoids loading packages from your regular package libraries. (These package files would be locked on some systems, and locked packages cannot be updated. pak does not load any package in the main process, except for pak itself).</p></li>
-<li><p>To avoid updating locked packages, pak offers the choice of unloading them from the current R session, and/or killing other R sessions locking them.</p></li>
-<li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. It finds conflicts up front, before attempting installation.</p></li>
-<li><p>System package support. pak automatically installs system dependencies on several Linux distributions.</p></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="convenient">Convenient<a class="anchor" aria-label="anchor" href="#convenient"></a>
-</h3>
-<ul>
-<li><p>BioC packages. pak supports Bioconductor packages out of the box. It uses the Bioconductor version that is appropriate for your R version.</p></li>
-<li><p>GitHub packages. pak supports GitHub packages out of the box. It also supports the <code>Remotes</code> entry in <code>DESCRIPTION</code> files, so that GitHub dependencies of GitHub packages will also get installed. See e.g. <a href="https://cran.r-project.org/package=remotes/vignettes/dependencies.html" class="external-link uri">https://cran.r-project.org/package=remotes/vignettes/dependencies.html</a></p></li>
-<li><p>Easy time travel with <a href="https://mran.microsoft.com/timemachine" class="external-link">MRAN</a> and <a href="https://packagemanager.rstudio.com/client/#/" class="external-link">RSPM</a>, to a specific date or when a certain R or package version was released.</p></li>
-<li><p>Package sizes. For CRAN packages pak shows the total sizes of packages it needs to download.</p></li>
-<li>
-<p>Other package sources:</p>
-<ul>
-<li>local package files and directories,</li>
-<li>URLs to package files or package tree archives.</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
-</h2>
-<ul>
-<li>Cache locally installed packages.</li>
-<li>Update installed packages.</li>
-<li>Better integration with renv.</li>
-<li>Support more package sources: Enterprise GitHub, GitLab, Bitbucket and SVN repositories.</li>
-<li>Support older CRAN and Bioconductor packages.</li>
-<li>More comprehensive system requirements support.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+<h2 id="blue_book-license">
+<strong><span class="emoji" data-emoji="blue_book">📘</span></strong> License<a class="anchor" aria-label="anchor" href="#blue_book-license"></a>
 </h2>
 <p>GPL-3 © RStudio</p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=pak" class="external-link">View on CRAN</a></li>
@@ -268,10 +3002,12 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a> <br><small class="roles"> Author, maintainer </small>  </li>
 <li>
 <a href="https://jimhester.com" class="external-link">Jim Hester</a> <br><small class="roles"> Author </small>  </li>
-<li>RStudio <br><small class="roles"> Copyright holder, funder </small>  </li>
+<li>
+<a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
 </ul>
 </div>
 
@@ -285,27 +3021,22 @@
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+   </div>
+  <footer><div class="container">
+  <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, RStudio.</p>
+<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
-      </footer>
-</div>
-
-  
-
-
-  
-
-  </body>
+  </div></footer>
+</body>
 </html>
