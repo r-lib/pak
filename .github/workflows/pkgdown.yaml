@@ -44,7 +44,7 @@ jobs:
 
       - name: Build site
         run: |
-          rmarkdown::render("README.Rmd")
+          # rmarkdown::render("README.Rmd")
           roxygen2::roxygenize()
           pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
         shell: Rscript {0}
