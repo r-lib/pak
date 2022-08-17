@@ -530,7 +530,7 @@ div.asciicast      \{ color: #172431, font-family: 'Fira Code',Monaco,Consolas,M
 }}
 }
 \section{pak is fast}{
-\subsection{▶ Parallel HTTP}{
+\subsection{Parallel HTTP}{
 
 pak performs HTTP queries concurrently. This is true when
 \itemize{
@@ -541,13 +541,13 @@ pak performs HTTP queries concurrently. This is true when
 }
 }
 
-\subsection{▶ Parallel installation}{
+\subsection{Parallel installation}{
 
 pak installs packages concurrently, as much as their dependency graph
 allows this.
 }
 
-\subsection{▶ Caching}{
+\subsection{Caching}{
 
 pak caches metadata and package files, so you don't need to re-download
 the same files over and over.
@@ -555,26 +555,26 @@ the same files over and over.
 }
 
 \section{pak is safe}{
-\subsection{▶ Plan installation up front}{
+\subsection{Plan installation up front}{
 
 pak creates an installation plan before downloading any packages.
 If the plan is unsuccessful, then it fails without downloading any
 packages.
 }
 
-\subsection{▶ Auto-install missing dependencies}{
+\subsection{Auto-install missing dependencies}{
 
 When requesting the installation of a package, pak makes sure that all
 of its dependencies are also installed.
 }
 
-\subsection{▶ Keeping binary packages up-to-date}{
+\subsection{Keeping binary packages up-to-date}{
 
 pak automatically discads binary packages from the cache, if a new build
 of the same version is available on CRAN.
 }
 
-\subsection{▶ Correct CRAN metadata errors}{
+\subsection{Correct CRAN metadata errors}{
 
 pak can correct some of CRAN's metadata issues, e.g.:
 \itemize{
@@ -584,7 +584,7 @@ because of a synchronization issue.
 }
 }
 
-\subsection{▶ Graceful handling of locked packaeg DLLs on Windows}{
+\subsection{Graceful handling of locked packaeg DLLs on Windows}{
 
 pak handles the situation of locked package DLLs, as well as possible.
 It detects which process locked them, and offers the choice of terminating
@@ -592,7 +592,7 @@ these processes. It also unloads packages from the current R session as
 needed.
 }
 
-\subsection{▶ pak keeps its own dependencies isolated}{
+\subsection{pak keeps its own dependencies isolated}{
 
 pak keeps its own dependencies in a private package library and never
 loads any packages. (Only in background processes).
@@ -600,13 +600,13 @@ loads any packages. (Only in background processes).
 }
 
 \section{pak is convenient}{
-\subsection{▶ pak comes as a self-contained binary package}{
+\subsection{pak comes as a self-contained binary package}{
 
 On the most common platforms. No dependencies, no system dependencies,
 no compiler needed. (See also the \link[=install]{installation} manual.)
 }
 
-\subsection{▶ Install packages from multiple sources}{
+\subsection{Install packages from multiple sources}{
 \itemize{
 \item CRAN, Bioconductor
 \item GitHub
@@ -615,24 +615,24 @@ no compiler needed. (See also the \link[=install]{installation} manual.)
 }
 }
 
-\subsection{▶ Ignore certain optional dependencies}{
+\subsection{Ignore certain optional dependencies}{
 
 pak can ignore certain optional dependencies if requested.
 }
 
-\subsection{▶ CRAN package file sizes}{
+\subsection{CRAN package file sizes}{
 
 pak knows the sizes of CRAN package files, so it can estimate how much
 data you need to download, before the installation.
 }
 
-\subsection{▶ Bioconductor version detection}{
+\subsection{Bioconductor version detection}{
 
 pak automatically selects the Bioconductor version that is appropriate for
 your R version. No need to set any repositories.
 }
 
-\subsection{▶ Time travel with MRAN or RSPM}{
+\subsection{Time travel with MRAN or RSPM}{
 
 pak can use MRAN (Microsoft R Application Network,
 https://mran.microsoft.com/) or RSPM (RStudio Public Package Manager,
@@ -640,7 +640,7 @@ https://packagemanager.rstudio.com/client/#/) to install from snapshots
 or CRAN.
 }
 
-\subsection{▶ pak can install dependencies of local packages}{
+\subsection{pak can install dependencies of local packages}{
 
 Very handly for package development!
 }
