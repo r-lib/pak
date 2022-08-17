@@ -42,6 +42,7 @@ jobs:
         shell: Rscript {0}
         env:
           IN_PKGDOWN: true
+          ASCIICAST_TIMEOUT: 600
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'

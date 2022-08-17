@@ -16,7 +16,8 @@ asciicast::init_knitr_engine(
   echo = TRUE,
   echo_input = FALSE,
   interactive = FALSE,
-  options = opts
+  options = opts,
+  timeout = as.integer(Sys.getenv("ASCIICAST_TIMEOUT", 10))
 )
 do.call(base::options, opts)
 
