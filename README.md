@@ -73,13 +73,13 @@ pak::local_install("cli")
 ### How do I … ?
 
 Start with our [our TLDR
-document](https://pak.r-lib.org/dev/articles/tldr.html) to solve
+document](https://pak.r-lib.org/dev/reference/tldr.html) to solve
 specific issues.
 
 ### FAQ
 
 Check out [list of frequently asked
-questions](https://pak.r-lib.org/dev/articles/faq.html).
+questions](https://pak.r-lib.org/dev/reference/faq.html).
 
 ### Reference
 
@@ -106,7 +106,7 @@ Head to the [pak issue tracker](https://github.com/r-lib/pak/issues).
 travel, etc.
 
 See the [complete list of awesome
-features](https://pak.r-lib.org/dev/articles/features.html).
+features](https://pak.r-lib.org/dev/reference/features.html).
 
 ## [:arrow_down:](https://github.com/r-lib/rig#%EF%B8%8F--installation) Installation
 
@@ -145,7 +145,7 @@ binaries packages for.
 ### Other platforms and nightly builds
 
 See the [installation
-page](https://pak.r-lib.org/dev/articles/install.html)!
+page](https://pak.r-lib.org/dev/reference/install.html)!
 
 ## **:blue_book:** License
 
