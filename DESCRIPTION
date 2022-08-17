@@ -69,7 +69,7 @@ Remotes:
     r-lib/pkgdepends,
     r-lib/processx,
     r-lib/ps
-Config/Needs/Website:
+Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2@feature/html-blocks,
     tidyverse/tidytemplate
