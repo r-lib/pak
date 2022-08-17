@@ -34,11 +34,19 @@ jobs:
           needs: website
           pak-version: devel
 
+      - name: Install local pak
+        run: |
+          install.packages(".", repos = NULL, type = "source")
+          pak:::create_dev_lib()
+        shell: Rscript {0}
+        env:
+          PAK_BUNDLE: none
+
       - name: Build site
         run: |
           rmarkdown::render("README.Rmd")
           roxygen2::roxygenize()
-          pkgdown::build_site_github_pages(new_process = TRUE)
+          pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
         shell: Rscript {0}
         env:
           IN_PKGDOWN: true
