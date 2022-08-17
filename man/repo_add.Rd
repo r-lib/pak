@@ -46,8 +46,10 @@ but otherwise names are informational.
 
 Currently supported repository specifications:
 \itemize{
-\item URL pointing to the root of the CRAN-like repository. Example:\preformatted{https://cloud.r-project.org
-}
+\item URL pointing to the root of the CRAN-like repository. Example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{https://cloud.r-project.org
+}\if{html}{\out{</div>}}
 \item \verb{RSPM@<date>}, RSPM (RStudio Package Manager) snapshot, at the
 specified date.
 \item \verb{RSPM@<package>-<version>} RSPM snapshot, for the day after the

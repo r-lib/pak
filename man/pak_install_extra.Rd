@@ -14,8 +14,8 @@ of the optional packages.}
 These packages are not required for any pak functionality. They are
 recommended for some functions that return values that are best
 used with these packages. E.g. many functions return data frames, which
-are printed nicer is the pillar package is available.
+print nicer when the pillar package is available.
 }
 \details{
-Currently only one package is optional: pillar.
+Currently only one package is optional: \strong{pillar}.
 }

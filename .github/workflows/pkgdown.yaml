@@ -34,10 +34,13 @@ jobs:
           needs: website
 
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        run: |
+          rmarkdown::render("README.Rmd")
+          roxygen2::roxygenize()
+          pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
         shell: Rscript {0}
         env:
-          PAK_BUNDLE: false
+          IN_PKGDOWN: true
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'

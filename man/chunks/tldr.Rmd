@@ -1,0 +1,208 @@
+
+# Package installation
+
+```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+dir.create(.lib <- tempfile())
+.libPaths(c(.lib, .libPaths()))
+```
+
+## Install a package from CRAN or Bioconductor
+
+```{asciicast tldr-cran}
+#| R.options = utils::modifyList(asciicast::asciicast_knitr_options(),
+#|                               list(asciicast_at = NULL,
+#|                                    asciicast_knitr_output = "svg",
+#|                                    asciicast_empty_wait = 5,
+#|                                    asciicast_end_wait = 20,
+#|                                    asciicast_omit_last_line = TRUE,
+#|                                    asciicast_cols = 80,
+#|                                    width = 80,
+#|                                    asciicast_details = TRUE,
+#|                                    asciicast_incomplete_error = FALSE),
+#|                              keep.null = TRUE)
+pak::pkg_install("tibble")
+```
+
+## Install a package from GitHub
+
+```{asciicast tldr-gh}
+pak::pkg_install("tidyverse/tibble")
+```
+
+## Install a package from a URL
+
+```{asciicast tldr-url}
+pak::pkg_install("url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz")
+```
+
+# Package updates
+
+## Update a package
+
+```{asciicast tldr-update}
+pak::pkg_install("tibble")
+```
+
+## Update all dependencies of a package
+
+```{asciicast tldr-update-all}
+pak::pkg_install("tibble", upgrade = TRUE)
+```
+
+# Dependency lookup
+
+## Dependencies of a CRAN or Bioconductor package
+
+```{asciicast tldr-deps}
+pak::pkg_deps("tibble")
+```
+
+## Depenendency tree of a CRAN / Bioconductor package
+
+```{asciicast tldr-deps-tree}
+pak::pkg_deps_tree("tibble")
+```
+
+## Dependency trre of a package on GitHub
+
+```{asciicast tldr-deps-gh}
+pak::pkg_deps_tree("tidyverse/tibble")
+```
+
+## Dependency tree of the package in the current directory
+
+```{asciicast tldr-deps-local-pre, include = FALSE}
+dl <- pak::pkg_download("tibble", platforms = "source", tempdir())
+untar(dl$fulltarget[1])
+```
+
+```{asciicast tldr-deps-local, dependson = "tldr-deps-local-pre"}
+pak::local_deps_tree("tibble")
+```
+
+(Assuming package is in directory `tibble`.)
+
+## Explain a recursive dependency
+
+```{asciicast tldr-deps-explain}
+pak::pkg_deps_explain("tibble", "rlang")
+```
+
+# Package development
+
+```{asciicast tldr-pkg-pre, include = FALSE, cache = FALSE}
+dl <- pak::pkg_download("tibble", platforms = "source", tempdir())
+untar(dl$fulltarget[1])
+setwd("tibble")
+try(pak:::pkg_data$remote$kill(), silent = TRUE)
+```
+
+## Install dependencies of local package
+
+```{asciicast tldr-pkg-deps}
+pak::local_install_deps()
+```
+
+## Install local package
+
+```{asciicast tldr-pkg-install}
+pak::local_install()
+```
+
+## Install all dependencies of local package
+
+```{asciicast tldr-pkg-dev-deps}
+pak::local_install_dev_deps()
+```
+
+```{asciicast tldr-pkg-post, include = FALSE, cache = FALSE}
+setwd("..")
+try(pak:::pkg_data$remote$kill(), silent = TRUE)
+```
+
+# Repositories
+
+## List current repositories
+
+```{asciicast tldr-repo-list}
+pak::repo_get()
+```
+
+## Add custom repository
+
+```{asciicast tldr-repo-add}
+pak::repo_add(rhub = 'https://r-hub.r-universe.dev')
+pak::repo_get()
+```
+
+## Remove custom repositories
+
+```{asciicast tldr-repo-remove, dependson = -1}
+options(repos = getOption("repos")["CRAN"])
+pak::repo_get()
+```
+
+Keeps only CRAN and (by default) Bioconductor.
+
+## Time travel using RSPM
+
+```{asciicast tldr-repo-rspm}
+pak::repo_add(CRAN = "RSPM@2022-06-30")
+pak::repo_get()
+```
+
+## Time travel using MRAN
+
+```{asciicast tldr-repo-mran}
+pak::repo_add(CRAN = "MRAN@2022-06-30")
+pak::repo_get()
+```
+
+# Caches
+
+## Inspect metadata cache
+
+```{asciicast tldr-meta-list}
+pak::meta_list()
+```
+
+## Update metadata cache
+
+```{asciicast tldr-meta-update}
+pak::meta_update()
+```
+
+## Clean metadata cache
+
+```{asciicast tldr-meta-clean}
+pak::meta_clean(force = TRUE)
+pak::meta_summary()
+```
+
+## Inspect package cache
+
+```{asciicast tldr-cache-list}
+pak::cache_list()
+```
+
+## View a package cache summary
+
+```{asciicast tldr-cache-summary}
+pak::cache_summary()
+```
+
+## Clean package cache
+
+```r
+pak::cache_clean()
+```
+
+# Libraries
+
+## List packages in a library
+
+```{asciicast tldr-lib-list}
+pak::lib_status(Sys.getenv("R_LIBS_USER"))
+```
+
+Pass the directory of the library as the argument.

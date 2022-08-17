@@ -1,0 +1,80 @@
+
+## Environment variables
+
+### `PKG_BUILD_VIGNETTES`
+
+### `PKG_CACHE_DIR`
+
+### `PKG_CRAN_MIRROR`
+
+### `PKG_DEPENDENCIES`
+
+### `PKG_LIBRARY`
+
+### `PKG_METADATA_CACHE_DIR`
+
+### `PKG_METADATA_UPDATE_AFTER`
+
+### `PKG_PLATFORMS`
+
+### `PKG_R_VERSIONS`
+
+### `PKG_SYSREQS`
+
+### `PKG_SYSREQS_RSPM_REPO_ID`
+
+### `PKG_SYSREQS_RSPM_URL`
+
+### `PKG_SYSREQS_SUDO`
+
+### `PKG_SYSREQS_VERBOSE`
+
+### `PKG_WINDOWS_ARCHS`
+
+## Options
+
+### `Ncpus`
+
+Set to the desired number of worker processes for package installation.
+If not set, then pak will use the number of logical processors in the
+machine.
+
+### `pak.no_extra_messages`
+
+Set to `TRUE` to omit pak's warnings about missing extra packages.
+
+### `pkg.build_vignettes`
+
+### `pkg.cache_dir`
+
+### `pkg.cran_mirror`
+
+### `pkg.dependencies`
+
+### `pkg.library`
+
+### `pkg.metadata_cache_dir`
+
+### `pkg.metadata_update_after`
+
+### `pkg.package_cache_dir`
+
+### `pkg.platforms`
+
+### `pkg.r_versions`
+
+### `pkg.sysreqs`
+
+### `pkg.sysreqs_rspm_repo_id`
+
+### `pkg.sysreqs_rspm_url`
+
+### `pkg.sysreqs_sudo`
+
+### `pkg.sysreqs_verbose`
+
+### `pkg.windows_archs`
+
+### `repos`
+
+The CRAN-like repositories to use. See `?options` for details.
