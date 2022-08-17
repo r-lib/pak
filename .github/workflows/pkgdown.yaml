@@ -42,6 +42,11 @@ jobs:
         env:
           PAK_BUNDLE: none
 
+      - name: Check if pak works
+        run: |
+          pak::pkg_install("tibble")
+        shell: Rscript {0}
+
       - name: Build site
         run: |
           # rmarkdown::render("README.Rmd")
