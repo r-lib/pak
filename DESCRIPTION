@@ -50,6 +50,7 @@ Suggests:
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     r-lib/callr,
+    r-lib/desc,
     cli,
     curl,
     distro,
@@ -65,6 +66,7 @@ Config/needs/dependencies:
     rprojroot
 Remotes:
     r-lib/callr,
+    r-lib/desc,
     r-lib/pkgcache,
     r-lib/pkgdepends,
     r-lib/processx,
