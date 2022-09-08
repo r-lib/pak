@@ -56,7 +56,19 @@
       <small>Source: <a href="https://github.com/r-lib/pak/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="section level2"><h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
+<ul><li><p>The <code>?ignore</code> parameter works correctly now.</p></li>
+<li><p>Dependency resolution now does not fail if a package is not found.</p></li>
+<li><p>pak can now install <code>url::</code> remotes from GitHub.</p></li>
+<li><p>pak now does not fail when the package of a <code>.tar.gz</code> GitHub snapshot is in a subdirectory, or in a subdirectory of a subdirectory.</p></li>
+<li><p>pak now errors early if it cannot deduce the name of the package from a <code>Remotes</code> or <code>Config/Needs/*</code> entry.</p></li>
+<li><p>Solver failures now include details in some cases where previously they did not.</p></li>
+<li><p>pak can now update packages in Docker containers where the old version was installed in the different Docker later (<a href="https://github.com/r-lib/pak/issues/251" class="external-link">#251</a>)</p></li>
+<li><p>pak errors are now user friendlier and better formatted.</p></li>
+<li><p>pak now does not load tibble and its dependencies in the pak subprocess, so their dlls are not locked by the pak subprocess on Windows.</p></li>
+<li><p>pak now does not fail when installing a package that uses a non-UTF-8 encoding on R 4.3.x and later (<a href="https://github.com/r-lib/pak/issues/404" class="external-link">#404</a>).</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="pak-030">pak 0.3.0<a class="anchor" aria-label="anchor" href="#pak-030"></a></h2><p class="text-muted">CRAN release: 2022-04-11</p>
 <ul><li>
