@@ -84,7 +84,7 @@ questions](https://pak.r-lib.org/dev/reference/faq.html).
 ### Reference
 
 [The complete reference of pak
-functions](https://pak.r-lib.org/dev/reference) is the most complete
+functions](https://pak.r-lib.org/dev/reference/) is the most complete
 source of information about pak.
 
 ### I have a(nother) question
