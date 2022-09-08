@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.3.1
 
 * The `?ignore` parameter works correctly now.
 
