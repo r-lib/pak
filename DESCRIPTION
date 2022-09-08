@@ -49,28 +49,23 @@ Suggests:
     withr
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
-    r-lib/callr,
-    r-lib/desc,
+    callr,
+    desc,
     cli,
     curl,
     distro,
     filelock,
     glue,
     jsonlite,
-    r-lib/pkgcache,
+    pkgcache,
     r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
-    r-lib/processx,
-    r-lib/ps,
+    processx,
+    ps,
     rprojroot
 Remotes:
-    r-lib/callr,
-    r-lib/desc,
-    r-lib/pkgcache,
-    r-lib/pkgdepends,
-    r-lib/processx,
-    r-lib/ps
+    r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2@feature/html-blocks,
