@@ -9,17 +9,9 @@ dir.create(.lib <- tempfile())
 ## Install a package from CRAN or Bioconductor
 
 ```{asciicast tldr-cran}
-#| R.options = utils::modifyList(asciicast::asciicast_knitr_options(),
-#|                               list(asciicast_at = NULL,
-#|                                    asciicast_knitr_output = "svg",
-#|                                    asciicast_empty_wait = 5,
-#|                                    asciicast_end_wait = 20,
-#|                                    asciicast_omit_last_line = TRUE,
-#|                                    asciicast_cols = 80,
-#|                                    width = 80,
-#|                                    asciicast_details = TRUE,
-#|                                    asciicast_incomplete_error = FALSE),
-#|                              keep.null = TRUE)
+#| asciicast_at = "all",
+#| asciicast_knitr_output = "svg",
+#| asciicast_cursor = FALSE
 pak::pkg_install("tibble")
 ```
 

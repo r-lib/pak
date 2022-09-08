@@ -17,7 +17,6 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 RoxygenNote: 7.2.1.9000
-Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.2)
 Imports:

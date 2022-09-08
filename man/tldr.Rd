@@ -5,530 +5,7 @@
 \title{Simplified manual. Start here!}
 \description{
 You don't need to read long manual pages for a simple task.
-This manual page collects the most common pak use cases.\if{html}{\out{
-<style type="text/css">
-.ansi-bold         \{ font-weight: bold;             \}
-.ansi-italic       \{ font-style: italic;            \}
-.ansi-underline    \{ text-decoration: underline;    \}
-.ansi-blink        \{ text-decoration: blink;        \}
-.ansi-hide         \{ visibility: hidden;            \}
-.ansi-crossedout   \{ text-decoration: line-through; \}
-.ansi-link:hover   \{ text-decoration: underline;    \}
-.ansi-color-0      \{ color: #073642 \}
-.ansi-color-1      \{ color: #DC322F \}
-.ansi-color-2      \{ color: #859900 \}
-.ansi-color-3      \{ color: #B58900 \}
-.ansi-color-4      \{ color: #268BD2 \}
-.ansi-color-5      \{ color: #D33682 \}
-.ansi-color-6      \{ color: #2AA198 \}
-.ansi-color-7      \{ color: #EEE8D5 \}
-.ansi-color-8      \{ color: #002B36 \}
-.ansi-color-9      \{ color: #CB4B16 \}
-.ansi-color-10     \{ color: #586E75 \}
-.ansi-color-11     \{ color: #657C83 \}
-.ansi-color-12     \{ color: #839496 \}
-.ansi-color-13     \{ color: #6C71C4 \}
-.ansi-color-14     \{ color: #93A1A1 \}
-.ansi-color-15     \{ color: #FDF6E3 \}
-.ansi-bg-color-0   \{ background-color: #073642 \}
-.ansi-bg-color-1   \{ background-color: #DC322F \}
-.ansi-bg-color-2   \{ background-color: #859900 \}
-.ansi-bg-color-3   \{ background-color: #B58900 \}
-.ansi-bg-color-4   \{ background-color: #268BD2 \}
-.ansi-bg-color-5   \{ background-color: #D33682 \}
-.ansi-bg-color-6   \{ background-color: #2AA198 \}
-.ansi-bg-color-7   \{ background-color: #EEE8D5 \}
-.ansi-bg-color-8   \{ background-color: #002B36 \}
-.ansi-bg-color-9   \{ background-color: #CB4B16 \}
-.ansi-bg-color-10  \{ background-color: #586E75 \}
-.ansi-bg-color-11  \{ background-color: #657C83 \}
-.ansi-bg-color-12  \{ background-color: #839496 \}
-.ansi-bg-color-13  \{ background-color: #6C71C4 \}
-.ansi-bg-color-14  \{ background-color: #93A1A1 \}
-.ansi-bg-color-15  \{ background-color: #FDF6E3 \}
-.ansi-color-16     \{ color: #000000 \}
-.ansi-color-52     \{ color: #330000 \}
-.ansi-color-88     \{ color: #660000 \}
-.ansi-color-124    \{ color: #990000 \}
-.ansi-color-160    \{ color: #cc0000 \}
-.ansi-color-196    \{ color: #ff0000 \}
-.ansi-color-22     \{ color: #003300 \}
-.ansi-color-58     \{ color: #333300 \}
-.ansi-color-94     \{ color: #663300 \}
-.ansi-color-130    \{ color: #993300 \}
-.ansi-color-166    \{ color: #cc3300 \}
-.ansi-color-202    \{ color: #ff3300 \}
-.ansi-color-28     \{ color: #006600 \}
-.ansi-color-64     \{ color: #336600 \}
-.ansi-color-100    \{ color: #666600 \}
-.ansi-color-136    \{ color: #996600 \}
-.ansi-color-172    \{ color: #cc6600 \}
-.ansi-color-208    \{ color: #ff6600 \}
-.ansi-color-34     \{ color: #009900 \}
-.ansi-color-70     \{ color: #339900 \}
-.ansi-color-106    \{ color: #669900 \}
-.ansi-color-142    \{ color: #999900 \}
-.ansi-color-178    \{ color: #cc9900 \}
-.ansi-color-214    \{ color: #ff9900 \}
-.ansi-color-40     \{ color: #00cc00 \}
-.ansi-color-76     \{ color: #33cc00 \}
-.ansi-color-112    \{ color: #66cc00 \}
-.ansi-color-148    \{ color: #99cc00 \}
-.ansi-color-184    \{ color: #cccc00 \}
-.ansi-color-220    \{ color: #ffcc00 \}
-.ansi-color-46     \{ color: #00ff00 \}
-.ansi-color-82     \{ color: #33ff00 \}
-.ansi-color-118    \{ color: #66ff00 \}
-.ansi-color-154    \{ color: #99ff00 \}
-.ansi-color-190    \{ color: #ccff00 \}
-.ansi-color-226    \{ color: #ffff00 \}
-.ansi-color-17     \{ color: #000033 \}
-.ansi-color-53     \{ color: #330033 \}
-.ansi-color-89     \{ color: #660033 \}
-.ansi-color-125    \{ color: #990033 \}
-.ansi-color-161    \{ color: #cc0033 \}
-.ansi-color-197    \{ color: #ff0033 \}
-.ansi-color-23     \{ color: #003333 \}
-.ansi-color-59     \{ color: #333333 \}
-.ansi-color-95     \{ color: #663333 \}
-.ansi-color-131    \{ color: #993333 \}
-.ansi-color-167    \{ color: #cc3333 \}
-.ansi-color-203    \{ color: #ff3333 \}
-.ansi-color-29     \{ color: #006633 \}
-.ansi-color-65     \{ color: #336633 \}
-.ansi-color-101    \{ color: #666633 \}
-.ansi-color-137    \{ color: #996633 \}
-.ansi-color-173    \{ color: #cc6633 \}
-.ansi-color-209    \{ color: #ff6633 \}
-.ansi-color-35     \{ color: #009933 \}
-.ansi-color-71     \{ color: #339933 \}
-.ansi-color-107    \{ color: #669933 \}
-.ansi-color-143    \{ color: #999933 \}
-.ansi-color-179    \{ color: #cc9933 \}
-.ansi-color-215    \{ color: #ff9933 \}
-.ansi-color-41     \{ color: #00cc33 \}
-.ansi-color-77     \{ color: #33cc33 \}
-.ansi-color-113    \{ color: #66cc33 \}
-.ansi-color-149    \{ color: #99cc33 \}
-.ansi-color-185    \{ color: #cccc33 \}
-.ansi-color-221    \{ color: #ffcc33 \}
-.ansi-color-47     \{ color: #00ff33 \}
-.ansi-color-83     \{ color: #33ff33 \}
-.ansi-color-119    \{ color: #66ff33 \}
-.ansi-color-155    \{ color: #99ff33 \}
-.ansi-color-191    \{ color: #ccff33 \}
-.ansi-color-227    \{ color: #ffff33 \}
-.ansi-color-18     \{ color: #000066 \}
-.ansi-color-54     \{ color: #330066 \}
-.ansi-color-90     \{ color: #660066 \}
-.ansi-color-126    \{ color: #990066 \}
-.ansi-color-162    \{ color: #cc0066 \}
-.ansi-color-198    \{ color: #ff0066 \}
-.ansi-color-24     \{ color: #003366 \}
-.ansi-color-60     \{ color: #333366 \}
-.ansi-color-96     \{ color: #663366 \}
-.ansi-color-132    \{ color: #993366 \}
-.ansi-color-168    \{ color: #cc3366 \}
-.ansi-color-204    \{ color: #ff3366 \}
-.ansi-color-30     \{ color: #006666 \}
-.ansi-color-66     \{ color: #336666 \}
-.ansi-color-102    \{ color: #666666 \}
-.ansi-color-138    \{ color: #996666 \}
-.ansi-color-174    \{ color: #cc6666 \}
-.ansi-color-210    \{ color: #ff6666 \}
-.ansi-color-36     \{ color: #009966 \}
-.ansi-color-72     \{ color: #339966 \}
-.ansi-color-108    \{ color: #669966 \}
-.ansi-color-144    \{ color: #999966 \}
-.ansi-color-180    \{ color: #cc9966 \}
-.ansi-color-216    \{ color: #ff9966 \}
-.ansi-color-42     \{ color: #00cc66 \}
-.ansi-color-78     \{ color: #33cc66 \}
-.ansi-color-114    \{ color: #66cc66 \}
-.ansi-color-150    \{ color: #99cc66 \}
-.ansi-color-186    \{ color: #cccc66 \}
-.ansi-color-222    \{ color: #ffcc66 \}
-.ansi-color-48     \{ color: #00ff66 \}
-.ansi-color-84     \{ color: #33ff66 \}
-.ansi-color-120    \{ color: #66ff66 \}
-.ansi-color-156    \{ color: #99ff66 \}
-.ansi-color-192    \{ color: #ccff66 \}
-.ansi-color-228    \{ color: #ffff66 \}
-.ansi-color-19     \{ color: #000099 \}
-.ansi-color-55     \{ color: #330099 \}
-.ansi-color-91     \{ color: #660099 \}
-.ansi-color-127    \{ color: #990099 \}
-.ansi-color-163    \{ color: #cc0099 \}
-.ansi-color-199    \{ color: #ff0099 \}
-.ansi-color-25     \{ color: #003399 \}
-.ansi-color-61     \{ color: #333399 \}
-.ansi-color-97     \{ color: #663399 \}
-.ansi-color-133    \{ color: #993399 \}
-.ansi-color-169    \{ color: #cc3399 \}
-.ansi-color-205    \{ color: #ff3399 \}
-.ansi-color-31     \{ color: #006699 \}
-.ansi-color-67     \{ color: #336699 \}
-.ansi-color-103    \{ color: #666699 \}
-.ansi-color-139    \{ color: #996699 \}
-.ansi-color-175    \{ color: #cc6699 \}
-.ansi-color-211    \{ color: #ff6699 \}
-.ansi-color-37     \{ color: #009999 \}
-.ansi-color-73     \{ color: #339999 \}
-.ansi-color-109    \{ color: #669999 \}
-.ansi-color-145    \{ color: #999999 \}
-.ansi-color-181    \{ color: #cc9999 \}
-.ansi-color-217    \{ color: #ff9999 \}
-.ansi-color-43     \{ color: #00cc99 \}
-.ansi-color-79     \{ color: #33cc99 \}
-.ansi-color-115    \{ color: #66cc99 \}
-.ansi-color-151    \{ color: #99cc99 \}
-.ansi-color-187    \{ color: #cccc99 \}
-.ansi-color-223    \{ color: #ffcc99 \}
-.ansi-color-49     \{ color: #00ff99 \}
-.ansi-color-85     \{ color: #33ff99 \}
-.ansi-color-121    \{ color: #66ff99 \}
-.ansi-color-157    \{ color: #99ff99 \}
-.ansi-color-193    \{ color: #ccff99 \}
-.ansi-color-229    \{ color: #ffff99 \}
-.ansi-color-20     \{ color: #0000cc \}
-.ansi-color-56     \{ color: #3300cc \}
-.ansi-color-92     \{ color: #6600cc \}
-.ansi-color-128    \{ color: #9900cc \}
-.ansi-color-164    \{ color: #cc00cc \}
-.ansi-color-200    \{ color: #ff00cc \}
-.ansi-color-26     \{ color: #0033cc \}
-.ansi-color-62     \{ color: #3333cc \}
-.ansi-color-98     \{ color: #6633cc \}
-.ansi-color-134    \{ color: #9933cc \}
-.ansi-color-170    \{ color: #cc33cc \}
-.ansi-color-206    \{ color: #ff33cc \}
-.ansi-color-32     \{ color: #0066cc \}
-.ansi-color-68     \{ color: #3366cc \}
-.ansi-color-104    \{ color: #6666cc \}
-.ansi-color-140    \{ color: #9966cc \}
-.ansi-color-176    \{ color: #cc66cc \}
-.ansi-color-212    \{ color: #ff66cc \}
-.ansi-color-38     \{ color: #0099cc \}
-.ansi-color-74     \{ color: #3399cc \}
-.ansi-color-110    \{ color: #6699cc \}
-.ansi-color-146    \{ color: #9999cc \}
-.ansi-color-182    \{ color: #cc99cc \}
-.ansi-color-218    \{ color: #ff99cc \}
-.ansi-color-44     \{ color: #00cccc \}
-.ansi-color-80     \{ color: #33cccc \}
-.ansi-color-116    \{ color: #66cccc \}
-.ansi-color-152    \{ color: #99cccc \}
-.ansi-color-188    \{ color: #cccccc \}
-.ansi-color-224    \{ color: #ffcccc \}
-.ansi-color-50     \{ color: #00ffcc \}
-.ansi-color-86     \{ color: #33ffcc \}
-.ansi-color-122    \{ color: #66ffcc \}
-.ansi-color-158    \{ color: #99ffcc \}
-.ansi-color-194    \{ color: #ccffcc \}
-.ansi-color-230    \{ color: #ffffcc \}
-.ansi-color-21     \{ color: #0000ff \}
-.ansi-color-57     \{ color: #3300ff \}
-.ansi-color-93     \{ color: #6600ff \}
-.ansi-color-129    \{ color: #9900ff \}
-.ansi-color-165    \{ color: #cc00ff \}
-.ansi-color-201    \{ color: #ff00ff \}
-.ansi-color-27     \{ color: #0033ff \}
-.ansi-color-63     \{ color: #3333ff \}
-.ansi-color-99     \{ color: #6633ff \}
-.ansi-color-135    \{ color: #9933ff \}
-.ansi-color-171    \{ color: #cc33ff \}
-.ansi-color-207    \{ color: #ff33ff \}
-.ansi-color-33     \{ color: #0066ff \}
-.ansi-color-69     \{ color: #3366ff \}
-.ansi-color-105    \{ color: #6666ff \}
-.ansi-color-141    \{ color: #9966ff \}
-.ansi-color-177    \{ color: #cc66ff \}
-.ansi-color-213    \{ color: #ff66ff \}
-.ansi-color-39     \{ color: #0099ff \}
-.ansi-color-75     \{ color: #3399ff \}
-.ansi-color-111    \{ color: #6699ff \}
-.ansi-color-147    \{ color: #9999ff \}
-.ansi-color-183    \{ color: #cc99ff \}
-.ansi-color-219    \{ color: #ff99ff \}
-.ansi-color-45     \{ color: #00ccff \}
-.ansi-color-81     \{ color: #33ccff \}
-.ansi-color-117    \{ color: #66ccff \}
-.ansi-color-153    \{ color: #99ccff \}
-.ansi-color-189    \{ color: #ccccff \}
-.ansi-color-225    \{ color: #ffccff \}
-.ansi-color-51     \{ color: #00ffff \}
-.ansi-color-87     \{ color: #33ffff \}
-.ansi-color-123    \{ color: #66ffff \}
-.ansi-color-159    \{ color: #99ffff \}
-.ansi-color-195    \{ color: #ccffff \}
-.ansi-color-231    \{ color: #ffffff \}
-.ansi-color-232    \{ color: #0a0a0a \}
-.ansi-color-233    \{ color: #141414 \}
-.ansi-color-234    \{ color: #1f1f1f \}
-.ansi-color-235    \{ color: #292929 \}
-.ansi-color-236    \{ color: #333333 \}
-.ansi-color-237    \{ color: #3d3d3d \}
-.ansi-color-238    \{ color: #474747 \}
-.ansi-color-239    \{ color: #525252 \}
-.ansi-color-240    \{ color: #5c5c5c \}
-.ansi-color-241    \{ color: #666666 \}
-.ansi-color-242    \{ color: #707070 \}
-.ansi-color-243    \{ color: #7a7a7a \}
-.ansi-color-244    \{ color: #858585 \}
-.ansi-color-245    \{ color: #8f8f8f \}
-.ansi-color-246    \{ color: #999999 \}
-.ansi-color-247    \{ color: #a3a3a3 \}
-.ansi-color-248    \{ color: #adadad \}
-.ansi-color-249    \{ color: #b8b8b8 \}
-.ansi-color-250    \{ color: #c2c2c2 \}
-.ansi-color-251    \{ color: #cccccc \}
-.ansi-color-252    \{ color: #d6d6d6 \}
-.ansi-color-253    \{ color: #e0e0e0 \}
-.ansi-color-254    \{ color: #ebebeb \}
-.ansi-color-255    \{ color: #f5f5f5 \}
-.ansi-bg-color-16  \{ background-color: #000000 \}
-.ansi-bg-color-52  \{ background-color: #330000 \}
-.ansi-bg-color-88  \{ background-color: #660000 \}
-.ansi-bg-color-124 \{ background-color: #990000 \}
-.ansi-bg-color-160 \{ background-color: #cc0000 \}
-.ansi-bg-color-196 \{ background-color: #ff0000 \}
-.ansi-bg-color-22  \{ background-color: #003300 \}
-.ansi-bg-color-58  \{ background-color: #333300 \}
-.ansi-bg-color-94  \{ background-color: #663300 \}
-.ansi-bg-color-130 \{ background-color: #993300 \}
-.ansi-bg-color-166 \{ background-color: #cc3300 \}
-.ansi-bg-color-202 \{ background-color: #ff3300 \}
-.ansi-bg-color-28  \{ background-color: #006600 \}
-.ansi-bg-color-64  \{ background-color: #336600 \}
-.ansi-bg-color-100 \{ background-color: #666600 \}
-.ansi-bg-color-136 \{ background-color: #996600 \}
-.ansi-bg-color-172 \{ background-color: #cc6600 \}
-.ansi-bg-color-208 \{ background-color: #ff6600 \}
-.ansi-bg-color-34  \{ background-color: #009900 \}
-.ansi-bg-color-70  \{ background-color: #339900 \}
-.ansi-bg-color-106 \{ background-color: #669900 \}
-.ansi-bg-color-142 \{ background-color: #999900 \}
-.ansi-bg-color-178 \{ background-color: #cc9900 \}
-.ansi-bg-color-214 \{ background-color: #ff9900 \}
-.ansi-bg-color-40  \{ background-color: #00cc00 \}
-.ansi-bg-color-76  \{ background-color: #33cc00 \}
-.ansi-bg-color-112 \{ background-color: #66cc00 \}
-.ansi-bg-color-148 \{ background-color: #99cc00 \}
-.ansi-bg-color-184 \{ background-color: #cccc00 \}
-.ansi-bg-color-220 \{ background-color: #ffcc00 \}
-.ansi-bg-color-46  \{ background-color: #00ff00 \}
-.ansi-bg-color-82  \{ background-color: #33ff00 \}
-.ansi-bg-color-118 \{ background-color: #66ff00 \}
-.ansi-bg-color-154 \{ background-color: #99ff00 \}
-.ansi-bg-color-190 \{ background-color: #ccff00 \}
-.ansi-bg-color-226 \{ background-color: #ffff00 \}
-.ansi-bg-color-17  \{ background-color: #000033 \}
-.ansi-bg-color-53  \{ background-color: #330033 \}
-.ansi-bg-color-89  \{ background-color: #660033 \}
-.ansi-bg-color-125 \{ background-color: #990033 \}
-.ansi-bg-color-161 \{ background-color: #cc0033 \}
-.ansi-bg-color-197 \{ background-color: #ff0033 \}
-.ansi-bg-color-23  \{ background-color: #003333 \}
-.ansi-bg-color-59  \{ background-color: #333333 \}
-.ansi-bg-color-95  \{ background-color: #663333 \}
-.ansi-bg-color-131 \{ background-color: #993333 \}
-.ansi-bg-color-167 \{ background-color: #cc3333 \}
-.ansi-bg-color-203 \{ background-color: #ff3333 \}
-.ansi-bg-color-29  \{ background-color: #006633 \}
-.ansi-bg-color-65  \{ background-color: #336633 \}
-.ansi-bg-color-101 \{ background-color: #666633 \}
-.ansi-bg-color-137 \{ background-color: #996633 \}
-.ansi-bg-color-173 \{ background-color: #cc6633 \}
-.ansi-bg-color-209 \{ background-color: #ff6633 \}
-.ansi-bg-color-35  \{ background-color: #009933 \}
-.ansi-bg-color-71  \{ background-color: #339933 \}
-.ansi-bg-color-107 \{ background-color: #669933 \}
-.ansi-bg-color-143 \{ background-color: #999933 \}
-.ansi-bg-color-179 \{ background-color: #cc9933 \}
-.ansi-bg-color-215 \{ background-color: #ff9933 \}
-.ansi-bg-color-41  \{ background-color: #00cc33 \}
-.ansi-bg-color-77  \{ background-color: #33cc33 \}
-.ansi-bg-color-113 \{ background-color: #66cc33 \}
-.ansi-bg-color-149 \{ background-color: #99cc33 \}
-.ansi-bg-color-185 \{ background-color: #cccc33 \}
-.ansi-bg-color-221 \{ background-color: #ffcc33 \}
-.ansi-bg-color-47  \{ background-color: #00ff33 \}
-.ansi-bg-color-83  \{ background-color: #33ff33 \}
-.ansi-bg-color-119 \{ background-color: #66ff33 \}
-.ansi-bg-color-155 \{ background-color: #99ff33 \}
-.ansi-bg-color-191 \{ background-color: #ccff33 \}
-.ansi-bg-color-227 \{ background-color: #ffff33 \}
-.ansi-bg-color-18  \{ background-color: #000066 \}
-.ansi-bg-color-54  \{ background-color: #330066 \}
-.ansi-bg-color-90  \{ background-color: #660066 \}
-.ansi-bg-color-126 \{ background-color: #990066 \}
-.ansi-bg-color-162 \{ background-color: #cc0066 \}
-.ansi-bg-color-198 \{ background-color: #ff0066 \}
-.ansi-bg-color-24  \{ background-color: #003366 \}
-.ansi-bg-color-60  \{ background-color: #333366 \}
-.ansi-bg-color-96  \{ background-color: #663366 \}
-.ansi-bg-color-132 \{ background-color: #993366 \}
-.ansi-bg-color-168 \{ background-color: #cc3366 \}
-.ansi-bg-color-204 \{ background-color: #ff3366 \}
-.ansi-bg-color-30  \{ background-color: #006666 \}
-.ansi-bg-color-66  \{ background-color: #336666 \}
-.ansi-bg-color-102 \{ background-color: #666666 \}
-.ansi-bg-color-138 \{ background-color: #996666 \}
-.ansi-bg-color-174 \{ background-color: #cc6666 \}
-.ansi-bg-color-210 \{ background-color: #ff6666 \}
-.ansi-bg-color-36  \{ background-color: #009966 \}
-.ansi-bg-color-72  \{ background-color: #339966 \}
-.ansi-bg-color-108 \{ background-color: #669966 \}
-.ansi-bg-color-144 \{ background-color: #999966 \}
-.ansi-bg-color-180 \{ background-color: #cc9966 \}
-.ansi-bg-color-216 \{ background-color: #ff9966 \}
-.ansi-bg-color-42  \{ background-color: #00cc66 \}
-.ansi-bg-color-78  \{ background-color: #33cc66 \}
-.ansi-bg-color-114 \{ background-color: #66cc66 \}
-.ansi-bg-color-150 \{ background-color: #99cc66 \}
-.ansi-bg-color-186 \{ background-color: #cccc66 \}
-.ansi-bg-color-222 \{ background-color: #ffcc66 \}
-.ansi-bg-color-48  \{ background-color: #00ff66 \}
-.ansi-bg-color-84  \{ background-color: #33ff66 \}
-.ansi-bg-color-120 \{ background-color: #66ff66 \}
-.ansi-bg-color-156 \{ background-color: #99ff66 \}
-.ansi-bg-color-192 \{ background-color: #ccff66 \}
-.ansi-bg-color-228 \{ background-color: #ffff66 \}
-.ansi-bg-color-19  \{ background-color: #000099 \}
-.ansi-bg-color-55  \{ background-color: #330099 \}
-.ansi-bg-color-91  \{ background-color: #660099 \}
-.ansi-bg-color-127 \{ background-color: #990099 \}
-.ansi-bg-color-163 \{ background-color: #cc0099 \}
-.ansi-bg-color-199 \{ background-color: #ff0099 \}
-.ansi-bg-color-25  \{ background-color: #003399 \}
-.ansi-bg-color-61  \{ background-color: #333399 \}
-.ansi-bg-color-97  \{ background-color: #663399 \}
-.ansi-bg-color-133 \{ background-color: #993399 \}
-.ansi-bg-color-169 \{ background-color: #cc3399 \}
-.ansi-bg-color-205 \{ background-color: #ff3399 \}
-.ansi-bg-color-31  \{ background-color: #006699 \}
-.ansi-bg-color-67  \{ background-color: #336699 \}
-.ansi-bg-color-103 \{ background-color: #666699 \}
-.ansi-bg-color-139 \{ background-color: #996699 \}
-.ansi-bg-color-175 \{ background-color: #cc6699 \}
-.ansi-bg-color-211 \{ background-color: #ff6699 \}
-.ansi-bg-color-37  \{ background-color: #009999 \}
-.ansi-bg-color-73  \{ background-color: #339999 \}
-.ansi-bg-color-109 \{ background-color: #669999 \}
-.ansi-bg-color-145 \{ background-color: #999999 \}
-.ansi-bg-color-181 \{ background-color: #cc9999 \}
-.ansi-bg-color-217 \{ background-color: #ff9999 \}
-.ansi-bg-color-43  \{ background-color: #00cc99 \}
-.ansi-bg-color-79  \{ background-color: #33cc99 \}
-.ansi-bg-color-115 \{ background-color: #66cc99 \}
-.ansi-bg-color-151 \{ background-color: #99cc99 \}
-.ansi-bg-color-187 \{ background-color: #cccc99 \}
-.ansi-bg-color-223 \{ background-color: #ffcc99 \}
-.ansi-bg-color-49  \{ background-color: #00ff99 \}
-.ansi-bg-color-85  \{ background-color: #33ff99 \}
-.ansi-bg-color-121 \{ background-color: #66ff99 \}
-.ansi-bg-color-157 \{ background-color: #99ff99 \}
-.ansi-bg-color-193 \{ background-color: #ccff99 \}
-.ansi-bg-color-229 \{ background-color: #ffff99 \}
-.ansi-bg-color-20  \{ background-color: #0000cc \}
-.ansi-bg-color-56  \{ background-color: #3300cc \}
-.ansi-bg-color-92  \{ background-color: #6600cc \}
-.ansi-bg-color-128 \{ background-color: #9900cc \}
-.ansi-bg-color-164 \{ background-color: #cc00cc \}
-.ansi-bg-color-200 \{ background-color: #ff00cc \}
-.ansi-bg-color-26  \{ background-color: #0033cc \}
-.ansi-bg-color-62  \{ background-color: #3333cc \}
-.ansi-bg-color-98  \{ background-color: #6633cc \}
-.ansi-bg-color-134 \{ background-color: #9933cc \}
-.ansi-bg-color-170 \{ background-color: #cc33cc \}
-.ansi-bg-color-206 \{ background-color: #ff33cc \}
-.ansi-bg-color-32  \{ background-color: #0066cc \}
-.ansi-bg-color-68  \{ background-color: #3366cc \}
-.ansi-bg-color-104 \{ background-color: #6666cc \}
-.ansi-bg-color-140 \{ background-color: #9966cc \}
-.ansi-bg-color-176 \{ background-color: #cc66cc \}
-.ansi-bg-color-212 \{ background-color: #ff66cc \}
-.ansi-bg-color-38  \{ background-color: #0099cc \}
-.ansi-bg-color-74  \{ background-color: #3399cc \}
-.ansi-bg-color-110 \{ background-color: #6699cc \}
-.ansi-bg-color-146 \{ background-color: #9999cc \}
-.ansi-bg-color-182 \{ background-color: #cc99cc \}
-.ansi-bg-color-218 \{ background-color: #ff99cc \}
-.ansi-bg-color-44  \{ background-color: #00cccc \}
-.ansi-bg-color-80  \{ background-color: #33cccc \}
-.ansi-bg-color-116 \{ background-color: #66cccc \}
-.ansi-bg-color-152 \{ background-color: #99cccc \}
-.ansi-bg-color-188 \{ background-color: #cccccc \}
-.ansi-bg-color-224 \{ background-color: #ffcccc \}
-.ansi-bg-color-50  \{ background-color: #00ffcc \}
-.ansi-bg-color-86  \{ background-color: #33ffcc \}
-.ansi-bg-color-122 \{ background-color: #66ffcc \}
-.ansi-bg-color-158 \{ background-color: #99ffcc \}
-.ansi-bg-color-194 \{ background-color: #ccffcc \}
-.ansi-bg-color-230 \{ background-color: #ffffcc \}
-.ansi-bg-color-21  \{ background-color: #0000ff \}
-.ansi-bg-color-57  \{ background-color: #3300ff \}
-.ansi-bg-color-93  \{ background-color: #6600ff \}
-.ansi-bg-color-129 \{ background-color: #9900ff \}
-.ansi-bg-color-165 \{ background-color: #cc00ff \}
-.ansi-bg-color-201 \{ background-color: #ff00ff \}
-.ansi-bg-color-27  \{ background-color: #0033ff \}
-.ansi-bg-color-63  \{ background-color: #3333ff \}
-.ansi-bg-color-99  \{ background-color: #6633ff \}
-.ansi-bg-color-135 \{ background-color: #9933ff \}
-.ansi-bg-color-171 \{ background-color: #cc33ff \}
-.ansi-bg-color-207 \{ background-color: #ff33ff \}
-.ansi-bg-color-33  \{ background-color: #0066ff \}
-.ansi-bg-color-69  \{ background-color: #3366ff \}
-.ansi-bg-color-105 \{ background-color: #6666ff \}
-.ansi-bg-color-141 \{ background-color: #9966ff \}
-.ansi-bg-color-177 \{ background-color: #cc66ff \}
-.ansi-bg-color-213 \{ background-color: #ff66ff \}
-.ansi-bg-color-39  \{ background-color: #0099ff \}
-.ansi-bg-color-75  \{ background-color: #3399ff \}
-.ansi-bg-color-111 \{ background-color: #6699ff \}
-.ansi-bg-color-147 \{ background-color: #9999ff \}
-.ansi-bg-color-183 \{ background-color: #cc99ff \}
-.ansi-bg-color-219 \{ background-color: #ff99ff \}
-.ansi-bg-color-45  \{ background-color: #00ccff \}
-.ansi-bg-color-81  \{ background-color: #33ccff \}
-.ansi-bg-color-117 \{ background-color: #66ccff \}
-.ansi-bg-color-153 \{ background-color: #99ccff \}
-.ansi-bg-color-189 \{ background-color: #ccccff \}
-.ansi-bg-color-225 \{ background-color: #ffccff \}
-.ansi-bg-color-51  \{ background-color: #00ffff \}
-.ansi-bg-color-87  \{ background-color: #33ffff \}
-.ansi-bg-color-123 \{ background-color: #66ffff \}
-.ansi-bg-color-159 \{ background-color: #99ffff \}
-.ansi-bg-color-195 \{ background-color: #ccffff \}
-.ansi-bg-color-231 \{ background-color: #ffffff \}
-.ansi-bg-color-232 \{ background-color: #0a0a0a \}
-.ansi-bg-color-233 \{ background-color: #141414 \}
-.ansi-bg-color-234 \{ background-color: #1f1f1f \}
-.ansi-bg-color-235 \{ background-color: #292929 \}
-.ansi-bg-color-236 \{ background-color: #333333 \}
-.ansi-bg-color-237 \{ background-color: #3d3d3d \}
-.ansi-bg-color-238 \{ background-color: #474747 \}
-.ansi-bg-color-239 \{ background-color: #525252 \}
-.ansi-bg-color-240 \{ background-color: #5c5c5c \}
-.ansi-bg-color-241 \{ background-color: #666666 \}
-.ansi-bg-color-242 \{ background-color: #707070 \}
-.ansi-bg-color-243 \{ background-color: #7a7a7a \}
-.ansi-bg-color-244 \{ background-color: #858585 \}
-.ansi-bg-color-245 \{ background-color: #8f8f8f \}
-.ansi-bg-color-246 \{ background-color: #999999 \}
-.ansi-bg-color-247 \{ background-color: #a3a3a3 \}
-.ansi-bg-color-248 \{ background-color: #adadad \}
-.ansi-bg-color-249 \{ background-color: #b8b8b8 \}
-.ansi-bg-color-250 \{ background-color: #c2c2c2 \}
-.ansi-bg-color-251 \{ background-color: #cccccc \}
-.ansi-bg-color-252 \{ background-color: #d6d6d6 \}
-.ansi-bg-color-253 \{ background-color: #e0e0e0 \}
-.ansi-bg-color-254 \{ background-color: #ebebeb \}
-.ansi-bg-color-255 \{ background-color: #f5f5f5 \}
-div.asciicast      \{ color: #172431, font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace, line-height: 1.300000 \}
-</style>
-}}
+This manual page collects the most common pak use cases.
 }
 \section{Package installation}{
 \subsection{Install a package from CRAN or Bioconductor}{
@@ -543,23 +20,27 @@ div.asciicast      \{ color: #172431, font-family: 'Fira Code',Monaco,Consolas,M
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tidyverse/tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> → Will <span class="ansi-italic">update</span> 1 package.                                                                            
-#> → The package (0 B) is cached.                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span> 3.1.8 → 3.1.8<span class="ansi-bold">.9000</span> 👷🏿‍♂️🔧 (GitHub: c538304)                                             
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed, 1 pkg is cached                                                          
-#> <span class="ansi-color-6">ℹ</span> Packaging <span class="ansi-color-4">tibble</span> 3.1.8.9000                                                                       
-#> <span class="ansi-color-2">✔</span> Packaged <span class="ansi-color-4">tibble</span> 3.1.8.9000 <span class="ansi-color-247">(1.1s)</span>                                                                 
-#> <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tibble</span> 3.1.8.9000                                                                        
-#> <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tibble</span> 3.1.8.9000 <span class="ansi-color-247">(2.9s)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.8.9000 (github::tidyverse/tibble@c538304) <span class="ansi-color-247">(20ms)</span>                             
-#> <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: kept 10, upd 1 <span class="ansi-color-249">[6.4s]</span>                                                            
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
+#> → All 2 packages (0 B) are cached.                                              
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9001</span> 👷🏾🔧 (GitHub: 44d905f)                               
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">vctrs</span>  0.4.1 → 0.4.1<span style="font-weight: bold;">.9000</span> 👷🏻‍♂️🔧 (GitHub: 5191dfc)                            
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached                                    
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 (source) (2.07 MB)                                       
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8.9001 (source) (1.34 MB)                                      
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.4.1.9000                                                    
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 <span style="color: #a3a3a3;">(1.3s)</span>                                              
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.4.1.9000                                                     
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 <span style="color: #a3a3a3;">(9.7s)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 (github::r-lib/vctrs@5191dfc) <span style="color: #a3a3a3;">(29ms)</span>               
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9001                                                   
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9001 <span style="color: #a3a3a3;">(437ms)</span>                                            
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9001                                                    
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9001 <span style="color: #a3a3a3;">(2.5s)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9001 (github::tidyverse/tibble@44d905f) <span style="color: #a3a3a3;">(42ms)</span>         
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 8, upd 2, dld 2 (NA B) <span style="color: #b8b8b8;">[17.7s]</span>                          
 </pre></div>
-</details>
 }}
 
 }
@@ -568,24 +49,20 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> → Will <span class="ansi-italic">install</span> 1 package.                                                                           
-#> → Will <span class="ansi-italic">update</span> 1 package.                                                                            
-#> → All 2 packages (38.65 kB) are cached.                                                             
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">ellipsis</span>              0.3.2                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span>   3.1.8.9000 → 3.1.<span class="ansi-bold">7</span> 👷🏿‍♂️🔧                                                             
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed, 2 pkgs (38.65 kB) are cached                                             
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">ellipsis</span> 0.3.2  <span class="ansi-color-247">(36ms)</span>                                                                  
-#> <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tibble</span> 3.1.7                                                                             
-#> <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tibble</span> 3.1.7 <span class="ansi-color-247">(2.4s)</span>                                                                         
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.7  <span class="ansi-color-247">(24ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> 1 pkg + 11 deps: kept 10, upd 1, added 1 <span class="ansi-color-249">[3.5s]</span>                                                   
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">install</span> 1 package.                                                       
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → All 2 packages (38.65 kB) are cached.                                         
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">ellipsis</span>              0.3.2                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.8.9001 → 3.1.<span style="font-weight: bold;">7</span> 👷🏻‍♀️🔧                                            
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (38.65 kB) are cached                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ellipsis</span> 0.3.2  <span style="color: #a3a3a3;">(13ms)</span>                                              
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.7                                                         
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(2.5s)</span>                                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(24ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 11 deps: kept 9, upd 1, added 1 <span style="color: #b8b8b8;">[3.4s]</span>                                
 </pre></div>
-</details>
 }}
 
 }
@@ -596,19 +73,15 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> → Will <span class="ansi-italic">update</span> 1 package.                                                                            
-#> → The package (724.32 kB) is cached.                                                                
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span> 3.1.7 → 3.1.<span class="ansi-bold">8</span>                                                                              
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                                              
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.8  <span class="ansi-color-247">(72ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: kept 10, upd 1 <span class="ansi-color-249">[600ms]</span>                                                           
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → The package (724.32 kB) is cached.                                            
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.7 → 3.1.<span style="font-weight: bold;">8</span>                                                          
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(29ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 1 <span style="color: #b8b8b8;">[572ms]</span>                                        
 </pre></div>
-</details>
 }}
 
 }
@@ -617,15 +90,17 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble", upgrade = TRUE)
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed                                                                           
-#> <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: kept 11 <span class="ansi-color-249">[505ms]</span>                                                                  
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → The package (495.82 kB) is cached.                                            
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">cli</span> 3.3.0 → 3.<span style="font-weight: bold;">4.0</span> 👷🏼🔧                                                         
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (495.82 kB) is cached                          
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.0                                                            
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.0 <span style="color: #a3a3a3;">(4.6s)</span>                                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.0  <span style="color: #a3a3a3;">(35ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, upd 1 <span style="color: #b8b8b8;">[5.2s]</span>                                        
 </pre></div>
-</details>
 }}
 
 }
@@ -636,34 +111,29 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 11 × 32</span>                                                                             
-#>    ref       type  direct direc…¹ status package version license needs…² prior…³                    
-#>    <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>     <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;lgl&gt;</span>  <span class="ansi-italic ansi-color-246">&lt;lgl&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>  <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;lgl&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250"> 1</span> cli       stan… FALSE  FALSE   OK     cli     3.3.0   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 2</span> fansi     stan… FALSE  FALSE   OK     fansi   1.0.3   GPL-2 … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 3</span> glue      stan… FALSE  FALSE   OK     glue    1.6.2   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 4</span> lifecycle stan… FALSE  FALSE   OK     lifecy… 1.0.1   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 5</span> magrittr  stan… FALSE  FALSE   OK     magrit… 2.0.3   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 6</span> pillar    stan… FALSE  FALSE   OK     pillar  1.8.0   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 7</span> pkgconfig stan… FALSE  FALSE   OK     pkgcon… 2.0.3   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 8</span> rlang     stan… FALSE  FALSE   OK     rlang   1.0.4   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 9</span> tibble    stan… TRUE   TRUE    OK     tibble  3.1.8   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">10</span> utf8      stan… FALSE  FALSE   OK     utf8    1.2.2   Apache… FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">11</span> vctrs     stan… FALSE  FALSE   OK     vctrs   0.4.1   MIT + … FALSE   <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-246"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>                             
-#> <span class="ansi-color-246">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span>                     
-#> <span class="ansi-color-246">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>                         
-#> <span class="ansi-color-246">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>                                 
-#> <span class="ansi-color-246">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>                         
-#> <span class="ansi-color-246">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg,</span>                                  
-#> <span class="ansi-color-246">#   ²​needscompilation, ³​priority</span>                                                                  
-#> <span class="ansi-color-246"># ℹ Use `colnames()` to see all variable names</span>                                                      
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 11 × 32</span>                                                         
+#>    ref       type  direct direc…¹ status package version license needs…² prior…³
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> fansi     stan… FALSE  FALSE   OK     fansi   1.0.3   GPL-2 … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 2</span> glue      stan… FALSE  FALSE   OK     glue    1.6.2   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 3</span> lifecycle stan… FALSE  FALSE   OK     lifecy… 1.0.1   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 4</span> magrittr  stan… FALSE  FALSE   OK     magrit… 2.0.3   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 5</span> pillar    stan… FALSE  FALSE   OK     pillar  1.8.1   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 6</span> pkgconfig stan… FALSE  FALSE   OK     pkgcon… 2.0.3   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 7</span> rlang     stan… FALSE  FALSE   OK     rlang   1.0.5   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 8</span> tibble    stan… TRUE   TRUE    OK     tibble  3.1.8   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 9</span> utf8      stan… FALSE  FALSE   OK     utf8    1.2.2   Apache… FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">10</span> vctrs     stan… FALSE  FALSE   OK     vctrs   0.4.1   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">11</span> cli       stan… FALSE  FALSE   OK     cli     3.4.0   MIT + … TRUE    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>         
+#> <span style="color: #999999;">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>     
+#> <span style="color: #999999;">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>             
+#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>     
+#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg,</span>              
+#> <span style="color: #999999;">#   ²​needscompilation, ³​priority</span>                                              
 </pre></div>
-</details>
 }}
 
 }
@@ -672,35 +142,30 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_tree("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-bold ansi-italic ansi-color-6">tibble </span><span class="ansi-bold ansi-italic ansi-color-8">3.1.8</span> <span class="ansi-color-2">✨</span>                                                                                      
-#> ├─fansi <span class="ansi-color-8">1.0.3</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> ├─lifecycle <span class="ansi-color-8">1.0.1</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> │ ├─glue <span class="ansi-color-8">1.6.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─rlang <span class="ansi-color-8">1.0.4</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> ├─magrittr <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                  
-#> ├─pillar <span class="ansi-color-8">1.8.0</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ ├─cli <span class="ansi-color-8">3.3.0</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> │ │ └─glue                                                                                          
-#> │ ├─fansi                                                                                           
-#> │ ├─glue                                                                                            
-#> │ ├─lifecycle                                                                                       
-#> │ ├─rlang                                                                                           
-#> │ ├─utf8 <span class="ansi-color-8">1.2.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─vctrs <span class="ansi-color-8">0.4.1</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> │   ├─cli                                                                                           
-#> │   ├─glue                                                                                          
-#> │   └─rlang                                                                                         
-#> ├─pkgconfig <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> ├─rlang                                                                                             
-#> └─vctrs                                                                                             
-#>                                                                                                     
-#> Key:  <span class="ansi-color-2">✨</span> new                                                                                         
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tibble </span><span style="font-weight: bold;font-style: italic;color: #002B36;">3.1.8</span> <span style="color: #859900;">✨</span>                                                                  
+#> ├─fansi <span style="color: #002B36;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
+#> ├─lifecycle <span style="color: #002B36;">1.0.1</span> <span style="color: #859900;">✨</span>                                                             
+#> │ ├─glue <span style="color: #002B36;">1.6.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─rlang <span style="color: #002B36;">1.0.5</span> <span style="color: #859900;">✨</span>                                                               
+#> ├─magrittr <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                              
+#> ├─pillar <span style="color: #002B36;">1.8.1</span> <span style="color: #859900;">✨</span>                                                                
+#> │ ├─cli <span style="color: #002B36;">3.4.0</span> <span style="color: #859900;">✨👷‍♀️🔧   </span>                                                         
+#> │ ├─fansi                                                                       
+#> │ ├─glue                                                                        
+#> │ ├─lifecycle                                                                   
+#> │ ├─rlang                                                                       
+#> │ ├─utf8 <span style="color: #002B36;">1.2.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─vctrs <span style="color: #002B36;">0.4.1</span> <span style="color: #859900;">✨</span>                                                               
+#> │   ├─cli                                                                       
+#> │   ├─glue                                                                      
+#> │   └─rlang                                                                     
+#> ├─pkgconfig <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                             
+#> ├─rlang                                                                         
+#> └─vctrs                                                                         
+#>                                                                                 
+#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷‍♀️ bu</span>ild | 🔧 c<span style="color: #859900;">o</span>mpile                                            
 </pre></div>
-</details>
 }}
 
 }
@@ -709,35 +174,30 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_tree("tidyverse/tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-bold ansi-italic ansi-color-6">tidyverse/tibble </span><span class="ansi-bold ansi-italic ansi-color-8">3.1.8.9000</span> <span class="ansi-color-2">✨👷🏽‍♂️🔧</span>                                                              
-#> ├─fansi <span class="ansi-color-8">1.0.3</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> ├─lifecycle <span class="ansi-color-8">1.0.1</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> │ ├─glue <span class="ansi-color-8">1.6.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─rlang <span class="ansi-color-8">1.0.4</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> ├─magrittr <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                  
-#> ├─pillar <span class="ansi-color-8">1.8.0</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ ├─cli <span class="ansi-color-8">3.3.0</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> │ │ └─glue                                                                                          
-#> │ ├─fansi                                                                                           
-#> │ ├─glue                                                                                            
-#> │ ├─lifecycle                                                                                       
-#> │ ├─rlang                                                                                           
-#> │ ├─utf8 <span class="ansi-color-8">1.2.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─vctrs <span class="ansi-color-8">0.4.1</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> │   ├─cli                                                                                           
-#> │   ├─glue                                                                                          
-#> │   └─rlang                                                                                         
-#> ├─pkgconfig <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> ├─rlang                                                                                             
-#> └─vctrs                                                                                             
-#>                                                                                                     
-#> Key:  <span class="ansi-color-2">✨</span> new | <span class="ansi-color-2">👷🏽‍♂️</span> build | <span class="ansi-color-2">🔧</span> compile                                                            
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tidyverse/tibble </span><span style="font-weight: bold;font-style: italic;color: #002B36;">3.1.8.9001</span> <span style="color: #859900;">✨👷🏼‍♂️🔧    </span>                                         
+#> ├─fansi <span style="color: #002B36;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
+#> ├─lifecycle <span style="color: #002B36;">1.0.1</span> <span style="color: #859900;">✨</span>                                                             
+#> │ ├─glue <span style="color: #002B36;">1.6.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─rlang <span style="color: #002B36;">1.0.5</span> <span style="color: #859900;">✨</span>                                                               
+#> ├─magrittr <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                              
+#> ├─pillar <span style="color: #002B36;">1.8.1</span> <span style="color: #859900;">✨</span>                                                                
+#> │ ├─cli <span style="color: #002B36;">3.4.0</span> <span style="color: #859900;">✨👷🏼‍♂️🔧    </span>                                                       
+#> │ ├─fansi                                                                       
+#> │ ├─glue                                                                        
+#> │ ├─lifecycle                                                                   
+#> │ ├─rlang                                                                       
+#> │ ├─utf8 <span style="color: #002B36;">1.2.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─r-lib/vctrs <span style="color: #002B36;">0.4.1.9000</span> <span style="color: #859900;">✨👷🏼‍♂️🔧    </span>                                          
+#> │   ├─cli                                                                       
+#> │   ├─glue                                                                      
+#> │   └─rlang                                                                     
+#> ├─pkgconfig <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                             
+#> ├─rlang                                                                         
+#> └─r-lib/vctrs                                                                   
+#>                                                                                 
+#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏼‍♂️ bui</span>ld | 🔧 co<span style="color: #859900;">m</span>pile                                           
 </pre></div>
-</details>
 }}
 
 }
@@ -746,35 +206,30 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_deps_tree("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-bold ansi-italic ansi-color-6">local::tibble </span><span class="ansi-bold ansi-italic ansi-color-8">3.1.8</span> <span class="ansi-color-2">✨👷🏻🔧</span>                                                                         
-#> ├─fansi <span class="ansi-color-8">1.0.3</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> ├─lifecycle <span class="ansi-color-8">1.0.1</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> │ ├─glue <span class="ansi-color-8">1.6.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─rlang <span class="ansi-color-8">1.0.4</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> ├─magrittr <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                  
-#> ├─pillar <span class="ansi-color-8">1.8.0</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ ├─cli <span class="ansi-color-8">3.3.0</span> <span class="ansi-color-2">✨</span>                                                                                     
-#> │ │ └─glue                                                                                          
-#> │ ├─fansi                                                                                           
-#> │ ├─glue                                                                                            
-#> │ ├─lifecycle                                                                                       
-#> │ ├─rlang                                                                                           
-#> │ ├─utf8 <span class="ansi-color-8">1.2.2</span> <span class="ansi-color-2">✨</span>                                                                                    
-#> │ └─vctrs <span class="ansi-color-8">0.4.1</span> <span class="ansi-color-2">✨</span>                                                                                   
-#> │   ├─cli                                                                                           
-#> │   ├─glue                                                                                          
-#> │   └─rlang                                                                                         
-#> ├─pkgconfig <span class="ansi-color-8">2.0.3</span> <span class="ansi-color-2">✨</span>                                                                                 
-#> ├─rlang                                                                                             
-#> └─vctrs                                                                                             
-#>                                                                                                     
-#> Key:  <span class="ansi-color-2">✨</span> new | <span class="ansi-color-2">👷🏻</span> build | <span class="ansi-color-2">🔧</span> compile                                                               
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">local::tibble </span><span style="font-weight: bold;font-style: italic;color: #002B36;">3.1.8</span> <span style="color: #859900;">✨👷🏻🔧 </span>                                                       
+#> ├─fansi <span style="color: #002B36;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
+#> ├─lifecycle <span style="color: #002B36;">1.0.1</span> <span style="color: #859900;">✨</span>                                                             
+#> │ ├─glue <span style="color: #002B36;">1.6.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─rlang <span style="color: #002B36;">1.0.5</span> <span style="color: #859900;">✨</span>                                                               
+#> ├─magrittr <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                              
+#> ├─pillar <span style="color: #002B36;">1.8.1</span> <span style="color: #859900;">✨</span>                                                                
+#> │ ├─cli <span style="color: #002B36;">3.4.0</span> <span style="color: #859900;">✨👷🏻🔧 </span>                                                             
+#> │ ├─fansi                                                                       
+#> │ ├─glue                                                                        
+#> │ ├─lifecycle                                                                   
+#> │ ├─rlang                                                                       
+#> │ ├─utf8 <span style="color: #002B36;">1.2.2</span> <span style="color: #859900;">✨</span>                                                                
+#> │ └─vctrs <span style="color: #002B36;">0.4.1</span> <span style="color: #859900;">✨</span>                                                               
+#> │   ├─cli                                                                       
+#> │   ├─glue                                                                      
+#> │   └─rlang                                                                     
+#> ├─pkgconfig <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">✨</span>                                                             
+#> ├─rlang                                                                         
+#> └─vctrs                                                                         
+#>                                                                                 
+#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏻 </span>build | 🔧<span style="color: #859900;"> </span>compile                                              
 </pre></div>
-</details>
 }}
 
 
@@ -785,18 +240,14 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_explain("tibble", "rlang")
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> tibble -&gt; lifecycle -&gt; rlang                                                                        
-#> tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                                                              
-#> tibble -&gt; pillar -&gt; rlang                                                                           
-#> tibble -&gt; pillar -&gt; vctrs -&gt; rlang                                                                  
-#> tibble -&gt; rlang                                                                                     
-#> tibble -&gt; vctrs -&gt; rlang                                                                            
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> tibble -&gt; lifecycle -&gt; rlang                                                    
+#> tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                                          
+#> tibble -&gt; pillar -&gt; rlang                                                       
+#> tibble -&gt; pillar -&gt; vctrs -&gt; rlang                                              
+#> tibble -&gt; rlang                                                                 
+#> tibble -&gt; vctrs -&gt; rlang                                                        
 </pre></div>
-</details>
 }}
 
 }
@@ -807,17 +258,15 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_install_deps()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-2">✔</span> Loading metadata database ... done                                                                
-#>                                                                                                     
-#> → The package (0 B) is cached.                                                                      
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed                                                                           
-#> <span class="ansi-color-2">✔</span> 10 deps: kept 10 <span class="ansi-color-249">[3s]</span>                                                                             
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Updated metadata database: 1.42 MB in 5 files.                                
+#> <span style="color: #2AA198;">ℹ</span> R 4.2 aarch64-apple-darwin20 packages are missing from Bioconductor           
+#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                           
+#>                                                                                 
+#> → The package (0 B) is cached.                                                  
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                                       
+#> <span style="color: #859900;">✔</span> 10 deps: kept 10 <span style="color: #b8b8b8;">[7.4s]</span>                                                       
 </pre></div>
-</details>
 }}
 
 }
@@ -826,24 +275,20 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_install()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> → Will <span class="ansi-italic">update</span> 1 package.                                                                            
-#> → The package (0 B) is cached.                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tibble</span> 3.1.8 → 3.1.8 👷🏻‍♀️🔧                                                                    
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed, 1 pkg is cached                                                          
-#> <span class="ansi-color-2">✔</span> Got <span class="ansi-color-4">tibble</span> 3.1.8 (source) (96 B)                                                                  
-#> <span class="ansi-color-6">ℹ</span> Packaging <span class="ansi-color-4">tibble</span> 3.1.8                                                                            
-#> <span class="ansi-color-2">✔</span> Packaged <span class="ansi-color-4">tibble</span> 3.1.8 <span class="ansi-color-247">(664ms)</span>                                                                     
-#> <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tibble</span> 3.1.8                                                                             
-#> <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tibble</span> 3.1.8 <span class="ansi-color-247">(2s)</span>                                                                           
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tibble</span> 3.1.8 (local) <span class="ansi-color-247">(27ms)</span>                                                             
-#> <span class="ansi-color-2">✔</span> 1 pkg + 10 deps: kept 10, upd 1, dld 1 (NA B) <span class="ansi-color-249">[3.6s]</span>                                              
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → The package (0 B) is cached.                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8 👷🏻‍♀️🔧                                                   
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8 (source) (96 B)                                              
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8                                                        
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(639ms)</span>                                                 
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8                                                         
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(2.2s)</span>                                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8 (local) <span style="color: #a3a3a3;">(28ms)</span>                                         
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, upd 1, dld 1 (NA B) <span style="color: #b8b8b8;">[3.9s]</span>                          
 </pre></div>
-</details>
 }}
 
 }
@@ -852,198 +297,199 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_install_dev_deps()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#>                                                                                                     
-#> → Will <span class="ansi-italic">install</span> 85 packages.                                                                         
-#> → Will <span class="ansi-italic">update</span> 2 packages.                                                                           
-#> → All 88 packages (97.25 MB) are cached.                                                            
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">askpass</span>                1.1                                                                        
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">base64enc</span>              0.1-3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">bench</span>                  1.1.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">bit</span>                    4.0.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">bit64</span>                  4.0.5                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">blob</span>                   1.2.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">brio</span>                   1.1.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">bslib</span>                  0.4.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">cachem</span>                 1.0.6                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">callr</span>                  3.7.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">clipr</span>                  0.8.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">colorspace</span>             2.0-3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">covr</span>                   3.5.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">crayon</span>                 1.5.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">curl</span>                   4.3.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">desc</span>                   1.4.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">DiagrammeR</span>             1.0.9                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">diffobj</span>                0.3.5                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">digest</span>                 0.6.29                                                                     
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">downloader</span>             0.4                                                                        
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">dplyr</span>                  1.0.9                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">evaluate</span>               0.16                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">farver</span>                 2.1.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">fastmap</span>                1.1.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">formattable</span>            0.2.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">fs</span>                     1.5.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">generics</span>               0.1.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">ggplot2</span>                3.3.6                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">gridExtra</span>              2.3                                                                        
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">gtable</span>                 0.3.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">highr</span>                  0.9                                                                        
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">hms</span>                    1.1.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">htmltools</span>              0.5.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">htmlwidgets</span>            1.5.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">httr</span>                   1.4.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">igraph</span>                 1.3.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">influenceR</span>             0.1.0.1                                                                    
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">isoband</span>                0.2.5                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">jquerylib</span>              0.1.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">jsonlite</span>               1.8.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">knitr</span>                  1.39                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">labeling</span>               0.4.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">lazyeval</span>               0.2.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">lubridate</span>              1.8.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">MASS</span>         7.3-57  → 7.3-<span class="ansi-bold">58.1</span>                                                                   
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">memoise</span>                2.0.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">mime</span>                   0.12                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">mockr</span>                  0.2.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">munsell</span>                0.5.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">nlme</span>         3.1-157 → 3.1-<span class="ansi-bold">159</span>                                                                    
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">nycflights13</span>           1.0.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">openssl</span>                2.0.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">pkgbuild</span>               1.3.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">pkgload</span>                1.3.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">praise</span>                 1.0.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">prettyunits</span>            1.1.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">processx</span>               3.7.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">profmem</span>                0.6.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">ps</span>                     1.7.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">purrr</span>                  0.3.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">R6</span>                     2.5.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rappdirs</span>               0.3.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">RColorBrewer</span>           1.1-3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">readr</span>                  2.1.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rematch2</span>               2.1.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rex</span>                    1.2.1                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rmarkdown</span>              2.15     👷🏿                                                              
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rprojroot</span>              2.0.3                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">rstudioapi</span>             0.13                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">sass</span>                   0.4.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">scales</span>                 1.2.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">stringi</span>                1.7.8                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">stringr</span>                1.4.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">sys</span>                    3.4                                                                        
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">testthat</span>               3.1.4                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tidyr</span>                  1.2.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tidyselect</span>             1.1.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tinytex</span>                0.41     👷🏽‍♂️                                                           
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">tzdb</span>                   0.3.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">viridis</span>                0.6.2                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">viridisLite</span>            0.4.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">visNetwork</span>             2.1.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">vroom</span>                  1.5.7                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">waldo</span>                  0.4.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">withr</span>                  2.5.0                                                                      
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">xfun</span>                   0.32                                                                       
-#> <span class="ansi-color-8">+ </span><span class="ansi-color-4">yaml</span>                   2.3.5                                                                      
-#> <span class="ansi-color-6">ℹ</span> No downloads are needed, 87 pkgs (97.25 MB) are cached                                            
-#> <span class="ansi-color-6">ℹ</span> Packaging <span class="ansi-color-4">tibble</span> 3.1.8                                                                            
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">DiagrammeR</span> 1.0.9  <span class="ansi-color-247">(58ms)</span>                                                                
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">MASS</span> 7.3-58.1  <span class="ansi-color-247">(67ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">R6</span> 2.5.1  <span class="ansi-color-247">(101ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">RColorBrewer</span> 1.1-3  <span class="ansi-color-247">(106ms)</span>                                                             
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">askpass</span> 1.1  <span class="ansi-color-247">(113ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">base64enc</span> 0.1-3  <span class="ansi-color-247">(118ms)</span>                                                                
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">bench</span> 1.1.2  <span class="ansi-color-247">(136ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">bit64</span> 4.0.5  <span class="ansi-color-247">(39ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">bit</span> 4.0.4  <span class="ansi-color-247">(41ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">blob</span> 1.2.3  <span class="ansi-color-247">(29ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">brio</span> 1.1.3  <span class="ansi-color-247">(19ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">cachem</span> 1.0.6  <span class="ansi-color-247">(14ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">callr</span> 3.7.1  <span class="ansi-color-247">(19ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">clipr</span> 0.8.0  <span class="ansi-color-247">(15ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">bslib</span> 0.4.0  <span class="ansi-color-247">(147ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">covr</span> 3.5.1  <span class="ansi-color-247">(24ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Packaged <span class="ansi-color-4">tibble</span> 3.1.8 <span class="ansi-color-247">(492ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">colorspace</span> 2.0-3  <span class="ansi-color-247">(87ms)</span>                                                                
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">crayon</span> 1.5.1  <span class="ansi-color-247">(66ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">curl</span> 4.3.2  <span class="ansi-color-247">(60ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">desc</span> 1.4.1  <span class="ansi-color-247">(36ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">diffobj</span> 0.3.5  <span class="ansi-color-247">(37ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">digest</span> 0.6.29  <span class="ansi-color-247">(54ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">downloader</span> 0.4  <span class="ansi-color-247">(24ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">dplyr</span> 1.0.9  <span class="ansi-color-247">(23ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">evaluate</span> 0.16  <span class="ansi-color-247">(11ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">farver</span> 2.1.1  <span class="ansi-color-247">(22ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">fastmap</span> 1.1.0  <span class="ansi-color-247">(11ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">formattable</span> 0.2.1  <span class="ansi-color-247">(13ms)</span>                                                               
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">fs</span> 1.5.2  <span class="ansi-color-247">(17ms)</span>                                                                        
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">generics</span> 0.1.3  <span class="ansi-color-247">(10ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">ggplot2</span> 3.3.6  <span class="ansi-color-247">(32ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">gridExtra</span> 2.3  <span class="ansi-color-247">(17ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">gtable</span> 0.3.0  <span class="ansi-color-247">(14ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">highr</span> 0.9  <span class="ansi-color-247">(11ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">hms</span> 1.1.1  <span class="ansi-color-247">(11ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">htmltools</span> 0.5.3  <span class="ansi-color-247">(14ms)</span>                                                                 
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">htmlwidgets</span> 1.5.4  <span class="ansi-color-247">(18ms)</span>                                                               
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">httr</span> 1.4.3  <span class="ansi-color-247">(14ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">igraph</span> 1.3.4  <span class="ansi-color-247">(64ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">influenceR</span> 0.1.0.1  <span class="ansi-color-247">(11ms)</span>                                                              
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">isoband</span> 0.2.5  <span class="ansi-color-247">(31ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">jquerylib</span> 0.1.4  <span class="ansi-color-247">(15ms)</span>                                                                 
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">jsonlite</span> 1.8.0  <span class="ansi-color-247">(20ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">knitr</span> 1.39  <span class="ansi-color-247">(41ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">labeling</span> 0.4.2  <span class="ansi-color-247">(10ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">lazyeval</span> 0.2.2  <span class="ansi-color-247">(13ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">lubridate</span> 1.8.0  <span class="ansi-color-247">(22ms)</span>                                                                 
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">memoise</span> 2.0.1  <span class="ansi-color-247">(10ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">mime</span> 0.12  <span class="ansi-color-247">(10ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">mockr</span> 0.2.0  <span class="ansi-color-247">(11ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">munsell</span> 0.5.0  <span class="ansi-color-247">(29ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">nlme</span> 3.1-159  <span class="ansi-color-247">(24ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">nycflights13</span> 1.0.2  <span class="ansi-color-247">(17ms)</span>                                                              
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">openssl</span> 2.0.2  <span class="ansi-color-247">(35ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">pkgbuild</span> 1.3.1  <span class="ansi-color-247">(10ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">pkgload</span> 1.3.0  <span class="ansi-color-247">(10ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">praise</span> 1.0.0  <span class="ansi-color-247">(10ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">prettyunits</span> 1.1.1  <span class="ansi-color-247">(10ms)</span>                                                               
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">processx</span> 3.7.0  <span class="ansi-color-247">(13ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">profmem</span> 0.6.0  <span class="ansi-color-247">(13ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">ps</span> 1.7.1  <span class="ansi-color-247">(13ms)</span>                                                                        
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">purrr</span> 0.3.4  <span class="ansi-color-247">(15ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rappdirs</span> 0.3.3  <span class="ansi-color-247">(12ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">readr</span> 2.1.2  <span class="ansi-color-247">(34ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rematch2</span> 2.1.2  <span class="ansi-color-247">(10ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rex</span> 1.2.1  <span class="ansi-color-247">(13ms)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rprojroot</span> 2.0.3  <span class="ansi-color-247">(11ms)</span>                                                                 
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rstudioapi</span> 0.13  <span class="ansi-color-247">(15ms)</span>                                                                 
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">sass</span> 0.4.2  <span class="ansi-color-247">(30ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">scales</span> 1.2.0  <span class="ansi-color-247">(15ms)</span>                                                                    
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">stringi</span> 1.7.8  <span class="ansi-color-247">(129ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">stringr</span> 1.4.0  <span class="ansi-color-247">(38ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">sys</span> 3.4  <span class="ansi-color-247">(26ms)</span>                                                                         
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">testthat</span> 3.1.4  <span class="ansi-color-247">(33ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tidyr</span> 1.2.0  <span class="ansi-color-247">(21ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tidyselect</span> 1.1.2  <span class="ansi-color-247">(12ms)</span>                                                                
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tzdb</span> 0.3.0  <span class="ansi-color-247">(27ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">viridisLite</span> 0.4.0  <span class="ansi-color-247">(12ms)</span>                                                               
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">viridis</span> 0.6.2  <span class="ansi-color-247">(22ms)</span>                                                                   
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">visNetwork</span> 2.1.0  <span class="ansi-color-247">(75ms)</span>                                                                
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">vroom</span> 1.5.7  <span class="ansi-color-247">(47ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">waldo</span> 0.4.0  <span class="ansi-color-247">(10ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">withr</span> 2.5.0  <span class="ansi-color-247">(13ms)</span>                                                                     
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">xfun</span> 0.32  <span class="ansi-color-247">(13ms)</span>                                                                       
-#> <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">tinytex</span> 0.41                                                                             
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">yaml</span> 2.3.5  <span class="ansi-color-247">(14ms)</span>                                                                      
-#> <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">tinytex</span> 0.41 <span class="ansi-color-247">(994ms)</span>                                                                        
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">tinytex</span> 0.41  <span class="ansi-color-247">(11ms)</span>                                                                    
-#> <span class="ansi-color-6">ℹ</span> Building <span class="ansi-color-4">rmarkdown</span> 2.15                                                                           
-#> <span class="ansi-color-2">✔</span> Built <span class="ansi-color-4">rmarkdown</span> 2.15 <span class="ansi-color-247">(3.7s)</span>                                                                       
-#> <span class="ansi-color-2">✔</span> Installed <span class="ansi-color-4">rmarkdown</span> 2.15  <span class="ansi-color-247">(65ms)</span>                                                                  
-#> <span class="ansi-color-2">✔</span> 102 deps: kept 15, upd 2, added 85 <span class="ansi-color-249">[9.4s]</span>                                                         
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">install</span> 86 packages.                                                     
+#> → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
+#> → Will <span style="font-style: italic;">download</span> 1 CRAN package (1.33 MB), cached: 88 (96.03 MB).                
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">askpass</span>                1.1                                                    
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">base64enc</span>              0.1-3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">bench</span>                  1.1.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">bit</span>                    4.0.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">bit64</span>                  4.0.5                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">blob</span>                   1.2.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">brio</span>                   1.1.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">bslib</span>                  0.4.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">cachem</span>                 1.0.6                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">callr</span>                  3.7.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">clipr</span>                  0.8.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">colorspace</span>             2.0-3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">covr</span>                   3.6.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">cpp11</span>                  0.4.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">crayon</span>                 1.5.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">curl</span>                   4.3.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">desc</span>                   1.4.2    👷🏻                                            
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">DiagrammeR</span>             1.0.9                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">diffobj</span>                0.3.5                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">digest</span>                 0.6.29                                                 
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">downloader</span>             0.4                                                    
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">dplyr</span>                  1.0.10    ⬇ <span style="color: #002B36;">(1.33 MB)</span>                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">evaluate</span>               0.16                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">farver</span>                 2.1.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">fastmap</span>                1.1.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">formattable</span>            0.2.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">fs</span>                     1.5.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">generics</span>               0.1.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">ggplot2</span>                3.3.6                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">gridExtra</span>              2.3                                                    
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">gtable</span>                 0.3.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">highr</span>                  0.9                                                    
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">hms</span>                    1.1.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">htmltools</span>              0.5.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">htmlwidgets</span>            1.5.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">httr</span>                   1.4.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">igraph</span>                 1.3.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">influenceR</span>             0.1.0.1                                                
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">isoband</span>                0.2.5                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">jquerylib</span>              0.1.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">jsonlite</span>               1.8.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">knitr</span>                  1.40                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">labeling</span>               0.4.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">lazyeval</span>               0.2.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">lubridate</span>              1.8.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">MASS</span>         7.3-57  → 7.3-<span style="font-weight: bold;">58.1</span>                                               
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">memoise</span>                2.0.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">mime</span>                   0.12                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">mockr</span>                  0.2.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">munsell</span>                0.5.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">nlme</span>         3.1-157 → 3.1-<span style="font-weight: bold;">159</span>                                                
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">nycflights13</span>           1.0.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">openssl</span>                2.0.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">pkgbuild</span>               1.3.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">pkgload</span>                1.3.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">praise</span>                 1.0.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">prettyunits</span>            1.1.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">processx</span>               3.7.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">profmem</span>                0.6.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">ps</span>                     1.7.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">purrr</span>                  0.3.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">R6</span>                     2.5.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rappdirs</span>               0.3.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">RColorBrewer</span>           1.1-3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">readr</span>                  2.1.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rematch2</span>               2.1.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rex</span>                    1.2.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rmarkdown</span>              2.16                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rprojroot</span>              2.0.3                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rstudioapi</span>             0.14                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">sass</span>                   0.4.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">scales</span>                 1.2.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">stringi</span>                1.7.8                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">stringr</span>                1.4.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">sys</span>                    3.4                                                    
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">testthat</span>               3.1.4                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tidyr</span>                  1.2.1    👷🏿🔧                                           
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tidyselect</span>             1.1.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tinytex</span>                0.41                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tzdb</span>                   0.3.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">viridis</span>                0.6.2                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">viridisLite</span>            0.4.1                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">visNetwork</span>             2.1.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">vroom</span>                  1.5.7                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">waldo</span>                  0.4.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">withr</span>                  2.5.0                                                  
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">xfun</span>                   0.32                                                   
+#> <span style="color: #002B36;">+ </span><span style="color: #268BD2;">yaml</span>                   2.3.5                                                  
+#> <span style="color: #2AA198;">ℹ</span> Getting 1 pkg (1.33 MB), 87 (96.03 MB) cached                                 
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tidyr</span> 1.2.1 (source) (746.06 kB)                                          
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">gtable</span> 0.3.1 (aarch64-apple-darwin20) (159.19 kB)                         
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">dplyr</span> 1.0.10 (aarch64-apple-darwin20) (1.33 MB)                           
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8                                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">DiagrammeR</span> 1.0.9  <span style="color: #a3a3a3;">(75ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">MASS</span> 7.3-58.1  <span style="color: #a3a3a3;">(83ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(89ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">RColorBrewer</span> 1.1-3  <span style="color: #a3a3a3;">(95ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">askpass</span> 1.1  <span style="color: #a3a3a3;">(102ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">base64enc</span> 0.1-3  <span style="color: #a3a3a3;">(106ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bench</span> 1.1.2  <span style="color: #a3a3a3;">(144ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(41ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit</span> 4.0.4  <span style="color: #a3a3a3;">(95ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">blob</span> 1.2.3  <span style="color: #a3a3a3;">(125ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">brio</span> 1.1.3  <span style="color: #a3a3a3;">(58ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cachem</span> 1.0.6  <span style="color: #a3a3a3;">(15ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">callr</span> 3.7.2  <span style="color: #a3a3a3;">(20ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">clipr</span> 0.8.0  <span style="color: #a3a3a3;">(38ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bslib</span> 0.4.0  <span style="color: #a3a3a3;">(165ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(597ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">colorspace</span> 2.0-3  <span style="color: #a3a3a3;">(67ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">covr</span> 3.6.1  <span style="color: #a3a3a3;">(53ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cpp11</span> 0.4.2  <span style="color: #a3a3a3;">(59ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">crayon</span> 1.5.1  <span style="color: #a3a3a3;">(39ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">curl</span> 4.3.2  <span style="color: #a3a3a3;">(41ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">diffobj</span> 0.3.5  <span style="color: #a3a3a3;">(61ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">digest</span> 0.6.29  <span style="color: #a3a3a3;">(39ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">downloader</span> 0.4  <span style="color: #a3a3a3;">(27ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.10  <span style="color: #a3a3a3;">(25ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">evaluate</span> 0.16  <span style="color: #a3a3a3;">(12ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">farver</span> 2.1.1  <span style="color: #a3a3a3;">(23ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fastmap</span> 1.1.0  <span style="color: #a3a3a3;">(14ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">formattable</span> 0.2.1  <span style="color: #a3a3a3;">(35ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fs</span> 1.5.2  <span style="color: #a3a3a3;">(20ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(12ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ggplot2</span> 3.3.6  <span style="color: #a3a3a3;">(35ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">gridExtra</span> 2.3  <span style="color: #a3a3a3;">(18ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">gtable</span> 0.3.1  <span style="color: #a3a3a3;">(15ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">highr</span> 0.9  <span style="color: #a3a3a3;">(14ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">hms</span> 1.1.2  <span style="color: #a3a3a3;">(14ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">htmltools</span> 0.5.3  <span style="color: #a3a3a3;">(15ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">htmlwidgets</span> 1.5.4  <span style="color: #a3a3a3;">(20ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">httr</span> 1.4.4  <span style="color: #a3a3a3;">(18ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">igraph</span> 1.3.4  <span style="color: #a3a3a3;">(67ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">influenceR</span> 0.1.0.1  <span style="color: #a3a3a3;">(13ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">isoband</span> 0.2.5  <span style="color: #a3a3a3;">(37ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jquerylib</span> 0.1.4  <span style="color: #a3a3a3;">(18ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jsonlite</span> 1.8.0  <span style="color: #a3a3a3;">(40ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">knitr</span> 1.40  <span style="color: #a3a3a3;">(46ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">labeling</span> 0.4.2  <span style="color: #a3a3a3;">(11ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lazyeval</span> 0.2.2  <span style="color: #a3a3a3;">(14ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lubridate</span> 1.8.0  <span style="color: #a3a3a3;">(26ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">memoise</span> 2.0.1  <span style="color: #a3a3a3;">(11ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mime</span> 0.12  <span style="color: #a3a3a3;">(12ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mockr</span> 0.2.0  <span style="color: #a3a3a3;">(29ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">munsell</span> 0.5.0  <span style="color: #a3a3a3;">(14ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">nlme</span> 3.1-159  <span style="color: #a3a3a3;">(27ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">nycflights13</span> 1.0.2  <span style="color: #a3a3a3;">(18ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">openssl</span> 2.0.2  <span style="color: #a3a3a3;">(33ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgbuild</span> 1.3.1  <span style="color: #a3a3a3;">(11ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgload</span> 1.3.0  <span style="color: #a3a3a3;">(12ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">praise</span> 1.0.0  <span style="color: #a3a3a3;">(30ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">prettyunits</span> 1.1.1  <span style="color: #a3a3a3;">(11ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">processx</span> 3.7.0  <span style="color: #a3a3a3;">(16ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">profmem</span> 0.6.0  <span style="color: #a3a3a3;">(12ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ps</span> 1.7.1  <span style="color: #a3a3a3;">(14ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">purrr</span> 0.3.4  <span style="color: #a3a3a3;">(17ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rappdirs</span> 0.3.3  <span style="color: #a3a3a3;">(13ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">readr</span> 2.1.2  <span style="color: #a3a3a3;">(31ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rematch2</span> 2.1.2  <span style="color: #a3a3a3;">(10ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rex</span> 1.2.1  <span style="color: #a3a3a3;">(13ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rmarkdown</span> 2.16  <span style="color: #a3a3a3;">(65ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rprojroot</span> 2.0.3  <span style="color: #a3a3a3;">(13ms)</span>                                             
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">desc</span> 1.4.2                                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rstudioapi</span> 0.14  <span style="color: #a3a3a3;">(17ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sass</span> 0.4.2  <span style="color: #a3a3a3;">(36ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">scales</span> 1.2.1  <span style="color: #a3a3a3;">(89ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringr</span> 1.4.1  <span style="color: #a3a3a3;">(35ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sys</span> 3.4  <span style="color: #a3a3a3;">(12ms)</span>                                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">testthat</span> 3.1.4  <span style="color: #a3a3a3;">(40ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringi</span> 1.7.8  <span style="color: #a3a3a3;">(230ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.1.2  <span style="color: #a3a3a3;">(39ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tinytex</span> 0.41  <span style="color: #a3a3a3;">(30ms)</span>                                                
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tidyr</span> 1.2.1                                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tzdb</span> 0.3.0  <span style="color: #a3a3a3;">(138ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridisLite</span> 0.4.1  <span style="color: #a3a3a3;">(41ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridis</span> 0.6.2  <span style="color: #a3a3a3;">(42ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">waldo</span> 0.4.0  <span style="color: #a3a3a3;">(28ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">visNetwork</span> 2.1.0  <span style="color: #a3a3a3;">(98ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vroom</span> 1.5.7  <span style="color: #a3a3a3;">(89ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(82ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">xfun</span> 0.32  <span style="color: #a3a3a3;">(115ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">yaml</span> 2.3.5  <span style="color: #a3a3a3;">(51ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">desc</span> 1.4.2 <span style="color: #a3a3a3;">(1.5s)</span>                                                       
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">desc</span> 1.4.2  <span style="color: #a3a3a3;">(15ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tidyr</span> 1.2.1 <span style="color: #a3a3a3;">(4.4s)</span>                                                      
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyr</span> 1.2.1  <span style="color: #a3a3a3;">(19ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> 103 deps: kept 15, upd 2, added 86, dld 3 (2.23 MB) <span style="color: #b8b8b8;">[10.4s]</span>                   
 </pre></div>
-</details>
 }}
 
 }
@@ -1054,21 +500,17 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 5 × 5</span>                                                                               
-#>   name          url                                        type  r_ver…¹ bioc_…²                    
-#> <span class="ansi-color-250">*</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>         <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                                      <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250">1</span> CRAN          https://cloud.r-project.org                cran  *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-246"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                           
+#>   name          url                                        type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org                cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1078,22 +520,18 @@ See output
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::repo_add(rhub = 'https://r-hub.r-universe.dev')
 pak::repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 6 × 5</span>                                                                               
-#>   name          url                                        type  r_ver…¹ bioc_…²                    
-#> <span class="ansi-color-250">*</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>         <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                                      <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250">1</span> CRAN          https://cloud.r-project.org                cran  *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">2</span> rhub          https://r-hub.r-universe.dev               cran… *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">3</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">4</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">5</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">6</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-246"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 6 × 5</span>                                                           
+#>   name          url                                        type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org                cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> rhub          https://r-hub.r-universe.dev               cran… *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1103,21 +541,17 @@ See output
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{options(repos = getOption("repos")["CRAN"])
 pak::repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 5 × 5</span>                                                                               
-#>   name          url                                        type  r_ver…¹ bioc_…²                    
-#> <span class="ansi-color-250">*</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>         <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                                      <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250">1</span> CRAN          https://cloud.r-project.org                cran  *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-246"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                           
+#>   name          url                                        type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org                cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                 
 </pre></div>
-</details>
 }}
 
 
@@ -1129,21 +563,17 @@ Keeps only CRAN and (by default) Bioconductor.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::repo_add(CRAN = "RSPM@2022-06-30")
 pak::repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 5 × 5</span>                                                                               
-#>   name          url                                        type  r_ver…¹ bioc_…²                    
-#> <span class="ansi-color-250">*</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>         <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                                      <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250">1</span> CRAN          https://packagemanager.rstudio.com/all/11… cran  *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-246"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                           
+#>   name          url                                        type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://packagemanager.rstudio.com/all/11… cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1153,21 +583,17 @@ See output
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::repo_add(CRAN = "MRAN@2022-06-30")
 pak::repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 5 × 5</span>                                                                               
-#>   name          url                                        type  r_ver…¹ bioc_…²                    
-#> <span class="ansi-color-250">*</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>         <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                                      <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250">1</span> CRAN          https://cran.microsoft.com/snapshot/2022-… cran  *       <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-250">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15                       
-#> <span class="ansi-color-246"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                           
+#>   name          url                                        type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cran.microsoft.com/snapshot/2022-… cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages/3.15/bi… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages/3.15/da… bioc  4.2.1   3.15   
+#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages/3.15/wo… bioc  4.2.1   3.15   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1178,36 +604,31 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::meta_list()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-2">✔</span> Updated metadata database: 4.49 MB in 8 files.                                                    
-#> <span class="ansi-color-6">ℹ</span> R 4.2 aarch64-apple-darwin20 packages are missing from Bioconductor                               
-#> <span class="ansi-color-2">✔</span> Updating metadata database ... done                                                               
-#> <span class="ansi-color-246"># A data frame: 41,614 × 32</span>                                                                         
-#>    package version depends sugge…¹ license imports linki…² archs enhan…³ os_type                    
-#>    <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250"> 1</span> A3      1.0.0   R (&gt;= … random… GPL (&gt;… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 2</span> AATtoo… 0.0.1   R (&gt;= … <span class="ansi-color-1">NA</span>      GPL-3   magrit… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 3</span> ABACUS  1.0.0   R (&gt;= … rmarkd… GPL-3   ggplot… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 4</span> ABC.RAP 0.9.0   R (&gt;= … knitr,… GPL-3   graphi… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 5</span> ABCana… 1.2.1   R (&gt;= … <span class="ansi-color-1">NA</span>      GPL-3   plotrix <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 6</span> ABCopt… 0.15.0  <span class="ansi-color-1">NA</span>      testth… MIT + … Rcpp, … Rcpp    ABCo… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 7</span> ABCp2   1.2     MASS    <span class="ansi-color-1">NA</span>      GPL-2   <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 8</span> ABHgen… 1.0.1   <span class="ansi-color-1">NA</span>      knitr,… GPL-3   ggplot… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 9</span> ABPS    0.3     <span class="ansi-color-1">NA</span>      testth… GPL (&gt;… kernlab <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">10</span> ACA     1.1     R (&gt;= … <span class="ansi-color-1">NA</span>      GPL     graphi… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-246"># … with 41,604 more rows, 22 more variables: priority &lt;chr&gt;,</span>                                       
-#> <span class="ansi-color-246">#   license_is_foss &lt;chr&gt;, license_restricts_use &lt;chr&gt;, repodir &lt;chr&gt;,</span>                              
-#> <span class="ansi-color-246">#   rversion &lt;chr&gt;, platform &lt;chr&gt;, needscompilation &lt;chr&gt;, ref &lt;chr&gt;,</span>                              
-#> <span class="ansi-color-246">#   type &lt;chr&gt;, direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;, mirror &lt;chr&gt;,</span>                             
-#> <span class="ansi-color-246">#   sources &lt;list&gt;, filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;, built &lt;chr&gt;,</span>                       
-#> <span class="ansi-color-246">#   published &lt;dttm&gt;, deps &lt;list&gt;, md5sum &lt;chr&gt;, path &lt;chr&gt;, and abbreviated</span>                        
-#> <span class="ansi-color-246">#   variable names ¹​suggests, ²​linkingto, ³​enhances</span>                                              
-#> <span class="ansi-color-246"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span>               
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Updated metadata database: 4.51 MB in 8 files.                                
+#> <span style="color: #2AA198;">ℹ</span> R 4.2 aarch64-apple-darwin20 packages are missing from Bioconductor           
+#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                           
+#> <span style="color: #999999;"># A data frame: 41,614 × 32</span>                                                     
+#>    package version depends sugge…¹ license imports linki…² archs enhan…³ os_type
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> A3      1.0.0   R (&gt;= … random… GPL (&gt;… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 2</span> AATtoo… 0.0.1   R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL-3   magrit… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 3</span> ABACUS  1.0.0   R (&gt;= … rmarkd… GPL-3   ggplot… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 4</span> ABC.RAP 0.9.0   R (&gt;= … knitr,… GPL-3   graphi… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 5</span> ABCana… 1.2.1   R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL-3   plotrix <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 6</span> ABCopt… 0.15.0  <span style="color: #DC322F;">NA</span>      testth… MIT + … Rcpp, … Rcpp    ABCo… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 7</span> ABCp2   1.2     MASS    <span style="color: #DC322F;">NA</span>      GPL-2   <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 8</span> ABHgen… 1.0.1   <span style="color: #DC322F;">NA</span>      knitr,… GPL-3   ggplot… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 9</span> ABPS    0.3     <span style="color: #DC322F;">NA</span>      testth… GPL (&gt;… kernlab <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">10</span> ACA     1.1     R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL     graphi… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 41,604 more rows, 22 more variables: priority &lt;chr&gt;,</span>                   
+#> <span style="color: #999999;">#   license_is_foss &lt;chr&gt;, license_restricts_use &lt;chr&gt;, repodir &lt;chr&gt;,</span>          
+#> <span style="color: #999999;">#   rversion &lt;chr&gt;, platform &lt;chr&gt;, needscompilation &lt;chr&gt;, ref &lt;chr&gt;,</span>          
+#> <span style="color: #999999;">#   type &lt;chr&gt;, direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;, mirror &lt;chr&gt;,</span>         
+#> <span style="color: #999999;">#   sources &lt;list&gt;, filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;, built &lt;chr&gt;,</span>   
+#> <span style="color: #999999;">#   published &lt;dttm&gt;, deps &lt;list&gt;, md5sum &lt;chr&gt;, path &lt;chr&gt;, and abbreviated</span>    
+#> <span style="color: #999999;">#   variable names ¹​suggests, ²​linkingto, ³​enhances</span>                          
 </pre></div>
-</details>
 }}
 
 }
@@ -1216,15 +637,11 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::meta_update()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-2">✔</span> Updated metadata database: 27.10 kB in 4 files.                                                   
-#> <span class="ansi-color-6">ℹ</span> R 4.2 aarch64-apple-darwin20 packages are missing from Bioconductor                               
-#> <span class="ansi-color-2">✔</span> Updating metadata database ... done                                                               
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Updated metadata database: 27.10 kB in 4 files.                               
+#> <span style="color: #2AA198;">ℹ</span> R 4.2 aarch64-apple-darwin20 packages are missing from Bioconductor           
+#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                           
 </pre></div>
-</details>
 }}
 
 }
@@ -1234,28 +651,24 @@ See output
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::meta_clean(force = TRUE)
 pak::meta_summary()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> .                                                                                                   
-#> $cachepath                                                                                          
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata"                        
-#>                                                                                                     
-#> $current_db                                                                                         
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/pkgs-9e6361fdc9.rds"    
-#>                                                                                                     
-#> $raw_files                                                                                          
-#> character(0)                                                                                        
-#>                                                                                                     
-#> $db_files                                                                                           
-#> character(0)                                                                                        
-#>                                                                                                     
-#> $size                                                                                               
-#> [1] 0                                                                                               
-#>                                                                                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> $cachepath                                                                      
+#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata"    
+#>                                                                                 
+#> $current_db                                                                     
+#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/pkgs
+#> -9e6361fdc9.rds"                                                                
+#>                                                                                 
+#> $raw_files                                                                      
+#> character(0)                                                                    
+#>                                                                                 
+#> $db_files                                                                       
+#> character(0)                                                                    
+#>                                                                                 
+#> $size                                                                           
+#> [1] 0                                                                           
+#>                                                                                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1264,28 +677,23 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::cache_list()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 1,644 × 11</span>                                                                          
-#>    fullpath       path  package url   etag  sha256 version platf…¹ built vigne…²                    
-#>    <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>          <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>  <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250"> 1</span> /Users/gaborc… src/… pak     file…  <span class="ansi-color-1">NA</span>   4e451… 0.2.0.… source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 2</span> /Users/gaborc… src/… pak     <span class="ansi-color-1">NA</span>     <span class="ansi-color-1">NA</span>   <span class="ansi-color-1">NA</span>     0.2.0.… aarch6… TRUE  FALSE                      
-#> <span class="ansi-color-250"> 3</span> /Users/gaborc… bin/… cli     http… <span class="ansi-color-246">"</span>\\"1… cbf6f… 3.1.1   aarch6… <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 4</span> /Users/gaborc… src/… R7      <span class="ansi-color-1">NA</span>     <span class="ansi-color-1">NA</span>   76af5… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>      FALSE <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 5</span> /Users/gaborc… src/… Annota… http… <span class="ansi-color-246">"</span>\\"4… 9c18b… 1.18.0  source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 6</span> /Users/gaborc… bin/… GGally  http… <span class="ansi-color-246">"</span>\\"1… a8ab8… 2.1.2   aarch6… <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 7</span> /Users/gaborc… src/… ensemb… http… <span class="ansi-color-246">"</span>\\"3… 0913f… 2.18.3  source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 8</span> /Users/gaborc… src/… bioviz… http… <span class="ansi-color-246">"</span>\\"2… 5faa6… 1.42.0  source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 9</span> /Users/gaborc… src/… Annota… http… <span class="ansi-color-246">"</span>\\"4… 283e2… 1.56.2  source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">10</span> /Users/gaborc… src/… rtrack… http… <span class="ansi-color-246">"</span>\\"3… 0c5e4… 1.54.0  source  <span class="ansi-color-1">NA</span>    <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-246"># … with 1,634 more rows, 1 more variable: rversion &lt;chr&gt;, and abbreviated</span>                          
-#> <span class="ansi-color-246">#   variable names ¹​platform, ²​vignettes</span>                                                          
-#> <span class="ansi-color-246"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span>               
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 1,873 × 11</span>                                                      
+#>    fullpath       path  package url   etag  sha256 version platf…¹ built vigne…²
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>          <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> /Users/gaborc… src/… pak     file…  <span style="color: #DC322F;">NA</span>   4e451… 0.2.0.… source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 2</span> /Users/gaborc… src/… pak     <span style="color: #DC322F;">NA</span>     <span style="color: #DC322F;">NA</span>   <span style="color: #DC322F;">NA</span>     0.2.0.… aarch6… TRUE  FALSE  
+#> <span style="color: #c2c2c2;"> 3</span> /Users/gaborc… bin/… cli     http… <span style="color: #999999;">"</span>\\"1… cbf6f… 3.1.1   aarch6… <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 4</span> /Users/gaborc… src/… R7      <span style="color: #DC322F;">NA</span>     <span style="color: #DC322F;">NA</span>   76af5… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      FALSE <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 5</span> /Users/gaborc… src/… Annota… http… <span style="color: #999999;">"</span>\\"4… 9c18b… 1.18.0  source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 6</span> /Users/gaborc… bin/… GGally  http… <span style="color: #999999;">"</span>\\"1… a8ab8… 2.1.2   aarch6… <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 7</span> /Users/gaborc… src/… ensemb… http… <span style="color: #999999;">"</span>\\"3… 0913f… 2.18.3  source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 8</span> /Users/gaborc… src/… bioviz… http… <span style="color: #999999;">"</span>\\"2… 5faa6… 1.42.0  source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 9</span> /Users/gaborc… src/… Annota… http… <span style="color: #999999;">"</span>\\"4… 283e2… 1.56.2  source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">10</span> /Users/gaborc… src/… rtrack… http… <span style="color: #999999;">"</span>\\"3… 0c5e4… 1.54.0  source  <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 1,863 more rows, 1 more variable: rversion &lt;chr&gt;, and abbreviated</span>      
+#> <span style="color: #999999;">#   variable names ¹​platform, ²​vignettes</span>                                      
 </pre></div>
-</details>
 }}
 
 }
@@ -1294,21 +702,17 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::cache_summary()
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> $cachepath                                                                                          
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"                              
-#>                                                                                                     
-#> $files                                                                                              
-#> [1] 1644                                                                                            
-#>                                                                                                     
-#> $size                                                                                               
-#> [1] 6384750753                                                                                      
-#>                                                                                                     
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> $cachepath                                                                      
+#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"          
+#>                                                                                 
+#> $files                                                                          
+#> [1] 1873                                                                        
+#>                                                                                 
+#> $size                                                                           
+#> [1] 6711771702                                                                  
+#>                                                                                 
 </pre></div>
-</details>
 }}
 
 }
@@ -1325,33 +729,28 @@ See output
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::lib_status(Sys.getenv("R_LIBS_USER"))
 }\if{html}{\out{</div>}}\if{html}{\out{
-<details><summary>
-See output
-</summary>
-<div class="asciicast"><pre>
-#> <span class="ansi-color-246"># A data frame: 394 × 36</span>                                                                            
-#>    library   package title version depends repos…¹ license needs…² built remot…³                    
-#>    <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>     <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;lgl&gt;</span>   <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span> <span class="ansi-italic ansi-color-246">&lt;chr&gt;</span>                      
-#> <span class="ansi-color-250"> 1</span> /Users/g… abc     Tool… 2.2.1   R (&gt;= … CRAN    GPL (&gt;… FALSE   R 4.… standa…                    
-#> <span class="ansi-color-250"> 2</span> /Users/g… abc.da… Data… 1.0     R (&gt;= … CRAN    GPL (&gt;… FALSE   R 4.… standa…                    
-#> <span class="ansi-color-250"> 3</span> /Users/g… abind   Comb… 1.4-5   R (&gt;= … CRAN    LGPL (… FALSE   R 4.… standa…                    
-#> <span class="ansi-color-250"> 4</span> /Users/g… ape     Anal… 5.6-2   R (&gt;= … CRAN    GPL-2 … TRUE    R 4.… standa…                    
-#> <span class="ansi-color-250"> 5</span> /Users/g… arrow   Inte… 8.0.0   R (&gt;= … CRAN    Apache… TRUE    R 4.… standa…                    
-#> <span class="ansi-color-250"> 6</span> /Users/g… asciic… Crea… 2.1.0.… <span class="ansi-color-1">NA</span>      <span class="ansi-color-1">NA</span>      MIT + … <span class="ansi-color-1">NA</span>      R 4.… <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250"> 7</span> /Users/g… askpass Safe… 1.1     <span class="ansi-color-1">NA</span>      CRAN    MIT + … TRUE    R 4.… standa…                    
-#> <span class="ansi-color-250"> 8</span> /Users/g… assert… Easy… 0.2.1   <span class="ansi-color-1">NA</span>      CRAN    GPL-3   FALSE   R 4.… standa…                    
-#> <span class="ansi-color-250"> 9</span> /Users/g… async   Asyn… 0.0.0.… R (&gt;= … <span class="ansi-color-1">NA</span>      MIT + … <span class="ansi-color-1">NA</span>      R 4.… <span class="ansi-color-1">NA</span>                         
-#> <span class="ansi-color-250">10</span> /Users/g… attempt Tool… 0.3.1   <span class="ansi-color-1">NA</span>      CRAN    MIT + … FALSE   R 4.… standa…                    
-#> <span class="ansi-color-246"># … with 384 more rows, 26 more variables: remotepkgref &lt;chr&gt;, remoteref &lt;chr&gt;,</span>                     
-#> <span class="ansi-color-246">#   remoterepos &lt;chr&gt;, remotepkgplatform &lt;chr&gt;, remotesha &lt;chr&gt;, imports &lt;chr&gt;,</span>                     
-#> <span class="ansi-color-246">#   suggests &lt;chr&gt;, linkingto &lt;chr&gt;, remotes &lt;chr&gt;, enhances &lt;chr&gt;,</span>                                 
-#> <span class="ansi-color-246">#   biocviews &lt;chr&gt;, remotehost &lt;chr&gt;, remoterepo &lt;chr&gt;, remoteusername &lt;chr&gt;,</span>                      
-#> <span class="ansi-color-246">#   priority &lt;chr&gt;, remoteurl &lt;chr&gt;, md5sum &lt;chr&gt;, platform &lt;chr&gt;,</span>                                  
-#> <span class="ansi-color-246">#   sysreqs &lt;chr&gt;, ref &lt;chr&gt;, type &lt;chr&gt;, status &lt;chr&gt;, rversion &lt;chr&gt;,</span>                             
-#> <span class="ansi-color-246">#   sources &lt;list&gt;, repotype &lt;chr&gt;, deps &lt;list&gt;, and abbreviated variable …</span>                         
-#> <span class="ansi-color-246"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span>               
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 531 × 38</span>                                                        
+#>    library   package title version depends repos…¹ license needs…² built remot…³
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> /Users/g… abc     Tool… 2.2.1   R (&gt;= … CRAN    GPL (&gt;… FALSE   R 4.… standa…
+#> <span style="color: #c2c2c2;"> 2</span> /Users/g… abc.da… Data… 1.0     R (&gt;= … CRAN    GPL (&gt;… FALSE   R 4.… standa…
+#> <span style="color: #c2c2c2;"> 3</span> /Users/g… abind   Comb… 1.4-5   R (&gt;= … CRAN    LGPL (… FALSE   R 4.… standa…
+#> <span style="color: #c2c2c2;"> 4</span> /Users/g… ape     Anal… 5.6-2   R (&gt;= … CRAN    GPL-2 … TRUE    R 4.… standa…
+#> <span style="color: #c2c2c2;"> 5</span> /Users/g… archive Mult… 1.1.5   R (&gt;= … CRAN    MIT + … TRUE    R 4.… standa…
+#> <span style="color: #c2c2c2;"> 6</span> /Users/g… arrow   Inte… 8.0.0   R (&gt;= … CRAN    Apache… TRUE    R 4.… standa…
+#> <span style="color: #c2c2c2;"> 7</span> /Users/g… asciic… Crea… 2.1.0.… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      MIT + … <span style="color: #DC322F;">NA</span>      R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 8</span> /Users/g… askpass Safe… 1.1     <span style="color: #DC322F;">NA</span>      CRAN    MIT + … TRUE    R 4.… standa…
+#> <span style="color: #c2c2c2;"> 9</span> /Users/g… assert… Easy… 0.2.1   <span style="color: #DC322F;">NA</span>      CRAN    GPL-3   FALSE   R 4.… standa…
+#> <span style="color: #c2c2c2;">10</span> /Users/g… async   Asyn… 0.0.0.… R (&gt;= … <span style="color: #DC322F;">NA</span>      MIT + … <span style="color: #DC322F;">NA</span>      R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 521 more rows, 28 more variables: remotepkgref &lt;chr&gt;, remoteref &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   remoterepos &lt;chr&gt;, remotepkgplatform &lt;chr&gt;, remotesha &lt;chr&gt;, imports &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   suggests &lt;chr&gt;, linkingto &lt;chr&gt;, remotes &lt;chr&gt;, enhances &lt;chr&gt;,</span>             
+#> <span style="color: #999999;">#   biocviews &lt;chr&gt;, remoteurl &lt;chr&gt;, priority &lt;chr&gt;, remotehost &lt;chr&gt;,</span>         
+#> <span style="color: #999999;">#   remoterepo &lt;chr&gt;, remoteusername &lt;chr&gt;, remoteetag &lt;chr&gt;,</span>                   
+#> <span style="color: #999999;">#   remotepackaged &lt;chr&gt;, md5sum &lt;chr&gt;, platform &lt;chr&gt;, sysreqs &lt;chr&gt;,</span>          
+#> <span style="color: #999999;">#   ref &lt;chr&gt;, type &lt;chr&gt;, status &lt;chr&gt;, rversion &lt;chr&gt;, sources &lt;list&gt;, …</span>      
 </pre></div>
-</details>
 }}
 
 
