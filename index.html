@@ -4,14 +4,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="The goal of pak is to make package installation faster and
+    more reliable. In particular, it performs all HTTP operations in parallel,
+    so metadata resolution and package downloads are fast. Metadata and package
+    files are cached on the local disk as well. pak has a dependency solver,
+    so it finds version conflicts before performing the installation. This
+    version of pak supports CRAN, Bioconductor and GitHub packages as well.">
 <title>Another Approach to Package Installation • pak</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
 <meta property="og:description" content="The goal of pak is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
     so metadata resolution and package downloads are fast. Metadata and package
@@ -21,88 +28,290 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><script defer data-domain="/pak.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#container" class="visually-hidden-focusable">Skip to content</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">pak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">pak</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/tldr.html">TLDR</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/internals.html">pak internals</a>
-    </li>
-  </ul>
+<li class="nav-item">
+  <a class="nav-link" href="reference/faq.html">FAQ</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/r-lib/pak/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/internals.html">pak internals</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/r-lib/pak/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
+    
+  </div>
+</nav><div class="container template-home" id="container">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="pak">pak<a class="anchor" aria-label="anchor" href="#pak"></a>
 </h1></div>
-<blockquote>
-<p>A Fresh Approach to R Package Installation</p>
-</blockquote>
+<blockquote><p>A Fresh Approach to R Package Installation</p></blockquote>
 <!-- badges: start -->
-
-<!-- badges: end -->
-<p>pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
-<p align="center">
-<img width="1000" src="https://cdn.jsdelivr.net/gh/r-lib/pak@images/pak-demo.svg?version=2"></p>
+<!-- badges: end --><p>pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> and <code>devtools::install_github()</code>. pak is fast, safe and convenient.</p>
+<ul>
+<li><a href="#rocket-short-tour"><span class="emoji" data-emoji="rocket">🚀</span> Short tour</a></li>
+<li><a href="#link-quick-links-start-here-if-in-doubt"><span class="emoji" data-emoji="link">🔗</span> Quick links (start here if in doubt!)</a></li>
+<li><a href="#sparkles-features"><span class="emoji" data-emoji="sparkles">✨</span> Features</a></li>
+<li><a href="#arrow_down-installation"><span class="emoji" data-emoji="arrow_down">⬇️</span> Installation</a></li>
+<li><a href="#blue_book-license"><strong><span class="emoji" data-emoji="blue_book">📘</span></strong> License</a></li>
+</ul>
+<!-- README.md is generated from README.Rmd. Please edit that file --><div class="section level2">
+<h2 id="rocket-short-tour">
+<span class="emoji" data-emoji="rocket">🚀</span> Short tour<a class="anchor" aria-label="anchor" href="#rocket-short-tour"></a>
+</h2>
+<div class="section level4">
+<h4 id="install-or-update-packages-from-cran-or-bioconductor">Install or update packages from CRAN or Bioconductor<a class="anchor" aria-label="anchor" href="#install-or-update-packages-from-cran-or-bioconductor"></a>
+</h4>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#&gt; <span style="color: #859900;">✔</span> Updated metadata database: 2.36 MB in 2 files.                                
+#&gt; <span style="color: #859900;">✔</span> Updating metadata database ... done                                           
+#&gt;                                                                                 
+#&gt; → Will <span style="font-style: italic;">install</span> 11 packages.                                                     
+#&gt; → Will <span style="font-style: italic;">download</span> 11 CRAN packages (4.54 MB).                                     
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">cli</span>         3.4.0 [bld][cmp][dl] <span style="color: #002B36;">(526.80 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3 [bld][cmp][dl] <span style="color: #002B36;">(481.16 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2 [bld][cmp][dl] <span style="color: #002B36;">(106.51 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.2 [bld][dl] <span style="color: #002B36;">(102.18 kB)</span>                                       
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3 [bld][cmp][dl] <span style="color: #002B36;">(267.07 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1 [bld][dl] <span style="color: #002B36;">(479.98 kB)</span>                                       
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3 [bld][dl] <span style="color: #002B36;">(6.08 kB)</span>                                         
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.5 [bld][cmp][dl] <span style="color: #002B36;">(741.68 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8 [bld][cmp][dl] <span style="color: #002B36;">(672.34 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2 [bld][cmp][dl] <span style="color: #002B36;">(240.33 kB)</span>                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">vctrs</span>       0.4.1 [bld][cmp][dl] <span style="color: #002B36;">(916.78 kB)</span>                                  
+#&gt; <span style="color: #2AA198;">ℹ</span> Getting 11 pkgs (4.54 MB)                                                     
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pkgconfig</span> 2.0.3 (source) (6.08 kB)                                        
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">glue</span> 1.6.2 (source) (106.51 kB)                                           
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lifecycle</span> 1.0.2 (source) (102.18 kB)                                      
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fansi</span> 1.0.3 (source) (481.16 kB)                                          
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">utf8</span> 1.2.2 (source) (240.33 kB)                                           
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.0 (source) (526.80 kB)                                            
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rlang</span> 1.0.5 (source) (741.68 kB)                                          
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">magrittr</span> 2.0.3 (source) (267.07 kB)                                       
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pillar</span> 1.8.1 (source) (479.98 kB)                                         
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.4.1 (source) (916.78 kB)                                          
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8 (source) (672.34 kB)                                         
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.0                                                            
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">fansi</span> 1.0.3                                                          
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">fansi</span> 1.0.3 <span style="color: #a3a3a3;">(4.6s)</span>                                                      
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">glue</span> 1.6.2                                                           
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">glue</span> 1.6.2 <span style="color: #a3a3a3;">(1.6s)</span>                                                       
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">magrittr</span> 2.0.3                                                       
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">magrittr</span> 2.0.3 <span style="color: #a3a3a3;">(1.3s)</span>                                                   
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">pkgconfig</span> 2.0.3                                                      
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">pkgconfig</span> 2.0.3 <span style="color: #a3a3a3;">(905ms)</span>                                                 
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">rlang</span> 1.0.5                                                          
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.0 <span style="color: #a3a3a3;">(9.2s)</span>                                                        
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">utf8</span> 1.2.2                                                           
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">utf8</span> 1.2.2 <span style="color: #a3a3a3;">(4s)</span>                                                         
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.0  <span style="color: #a3a3a3;">(47ms)</span>                                                   
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(28ms)</span>                                                 
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(28ms)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(23ms)</span>                                              
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(21ms)</span>                                             
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(28ms)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">rlang</span> 1.0.5 <span style="color: #a3a3a3;">(15.6s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.5  <span style="color: #a3a3a3;">(50ms)</span>                                                 
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">lifecycle</span> 1.0.2                                                      
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.4.1                                                          
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">lifecycle</span> 1.0.2 <span style="color: #a3a3a3;">(1.5s)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.2  <span style="color: #a3a3a3;">(27ms)</span>                                             
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.4.1 <span style="color: #a3a3a3;">(20.5s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.4.1  <span style="color: #a3a3a3;">(62ms)</span>                                                 
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">pillar</span> 1.8.1                                                         
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">pillar</span> 1.8.1 <span style="color: #a3a3a3;">(4s)</span>                                                       
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(35ms)</span>                                                
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8                                                         
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(3.9s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(38ms)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11, dld 11 (4.54 MB) <span style="color: #b8b8b8;">[1m 0.3s]</span>                         
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="install-packages-from-github">Install packages from GItHub<a class="anchor" aria-label="anchor" href="#install-packages-from-github"></a>
+</h4>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"tidyverse/tibble"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#&gt;                                                                                 
+#&gt; → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
+#&gt; → All 2 packages (0 B) are cached.                                              
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9001</span> [bld][cmp] (GitHub: 225f4d9)                        
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">vctrs</span>  0.4.1 → 0.4.1<span style="font-weight: bold;">.9000</span> [bld][cmp] (GitHub: aea8877)                        
+#&gt; <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached                                    
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8.9001 (source) (1.34 MB)                                      
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 (source) (2.07 MB)                                       
+#&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.4.1.9000                                                    
+#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 <span style="color: #a3a3a3;">(960ms)</span>                                             
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.4.1.9000                                                     
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 <span style="color: #a3a3a3;">(21s)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.4.1.9000 (github::r-lib/vctrs@aea8877) <span style="color: #a3a3a3;">(67ms)</span>               
+#&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9001                                                   
+#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9001 <span style="color: #a3a3a3;">(616ms)</span>                                            
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9001                                                    
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9001 <span style="color: #a3a3a3;">(3.6s)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9001 (github::tidyverse/tibble@225f4d9) <span style="color: #a3a3a3;">(29ms)</span>         
+#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2, dld 2 (NA B) <span style="color: #b8b8b8;">[29.8s]</span>                          
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="look-up-dependencies">Look up dependencies<a class="anchor" aria-label="anchor" href="#look-up-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_deps_tree.html">pkg_deps_tree</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#&gt; <span style="font-weight: bold;font-style: italic;color: #2AA198;">tibble </span><span style="font-weight: bold;font-style: italic;color: #002B36;">3.1.8</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                    
+#&gt; ├─fansi <span style="color: #002B36;">1.0.3</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                   
+#&gt; ├─lifecycle <span style="color: #002B36;">1.0.2</span> <span style="color: #859900;">[new][bld]</span>                                                    
+#&gt; │ ├─glue <span style="color: #002B36;">1.6.2</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                  
+#&gt; │ └─rlang <span style="color: #002B36;">1.0.5</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                 
+#&gt; ├─magrittr <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                
+#&gt; ├─pillar <span style="color: #002B36;">1.8.1</span> <span style="color: #859900;">[new][bld]</span>                                                       
+#&gt; │ ├─cli <span style="color: #002B36;">3.4.0</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                   
+#&gt; │ ├─fansi                                                                       
+#&gt; │ ├─glue                                                                        
+#&gt; │ ├─lifecycle                                                                   
+#&gt; │ ├─rlang                                                                       
+#&gt; │ ├─utf8 <span style="color: #002B36;">1.2.2</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                  
+#&gt; │ └─vctrs <span style="color: #002B36;">0.4.1</span> <span style="color: #859900;">[new][bld][cmp]</span>                                                 
+#&gt; │   ├─cli                                                                       
+#&gt; │   ├─glue                                                                      
+#&gt; │   └─rlang                                                                     
+#&gt; ├─pkgconfig <span style="color: #002B36;">2.0.3</span> <span style="color: #859900;">[new][bld]</span>                                                    
+#&gt; ├─rlang                                                                         
+#&gt; └─vctrs                                                                         
+#&gt;                                                                                 
+#&gt; Key:  <span style="color: #859900;">[new]</span> new | <span style="color: #859900;">[bld]</span> build | <span style="color: #859900;">[cmp]</span> compile                                   
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="explain-dependencies">Explain dependencies<a class="anchor" aria-label="anchor" href="#explain-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_deps_explain.html">pkg_deps_explain</a></span><span class="op">(</span><span class="st">"tibble"</span>, <span class="st">"rlang"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#&gt; tibble -&gt; lifecycle -&gt; rlang                                                    
+#&gt; tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                                          
+#&gt; tibble -&gt; pillar -&gt; rlang                                                       
+#&gt; tibble -&gt; pillar -&gt; vctrs -&gt; rlang                                              
+#&gt; tibble -&gt; rlang                                                                 
+#&gt; tibble -&gt; vctrs -&gt; rlang                                                        
+</pre></div>
+</div>
+<div class="section level4">
+<h4 id="install-a-local-package-and-its-dependencies">Install a local package and its dependencies<a class="anchor" aria-label="anchor" href="#install-a-local-package-and-its-dependencies"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/local_install.html">local_install</a></span><span class="op">(</span><span class="st">"cli"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#&gt;                                                                                 
+#&gt; → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#&gt; → The package (0 B) is cached.                                                  
+#&gt; <span style="color: #002B36;">+ </span><span style="color: #268BD2;">cli</span> 3.4.0 → 3.4.0 [bld][cmp]                                                  
+#&gt; <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.0 (source) (526.80 kB)                                            
+#&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">cli</span> 3.4.0                                                           
+#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">cli</span> 3.4.0 <span style="color: #a3a3a3;">(740ms)</span>                                                    
+#&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.0                                                            
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.0 <span style="color: #a3a3a3;">(9.1s)</span>                                                        
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.0 (local) <span style="color: #a3a3a3;">(62ms)</span>                                            
+#&gt; <span style="color: #859900;">✔</span> 1 pkg: upd 1, dld 1 (526.80 kB) <span style="color: #b8b8b8;">[10.5s]</span>                                       
+</pre></div>
+</div>
+</div>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="link-quick-links-start-here-if-in-doubt">
+<span class="emoji" data-emoji="link">🔗</span> Quick links (start here if in doubt!)<a class="anchor" aria-label="anchor" href="#link-quick-links-start-here-if-in-doubt"></a>
+</h2>
+<div class="section level3">
+<h3 id="how-do-i--">How do I … ?<a class="anchor" aria-label="anchor" href="#how-do-i--"></a>
+</h3>
+<p>Start with our <a href="https://pak.r-lib.org/dev/reference/tldr.html" class="external-link">our TLDR document</a> to solve specific issues.</p>
+</div>
+<div class="section level3">
+<h3 id="faq">FAQ<a class="anchor" aria-label="anchor" href="#faq"></a>
+</h3>
+<p>Check out <a href="https://pak.r-lib.org/dev/reference/faq.html" class="external-link">list of frequently asked questions</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+</h3>
+<p><a href="https://pak.r-lib.org/dev/reference/" class="external-link">The complete reference of pak functions</a> is the most complete source of information about pak.</p>
+</div>
+<div class="section level3">
+<h3 id="i-have-another-question">I have a(nother) question<a class="anchor" aria-label="anchor" href="#i-have-another-question"></a>
+</h3>
+<p>Don’t hesitate to ask at the <a href="https://community.rstudio.com/" class="external-link">RStudio Community forum</a>. Use the <code>pak</code> tag.</p>
+</div>
+<div class="section level3">
+<h3 id="i-would-like-to-report-a-bug">I would like to report a bug<a class="anchor" aria-label="anchor" href="#i-would-like-to-report-a-bug"></a>
+</h3>
+<p>Head to the <a href="https://github.com/r-lib/pak/issues" class="external-link">pak issue tracker</a>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="sparkles-features">
+<span class="emoji" data-emoji="sparkles">✨</span> Features<a class="anchor" aria-label="anchor" href="#sparkles-features"></a>
+</h2>
+<p><span class="emoji" data-emoji="zap">⚡</span> Fast - parallel downloads and installation, caching, etc.</p>
+<p><span class="emoji" data-emoji="safety_vest">🦺</span> Safe - dependency solver, system dependency solver, etc.</p>
+<p><span class="emoji" data-emoji="convenience_store">🏪</span> Convenient - packages from multiple sources, time travel, etc.</p>
+<p>See the <a href="https://pak.r-lib.org/dev/reference/features.html" class="external-link">complete list of awesome features</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="arrow_down-installation">
+<a href="https://github.com/r-lib/rig#%EF%B8%8F--installation" class="external-link"><span class="emoji" data-emoji="arrow_down">⬇️</span></a> Installation<a class="anchor" aria-label="anchor" href="#arrow_down-installation"></a>
 </h2>
 <div class="section level3">
 <h3 id="pre-built-binaries">Pre-built binaries<a class="anchor" aria-label="anchor" href="#pre-built-binaries"></a>
 </h3>
 <p>Install a binary build of pak from our repository on GitHub:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/stable/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/stable/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This is supported for the following systems:</p>
 <table class="table">
 <thead><tr class="header">
@@ -144,98 +353,24 @@
 <h3 id="install-from-cran">Install from CRAN<a class="anchor" aria-label="anchor" href="#install-from-cran"></a>
 </h3>
 <p>Install the released version of the package from CRAN as usual:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span></code></pre></div>
 <p>This potentially needs a C compiler on platforms CRAN does not have binaries packages for.</p>
 </div>
 <div class="section level3">
-<h3 id="nightly-builds">Nightly builds<a class="anchor" aria-label="anchor" href="#nightly-builds"></a>
+<h3 id="other-platforms-and-nightly-builds">Other platforms and nightly builds<a class="anchor" aria-label="anchor" href="#other-platforms-and-nightly-builds"></a>
 </h3>
-<p>We have nightly binary builds, for the same systems as the table above:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"https://r-lib.github.io/p/pak/devel/%s/%s/%s"</span>, <span class="va">.Platform</span><span class="op">$</span><span class="va">pkgType</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>, <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>See the <a href="https://pak.r-lib.org/dev/reference/install.html" class="external-link">installation page</a>!</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h2>
-<p>Call <code><a href="reference/pkg_install.html">pkg_install()</a></code> to install CRAN or Bioconductor packages:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></code></pre></div>
-<p>To install packages from GitHub, use the <code>user/repo</code> syntax:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">"r-lib/usethis"</span><span class="op">)</span></code></pre></div>
-<p>All dependencies will be installed as well, to the same library.</p>
-<div class="section level3">
-<h3 id="on-github-actions">On GitHub Actions<a class="anchor" aria-label="anchor" href="#on-github-actions"></a>
-</h3>
-<p>The <a href="https://github.com/r-lib/actions/tree/v2/setup-r-dependencies#setup-r-dependencies" class="external-link"><code>setup-r-dependencies</code></a> action at <a href="https://github.com/r-lib/actions" class="external-link"><code>r-lib/actions</code></a> uses pak to install packages. See the <a href="https://github.com/r-lib/actions/tree/v2/examples" class="external-link"><code>examples</code></a> directory for example workflows.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="why-pak">Why pak?<a class="anchor" aria-label="anchor" href="#why-pak"></a>
-</h2>
-<div class="section level3">
-<h3 id="fast">Fast<a class="anchor" aria-label="anchor" href="#fast"></a>
-</h3>
-<ul>
-<li><p>Fast downloads and HTTP queries. pak performs all HTTP requests concurrently.</p></li>
-<li><p>Fast installs. pak builds and installs packages concurrently.</p></li>
-<li><p>Metadata and package cache. pak caches package metadata and all downloaded packages locally. It does not download the same package files over and over again.</p></li>
-<li><p>Lazy installation. pak only installs the packages that are really necessary for the installation. If the requested package and its dependencies are already installed, pak does nothing.</p></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="safe">Safe<a class="anchor" aria-label="anchor" href="#safe"></a>
-</h3>
-<ul>
-<li><p>Private library (pak’s own package dependencies do not affect your regular package libraries and vice versa).</p></li>
-<li><p>Every pak operation runs in a sub-process, and the packages are loaded from the private library. pak avoids loading packages from your regular package libraries. (These package files would be locked on some systems, and locked packages cannot be updated. pak does not load any package in the main process, except for pak itself).</p></li>
-<li><p>To avoid updating locked packages, pak offers the choice of unloading them from the current R session, and/or killing other R sessions locking them.</p></li>
-<li><p>Dependency solver. pak makes sure that you end up in a consistent, working state of dependencies. It finds conflicts up front, before attempting installation.</p></li>
-<li><p>System package support. pak automatically installs system dependencies on several Linux distributions.</p></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="convenient">Convenient<a class="anchor" aria-label="anchor" href="#convenient"></a>
-</h3>
-<ul>
-<li><p>BioC packages. pak supports Bioconductor packages out of the box. It uses the Bioconductor version that is appropriate for your R version.</p></li>
-<li><p>GitHub packages. pak supports GitHub packages out of the box. It also supports the <code>Remotes</code> entry in <code>DESCRIPTION</code> files, so that GitHub dependencies of GitHub packages will also get installed. See e.g. <a href="https://cran.r-project.org/package=remotes/vignettes/dependencies.html" class="external-link uri">https://cran.r-project.org/package=remotes/vignettes/dependencies.html</a></p></li>
-<li><p>Easy time travel with <a href="https://mran.microsoft.com/timemachine" class="external-link">MRAN</a> and <a href="https://packagemanager.rstudio.com/client/#/" class="external-link">RSPM</a>, to a specific date or when a certain R or package version was released.</p></li>
-<li><p>Package sizes. For CRAN packages pak shows the total sizes of packages it needs to download.</p></li>
-<li>
-<p>Other package sources:</p>
-<ul>
-<li>local package files and directories,</li>
-<li>URLs to package files or package tree archives.</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
-</h2>
-<ul>
-<li>Cache locally installed packages.</li>
-<li>Update installed packages.</li>
-<li>Better integration with renv.</li>
-<li>Support more package sources: Enterprise GitHub, GitLab, Bitbucket and SVN repositories.</li>
-<li>Support older CRAN and Bioconductor packages.</li>
-<li>More comprehensive system requirements support.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+<h2 id="blue_book-license">
+<strong><span class="emoji" data-emoji="blue_book">📘</span></strong> License<a class="anchor" aria-label="anchor" href="#blue_book-license"></a>
 </h2>
 <p>GPL-3 © RStudio</p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=pak" class="external-link">View on CRAN</a></li>
@@ -262,44 +397,33 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a> <br><small class="roles"> Author, maintainer </small>  </li>
 <li>
 <a href="https://jimhester.com" class="external-link">Jim Hester</a> <br><small class="roles"> Author </small>  </li>
-<li>RStudio <br><small class="roles"> Copyright holder, funder </small>  </li>
+<li>
+<a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=pak" class="external-link"><img src="https://www.r-pkg.org/badges/version/pak"></a></li>
-<li><a href="https://www.r-pkg.org/pkg/pak" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/pak" alt="CRAN RStudio mirror downloads"></a></li>
-<li><a href="https://app.codecov.io/gh/r-lib/pak?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/pak/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/pak/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-</ul>
-</div>
 
-  </div>
+
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+   </div>
+  <footer><div class="container">
+  <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Gábor Csárdi, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, RStudio.</p>
+<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
-      </footer>
-</div>
-
-  
-
-
-  
-
-  </body>
+  </div></footer>
+</body>
 </html>
