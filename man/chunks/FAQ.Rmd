@@ -34,7 +34,7 @@ pak::pkg_install("tibble?source")
 
 ```{asciicast faq-ignore}
 pak::pkg_install(
-  c("tibble", "DiagrammeR=?ignore", "formattable?=ignore"),
+  c("tibble", "DiagrammeR=?ignore", "formattable=?ignore"),
   dependencies = TRUE
 )
 ```
