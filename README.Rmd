@@ -45,7 +45,7 @@ dir.create(.lib <- tempfile())
 pak::pkg_install("tibble")
 ```
 
-#### Install packages from GItHub
+#### Install packages from GitHub
 
 ```{asciicast gh}
 pak::pkg_install("tidyverse/tibble")

@@ -49,13 +49,13 @@ pak::pkg_install("tibble", upgrade = TRUE)
 pak::pkg_deps("tibble")
 ```
 
-## Depenendency tree of a CRAN / Bioconductor package
+## Dependency tree of a CRAN / Bioconductor package
 
 ```{asciicast tldr-deps-tree}
 pak::pkg_deps_tree("tibble")
 ```
 
-## Dependency trre of a package on GitHub
+## Dependency tree of a package on GitHub
 
 ```{asciicast tldr-deps-gh}
 pak::pkg_deps_tree("tidyverse/tibble")
