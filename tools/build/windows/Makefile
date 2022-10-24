@@ -1,5 +1,5 @@
 
-RVERSIONS ?= $(shell rim list)
+RVERSIONS ?= $(shell rig list)
 RVERSION_DEFAULT ?= $(shell R.bat -s  -e 'cat(as.character(getRversion()))')
 
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')

@@ -90,20 +90,20 @@ jobs:
       with:
         fetch-depth: 10
 
-    - name: Install rim
+    - name: Install rig
       run: |
-        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
-        sudo installer -pkg rim-0.2.2-macOS-x86_64.pkg -target /
+        curl -OL https://github.com/gaborcsardi/rig/releases/download/v0.2.2/rig-0.2.2-macOS-x86_64.pkg
+        sudo installer -pkg rig-0.5.2-macOS-x86_64.pkg -target /
 
     - name: Install R
       run: |
-        sudo rim add 3.4
-        sudo rim add 3.5
-        sudo rim add 3.6
-        sudo rim add 4.0
-        sudo rim add 4.1
-        sudo rim add next
-        sudo rim add devel
+        sudo rig add 3.4
+        sudo rig add 3.5
+        sudo rig add 3.6
+        sudo rig add 4.0
+        sudo rig add 4.1
+        sudo rig add next
+        sudo rig add devel
 
     - name: Install skopeo
       run: |
@@ -143,10 +143,10 @@ jobs:
         git config --local user.name "$GITHUB_ACTOR"
         git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-    - name: Install rim
+    - name: Install rig
       run: |
-        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-windows-0.2.2.exe -OutFile rim.exe
-        Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
+        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rig/releases/download/v0.2.2/rig-windows-0.5.2.exe -OutFile rig.exe
+        Start-Process ".\rig.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
         # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
@@ -164,16 +164,16 @@ jobs:
     # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
-        rim add 3.4
-        rim add 3.5
-        rim add 3.6
-        rim add 4.0
-        rim add 4.1
-        rim add next
-        rim add devel
-        rim add rtools35
-        # rim add rtools40 # already installed
-        rim default 4.2.1
+        rig add 3.4
+        rig add 3.5
+        rig add 3.6
+        rig add 4.0
+        rig add 4.1
+        rig add next
+        rig add devel
+        rig add rtools35
+        # rig add rtools40 # already installed
+        rig default 4.2.1
 
     - name: Build pak binaries
       run: |
