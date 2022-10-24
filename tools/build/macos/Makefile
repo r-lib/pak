@@ -1,7 +1,7 @@
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= $(shell rim list)
+RVERSIONS ?= $(shell rig list)
 RVERSION_DEFAULT ?= $(shell R -s  -e 'cat(as.character(getRversion()[,1:2]))')
 
 PKGCONFIGVERSION=0.29.2
