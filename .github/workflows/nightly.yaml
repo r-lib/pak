@@ -331,7 +331,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Dependencies
-      uses: r-lib/actions/setup-r-dependencies@v2
+      uses: r-lib/actions/setup-r-dependencies@v2-branch
 
     - name: Install local pak tree
       run: R CMD INSTALL .
