@@ -228,7 +228,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   macos-m1:
-    runs-on: [self-hosted, macOS, arm64]
+    runs-on: [macos-arm64]
     if: ${{ github.event.inputs.macos-m1 == '' || github.event.inputs.macos-m1 == 'yes' }}
     name: macos arm64 pak binaries
     defaults:
@@ -273,7 +273,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   linux-arm64:
-    runs-on: [self-hosted, Linux, arm64]
+    runs-on: [linux-arm64]
     if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
