@@ -92,8 +92,8 @@ jobs:
 
     - name: Install rig
       run: |
-        curl -OL https://github.com/r-lib/rig/releases/download/v0.5.2/rig-0.5.2-macOS-x86_64.pkg
-        sudo installer -pkg rig-0.5.2-macOS-x86_64.pkg -target /
+        curl -OL https://github.com/r-lib/rig/releases/download/v0.2.2/rig-0.2.2-macOS-x86_64.pkg
+        sudo installer -pkg rig-0.2.2-macOS-x86_64.pkg -target /
 
     - name: Install R
       run: |
@@ -145,7 +145,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.5.2/rig-windows-0.5.2.exe -OutFile rig.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.2.2/rig-windows-0.2.2.exe -OutFile rig.exe
         Start-Process ".\rig.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
         # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
