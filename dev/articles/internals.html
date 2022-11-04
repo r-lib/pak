@@ -92,30 +92,73 @@
 <div class="section level2">
 <h2 id="the-embedded-library">The embedded library<a class="anchor" aria-label="anchor" href="#the-embedded-library"></a>
 </h2>
-<p>pak bundles its dependencies into the installed package, or into the user’s cache directory. This can happen several ways:</p>
+<p>pak bundles its dependencies into the installed package, or into the
+user’s cache directory. This can happen several ways:</p>
 <ol style="list-style-type: decimal">
-<li><p>If not running inside <code>R CMD check</code>, <code>R CMD INSTALL</code> installs all dependencies when installing package data, into <code>/library</code> within the installed package. Downloading and installing the (currently) 37 dependencies takes about 1-1.5 minutes for platforms with binaries, and about 4 minutes for platforms that compile everything from source (measured on Linux). The goal of this is to create self-contained binaries on CRAN.</p></li>
-<li><p>The main advantage of doing this in the data step is that we can show the progress and/or other messages to the user.</p></li>
-<li><p>If the bundling fails, pak errors. This is to avoid creating a non-functional binary package. Hopefully CRAN will just try creating the binary again, later.</p></li>
-<li><p>This also works well on platforms that do not (yet) have binaries, e.g. M1 macs, Linux or the new experimental Windows platform.</p></li>
-<li><p>When running inside <code>R CMD check</code>, pak does not bundle its dependencies, to make the checks faster.</p></li>
-<li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does not install the package during the check. Instead, they pre-install it, and then refer to the install log in the check. They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.</p></li>
-<li><p>When pak is installed from GitHub, using <code>remotes::install_github()</code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
-<li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field, then pak does not bundle its dependencies, only emits a message that suggests using <code>create_dev_lib()</code>. This is because we can’t easily install from GitHub using base R functions only.</p></li>
-<li><p>When running <code>R CMD check</code>, pak uses <code>testthat.R</code> to bundle the dependencies into the temporary installation that is used in the check. However, pak <em>copies</em> the dependencies in this case, to make the check faster. If copying the dependencies fails, then pak skips the test suite. The reason for copying in <code>testthat.R</code> instead of install time is that this way we avoid the check warning about the large <code>/library</code> directory.</p></li>
-<li><p>If the pak installation currently being tested does not have bundled dependencies, then <code>setup.R</code> bundles them, but into the user’s cache directory. This is to make sure that we can still use <code>devtools::test()</code> and alike for development.</p></li>
-<li><p>When developing pak interactively, e.g. using <code>load_all()</code>, use <code>create_dev_lib()</code> to copy dependencies into the user’s cache directory.</p></li>
+<li><p>If not running inside <code>R CMD check</code>,
+<code>R CMD INSTALL</code> installs all dependencies when installing
+package data, into <code>/library</code> within the installed package.
+Downloading and installing the (currently) 37 dependencies takes about
+1-1.5 minutes for platforms with binaries, and about 4 minutes for
+platforms that compile everything from source (measured on Linux). The
+goal of this is to create self-contained binaries on CRAN.</p></li>
+<li><p>The main advantage of doing this in the data step is that we can
+show the progress and/or other messages to the user.</p></li>
+<li><p>If the bundling fails, pak errors. This is to avoid creating a
+non-functional binary package. Hopefully CRAN will just try creating the
+binary again, later.</p></li>
+<li><p>This also works well on platforms that do not (yet) have
+binaries, e.g. M1 macs, Linux or the new experimental Windows
+platform.</p></li>
+<li><p>When running inside <code>R CMD check</code>, pak does not bundle
+its dependencies, to make the checks faster.</p></li>
+<li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does
+not install the package during the check. Instead, they pre-install it,
+and then refer to the install log in the check. They do set up the same
+env vars for the pre-install, so pak still does not bundle the
+dependencies in this case.</p></li>
+<li><p>When pak is installed from GitHub, using
+<code>remotes::install_github()</code> or similar, the same dependency
+bundling happens. This is nice on platforms for which we do not build a
+self-contained binary. But see also the next item.</p></li>
+<li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field,
+then pak does not bundle its dependencies, only emits a message that
+suggests using <code>create_dev_lib()</code>. This is because we can’t
+easily install from GitHub using base R functions only.</p></li>
+<li><p>When running <code>R CMD check</code>, pak uses
+<code>testthat.R</code> to bundle the dependencies into the temporary
+installation that is used in the check. However, pak <em>copies</em> the
+dependencies in this case, to make the check faster. If copying the
+dependencies fails, then pak skips the test suite. The reason for
+copying in <code>testthat.R</code> instead of install time is that this
+way we avoid the check warning about the large <code>/library</code>
+directory.</p></li>
+<li><p>If the pak installation currently being tested does not have
+bundled dependencies, then <code>setup.R</code> bundles them, but into
+the user’s cache directory. This is to make sure that we can still use
+<code>devtools::test()</code> and alike for development.</p></li>
+<li><p>When developing pak interactively, e.g. using
+<code>load_all()</code>, use <code>create_dev_lib()</code> to copy
+dependencies into the user’s cache directory.</p></li>
 </ol>
 <p>In summary, these are the various bundling modes:</p>
 <ol style="list-style-type: decimal">
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is ready to use</p></li>
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code> → no not bundle</p></li>
-<li><p><code>R CMD check</code> → copy into <code>/library</code>, ignore errors</p></li>
-<li><p><code>remotes::install_github()</code> without <code>Remotes</code> → install into <code>/library</code></p></li>
-<li><p><code>remotes::install_github()</code> with <code>Remotes</code> → no not bundle</p></li>
-<li><p><code>devtools::test()</code> and similar → copy into user’s cache directory</p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is
+ready to use</p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install
+into <code>/library</code></p></li>
+<li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install
+into <code>/library</code></p></li>
+<li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code>
+→ no not bundle</p></li>
+<li><p><code>R CMD check</code> → copy into <code>/library</code>,
+ignore errors</p></li>
+<li><p><code>remotes::install_github()</code> without
+<code>Remotes</code> → install into <code>/library</code></p></li>
+<li><p><code>remotes::install_github()</code> with <code>Remotes</code>
+→ no not bundle</p></li>
+<li><p><code>devtools::test()</code> and similar → copy into user’s
+cache directory</p></li>
 </ol>
 </div>
   </main>
