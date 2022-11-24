@@ -181,7 +181,7 @@ jobs:
         rim add devel
         rim add rtools35
         # rim add rtools40 # already installed
-        rim default 4.2.1
+        rim default 4.2.2
 
     - name: Build pak binaries
       run: |
