@@ -11,7 +11,8 @@
 ^README\.md$
 ^README\.html$
 ^Makefile$
-^tools$
+^tools/build$
+^tools/tests$
 ^\.Rprofile$
 ^\.github$
 ^pak_.*\.tgz$
