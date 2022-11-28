@@ -50,6 +50,27 @@ remote <- function(func, args = list()) {
       )
   }, subst_args)
 
+  opts <- options()
+  pkg_options <- opts[grepl("^pkg[.]", names(opts))]
+  envs <- Sys.getenv()
+  pkg_envs <- envs[grepl("^PKG_", names(envs))]
+  rs$run(function(new_opts, new_envs) {
+    opts <- options()
+    old_opts <- opts[grepl("^pkg[.]", names(opts))]
+    # remove all pkg.* options
+    options(structure(
+      vector(length(old_opts), mode = "list"),
+      names = names(old_opts)
+    ))
+    # set new ones
+    options(new_opts)
+
+    envs <- Sys.getenv()
+    old_envs <- envs[grepl("^PKG_", names(envs))]
+    Sys.unsetenv(old_envs)
+    do.call("Sys.setenv", as.list(new_envs))
+  }, list(new_opts = pkg_options, new_envs = pkg_envs))
+
   res <- withCallingHandlers(
     callr_message = function(msg) {
       withRestarts({
