@@ -291,3 +291,7 @@ is_flag <- function(x) {
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
+
+map_named <- function(x, fun) {
+  mapply(names(x), x, SIMPLIFY = FALSE, FUN = fun)
+}
