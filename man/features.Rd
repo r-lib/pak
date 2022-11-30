@@ -47,7 +47,7 @@ of its dependencies are also installed.
 
 \subsection{Keeping binary packages up-to-date}{
 
-pak automatically discads binary packages from the cache, if a new build
+pak automatically discards binary packages from the cache, if a new build
 of the same version is available on CRAN.
 }
 
@@ -61,7 +61,7 @@ because of a synchronization issue.
 }
 }
 
-\subsection{Graceful handling of locked packaeg DLLs on Windows}{
+\subsection{Graceful handling of locked package DLLs on Windows}{
 
 pak handles the situation of locked package DLLs, as well as possible.
 It detects which process locked them, and offers the choice of terminating
@@ -119,7 +119,7 @@ or CRAN.
 
 \subsection{pak can install dependencies of local packages}{
 
-Very handly for package development!
+Very handy for package development!
 }
 }
 
