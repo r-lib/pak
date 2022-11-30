@@ -68,7 +68,7 @@ remote <- function(func, args = list()) {
     envs <- Sys.getenv()
     old_envs <- envs[grepl("^PKG_", names(envs))]
     Sys.unsetenv(old_envs)
-    do.call("Sys.setenv", as.list(new_envs))
+    if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
   }, list(new_opts = pkg_options, new_envs = pkg_envs))
 
   res <- withCallingHandlers(
