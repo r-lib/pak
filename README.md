@@ -35,8 +35,8 @@ pak::pkg_install("tibble")
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="man/figures/cran.svg">
-  <source media="(prefers-color-scheme: light)" srcset="man/figures/cran-dark.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="./man/figures/cran.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./man/figures/cran-dark.svg">
 </picture>
 
 #### Install packages from GItHub
