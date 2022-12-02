@@ -34,7 +34,10 @@ pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and d
 pak::pkg_install("tibble")
 ```
 
-<img src="man/figures/cran.svg" width="100%" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="man/figures/cran.svg">
+  <source media="(prefers-color-scheme: light)" srcset="man/figures/cran-dark.svg">
+</picture>
 
 #### Install packages from GItHub
 
