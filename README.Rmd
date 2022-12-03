@@ -25,6 +25,8 @@ knitr::opts_chunk$set(
 asciicast::init_knitr_engine(
   startup = quote({
     library(cli)
+    library(pak)
+    pak::lib_status()
     set.seed(1) }),
   echo = TRUE,
   echo_input = FALSE,
