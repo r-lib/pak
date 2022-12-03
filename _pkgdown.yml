@@ -77,11 +77,6 @@ reference:
   - lockfile_create
   - lockfile_install
 
-- title: Configuration
-  contents:
-  - pak_config
-  - pak_sitrep
-
 - title: pak housekeeping
   contents:
   - cache_summary
@@ -90,4 +85,5 @@ reference:
   - pak_install_extra
   - pak_setup
   - pak_cleanup
+  - pak_sitrep
   - pak_update

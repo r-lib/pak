@@ -3,12 +3,27 @@
 \name{pak-config}
 \alias{pak-config}
 \alias{pak_config}
+\alias{config}
 \title{pak configuration}
 \description{
 pak behavior can be finetuned with environment variables and
 options (as in \code{\link[base:options]{base::options()}}).
 }
-\details{
+\section{R options affecting pak's behavior}{
+\subsection{\code{Ncpus}}{
+
+Set to the desired number of worker processes for package installation.
+If not set, then pak will use the number of logical processors in the
+machine.
+}
+
+\subsection{\code{repos}}{
+
+The CRAN-like repositories to use. See \code{\link[base:options]{base::options()}} for details.
+}
+}
+
+\section{pak configuration}{
 Configuration entries (unless noted otherwise on this manual page)
 have a corresponding environment variable, and a corresponding option.
 
@@ -28,4 +43,13 @@ Some examples:\tabular{lll}{
 
 \eval{pak:::doc_config()}
 }
+
+\subsection{Notes}{
+
+From version 0.4.0 pak copies the \verb{PKG_*} environment variables and
+the \verb{pkg.*} options to the pak subprocess, where they are actually
+used, so you don't need to restart R or reaload pak after a
+configuration change.
 }
+}
+

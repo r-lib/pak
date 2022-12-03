@@ -43,24 +43,28 @@ NULL
 
 #' pak configuration
 #'
-#' @name config
-#' @description
-#' Environment variables and options that modify the default pak behavior.
-#'
-#' ```{r child = "man/chunks/config.Rmd"}
-#' ```
-NULL
-
-#' pak configuration
-#'
 #' @name pak-config
-#' @aliases pak_config
+#' @aliases pak_config config
 #'
 #' @description
 #' pak behavior can be finetuned with environment variables and
 #' options (as in [base::options()]).
 #'
 #' @details
+#' # R options affecting pak's behavior
+#'
+#' ## `Ncpus`
+#' 
+#' Set to the desired number of worker processes for package installation.
+#' If not set, then pak will use the number of logical processors in the
+#' machine.
+#'
+#' ## `repos`
+#'
+#' The CRAN-like repositories to use. See [base::options()] for details.
+#' 
+#' # pak configuration
+#' 
 #' Configuration entries (unless noted otherwise on this manual page)
 #' have a corresponding environment variable, and a corresponding option.
 #'
