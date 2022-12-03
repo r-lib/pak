@@ -106,7 +106,7 @@ package), use the \code{?source} parameter:
 \subsection{How do I ignore an optional dependency?}{
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install(
-  c("tibble", "DiagrammeR=?ignore", "formattable?=ignore"),
+  c("tibble", "DiagrammeR=?ignore", "formattable=?ignore"),
   dependencies = TRUE
 )
 }\if{html}{\out{</div>}}\if{html}{\out{

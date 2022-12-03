@@ -11,7 +11,8 @@
 ^README\.md$
 ^README\.html$
 ^Makefile$
-^tools$
+^tools/build$
+^tools/tests$
 ^\.Rprofile$
 ^\.github$
 ^pak_.*\.tgz$
@@ -29,3 +30,4 @@
 ^man/chunks/.*_cache$
 ^man/chunks/.*_files$
 ^tibble$
+^man/macros/eval2.Rd$

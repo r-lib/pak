@@ -138,7 +138,7 @@ This manual page collects the most common pak use cases.
 
 }
 
-\subsection{Depenendency tree of a CRAN / Bioconductor package}{
+\subsection{Dependency tree of a CRAN / Bioconductor package}{
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_tree("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
@@ -170,7 +170,7 @@ This manual page collects the most common pak use cases.
 
 }
 
-\subsection{Dependency trre of a package on GitHub}{
+\subsection{Dependency tree of a package on GitHub}{
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_tree("tidyverse/tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
