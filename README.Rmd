@@ -37,6 +37,11 @@ dir.create(.lib <- tempfile())
 .libPaths(c(.lib, .libPaths()))
 ```
 
+```{asciicast tmp-cache, include = FALSE, cache = FALSE}
+Sys.setenv(R_USER_CACHE_DIR = tempfile())
+options(cli_num_colors = 256)
+```
+
 ## :rocket: Short tour
 
 #### Install or update packages from CRAN or Bioconductor
