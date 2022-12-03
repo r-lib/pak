@@ -66,7 +66,27 @@ options (as in <code><a href="https://rdrr.io/r/base/options.html" class="extern
 
 
     <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <h2 id="r-options-affecting-pak-s-behavior">R options affecting pak's behavior<a class="anchor" aria-label="anchor" href="#r-options-affecting-pak-s-behavior"></a></h2>
+    
+<div class="section">
+<h3 id="ncpus"><code>Ncpus</code><a class="anchor" aria-label="anchor" href="#ncpus"></a></h3>
+
+
+<p>Set to the desired number of worker processes for package installation.
+If not set, then pak will use the number of logical processors in the
+machine.</p>
+</div>
+
+<div class="section">
+<h3 id="repos"><code>repos</code><a class="anchor" aria-label="anchor" href="#repos"></a></h3>
+
+
+<p>The CRAN-like repositories to use. See <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code> for details.</p>
+</div>
+
+    </div>
+    <div class="section level2">
+    <h2 id="pak-configuration">pak configuration<a class="anchor" aria-label="anchor" href="#pak-configuration"></a></h2>
     <p>Configuration entries (unless noted otherwise on this manual page)
 have a corresponding environment variable, and a corresponding option.</p>
 <p>The environment variable is always uppercase and uses underscores as the
@@ -142,6 +162,16 @@ Windows binaries for R 4.2.x currently. <code>"both"</code> is the default
 for R 4.2.0 and earlier.</p></li>
 </ul></li>
 </ul></div>
+
+<div class="section">
+<h3 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a></h3>
+
+
+<p>From version 0.4.0 pak copies the <code>PKG_*</code> environment variables and
+the <code>pkg.*</code> options to the pak subprocess, where they are actually
+used, so you don't need to restart R or reaload pak after a
+configuration change.</p>
+</div>
 
     </div>
 
