@@ -11,18 +11,17 @@
 
 pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to `install.packages()` and `devtools::install_github()`. pak is fast, safe and convenient.
 
--   <a href="#rocket-short-tour" id="toc-rocket-short-tour">:rocket: Short
-    tour</a>
--   <a href="#link-quick-links-start-here-if-in-doubt"
-    id="toc-link-quick-links-start-here-if-in-doubt">:link: Quick links
-    (start here if in doubt!)</a>
--   <a href="#sparkles-features" id="toc-sparkles-features">:sparkles:
-    Features</a>
--   <a href="#arrow_down-installation"
-    id="toc-arrow_down-installation"><span>:arrow_down:</span>
-    Installation</a>
--   <a href="#blue_book-license"
-    id="toc-blue_book-license"><strong>:blue_book:</strong> License</a>
+- <a href="#rocket-short-tour" id="toc-rocket-short-tour">:rocket: Short
+  tour</a>
+- <a href="#link-quick-links-start-here-if-in-doubt"
+  id="toc-link-quick-links-start-here-if-in-doubt">:link: Quick links
+  (start here if in doubt!)</a>
+- <a href="#sparkles-features" id="toc-sparkles-features">:sparkles:
+  Features</a>
+- <a href="#arrow_down-installation"
+  id="toc-arrow_down-installation">:arrow_down: Installation</a>
+- <a href="#blue_book-license"
+  id="toc-blue_book-license"><strong>:blue_book:</strong> License</a>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -34,15 +33,19 @@ pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and d
 pak::pkg_install("tibble")
 ```
 
-<img src="man/figures/cran.svg" width="100%" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/cran-dark.svg">
+<img src="man/figures/cran.svg" width="100%" /> </picture>
 
-#### Install packages from GItHub
+#### Install packages from GitHub
 
 ``` r
 pak::pkg_install("tidyverse/tibble")
 ```
 
-<img src="man/figures/gh.svg" width="100%" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/gh-dark.svg">
+<img src="man/figures/gh.svg" width="100%" /> </picture>
 
 #### Look up dependencies
 
@@ -50,7 +53,9 @@ pak::pkg_install("tidyverse/tibble")
 pak::pkg_deps_tree("tibble")
 ```
 
-<img src="man/figures/deps.svg" width="100%" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/deps-dark.svg">
+<img src="man/figures/deps.svg" width="100%" /> </picture>
 
 #### Explain dependencies
 
@@ -58,7 +63,9 @@ pak::pkg_deps_tree("tibble")
 pak::pkg_deps_explain("tibble", "rlang")
 ```
 
-<img src="man/figures/explain.svg" width="100%" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/explain-dark.svg">
+<img src="man/figures/explain.svg" width="100%" /> </picture>
 
 #### Install a local package and its dependencies
 
@@ -66,7 +73,9 @@ pak::pkg_deps_explain("tibble", "rlang")
 pak::local_install("cli")
 ```
 
-<img src="man/figures/local.svg" width="100%" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/local-dark.svg">
+<img src="man/figures/local.svg" width="100%" /> </picture>
 
 ## :link: Quick links (start here if in doubt!)
 

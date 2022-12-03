@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures",
   out.width = "100%",
   cache = TRUE,
-  asciicast_theme = "pkgdown"
+  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
 )
 asciicast::init_knitr_engine(
   startup = quote({
@@ -35,6 +35,11 @@ asciicast::init_knitr_engine(
 ```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
 dir.create(.lib <- tempfile())
 .libPaths(c(.lib, .libPaths()))
+```
+
+```{asciicast tmp-cache, include = FALSE, cache = FALSE}
+Sys.setenv(R_USER_CACHE_DIR = tempfile())
+options(cli_num_colors = 256)
 ```
 
 ## :rocket: Short tour
