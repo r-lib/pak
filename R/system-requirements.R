@@ -131,7 +131,7 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
   }
 
-  commands <- as.character(c(pre_install, install_scripts))
+  commands <- as.character(c(pre_install, simplify_install(install_scripts)))
   if (echo) {
     callback <- function(x, ...) cli::cli_verbatim(sub("[\r\n]+$", "", x))
   } else {
@@ -163,5 +163,19 @@ supported_os_versions <- function() {
     "opensuse" = c("42.3", "15.0"),
     "sle" = c("12.3", "15.0")
     #"windows" = c("")
+  )
+}
+
+# Grouping multiple `apt-get install -y` calls in install scripts.
+# This should be done by the server, but isn't (yet).
+simplify_install <- function(x) {
+  rx <- "^apt-get install -y ([a-z0-9-]+)$"
+  if (length(x) == 0 || !all(grepl(rx, x))) {
+    return(x)
+  }
+
+  paste0(
+    "apt-get install -y ",
+    paste(gsub(rx, "\\1", x), collapse = " ")
   )
 }

@@ -75,9 +75,7 @@ test_that("local_system_requirements return the system requirements if it has a 
 
   expect_equal(
     local_system_requirements("ubuntu", "16.04", pkg),
-    c("apt-get install -y libcurl4-openssl-dev",
-      "apt-get install -y libssl-dev"
-    )
+    "apt-get install -y libcurl4-openssl-dev libssl-dev"
   )
 
   expect_equal(
@@ -100,9 +98,7 @@ test_that("local_system_requirements return the system requirements if it has a 
 
   expect_equal(
     local_system_requirements("ubuntu", "16.04", pkg),
-    c("apt-get install -y libcurl4-openssl-dev",
-      "apt-get install -y libssl-dev"
-    )
+    "apt-get install -y libcurl4-openssl-dev libssl-dev"
   )
 
   expect_equal(
@@ -126,9 +122,7 @@ test_that("local_system_requirements return the system requirements if 2nd order
 
   expect_equal(
     local_system_requirements("ubuntu", "16.04", pkg),
-    c("apt-get install -y libcurl4-openssl-dev",
-      "apt-get install -y libssl-dev"
-    )
+    "apt-get install -y libcurl4-openssl-dev libssl-dev"
   )
 
   expect_equal(
@@ -144,8 +138,6 @@ test_that("pkg_system_requirements returns the system requirements", {
 
   expect_equal(
     pkg_system_requirements("curl", "ubuntu", "16.04"),
-    c("apt-get install -y libcurl4-openssl-dev",
-      "apt-get install -y libssl-dev"
-    )
+    "apt-get install -y libcurl4-openssl-dev libssl-dev"
   )
 })
