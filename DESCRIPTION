@@ -71,6 +71,7 @@ Config/Needs/website:
     r-lib/roxygen2@feature/html-blocks,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
+Config/build/extra-sources: configure*
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
 BuildResaveData: no
