@@ -1,5 +1,7 @@
 #! /usr/bin/env sh
 
+echo "*** Running ./configure"
+
 # Check that this is not just ./configure. We need to run this
 # from R CMD INSTALL, to have the R env vars set.
 

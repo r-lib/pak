@@ -28,4 +28,12 @@ Some examples:\tabular{lll}{
 
 \eval{pak:::doc_config()}
 }
+
+\subsection{Notes}{
+
+From version 0.4.0 pak copies the \verb{PKG_*} environment variables and
+the \verb{pkg.*} options to the pak subprocess, where they are actually
+used, so you don't need to restart R or reaload pak after a
+configuration change.
+}
 }
