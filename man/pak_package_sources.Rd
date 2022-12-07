@@ -19,4 +19,4 @@ Other package functions:
 \code{\link{pkg_status}()}
 }
 \concept{package functions}
-\evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds")}
+\evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = TRUE)}

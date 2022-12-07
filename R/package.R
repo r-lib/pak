@@ -6,7 +6,7 @@
 #' can be found.
 #'
 #' @details NULL
-#' @rawRd \evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds")}
+#' @rawRd \evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = TRUE)}
 #'
 #' @name pak_package_sources
 #' @family package functions
