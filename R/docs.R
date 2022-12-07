@@ -116,3 +116,14 @@ doc_config <- function() {
     "}"
   )
 }
+
+include_docs <- function(pkg, file) {
+  lib <- private_lib_dir()
+  rds <- file.path(lib, pkg, file)
+  if (!file.exists(rds)) {
+    return("Cannot look up documentation in pkgdepends. :(")
+  }
+
+  rd <- readRDS(rds)
+  rd
+}

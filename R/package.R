@@ -1,115 +1,17 @@
 
 #' Package sources
 #'
-#' @section Standard packages:
+#' @description
+#' Learn how to tell pak which packages to install, and where those packages
+#' can be found.
+#' 
+#' @rawRd \eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds")}
 #'
-#' pak can install packages from various package sources. By default,
-#' a package name without the specification of its source, refers to a
-#' CRAN or Bioconductor package. pak calls these _standard_ packages.
-#' For example:
-#'
-#' ```r
-#' ## CRAN package
-#' pkg_install("glue")
-#' ## BioC package
-#' pkg_install("limma")
-#' ```
-#' When considering a standard package, the calling version of R is used
-#' to determine the available source and binary packages on CRAN and the
-#' Bioconductor repositories.
-#'
-#' The full specification of standard packages is simply
-#' ```
-#' [standard::]<package>
-#' ```
-#'
-#' If you know the exact source of the package, you can also write
-#' ```
-#' cran::<package>
-#' bioc::<package>
-#' ```
-#'
-#' @section GitHub packages:
-#'
-#' pak can install packages from GitHub repositories. Any package that
-#' is specified in the `user/repo` notation is taken to be a GitHub package.
-#' For example:
-#'
-#' ```r
-#' ## Package from GitHub
-#' pkg_install("r-lib/glue")
-#' ```
-#'
-#' The full specification of GitHub packages is
-#' ```
-#' [<package>=][github::]<username>/<repo>[/<subdir>]
-#'     [@<committish> | #<pull> | @[*]release]
-#'
-#' ```
-#'
-#' * `<package>` is the name of the package. If this is missing, the
-#'   name of the package must match the name of the repository.
-#' * `<username>`: GitHub user or organization name.
-#' * `<repo>`: repository name.
-#' * `<subdir>`: If the R package is in a subdirectory within the
-#'   repository.
-#' * `<commitish>`: A branch name, git tag or SHA hash, to specify the
-#'   branch, tag or commit to download or install.
-#' * `<pull>`: Pull request number, to install the branch that corresponds
-#'   to a pull request.
-#' * The `@*release` string can be used to install the latest release.
-#'
-#' @section Local package trees:
-#'
-#' pak can install packages from package trees. You can either use the
-#' [local_install()] function for this, or specify the `local::` package
-#' source. E.g. these are equivalent:
-#'
-#' ```r
-#' local_install("/path/to/my/package")
-#' pkg_install("local::/path/to/my/package")
-#' ```
-#'
-#' The `local::` form is handy if you want to mix it with other package
-#' specifications, e.g. to install a local package, and another standard
-#' package:
-#'
-#' ```r
-#' pkg_install(c("local://path/to/my/package", "testthat"))
-#' ```
-#'
-#' @section The `Remotes` field:
-#'
-#' You can mark any regular dependency defined in the `Depends`, `Imports`,
-#' `Suggests` or `Enhances` fields as being installed from a remote
-#' location by adding the remote location to `Remotes` in your
-#' `DESCRIPTION` file. This will cause pak to download and install them
-#' from the specified location, instead of CRAN.
-#'
-#' The remote dependencies specified in `Remotes` is a comma separated
-#' list of package sources:
-#'
-#' ```
-#' Remotes: <pkg-source-1>, <pkg-source-2>, [ ... ]
-#' ```
-#'
-#' Note that you will still need add the package to one of the regular
-#' dependency fields, i.e. `Imports`, `Suggests`, etc. Here is a concrete
-#' example that specifies the `r-lib/glue` package:
-#'
-#' ```
-#' Imports: glue
-#' Remotes: r-lib/glue,
-#'   r-lib/httr@v0.4,
-#'   klutometis/roxygen#142,
-#'   r-lib/testthat@c67018fa4970
-#' ```
-#'
-#' The CRAN and Bioconductor repositories do not support the `Remotes`
-#' field, so you need to remove this field, before submitting your package
-#' to either of them.
-#'
-#' @section The package dependency solver:
+#' @name pak_package_sources
+#' @family package functions
+NULL
+
+#' The package dependency solver
 #'
 #' pak contains a package dependency solver, that makes sure that the
 #' package source and version requirements of all packages are satisfied,
@@ -153,8 +55,8 @@
 #' two different packages with the same cannot be installed into an R
 #' package library.
 #'
-#' @name pak_package_sources
-#' @family package functions
+#' @name pak_solver
+#' @family pakcage functions
 NULL
 
 #' Install a package
