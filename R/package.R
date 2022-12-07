@@ -4,8 +4,9 @@
 #' @description
 #' Learn how to tell pak which packages to install, and where those packages
 #' can be found.
-#' 
-#' @rawRd \eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds")}
+#'
+#' @details NULL
+#' @rawRd \evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds")}
 #'
 #' @name pak_package_sources
 #' @family package functions
