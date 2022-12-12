@@ -68,7 +68,7 @@ Remotes:
     r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
-    r-lib/roxygen2@feature/html-blocks,
+    r-lib/roxygen2,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Config/build/extra-sources: configure*
