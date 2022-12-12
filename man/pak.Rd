@@ -2,13 +2,13 @@
 % Please edit documentation in R/pak.R
 \name{pak}
 \alias{pak}
-\title{Install the required packages}
+\title{Install specified required packages}
 \usage{
 pak(pkg = NULL, ...)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
-See \link[=pak_package_sources]{pak package sources} for details. If \code{NULL},
+See \link[=Package sources]{pak package sources} for details. If \code{NULL},
 will install all development dependencies for the current package.}
 
 \item{...}{Extra arguments are passed to \code{\link[=pkg_install]{pkg_install()}} or
@@ -33,7 +33,6 @@ packages, just one.
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},

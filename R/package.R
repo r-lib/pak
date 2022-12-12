@@ -1,96 +1,50 @@
 
-#' Package sources
+#' Install packages
 #'
-#' @description
-#' Learn how to tell pak which packages to install, and where those packages
-#' can be found.
-#'
-#' @details
-#' \eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
-#'
-#' @name pak_package_sources
-#' @family package functions
-NULL
-
-#' The package dependency solver
-#'
-#' pak contains a package dependency solver, that makes sure that the
-#' package source and version requirements of all packages are satisfied,
-#' before starting an installation. For CRAN and BioC packages this is
-#' usually automatic, because these repositories are generally in a
-#' consistent state. If packages depend on other other package sources,
-#' however, this is not the case.
-#'
-#' Here is an example of a conflict detected:
-#' ```
-#' > pak::pkg_install(c("r-lib/pkgcache@conflict", "r-lib/cli@message"))
-#' Error: Cannot install packages:
-#'   * Cannot install `r-lib/pkgcache@conflict`.
-#'     - Cannot install dependency r-lib/cli@main
-#'   * Cannot install `r-lib/cli@main`.
-#' - Conflicts r-lib/cli@message
-#' ```
-#'
-#' `r-lib/pkgcache@conflict` depends on the main branch of `r-lib/cli`,
-#' whereas, we explicitly requested the `message` branch. Since it cannot
-#' install both versions into a single library, pak quits.
-#'
-#' When pak considers a package for installation, and the package is given
-#' with its name only, (e.g. as a dependency of another package), then
-#' the package may have _any_ package source. This is necessary, because
-#' one R package library may contain only at most one version of a package
-#' with a given name.
-#'
-#' pak's behavior is best explained via an example.
-#' Assume that you are installing a local package (see below), e.g.
-#' `local::.`, and the local package depends on `pkgA` and `user/pkgB`,
-#' the latter being a package from GitHub (see below), and that `pkgA`
-#' also depends on `pkgB`. Now pak must install `pkgB` _and_ `user/pkgB`.
-#' In this case pak interprets `pkgB` as a package from any package source,
-#' instead of a standard package, so installing `user/pkgB` satisfies both
-#' requirements.
-#'
-#' Note that that `cran::pkgB` and `user/pkgB` requirements result a
-#' conflict that pak cannot resolve. This is because the first one _must_
-#' be a CRAN package, and the second one _must_ be a GitHub package, and
-#' two different packages with the same cannot be installed into an R
+#' Install one or more packages and their dependencies into a single
 #' package library.
 #'
-#' @name pak_solver
-#' @family pakcage functions
-NULL
-
-#' Install a package
+#' @param pkg Package names or package references. E.g.
+#'   - `ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
+#'     in general,
+#'   - `tidyverse/ggplot2`: package from GitHub,
+#'   - `tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
+#'   - `https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
+#'   - `.`: package in the current working directory.
 #'
-#' Install a package and its dependencies into a single package library.
-#'
-#' @param pkg Package names or remote package specifications to install.
-#'   See [pak package sources][pak_package_sources] for details.
+#'   See "[Package sources]" for more details.
 #' @param lib Package library to install the packages to. Note that _all_
 #'   dependent packages will the be installed here, even if they are
 #'   already installed in another library.
-#' @param upgrade When `FALSE`, the default, does the minimum amount of work
-#'   to give you the latest version of `pkg`. It will only upgrade packages if
-#'   `pkg`, or one of its dependencies, explicitly requires a higher version
-#'   than what you currently have.
+#' @param upgrade When `FALSE`, the default, pak does the minimum amount
+#'   of work to give you the latest version of `pkg`. It will only upgrade
+#'   dependent packages if `pkg`, or one of their dependencies explicitly
+#'   require a higher version than what you currently have. It will also
+#'   prefer a binary package over to source package, even it the binary
+#'   package is older.
 #'
-#'   When `upgrade = TRUE`, will do ensure that you have the latest version of
-#'   `pkg` and all its dependencies.
+#'   When `upgrade = TRUE`, pak will ensure that you have the latest
+#'   version of `pkg` and all their dependencies.
 #' @param ask Whether to ask for confirmation when installing a different
 #'   version of a package that is already installed. Installations that only
 #'   add new packages never require confirmation.
-#' @param dependencies Dependency types. See
-#'   [pkgdepends::as_pkg_dependencies()] for possible values. Note that
-#'   changing this argument from the default might result an installation
-#'   failure, e.g. if you set it to `FALSE`, packages might not build if
-#'   their dependencies are not already installed.
+#' @param dependencies What kinds of dependencies to install. Most commonly
+#'   one of the following values:
+#'   - `NA`: only required (hard) dependencies,
+#'   - `TRUE`: required dependencies plus optional and development
+#'     dependencies,
+#'   - `FALSE`: do not install any dependencies. (You might end up with a
+#'     non-working package, and/or the installation might fail.)
+#'   See [Package dependency types] for other possible values and more
+#'   information about package dependencies.
 #' @return (Invisibly) A data frame with information about the installed
 #'   package(s).
 #'
 #' @export
+#' @seealso [Package sources], [The dependency solver].
 #' @family package functions
-#' @examples
-#' \dontrun{
+#' @section Examples:
+#' ```r
 #' pkg_install("dplyr")
 #'
 #' # Upgrade dplyr and all its dependencies
@@ -102,7 +56,8 @@ NULL
 #' # Switch back to the CRAN version. This will be fast because
 #' # pak will have cached the prior install.
 #' pkg_install("dplyr")
-#' }
+#' ```
+
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         ask = interactive(), dependencies = NA) {
 
@@ -199,7 +154,7 @@ pkg_status_internal <- function(pkg, lib = .libPaths()) {
   do.call("rbind_expand", st)
 }
 
-#' Remove installed packages
+#' Remove an installed package
 #'
 #' @param pkg A character vector of packages to remove.
 #' @param lib library to remove packages from
@@ -224,11 +179,9 @@ pkg_remove_internal <- function(pkg, lib) {
 
 #' Look up the dependencies of a package
 #'
-#' @param pkg Package name or remote package specification to resolve.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Dependency types. See
-#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @inheritParams pkg_install
 #' @return A data frame.
 #'
 #' @family package functions
@@ -270,11 +223,9 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 
 #' Draw the dependency tree of a package
 #'
-#' @param pkg Package name or remote package specification to resolve.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Dependency types. See
-#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @inheritParams pkg_install
 #' @return The same data frame as [pkg_deps()], invisibly.
 #'
 #' @family package functions
@@ -312,19 +263,16 @@ pkg_list <- function(lib = .libPaths()[1]) {
   lib_status(lib)
 }
 
-#' Download a package and potentially its dependencies as well
+#' Download a package and its dependencies
 #'
-#' @param pkg Package names or remote package specifications to download.
 #' @param dest_dir Destination directory for the packages. If it does not
 #'   exist, then it will be created.
-#' @param dependencies Dependency types, to download the (recursive)
-#'   dependencies of `pkg` as well. See [pkgdepends::as_pkg_dependencies()]
-#'   for possible values.
 #' @param platforms Types of binary or source packages to download. The
 #'   default is the value of [pkgdepends::default_platforms()].
 #' @param r_versions R version(s) to download packages for. (This does not
 #'   matter for source packages, but it does for binaries.) It defaults to
 #'   the current R version.
+#' @inheritParams pkg_install
 #' @return Data frame with information about the downloaded
 #'   packages, invisibly.
 #'

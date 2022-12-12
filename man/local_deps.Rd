@@ -21,10 +21,17 @@ local_dev_deps_tree(root = ".", upgrade = TRUE, dependencies = TRUE)
 \item{upgrade}{Whether to use the most recent available package
 versions.}
 
-\item{dependencies}{Which dependencies to print. Defaults to the hard
-dependencies for \code{local_deps()} and \code{local_deps_tree()} and the hard
-dependencies plus the development dependencies for \code{local_dev_deps()}
-and \code{local_dev_deps_tree()}.}
+\item{dependencies}{What kinds of dependencies to install. Most commonly
+one of the following values:
+\itemize{
+\item \code{NA}: only required (hard) dependencies,
+\item \code{TRUE}: required dependencies plus optional and development
+dependencies,
+\item \code{FALSE}: do not install any dependencies. (You might end up with a
+non-working package, and/or the installation might fail.)
+See \link{Package dependency types} for other possible values and more
+information about package dependencies.
+}}
 }
 \value{
 All of these functions return the dependencies in a data

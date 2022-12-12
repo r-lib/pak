@@ -2,7 +2,7 @@
 % Please edit documentation in R/package.R
 \name{pkg_download}
 \alias{pkg_download}
-\title{Download a package and potentially its dependencies as well}
+\title{Download a package and its dependencies}
 \usage{
 pkg_download(
   pkg,
@@ -13,14 +13,32 @@ pkg_download(
 )
 }
 \arguments{
-\item{pkg}{Package names or remote package specifications to download.}
+\item{pkg}{Package names or package references. E.g.
+\itemize{
+\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
+in general,
+\item \code{tidyverse/ggplot2}: package from GitHub,
+\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
+\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
+\item \code{.}: package in the current working directory.
+}
+
+See "\link{Package sources}" for more details.}
 
 \item{dest_dir}{Destination directory for the packages. If it does not
 exist, then it will be created.}
 
-\item{dependencies}{Dependency types, to download the (recursive)
-dependencies of \code{pkg} as well. See \code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}}
-for possible values.}
+\item{dependencies}{What kinds of dependencies to install. Most commonly
+one of the following values:
+\itemize{
+\item \code{NA}: only required (hard) dependencies,
+\item \code{TRUE}: required dependencies plus optional and development
+dependencies,
+\item \code{FALSE}: do not install any dependencies. (You might end up with a
+non-working package, and/or the installation might fail.)
+See \link{Package dependency types} for other possible values and more
+information about package dependencies.
+}}
 
 \item{platforms}{Types of binary or source packages to download. The
 default is the value of \code{\link[pkgdepends:default_platforms]{pkgdepends::default_platforms()}}.}
@@ -34,7 +52,7 @@ Data frame with information about the downloaded
 packages, invisibly.
 }
 \description{
-Download a package and potentially its dependencies as well
+Download a package and its dependencies
 }
 \examples{
 \dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -45,7 +63,6 @@ pkg_download("r-lib/pak", platforms = "source")
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},

@@ -2,7 +2,7 @@
 % Please edit documentation in R/package.R
 \name{pkg_remove}
 \alias{pkg_remove}
-\title{Remove installed packages}
+\title{Remove an installed package}
 \usage{
 pkg_remove(pkg, lib = .libPaths()[[1L]])
 }
@@ -12,12 +12,11 @@ pkg_remove(pkg, lib = .libPaths()[[1L]])
 \item{lib}{library to remove packages from}
 }
 \description{
-Remove installed packages
+Remove an installed package
 }
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},

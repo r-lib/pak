@@ -1,13 +1,13 @@
 
-#' Local package trees
+#' About local package trees
 #'
 #' pak can install packages from local package trees. This is convenient
 #' for package development. See the following functions:
 #' * [local_install()] installs a package from a package tree and all of its
-#'   (hard) dependencies (i.e. `Includes`, `Depends`, `LinkingTo`.
+#'   dependencies.
 #' * [local_install_deps()] installs all hard dependencies of a package.
 #' * [local_install_dev_deps()] installs all hard and soft dependencies
-#'   of a package. This function is intended for active package development.
+#'   of a package. This function is intended for package development.
 #'
 #' Note that the last two functions do not install the package in the
 #' specified package tree itself, only its dependencies. This is convenient
@@ -98,7 +98,7 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
   invisible(inst)
 }
 
-#' Install all dependencies of a package tree
+#' Install all (development) dependencies of a package tree
 #'
 #' Installs all dependencies of a package tree (or source package file),
 #' without installing the package tree itself. It installs the development
@@ -141,10 +141,7 @@ local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
 #' @param root Path to the package tree.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Which dependencies to print. Defaults to the hard
-#'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
-#'   dependencies plus the development dependencies for `local_dev_deps()`
-#'   and `local_dev_deps_tree()`.
+#' @inheritParams pkg_install
 #' @return All of these functions return the dependencies in a data
 #'   frame. `local_deps_tree()` and `local_dev_deps_tree()` also
 #'   print the dependency tree.
@@ -189,10 +186,7 @@ local_dev_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = TRUE)
 #' @param deps Package names of the dependencies to explain.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Which dependencies to print. Defaults to the hard
-#'   dependencies for `local_deps()` and `local_deps_tree()` and the hard
-#'   dependencies plus the development dependencies for `local_dev_deps()`
-#'   and `local_dev_deps_tree()`.
+#' @inheritParams pkg_install
 #'
 #' @export
 #' @family local package trees

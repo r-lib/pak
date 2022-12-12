@@ -6,12 +6,10 @@
 #' This function is similar to [pkg_deps_tree()], but its output is easier
 #' to read if you are only interested is certain packages (`deps`).
 #'
-#' @param pkg Package name or remote package specification.
 #' @param deps Package names of the dependencies to explain.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Dependency types. See
-#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @inheritParams pkg_install
 #' @return A named list with a print method. First entries are the
 #'   function arguments: `pkg`, `deps`, `dependencies`, the last one is
 #'   `paths` and it contains the results in a named list, the names are

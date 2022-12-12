@@ -2,16 +2,16 @@
 % Please edit documentation in R/local.R
 \name{local_package_trees}
 \alias{local_package_trees}
-\title{Local package trees}
+\title{About local package trees}
 \description{
 pak can install packages from local package trees. This is convenient
 for package development. See the following functions:
 \itemize{
 \item \code{\link[=local_install]{local_install()}} installs a package from a package tree and all of its
-(hard) dependencies (i.e. \code{Includes}, \code{Depends}, \code{LinkingTo}.
+dependencies.
 \item \code{\link[=local_install_deps]{local_install_deps()}} installs all hard dependencies of a package.
 \item \code{\link[=local_install_dev_deps]{local_install_dev_deps()}} installs all hard and soft dependencies
-of a package. This function is intended for active package development.
+of a package. This function is intended for package development.
 }
 }
 \details{

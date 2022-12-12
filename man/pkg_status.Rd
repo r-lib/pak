@@ -26,7 +26,6 @@ pkg_status("MASS")
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},

@@ -57,7 +57,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     r-lib/pkgcache,
-    r-lib/pkgdepends,
+    r-lib/pkgdepends@feature/docs-for-pak,
     pkgsearch,
     prettyunits,
     processx,
@@ -65,7 +65,7 @@ Config/needs/dependencies:
     rprojroot
 Remotes:
     r-lib/pkgcache,
-    r-lib/pkgdepends
+    r-lib/pkgdepends@feature/docs-for-pak
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,

@@ -16,11 +16,11 @@ development:
 
 navbar:
   structure:
-    left: [TLDR, FAQ, reference, articles, news]
+    left: [get-started, FAQ, reference, articles, news]
   components:
-    TLDR:
-      text: TLDR
-      href: reference/tldr.html
+    get-started:
+      text: "Get started"
+      href: reference/get-started.html
     FAQ:
       text: FAQ
       href: reference/faq.html
@@ -28,33 +28,41 @@ navbar:
 reference:
 - title: About pak
   contents:
-  - tldr
-  - faq
-  - install
-  - features
-  - config
+  - "Get started with pak"
+  - "FAQ"
+  - "Installing pak"
+  - "Great pak features"
+  - "Package sources"
+  - "The dependency solver"
+  - "Package dependency types"
+  - "pak configuration"
 
 - title: Packages
+- subtitle: Installation
   contents:
+  - pkg_install
   - pak
-  - pak_package_sources
-  - pak_solver
+  - pkg_status
+  - pkg_remove
+- subtitle: Dependencies
+  contents:
   - pkg_deps
   - pkg_deps_explain
   - pkg_deps_tree
+- subtitle: Download
+  contents:
   - pkg_download
+- subtitle: Metadata
+  contents:
   - pkg_history
-  - pkg_install
   - pkg_name_check
-  - pkg_remove
   - pkg_search
-  - pkg_status
 
 - title: Local Package Trees
   contents:
+  - local_package_trees
   - local_deps
   - local_deps_explain
-  - local_package_trees
   - local_install
   - local_install_deps
   - local_install_dev_deps
@@ -81,10 +89,13 @@ reference:
 - title: pak housekeeping
   contents:
   - cache_summary
-  - local_system_requirements
   - meta_summary
   - pak_install_extra
-  - pak_setup
   - pak_cleanup
   - pak_sitrep
   - pak_update
+
+- title: internal
+  contents:
+  - local_system_requirements
+  - pak_setup

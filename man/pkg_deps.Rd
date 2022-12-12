@@ -7,13 +7,32 @@
 pkg_deps(pkg, upgrade = TRUE, dependencies = NA)
 }
 \arguments{
-\item{pkg}{Package name or remote package specification to resolve.}
+\item{pkg}{Package names or package references. E.g.
+\itemize{
+\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
+in general,
+\item \code{tidyverse/ggplot2}: package from GitHub,
+\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
+\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
+\item \code{.}: package in the current working directory.
+}
+
+See "\link{Package sources}" for more details.}
 
 \item{upgrade}{Whether to use the most recent available package
 versions.}
 
-\item{dependencies}{Dependency types. See
-\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}
+\item{dependencies}{What kinds of dependencies to install. Most commonly
+one of the following values:
+\itemize{
+\item \code{NA}: only required (hard) dependencies,
+\item \code{TRUE}: required dependencies plus optional and development
+dependencies,
+\item \code{FALSE}: do not install any dependencies. (You might end up with a
+non-working package, and/or the installation might fail.)
+See \link{Package dependency types} for other possible values and more
+information about package dependencies.
+}}
 }
 \value{
 A data frame.
@@ -30,7 +49,6 @@ pkg_deps("r-lib/fs")
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},

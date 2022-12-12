@@ -19,23 +19,31 @@ local_install_deps(
 dependent packages will the be installed here, even if they are
 already installed in another library.}
 
-\item{upgrade}{When \code{FALSE}, the default, does the minimum amount of work
-to give you the latest version of \code{pkg}. It will only upgrade packages if
-\code{pkg}, or one of its dependencies, explicitly requires a higher version
-than what you currently have.
+\item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
+of work to give you the latest version of \code{pkg}. It will only upgrade
+dependent packages if \code{pkg}, or one of their dependencies explicitly
+require a higher version than what you currently have. It will also
+prefer a binary package over to source package, even it the binary
+package is older.
 
-When \code{upgrade = TRUE}, will do ensure that you have the latest version of
-\code{pkg} and all its dependencies.}
+When \code{upgrade = TRUE}, pak will ensure that you have the latest
+version of \code{pkg} and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
 add new packages never require confirmation.}
 
-\item{dependencies}{Dependency types. See
-\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values. Note that
-changing this argument from the default might result an installation
-failure, e.g. if you set it to \code{FALSE}, packages might not build if
-their dependencies are not already installed.}
+\item{dependencies}{What kinds of dependencies to install. Most commonly
+one of the following values:
+\itemize{
+\item \code{NA}: only required (hard) dependencies,
+\item \code{TRUE}: required dependencies plus optional and development
+dependencies,
+\item \code{FALSE}: do not install any dependencies. (You might end up with a
+non-working package, and/or the installation might fail.)
+See \link{Package dependency types} for other possible values and more
+information about package dependencies.
+}}
 }
 \value{
 Data frame, with information about the installed package(s).
