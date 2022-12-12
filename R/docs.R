@@ -54,7 +54,7 @@ NULL
 #' # R options affecting pak's behavior
 #'
 #' ## `Ncpus`
-#' 
+#'
 #' Set to the desired number of worker processes for package installation.
 #' If not set, then pak will use the number of logical processors in the
 #' machine.
@@ -62,9 +62,9 @@ NULL
 #' ## `repos`
 #'
 #' The CRAN-like repositories to use. See [base::options()] for details.
-#' 
+#'
 #' # pak configuration
-#' 
+#'
 #' Configuration entries (unless noted otherwise on this manual page)
 #' have a corresponding environment variable, and a corresponding option.
 #'
@@ -131,5 +131,5 @@ include_docs <- function(pkg, file, top = FALSE) {
   rd <- readRDS(rds)
   # We cannot insert top level docs currently, because of a base R bug that
   # was fixed in R 4.0. See also the comments in tools/dynamic-help.R.
-  sub("\\section", "\\subsection", fixed = TRUE, rd)
+  gsub("\\section", "\\subsection", fixed = TRUE, rd)
 }

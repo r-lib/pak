@@ -8,7 +8,7 @@ Learn how to tell pak which packages to install, and where those packages
 can be found.
 }
 \details{
-\eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = TRUE)}
+\eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
 }
 \seealso{
 Other package functions: 
