@@ -129,5 +129,7 @@ include_docs <- function(pkg, file, top = FALSE) {
   }
 
   rd <- readRDS(rds)
-  rd
+  # We cannot insert top level docs currently, because of a base R bug that
+  # was fixed in R 4.0. See also the comments in tools/dynamic-help.R.
+  sub("\\section", "\\subsection", fixed = TRUE, rd)
 }

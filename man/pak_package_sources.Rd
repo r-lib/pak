@@ -7,6 +7,9 @@
 Learn how to tell pak which packages to install, and where those packages
 can be found.
 }
+\details{
+\eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = TRUE)}
+}
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
@@ -19,4 +22,3 @@ Other package functions:
 \code{\link{pkg_status}()}
 }
 \concept{package functions}
-\evaltop{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = TRUE)}
