@@ -66,6 +66,275 @@ can be found.</p>
 
 
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p></p><div class="section">
+<h3 id="package-references">Package references<a class="anchor" aria-label="anchor" href="#package-references"></a></h3>
+<p>Many pkgdepends and pak functions take package names as arguments.
+E.g. <code><a href="pkg_install.html">pak::pkg_install()</a></code> takes the names of the packages to install,
+<code><a href="pkg_deps_tree.html">pak::pkg_deps_tree()</a></code> takes the names of the packages to draw dependency
+trees for.</p>
+<p>Most of these function can also take a more generic <em>package reference</em>
+instead of a package name.
+A package reference also tells pak where to find the
+package, the package source.</p>
+<p>To specify a package source, use its name as a prefix, with a <code>::</code>
+separator.
+E.g. <code>cran::mypkg</code> means the <code>mypkg</code> package from CRAN.</p>
+<p>A package name is a special package reference, that implicitly specifies
+the configured CRAN(-like) repositories as the package source.
+(We call this the <code>standard</code> package source.)
+So <code>mypkg</code> is equivalent to <code>standard::mypkg</code> and pak look for mypkg in
+any of the configured CRAN-like repositories.
+If you did not explicitly specify any CRAN-like repositories (e.g. with
+<code>options("repos")</code>), then pak uses the CRAN and Bioconductor repositories
+by default.</p>
+<p>This is the list of the currently supported package sources.
+We will discuss each in detail below.</p><ul><li><p><code>cran</code>: a CRAN package.</p></li>
+<li><p><code>bioc</code>: a Bioconductor package.</p></li>
+<li><p><code>standard</code>: a package from a configured CRAN-like repository.</p></li>
+<li><p><code>github</code>: a package from GitHub.</p></li>
+<li><p><code>local</code>: a local package file or directory.</p></li>
+<li><p><code>url</code>: an URL that points to a package archive.</p></li>
+<li><p><code>installed</code> an installed package.</p></li>
+<li><p><code>deps</code> the dependencies of a local package file or directory.</p></li>
+<li><p><code>any</code> a special reference type that accepts a package from any source.
+See below.</p></li>
+<li><p><code>param</code> a special reference to change how other references are downloaded
+or installed. See "Parameters" below.</p></li>
+</ul><div class="section">
+<h4 id="shorthands">Shorthands<a class="anchor" aria-label="anchor" href="#shorthands"></a></h4><p>To save typing, you do not always need to fully specify the package source
+in a package reference.
+You have seen before that a package name implicitly has a <code>standard</code>
+package source.
+Here are the complete rules for such shorthands, in the order they are
+applied:</p><ul><li><p>If the ref is a valid package name, or a package name with a <code>@</code> version
+specification, the <code>standard</code> package source is used. E.g. <code>pkg</code> is
+equivalent to <code>standard::pkg</code> and <code>pkg@1.0</code> is equivalent to
+<code>standard::pkg@1.0</code>.</p></li>
+<li><p>If the ref is a valid <code>github</code> ref type without the <code>github::</code> prefix,
+then <code>github</code> is used. E.g. <code>user/repo</code> is equivalent to
+<code>github::user/repo</code> and <code>user/repo@tag</code> is equivalent to
+<code>github::user/repo@tag</code>, etc.</p></li>
+<li><p>If the ref is a GitHub URL (see below) without the <code>github::</code> prefix,
+then <code>github</code> is used.</p></li>
+<li><p>If the ref is a path that starts with <code>.</code> or <code>/</code> or <code>\</code> or <code>~</code> then
+<code>local</code> is used. (pak does not check if the path
+exists.)</p></li>
+<li><p>If a package reference if of the form <code>&lt;package-name&gt;=?&lt;parameters&gt;</code>,
+then it will be the special <code>param</code> type. See "Parameters" below.</p></li>
+</ul><p>If the package reference does not have an explicit package source,
+and the package source cannot be determined from these rules, then
+pak throws an error.</p>
+</div><div class="section">
+<h4 id="package-names">Package names<a class="anchor" aria-label="anchor" href="#package-names"></a></h4><p>When pak is looking up the dependencies of a package,
+it needs to be able to determine the name of the dependency from the
+package reference.
+This is sometimes not easy for dependencies in <code>Remotes</code> (or similar) fields.</p><ul><li><p>For <code>github::</code> dependencies pak assumes that the package
+name is the same as the name of the repository. If this does not hold,
+then you need to specify the package name explicitly, using a
+<code>&lt;package&gt;=</code> prefix. E.g. <code>pins=rstudio/pins-r</code>. If you specify both the
+package source type and the package name, the package name comes first:
+<code>pins=github::rstudio/pins-r</code>.</p></li>
+<li><p>For <code>local::</code> dependencies, you always need to specify the package name
+explicitly. E.g. <code>pins=local::~/works/pins</code>.</p></li>
+<li><p>For <code>url::</code> dependencies, you always need to specify the package name
+explicitly. E.g. <code>ggplot2=url::https://cloud.r-project.org/src/contrib/...</code>.</p></li>
+</ul></div><div class="section">
+<h4 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a></h4><p>Package references may have optional parameters, added after a question
+mark.
+Different parameters are separated by an ampersand (<code>&amp;</code>) character.
+(This is very similar to how HTTP URLs take query parameters.)</p>
+<p>Parameters may be flags that turn on some behavior, or they can have a
+string value, assigned with an equal sign (<code>=</code>).
+If no value is assigned, then we assume the <code>true</code> value. For example
+these two package refs are equivalent:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="sc">&amp;</span>nocache</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="ot">=</span>true<span class="sc">&amp;</span>nocache<span class="ot">=</span>true</span></code></pre><p></p></div><div class="section">
+<h5 id="parameters-for-downstream-packages">Parameters for downstream packages<a class="anchor" aria-label="anchor" href="#parameters-for-downstream-packages"></a></h5><p>pak allows specifying parameters for downstream packages,
+using the <code>&lt;package&gt;=?&lt;params&gt;</code> special package reference, where <code>package</code> is
+the name of the package, and <code>&lt;params&gt;</code> are the parameters, as above.
+This is useful if you want to add a parameter to a downstream dependency.</p>
+<p>For example, to install ggplot2, and always reinstall its cli package
+dependency you could use the <code>ggplot2</code> and <code>cli=?reinstall</code> package
+references.
+The latter tells pak to always reinstall cli, even if
+it is already installed.</p>
+</div><div class="section">
+<h5 id="currently-supported-parameters">Currently supported parameters<a class="anchor" aria-label="anchor" href="#currently-supported-parameters"></a></h5><ul><li><p><code>ignore</code> is a flag parameter. If specified, the package is ignored.
+This usually makes sense in the <code>packagename=?ignore</code> form, to ignore a
+downstream soft dependency. If all versions of a hard dependency are
+ignored that will lead to a solution error.</p></li>
+<li><p><code>ignore-before-r</code> is a version number parameter. The package will be
+ignored on R versions that are older than the specified one. E.g.
+<code>Matrix=?ignore-before-r=4.1.2</code> will ignore the Matrix package on R versions
+that are older than 4.1.2. This parameter really only makes sense in the
+<code>packgename=?ignore</code> form.</p></li>
+<li><p><code>source</code> is a flag parameter. If specified, then a source R package
+is requested from a CRAN-like repository. For package installations
+<code>source</code> always triggers a re-install. In other words, <code>source</code> implies the
+<code>reinstall</code> parameter. This parameter is supported for <code>bioc::</code>, <code>cran::</code>
+and <code>standard::</code> remote types, and it is ignored for others.</p></li>
+<li><p><code>reinstall</code> requests a re-install for package installations. It is
+supported by the <code>bioc::</code>, <code>cran::</code>, <code>github::</code>, <code>local::</code>, <code>standard::</code>,
+and <code>url::</code> remote types.</p></li>
+<li><p><code>nocache</code> will ignore the package cache. It will always download the
+package file, and it will not add the downloaded (and built) package(s)
+to the package cache. It is supported by the <code>bioc::</code>, <code>cran::</code>, <code>github::</code>,
+<code>standard::</code> and <code>url::</code> remote types.</p></li>
+</ul></div></div><div class="section">
+<h4 id="package-source-details">Package source details<a class="anchor" aria-label="anchor" href="#package-source-details"></a></h4><div class="section">
+<h5 id="cran-packages-cran-">CRAN packages (<code>cran::</code>)<a class="anchor" aria-label="anchor" href="#cran-packages-cran-"></a></h5><p>A package from CRAN. Full syntax:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[cran<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is a valid package name.</p></li>
+<li><p><code>&lt;version&gt;</code> is a version or a version requirement.</p></li>
+</ul><p>Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>forecast</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span><span class="fl">8.8</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span><span class="er">&gt;=</span><span class="fl">8.8</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>forecast</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span>last</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span>current</span></code></pre><p></p></div>
+<p>Note: pak currently parses the version specification part
+(everything after <code>@</code>), but does not use it.</p>
+</div><div class="section">
+<h5 id="bioconductor-packages-bioc-">Bioconductor packages (<code>bioc::</code>)<a class="anchor" aria-label="anchor" href="#bioconductor-packages-bioc-"></a></h5><p>A package from Bioconductor. The syntax is the same as for CRAN packages,
+except for the prefix.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[bioc<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div>
+</div><div class="section">
+<h5 id="standard-packages-standard-">Standard packages (<code>standard::</code>)<a class="anchor" aria-label="anchor" href="#standard-packages-standard-"></a></h5><p>These are packages either from CRAN or Bioconductor, the full syntax
+is the same as for CRAN packages, except for the prefix:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[standard<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> current <span class="sc">|</span> last]</span></code></pre><p></p></div>
+</div><div class="section">
+<h5 id="github-packages-github-">GitHub packages (<code>github::</code>)<a class="anchor" aria-label="anchor" href="#github-packages-github-"></a></h5><p>Packages from a GitHub repository. Full syntax:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+the name of the repository is used.</p></li>
+<li><p><code>&lt;username&gt;</code> is a GitHub username or organization name.</p></li>
+<li><p><code>&lt;repository&gt;</code> is the name of the repository.</p></li>
+<li><p><code>&lt;subdir&gt;</code> optional subdirectory, if the package is within a
+subdirectory in the repository.</p></li>
+<li><p><code>&lt;detail&gt;</code> specifies a certain version of the package, see below.</p></li>
+</ul><p><code>&lt;detail&gt;</code> may specify:</p><ul><li><p>a git branch, tag or (prefix of) a commit hash: <code>@&lt;commitish&gt;</code>;</p></li>
+<li><p>a pull request: <code>#&lt;pull-request&gt;</code>; or</p></li>
+<li><p>the latest release: <code>@*release</code>.</p></li>
+</ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
+branch is used.</p>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>github<span class="sc">::</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>84be6207</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>branch</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="co">#41</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>release</span></code></pre><p></p></div>
+<p>For convenience GitHub HTTP URLs can also be used to specify a
+package from GitHub. Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A branch:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>ghactions</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A tag:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>v2.<span class="fl">1.1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A commit:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>commit<span class="sc">/</span>8fbcb548e316</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># A pull request:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>pull<span class="sc">/</span><span class="dv">76</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># A release:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>releases<span class="sc">/</span>tag<span class="sc">/</span>v2.<span class="fl">1.0</span></span></code></pre><p></p></div>
+<p>A GitHub remote string can also be used instead of an URL, for example:
+<code>git@github.com:r-lib/pak.git</code></p>
+</div><div class="section">
+<h5 id="local-packages-local-">Local packages (<code>local::</code>)<a class="anchor" aria-label="anchor" href="#local-packages-local-"></a></h5><p>A path that refers to a package file built with <code>R CMD build</code>, or a
+directory that contains a package. Full syntax:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
+<p>For brevity, you can omit the <code>local::</code> prefix, if you specify an
+absolute path, a path from the user's home directory, starting with <code>~</code>,
+or a relative path starting with <code>./</code> or <code>.\\</code>.</p>
+<p>A single dot (<code>"."</code>) is considered to be a local package in the current
+working directory.</p>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span>.</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="sc">~</span><span class="er">/</span>path<span class="sc">/</span>from<span class="sc">/</span>home</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>.<span class="sc">/</span>relative<span class="sc">/</span>path</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>.</span></code></pre><p></p></div>
+<p>If you specify a local package in a dependency (i.e. in <code>DESCRIPTION</code>), then
+you also need to specify the name of the package, see "Package names"
+above.</p>
+</div><div class="section">
+<h5 id="urls-url-">URLs (<code>url::</code>)<a class="anchor" aria-label="anchor" href="#urls-url-"></a></h5><p>You can use <code>url::</code> to refer to URLs that hold R package archives
+(i.e. properly built with <code>R CMD build</code>), or compressed directories
+of package trees (i.e. not built with <code>R CMD build</code>). pak will
+figure out if it needs to run <code>R CMD build</code> on the package first.</p>
+<p>This remote type supports <code>.tar.gz</code> and <code>.zip</code> files.</p>
+<p>Note that URLs are not ideal remote types, because pak needs to
+download the package file to resolve its dependencies. When this happens,
+it puts the package file in the cache, so no further downloads are
+needed when installing the package later.</p>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>cloud.r<span class="sc">-</span>project.org<span class="sc">/</span>src<span class="sc">/</span>contrib<span class="sc">/</span>Archive<span class="sc">/</span>cli<span class="sc">/</span>cli_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>tidyverse<span class="sc">/</span>stringr<span class="sc">/</span>archive<span class="sc">/</span>HEAD.zip</span></code></pre><p></p></div>
+<p>If you specify a package from an URL in a dependency (i.e. in <code>DESCRIPTION</code>),
+then you also need to specify the name of the package, see "Package names"
+above.</p>
+</div><div class="section">
+<h5 id="installed-packages-installed-">Installed packages (<code>installed::</code>)<a class="anchor" aria-label="anchor" href="#installed-packages-installed-"></a></h5><p>This is usually used internally, but can also be used directly.
+Full syntax:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span><span class="er">/&lt;</span>package<span class="sc">&gt;</span></span></code></pre><p></p></div><ul><li><p><code>&lt;path&gt;</code> is the library the package is installed to.</p></li>
+<li><p><code>&lt;package&gt;</code> is the package name.</p></li>
+</ul><p>Example:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">~/</span>R<span class="sc">/</span><span class="fl">3.6</span><span class="sc">/</span>crayon</span></code></pre><p></p></div>
+</div><div class="section">
+<h5 id="package-dependencies-deps-">Package dependencies (<code>deps::</code>)<a class="anchor" aria-label="anchor" href="#package-dependencies-deps-"></a></h5><p>Usually used internally, it specifies the dependencies of a local
+package. It can be used to download or install the dependencies of a
+package, without downloading or installing the package itself.
+Full syntax:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span>.</span></code></pre><p></p></div>
+</div><div class="section">
+<h5 id="any-packages"><code>any::</code> packages<a class="anchor" aria-label="anchor" href="#any-packages"></a></h5><p>Sometimes you need to install additional packages, but you don't mind
+where they are installed from. Here is an example. You want to install
+cli from GitHub, from <code>r-lib/cli</code>. You also want to install glue, and
+you don't mind which version of glue is installed, as long as it is
+compatible with the requested cli version. If cli specifies the
+development version of glue, then that is fine. If cli is fine with the
+CRAN version of glue, that's OK, too. If a future version of cli does
+not depend on glue, you still want glue installed, from CRAN. The <code>any::</code>
+reference type does exactly this.</p>
+<p>In our example you might write</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glue"</span>, <span class="st">"r-lib/cli"</span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div>
+<p>first, but this will fail if <code>rlib/cli</code> requests (say) <code>tidyverse/glue</code>,
+because in <code><a href="pkg_install.html">pkg_install()</a></code> <code>"glue"</code> is interpreted as <code>"standard::glue"</code>,
+creating a conflict with <code>tidyverse/glue</code>. On the other hand</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"any::glue"</span>, <span class="st">"r-lib/cli"</span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div>
+<p>works, independently of which glue version is requested by cli.</p>
+</div><div class="section">
+<h5 id="parameter-refs-param-">Parameter refs (<code>param::</code>)<a class="anchor" aria-label="anchor" href="#parameter-refs-param-"></a></h5><p>See "Parameters" above.</p>
+</div></div><div class="section">
+<h4 id="the-remotes-field">The <code>Remotes</code> field<a class="anchor" aria-label="anchor" href="#the-remotes-field"></a></h4><p>In the <code>DESCRIPTION</code> file of an R package you can mark any regular
+dependency defined in the <code>Depends</code>, <code>Imports</code>, <code>Suggests</code> or <code>Enhances</code>
+fields as being installed from a non-standard package source by adding
+a package reference to a <code>Remotes</code> entry.
+pak will download and install the package from the
+from the specified location, instead of a CRAN-like repository.</p>
+<p>The remote dependencies specified in <code>Remotes</code> is a comma separated
+list of package sources:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Remotes<span class="sc">:</span> <span class="er">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-1</span><span class="sc">&gt;</span>, <span class="sc">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-2</span><span class="sc">&gt;</span>, [ ... ]</span></code></pre><p></p></div>
+<p>Note that you will still need add the package to one of the regular
+dependency fields, i.e. <code>Imports</code>, <code>Suggests</code>, etc. Here is a concrete
+example that specifies the <code>r-lib/glue</code> package:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Imports<span class="sc">:</span> glue</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Remotes<span class="sc">:</span> r<span class="sc">-</span>lib<span class="sc">/</span>glue,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>httr<span class="sc">@</span>v0<span class="fl">.4</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  klutometis<span class="sc">/</span>roxygen<span class="co">#142,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>testthat<span class="sc">@</span>c67018fa4970</span></code></pre><p></p></div>
+<p>The CRAN and Bioconductor repositories do not support the <code>Remotes</code>
+field, so you need to remove this field, before submitting your package
+to either of them.</p>
+</div></div>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other package functions: 
 <code><a href="lib_status.html">lib_status</a>()</code>,
@@ -78,7 +347,8 @@ can be found.</p>
 <code><a href="pkg_status.html">pkg_status</a>()</code></p></div>
     </div>
 
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
    </div>
