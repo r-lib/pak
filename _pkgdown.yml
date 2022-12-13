@@ -28,8 +28,6 @@ navbar:
 reference:
 - title: About pak
   contents:
-  - "Get started with pak"
-  - "FAQ"
   - "Installing pak"
   - "Great pak features"
   - "Package sources"
@@ -97,5 +95,7 @@ reference:
 
 - title: internal
   contents:
+  - "Get started with pak"
+  - "FAQ"
   - local_system_requirements
   - pak_setup

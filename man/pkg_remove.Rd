@@ -2,17 +2,20 @@
 % Please edit documentation in R/package.R
 \name{pkg_remove}
 \alias{pkg_remove}
-\title{Remove an installed package}
+\title{Remove installed packages}
 \usage{
 pkg_remove(pkg, lib = .libPaths()[[1L]])
 }
 \arguments{
 \item{pkg}{A character vector of packages to remove.}
 
-\item{lib}{library to remove packages from}
+\item{lib}{library to remove packages from.}
+}
+\value{
+Nothing.
 }
 \description{
-Remove an installed package
+Remove installed packages
 }
 \seealso{
 Other package functions: 

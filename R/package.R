@@ -14,17 +14,20 @@
 #'
 #'   See "[Package sources]" for more details.
 #' @param lib Package library to install the packages to. Note that _all_
-#'   dependent packages will the be installed here, even if they are
-#'   already installed in another library.
+#'   dependent packages will be installed here, even if they are
+#'   already installed in another library. The only exceptions are base
+#'   and recommended packages installed in `.Library`. These are not
+#'   duplicated in `lib`, unless a newer version of a recommemded package
+#'   is needed.
 #' @param upgrade When `FALSE`, the default, pak does the minimum amount
-#'   of work to give you the latest version of `pkg`. It will only upgrade
+#'   of work to give you the latest version(s) of `pkg`. It will only upgrade
 #'   dependent packages if `pkg`, or one of their dependencies explicitly
 #'   require a higher version than what you currently have. It will also
 #'   prefer a binary package over to source package, even it the binary
 #'   package is older.
 #'
 #'   When `upgrade = TRUE`, pak will ensure that you have the latest
-#'   version of `pkg` and all their dependencies.
+#'   version(s) of `pkg` and all their dependencies.
 #' @param ask Whether to ask for confirmation when installing a different
 #'   version of a package that is already installed. Installations that only
 #'   add new packages never require confirmation.
@@ -41,20 +44,27 @@
 #'   package(s).
 #'
 #' @export
-#' @seealso [Package sources], [The dependency solver].
+#' @seealso [Get started with pak], [Package sources], [FAQ],
+#'   [The dependency solver].
 #' @family package functions
 #' @section Examples:
-#' ```r
+#' ```{asciicast pkg-install-dplyr}
 #' pkg_install("dplyr")
+#' ```
 #'
-#' # Upgrade dplyr and all its dependencies
+#' Upgrade dplyr and all its dependencies:
+#' ```{asciicast pkg-install-upgrade}
 #' pkg_install("dplyr", upgrade = TRUE)
+#' ````
 #'
-#' # Install the development version of dplyr
+#' Install the development version of dplyr:
+#' ```{asciicast pkg-install-gh}
 #' pkg_install("tidyverse/dplyr")
+#' ```
 #'
-#' # Switch back to the CRAN version. This will be fast because
-#' # pak will have cached the prior install.
+#' Switch back to the CRAN version. This will be fast because
+#' pak will have cached the prior install.
+#' ```{asciicast pkg-install-cran}
 #' pkg_install("dplyr")
 #' ```
 
@@ -130,15 +140,16 @@ pkg_install_do_plan <- function(proposal, lib) {
 #'
 #' @param pkg Name of one or more installed packages to display status for.
 #' @param lib One or more library paths to lookup packages status in.
+#'   By default all libraries are used.
 #' @return Data frame with data about installations of `pkg`.
 #' Columns include: `library`, `package`, `title`, `version`.
 #'
 #' @export
 #' @family package functions
-#' @examples
-#' \dontrun{
+#' @section Examples:
+#' ```{asciicast pkg-status}
 #' pkg_status("MASS")
-#' }
+#' ```
 
 pkg_status <- function(pkg, lib = .libPaths()) {
   stopifnot(length(pkg == 1) && is.character(pkg))
@@ -154,10 +165,11 @@ pkg_status_internal <- function(pkg, lib = .libPaths()) {
   do.call("rbind_expand", st)
 }
 
-#' Remove an installed package
+#' Remove installed packages
 #'
 #' @param pkg A character vector of packages to remove.
-#' @param lib library to remove packages from
+#' @param lib library to remove packages from.
+#' @return Nothing.
 #' @export
 #' @family package functions
 
@@ -182,13 +194,20 @@ pkg_remove_internal <- function(pkg, lib) {
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
 #' @inheritParams pkg_install
-#' @return A data frame.
+#' @return A data frame with the dependency data, it includes `pkg`
+#'   as well.
 #'
 #' @family package functions
 #' @export
-#' @examplesIf FALSE
+#' @section Examples:
+#' ```{asciicast pkg-deps}
 #' pkg_deps("curl")
-#' pkg_deps("r-lib/fs")
+#' ```
+#'
+#' For a package on GitHub:
+#' ```{asciicast pkg-deps-gh}
+#' pkg_deps("r-lib/callr")
+#' ```
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))

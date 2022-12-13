@@ -80,6 +80,20 @@ In this case you can delete the package and then install it, or use the
 
 }
 
+\subsection{How do I install a dependency from a binary package}{
+
+Sometimes it is suffifient to install the binary package of an older
+version of a dependency, instead of the newer source package that
+potentially needs compilers, system tools or libraries.
+
+\code{pkg_install()} and \code{lockfile_create()} default to \code{upgrade = FALSE}, which
+always chooses binaries over source packages, so if you use \code{pkg_install()}
+you don't need to do anything extra.
+
+The \verb{local_install_*} functions default to \code{upgrade = TRUE}, as does \code{pak()}
+with \code{pkf = NULL}, so for these you need to explicitly use \code{upgrade = FALSE}.
+}
+
 \subsection{How do I install a package from source?}{
 
 To force the installation of a source package (instead of a binary
@@ -98,6 +112,52 @@ package), use the \code{?source} parameter:
 #> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(3.5s)</span>                                                     
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(35ms)</span>                                                
 #> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1, dld 1 (674.87 kB) <span style="color: #b8b8b8;">[7.2s]</span>                   
+</pre></div>
+}}
+
+}
+
+\subsection{How do I install the latest version of a dependency?}{
+
+If you want to always install a dependency from source, because you want
+the latest version or some other reason, you can use the \code{source}
+parameter with the \verb{<package>=} form: \verb{<package>=?source}.
+For example to install tibble, with its cli dependency installed from
+source you could write:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install(c("tibble", "cli=?source"))
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
+#>                                                                                 
+#> → Will <span style="font-style: italic;">install</span> 11 packages.                                                     
+#> → All 11 packages (6.73 MB) are cached.                                         
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1 👷🏿🔧                                                         
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1                                                             
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 11 pkgs (6.73 MB) are cached                         
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1                                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(58ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(72ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(103ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(110ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(110ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(177ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(180ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(90ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(37ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(163ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(5.2s)</span>                                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(28ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11 <span style="color: #b8b8b8;">[9.7s]</span>                                              
 </pre></div>
 }}
 

@@ -1,4 +1,5 @@
 
+options(asciicast_timeout = 600)
 if (exists(".knitr_asciicast_process", envir = .GlobalEnv)) {
   rm(list = ".knitr_asciicast_process", envir = .GlobalEnv)
 }
@@ -13,6 +14,7 @@ asciicast::init_knitr_engine(
     options(cli.progress_show_after = 0)
     options(cli.progress_clear = FALSE)
     library(cli)
+    pkgload::load_all()
     set.seed(1)
   })
 )

@@ -16,18 +16,21 @@ local_install(
 \item{root}{Path to the package tree.}
 
 \item{lib}{Package library to install the packages to. Note that \emph{all}
-dependent packages will the be installed here, even if they are
-already installed in another library.}
+dependent packages will be installed here, even if they are
+already installed in another library. The only exceptions are base
+and recommended packages installed in \code{.Library}. These are not
+duplicated in \code{lib}, unless a newer version of a recommemded package
+is needed.}
 
 \item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version of \code{pkg}. It will only upgrade
+of work to give you the latest version(s) of \code{pkg}. It will only upgrade
 dependent packages if \code{pkg}, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
 prefer a binary package over to source package, even it the binary
 package is older.
 
 When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version of \code{pkg} and all their dependencies.}
+version(s) of \code{pkg} and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only

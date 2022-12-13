@@ -35,17 +35,57 @@ information about package dependencies.
 }}
 }
 \value{
-A data frame.
+A data frame with the dependency data, it includes \code{pkg}
+as well.
 }
 \description{
 Look up the dependencies of a package
 }
-\examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-pkg_deps("curl")
-pkg_deps("r-lib/fs")
-\dontshow{\}) # examplesIf}
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps("curl")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
+#> <span style="color: #999999;"># A data frame: 1 × 32</span>                                                          
+#>   ref   type     direct directpkg status package version license needs…¹ prior…²
+#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> curl  standard TRUE   TRUE      OK     curl    4.3.3   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>         
+#> <span style="color: #999999;">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>     
+#> <span style="color: #999999;">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>             
+#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>     
+#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​needscompilation,</span>       
+#> <span style="color: #999999;">#   ²​priority</span>                                                                  
+</pre></div>
+}}
+
+
+For a package on GitHub:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps("r-lib/callr")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 4 × 32</span>                                                          
+#>   ref        type  direct direc…¹ status package version license needs…² prior…³
+#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> r-lib/cal… gith… TRUE   TRUE    OK     callr   3.7.3.… MIT + … TRUE    <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> R6         stan… FALSE  FALSE   OK     R6      2.5.1   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">3</span> processx   stan… FALSE  FALSE   OK     proces… 3.8.0   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">4</span> ps         stan… FALSE  FALSE   OK     ps      1.7.2   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>         
+#> <span style="color: #999999;">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>     
+#> <span style="color: #999999;">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>             
+#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>     
+#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg,</span>              
+#> <span style="color: #999999;">#   ²​needscompilation, ³​priority</span>                                              
+</pre></div>
+}}
 }
+
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},

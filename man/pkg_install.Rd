@@ -26,18 +26,21 @@ in general,
 See "\link{Package sources}" for more details.}
 
 \item{lib}{Package library to install the packages to. Note that \emph{all}
-dependent packages will the be installed here, even if they are
-already installed in another library.}
+dependent packages will be installed here, even if they are
+already installed in another library. The only exceptions are base
+and recommended packages installed in \code{.Library}. These are not
+duplicated in \code{lib}, unless a newer version of a recommemded package
+is needed.}
 
 \item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version of \code{pkg}. It will only upgrade
+of work to give you the latest version(s) of \code{pkg}. It will only upgrade
 dependent packages if \code{pkg}, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
 prefer a binary package over to source package, even it the binary
 package is older.
 
 When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version of \code{pkg} and all their dependencies.}
+version(s) of \code{pkg} and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
@@ -67,21 +70,102 @@ package library.
 
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
+#>                                                                                 
+#> → Will <span style="font-style: italic;">install</span> 16 packages.                                                     
+#> → All 16 packages (9.42 MB) are cached.                                         
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>          3.4.1                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span>        1.0.10                                                           
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>        1.0.3                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">generics</span>     0.1.3                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>         1.6.2                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>    1.0.3                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>     2.0.3                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>       1.8.1                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>    2.0.3                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">R6</span>           2.5.1                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>        1.0.6                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>       3.1.8                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyselect</span>   1.2.0                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>         1.2.2                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>        0.5.1                                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0                                                            
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 16 pkgs (9.42 MB) are cached                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(65ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(76ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.10  <span style="color: #a3a3a3;">(91ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(99ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(105ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(130ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(146ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(156ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(51ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(34ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(35ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(38ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.2.0  <span style="color: #a3a3a3;">(37ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(35ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(57ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(49ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> 1 pkg + 15 deps: added 16 <span style="color: #b8b8b8;">[3.5s]</span>                                              
+</pre></div>
+}}
 
-# Upgrade dplyr and all its dependencies
-pkg_install("dplyr", upgrade = TRUE)
 
-# Install the development version of dplyr
-pkg_install("tidyverse/dplyr")
+Upgrade dplyr and all its dependencies:
 
-# Switch back to the CRAN version. This will be fast because
-# pak will have cached the prior install.
-pkg_install("dplyr")
-}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr", upgrade = TRUE)
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                                       
+#> <span style="color: #859900;">✔</span> 1 pkg + 15 deps: kept 16 <span style="color: #b8b8b8;">[366ms]</span>                                              
+</pre></div>
+}}
+
+
+Install the development version of dplyr:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("tidyverse/dplyr")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → The package (0 B) is cached.                                                  
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span> 1.0.10 → 1.0.<span style="font-weight: bold;">99.9000</span> 👷🏼‍♀️🔧 (GitHub: 28158c7)                           
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">dplyr</span> 1.0.99.9000                                                   
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 <span style="color: #a3a3a3;">(9.2s)</span>                                             
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">dplyr</span> 1.0.99.9000                                                    
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 <span style="color: #a3a3a3;">(5.3s)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 (github::tidyverse/dplyr@28158c7) <span style="color: #a3a3a3;">(36ms)</span>          
+#> <span style="color: #859900;">✔</span> 1 pkg + 15 deps: kept 15, upd 1 <span style="color: #b8b8b8;">[16.7s]</span>                                       
+</pre></div>
+}}
+
+
+Switch back to the CRAN version. This will be fast because
+pak will have cached the prior install.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
+#> → The package (1.33 MB) is cached.                                              
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span> 1.0.99.9000 → 1.0.<span style="font-weight: bold;">10</span>                                                    
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (1.33 MB) is cached                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.10  <span style="color: #a3a3a3;">(42ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 15 deps: kept 15, upd 1 <span style="color: #b8b8b8;">[533ms]</span>                                       
+</pre></div>
+}}
 }
 
 \seealso{
-\link{Package sources}, \link{The dependency solver}.
+\link{Get started with pak}, \link{Package sources}, \link{FAQ},
+\link{The dependency solver}.
 
 Other package functions: 
 \code{\link{lib_status}()},

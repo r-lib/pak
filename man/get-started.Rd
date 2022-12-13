@@ -14,6 +14,9 @@ This manual page collects the most common pak use cases.
 }\if{html}{\out{</div>}}
 
 \if{html}{\figure{tldr-cran.svg}}
+
+pak automatically sets a CRAN repository and the Bioconductor repositories
+that correspons to the current R version.
 }
 
 \subsection{Install a package from GitHub}{
@@ -21,49 +24,95 @@ This manual page collects the most common pak use cases.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tidyverse/tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
 #>                                                                                 
-#> → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
-#> → All 2 packages (0 B) are cached.                                              
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9002</span> 👷🏾‍♀️🔧 (GitHub: 37ec86a)                            
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>  0.5.1 → 0.5.1<span style="font-weight: bold;">.9000</span> 👷🏾‍♀️🔧 (GitHub: 48794fd)                            
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached                                    
+#> → Will <span style="font-style: italic;">install</span> 11 packages.                                                     
+#> → All 11 packages (4.91 MB) are cached.                                         
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8.9002 👷🏽‍♀️🔧 (GitHub: 37ec86a)                               
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1.9000 👷🏾‍♀️🔧 (GitHub: 48794fd)                               
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 11 pkgs (4.91 MB) are cached                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(63ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(74ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(90ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(97ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(106ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(106ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(138ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(141ms)</span>                                                
 #> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                    
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(1.8s)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(81ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(1.4s)</span>                                              
 #> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                     
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(11.1s)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@48794fd) <span style="color: #a3a3a3;">(44ms)</span>               
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(10.9s)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@48794fd) <span style="color: #a3a3a3;">(25ms)</span>               
 #> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                   
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(519ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(547ms)</span>                                            
 #> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                    
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(3.1s)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(30ms)</span>         
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2 <span style="color: #b8b8b8;">[19.2s]</span>                                        
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(2.6s)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(20ms)</span>         
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11 <span style="color: #b8b8b8;">[22.3s]</span>                                             
 </pre></div>
 }}
 
+
+Use the \code{user/repo} form.
+You can specify a branch or tag: \code{user/repo@branch} or \code{user/repo@tag}.
 }
 
 \subsection{Install a package from a URL}{
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz")
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install(
+  "url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz"
+)
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
 #>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 1 package.                                                       
-#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
-#> → All 2 packages (38.65 kB) are cached.                                         
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">ellipsis</span>              0.3.2                                                   
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.8.9002 → 3.1.<span style="font-weight: bold;">7</span> 👷🏾🔧                                               
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (38.65 kB) are cached                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">ellipsis</span> 0.3.2 (aarch64-apple-darwin20) (38.65 kB)                        
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ellipsis</span> 0.3.2  <span style="color: #a3a3a3;">(23ms)</span>                                              
+#> → Will <span style="font-style: italic;">install</span> 12 packages.                                                     
+#> → All 12 packages (6.79 MB) are cached.                                         
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">ellipsis</span>    0.3.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.7 👷🏿‍♂️🔧                                                      
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1                                                             
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 12 pkgs (6.79 MB) are cached                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(59ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ellipsis</span> 0.3.2  <span style="color: #a3a3a3;">(70ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(86ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(96ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(105ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(122ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(152ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(157ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(88ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(38ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(32ms)</span>                                                 
 #> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.7                                                         
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(2.8s)</span>                                                     
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(32ms)</span>                                                
-#> <span style="color: #859900;">✔</span> 1 pkg + 11 deps: kept 10, upd 1, added 1, dld 1 (38.65 kB) <span style="color: #b8b8b8;">[5s]</span>               
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(4.9s)</span>                                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(26ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 11 deps: added 12 <span style="color: #b8b8b8;">[14s]</span>                                               
 </pre></div>
 }}
 
+
+The URL may point to an R package file, made with \verb{R CMD build}, or a
+\code{.tar.gz} or \code{.zip} archive of a package tree.
 }
 }
 
@@ -78,11 +127,13 @@ This manual page collects the most common pak use cases.
 #> → The package (724.32 kB) is cached.                                            
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.7 → 3.1.<span style="font-weight: bold;">8</span>                                                          
 #> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(41ms)</span>                                                
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, upd 1 <span style="color: #b8b8b8;">[685ms]</span>                                       
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(70ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, upd 1 <span style="color: #b8b8b8;">[822ms]</span>                                       
 </pre></div>
 }}
 
+
+\code{pak::pkg_install()} automatically updates the package.
 }
 
 \subsection{Update all dependencies of a package}{
@@ -92,7 +143,29 @@ This manual page collects the most common pak use cases.
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #>                                                                                 
 #> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                                       
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 11 <span style="color: #b8b8b8;">[700ms]</span>                                              
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 11 <span style="color: #b8b8b8;">[577ms]</span>                                              
+</pre></div>
+}}
+
+
+\code{update = TRUE} updates the package itself and all of its dependencies, if
+necessary.
+}
+
+\subsection{Reinstall a package}{
+
+Add \code{?reinstall} to the package name or package reference in general:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble?reinstall")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+#> → Will <span style="font-style: italic;">install</span> 1 package.                                                       
+#> → The package (724.32 kB) is cached.                                            
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.8                                                                
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(39ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, added 1 <span style="color: #b8b8b8;">[637ms]</span>                                     
 </pre></div>
 }}
 
@@ -129,6 +202,8 @@ This manual page collects the most common pak use cases.
 </pre></div>
 }}
 
+
+The results are returned in a data frame.
 }
 
 \subsection{Dependency tree of a CRAN / Bioconductor package}{
@@ -163,6 +238,8 @@ This manual page collects the most common pak use cases.
 </pre></div>
 }}
 
+
+The results are also silently returned in a data frame.
 }
 
 \subsection{Dependency tree of a package on GitHub}{
@@ -170,7 +247,7 @@ This manual page collects the most common pak use cases.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_tree("tidyverse/tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tidyverse/tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8.9002</span> <span style="color: #859900;">✨👷🏻‍♀️🔧    </span>                                         
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tidyverse/tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8.9002</span> <span style="color: #859900;">✨👷🏻‍♂️🔧    </span>                                         
 #> ├─fansi <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
 #> ├─lifecycle <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                             
 #> │ ├─cli <span style="color: #525252;">3.4.1</span> <span style="color: #859900;">✨</span>                                                                 
@@ -184,7 +261,7 @@ This manual page collects the most common pak use cases.
 #> │ ├─lifecycle                                                                   
 #> │ ├─rlang                                                                       
 #> │ ├─utf8 <span style="color: #525252;">1.2.2</span> <span style="color: #859900;">✨</span>                                                                
-#> │ └─r-lib/vctrs <span style="color: #525252;">0.5.1.9000</span> <span style="color: #859900;">✨👷🏻‍♀️🔧    </span>                                          
+#> │ └─r-lib/vctrs <span style="color: #525252;">0.5.1.9000</span> <span style="color: #859900;">✨👷🏻‍♂️🔧    </span>                                          
 #> │   ├─cli                                                                       
 #> │   ├─glue                                                                      
 #> │   ├─lifecycle                                                                 
@@ -193,10 +270,14 @@ This manual page collects the most common pak use cases.
 #> ├─rlang                                                                         
 #> └─r-lib/vctrs                                                                   
 #>                                                                                 
-#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏻‍♀️ bui</span>ld | 🔧 co<span style="color: #859900;">m</span>pile                                           
+#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏻‍♂️ bui</span>ld | 🔧 co<span style="color: #859900;">m</span>pile                                           
 </pre></div>
 }}
 
+
+Use the \code{user/repo} form.
+As usual, you can also select a branch, tag, or sha, with the
+\code{user/repo@branch}, \code{user/repo@tag} or \code{user/repo@sha} forms.
 }
 
 \subsection{Dependency tree of the package in the current directory}{
@@ -204,7 +285,7 @@ This manual page collects the most common pak use cases.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_deps_tree("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">local::tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8</span> <span style="color: #859900;">✨👷🏼‍♂️🔧    </span>                                                 
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">local::tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8</span> <span style="color: #859900;">✨👷🏾🔧 </span>                                                       
 #> ├─fansi <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
 #> ├─lifecycle <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                             
 #> │ ├─cli <span style="color: #525252;">3.4.1</span> <span style="color: #859900;">✨</span>                                                                 
@@ -227,15 +308,17 @@ This manual page collects the most common pak use cases.
 #> ├─rlang                                                                         
 #> └─vctrs                                                                         
 #>                                                                                 
-#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏼‍♂️ bui</span>ld | 🔧 co<span style="color: #859900;">m</span>pile                                           
+#> Key:  <span style="color: #859900;">✨</span> new | <span style="color: #859900;">👷🏾 </span>build | 🔧<span style="color: #859900;"> </span>compile                                              
 </pre></div>
 }}
 
 
-(Assuming package is in directory \code{tibble}.)
+Assuming package is in directory \code{tibble}.
 }
 
 \subsection{Explain a recursive dependency}{
+
+How does tibble depend on rlang?
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_deps_explain("tibble", "rlang")
 }\if{html}{\out{</div>}}\if{html}{\out{
@@ -251,6 +334,9 @@ This manual page collects the most common pak use cases.
 </pre></div>
 }}
 
+
+Use can also use the \code{user/repo} form for packages from GitHub,
+\code{url::...} for packages at URLs, etc.
 }
 }
 
@@ -264,7 +350,7 @@ This manual page collects the most common pak use cases.
 #>                                                                                 
 #> → The package (0 B) is cached.                                                  
 #> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                                       
-#> <span style="color: #859900;">✔</span> 10 deps: kept 10 <span style="color: #b8b8b8;">[3.3s]</span>                                                       
+#> <span style="color: #859900;">✔</span> 10 deps: kept 10 <span style="color: #b8b8b8;">[3.4s]</span>                                                       
 </pre></div>
 }}
 
@@ -278,13 +364,13 @@ This manual page collects the most common pak use cases.
 #>                                                                                 
 #> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
 #> → The package (0 B) is cached.                                                  
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8 👷🏼‍♀️🔧                                                   
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8 👷🏼‍♂️🔧                                                   
 #> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
 #> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8 (source) (96 B)                                              
 #> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8                                                        
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(853ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(891ms)</span>                                                 
 #> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8                                                         
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(2.5s)</span>                                                     
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(2.4s)</span>                                                     
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8 (local) <span style="color: #a3a3a3;">(37ms)</span>                                         
 #> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 10, upd 1, dld 1 (NA B) <span style="color: #b8b8b8;">[4.7s]</span>                          
 </pre></div>
@@ -300,7 +386,7 @@ This manual page collects the most common pak use cases.
 #>                                                                                 
 #> → Will <span style="font-style: italic;">install</span> 86 packages.                                                     
 #> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
-#> → Will <span style="font-style: italic;">download</span> 19 CRAN packages (28.40 MB), cached: 69 (71.79 MB).             
+#> → All 88 packages (100.09 MB) are cached.                                       
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">askpass</span>              1.1                                                      
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">base64enc</span>            0.1-3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">bench</span>                1.1.2                                                    
@@ -311,36 +397,36 @@ This manual page collects the most common pak use cases.
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">bslib</span>                0.4.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cachem</span>               1.0.6                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">callr</span>                3.7.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">clipr</span>                0.8.0    ⬇ <span style="color: #525252;">(50.34 kB)</span>                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">clipr</span>                0.8.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">colorspace</span>           2.0-3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">covr</span>                 3.6.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">crayon</span>               1.5.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">curl</span>                 4.3.3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">desc</span>                 1.4.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">DiagrammeR</span>           1.0.9    ⬇ <span style="color: #525252;">(2.27 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">DiagrammeR</span>           1.0.9                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">diffobj</span>              0.3.5                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">digest</span>               0.6.31                                                   
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">downloader</span>           0.4      ⬇ <span style="color: #525252;">(21.75 kB)</span>                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">downloader</span>           0.4                                                      
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span>                1.0.10                                                   
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">evaluate</span>             0.18                                                     
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">farver</span>               2.1.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fastmap</span>              1.1.0                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">formattable</span>          0.2.1    ⬇ <span style="color: #525252;">(168.24 kB)</span>                                   
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">formattable</span>          0.2.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fs</span>                   1.5.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">generics</span>             0.1.3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">ggplot2</span>              3.4.0                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">gridExtra</span>            2.3      ⬇ <span style="color: #525252;">(1.10 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">gridExtra</span>            2.3                                                      
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">gtable</span>               0.3.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">highr</span>                0.9                                                      
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">hms</span>                  1.1.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">htmltools</span>            0.5.4    ⬇ <span style="color: #525252;">(347.89 kB)</span>                                   
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">htmlwidgets</span>          1.5.4    ⬇ <span style="color: #525252;">(898.05 kB)</span>                                   
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">htmltools</span>            0.5.4                                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">htmlwidgets</span>          1.5.4                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">httr</span>                 1.4.4                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">igraph</span>               1.3.5                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">influenceR</span>           0.1.0.1  ⬇ <span style="color: #525252;">(63.70 kB)</span>                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">influenceR</span>           0.1.0.1                                                  
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">isoband</span>              0.2.6                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">jquerylib</span>            0.1.4                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">jsonlite</span>             1.8.4    ⬇ <span style="color: #525252;">(1.13 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">jsonlite</span>             1.8.4                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">knitr</span>                1.41                                                     
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">labeling</span>             0.4.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lazyeval</span>             0.2.2                                                    
@@ -351,7 +437,7 @@ This manual page collects the most common pak use cases.
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">mockr</span>                0.2.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">munsell</span>              0.5.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">nycflights13</span>         1.0.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">openssl</span>              2.0.5    ⬇ <span style="color: #525252;">(2.48 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">openssl</span>              2.0.5                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgbuild</span>             1.4.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgload</span>              1.3.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">praise</span>               1.0.0                                                    
@@ -363,164 +449,142 @@ This manual page collects the most common pak use cases.
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">R6</span>                   2.5.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rappdirs</span>             0.3.3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">RColorBrewer</span>         1.1-3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">readr</span>                2.1.3    ⬇ <span style="color: #525252;">(1.96 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">readr</span>                2.1.3                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rematch2</span>             2.1.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rex</span>                  1.2.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rmarkdown</span>            2.18                                                     
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rprojroot</span>            2.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rstudioapi</span>           0.14     ⬇ <span style="color: #525252;">(292.53 kB)</span>                                   
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">sass</span>                 0.4.4    ⬇ <span style="color: #525252;">(2.41 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rstudioapi</span>           0.14                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">sass</span>                 0.4.4                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">scales</span>               1.2.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">stringi</span>              1.7.8                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">stringr</span>              1.5.0    ⬇ <span style="color: #525252;">(308.75 kB)</span>                                   
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">stringr</span>              1.5.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">sys</span>                  3.4.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">testthat</span>             3.1.6    ⬇ <span style="color: #525252;">(2.92 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">testthat</span>             3.1.6                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyr</span>                1.2.1                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyselect</span>           1.2.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">timechange</span>           0.1.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tinytex</span>              0.42                                                     
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tzdb</span>                 0.3.0    ⬇ <span style="color: #525252;">(1.22 MB)</span>                                     
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">viridis</span>              0.6.2    ⬇ <span style="color: #525252;">(3.00 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tinytex</span>              0.43    👷🏾                                               
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tzdb</span>                 0.3.0                                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">viridis</span>              0.6.2                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">viridisLite</span>          0.4.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">visNetwork</span>           2.1.2    ⬇ <span style="color: #525252;">(4.64 MB)</span>                                     
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vroom</span>                1.6.0    ⬇ <span style="color: #525252;">(3.12 MB)</span>                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">visNetwork</span>           2.1.2                                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vroom</span>                1.6.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">waldo</span>                0.4.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>                2.5.0                                                    
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">xfun</span>                 0.35                                                     
 #> <span style="color: #525252;">+ </span><span style="color: #268BD2;">yaml</span>                 2.3.6                                                    
-#> <span style="color: #2AA198;">ℹ</span> Getting 19 pkgs (28.40 MB), 68 (71.79 MB) cached                              
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">blob</span> 1.2.3 (aarch64-apple-darwin20) (45.90 kB)                            
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">clipr</span> 0.8.0 (aarch64-apple-darwin20) (50.34 kB)                           
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">downloader</span> 0.4 (aarch64-apple-darwin20) (21.75 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cachem</span> 1.0.6 (aarch64-apple-darwin20) (67.65 kB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">htmltools</span> 0.5.4 (aarch64-apple-darwin20) (347.89 kB)                      
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fastmap</span> 1.1.0 (aarch64-apple-darwin20) (178.21 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">colorspace</span> 2.0-3 (aarch64-apple-darwin20) (2.62 MB)                       
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rex</span> 1.2.1 (aarch64-apple-darwin20) (122.38 kB)                            
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">bit</span> 4.0.5 (aarch64-apple-darwin20) (1.23 MB)                              
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rstudioapi</span> 0.14 (aarch64-apple-darwin20) (292.53 kB)                      
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">DiagrammeR</span> 1.0.9 (aarch64-apple-darwin20) (2.27 MB)                       
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">formattable</span> 0.2.1 (aarch64-apple-darwin20) (168.24 kB)                    
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">htmlwidgets</span> 1.5.4 (aarch64-apple-darwin20) (898.05 kB)                    
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">withr</span> 2.5.0 (aarch64-apple-darwin20) (229.48 kB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tinytex</span> 0.42 (aarch64-apple-darwin20) (133.32 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">openssl</span> 2.0.5 (aarch64-apple-darwin20) (2.48 MB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">digest</span> 0.6.31 (aarch64-apple-darwin20) (273.12 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fs</span> 1.5.2 (aarch64-apple-darwin20) (589.90 kB)                             
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">gtable</span> 0.3.1 (aarch64-apple-darwin20) (159.19 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rprojroot</span> 2.0.3 (aarch64-apple-darwin20) (100.20 kB)                      
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">sys</span> 3.4.1 (aarch64-apple-darwin20) (50.67 kB)                             
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">dplyr</span> 1.0.10 (aarch64-apple-darwin20) (1.33 MB)                           
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">stringr</span> 1.5.0 (aarch64-apple-darwin20) (308.75 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">evaluate</span> 0.18 (aarch64-apple-darwin20) (77.93 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">jsonlite</span> 1.8.4 (aarch64-apple-darwin20) (1.13 MB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">crayon</span> 1.5.2 (aarch64-apple-darwin20) (161.50 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">testthat</span> 3.1.6 (aarch64-apple-darwin20) (2.92 MB)                         
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 87 pkgs (100.09 MB) are cached                       
 #> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">influenceR</span> 0.1.0.1 (aarch64-apple-darwin20) (63.70 kB)                    
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">readr</span> 2.1.3 (aarch64-apple-darwin20) (1.96 MB)                            
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">munsell</span> 0.5.0 (aarch64-apple-darwin20) (241.65 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">diffobj</span> 0.3.5 (aarch64-apple-darwin20) (1.01 MB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lazyeval</span> 0.2.2 (aarch64-apple-darwin20) (159.69 kB)                       
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tzdb</span> 0.3.0 (aarch64-apple-darwin20) (1.22 MB)                             
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">visNetwork</span> 2.1.2 (aarch64-apple-darwin20) (4.64 MB)                       
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">evaluate</span> 0.18 (aarch64-apple-darwin20) (77.93 kB)                         
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">crayon</span> 1.5.2 (aarch64-apple-darwin20) (161.50 kB)                         
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rprojroot</span> 2.0.3 (aarch64-apple-darwin20) (100.20 kB)                      
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">formattable</span> 0.2.1 (aarch64-apple-darwin20) (168.24 kB)                    
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">digest</span> 0.6.31 (aarch64-apple-darwin20) (273.12 kB)                        
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tinytex</span> 0.43 (source) (32.97 kB)                                          
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">dplyr</span> 1.0.10 (aarch64-apple-darwin20) (1.33 MB)                           
 #> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">timechange</span> 0.1.1 (aarch64-apple-darwin20) (882.60 kB)                     
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">gridExtra</span> 2.3 (aarch64-apple-darwin20) (1.10 MB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">viridis</span> 0.6.2 (aarch64-apple-darwin20) (3.00 MB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">sass</span> 0.4.4 (aarch64-apple-darwin20) (2.41 MB)                             
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vroom</span> 1.6.0 (aarch64-apple-darwin20) (3.12 MB)                            
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lazyeval</span> 0.2.2 (aarch64-apple-darwin20) (159.69 kB)                       
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">jsonlite</span> 1.8.4 (aarch64-apple-darwin20) (1.13 MB)                         
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">stringr</span> 1.5.0 (aarch64-apple-darwin20) (308.75 kB)                        
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">munsell</span> 0.5.0 (aarch64-apple-darwin20) (241.65 kB)                        
 #> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8                                                        
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">DiagrammeR</span> 1.0.9  <span style="color: #a3a3a3;">(68ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(70ms)</span>                                                    
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">RColorBrewer</span> 1.1-3  <span style="color: #a3a3a3;">(78ms)</span>                                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">askpass</span> 1.1  <span style="color: #a3a3a3;">(85ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">base64enc</span> 0.1-3  <span style="color: #a3a3a3;">(91ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">Matrix</span> 1.5-3  <span style="color: #a3a3a3;">(158ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bench</span> 1.1.2  <span style="color: #a3a3a3;">(192ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(127ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(48ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">blob</span> 1.2.3  <span style="color: #a3a3a3;">(46ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">brio</span> 1.1.3  <span style="color: #a3a3a3;">(43ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cachem</span> 1.0.6  <span style="color: #a3a3a3;">(18ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">callr</span> 3.7.3  <span style="color: #a3a3a3;">(23ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">clipr</span> 0.8.0  <span style="color: #a3a3a3;">(18ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bslib</span> 0.4.1  <span style="color: #a3a3a3;">(164ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">colorspace</span> 2.0-3  <span style="color: #a3a3a3;">(76ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(626ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">covr</span> 3.6.1  <span style="color: #a3a3a3;">(101ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">crayon</span> 1.5.2  <span style="color: #a3a3a3;">(107ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">curl</span> 4.3.3  <span style="color: #a3a3a3;">(102ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">desc</span> 1.4.2  <span style="color: #a3a3a3;">(46ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">diffobj</span> 0.3.5  <span style="color: #a3a3a3;">(44ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">digest</span> 0.6.31  <span style="color: #a3a3a3;">(42ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">downloader</span> 0.4  <span style="color: #a3a3a3;">(39ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">DiagrammeR</span> 1.0.9  <span style="color: #a3a3a3;">(62ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(60ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">RColorBrewer</span> 1.1-3  <span style="color: #a3a3a3;">(70ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">askpass</span> 1.1  <span style="color: #a3a3a3;">(78ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">base64enc</span> 0.1-3  <span style="color: #a3a3a3;">(103ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">Matrix</span> 1.5-3  <span style="color: #a3a3a3;">(167ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bench</span> 1.1.2  <span style="color: #a3a3a3;">(140ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(59ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(44ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">blob</span> 1.2.3  <span style="color: #a3a3a3;">(45ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">brio</span> 1.1.3  <span style="color: #a3a3a3;">(41ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cachem</span> 1.0.6  <span style="color: #a3a3a3;">(17ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">callr</span> 3.7.3  <span style="color: #a3a3a3;">(25ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">clipr</span> 0.8.0  <span style="color: #a3a3a3;">(45ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">colorspace</span> 2.0-3  <span style="color: #a3a3a3;">(70ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bslib</span> 0.4.1  <span style="color: #a3a3a3;">(201ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">covr</span> 3.6.1  <span style="color: #a3a3a3;">(65ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">crayon</span> 1.5.2  <span style="color: #a3a3a3;">(59ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">curl</span> 4.3.3  <span style="color: #a3a3a3;">(43ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(623ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">desc</span> 1.4.2  <span style="color: #a3a3a3;">(51ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">diffobj</span> 0.3.5  <span style="color: #a3a3a3;">(49ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">digest</span> 0.6.31  <span style="color: #a3a3a3;">(41ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">downloader</span> 0.4  <span style="color: #a3a3a3;">(38ms)</span>                                              
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.10  <span style="color: #a3a3a3;">(41ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">evaluate</span> 0.18  <span style="color: #a3a3a3;">(41ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">farver</span> 2.1.1  <span style="color: #a3a3a3;">(43ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fastmap</span> 1.1.0  <span style="color: #a3a3a3;">(41ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">formattable</span> 0.2.1  <span style="color: #a3a3a3;">(76ms)</span>                                           
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fs</span> 1.5.2  <span style="color: #a3a3a3;">(57ms)</span>                                                    
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(43ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">evaluate</span> 0.18  <span style="color: #a3a3a3;">(66ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">farver</span> 2.1.1  <span style="color: #a3a3a3;">(44ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fastmap</span> 1.1.0  <span style="color: #a3a3a3;">(43ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">formattable</span> 0.2.1  <span style="color: #a3a3a3;">(42ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fs</span> 1.5.2  <span style="color: #a3a3a3;">(43ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(40ms)</span>                                              
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ggplot2</span> 3.4.0  <span style="color: #a3a3a3;">(44ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">gridExtra</span> 2.3  <span style="color: #a3a3a3;">(43ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">gridExtra</span> 2.3  <span style="color: #a3a3a3;">(45ms)</span>                                               
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">gtable</span> 0.3.1  <span style="color: #a3a3a3;">(39ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">highr</span> 0.9  <span style="color: #a3a3a3;">(39ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">hms</span> 1.1.2  <span style="color: #a3a3a3;">(39ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">highr</span> 0.9  <span style="color: #a3a3a3;">(42ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">hms</span> 1.1.2  <span style="color: #a3a3a3;">(63ms)</span>                                                   
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">htmltools</span> 0.5.4  <span style="color: #a3a3a3;">(42ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">htmlwidgets</span> 1.5.4  <span style="color: #a3a3a3;">(41ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">htmlwidgets</span> 1.5.4  <span style="color: #a3a3a3;">(44ms)</span>                                           
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">httr</span> 1.4.4  <span style="color: #a3a3a3;">(40ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">igraph</span> 1.3.5  <span style="color: #a3a3a3;">(81ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">influenceR</span> 0.1.0.1  <span style="color: #a3a3a3;">(47ms)</span>                                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">isoband</span> 0.2.6  <span style="color: #a3a3a3;">(41ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jquerylib</span> 0.1.4  <span style="color: #a3a3a3;">(41ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jsonlite</span> 1.8.4  <span style="color: #a3a3a3;">(40ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">labeling</span> 0.4.2  <span style="color: #a3a3a3;">(12ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">knitr</span> 1.41  <span style="color: #a3a3a3;">(78ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lazyeval</span> 0.2.2  <span style="color: #a3a3a3;">(48ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.0  <span style="color: #a3a3a3;">(42ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">memoise</span> 2.0.1  <span style="color: #a3a3a3;">(42ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mime</span> 0.12  <span style="color: #a3a3a3;">(66ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mockr</span> 0.2.0  <span style="color: #a3a3a3;">(79ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">munsell</span> 0.5.0  <span style="color: #a3a3a3;">(41ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">nycflights13</span> 1.0.2  <span style="color: #a3a3a3;">(42ms)</span>                                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">openssl</span> 2.0.5  <span style="color: #a3a3a3;">(43ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgbuild</span> 1.4.0  <span style="color: #a3a3a3;">(43ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgload</span> 1.3.2  <span style="color: #a3a3a3;">(43ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">praise</span> 1.0.0  <span style="color: #a3a3a3;">(41ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">prettyunits</span> 1.1.1  <span style="color: #a3a3a3;">(39ms)</span>                                           
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">processx</span> 3.8.0  <span style="color: #a3a3a3;">(40ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">influenceR</span> 0.1.0.1  <span style="color: #a3a3a3;">(16ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">igraph</span> 1.3.5  <span style="color: #a3a3a3;">(72ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">isoband</span> 0.2.6  <span style="color: #a3a3a3;">(42ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jquerylib</span> 0.1.4  <span style="color: #a3a3a3;">(40ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">jsonlite</span> 1.8.4  <span style="color: #a3a3a3;">(39ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">labeling</span> 0.4.2  <span style="color: #a3a3a3;">(13ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">knitr</span> 1.41  <span style="color: #a3a3a3;">(100ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lazyeval</span> 0.2.2  <span style="color: #a3a3a3;">(70ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.0  <span style="color: #a3a3a3;">(43ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">memoise</span> 2.0.1  <span style="color: #a3a3a3;">(44ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mime</span> 0.12  <span style="color: #a3a3a3;">(41ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">mockr</span> 0.2.0  <span style="color: #a3a3a3;">(41ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">munsell</span> 0.5.0  <span style="color: #a3a3a3;">(39ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">nycflights13</span> 1.0.2  <span style="color: #a3a3a3;">(39ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">openssl</span> 2.0.5  <span style="color: #a3a3a3;">(40ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgbuild</span> 1.4.0  <span style="color: #a3a3a3;">(41ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgload</span> 1.3.2  <span style="color: #a3a3a3;">(62ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">praise</span> 1.0.0  <span style="color: #a3a3a3;">(65ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">prettyunits</span> 1.1.1  <span style="color: #a3a3a3;">(41ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">processx</span> 3.8.0  <span style="color: #a3a3a3;">(41ms)</span>                                              
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">profmem</span> 0.6.0  <span style="color: #a3a3a3;">(40ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ps</span> 1.7.2  <span style="color: #a3a3a3;">(72ms)</span>                                                    
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">purrr</span> 0.3.5  <span style="color: #a3a3a3;">(79ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rappdirs</span> 0.3.3  <span style="color: #a3a3a3;">(44ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">readr</span> 2.1.3  <span style="color: #a3a3a3;">(45ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rematch2</span> 2.1.2  <span style="color: #a3a3a3;">(41ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rex</span> 1.2.1  <span style="color: #a3a3a3;">(38ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rprojroot</span> 2.0.3  <span style="color: #a3a3a3;">(16ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rstudioapi</span> 0.14  <span style="color: #a3a3a3;">(23ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rmarkdown</span> 2.18  <span style="color: #a3a3a3;">(114ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sass</span> 0.4.4  <span style="color: #a3a3a3;">(46ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">scales</span> 1.2.1  <span style="color: #a3a3a3;">(42ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringr</span> 1.5.0  <span style="color: #a3a3a3;">(33ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringi</span> 1.7.8  <span style="color: #a3a3a3;">(123ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sys</span> 3.4.1  <span style="color: #a3a3a3;">(45ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">testthat</span> 3.1.6  <span style="color: #a3a3a3;">(47ms)</span>                                              
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyr</span> 1.2.1  <span style="color: #a3a3a3;">(48ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.2.0  <span style="color: #a3a3a3;">(41ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">timechange</span> 0.1.1  <span style="color: #a3a3a3;">(40ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tinytex</span> 0.42  <span style="color: #a3a3a3;">(40ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tzdb</span> 0.3.0  <span style="color: #a3a3a3;">(43ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridisLite</span> 0.4.1  <span style="color: #a3a3a3;">(41ms)</span>                                           
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridis</span> 0.6.2  <span style="color: #a3a3a3;">(67ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">visNetwork</span> 2.1.2  <span style="color: #a3a3a3;">(82ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">waldo</span> 0.4.0  <span style="color: #a3a3a3;">(21ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vroom</span> 1.6.0  <span style="color: #a3a3a3;">(85ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(45ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ps</span> 1.7.2  <span style="color: #a3a3a3;">(39ms)</span>                                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">purrr</span> 0.3.5  <span style="color: #a3a3a3;">(40ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rappdirs</span> 0.3.3  <span style="color: #a3a3a3;">(41ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">readr</span> 2.1.3  <span style="color: #a3a3a3;">(44ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rematch2</span> 2.1.2  <span style="color: #a3a3a3;">(42ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rex</span> 1.2.1  <span style="color: #a3a3a3;">(39ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rprojroot</span> 2.0.3  <span style="color: #a3a3a3;">(20ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rmarkdown</span> 2.18  <span style="color: #a3a3a3;">(104ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rstudioapi</span> 0.14  <span style="color: #a3a3a3;">(46ms)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sass</span> 0.4.4  <span style="color: #a3a3a3;">(43ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">scales</span> 1.2.1  <span style="color: #a3a3a3;">(43ms)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringr</span> 1.5.0  <span style="color: #a3a3a3;">(22ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">sys</span> 3.4.1  <span style="color: #a3a3a3;">(17ms)</span>                                                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">stringi</span> 1.7.8  <span style="color: #a3a3a3;">(125ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">testthat</span> 3.1.6  <span style="color: #a3a3a3;">(59ms)</span>                                              
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyr</span> 1.2.1  <span style="color: #a3a3a3;">(43ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.2.0  <span style="color: #a3a3a3;">(65ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">timechange</span> 0.1.1  <span style="color: #a3a3a3;">(44ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tzdb</span> 0.3.0  <span style="color: #a3a3a3;">(44ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridisLite</span> 0.4.1  <span style="color: #a3a3a3;">(42ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">viridis</span> 0.6.2  <span style="color: #a3a3a3;">(42ms)</span>                                               
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">visNetwork</span> 2.1.2  <span style="color: #a3a3a3;">(71ms)</span>                                            
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vroom</span> 1.6.0  <span style="color: #a3a3a3;">(73ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">waldo</span> 0.4.0  <span style="color: #a3a3a3;">(41ms)</span>                                                 
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(41ms)</span>                                                 
 #> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">xfun</span> 0.35  <span style="color: #a3a3a3;">(42ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">yaml</span> 2.3.6  <span style="color: #a3a3a3;">(28ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> 103 deps: kept 16, upd 1, added 86, dld 39 (38.07 MB) <span style="color: #b8b8b8;">[7.6s]</span>                  
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tinytex</span> 0.43                                                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">yaml</span> 2.3.6  <span style="color: #a3a3a3;">(69ms)</span>                                                  
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tinytex</span> 0.43 <span style="color: #a3a3a3;">(1.2s)</span>                                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tinytex</span> 0.43  <span style="color: #a3a3a3;">(17ms)</span>                                                
+#> <span style="color: #859900;">✔</span> 103 deps: kept 16, upd 1, added 86, dld 13 (4.92 MB) <span style="color: #b8b8b8;">[7s]</span>                     
 </pre></div>
 }}
 
+
+Installs development and optional dependencies as well.
 }
 }
 
@@ -542,6 +606,9 @@ This manual page collects the most common pak use cases.
 </pre></div>
 }}
 
+
+If you haven't set a CRAN or Bioconductor repository, pak does that
+automatically.
 }
 
 \subsection{Add custom repository}{
@@ -584,7 +651,8 @@ pak::repo_get()
 }}
 
 
-Keeps only CRAN and (by default) Bioconductor.
+If you set the \code{repos} option to a CRAN repo only, or unset it completely,
+then pak keeps only CRAN and (by default) Bioconductor.
 }
 
 \subsection{Time travel using RSPM}{
@@ -605,6 +673,11 @@ pak::repo_get()
 </pre></div>
 }}
 
+
+Sets a repository that is equivalent to CRAN's state closest to the
+specified date.
+Name this repository \code{CRAN}, otherwise pak will also add a default CRAN
+repository.
 }
 
 \subsection{Time travel using MRAN}{
@@ -625,10 +698,15 @@ pak::repo_get()
 </pre></div>
 }}
 
+
+Sets a repository that is equivalent to CRAN's state at the specified date.
+Name this repository \code{CRAN}, otherwise pak will also add a default CRAN
+repository.
 }
 }
 
 \section{Caches}{
+By default pak caches both metadata and downloaded packages.
 \subsection{Inspect metadata cache}{
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::meta_list()
@@ -662,6 +740,10 @@ pak::repo_get()
 }
 
 \subsection{Update metadata cache}{
+
+By default \code{pkg_install()} and similar functions automatically update the
+metadata for the currently set repositories if it is older than 24 hours.
+You can also force an update manually:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::meta_update()
 }\if{html}{\out{</div>}}\if{html}{\out{
@@ -701,10 +783,12 @@ pak::meta_summary()
 
 \subsection{Inspect package cache}{
 
+Downloaded packages are also cached.
+
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::cache_list()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 388 × 11</span>                                                        
+#> <span style="color: #999999;"># A data frame: 415 × 11</span>                                                        
 #>    fullpath       path  package url   etag  sha256 version platf…¹ built vigne…²
 #>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>          <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>
 #> <span style="color: #c2c2c2;"> 1</span> /Users/gaborc… arch… <span style="color: #DC322F;">NA</span>      http… <span style="color: #999999;">"</span>\\"1… 0c8f0… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>         <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>
@@ -717,7 +801,7 @@ pak::meta_summary()
 #> <span style="color: #c2c2c2;"> 8</span> /Users/gaborc… bin/… cli     http… <span style="color: #999999;">"</span>\\"1… 36830… 3.4.1   aarch6…    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>
 #> <span style="color: #c2c2c2;"> 9</span> /Users/gaborc… bin/… lifecy… http… <span style="color: #999999;">"</span>\\"1… 7ce27… 1.0.3   aarch6…    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>
 #> <span style="color: #c2c2c2;">10</span> /Users/gaborc… bin/… vctrs   http… <span style="color: #999999;">"</span>\\"1… c3a69… 0.4.2   aarch6…    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>
-#> <span style="color: #999999;"># … with 378 more rows, 1 more variable: rversion &lt;chr&gt;, and abbreviated</span>        
+#> <span style="color: #999999;"># … with 405 more rows, 1 more variable: rversion &lt;chr&gt;, and abbreviated</span>        
 #> <span style="color: #999999;">#   variable names ¹​platform, ²​vignettes</span>                                      
 </pre></div>
 }}
@@ -733,10 +817,10 @@ pak::meta_summary()
 #> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"          
 #>                                                                                 
 #> $files                                                                          
-#> [1] 388                                                                         
+#> [1] 415                                                                         
 #>                                                                                 
 #> $size                                                                           
-#> [1] 622176579                                                                   
+#> [1] 635257957                                                                   
 #>                                                                                 
 </pre></div>
 }}

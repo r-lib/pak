@@ -21,6 +21,19 @@ pak::pkg_install("tibble")
 pak::pkg_install("tibble?reinstall")
 ```
 
+## How do I install a dependency from a binary package
+
+Sometimes it is suffifient to install the binary package of an older
+version of a dependency, instead of the newer source package that
+potentially needs compilers, system tools or libraries.
+
+`pkg_install()` and `lockfile_create()` default to `upgrade = FALSE`, which
+always chooses binaries over source packages, so if you use `pkg_install()`
+you don't need to do anything extra.
+
+The `local_install_*` functions default to `upgrade = TRUE`, as does `pak()`
+with `pkf = NULL`, so for these you need to explicitly use `upgrade = FALSE`.
+
 ## How do I install a package from source?
 
 To force the installation of a source package (instead of a binary
@@ -28,6 +41,18 @@ package), use the `?source` parameter:
 
 ```{asciicast faq-source}
 pak::pkg_install("tibble?source")
+```
+
+## How do I install the latest version of a dependency?
+
+If you want to always install a dependency from source, because you want
+the latest version or some other reason, you can use the `source`
+parameter with the `<package>=` form: `<package>=?source`.
+For example to install tibble, with its cli dependency installed from
+source you could write:
+
+```{asciicast faq-source-dep}
+pak::pkg_install(c("tibble", "cli=?source"))
 ```
 
 ## How do I ignore an optional dependency?
