@@ -196,7 +196,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
 
 pkg_status_internal <- function(pkg, lib = .libPaths()) {
   st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
-  do.call(rbind, st)
+  do.call("rbind_expand", st)
 }
 
 #' Remove installed packages
