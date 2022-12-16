@@ -18,7 +18,7 @@
 <link href="deps/Source_Code_Pro-0.4.4/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Another Approach to Package Installation">
 <meta property="og:description" content="The goal of pak is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
     so metadata resolution and package downloads are fast. Metadata and package
@@ -49,7 +49,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="reference/tldr.html">TLDR</a>
+  <a class="nav-link" href="reference/get-started.html">Get started</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="reference/faq.html">FAQ</a>
@@ -132,49 +132,49 @@
 #&gt; <span style="color: #2AA198;">ℹ</span> Getting 11 pkgs (4.60 MB)                                                     
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">glue</span> 1.6.2 (source) (106.51 kB)                                           
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pkgconfig</span> 2.0.3 (source) (6.08 kB)                                        
-#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fansi</span> 1.0.3 (source) (481.16 kB)                                          
-#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">utf8</span> 1.2.2 (source) (240.33 kB)                                           
-#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">magrittr</span> 2.0.3 (source) (267.07 kB)                                       
-#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lifecycle</span> 1.0.3 (source) (106.85 kB)                                      
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.1 (source) (540.04 kB)                                            
-#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pillar</span> 1.8.1 (source) (479.98 kB)                                         
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">utf8</span> 1.2.2 (source) (240.33 kB)                                           
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fansi</span> 1.0.3 (source) (481.16 kB)                                          
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lifecycle</span> 1.0.3 (source) (106.85 kB)                                      
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">magrittr</span> 2.0.3 (source) (267.07 kB)                                       
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8 (source) (672.34 kB)                                         
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rlang</span> 1.0.6 (source) (742.51 kB)                                          
+#&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pillar</span> 1.8.1 (source) (479.98 kB)                                         
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.5.1 (source) (959.56 kB)                                          
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1                                                            
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">fansi</span> 1.0.3                                                          
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">fansi</span> 1.0.3 <span style="color: #a3a3a3;">(6.2s)</span>                                                      
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">fansi</span> 1.0.3 <span style="color: #a3a3a3;">(5.8s)</span>                                                      
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">glue</span> 1.6.2                                                           
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">glue</span> 1.6.2 <span style="color: #a3a3a3;">(2.3s)</span>                                                       
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">glue</span> 1.6.2 <span style="color: #a3a3a3;">(2.2s)</span>                                                       
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">magrittr</span> 2.0.3                                                       
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">magrittr</span> 2.0.3 <span style="color: #a3a3a3;">(1.9s)</span>                                                   
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">magrittr</span> 2.0.3 <span style="color: #a3a3a3;">(1.8s)</span>                                                   
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">pkgconfig</span> 2.0.3                                                      
 #&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">pkgconfig</span> 2.0.3 <span style="color: #a3a3a3;">(1.2s)</span>                                                  
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">rlang</span> 1.0.6                                                          
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(13.8s)</span>                                                       
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(13.1s)</span>                                                       
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">utf8</span> 1.2.2                                                           
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">utf8</span> 1.2.2 <span style="color: #a3a3a3;">(5.7s)</span>                                                       
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(100ms)</span>                                                  
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(43ms)</span>                                                 
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(41ms)</span>                                                  
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(60ms)</span>                                              
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(28ms)</span>                                             
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(37ms)</span>                                                  
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">rlang</span> 1.0.6 <span style="color: #a3a3a3;">(18.3s)</span>                                                     
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(62ms)</span>                                                 
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">utf8</span> 1.2.2 <span style="color: #a3a3a3;">(5.6s)</span>                                                       
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(71ms)</span>                                                   
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(40ms)</span>                                                 
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(32ms)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(34ms)</span>                                              
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(27ms)</span>                                             
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(32ms)</span>                                                  
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">rlang</span> 1.0.6 <span style="color: #a3a3a3;">(17.5s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(52ms)</span>                                                 
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">lifecycle</span> 1.0.3                                                      
 #&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">lifecycle</span> 1.0.3 <span style="color: #a3a3a3;">(2.1s)</span>                                                  
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(39ms)</span>                                             
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(27ms)</span>                                             
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.5.1                                                          
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1 <span style="color: #a3a3a3;">(26.5s)</span>                                                     
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(1.1s)</span>                                                 
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1 <span style="color: #a3a3a3;">(25.2s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(73ms)</span>                                                 
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">pillar</span> 1.8.1                                                         
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">pillar</span> 1.8.1 <span style="color: #a3a3a3;">(5.6s)</span>                                                     
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(42ms)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">pillar</span> 1.8.1 <span style="color: #a3a3a3;">(5.7s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(40ms)</span>                                                
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8                                                         
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(5.2s)</span>                                                     
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(44ms)</span>                                                
-#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11, dld 11 (4.60 MB) <span style="color: #b8b8b8;">[1m 21.5s]</span>                        
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8 <span style="color: #a3a3a3;">(5.4s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(76ms)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11, dld 11 (4.60 MB) <span style="color: #b8b8b8;">[1m 17.2s]</span>                        
 </pre>
 </div>
 </div>
@@ -189,21 +189,21 @@
 #&gt; → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
 #&gt; → All 2 packages (0 B) are cached.                                              
 #&gt; <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9002</span> [bld][cmp] (GitHub: 37ec86a)                        
-#&gt; <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>  0.5.1 → 0.5.1<span style="font-weight: bold;">.9000</span> [bld][cmp] (GitHub: 48794fd)                        
+#&gt; <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>  0.5.1 → 0.5.1<span style="font-weight: bold;">.9000</span> [bld][cmp] (GitHub: 2d7de76)                        
 #&gt; <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached                                    
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (source) (1.34 MB)                                      
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (source) (2.11 MB)                                       
 #&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                    
 #&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(1.4s)</span>                                              
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                     
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(26.4s)</span>                                                
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@48794fd) <span style="color: #a3a3a3;">(73ms)</span>               
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(27.6s)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@2d7de76) <span style="color: #a3a3a3;">(72ms)</span>               
 #&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                   
-#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(802ms)</span>                                            
+#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(788ms)</span>                                            
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                    
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(4.9s)</span>                                                
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(40ms)</span>         
-#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2, dld 2 (NA B) <span style="color: #b8b8b8;">[38.4s]</span>                          
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(5.3s)</span>                                                
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(46ms)</span>         
+#&gt; <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2, dld 2 (NA B) <span style="color: #b8b8b8;">[39.8s]</span>                          
 </pre>
 </div>
 </div>
@@ -273,11 +273,11 @@
 #&gt; <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
 #&gt; <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.1 (source) (540.04 kB)                                            
 #&gt; <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">cli</span> 3.4.1                                                           
-#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(1.1s)</span>                                                     
+#&gt; <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(1s)</span>                                                       
 #&gt; <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1                                                            
-#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(12.6s)</span>                                                       
-#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1 (local) <span style="color: #a3a3a3;">(56ms)</span>                                            
-#&gt; <span style="color: #859900;">✔</span> 1 pkg: upd 1, dld 1 (540.04 kB) <span style="color: #b8b8b8;">[14.7s]</span>                                       
+#&gt; <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(12.8s)</span>                                                       
+#&gt; <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1 (local) <span style="color: #a3a3a3;">(51ms)</span>                                            
+#&gt; <span style="color: #859900;">✔</span> 1 pkg: upd 1, dld 1 (540.04 kB) <span style="color: #b8b8b8;">[14.8s]</span>                                       
 </pre>
 </div>
 </div>
@@ -289,7 +289,7 @@
 <div class="section level3">
 <h3 id="how-do-i--">How do I … ?<a class="anchor" aria-label="anchor" href="#how-do-i--"></a>
 </h3>
-<p>Start with our <a href="https://pak.r-lib.org/dev/reference/tldr.html" class="external-link">our TLDR document</a> to solve specific issues.</p>
+<p>Start with at <a href="https://pak.r-lib.org/dev/reference/get-started.html" class="external-link"><em>Get Started with pak</em></a> to solve specific issues.</p>
 </div>
 <div class="section level3">
 <h3 id="faq">FAQ<a class="anchor" aria-label="anchor" href="#faq"></a>
@@ -448,7 +448,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
   </div></footer>
