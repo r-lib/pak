@@ -295,3 +295,22 @@ is_string <- function(x) {
 map_named <- function(x, fun) {
   mapply(names(x), x, SIMPLIFY = FALSE, FUN = fun)
 }
+
+rbind_expand <- function(..., .list = list()) {
+  data <- c(list(...), .list)
+  cols <- unique(unlist(lapply(data, function(x) colnames(x))))
+  for (i in seq_along(data)) {
+    miss_cols <- setdiff(cols, colnames(data[[i]]))
+    if (length(miss_cols)) {
+      na_df <- as_data_frame(structure(
+        replicate(
+          length(miss_cols),
+          if (nrow(data[[i]])) NA else logical(),
+          simplify = FALSE),
+        names = miss_cols))
+      data[[i]] <- as_data_frame(cbind(data[[i]], na_df))
+    }
+  }
+
+  do.call(rbind, data)
+}

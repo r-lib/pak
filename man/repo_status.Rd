@@ -64,16 +64,74 @@ It checks the status of the configured or supplied repositories.
 \code{repo_ping()} is similar to \code{repo_status()} but also prints a short
 summary of the data, and it returns its result invisibly.
 }
-\examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-repo_status()
-repo_status(
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_status()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 10 × 10</span>                                                 
+#>    name     url   type  bioc_…¹ platf…² path  r_ver…³ ok     ping error 
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;list&gt;</span>
+#> <span style="color: #c2c2c2;"> 1</span> CRAN     http… cran  <span style="color: #DC322F;">NA</span>      source  src/… 4.2     TRUE  0.269 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 2</span> CRAN     http… cran  <span style="color: #DC322F;">NA</span>      aarch6… bin/… 4.2     TRUE  0.265 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 3</span> BioCsoft http… bioc  3.16    source  src/… 4.2     TRUE  0.264 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 4</span> BioCsoft http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.271 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 5</span> BioCann  http… bioc  3.16    source  src/… 4.2     TRUE  0.383 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 6</span> BioCann  http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.392 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 7</span> BioCexp  http… bioc  3.16    source  src/… 4.2     TRUE  0.507 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 8</span> BioCexp  http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.739 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;"> 9</span> BioCwor… http… bioc  3.16    source  src/… 4.2     TRUE  0.505 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #c2c2c2;">10</span> BioCwor… http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.766 <span style="color: #999999;">&lt;NULL&gt;</span>
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​bioc_version, ²​platform,</span>         
+#> <span style="color: #999999;">#   ³​r_version</span>                                                         
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_status(
   platforms = c("windows", "macos"),
   r_version = c("4.0", "4.1")
 )
-repo_ping()
-\dontshow{\}) # examplesIf}
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 15 × 10</span>                                                 
+#>    name          url    type  bioc_…¹ platf…² r_ver…³ path  ok      ping
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+#> <span style="color: #c2c2c2;"> 1</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      i386+x… 4.0     bin/… TRUE   0.198
+#> <span style="color: #c2c2c2;"> 2</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      i386+x… 4.1     bin/… TRUE   0.197
+#> <span style="color: #c2c2c2;"> 3</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      aarch6… 4.1     bin/… TRUE   0.197
+#> <span style="color: #c2c2c2;"> 4</span> BioCsoft      https… bioc  3.12    i386+x… 4.0     bin/… TRUE   0.988
+#> <span style="color: #c2c2c2;"> 5</span> BioCann       https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.03 
+#> <span style="color: #c2c2c2;"> 6</span> BioCexp       https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.25 
+#> <span style="color: #c2c2c2;"> 7</span> BioCworkflows https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.47 
+#> <span style="color: #c2c2c2;"> 8</span> BioCsoft      https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.48 
+#> <span style="color: #c2c2c2;"> 9</span> BioCsoft      https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>    
+#> <span style="color: #c2c2c2;">10</span> BioCann       https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.45 
+#> <span style="color: #c2c2c2;">11</span> BioCann       https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>    
+#> <span style="color: #c2c2c2;">12</span> BioCexp       https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.72 
+#> <span style="color: #c2c2c2;">13</span> BioCexp       https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>    
+#> <span style="color: #c2c2c2;">14</span> BioCworkflows https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.71 
+#> <span style="color: #c2c2c2;">15</span> BioCworkflows https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>    
+#> <span style="color: #999999;"># … with 1 more variable: error &lt;list&gt;, and abbreviated variable names</span>  
+#> <span style="color: #999999;">#   ¹​bioc_version, ²​platform, ³​r_version</span>                             
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_ping()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> Repository summary:                   source aarch64-apple-darwin20<span style="color: #2AA198;">          </span>
+#> CRAN          @ cloud.r-project.org   <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (194ms)</span>
+#> BioCsoft      @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (352ms)</span>
+#> BioCann       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (511ms)</span>
+#> BioCexp       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (675ms)</span>
+#> BioCworkflows @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (698ms)</span>
+</pre></div>
+}}
 }
+
 \seealso{
 Other repository functions: 
 \code{\link{repo_add}()},

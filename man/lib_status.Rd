@@ -15,13 +15,43 @@ pkg_list(lib = .libPaths()[1])
 \value{
 Data frame the contains data about the packages
 installed in the library.
+\eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
 }
 \description{
 Status of packages in a library
 }
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{lib_status(.Library)
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 31 × 31</span>                                                 
+#>    library   package version prior…¹ title license sugge…² built depends
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> /Library… base    4.2.2   base    <span style="color: #999999;">"</span>The… Part o… methods R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 2</span> /Library… boot    1.3-28  recomm… <span style="color: #999999;">"</span>Boo… Unlimi… MASS, … R 4.… R (&gt;= …
+#> <span style="color: #c2c2c2;"> 3</span> /Library… class   7.3-20  recomm… <span style="color: #999999;">"</span>Fun… GPL-2 … <span style="color: #DC322F;">NA</span>      R 4.… R (&gt;= …
+#> <span style="color: #c2c2c2;"> 4</span> /Library… cluster 2.1.4   recomm… <span style="color: #999999;">"</span>\\"F… GPL (&gt;… MASS, … R 4.… R (&gt;= …
+#> <span style="color: #c2c2c2;"> 5</span> /Library… codeto… 0.2-18  recomm… <span style="color: #999999;">"</span>Cod… GPL     <span style="color: #DC322F;">NA</span>      R 4.… R (&gt;= …
+#> <span style="color: #c2c2c2;"> 6</span> /Library… compil… 4.2.2   base    <span style="color: #999999;">"</span>The… Part o… <span style="color: #DC322F;">NA</span>      R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 7</span> /Library… datase… 4.2.2   base    <span style="color: #999999;">"</span>The… Part o… <span style="color: #DC322F;">NA</span>      R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 8</span> /Library… filelo… 1.0.2   <span style="color: #DC322F;">NA</span>      <span style="color: #999999;">"</span>Por… MIT + … callr … R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;"> 9</span> /Library… foreign 0.8-83  recomm… <span style="color: #999999;">"</span>Rea… GPL (&gt;… <span style="color: #DC322F;">NA</span>      R 4.… R (&gt;= …
+#> <span style="color: #c2c2c2;">10</span> /Library… graphi… 4.2.2   base    <span style="color: #999999;">"</span>The… Part o… <span style="color: #DC322F;">NA</span>      R 4.… <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #999999;"># … with 21 more rows, 22 more variables: needscompilation &lt;lgl&gt;,</span>       
+#> <span style="color: #999999;">#   repository &lt;chr&gt;, imports &lt;chr&gt;, remotetype &lt;chr&gt;,</span>                  
+#> <span style="color: #999999;">#   remotepkgref &lt;chr&gt;, remoteref &lt;chr&gt;, remoterepos &lt;chr&gt;,</span>             
+#> <span style="color: #999999;">#   remotepkgplatform &lt;chr&gt;, remotesha &lt;chr&gt;, enhances &lt;chr&gt;,</span>           
+#> <span style="color: #999999;">#   linkingto &lt;chr&gt;, md5sum &lt;chr&gt;, platform &lt;chr&gt;, biocviews &lt;chr&gt;,</span>     
+#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, ref &lt;chr&gt;, type &lt;chr&gt;, status &lt;chr&gt;, rversion &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   sources &lt;list&gt;, repotype &lt;chr&gt;, deps &lt;list&gt;, and abbreviated …</span>      
+</pre></div>
+}}
+}
+
 \seealso{
 Other package functions: 
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},

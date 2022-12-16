@@ -8,18 +8,22 @@
 #'
 #' @param query Search query string.
 #' @param ... Additional arguments passed to [pkgsearch::pkg_search()]
-#' @return A data frame, that is also a `pak_search_result`
-#' object with a custom print method. To see the underlying table, you
+#' @return A data frame, that is also a `pak_search_result` object
+#' with a custom print method. To see the underlying table, you
 #' can use `[]` to drop the extra classes. See examples below.
 #'
 #' @export
-#' @examplesIf FALSE
-#' # Simple search
+#' @section Examples:
+#' Simple search
+#' ```{asciicast pkg-search, R.options = list(width = 72)}
 #' pkg_search("survival")
+#'```
 #'
-#' # See the underlying data frame
+#' See the underlying data frame
+#' ```{asciicast pkg-search-2, R.options = list(width = 72)}
 #' psro <- pkg_search("ropensci")
 #' psro[]
+#' ```
 
 pkg_search <- function(query, ...) {
   load_extra("pillar")
@@ -73,11 +77,17 @@ print.pak_search_result <- function(x, ...) {
 }
 
 
-#' Query the history of a package
+#' Query the history of a CRAN package
 #'
 #' @param pkg Package name.
-#' @return A data frame, with one row per package version.
+#' @return A data frame, with one row per package version. The columns are
+#'   the entries of the `DESCRIPTION` files in the released package
+#'   versions.
 #' @export
+#' @section Examples:
+#' ```{asciicast pkg-history, R.options = list(width = 72)}
+#' pkg_history("ggplot2")
+#' ```
 
 pkg_history <- function(pkg) {
   load_extra("pillar")

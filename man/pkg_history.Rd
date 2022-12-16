@@ -2,7 +2,7 @@
 % Please edit documentation in R/search.R
 \name{pkg_history}
 \alias{pkg_history}
-\title{Query the history of a package}
+\title{Query the history of a CRAN package}
 \usage{
 pkg_history(pkg)
 }
@@ -10,8 +10,40 @@ pkg_history(pkg)
 \item{pkg}{Package name.}
 }
 \value{
-A data frame, with one row per package version.
+A data frame, with one row per package version. The columns are
+the entries of the \code{DESCRIPTION} files in the released package
+versions.
 }
 \description{
-Query the history of a package
+Query the history of a CRAN package
 }
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_history("ggplot2")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 44 × 30</span>                                                 
+#>    Package Type    Title    Version Date  Author Maint…¹ Descr…² License
+#>  <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> ggplot2 Package An impl… 0.5     2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 2</span> ggplot2 Package An impl… 0.5.1   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 3</span> ggplot2 Package An impl… 0.5.2   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 4</span> ggplot2 Package An impl… 0.5.4   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 5</span> ggplot2 Package An impl… 0.5.5   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 6</span> ggplot2 Package An impl… 0.5.6   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 7</span> ggplot2 Package An impl… 0.5.7   2007… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 8</span> ggplot2 Package An impl… 0.6     2008… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;"> 9</span> ggplot2 Package An impl… 0.7     2008… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #c2c2c2;">10</span> ggplot2 Package An impl… 0.8     2008… Hadle… Hadley… <span style="color: #999999;">"</span>An im… GPL    
+#> <span style="color: #999999;"># … with 34 more rows, 21 more variables: SaveImage &lt;chr&gt;,</span>              
+#> <span style="color: #999999;">#   LazyData &lt;chr&gt;, Packaged &lt;chr&gt;, crandb_file_date &lt;chr&gt;, date &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   dependencies &lt;list&gt;, URL &lt;chr&gt;, LazyLoad &lt;chr&gt;, Extends &lt;chr&gt;,</span>      
+#> <span style="color: #999999;">#   Collate &lt;chr&gt;, Repository &lt;chr&gt;, `Date/Publication` &lt;chr&gt;,</span>          
+#> <span style="color: #999999;">#   NeedsCompilation &lt;chr&gt;, VignetteBuilder &lt;chr&gt;, BugReports &lt;chr&gt;,</span>    
+#> <span style="color: #999999;">#   `Authors@R` &lt;chr&gt;, RoxygenNote &lt;chr&gt;, Encoding &lt;chr&gt;, MD5sum &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   `Config/Needs/website` &lt;chr&gt;, `Config/testthat/edition` &lt;chr&gt;, …</span>    
+</pre></div>
+}}
+}
+

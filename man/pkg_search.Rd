@@ -12,8 +12,8 @@ pkg_search(query, ...)
 \item{...}{Additional arguments passed to \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}}}
 }
 \value{
-A data frame, that is also a \code{pak_search_result}
-object with a custom print method. To see the underlying table, you
+A data frame, that is also a \code{pak_search_result} object
+with a custom print method. To see the underlying table, you
 can use \verb{[]} to drop the extra classes. See examples below.
 }
 \description{
@@ -22,13 +22,73 @@ pkgsearch package. See that package for more details and also
 \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}} for pagination, more advanced searching,
 etc.
 }
-\examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# Simple search
-pkg_search("survival")
+\section{Examples}{
 
-# See the underlying data frame
-psro <- pkg_search("ropensci")
+Simple search
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_search("survival")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                         
+#> 1 survival 3.4.0 -- by Terry M Therneau, 4 months ago                   
+#>   Survival Analysis                                                     
+#>                                                                         
+#> 2 survminer 0.4.9 -- by Alboukadel Kassambara, 2 years ago              
+#>   Drawing Survival Curves using 'ggplot2'                               
+#>                                                                         
+#> 3 flexsurv 2.2 -- by Christopher Jackson, 6 months ago                  
+#>   Flexible Parametric Survival and Multi-State Models                   
+#>                                                                         
+#> 4 muhaz 1.2.6.4 -- by David Winsemius, 2 years ago                      
+#>   Hazard Function Estimation in Survival Analysis                       
+#>                                                                         
+#> 5 pec 2022.5.4 -- by Thomas A. Gerds, 8 months ago                      
+#>   Prediction Error Curves for Risk Prediction Models in Survival Analysi
+#> s                                                                       
+#>                                                                         
+#> 6 randomForestSRC 3.1.1 -- by Udaya B. Kogalur, 5 months ago            
+#>   Fast Unified Random Forests for Survival, Regression, and Classificati
+#> on (RF-SRC)                                                             
+#>                                                                         
+#> 7 relsurv 2.2.8 -- by Damjan Manevski, 4 months ago                     
+#>   Relative Survival                                                     
+#>                                                                         
+#> 8 survRM2 1.0.4 -- by Hajime Uno, 6 months ago                          
+#>   Comparing Restricted Mean Survival Time                               
+#>                                                                         
+#> 9 titanic 0.1.0 -- by Paul Hendricks, 7 years ago                       
+#>   Titanic Passenger Survival Data Set                                   
+#>                                                                         
+#> 10 KMsurv 0.1.5 -- by Jun Yan, 10 years ago                             
+#>   Data sets from Klein and Moeschberger (1997), Survival Analysis       
+</pre></div>
+}}
+
+
+See the underlying data frame
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{psro <- pkg_search("ropensci")
 psro[]
-\dontshow{\}) # examplesIf}
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 10 × 15</span>                                                 
+#>    score package    version    title descr…¹ date                maint…²
+#>    <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;pckg_vrs&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;dttm&gt;</span>              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span>  538. webmockr   0.8.2      Stub… <span style="color: #999999;">"</span>Stubb… 2022-08-28 <span style="color: #999999;">19:20:02</span> Scott …
+#> <span style="color: #c2c2c2;"> 2</span>  520. RSelenium  1.7.9      R Bi… <span style="color: #999999;">"</span>Provi… 2022-09-02 <span style="color: #999999;">07:10:11</span> Ju Yeo…
+#> <span style="color: #c2c2c2;"> 3</span>  416. tracerer   2.2.2      Trac… <span style="color: #999999;">"</span>'BEAS… 2021-05-30 <span style="color: #999999;">08:40:03</span> Richèl…
+#> <span style="color: #c2c2c2;"> 4</span>  376. rfisheries 0.2        'Pro… <span style="color: #999999;">"</span>A pro… 2016-02-19 <span style="color: #999999;">08:50:03</span> Karthi…
+#> <span style="color: #c2c2c2;"> 5</span>  367. mcbette    1.15       Mode… <span style="color: #999999;">"</span>'BEAS… 2022-08-27 <span style="color: #999999;">12:30:02</span> Richèl…
+#> <span style="color: #c2c2c2;"> 6</span>  359. taxize     0.9.100    Taxo… <span style="color: #999999;">"</span>Inter… 2022-04-22 <span style="color: #999999;">07:30:02</span> Zachar…
+#> <span style="color: #c2c2c2;"> 7</span>  350. beastier   2.4.11     Call… <span style="color: #999999;">"</span>'BEAS… 2022-08-11 <span style="color: #999999;">13:40:04</span> Richèl…
+#> <span style="color: #c2c2c2;"> 8</span>  347. spocc      1.2.0      Inte… <span style="color: #999999;">"</span>A pro… 2021-01-05 <span style="color: #999999;">19:50:03</span> Scott …
+#> <span style="color: #c2c2c2;"> 9</span>  316. chromer    0.3        Inte… <span style="color: #999999;">"</span>A pro… 2022-10-27 <span style="color: #999999;">22:45:36</span> Karl W…
+#> <span style="color: #c2c2c2;">10</span>  315. visdat     0.5.3      Prel… <span style="color: #999999;">"</span>Creat… 2019-02-15 <span style="color: #999999;">14:30:03</span> Nichol…
+#> <span style="color: #999999;"># … with 8 more variables: maintainer_email &lt;chr&gt;, revdeps &lt;int&gt;,</span>       
+#> <span style="color: #999999;">#   downloads_last_month &lt;int&gt;, license &lt;chr&gt;, url &lt;chr&gt;,</span>               
+#> <span style="color: #999999;">#   bugreports &lt;chr&gt;, package_data &lt;I&lt;list&gt;&gt;, ago &lt;chr&gt;, and</span>            
+#> <span style="color: #999999;">#   abbreviated variable names ¹​description, ²​maintainer_name</span>         
+</pre></div>
+}}
 }
+

@@ -14,9 +14,10 @@
 #'
 #' @export
 #' @rdname cache
-#' @examplesIf FALSE
-#' # Summary
+#' @section Examples:
+#' ```{asciicast cache-summary}
 #' cache_summary()
+#' ```
 
 cache_summary <- function() {
   remote(
@@ -44,11 +45,18 @@ cache_summary_internal <- function() {
 #'
 #' @rdname cache
 #' @export
-#' @examplesIf FALSE
-#' # List packages
+#' @section Examples:
+#' ```{asciicast cache-list}
 #' cache_list()
+#' ```
+#'
+#' ```{asciicast cache-list-2}
 #' cache_list(package = "recipes")
+#' ```
+#'
+#' ```{asciicast cache-list-3}
 #' cache_list(platform = "source")
+#' ```
 
 cache_list <- function(...) {
   load_extra("pillar")
@@ -69,10 +77,11 @@ cache_list_internal <- function(...) {
 #' @return `cache_delete()` returns nothing.
 #' @export
 #' @rdname cache
-#' @examplesIf FALSE
-#' # Delete packages
+#' @section Examples:
+#' ```{r cache-delete, eval = FALSE}
 #' cache_delete(package = "knitr")
 #' cache_delete(platform = "macos")
+#' ```
 
 cache_delete <- function(...) {
   remote(
@@ -94,8 +103,10 @@ cache_delete_internal <- function(...) {
 #'
 #' @export
 #' @rdname cache
-#' @examplesIf FALSE
+#' @section Examples:
+#' ```{r cache-clean, eval = FALSE}
 #' cache_clean()
+#' ```
 
 cache_clean <- function() {
   remote(
@@ -129,9 +140,12 @@ cache_clean_internal <- function() {
 #'
 #' @export
 #' @rdname metadata
-#' @examplesIf FALSE
-#' # Metadata cache summary
-#' meta_cummary()
+#' @section Examples:
+#' Metadata cache summary:
+#'
+#' ```{r meta-summary}
+#' meta_summary()
+#' ```
 
 meta_summary <- function() {
   remote(
@@ -163,11 +177,16 @@ meta_summary_internal <- function() {
 #'
 #' @export
 #' @rdname metadata
-#' @examplesIf FALSE
-#' # The current metadata DB
+#' @section Examples:
+#' The current metadata DB:
+#' ```{asciicast meta-list}
 #' meta_list()
-#' # Selected packages only
+#' ```
+#'
+#' Selected packages only:
+#' ```{asciicast meta-list-2}
 #' meta_list(pkg = c("shiny", "htmlwidgets"))
+#' ```
 
 meta_list <- function(pkg = NULL) {
   load_extra("pillar")
@@ -192,9 +211,11 @@ meta_list_internal <- function(pkg) {
 #'
 #' @export
 #' @rdname metadata
-#' @examplesIf FALSE
-#' # Update the metadata DB
+#' @section Examples:
+#' Update the metadata DB
+#' ```{asciicast meta-update}
 #' meta_update()
+#' ```
 
 meta_update <- function() {
   remote(
@@ -217,9 +238,11 @@ meta_update_internal <- function() {
 #'
 #' @export
 #' @rdname metadata
-#' @examplesIf FALSE
-#' # Delete the metadata DB
+#' @section Examples:
+#' Delete the metadata DB
+#' ```{asciicast meta-clean}
 #' meta_clean()
+#' ```
 
 meta_clean <- function(force = FALSE) {
   if (!force) {

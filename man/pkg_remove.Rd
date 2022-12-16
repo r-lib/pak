@@ -9,7 +9,10 @@ pkg_remove(pkg, lib = .libPaths()[[1L]])
 \arguments{
 \item{pkg}{A character vector of packages to remove.}
 
-\item{lib}{library to remove packages from}
+\item{lib}{library to remove packages from.}
+}
+\value{
+Nothing.
 }
 \description{
 Remove installed packages
@@ -17,7 +20,6 @@ Remove installed packages
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pak_package_sources}},
 \code{\link{pak}()},
 \code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},

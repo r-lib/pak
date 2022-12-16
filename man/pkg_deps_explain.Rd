@@ -7,15 +7,34 @@
 pkg_deps_explain(pkg, deps, upgrade = TRUE, dependencies = NA)
 }
 \arguments{
-\item{pkg}{Package name or remote package specification.}
+\item{pkg}{Package names or package references. E.g.
+\itemize{
+\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
+in general,
+\item \code{tidyverse/ggplot2}: package from GitHub,
+\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
+\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
+\item \code{.}: package in the current working directory.
+}
+
+See "\link{Package sources}" for more details.}
 
 \item{deps}{Package names of the dependencies to explain.}
 
 \item{upgrade}{Whether to use the most recent available package
 versions.}
 
-\item{dependencies}{Dependency types. See
-\code{\link[pkgdepends:as_pkg_dependencies]{pkgdepends::as_pkg_dependencies()}} for possible values.}
+\item{dependencies}{What kinds of dependencies to install. Most commonly
+one of the following values:
+\itemize{
+\item \code{NA}: only required (hard) dependencies,
+\item \code{TRUE}: required dependencies plus optional and development
+dependencies,
+\item \code{FALSE}: do not install any dependencies. (You might end up with a
+non-working package, and/or the installation might fail.)
+See \link{Package dependency types} for other possible values and more
+information about package dependencies.
+}}
 }
 \value{
 A named list with a print method. First entries are the
@@ -30,9 +49,51 @@ Extract dependency chains from \code{pkg} to \code{deps}.
 This function is similar to \code{\link[=pkg_deps_tree]{pkg_deps_tree()}}, but its output is easier
 to read if you are only interested is certain packages (\code{deps}).
 }
-\examples{
-\dontrun{
-# How does the GH version of usethis depend on cli and ps?
-pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
+\section{Examples}{
+
+How does dplyr depend on rlang?
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps_explain("dplyr", "rlang")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Updated metadata database: 5.09 MB in 12 files.                       
+#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                   
+#> dplyr -&gt; lifecycle -&gt; rlang                                             
+#> dplyr -&gt; rlang                                                          
+#> dplyr -&gt; tibble -&gt; lifecycle -&gt; rlang                                   
+#> dplyr -&gt; tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                         
+#> dplyr -&gt; tibble -&gt; pillar -&gt; rlang                                      
+#> dplyr -&gt; tibble -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang                
+#> dplyr -&gt; tibble -&gt; pillar -&gt; vctrs -&gt; rlang                             
+#> dplyr -&gt; tibble -&gt; rlang                                                
+#> dplyr -&gt; tibble -&gt; vctrs -&gt; lifecycle -&gt; rlang                          
+#> dplyr -&gt; tibble -&gt; vctrs -&gt; rlang                                       
+#> dplyr -&gt; tidyselect -&gt; lifecycle -&gt; rlang                               
+#> dplyr -&gt; tidyselect -&gt; rlang                                            
+#> dplyr -&gt; tidyselect -&gt; vctrs -&gt; lifecycle -&gt; rlang                      
+#> dplyr -&gt; tidyselect -&gt; vctrs -&gt; rlang                                   
+#> dplyr -&gt; vctrs -&gt; lifecycle -&gt; rlang                                    
+#> dplyr -&gt; vctrs -&gt; rlang                                                 
+#> dplyr -&gt; pillar -&gt; lifecycle -&gt; rlang                                   
+#> dplyr -&gt; pillar -&gt; rlang                                                
+#> dplyr -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang                          
+#> dplyr -&gt; pillar -&gt; vctrs -&gt; rlang                                       
+</pre></div>
+}}
+
+
+How does the GH version of usethis depend on cli and ps?
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> usethis -&gt; cli                                                          
+#> usethis -&gt; desc -&gt; cli                                                  
+#> usethis -&gt; gh -&gt; cli                                                    
+#> usethis -&gt; lifecycle -&gt; cli                                             
+#>                                                                         
+#> x ps                                                                    
+</pre></div>
+}}
 }
-}
+
