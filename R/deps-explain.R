@@ -16,11 +16,16 @@
 #'   the package names in `deps`.
 #'
 #' @export
-#' @examples
-#' \dontrun{
-#' # How does the GH version of usethis depend on cli and ps?
+#' @section Examples:
+#' How does dplyr depend on rlang?
+#' ```{asciicast pkg-deps-explain}
+#' pkg_deps_explain("dplyr", "rlang")
+#' ```
+#'
+#' How does the GH version of usethis depend on cli and ps?
+#' ```{asciicast pkg-deps-explain-2}
 #' pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
-#' }
+#' ```
 
 pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))

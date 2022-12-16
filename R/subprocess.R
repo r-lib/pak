@@ -28,7 +28,8 @@ remote <- function(func, args = list()) {
   subst_args <- list(
     "__body__" = body(func),
     "__verbosity__" = is_verbose(),
-    "__repos__" = getOption("repos")
+    "__repos__" = getOption("repos"),
+    "__width__" = pkg_data$ns$cli$console_width()
   )
   body(func2) <- substitute({
       withCallingHandlers(
@@ -44,7 +45,12 @@ remote <- function(func, args = list()) {
           invokeRestart("cli_message_handled")
         },
         {
-          options(pkg.show_progress = `__verbosity__`, repos = `__repos__`)
+          options(
+            pkg.show_progress = `__verbosity__`,
+            repos = `__repos__`,
+            cli.width = `__width__`,
+            width = `__width__`
+          )
           `__body__`
         }
       )

@@ -5,9 +5,14 @@
 #' @param lib Path to library.
 #' @return Data frame the contains data about the packages
 #'   installed in the library.
-#'
+#'   \eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
+
 #' @export
 #' @family library functions
+#' @section Examples:
+#' ```{asciicast lib-status-2}
+#' lib_status(.Library)
+#' ```
 
 lib_status <- function(lib = .libPaths()[1]) {
   load_extra("pillar")

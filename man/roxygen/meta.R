@@ -10,7 +10,8 @@ asciicast::init_knitr_engine(
   interactive = FALSE,
   timeout = as.integer(Sys.getenv("ASCIICAST_TIMEOUT", 300)),
   startup = quote({
-    options(cli.width = 70)
+    options(width = 72)
+    options(cli.width = 72)
     options(cli.progress_show_after = 0)
     options(cli.progress_clear = FALSE)
     library(cli)
@@ -22,7 +23,9 @@ asciicast::init_knitr_engine(
 knitr::opts_chunk$set(
   asciicast_knitr_output = "html",
   asciicast_include_style = FALSE,
-  asciicast_theme = "pkgdown"
+  asciicast_theme = "pkgdown",
+  asciicast_width = 72,
+  asciicast_cols = 72
 )
 
 list(

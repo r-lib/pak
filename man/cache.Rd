@@ -50,23 +50,91 @@ packages in the package cache.
 
 \code{cache_clean()} deletes all files from the cache.
 }
-\examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# Summary
-cache_summary()
-\dontshow{\}) # examplesIf}
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# List packages
-cache_list()
-cache_list(package = "recipes")
-cache_list(platform = "source")
-\dontshow{\}) # examplesIf}
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# Delete packages
-cache_delete(package = "knitr")
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_summary()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> $cachepath                                                              
+#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"  
+#>                                                                         
+#> $files                                                                  
+#> [1] 483                                                                 
+#>                                                                         
+#> $size                                                                   
+#> [1] 654662486                                                           
+#>                                                                         
+</pre></div>
+}}
+
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_list()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 483 × 11</span>                                                
+#>    fullpath       path  package url   etag  sha256 version platf…¹ built
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>          <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>
+#> <span style="color: #c2c2c2;"> 1</span> /Users/gaborc… arch… <span style="color: #DC322F;">NA</span>      http… <span style="color: #999999;">"</span>\\"1… 0c8f0… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>         <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 2</span> /Users/gaborc… bin/… evalua… http… <span style="color: #999999;">"</span>\\"1… 08a39… 0.17    aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 3</span> /Users/gaborc… bin/… crayon  http… <span style="color: #999999;">"</span>\\"2… 1e6d5… 1.5.2   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 4</span> /Users/gaborc… bin/… common… http… <span style="color: #999999;">"</span>\\"4… 47b4a… 1.8.1   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 5</span> /Users/gaborc… bin/… curl    http… <span style="color: #999999;">"</span>\\"b… 7b8ba… 4.3.3   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 6</span> /Users/gaborc… bin/… tinytex http… <span style="color: #999999;">"</span>\\"2… 7e9ba… 0.42    aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 7</span> /Users/gaborc… bin/… jsonli… http… <span style="color: #999999;">"</span>\\"1… 68e59… 1.8.2   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 8</span> /Users/gaborc… bin/… lifecy… http… <span style="color: #999999;">"</span>\\"1… 7ce27… 1.0.3   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 9</span> /Users/gaborc… bin/… vctrs   http… <span style="color: #999999;">"</span>\\"1… c3a69… 0.4.2   aarch6…    <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;">10</span> /Users/gaborc… src/… pkgcac… <span style="color: #DC322F;">NA</span>     <span style="color: #DC322F;">NA</span>   9b70a… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>          0
+#> <span style="color: #999999;"># … with 473 more rows, 2 more variables: vignettes &lt;int&gt;,</span>              
+#> <span style="color: #999999;">#   rversion &lt;chr&gt;, and abbreviated variable name ¹​platform</span>            
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_list(package = "recipes")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 1 × 11</span>                                                  
+#>   fullp…¹ path  package url   etag  sha256 version platf…² built vigne…³
+#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>
+#> <span style="color: #c2c2c2;">1</span> /Users… bin/… recipes http… <span style="color: #999999;">"</span>\\"1… e281e… 1.0.2   aarch6…    <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>
+#> <span style="color: #999999;"># … with 1 more variable: rversion &lt;chr&gt;, and abbreviated variable</span>      
+#> <span style="color: #999999;">#   names ¹​fullpath, ²​platform, ³​vignettes</span>                           
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_list(platform = "source")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 69 × 11</span>                                                 
+#>    fullpath       path  package url   etag  sha256 version platf…¹ built
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>          <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>
+#> <span style="color: #c2c2c2;"> 1</span> /Users/gaborc… src/… crayon  http… <span style="color: #999999;">"</span>\\"9… 70a9a… 1.5.2   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 2</span> /Users/gaborc… src/… zip     http… <span style="color: #999999;">"</span>\\"1… 14873… 2.2.1   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 3</span> /Users/gaborc… src/… curl    http… <span style="color: #999999;">"</span>\\"a… 3567b… 4.3.3   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 4</span> /Users/gaborc… src/… rlang   http… <span style="color: #999999;">"</span>\\"b… e6973… 1.0.6   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 5</span> /Users/gaborc… src/… openssl http… <span style="color: #999999;">"</span>\\"1… 7cde9… 2.0.3   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 6</span> /Users/gaborc… src/… tinytex http… <span style="color: #999999;">"</span>\\"8… 205f7… 0.42    source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 7</span> /Users/gaborc… src/… evalua… http… <span style="color: #999999;">"</span>\\"6… 49c74… 0.17    source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 8</span> /Users/gaborc… src/… Rcpp    http… <span style="color: #999999;">"</span>\\"2… 807ce… 1.0.9   source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;"> 9</span> /Users/gaborc… src/… knitr   http… <span style="color: #999999;">"</span>\\"d… 9b8f9… 1.40    source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #c2c2c2;">10</span> /Users/gaborc… src/… lpSolve http… <span style="color: #999999;">"</span>\\"7… f7258… 5.6.17  source     <span style="color: #DC322F;">NA</span>
+#> <span style="color: #999999;"># … with 59 more rows, 2 more variables: vignettes &lt;int&gt;,</span>               
+#> <span style="color: #999999;">#   rversion &lt;chr&gt;, and abbreviated variable name ¹​platform</span>            
+</pre></div>
+}}
+
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_delete(package = "knitr")
 cache_delete(platform = "macos")
-\dontshow{\}) # examplesIf}
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-cache_clean()
-\dontshow{\}) # examplesIf}
+}\if{html}{\out{</div>}}
+
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{cache_clean()
+}\if{html}{\out{</div>}}
 }
+

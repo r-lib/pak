@@ -6,6 +6,10 @@
 #' @inheritParams pkgdepends::pkg_name_check
 #'
 #' @export
+#' @section Examples:
+#' ```{asciicast pkg-name-check}
+#' pkg_name_check("sicily")
+#' ```
 
 pkg_name_check <- function(name, dictionaries = NULL) {
   remote(

@@ -142,7 +142,7 @@ pkg_install_do_plan <- function(proposal, lib) {
 #' @param lib One or more library paths to lookup packages status in.
 #'   By default all libraries are used.
 #' @return Data frame with data about installations of `pkg`.
-#' Columns include: `library`, `package`, `title`, `version`.
+#'   \eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
 #'
 #' @export
 #' @family package functions
@@ -195,13 +195,14 @@ pkg_remove_internal <- function(pkg, lib) {
 #'   versions.
 #' @inheritParams pkg_install
 #' @return A data frame with the dependency data, it includes `pkg`
-#'   as well.
+#'   as well. It has the following columns.
+#'   \eval{pak:::include_docs("pkgdepends", "docs/resolution-result.rds")}
 #'
 #' @family package functions
 #' @export
 #' @section Examples:
 #' ```{asciicast pkg-deps}
-#' pkg_deps("curl")
+#' pkg_deps("dplyr")
 #' ```
 #'
 #' For a package on GitHub:
@@ -249,9 +250,14 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #'
 #' @family package functions
 #' @export
-#' @examplesIf FALSE
+#' @section Examples:
+#' ```{asciicast pkg-deos-tree}
 #' pkg_deps_tree("dplyr")
+#' ```
+#'
+#' ```{asciicast pkg-deps-tree-2}
 #' pkg_deps_tree("r-lib/usethis")
+#' ```
 
 pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
@@ -284,6 +290,8 @@ pkg_list <- function(lib = .libPaths()[1]) {
 
 #' Download a package and its dependencies
 #'
+#' TODO: explain result
+#'
 #' @param dest_dir Destination directory for the packages. If it does not
 #'   exist, then it will be created.
 #' @param platforms Types of binary or source packages to download. The
@@ -293,13 +301,28 @@ pkg_list <- function(lib = .libPaths()[1]) {
 #'   the current R version.
 #' @inheritParams pkg_install
 #' @return Data frame with information about the downloaded
-#'   packages, invisibly.
+#'   packages, invisibly. Columns:
+#'   \eval{pak:::include_docs("pkgdepends", "docs/download-result.rds")}
 #'
 #' @export
 #' @family package functions
-#' @examplesIf FALSE
-#' pkg_download("forcats")
+#' @section Examples:
+#'
+#' ```{asciicast pkg-download}
+#' dl <- pkg_download("forcats")
+#' ```
+#'
+#' ```{asciicast pkg-download-2}
+#' dl
+#' ```
+#'
+#' ```{asciicast pkg-download-3}
+#' dl$fulltarget
+#' ```
+#'
+#' ```{asciicast pkg-download-4}
 #' pkg_download("r-lib/pak", platforms = "source")
+#' ```
 
 pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
                          platforms = NULL, r_versions = NULL) {

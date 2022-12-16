@@ -14,7 +14,7 @@ By default all libraries are used.}
 }
 \value{
 Data frame with data about installations of \code{pkg}.
-Columns include: \code{library}, \code{package}, \code{title}, \code{version}.
+\eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
 }
 \description{
 Display installed locations of a package
@@ -25,18 +25,18 @@ Display installed locations of a package
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_status("MASS")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 2 × 39</span>                                                          
-#>   library    package title version depends repos…¹ license needs…² built remot…³
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> /Users/ga… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.… standa…
-#> <span style="color: #c2c2c2;">2</span> /Library/… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.… <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #999999;"># … with 29 more variables: remotepkgref &lt;chr&gt;, remoteref &lt;chr&gt;,</span>                
-#> <span style="color: #999999;">#   remoterepos &lt;chr&gt;, remotepkgplatform &lt;chr&gt;, remotesha &lt;chr&gt;, imports &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   suggests &lt;chr&gt;, linkingto &lt;chr&gt;, remotes &lt;chr&gt;, remotehost &lt;chr&gt;,</span>           
-#> <span style="color: #999999;">#   remoterepo &lt;chr&gt;, remoteusername &lt;chr&gt;, enhances &lt;chr&gt;, biocviews &lt;chr&gt;,</span>    
-#> <span style="color: #999999;">#   remoteurl &lt;chr&gt;, remotesubdir &lt;chr&gt;, priority &lt;chr&gt;, remoteetag &lt;chr&gt;,</span>      
-#> <span style="color: #999999;">#   remotepackaged &lt;chr&gt;, md5sum &lt;chr&gt;, platform &lt;chr&gt;, sysreqs &lt;chr&gt;,</span>          
-#> <span style="color: #999999;">#   ref &lt;chr&gt;, type &lt;chr&gt;, status &lt;chr&gt;, rversion &lt;chr&gt;, sources &lt;list&gt;, …</span>      
+#> <span style="color: #999999;"># A data frame: 2 × 39</span>                                                  
+#>   library    package title version depends repos…¹ license needs…² built
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>
+#> <span style="color: #c2c2c2;">1</span> /Users/ga… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.…
+#> <span style="color: #c2c2c2;">2</span> /Library/… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.…
+#> <span style="color: #999999;"># … with 30 more variables: remotetype &lt;chr&gt;, remotepkgref &lt;chr&gt;,</span>       
+#> <span style="color: #999999;">#   remoteref &lt;chr&gt;, remoterepos &lt;chr&gt;, remotepkgplatform &lt;chr&gt;,</span>        
+#> <span style="color: #999999;">#   remotesha &lt;chr&gt;, imports &lt;chr&gt;, suggests &lt;chr&gt;, linkingto &lt;chr&gt;,</span>    
+#> <span style="color: #999999;">#   remotes &lt;chr&gt;, remotehost &lt;chr&gt;, remoterepo &lt;chr&gt;,</span>                  
+#> <span style="color: #999999;">#   remoteusername &lt;chr&gt;, enhances &lt;chr&gt;, biocviews &lt;chr&gt;,</span>              
+#> <span style="color: #999999;">#   remoteurl &lt;chr&gt;, remotesubdir &lt;chr&gt;, priority &lt;chr&gt;,</span>                
+#> <span style="color: #999999;">#   remoteetag &lt;chr&gt;, remotepackaged &lt;chr&gt;, md5sum &lt;chr&gt;, …</span>             
 </pre></div>
 }}
 }

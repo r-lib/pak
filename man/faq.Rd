@@ -17,50 +17,38 @@ In this case you can delete the package and then install it, or use the
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 13 packages.                                                     
-#> → All 13 packages (7.68 MB) are cached.                                         
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.3.0                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">crayon</span>      1.5.1                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">ellipsis</span>    0.3.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.1                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.7.0                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.7                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.4.1                                                             
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 13 pkgs (7.68 MB) are cached                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">ellipsis</span> 0.3.2 (aarch64-apple-darwin20) (38.65 kB)                        
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">glue</span> 1.6.2 (aarch64-apple-darwin20) (154.64 kB)                           
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">magrittr</span> 2.0.3 (aarch64-apple-darwin20) (231.25 kB)                       
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">fansi</span> 1.0.3 (aarch64-apple-darwin20) (379.23 kB)                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">utf8</span> 1.2.2 (aarch64-apple-darwin20) (209.24 kB)                           
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pkgconfig</span> 2.0.3 (aarch64-apple-darwin20) (17.70 kB)                       
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">crayon</span> 1.5.1 (aarch64-apple-darwin20) (158.62 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">rlang</span> 1.0.2 (aarch64-apple-darwin20) (1.79 MB)                            
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">lifecycle</span> 1.0.1 (aarch64-apple-darwin20) (107.55 kB)                      
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">pillar</span> 1.7.0 (aarch64-apple-darwin20) (744.33 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.3.0 (aarch64-apple-darwin20) (1.17 MB)                              
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.7 (aarch64-apple-darwin20) (723.61 kB)                         
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">vctrs</span> 0.4.1 (aarch64-apple-darwin20) (1.76 MB)                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.3.0  <span style="color: #a3a3a3;">(97ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">crayon</span> 1.5.1  <span style="color: #a3a3a3;">(105ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ellipsis</span> 0.3.2  <span style="color: #a3a3a3;">(115ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(125ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(133ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.1  <span style="color: #a3a3a3;">(143ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(161ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.7.0  <span style="color: #a3a3a3;">(188ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(73ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.2  <span style="color: #a3a3a3;">(41ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(47ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(45ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.4.1  <span style="color: #a3a3a3;">(32ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: added 13, dld 13 (7.48 MB) <span style="color: #b8b8b8;">[5.5s]</span>                            
+#>                                                                         
+#> → Will <span style="font-style: italic;">install</span> 13 packages.                                             
+#> → All 13 packages (7.68 MB) are cached.                                 
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.3.0                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">crayon</span>      1.5.1                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">ellipsis</span>    0.3.2                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.1                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.7.0                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.2                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.7                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                     
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.4.1                                                     
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 13 pkgs (7.68 MB) are cached                 
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">utf8</span> 1.2.2 (aarch64-apple-darwin20) (209.24 kB)                   
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.3.0  <span style="color: #a3a3a3;">(76ms)</span>                                           
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">crayon</span> 1.5.1  <span style="color: #a3a3a3;">(87ms)</span>                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">ellipsis</span> 0.3.2  <span style="color: #a3a3a3;">(97ms)</span>                                      
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(103ms)</span>                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(111ms)</span>                                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.1  <span style="color: #a3a3a3;">(153ms)</span>                                    
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(158ms)</span>                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.7.0  <span style="color: #a3a3a3;">(162ms)</span>                                       
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(87ms)</span>                                     
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.2  <span style="color: #a3a3a3;">(39ms)</span>                                         
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(41ms)</span>                                        
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(39ms)</span>                                          
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.4.1  <span style="color: #a3a3a3;">(32ms)</span>                                         
+#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: added 13, dld 1 (209.24 kB) <span style="color: #b8b8b8;">[1.8s]</span>                   
 </pre></div>
 }}
 
@@ -68,13 +56,13 @@ In this case you can delete the package and then install it, or use the
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble?reinstall")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 1 package.                                                       
-#> → The package (724.32 kB) is cached.                                            
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.7                                                                
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(44ms)</span>                                                
-#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1 <span style="color: #b8b8b8;">[732ms]</span>                                     
+#>                                                                         
+#> → Will <span style="font-style: italic;">install</span> 1 package.                                               
+#> → The package (724.32 kB) is cached.                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.7                                                        
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (724.32 kB) is cached                  
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(42ms)</span>                                        
+#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1 <span style="color: #b8b8b8;">[343ms]</span>                             
 </pre></div>
 }}
 
@@ -102,16 +90,15 @@ package), use the \code{?source} parameter:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install("tibble?source")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 1 package.                                                       
-#> → The package (672.34 kB) is cached.                                            
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.7 👷🏼‍♀️🔧                                                         
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (672.34 kB) is cached                          
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">tibble</span> 3.1.7 (source) (674.87 kB)                                         
-#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.7                                                         
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(3.5s)</span>                                                     
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(35ms)</span>                                                
-#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1, dld 1 (674.87 kB) <span style="color: #b8b8b8;">[7.2s]</span>                   
+#>                                                                         
+#> → Will <span style="font-style: italic;">install</span> 1 package.                                               
+#> → The package (672.34 kB) is cached.                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>   3.1.7 👷🏼‍♀️🔧                                                 
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (672.34 kB) is cached                  
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.7                                                 
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.7 <span style="color: #a3a3a3;">(3.1s)</span>                                             
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.7  <span style="color: #a3a3a3;">(35ms)</span>                                        
+#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1 <span style="color: #b8b8b8;">[4.1s]</span>                              
 </pre></div>
 }}
 
@@ -128,36 +115,15 @@ source you could write:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_install(c("tibble", "cli=?source"))
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
-#>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 11 packages.                                                     
-#> → All 11 packages (6.73 MB) are cached.                                         
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1 👷🏿🔧                                                         
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1                                                             
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 11 pkgs (6.73 MB) are cached                         
-#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1                                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(58ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(72ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(103ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(110ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(110ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(177ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(180ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(90ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(37ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(163ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(5.2s)</span>                                                        
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(28ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11 <span style="color: #b8b8b8;">[9.7s]</span>                                              
+#>                                                                         
+#> → Will <span style="font-style: italic;">install</span> 1 package.                                               
+#> → The package (540.04 kB) is cached.                                    
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>   3.3.0 👷🏽🔧                                                       
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg (540.04 kB) is cached                  
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.3.0                                                    
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.3.0 <span style="color: #a3a3a3;">(4.5s)</span>                                                
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.3.0  <span style="color: #a3a3a3;">(68ms)</span>                                           
+#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 11, added 1 <span style="color: #b8b8b8;">[4.9s]</span>                              
 </pre></div>
 }}
 
@@ -171,9 +137,9 @@ source you could write:
 )
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                                 
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                                       
-#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 12 <span style="color: #b8b8b8;">[906ms]</span>                                              
+#>                                                                         
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed                                               
+#> <span style="color: #859900;">✔</span> 1 pkg + 12 deps: kept 12 <span style="color: #b8b8b8;">[583ms]</span>                                      
 </pre></div>
 }}
 

@@ -30,6 +30,10 @@ pak_setup <- function(mode = c("auto", "download", "copy"), quiet = FALSE) {
 #' @aliases pak_sitrep_data
 #' @export
 #' @family pak housekeeping
+#' @section Examples:
+#' ```{asciicast pak-sitrep}
+#' pak_sitrep()
+#' ```
 
 pak_sitrep <- function() {
 

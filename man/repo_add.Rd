@@ -80,19 +80,81 @@ an error.
 }
 }
 
-\examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
-repo_get()
+\section{Exaples}{
 
-repo_resolve("MRAN@2020-01-21")
-repo_resolve("RSPM@2020-01-21")
-repo_resolve("MRAN@dplyr-1.0.0")
-repo_resolve("RSPM@dplyr-1.0.0")
-repo_resolve("MRAN@R-4.0.0")
-repo_resolve("RSPM@R-4.0.0")
-\dontshow{\}) # examplesIf}
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
+repo_get()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #999999;"># A data frame: 6 × 5</span>                                                   
+#>   name          url                                type  r_ver…¹ bioc_…²
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">2</span> RSPMdplyr100  https://packagemanager.posit.co/c… cran… *       <span style="color: #DC322F;">NA</span>     
+#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
+#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
+#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
+#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
+#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@2020-01-21")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                             CRAN                        
+#> "https://cran.microsoft.com/snapshot/2020-01-21"                        
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@2020-01-21")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                       CRAN                              
+#> "https://packagemanager.posit.co/cran/245"                              
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@dplyr-1.0.0")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                             CRAN                        
+#> "https://cran.microsoft.com/snapshot/2020-05-30"                        
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@dplyr-1.0.0")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                       CRAN                              
+#> "https://packagemanager.posit.co/cran/289"                              
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@R-4.0.0")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                             CRAN                        
+#> "https://cran.microsoft.com/snapshot/2020-04-25"                        
+</pre></div>
+}}
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@R-4.0.0")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                       CRAN                              
+#> "https://packagemanager.posit.co/cran/276"                              
+</pre></div>
+}}
 }
+
 \seealso{
 Other repository functions: 
 \code{\link{repo_get}()},

@@ -38,13 +38,21 @@
 #'
 #' @family repository functions
 #' @export
-#' @examplesIf FALSE
+#' @section Examples:
+#' ```{asciicast repo-status}
 #' repo_status()
+#' ```
+#'
+#' ```{asciicast repo-status-2}
 #' repo_status(
 #'   platforms = c("windows", "macos"),
 #'   r_version = c("4.0", "4.1")
 #' )
+#' ```
+#'
+#' ```{asciicast repo-status-3, asciicast_cols = 77, asciicast_width = 77, R.options = list(cli.width = 77, width = 77)}
 #' repo_ping()
+#' ```
 
 repo_status <- function(platforms = NULL, r_version = getRversion(),
                         bioc = TRUE, cran_mirror = NULL) {
@@ -121,8 +129,10 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #'
 #' @family repository functions
 #' @export
-#' @examplesIf FALSE
+#' @section Examples:
+#' ```{asciicast repo-get}
 #' repo_get()
+#' ```
 
 repo_get <- function(r_version = getRversion(),
                      bioc = TRUE, cran_mirror = NULL) {
@@ -201,16 +211,30 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #'
 #' @family repository functions
 #' @export
-#' @examplesIf FALSE
+#' @section Exaples:
+#' ```{asciicast repo-add}
 #' repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
 #' repo_get()
+#' ```
 #'
+#' ```{asciicast repo-add-2}
 #' repo_resolve("MRAN@2020-01-21")
+#' ```
+#' ```{asciicast repo-add-3}
 #' repo_resolve("RSPM@2020-01-21")
+#' ```
+#' ```{asciicast repo-add-4}
 #' repo_resolve("MRAN@dplyr-1.0.0")
+#' ```
+#' ```{asciicast repo-add-5}
 #' repo_resolve("RSPM@dplyr-1.0.0")
+#' ```
+#' ```{asciicast repo-add-6}
 #' repo_resolve("MRAN@R-4.0.0")
+#' ```
+#' ```{asciicast repo-add-7}
 #' repo_resolve("RSPM@R-4.0.0")
+#' ```
 
 repo_add <- function(..., .list = NULL) {
   new <- c(list(...), .list)

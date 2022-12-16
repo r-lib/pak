@@ -49,9 +49,51 @@ Extract dependency chains from \code{pkg} to \code{deps}.
 This function is similar to \code{\link[=pkg_deps_tree]{pkg_deps_tree()}}, but its output is easier
 to read if you are only interested is certain packages (\code{deps}).
 }
-\examples{
-\dontrun{
-# How does the GH version of usethis depend on cli and ps?
-pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
+\section{Examples}{
+
+How does dplyr depend on rlang?
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps_explain("dplyr", "rlang")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #859900;">✔</span> Updated metadata database: 5.09 MB in 12 files.                       
+#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                   
+#> dplyr -&gt; lifecycle -&gt; rlang                                             
+#> dplyr -&gt; rlang                                                          
+#> dplyr -&gt; tibble -&gt; lifecycle -&gt; rlang                                   
+#> dplyr -&gt; tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                         
+#> dplyr -&gt; tibble -&gt; pillar -&gt; rlang                                      
+#> dplyr -&gt; tibble -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang                
+#> dplyr -&gt; tibble -&gt; pillar -&gt; vctrs -&gt; rlang                             
+#> dplyr -&gt; tibble -&gt; rlang                                                
+#> dplyr -&gt; tibble -&gt; vctrs -&gt; lifecycle -&gt; rlang                          
+#> dplyr -&gt; tibble -&gt; vctrs -&gt; rlang                                       
+#> dplyr -&gt; tidyselect -&gt; lifecycle -&gt; rlang                               
+#> dplyr -&gt; tidyselect -&gt; rlang                                            
+#> dplyr -&gt; tidyselect -&gt; vctrs -&gt; lifecycle -&gt; rlang                      
+#> dplyr -&gt; tidyselect -&gt; vctrs -&gt; rlang                                   
+#> dplyr -&gt; vctrs -&gt; lifecycle -&gt; rlang                                    
+#> dplyr -&gt; vctrs -&gt; rlang                                                 
+#> dplyr -&gt; pillar -&gt; lifecycle -&gt; rlang                                   
+#> dplyr -&gt; pillar -&gt; rlang                                                
+#> dplyr -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang                          
+#> dplyr -&gt; pillar -&gt; vctrs -&gt; rlang                                       
+</pre></div>
+}}
+
+
+How does the GH version of usethis depend on cli and ps?
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> usethis -&gt; cli                                                          
+#> usethis -&gt; desc -&gt; cli                                                  
+#> usethis -&gt; gh -&gt; cli                                                    
+#> usethis -&gt; lifecycle -&gt; cli                                             
+#>                                                                         
+#> x ps                                                                    
+</pre></div>
+}}
 }
-}
+

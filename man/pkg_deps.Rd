@@ -36,7 +36,8 @@ information about package dependencies.
 }
 \value{
 A data frame with the dependency data, it includes \code{pkg}
-as well.
+as well. It has the following columns.
+\eval{pak:::include_docs("pkgdepends", "docs/resolution-result.rds")}
 }
 \description{
 Look up the dependencies of a package
@@ -44,21 +45,35 @@ Look up the dependencies of a package
 \section{Examples}{
 
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps("curl")
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps("dplyr")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
-#> <span style="color: #999999;"># A data frame: 1 × 32</span>                                                          
-#>   ref   type     direct directpkg status package version license needs…¹ prior…²
-#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> curl  standard TRUE   TRUE      OK     curl    4.3.3   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #999999;"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>         
-#> <span style="color: #999999;">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>     
-#> <span style="color: #999999;">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>             
-#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>     
-#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​needscompilation,</span>       
-#> <span style="color: #999999;">#   ²​priority</span>                                                                  
+#> <span style="color: #999999;"># A data frame: 16 × 32</span>                                                 
+#>    ref       type  direct direc…¹ status package version license needs…²
+#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  
+#> <span style="color: #c2c2c2;"> 1</span> R6        stan… FALSE  FALSE   OK     R6      2.5.1   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 2</span> cli       stan… FALSE  FALSE   OK     cli     3.4.1   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 3</span> dplyr     stan… TRUE   TRUE    OK     dplyr   1.0.10  MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 4</span> fansi     stan… FALSE  FALSE   OK     fansi   1.0.3   GPL-2 … FALSE  
+#> <span style="color: #c2c2c2;"> 5</span> generics  stan… FALSE  FALSE   OK     generi… 0.1.3   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 6</span> glue      stan… FALSE  FALSE   OK     glue    1.6.2   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 7</span> lifecycle stan… FALSE  FALSE   OK     lifecy… 1.0.3   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 8</span> magrittr  stan… FALSE  FALSE   OK     magrit… 2.0.3   MIT + … FALSE  
+#> <span style="color: #c2c2c2;"> 9</span> pillar    stan… FALSE  FALSE   OK     pillar  1.8.1   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">10</span> pkgconfig stan… FALSE  FALSE   OK     pkgcon… 2.0.3   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">11</span> rlang     stan… FALSE  FALSE   OK     rlang   1.0.6   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">12</span> tibble    stan… FALSE  FALSE   OK     tibble  3.1.8   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">13</span> tidysele… stan… FALSE  FALSE   OK     tidyse… 1.2.0   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">14</span> utf8      stan… FALSE  FALSE   OK     utf8    1.2.2   Apache… FALSE  
+#> <span style="color: #c2c2c2;">15</span> vctrs     stan… FALSE  FALSE   OK     vctrs   0.5.1   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">16</span> withr     stan… FALSE  FALSE   OK     withr   2.5.0   MIT + … FALSE  
+#> <span style="color: #999999;"># … with 23 more variables: priority &lt;chr&gt;, md5sum &lt;chr&gt;, sha256 &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   filesize &lt;int&gt;, built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;,</span>        
+#> <span style="color: #999999;">#   repotype &lt;chr&gt;, repodir &lt;chr&gt;, target &lt;chr&gt;, deps &lt;list&gt;,</span>           
+#> <span style="color: #999999;">#   mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;, error &lt;list&gt;,</span>          
+#> <span style="color: #999999;">#   metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;, sysreqs &lt;chr&gt;,</span>    
+#> <span style="color: #999999;">#   cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>            
+#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg, …</span>    
 </pre></div>
 }}
 
@@ -68,20 +83,20 @@ For a package on GitHub:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps("r-lib/callr")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 4 × 32</span>                                                          
-#>   ref        type  direct direc…¹ status package version license needs…² prior…³
-#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> r-lib/cal… gith… TRUE   TRUE    OK     callr   3.7.3.… MIT + … TRUE    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">2</span> R6         stan… FALSE  FALSE   OK     R6      2.5.1   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">3</span> processx   stan… FALSE  FALSE   OK     proces… 3.8.0   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">4</span> ps         stan… FALSE  FALSE   OK     ps      1.7.2   MIT + … FALSE   <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #999999;"># … with 22 more variables: md5sum &lt;chr&gt;, sha256 &lt;chr&gt;, filesize &lt;int&gt;,</span>         
-#> <span style="color: #999999;">#   built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;, repotype &lt;chr&gt;, repodir &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   target &lt;chr&gt;, deps &lt;list&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;,</span>     
-#> <span style="color: #999999;">#   error &lt;list&gt;, metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>             
-#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>     
-#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg,</span>              
-#> <span style="color: #999999;">#   ²​needscompilation, ³​priority</span>                                              
+#> <span style="color: #999999;"># A data frame: 4 × 32</span>                                                  
+#>   ref        type  direct direc…¹ status package version license needs…²
+#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  
+#> <span style="color: #c2c2c2;">1</span> r-lib/cal… gith… TRUE   TRUE    OK     callr   3.7.3.… MIT + … TRUE   
+#> <span style="color: #c2c2c2;">2</span> R6         stan… FALSE  FALSE   OK     R6      2.5.1   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">3</span> processx   stan… FALSE  FALSE   OK     proces… 3.8.0   MIT + … FALSE  
+#> <span style="color: #c2c2c2;">4</span> ps         stan… FALSE  FALSE   OK     ps      1.7.2   MIT + … FALSE  
+#> <span style="color: #999999;"># … with 23 more variables: priority &lt;chr&gt;, md5sum &lt;chr&gt;, sha256 &lt;chr&gt;,</span> 
+#> <span style="color: #999999;">#   filesize &lt;int&gt;, built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;,</span>        
+#> <span style="color: #999999;">#   repotype &lt;chr&gt;, repodir &lt;chr&gt;, target &lt;chr&gt;, deps &lt;list&gt;,</span>           
+#> <span style="color: #999999;">#   mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;, error &lt;list&gt;,</span>          
+#> <span style="color: #999999;">#   metadata &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;, sysreqs &lt;chr&gt;,</span>    
+#> <span style="color: #999999;">#   cache_status &lt;chr&gt;, lib_status &lt;chr&gt;, old_version &lt;chr&gt;,</span>            
+#> <span style="color: #999999;">#   new_version &lt;chr&gt;, and abbreviated variable names ¹​directpkg, …</span>    
 </pre></div>
 }}
 }
