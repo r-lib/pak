@@ -36,8 +36,8 @@ Suggests:
     mockery,
     pingr,
     jsonlite (>= 1.8.0),
-    pkgcache (>= 2.0.1),
-    pkgdepends (>= 0.3.0),
+    pkgcache (>= 2.0.4),
+    pkgdepends (>= 0.4.0),
     pkgsearch (>= 3.1.0),
     prettyunits,
     processx (>= 3.5.2),
@@ -56,16 +56,13 @@ Config/needs/dependencies:
     filelock,
     glue,
     jsonlite,
-    r-lib/pkgcache,
-    r-lib/pkgdepends,
+    pkgcache,
+    pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
     ps,
     rprojroot
-Remotes:
-    r-lib/pkgcache,
-    r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,
