@@ -22,12 +22,12 @@ NULL
 #' ```
 NULL
 
-#' A list of the most imporatant pak features
+#' A list of the most important pak features
 #'
 #' @name Great pak features
 #' @rdname features
 #' @description
-#' A list of the most imporatant pak features.
+#' A list of the most important pak features.
 #'
 #' ```{r child = "man/chunks/features.Rmd"}
 #' ```
