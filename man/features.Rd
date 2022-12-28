@@ -2,9 +2,9 @@
 % Please edit documentation in R/docs.R
 \name{Great pak features}
 \alias{Great pak features}
-\title{A list of the most imporatant pak features}
+\title{A list of the most important pak features}
 \description{
-A list of the most imporatant pak features.
+A list of the most important pak features.
 }
 \section{pak is fast}{
 \subsection{Parallel HTTP}{
