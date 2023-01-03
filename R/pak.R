@@ -1,5 +1,5 @@
 
-#' Install the required packages
+#' Install specified required packages
 #'
 #' Install the specified packages, or the ones required by
 #' the package or project in the current working directory.
@@ -14,7 +14,7 @@
 #'   packages, just one.
 #'
 #' @param pkg Package names or remote package specifications to install.
-#'   See [pak package sources][pak_package_sources] for details. If `NULL`,
+#'   See [pak package sources][Package sources] for details. If `NULL`,
 #'   will install all development dependencies for the current package.
 #' @param ... Extra arguments are passed to [pkg_install()] or
 #'   [local_install_dev_deps()].

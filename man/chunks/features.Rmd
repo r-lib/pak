@@ -35,7 +35,7 @@ of its dependencies are also installed.
 
 ## Keeping binary packages up-to-date
 
-pak automatically discads binary packages from the cache, if a new build
+pak automatically discards binary packages from the cache, if a new build
 of the same version is available on CRAN.
 
 ## Correct CRAN metadata errors
@@ -46,7 +46,7 @@ pak can correct some of CRAN's metadata issues, e.g.:
 - macOS binary package is only available at https://mac.r-project.org/
   because of a synchronization issue.
 
-## Graceful handling of locked packaeg DLLs on Windows
+## Graceful handling of locked package DLLs on Windows
 
 pak handles the situation of locked package DLLs, as well as possible.
 It detects which process locked them, and offers the choice of terminating
@@ -63,7 +63,7 @@ loads any packages. (Only in background processes).
 ## pak comes as a self-contained binary package
 
 On the most common platforms. No dependencies, no system dependencies,
-no compiler needed. (See also the [installation][install] manual.)
+no compiler needed. (See also the [installation][Installing pak] manual.)
 
 ## Install packages from multiple sources
 
@@ -95,4 +95,4 @@ or CRAN.
 
 ## pak can install dependencies of local packages
 
-Very handly for package development!
+Very handy for package development!

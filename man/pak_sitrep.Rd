@@ -17,6 +17,32 @@ It prints
 \item whether the pak private library is functional.
 }
 }
+\section{Examples}{
+
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak_sitrep()
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>  compatible)                                                            
+#> - pak repository: - (local install?)                                    
+#> * Optional packages installed:                                          
+#> - pillar                                                                
+#> * Library path:                                                         
+#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpcpVAdU/fi
+#> led8ef3d7a46fc                                                          
+#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpcpVAdU/fi
+#> led8ef2562d6ef                                                          
+#> - /Users/gaborcsardi/Library/R/arm64/4.2/library                        
+#> - /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library  
+#> * Private library location:                                             
+#> - /Users/gaborcsardi/Library/Caches/org.R-project.R/R/pak/lib/4.2/aarch6
+#> 4                                                                       
+#> * Private library exists.                                               
+#> * Private library is functional                                         
+</pre></div>
+}}
+}
+
 \seealso{
 Other pak housekeeping: 
 \code{\link{pak_cleanup}()}

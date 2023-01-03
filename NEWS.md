@@ -1,5 +1,32 @@
 # pak (development version)
 
+# pak 0.3.1
+
+* The `?ignore` parameter works correctly now.
+
+* Dependency resolution now does not fail if a package is not found.
+
+* pak can now install `url::` remotes from GitHub.
+
+* pak now does not fail when the package of a `.tar.gz` GitHub
+  snapshot is in a subdirectory, or in a subdirectory of a subdirectory.
+
+* pak now errors early if it cannot deduce the name of the package
+  from a `Remotes` or `Config/Needs/*` entry.
+
+* Solver failures now include details in some cases where previously they
+  did not.
+
+* pak can now update packages in Docker containers where the
+  old version was installed in the different Docker later (#251)
+
+* pak errors are now user friendlier and better formatted.
+
+* pak now does not load tibble and its dependencies in the pak subprocess,
+  so their dlls are not locked by the pak subprocess on Windows.
+
+* pak now does not fail when installing a package that uses a non-UTF-8
+  encoding on R 4.3.x and later (#404).
 
 # pak 0.3.0
 

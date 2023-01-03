@@ -86,13 +86,13 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
-    - name: Install rim
+    - name: Install rig
       run: |
-        curl -OL https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
+        curl -OL https://github.com/r-lib/rig/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
         sudo installer -pkg rim-0.2.2-macOS-x86_64.pkg -target /
 
     - name: Install R
@@ -114,10 +114,16 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
+      env:
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSION_DEFAULT: 4.2
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
+      env:
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSION_DEFAULT: 4.2
 
     - name: Deploy packages
       run: |
@@ -125,6 +131,8 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSION_DEFAULT: 4.2
 
   # -----------------------------------------------------------------------
   windows:
@@ -134,7 +142,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
@@ -143,9 +151,9 @@ jobs:
         git config --local user.name "$GITHUB_ACTOR"
         git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-    - name: Install rim
+    - name: Install rig
       run: |
-        Invoke-WebRequest -Uri  https://github.com/gaborcsardi/rim/releases/download/v0.2.2/rim-windows-0.2.2.exe -OutFile rim.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.2.2/rim-windows-0.2.2.exe -OutFile rim.exe
         Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
         # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
@@ -173,7 +181,7 @@ jobs:
         rim add devel
         rim add rtools35
         # rim add rtools40 # already installed
-        rim default 4.2.1
+        rim default 4.2.2
 
     - name: Build pak binaries
       run: |
@@ -211,7 +219,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
@@ -228,7 +236,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   macos-m1:
-    runs-on: [self-hosted, macOS, arm64]
+    runs-on: [macos-arm64]
     if: ${{ github.event.inputs.macos-m1 == '' || github.event.inputs.macos-m1 == 'yes' }}
     name: macos arm64 pak binaries
     defaults:
@@ -238,7 +246,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
@@ -273,7 +281,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   linux-arm64:
-    runs-on: [self-hosted, Linux, arm64]
+    runs-on: [linux-arm64]
     if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
@@ -292,7 +300,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
@@ -321,7 +329,7 @@ jobs:
         sudo apt-get update
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 10
 
@@ -331,7 +339,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Dependencies
-      uses: r-lib/actions/setup-r-dependencies@v2
+      uses: r-lib/actions/setup-r-dependencies@v2-branch
 
     - name: Install local pak tree
       run: R CMD INSTALL .

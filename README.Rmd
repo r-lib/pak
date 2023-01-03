@@ -18,27 +18,30 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures",
-  out.width = "100%"
+  out.width = "100%",
+  cache = TRUE,
+  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
 )
 asciicast::init_knitr_engine(
+  startup = quote({
+    library(cli)
+    library(pak)
+    pak::lib_status()
+    set.seed(1) }),
   echo = TRUE,
   echo_input = FALSE,
-  startup = quote(library(cli)),
-  interactive = FALSE,
-  options = list(
-    asciicast_knitr_output = "auto",
-    asciicast_at = "end",
-    asciicast_end_wait = 3,
-    asciicast_echo = FALSE,
-    asciicast_theme = "pkgdown",
-    asciicast_omit_last_line = TRUE
-  )
+  interactive = FALSE
 )
 ```
 
 ```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
 dir.create(.lib <- tempfile())
 .libPaths(c(.lib, .libPaths()))
+```
+
+```{asciicast tmp-cache, include = FALSE, cache = FALSE}
+Sys.setenv(R_USER_CACHE_DIR = tempfile())
+options(cli_num_colors = 256)
 ```
 
 ## :rocket: Short tour
@@ -49,7 +52,7 @@ dir.create(.lib <- tempfile())
 pak::pkg_install("tibble")
 ```
 
-#### Install packages from GItHub
+#### Install packages from GitHub
 
 ```{asciicast gh}
 pak::pkg_install("tidyverse/tibble")
@@ -82,7 +85,7 @@ pak::local_install("cli")
 
 ### How do I ... ?
 
-Start with our [our TLDR document](https://pak.r-lib.org/dev/reference/tldr.html) to solve specific issues.
+Start with at [_Get Started with pak_](https://pak.r-lib.org/dev/reference/get-started.html) to solve specific issues.
 
 ### FAQ
 
@@ -90,7 +93,7 @@ Check out [list of frequently asked questions](https://pak.r-lib.org/dev/referen
 
 ### Reference
 
-[The complete reference of pak functions](https://pak.r-lib.org/dev/reference) is the most complete source of information about pak.
+[The complete reference of pak functions](https://pak.r-lib.org/dev/reference/) is the most complete source of information about pak.
 
 ### I have a(nother) question
 

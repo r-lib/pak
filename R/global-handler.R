@@ -2,7 +2,7 @@
 #' Install missing packages on the fly
 #'
 #' Use this function to set up a global error handler, that is called
-#' if R fails to load a package. This handler will offer yout the choice
+#' if R fails to load a package. This handler will offer you the choice
 #' of installing the missing package (and all its dependencies),
 #' and in some cases it can also remedy the error and restart the code.
 #'

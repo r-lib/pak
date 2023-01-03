@@ -6,23 +6,26 @@
 #' This function is similar to [pkg_deps_tree()], but its output is easier
 #' to read if you are only interested is certain packages (`deps`).
 #'
-#' @param pkg Package name or remote package specification.
 #' @param deps Package names of the dependencies to explain.
 #' @param upgrade Whether to use the most recent available package
 #'   versions.
-#' @param dependencies Dependency types. See
-#'   [pkgdepends::as_pkg_dependencies()] for possible values.
+#' @inheritParams pkg_install
 #' @return A named list with a print method. First entries are the
 #'   function arguments: `pkg`, `deps`, `dependencies`, the last one is
 #'   `paths` and it contains the results in a named list, the names are
 #'   the package names in `deps`.
 #'
 #' @export
-#' @examples
-#' \dontrun{
-#' # How does the GH version of usethis depend on cli and ps?
+#' @section Examples:
+#' How does dplyr depend on rlang?
+#' ```{asciicast pkg-deps-explain}
+#' pkg_deps_explain("dplyr", "rlang")
+#' ```
+#'
+#' How does the GH version of usethis depend on cli and ps?
+#' ```{asciicast pkg-deps-explain-2}
 #' pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
-#' }
+#' ```
 
 pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))

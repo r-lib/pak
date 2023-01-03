@@ -28,7 +28,8 @@ remote <- function(func, args = list()) {
   subst_args <- list(
     "__body__" = body(func),
     "__verbosity__" = is_verbose(),
-    "__repos__" = getOption("repos")
+    "__repos__" = getOption("repos"),
+    "__width__" = pkg_data$ns$cli$console_width()
   )
   body(func2) <- substitute({
       withCallingHandlers(
@@ -44,11 +45,37 @@ remote <- function(func, args = list()) {
           invokeRestart("cli_message_handled")
         },
         {
-          options(pkg.show_progress = `__verbosity__`, repos = `__repos__`)
+          options(
+            pkg.show_progress = `__verbosity__`,
+            repos = `__repos__`,
+            cli.width = `__width__`,
+            width = `__width__`
+          )
           `__body__`
         }
       )
   }, subst_args)
+
+  opts <- options()
+  pkg_options <- opts[grepl("^pkg[.]", names(opts))]
+  envs <- Sys.getenv()
+  pkg_envs <- envs[grepl("^PKG_", names(envs))]
+  rs$run(function(new_opts, new_envs) {
+    opts <- options()
+    old_opts <- opts[grepl("^pkg[.]", names(opts))]
+    # remove all pkg.* options
+    options(structure(
+      vector(length(old_opts), mode = "list"),
+      names = names(old_opts)
+    ))
+    # set new ones
+    options(new_opts)
+
+    envs <- Sys.getenv()
+    old_envs <- envs[grepl("^PKG_", names(envs))]
+    Sys.unsetenv(old_envs)
+    if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
+  }, list(new_opts = pkg_options, new_envs = pkg_envs))
 
   res <- withCallingHandlers(
     callr_message = function(msg) {

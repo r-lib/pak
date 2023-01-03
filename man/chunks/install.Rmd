@@ -1,10 +1,19 @@
 
 ## Pre-built binaries
 
-Install a binary build of pak from our repository on GitHub:
+Our pre-built binaries have the advantage that they are completely
+self-containted and dependency free.
+No additional R packages, system libraries or tools (e.g. compilers) are
+needed for them.
+Install a pre-built binary build of pak from our repository on GitHub:
 
 ``` r
-install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+install.packages("pak", repos = sprintf(
+  "https://r-lib.github.io/p/pak/stable/%s/%s/%s",
+  .Platform$pkgType,
+  R.Version()$os,
+  R.Version()$arch
+))
 ```
 
 This is supported for the following systems:
@@ -17,8 +26,14 @@ This is supported for the following systems:
 | macOS Big Sur+      | aarch64   | R 4.1.0 - R-devel |
 | Windows             | x86_64    | R 3.4.0 - R-devel |
 
-For macOS we only support the official CRAN R build. Other builds, e.g.
-Homebrew R, are not supported.
+### Notes
+
+* For macOS we only support the official CRAN R build. Other builds, e.g.
+  Homebrew R, are not supported.
+* We only support R builds that have an R shared library. CRAN's Windows
+  and macOS installers are such, so the the R builds in the common Linux
+  distributions. But this might be an issue if you build R yourself without
+  the `--enable-R-shlib` option.
 
 ## Install from CRAN
 
@@ -36,10 +51,15 @@ binaries packages for.
 We have nightly binary builds, for the same systems as the table above:
 
 ``` r
-install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+install.packages("pak", repos = sprintf(
+  "https://r-lib.github.io/p/pak/devel/%s/%s/%s",
+  .Platform$pkgType,
+  R.Version()$os,
+  R.Version()$arch
+))
 ```
 
-## `stable`, `rc` and `devel` streams
+### `stable`, `rc` and `devel` streams
 
 We have three types of binaries available:
 
@@ -53,5 +73,11 @@ The streams are available under different repository URLs:
 
 ``` r
 stream <- "rc"
-install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/%s/%s/%s/%s", stream, .Platform$pkgType, R.Version()$os, R.Version()$arch))
+install.packages("pak", repos = sprintf(
+  "https://r-lib.github.io/p/pak/%s/%s/%s/%s",
+  stream,
+  .Platform$pkgType,
+  R.Version()$os,
+  R.Version()$arch
+))
 ```

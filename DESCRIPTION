@@ -1,5 +1,5 @@
 Package: pak
-Version: 0.3.0.9000
+Version: 0.3.1.9999
 Title: Another Approach to Package Installation
 Description: The goal of 'pak' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
@@ -17,7 +17,6 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 RoxygenNote: 7.2.1.9000
-Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 3.2)
 Imports:
@@ -37,8 +36,8 @@ Suggests:
     mockery,
     pingr,
     jsonlite (>= 1.8.0),
-    pkgcache (>= 2.0.1),
-    pkgdepends (>= 0.3.0),
+    pkgcache (>= 2.0.4),
+    pkgdepends (>= 0.4.0),
     pkgsearch (>= 3.1.0),
     prettyunits,
     processx (>= 3.5.2),
@@ -49,33 +48,27 @@ Suggests:
     withr
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
-    r-lib/callr,
-    r-lib/desc,
+    callr,
+    desc,
     cli,
     curl,
     distro,
     filelock,
     glue,
     jsonlite,
-    r-lib/pkgcache,
-    r-lib/pkgdepends,
+    pkgcache,
+    pkgdepends,
     pkgsearch,
     prettyunits,
-    r-lib/processx,
-    r-lib/ps,
+    processx,
+    ps,
     rprojroot
-Remotes:
-    r-lib/callr,
-    r-lib/desc,
-    r-lib/pkgcache,
-    r-lib/pkgdepends,
-    r-lib/processx,
-    r-lib/ps
 Config/Needs/website:
     r-lib/asciicast,
-    r-lib/roxygen2@feature/html-blocks,
+    r-lib/roxygen2,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
+Config/build/extra-sources: configure*
 URL: https://pak.r-lib.org/
 BugReports: https://github.com/r-lib/pak/issues
 BuildResaveData: no
