@@ -95,6 +95,16 @@ remote <- function(func, args = list()) {
     if (inherits(res$error, "callr_status_error")) {
       res$error$message <- "error in pak subprocess"
     }
+    # This is a temporary workaround until we have a principled way of
+    # printing the various error types in the main process.
+    if (inherits(res$error$parent, "package_build_error") &&
+        !is.null(res$error$parent$data$stdout)) {
+      res$error$parent$message <- paste0(
+        res$error$parent$message,
+        "\nFull installation output:\n",
+        paste(res$error$parent$data$stdout, collapse = "\n")
+      )
+    }
     err$throw(res$error)
   }
 
