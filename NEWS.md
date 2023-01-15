@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.4.0
 
 * pak has much improved and more informative error messages now.
   This work is not yet finished, so if you find an unclear error message,
