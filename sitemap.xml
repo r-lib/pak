@@ -22,13 +22,13 @@
     <loc>http://pak.r-lib.org/reference/cache.html</loc>
   </url>
   <url>
-    <loc>http://pak.r-lib.org/reference/config.html</loc>
-  </url>
-  <url>
     <loc>http://pak.r-lib.org/reference/faq.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/features.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/get-started.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/handle_package_not_found.html</loc>
@@ -73,6 +73,12 @@
     <loc>http://pak.r-lib.org/reference/metadata.html</loc>
   </url>
   <url>
+    <loc>http://pak.r-lib.org/reference/package-dependency-types.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pak-config.html</loc>
+  </url>
+  <url>
     <loc>http://pak.r-lib.org/reference/pak.html</loc>
   </url>
   <url>
@@ -89,6 +95,9 @@
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/pak_sitrep.html</loc>
+  </url>
+  <url>
+    <loc>http://pak.r-lib.org/reference/pak_solver.html</loc>
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/pak_update.html</loc>
@@ -131,8 +140,5 @@
   </url>
   <url>
     <loc>http://pak.r-lib.org/reference/repo_status.html</loc>
-  </url>
-  <url>
-    <loc>http://pak.r-lib.org/reference/tldr.html</loc>
   </url>
 </urlset>

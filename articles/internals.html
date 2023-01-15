@@ -8,12 +8,12 @@
 <meta name="description" content="pak">
 <title>pak internals • pak</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.4/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.4/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="pak internals">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="pak internals">
 <meta property="og:description" content="pak">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../reference/tldr.html">TLDR</a>
+  <a class="nav-link" href="../reference/get-started.html">Get started</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../reference/faq.html">FAQ</a>
@@ -91,30 +91,73 @@
 <div class="section level2">
 <h2 id="the-embedded-library">The embedded library<a class="anchor" aria-label="anchor" href="#the-embedded-library"></a>
 </h2>
-<p>pak bundles its dependencies into the installed package, or into the user’s cache directory. This can happen several ways:</p>
+<p>pak bundles its dependencies into the installed package, or into the
+user’s cache directory. This can happen several ways:</p>
 <ol style="list-style-type: decimal">
-<li><p>If not running inside <code>R CMD check</code>, <code>R CMD INSTALL</code> installs all dependencies when installing package data, into <code>/library</code> within the installed package. Downloading and installing the (currently) 37 dependencies takes about 1-1.5 minutes for platforms with binaries, and about 4 minutes for platforms that compile everything from source (measured on Linux). The goal of this is to create self-contained binaries on CRAN.</p></li>
-<li><p>The main advantage of doing this in the data step is that we can show the progress and/or other messages to the user.</p></li>
-<li><p>If the bundling fails, pak errors. This is to avoid creating a non-functional binary package. Hopefully CRAN will just try creating the binary again, later.</p></li>
-<li><p>This also works well on platforms that do not (yet) have binaries, e.g. M1 macs, Linux or the new experimental Windows platform.</p></li>
-<li><p>When running inside <code>R CMD check</code>, pak does not bundle its dependencies, to make the checks faster.</p></li>
-<li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does not install the package during the check. Instead, they pre-install it, and then refer to the install log in the check. They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.</p></li>
-<li><p>When pak is installed from GitHub, using <code>remotes::install_github()</code> or similar, the same dependency bundling happens. This is nice on platforms for which we do not build a self-contained binary. But see also the next item.</p></li>
-<li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field, then pak does not bundle its dependencies, only emits a message that suggests using <code>create_dev_lib()</code>. This is because we can’t easily install from GitHub using base R functions only.</p></li>
-<li><p>When running <code>R CMD check</code>, pak uses <code>testthat.R</code> to bundle the dependencies into the temporary installation that is used in the check. However, pak <em>copies</em> the dependencies in this case, to make the check faster. If copying the dependencies fails, then pak skips the test suite. The reason for copying in <code>testthat.R</code> instead of install time is that this way we avoid the check warning about the large <code>/library</code> directory.</p></li>
-<li><p>If the pak installation currently being tested does not have bundled dependencies, then <code>setup.R</code> bundles them, but into the user’s cache directory. This is to make sure that we can still use <code>devtools::test()</code> and alike for development.</p></li>
-<li><p>When developing pak interactively, e.g. using <code>load_all()</code>, use <code>create_dev_lib()</code> to copy dependencies into the user’s cache directory.</p></li>
+<li><p>If not running inside <code>R CMD check</code>,
+<code>R CMD INSTALL</code> installs all dependencies when installing
+package data, into <code>/library</code> within the installed package.
+Downloading and installing the (currently) 37 dependencies takes about
+1-1.5 minutes for platforms with binaries, and about 4 minutes for
+platforms that compile everything from source (measured on Linux). The
+goal of this is to create self-contained binaries on CRAN.</p></li>
+<li><p>The main advantage of doing this in the data step is that we can
+show the progress and/or other messages to the user.</p></li>
+<li><p>If the bundling fails, pak errors. This is to avoid creating a
+non-functional binary package. Hopefully CRAN will just try creating the
+binary again, later.</p></li>
+<li><p>This also works well on platforms that do not (yet) have
+binaries, e.g. M1 macs, Linux or the new experimental Windows
+platform.</p></li>
+<li><p>When running inside <code>R CMD check</code>, pak does not bundle
+its dependencies, to make the checks faster.</p></li>
+<li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does
+not install the package during the check. Instead, they pre-install it,
+and then refer to the install log in the check. They do set up the same
+env vars for the pre-install, so pak still does not bundle the
+dependencies in this case.</p></li>
+<li><p>When pak is installed from GitHub, using
+<code>remotes::install_github()</code> or similar, the same dependency
+bundling happens. This is nice on platforms for which we do not build a
+self-contained binary. But see also the next item.</p></li>
+<li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field,
+then pak does not bundle its dependencies, only emits a message that
+suggests using <code>create_dev_lib()</code>. This is because we can’t
+easily install from GitHub using base R functions only.</p></li>
+<li><p>When running <code>R CMD check</code>, pak uses
+<code>testthat.R</code> to bundle the dependencies into the temporary
+installation that is used in the check. However, pak <em>copies</em> the
+dependencies in this case, to make the check faster. If copying the
+dependencies fails, then pak skips the test suite. The reason for
+copying in <code>testthat.R</code> instead of install time is that this
+way we avoid the check warning about the large <code>/library</code>
+directory.</p></li>
+<li><p>If the pak installation currently being tested does not have
+bundled dependencies, then <code>setup.R</code> bundles them, but into
+the user’s cache directory. This is to make sure that we can still use
+<code>devtools::test()</code> and alike for development.</p></li>
+<li><p>When developing pak interactively, e.g. using
+<code>load_all()</code>, use <code>create_dev_lib()</code> to copy
+dependencies into the user’s cache directory.</p></li>
 </ol>
 <p>In summary, these are the various bundling modes:</p>
 <ol style="list-style-type: decimal">
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is ready to use</p></li>
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code> → no not bundle</p></li>
-<li><p><code>R CMD check</code> → copy into <code>/library</code>, ignore errors</p></li>
-<li><p><code>remotes::install_github()</code> without <code>Remotes</code> → install into <code>/library</code></p></li>
-<li><p><code>remotes::install_github()</code> with <code>Remotes</code> → no not bundle</p></li>
-<li><p><code>devtools::test()</code> and similar → copy into user’s cache directory</p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is
+ready to use</p></li>
+<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install
+into <code>/library</code></p></li>
+<li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install
+into <code>/library</code></p></li>
+<li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code>
+→ no not bundle</p></li>
+<li><p><code>R CMD check</code> → copy into <code>/library</code>,
+ignore errors</p></li>
+<li><p><code>remotes::install_github()</code> without
+<code>Remotes</code> → install into <code>/library</code></p></li>
+<li><p><code>remotes::install_github()</code> with <code>Remotes</code>
+→ no not bundle</p></li>
+<li><p><code>devtools::test()</code> and similar → copy into user’s
+cache directory</p></li>
 </ol>
 </div>
   </main>
@@ -131,7 +174,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
   </div></footer>
