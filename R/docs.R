@@ -209,5 +209,23 @@ include_docs <- function(pkg, file, top = FALSE) {
   rd <- readRDS(rds)
   # We cannot insert top level docs currently, because of a base R bug that
   # was fixed in R 4.0. See also the comments in tools/dynamic-help.R.
-  gsub("\\section", "\\subsection", fixed = TRUE, rd)
+  rd <- gsub("\\section", "\\subsection", fixed = TRUE, rd)
+
+  # Work around a weird bug. Apparently, if this is generated from a macro,
+  # then R adds a `</p>` right after the inserted `<div>`. So we offset that with
+  # a starting `<p>`. This must not be empty, hence the non-breaking space.
+  rd <- gsub(
+    "\\if{html}{\\out{<div class=\"sourceCode\">}}",
+    "\\if{html}{\\out{<div class=\"sourceCode\"><p>&nbsp; }}",
+    rd,
+    fixed = TRUE
+  )
+  rd <- gsub(
+    "\\if{html}{\\out{<div class=\"sourceCode r\">}}",
+    "\\if{html}{\\out{<div class=\"sourceCode r\"><p>&nbsp;}}",
+    rd,
+    fixed = TRUE
+  )
+
+  rd
 }
