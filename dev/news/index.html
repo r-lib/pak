@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.1.9999</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.4.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,27 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
 </div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="pak-040">pak 0.4.0<a class="anchor" aria-label="anchor" href="#pak-040"></a></h2><p class="text-muted">CRAN release: 2023-01-15</p>
+<ul><li><p>pak has much improved and more informative error messages now. This work is not yet finished, so if you find an unclear error message, please open an issue. Thank you!</p></li>
+<li><p>The solver is now more robust for non-canonical input (e.g. <code>DESCRIPTION</code> files) (<a href="https://github.com/r-lib/pak/issues/423" class="external-link uri">https://github.com/r-lib/pak/issues/423</a>).</p></li>
+<li><p>Better installation output. Standard output and error are now collected together (<a href="https://github.com/r-lib/pkgdepends/commit/0669f0f8c" class="external-link uri">https://github.com/r-lib/pkgdepends/commit/0669f0f8c</a>).</p></li>
+<li><p>The solver is now doing a better job when multiple versions of the same package are present in the same repository (<a href="https://github.com/r-lib/actions/issues/559" class="external-link uri">https://github.com/r-lib/actions/issues/559</a>).</p></li>
+<li><p><code><a href="../reference/pkg_name_check.html">pkg_name_check()</a></code> now works again, it needed a fix after changes at <a href="https://crandb.r-pkg.org" class="external-link uri">https://crandb.r-pkg.org</a>.</p></li>
+<li><p>Explicit package names in local and URL package sources, as in <code>package=local::...</code> or <code>package=url::...</code> are now parsed correctly in dependencies.</p></li>
+<li><p>pak is now more robust to <code>Archs</code> fields missing from the CRAN metadata for packages with compiled code (<a href="https://github.com/r-lib/pak/issues/448" class="external-link uri">https://github.com/r-lib/pak/issues/448</a>).</p></li>
+<li><p><code>url::</code> packages now always work correctly, even if the digest package is not installed (<a href="https://github.com/r-lib/pak/issues/433" class="external-link uri">https://github.com/r-lib/pak/issues/433</a>).</p></li>
+<li><p>pak is now more robust when installing packages from subdirectories of GitHub repositories (<a href="https://github.com/r-lib/pak/issues/431" class="external-link uri">https://github.com/r-lib/pak/issues/431</a>, <a href="https://github.com/paleolimbot" class="external-link">@paleolimbot</a>).</p></li>
+<li><p>Parameters <code>?reinstall</code>, <code><a href="https://rdrr.io/r/base/source.html" class="external-link">?source</a></code> and <code>?ignore</code> now work correctly when specified in the <code>package=?parameter</code> format (<a href="https://github.com/r-lib/pak/issues/294" class="external-link">#294</a>).</p></li>
+<li><p>The <code>?ignore</code> parameter works correctly now.</p></li>
+<li><p>Dependency resolution now does not fail if a package is not found.</p></li>
+<li><p>pak can now install <code>url::</code> remotes from GitHub.</p></li>
+<li><p>pak now does not fail when the package of a <code>.tar.gz</code> GitHub snapshot is in a subdirectory, or in a subdirectory of a subdirectory.</p></li>
+<li><p>pak now errors early if it cannot deduce the name of the package from a <code>Remotes</code> or <code>Config/Needs/*</code> entry.</p></li>
+<li><p>Solver failures now include details in some cases where previously they did not.</p></li>
+<li><p>pak can now update packages in Docker containers where the old version was installed in the different Docker later (<a href="https://github.com/r-lib/pak/issues/251" class="external-link uri">https://github.com/r-lib/pak/issues/251</a>)</p></li>
+<li><p>Update R version -&gt; Bioconductor version mapping. R 4.2.x now maps to Bioconductor 3.16.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="pak-031">pak 0.3.1<a class="anchor" aria-label="anchor" href="#pak-031"></a></h2><p class="text-muted">CRAN release: 2022-09-08</p>
 <ul><li><p>The <code>?ignore</code> parameter works correctly now.</p></li>
