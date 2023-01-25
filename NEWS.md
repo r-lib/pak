@@ -1,5 +1,64 @@
 # pak (development version)
 
+# pak 0.4.0
+
+* pak has much improved and more informative error messages now.
+  This work is not yet finished, so if you find an unclear error message,
+  please open an issue. Thank you!
+
+* The solver is now more robust for non-canonical input (e.g. `DESCRIPTION`
+  files) (https://github.com/r-lib/pak/issues/423).
+
+* Better installation output. Standard output and error are now
+  collected together (https://github.com/r-lib/pkgdepends/commit/0669f0f8c).
+
+* The solver is now doing a better job when multiple versions of the
+  same package are present in the same repository
+  (https://github.com/r-lib/actions/issues/559).
+
+* `pkg_name_check()` now works again, it needed a fix after changes at
+  https://crandb.r-pkg.org.
+
+* Explicit package names in local and URL package sources, as in
+  `package=local::...` or `package=url::...` are now parsed correctly in
+  dependencies.
+
+* pak is now more robust to `Archs` fields missing from the CRAN
+  metadata for packages with compiled code
+  (https://github.com/r-lib/pak/issues/448).
+
+* `url::` packages now always work correctly, even if the digest package is
+  not installed (https://github.com/r-lib/pak/issues/433).
+
+* pak is now more robust when installing packages from subdirectories
+  of GitHub repositories (https://github.com/r-lib/pak/issues/431,
+  @paleolimbot).
+
+* Parameters `?reinstall`, `?source` and `?ignore` now work correctly when
+  specified in the `package=?parameter` format (#294).
+
+* The `?ignore` parameter works correctly now.
+
+* Dependency resolution now does not fail if a package is not found.
+
+* pak can now install `url::` remotes from GitHub.
+
+* pak now does not fail when the package of a `.tar.gz` GitHub
+  snapshot is in a subdirectory, or in a subdirectory of a subdirectory.
+
+* pak now errors early if it cannot deduce the name of the package
+  from a `Remotes` or `Config/Needs/*` entry.
+
+* Solver failures now include details in some cases where previously they
+  did not.
+
+* pak can now update packages in Docker containers where the
+  old version was installed in the different Docker later
+  (https://github.com/r-lib/pak/issues/251)
+
+* Update R version -> Bioconductor version mapping. R 4.2.x now maps to
+  Bioconductor 3.16.
+
 # pak 0.3.1
 
 * The `?ignore` parameter works correctly now.

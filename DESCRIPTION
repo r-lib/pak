@@ -1,5 +1,5 @@
 Package: pak
-Version: 0.3.1.9999
+Version: 0.4.0.9000
 Title: Another Approach to Package Installation
 Description: The goal of 'pak' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in parallel,
@@ -57,12 +57,14 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     pkgcache,
-    pkgdepends,
+    r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
     ps,
     rprojroot
+Remotes:
+    r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,
