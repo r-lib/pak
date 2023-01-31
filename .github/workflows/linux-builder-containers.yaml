@@ -52,7 +52,7 @@ jobs:
 
   # -----------------------------------------------------------------------
   aarch64:
-    runs-on: [self-hosted, Linux, arm64]
+    runs-on: [linux-arm64]
     name: Build pak builder containers, aarch64
     strategy:
       fail-fast: false
