@@ -1,18 +1,18 @@
 # remote messages
 
     Code
-      invisible(remote(function() cli::cli_alert_info("just once")))
+      invisible(remote(function() cli::cli_text("just once")))
     Message <callr_message>
-      ℹ just once
+      just once
 
 ---
 
     Code
-      withCallingHandlers(invisible(remote(function() cli::cli_alert_info("just once"))),
+      withCallingHandlers(invisible(remote(function() cli::cli_text("just once"))),
       message = function(m) print(m))
     Output
-      <callr_message: ℹ just once
+      <callr_message: just once
       >
     Message <callr_message>
-      ℹ just once
+      just once
 

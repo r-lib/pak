@@ -34,11 +34,11 @@ test_that("remote", {
 test_that("remote messages", {
   skip_on_cran()
   expect_snapshot(
-    invisible(remote(function() cli::cli_alert_info("just once")))
+    invisible(remote(function() cli::cli_text("just once")))
   )
   expect_snapshot(
     withCallingHandlers(
-      invisible(remote(function() cli::cli_alert_info("just once"))),
+      invisible(remote(function() cli::cli_text("just once"))),
       message = function(m) print(m)
     )
   )
