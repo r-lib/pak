@@ -30,3 +30,16 @@ test_that("remote", {
   expect_equal(pid, pkg_data$remote$get_pid())
   expect_equal(remote(function() 4 + 4), 8)
 })
+
+test_that("remote messages", {
+  skip_on_cran()
+  expect_snapshot(
+    invisible(remote(function() cli::cli_alert_info("just once")))
+  )
+  expect_snapshot(
+    withCallingHandlers(
+      invisible(remote(function() cli::cli_alert_info("just once"))),
+      message = function(m) print(m)
+    )
+  )
+})

@@ -87,6 +87,11 @@ remote <- function(func, args = list()) {
       if (!is.null(findRestart("cli_message_handled"))) {
         invokeRestart("cli_message_handled")
       }
+      # This is to prevent the original condition from bubbling up,
+      # because we re-emitted it already.
+      if (!is.null(findRestart("muffleMessage"))) {
+        invokeRestart("muffleMessage")
+      }
     },
     rs$run_with_output(func2, args)
   )
