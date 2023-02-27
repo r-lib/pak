@@ -6,6 +6,7 @@ template:
   includes:
     in_header: |
       <script defer data-domain="/pak.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+  assets: tools/pkgdown/assets
 
 authors:
   "Jim Hester":
