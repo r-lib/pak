@@ -18,15 +18,15 @@ RUN PAK_BUNDLE=false R CMD INSTALL .
 
 # system requirements -----------------------------------------------------
 
-RUN apk add linux-headers bash gcc musl-dev g++ pkgconf
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf
 
 # Install pkgdepends ------------------------------------------------------
 
-RUN R -q -e 'pak:::safe_cran_install("pkgdepends")'
+RUN PROCESSX_UNLINK_R=true R -q -e 'pak:::safe_cran_install("pkgdepends")'
 
 # Install pak dependencies ------------------------------------------------
 
-RUN R -q -e 'pak:::embed_lib(".")'
+RUN PROCESSX_UNLINK_R=true R -q -e 'pak:::embed_lib(".")'
 
 # Embed CA certs ----------------------------------------------------------
 
@@ -35,6 +35,9 @@ RUN R -q -e 'pak:::embed_ca_certs()'
 # Minimize library --------------------------------------------------------
 
 ENV PAKROOT=/usr/local/lib/R/library/pak
+
+RUN find ${PAKROOT}/library -name "*.so" | \
+    xargs patchelf --remove-needed libR.so
 
 RUN rm -rf ${PAKROOT}/library/_cache && \
     rm -rf ${PAKROOT}/library/*/help && \

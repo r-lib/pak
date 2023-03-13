@@ -60,11 +60,12 @@ Config/needs/dependencies:
     r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
-    processx,
+    r-lib/processx,
     ps,
     rprojroot
 Remotes:
-    r-lib/pkgdepends
+    r-lib/pkgdepends,
+    r-lib/processx
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,
