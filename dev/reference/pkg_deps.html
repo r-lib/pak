@@ -136,8 +136,10 @@ This is a list column.</p></li>
 repository.</p></li>
 <li><p><code>sha256</code>: SHA256 hash of the package file, if available, otherwise
 <code>NA</code>.</p></li>
-<li><p><code>sources</code>: URLs where this package can be downloaded from. This is a
-zero length vector for <code>installed::</code> refs.</p></li>
+<li><p><code>sources</code>: URLs where this package can be downloaded from. This is not
+necessarily a URL that you can download with a HTTP client. E.g. for
+<code>local::</code> refs it is a path, and for <code>git::</code> refs it is a URL for git.
+It is a zero length vector for <code>installed::</code> refs.</p></li>
 <li><p><code>status</code>: status of the dependency resolution, <code>"OK"</code> or <code>"FAILED"</code>.</p></li>
 <li><p><code>target</code>: path where this package should be saved in a CRAN-repository.</p></li>
 <li><p><code>type</code>: ref type.</p></li>
