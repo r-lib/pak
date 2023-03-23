@@ -8,4 +8,7 @@
 
 <!-- badges: end -->
 
-pak installs R packages from CRAN, Bioconductor, GitHub, URLs, local files and directories. It is an alternative to `install.packages()` and `devtools::install_github()`. pak is fast, safe and convenient.
+pak installs R packages from CRAN, Bioconductor, GitHub, URLs, git
+repositories, local files and directories. It is an alternative to
+`install.packages()` and `devtools::install_github()`. pak is fast, safe and
+convenient.
