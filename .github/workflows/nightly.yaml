@@ -291,6 +291,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.4', platform: 'linux/arm64' }
           - { r: '4.3', platform: 'linux/arm64' }
           - { r: '4.2', platform: 'linux/arm64' }
           - { r: '4.1', platform: 'linux/arm64' }
