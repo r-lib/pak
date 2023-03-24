@@ -282,6 +282,15 @@
           "buildtime": "2023-03-24T05:39:00+00:00",
           "size": 8060721,
           "digest": "sha256:c9a1f8ce8d0d0b6996aba5aa1286de1c23807b6581510a1016048089545949e6"
+        },
+        {
+          "r.platform": "x86_64-pc-linux-musl",
+          "r.version": "4.4",
+          "pak.version": "0.4.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2023-03-24T10:41:47+00:00",
+          "size": 8067631,
+          "digest": "sha256:e66fcacc0cd98609e8312703bf62100ff9242a10ff3da30f8ca8c8dc122e2258"
         }
       ]
     },
