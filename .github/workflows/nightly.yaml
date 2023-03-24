@@ -177,6 +177,7 @@ jobs:
         rim add 3.6
         rim add 4.0
         rim add 4.1
+        rim add 4.2
         rim add next
         rim add devel
         rim add rtools35
@@ -208,6 +209,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.4', platform: 'linux/amd64' }
           - { r: '4.3', platform: 'linux/amd64' }
           - { r: '4.2', platform: 'linux/amd64' }
           - { r: '4.1', platform: 'linux/amd64' }
