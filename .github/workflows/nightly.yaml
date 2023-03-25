@@ -102,6 +102,7 @@ jobs:
         sudo rim add 3.6
         sudo rim add 4.0
         sudo rim add 4.1
+        sudo rim add 4.2
         sudo rim add next
         sudo rim add devel
 
@@ -115,14 +116,14 @@ jobs:
       run: |
         cd tools/build/macos && make build
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3 4.4
         RVERSION_DEFAULT: 4.2
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3 4.4
         RVERSION_DEFAULT: 4.2
 
     - name: Deploy packages
@@ -131,7 +132,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3 4.4
         RVERSION_DEFAULT: 4.2
 
   # -----------------------------------------------------------------------
@@ -261,15 +262,15 @@ jobs:
       run: |
         cd tools/build/macos && make build
       env:
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
-        RVERSION_DEFAULT: 4.1-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
+        RVERSION_DEFAULT: 4.2-arm64
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
       env:
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
-        RVERSION_DEFAULT: 4.1-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
+        RVERSION_DEFAULT: 4.2-arm64
 
     - name: Deploy packages
       run: |
@@ -277,8 +278,8 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64
-        RVERSION_DEFAULT: 4.1-arm64
+        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
+        RVERSION_DEFAULT: 4.2-arm64
 
   # ------------------------------------------------------------------------
 
