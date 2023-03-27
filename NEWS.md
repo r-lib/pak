@@ -1,5 +1,17 @@
 # pak (development version)
 
+* The `meta_*()` functions now consider the `platforms`, `cran_mirror` and
+  `r_versions` config entries, see `?"pak-config"`.
+
+* Better Posit Package Manager (PPM) support. New `+ppm_has_binaries()`,
+  `ppm_r_versions()`, `ppm_repo_url()`, `ppm_snapshots()` and `ppm_platforms()`
+  functions to help interacting with PPM. See the new 'pkgcache and Posit
+  Package Manager on Linux' article at https://r-lib.github.io/pkgcache.
+  (r-lib/pkgcache#47 and r-lib/pkgdepends#186).
+
+* New `system_r_platform()` and `system_r_platform_data()` functions to query
+  the current platform.
+
 # pak 0.4.0
 
 * pak has much improved and more informative error messages now.

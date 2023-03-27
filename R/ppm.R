@@ -8,7 +8,7 @@
 #'   article at <`r pkgcache:::pkgdown_url()`>.
 #' @family PPM functions
 #' @examplesIf !pkgcache:::is_rcmd_check()
-#' current_r_platform()
+#' system_r_platform()
 #' ppm_has_binaries()
 
 ppm_has_binaries <- function() {

@@ -2,6 +2,7 @@
 % Please edit documentation in R/docs.R
 \name{pak configuration}
 \alias{pak configuration}
+\alias{pak-config}
 \title{Environment variables and options that modify the defualt behavior}
 \description{
 pak behavior can be finetuned with environment variables and

@@ -123,6 +123,7 @@ NULL
 #'
 #' @name pak configuration
 #' @rdname pak-config
+#' @aliases pak-config
 #'
 #' @description
 #' pak behavior can be finetuned with environment variables and

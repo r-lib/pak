@@ -157,7 +157,12 @@ meta_summary <- function() {
 }
 
 meta_summary_internal <- function() {
-  ret <- pkgcache::meta_cache_summary()
+  cmc <- pkgcache::cranlike_metadata_cache$new(
+    platforms = pkgdepends::current_config()$get("platforms"),
+    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
+    r_version = pkgdepends::current_config()$get("r_versions")
+  )
+  ret <- cmc$summary()
   list(
     cachepath = ret$cachepath,
     current_db = ret$current_rds,
@@ -199,7 +204,12 @@ meta_list <- function(pkg = NULL) {
 }
 
 meta_list_internal <- function(pkg) {
-  pkgcache::meta_cache_list(packages = pkg)
+  cmc <- pkgcache::cranlike_metadata_cache$new(
+    platforms = pkgdepends::current_config()$get("platforms"),
+    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
+    r_version = pkgdepends::current_config()$get("r_versions")
+  )
+  cmc$list(packages = pkg)
 }
 
 #' @details `meta_update()` updates the metadata database. You don't
@@ -228,7 +238,13 @@ meta_update <- function() {
 }
 
 meta_update_internal <- function() {
-  pkgcache::meta_cache_update()
+  cmc <- pkgcache::cranlike_metadata_cache$new(
+    platforms = pkgdepends::current_config()$get("platforms"),
+    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
+    r_version = pkgdepends::current_config()$get("r_versions")
+  )
+  cmc$update()
+  invisible()
 }
 
 #' @details `meta_clean()` deletes the whole metadata DB.
@@ -265,5 +281,10 @@ meta_clean <- function(force = FALSE) {
 }
 
 meta_clean_internal <- function() {
-  pkgcache::meta_cache_cleanup(force = TRUE)
+  cmc <- pkgcache::cranlike_metadata_cache$new(
+    platforms = pkgdepends::current_config()$get("platforms"),
+    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
+    r_version = pkgdepends::current_config()$get("r_versions")
+  )
+  cmc$cleanup(force = TRUE)
 }
