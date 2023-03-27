@@ -72,6 +72,11 @@ reference:
 
 - title: Repositories
   contents:
+  - ppm_has_binaries
+  - ppm_platforms
+  - ppm_r_versions
+  - ppm_repo_url
+  - ppm_snapshots
   - repo_add
   - repo_get
   - repo_status
@@ -84,6 +89,10 @@ reference:
   contents:
   - lockfile_create
   - lockfile_install
+
+- title: System information
+  contents:
+  - system_r_platform
 
 - title: pak housekeeping
   contents:
