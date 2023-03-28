@@ -202,7 +202,7 @@ jobs:
 
   # -----------------------------------------------------------------------
   linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: ${{ github.event.inputs.linux == '' || github.event.inputs.linux == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
@@ -322,7 +322,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && always() }}
     needs: [ macos, windows, linux, macos-m1, linux-arm64 ]
 
