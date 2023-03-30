@@ -57,7 +57,8 @@ remote <- function(func, args = list()) {
   }, subst_args)
 
   opts <- options()
-  pkg_options <- opts[grepl("^pkg[.]", names(opts))]
+  extraopts <- "Ncpus"
+  pkg_options <- opts[grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts]
   envs <- Sys.getenv()
   pkg_envs <- envs[grepl("^PKG_", names(envs))]
   rs$run(function(new_opts, new_envs) {
