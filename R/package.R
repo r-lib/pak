@@ -83,7 +83,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(proposal = NULL, lib = lib))
+    list(proposal = NULL))
 
   if (length(unloaded) > 0) offer_restart(unloaded)
 
@@ -105,9 +105,8 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
   print_install_details(prop, lib, loaded)
 }
 
-pkg_install_do_plan <- function(proposal, lib) {
+pkg_install_do_plan <- function(proposal) {
 
-  num_workers <- get_num_workers()
   proposal <- proposal %||% pkg_data$tmp$proposal
   start  <- pkg_data$tmp$start
   pkg_data$tmp <- NULL
@@ -120,9 +119,7 @@ pkg_install_do_plan <- function(proposal, lib) {
   proposal$install_sysreqs()
 
   # Get the installation plan and hand it over to pkgdepends
-  plan <- proposal$get_install_plan()
-  inst <- pkgdepends::install_package_plan(plan = plan, lib = lib,
-                                           num_workers = num_workers)
+  inst <- proposal$install()
 
   attr(inst, "total_time") <- Sys.time() - start
   class(inst) <- c("pkg_install_result", class(inst))
