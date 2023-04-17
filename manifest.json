@@ -327,6 +327,15 @@
           "buildtime": "2023-04-11T06:12:17+00:00",
           "size": 5679796,
           "digest": "sha256:a7e4c4128e3b7789481d542b6a5af62b3bc90446a4026c9aee7f291a669faac9"
+        },
+        {
+          "r.platform": "x86_64-apple-darwin20",
+          "r.version": "4.3",
+          "pak.version": "0.4.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2023-04-17T13:28:15+00:00",
+          "size": 8771741,
+          "digest": "sha256:6f9f78fd7e14a3c4ffe331cb4ad3bba5dd6c0e569715c56627a715f3e61ba34b"
         }
       ]
     },
