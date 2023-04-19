@@ -60,7 +60,7 @@ Config/needs/dependencies:
     r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
-    r-lib/processx,
+    processx,
     ps,
     rprojroot
 Remotes:
