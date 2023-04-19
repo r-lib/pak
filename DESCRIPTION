@@ -40,7 +40,7 @@ Suggests:
     pkgdepends (>= 0.4.0),
     pkgsearch (>= 3.1.0),
     prettyunits,
-    processx (>= 3.5.2),
+    processx (>= 3.8.1),
     ps (>= 1.6.0),
     rprojroot (>= 2.0.2),
     rstudioapi,
@@ -64,8 +64,7 @@ Config/needs/dependencies:
     ps,
     rprojroot
 Remotes:
-    r-lib/pkgdepends,
-    r-lib/processx
+    r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,
