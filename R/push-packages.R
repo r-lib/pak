@@ -639,11 +639,12 @@ create_pak_repo <- local({
   #
   # This is the compatiblity mapping for the older, generic repo URL:
   # ```
-  # /src/contrib                          -> linux/x86_64
-  # /bin/macosx/big-sur-arm64/contrib/4.1 -> darwin20/aarch64
-  # /bin/macosx/contrib/4.1               -> darwin17.0/x86_64
-  # /bin/macosx/el-capitan/contrib/3.6    -> darwin15.6.0/x86_64
-  # /bin/windows/contrib/4.1              -> mingw32/x86_64
+  # /src/contrib                           -> linux/x86_64
+  # /bin/macosx/big-sur-arm64/contrib/4.1  -> darwin20/aarch64
+  # /bin/macosx/contrib/4.1                -> darwin17.0/x86_64
+  # /bin/macosx/big-sur-x86_64/contrib/4.3 -> darwin20.0/x86_64
+  # /bin/macosx/el-capitan/contrib/3.6     -> darwin15.6.0/x86_64
+  # /bin/windows/contrib/4.1               -> mingw32/x86_64
   # ```
 
   links <- c(
