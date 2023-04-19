@@ -95,7 +95,11 @@ jobs:
         curl -OL https://github.com/r-lib/rig/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
         sudo installer -pkg rim-0.2.2-macOS-x86_64.pkg -target /
 
-    - name: Install R
+    - uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: next
+
+    - name: Install R (other versions)
       run: |
         sudo rim add 3.4
         sudo rim add 3.5
@@ -103,7 +107,6 @@ jobs:
         sudo rim add 4.0
         sudo rim add 4.1
         sudo rim add 4.2
-        sudo rim add next
         sudo rim add devel
 
     - name: Install skopeo
