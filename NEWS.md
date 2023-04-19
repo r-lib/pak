@@ -12,6 +12,35 @@
 * New `system_r_platform()` and `system_r_platform_data()` functions to query
   the current platform.
 
+* pak now support git repositories as package references. E.g.
+  `git::https://github.com/r-lib/pak.git`.
+
+* pak now supports versioned CRAN packages, e.g. `dplyr@1.1.1` will
+  always install dplyr 1.1.1. Note that only CRAN packages are supported,
+  Bioconductor packages are not (yet).
+
+* pak now has an alternative system requirements lookup
+  implementation. It supports Fedora and Debian systems as well, in
+  addition to Debian, Ubuntu, SUSE and RedHat derivatives.
+  You can switch to this implementation by setting the
+  `R_PKG_SYSREQS2` environment variable to `true`.
+
+* pak now does a better job looking up dependencies for
+  hand-selected dependency types. E.g. `dependencies = "LinkingTo"`.
+
+* pak now removes `?ignore`-d packages from dependencies, and
+  uses the correct version comparison for `?ignore-before.r`
+  (https://github.com/r-lib/actions/issues/708).
+
+* pak now does not fail for circular soft dependencies (#306).
+
+* pak now reports dependency solver failures better in some cases
+  (#305, https://github.com/r-lib/pak/issues/474).
+
+* pak now uses locally built CRAN binaries from the cache. Use the
+  `?nocache` parameter to opt out from this, or
+  `cache_delete(package = ...)` to remove a package from the cache.
+
 # pak 0.4.0
 
 * pak has much improved and more informative error messages now.
