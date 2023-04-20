@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.5.0
 
 * The `meta_*()` functions now consider the `platforms`, `cran_mirror` and
   `r_versions` config entries, see `?"pak-config"`.
