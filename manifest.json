@@ -363,56 +363,56 @@
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.0",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T06:06:57+00:00",
-          "size": 5524108,
-          "digest": "sha256:ba2717f21f8497fc4aa38d83ca9244417bfb43f36cfc0011e0587291c1a4c6fa"
+          "buildtime": "2023-04-20T12:18:59+00:00",
+          "size": 5669476,
+          "digest": "sha256:9e2c52eaf219dcc413001527c19fbd0d0d5fa043a925683767ab1e21353f5b9a"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.1",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T06:08:36+00:00",
-          "size": 5517880,
-          "digest": "sha256:e6bafb42a57e919094bfc8a93e69722c896229f8f837eb3cdcba795f810dd7cd"
+          "buildtime": "2023-04-20T12:20:47+00:00",
+          "size": 5663088,
+          "digest": "sha256:59b073abaff8788eb311a4628a994f851b7415f34b0cbcdd420e8a0aa319c4d9"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.2",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T06:10:11+00:00",
-          "size": 5519594,
-          "digest": "sha256:aa8d51b778156f8408b7dc354f905ea3fb92dbdf0a56a277ba63d7e86036df4b"
+          "buildtime": "2023-04-20T12:22:31+00:00",
+          "size": 5660776,
+          "digest": "sha256:70ce32f662b9fbfde78d3add3f74a9976a2b6806cba55a23108b6f44f31a6bb4"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.4",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T05:53:16+00:00",
-          "size": 3178535,
-          "digest": "sha256:376ba3027e98609ce81270d93806024292b744ab76374612046370ff3a2d78a9"
+          "buildtime": "2023-04-20T12:07:09+00:00",
+          "size": 3246712,
+          "digest": "sha256:e0790335ee38eecb548f576d274ab9d47ccce07d79d329002e8dd822983e6655"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.5",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T05:57:28+00:00",
-          "size": 5500594,
-          "digest": "sha256:82705034ac9bc98b14815fee5d9e399231fb5e1de15e05ee97de0df9e108e5fa"
+          "buildtime": "2023-04-20T12:10:54+00:00",
+          "size": 5643186,
+          "digest": "sha256:9b518fb0c59fd3f934bb153240969b8afe69c75b170a52afc08f9f8449d51b4f"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.6",
-          "pak.version": "0.4.0",
+          "pak.version": "0.4.0.9999",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T06:02:06+00:00",
-          "size": 5539100,
-          "digest": "sha256:d930b96a67f747a38b265400747064e23f9306333e6d2861ce35adbd7b07bd1a"
+          "buildtime": "2023-04-20T12:14:56+00:00",
+          "size": 5683816,
+          "digest": "sha256:f0a08ee31324a1cde16d9ee1aabf35ff2e88522a67aa2be7508397d0cd38e8d8"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
@@ -638,6 +638,24 @@
           "buildtime": "2023-04-20T10:14:54+00:00",
           "size": 8473055,
           "digest": "sha256:67455ef9048177fe931eb3dd64045d9b71fc55a4f45086f0045809090076f95c"
+        },
+        {
+          "r.platform": "x86_64-apple-darwin20",
+          "r.version": "4.3",
+          "pak.version": "0.4.0.9999",
+          "pak.revision": "TODO",
+          "buildtime": "2023-04-20T12:24:31+00:00",
+          "size": 5671922,
+          "digest": "sha256:d3508472c0e75e71d560807eeb3c6a21504763a3d5c9156a05a21551b90303e0"
+        },
+        {
+          "r.platform": "x86_64-apple-darwin17.0",
+          "r.version": "4.4",
+          "pak.version": "0.4.0.9999",
+          "pak.revision": "TODO",
+          "buildtime": "2023-04-20T12:29:20+00:00",
+          "size": 5677134,
+          "digest": "sha256:ea04ba9f764f56df11975e94811df3537d69248a8c895175344089aa6244efaf"
         }
       ]
     },
