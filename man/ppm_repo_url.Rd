@@ -42,7 +42,7 @@ ppm_repo_url()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev}.
+article at \url{https://r-lib.github.io/pkgcache/dev/}.
 
 \code{\link[=repo_resolve]{repo_resolve()}} and \code{\link[=repo_add]{repo_add()}} to find and configure PPM
 snapshots.

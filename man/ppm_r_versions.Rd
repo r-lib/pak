@@ -23,7 +23,7 @@ ppm_r_versions()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev}.
+article at \url{https://r-lib.github.io/pkgcache/dev/}.
 
 Other PPM functions: 
 \code{\link{ppm_has_binaries}()},
