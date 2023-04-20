@@ -57,14 +57,12 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     pkgcache,
-    r-lib/pkgdepends,
+    pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
     ps,
     rprojroot
-Remotes:
-    r-lib/pkgdepends
 Config/Needs/website:
     r-lib/asciicast,
     r-lib/roxygen2,
