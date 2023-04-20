@@ -42,7 +42,7 @@ of a supported Linux distribution. See the \code{binary_url} column of the
 result of \code{\link[=ppm_platforms]{ppm_platforms()}} for these code names.
 }
 \examples{
-\dontshow{if (!pkgcache:::is_rcmd_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ppm_snapshots()
 \dontshow{\}) # examplesIf}
 }

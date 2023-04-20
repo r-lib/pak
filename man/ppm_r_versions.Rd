@@ -17,7 +17,7 @@ first two components of R versions supported by this PPM instance.
 List all R versions supported by Posit Package Manager (PPM)
 }
 \examples{
-\dontshow{if (!pkgcache:::is_rcmd_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ppm_r_versions()
 \dontshow{\}) # examplesIf}
 }

@@ -7,7 +7,7 @@
 #' @seealso The 'pkgcache and Posit Package Manager on Linux'
 #'   article at <`r pkgcache:::pkgdown_url()`>.
 #' @family PPM functions
-#' @examplesIf !pkgcache:::is_rcmd_check()
+#' @examplesIf FALSE
 #' system_r_platform()
 #' ppm_has_binaries()
 
@@ -37,7 +37,7 @@ ppm_has_binaries_internal <- function() {
 #'   article at <`r pkgcache:::pkgdown_url()`>.
 #' @family PPM functions
 #' @export
-#' @examplesIf !pkgcache:::is_rcmd_check()
+#' @examplesIf FALSE
 #' ppm_platforms()
 
 ppm_platforms <- function() {
@@ -62,7 +62,7 @@ ppm_platforms_internal <- function() {
 #'   article at <`r pkgcache:::pkgdown_url()`>.
 #' @family PPM functions
 #' @export
-#' @examplesIf !pkgcache:::is_rcmd_check()
+#' @examplesIf FALSE
 #' ppm_r_versions()
 
 ppm_r_versions <- function() {
@@ -111,7 +111,7 @@ ppm_r_versions_internal <- function() {
 #' @seealso [repo_resolve()] and [repo_add()] to find and configure PPM
 #'   snapshots.
 #' @family PPM functions
-#' @examples
+#' @examplesIf FALSE
 #' ppm_repo_url()
 
 ppm_repo_url <- function() {
@@ -158,7 +158,7 @@ ppm_repo_url_internal <- function() {
 #'   article at <`r pkgcache:::pkgdown_url()`>.
 #' @family PPM functions
 #' @export
-#' @examplesIf !pkgcache:::is_rcmd_check()
+#' @examplesIf FALSE
 #' ppm_snapshots()
 
 ppm_snapshots <- function() {

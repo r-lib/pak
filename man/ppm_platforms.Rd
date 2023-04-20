@@ -22,7 +22,7 @@ platform, see \code{\link[=ppm_snapshots]{ppm_snapshots()}}.
 List all platforms supported by Posit Package Manager (PPM)
 }
 \examples{
-\dontshow{if (!pkgcache:::is_rcmd_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ppm_platforms()
 \dontshow{\}) # examplesIf}
 }

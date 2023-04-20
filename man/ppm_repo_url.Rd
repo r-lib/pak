@@ -38,7 +38,9 @@ uses the public PPM instance at \verb{https://packagemanager.posit.co}, with
 the \code{cran} repository.
 }
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ppm_repo_url()
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'

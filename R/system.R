@@ -56,7 +56,7 @@
 #' @export
 #' @seealso These function call [pkgcache::current_r_platform()] and
 #' [pkgcache::current_r_platform_data()].
-#' @examples
+#' @examplesIf FALSE
 #' system_r_platform()
 #' system_r_platform_data()
 
