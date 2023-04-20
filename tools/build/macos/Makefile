@@ -313,8 +313,7 @@ export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).tgz,$(RVERSIONS))
 
 deploy: test
 	@echo "----- DEPLOYING packages -----------------------------------"
-	@echo $(PKGFILES)
-	R_LIBS=$(RLIB) $(R) -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = TRUE)'
+	R_LIBS=$(RLIB) $(R)t -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = TRUE)'
 	R_LIBS=$(RLIB) $(R) -q -e \
 		'pak:::push_packages(strsplit(Sys.getenv("PKGFILES"), " ")[[1]])'
 
