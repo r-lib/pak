@@ -95,7 +95,7 @@ jobs:
         curl -OL https://github.com/r-lib/rig/releases/download/v0.5.3pre/rig-0.5.3-macOS-x86_64.pkg
         sudo installer -pkg rig-0.5.3-macOS-x86_64.pkg -target /
 
-    - name: Install R (other versions)
+    - name: Install R
       run: |
         sudo rig add 3.4
         sudo rig add 3.5
