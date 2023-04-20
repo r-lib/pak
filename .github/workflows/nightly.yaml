@@ -101,13 +101,7 @@ jobs:
 
     - name: Install R (other versions)
       run: |
-        sudo rim add 3.4
-        sudo rim add 3.5
-        sudo rim add 3.6
-        sudo rim add 4.0
-        sudo rim add 4.1
         sudo rim add 4.2
-        sudo rim add devel
 
     - name: Install skopeo
       run: |
@@ -119,14 +113,14 @@ jobs:
       run: |
         cd tools/build/macos && make build
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 4.2 4.3-x86_64
         RVERSION_DEFAULT: 4.2
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 4.2 4.3-x86_64
         RVERSION_DEFAULT: 4.2
 
     - name: Deploy packages
@@ -135,7 +129,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 4.2 4.3-x86_64
         RVERSION_DEFAULT: 4.2
 
   # -----------------------------------------------------------------------
