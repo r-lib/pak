@@ -95,10 +95,6 @@ jobs:
         curl -OL https://github.com/r-lib/rig/releases/download/v0.2.2/rim-0.2.2-macOS-x86_64.pkg
         sudo installer -pkg rim-0.2.2-macOS-x86_64.pkg -target /
 
-    - uses: r-lib/actions/setup-r@v2
-      with:
-        r-version: next
-
     - name: Install R (other versions)
       run: |
         sudo rim add 3.4
@@ -119,14 +115,14 @@ jobs:
       run: |
         cd tools/build/macos && make build
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.4
         RVERSION_DEFAULT: 4.2
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
       env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.4
         RVERSION_DEFAULT: 4.2
 
     - name: Deploy packages
@@ -135,7 +131,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
+        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.4
         RVERSION_DEFAULT: 4.2
 
   # -----------------------------------------------------------------------
