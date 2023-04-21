@@ -232,11 +232,11 @@
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.4.0.9999",
+          "pak.version": "0.5.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-21T05:54:31+00:00",
-          "size": 8232644,
-          "digest": "sha256:1d55aa7135f1255e3bdb2893d8b73124ea93408ebfbcc6129e82d06e14ec9abf"
+          "buildtime": "2023-04-21T11:48:58+00:00",
+          "size": 8234385,
+          "digest": "sha256:71551a84da8b80a34ec1f4a4516f76a307b9c63e281ddba6274df8211f7d130c"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
