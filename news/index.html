@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,20 @@
       <small>Source: <a href="https://github.com/r-lib/pak/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="pak-050">pak 0.5.0<a class="anchor" aria-label="anchor" href="#pak-050"></a></h2><p class="text-muted">CRAN release: 2023-04-20</p>
+<ul><li><p>The <code>meta_*()</code> functions now consider the <code>platforms</code>, <code>cran_mirror</code> and <code>r_versions</code> config entries, see <code><a href="../reference/pak-config.html">?"pak-config"</a></code>.</p></li>
+<li><p>Better Posit Package Manager (PPM) support. New <code>+ppm_has_binaries()</code>, <code><a href="../reference/ppm_r_versions.html">ppm_r_versions()</a></code>, <code><a href="../reference/ppm_repo_url.html">ppm_repo_url()</a></code>, <code><a href="../reference/ppm_snapshots.html">ppm_snapshots()</a></code> and <code><a href="../reference/ppm_platforms.html">ppm_platforms()</a></code> functions to help interacting with PPM. See the new ‘pkgcache and Posit Package Manager on Linux’ article at <a href="https://r-lib.github.io/pkgcache" class="external-link uri">https://r-lib.github.io/pkgcache</a>. (r-lib/pkgcache#47 and r-lib/pkgdepends#186).</p></li>
+<li><p>New <code><a href="../reference/system_r_platform.html">system_r_platform()</a></code> and <code><a href="../reference/system_r_platform.html">system_r_platform_data()</a></code> functions to query the current platform.</p></li>
+<li><p>pak now support git repositories as package references. E.g. <code>git::https://github.com/r-lib/pak.git</code>.</p></li>
+<li><p>pak now supports versioned CRAN packages, e.g. <code>dplyr@1.1.1</code> will always install dplyr 1.1.1. Note that only CRAN packages are supported, Bioconductor packages are not (yet).</p></li>
+<li><p>pak now has an alternative system requirements lookup implementation. It supports Fedora and Debian systems as well, in addition to Debian, Ubuntu, SUSE and RedHat derivatives. You can switch to this implementation by setting the <code>R_PKG_SYSREQS2</code> environment variable to <code>true</code>.</p></li>
+<li><p>pak now does a better job looking up dependencies for hand-selected dependency types. E.g. <code>dependencies = "LinkingTo"</code>.</p></li>
+<li><p>pak now removes <code>?ignore</code>-d packages from dependencies, and uses the correct version comparison for <code>?ignore-before.r</code> (<a href="https://github.com/r-lib/actions/issues/708" class="external-link uri">https://github.com/r-lib/actions/issues/708</a>).</p></li>
+<li><p>pak now does not fail for circular soft dependencies (<a href="https://github.com/r-lib/pak/issues/306" class="external-link">#306</a>).</p></li>
+<li><p>pak now reports dependency solver failures better in some cases (<a href="https://github.com/r-lib/pak/issues/305" class="external-link">#305</a>, <a href="https://github.com/r-lib/pak/issues/474" class="external-link uri">https://github.com/r-lib/pak/issues/474</a>).</p></li>
+<li><p>pak now uses locally built CRAN binaries from the cache. Use the <code>?nocache</code> parameter to opt out from this, or <code>cache_delete(package = ...)</code> to remove a package from the cache.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="pak-040">pak 0.4.0<a class="anchor" aria-label="anchor" href="#pak-040"></a></h2><p class="text-muted">CRAN release: 2023-01-15</p>
 <ul><li><p>pak has much improved and more informative error messages now. This work is not yet finished, so if you find an unclear error message, please open an issue. Thank you!</p></li>

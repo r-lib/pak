@@ -18,7 +18,7 @@ If you want a quick overview of package sources, see
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,7 @@ We will discuss each in detail below.</p><ul><li><p><code>cran</code>: a CRAN pa
 <li><p><code>bioc</code>: a Bioconductor package.</p></li>
 <li><p><code>standard</code>: a package from a configured CRAN-like repository.</p></li>
 <li><p><code>github</code>: a package from GitHub.</p></li>
+<li><p><code>git</code>: a package in a git repository.</p></li>
 <li><p><code>local</code>: a local package file or directory.</p></li>
 <li><p><code>url</code>: an URL that points to a package archive.</p></li>
 <li><p><code>installed</code> an installed package.</p></li>
@@ -144,6 +145,10 @@ then you need to specify the package name explicitly, using a
 <code>&lt;package&gt;=</code> prefix. E.g. <code>pins=rstudio/pins-r</code>. If you specify both the
 package source type and the package name, the package name comes first:
 <code>pins=github::rstudio/pins-r</code>.</p></li>
+<li><p>For <code>git::</code> dependencies, pak assumes that the package
+name is the same as the last component of the repository. If this does not
+hold, then you need to specify the package name explicitly, using a
+<code>&lt;package&gt;=</code> prefix. E.g. <code>pins=git::https://github.com/rstudio/pins-r</code>.</p></li>
 <li><p>For <code>local::</code> dependencies, you always need to specify the package name
 explicitly. E.g. <code>pins=local::~/works/pins</code>.</p></li>
 <li><p>For <code>url::</code> dependencies, you always need to specify the package name
@@ -184,12 +189,12 @@ is requested from a CRAN-like repository. For package installations
 <code>reinstall</code> parameter. This parameter is supported for <code>bioc::</code>, <code>cran::</code>
 and <code>standard::</code> remote types, and it is ignored for others.</p></li>
 <li><p><code>reinstall</code> requests a re-install for package installations. It is
-supported by the <code>bioc::</code>, <code>cran::</code>, <code>github::</code>, <code>local::</code>, <code>standard::</code>,
-and <code>url::</code> remote types.</p></li>
+supported by the <code>bioc::</code>, <code>cran::</code>, <code>git::</code>, <code>github::</code>, <code>local::</code>,
+<code>standard::</code>, and <code>url::</code> remote types.</p></li>
 <li><p><code>nocache</code> will ignore the package cache. It will always download the
 package file, and it will not add the downloaded (and built) package(s)
-to the package cache. It is supported by the <code>bioc::</code>, <code>cran::</code>, <code>github::</code>,
-<code>standard::</code> and <code>url::</code> remote types.</p></li>
+to the package cache. It is supported by the <code>bioc::</code>, <code>cran::</code>, <code>git::</code>,
+<code>github::</code>, <code>standard::</code> and <code>url::</code> remote types.</p></li>
 </ul></div></div><div class="section">
 <h4 id="package-source-details">Package source details<a class="anchor" aria-label="anchor" href="#package-source-details"></a></h4><div class="section">
 <h5 id="cran-packages-cran-">CRAN packages (<code>cran::</code>)<a class="anchor" aria-label="anchor" href="#cran-packages-cran-"></a></h5><p>A package from CRAN. Full syntax:</p>
@@ -248,6 +253,31 @@ package from GitHub. Examples:</p>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>releases<span class="sc">/</span>tag<span class="sc">/</span>v2.<span class="fl">1.0</span></span></code></pre><p></p></div>
 <p>A GitHub remote string can also be used instead of an URL, for example:
 <code>git@github.com:r-lib/pak.git</code></p>
+</div><div class="section">
+<h5 id="packages-in-git-repositories-git-">Packages in git repositories (<code>git::</code>)<a class="anchor" aria-label="anchor" href="#packages-in-git-repositories-git-"></a></h5><p>Full syntax:</p>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>]git<span class="sc">::</span>https?<span class="sc">:</span><span class="er">//&lt;</span>host<span class="sc">&gt;</span>[<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+the last component of the <code>&lt;host&gt;</code> is used.</p></li>
+<li><p><code>&lt;host&gt;</code> host name and path of the git repository. Some git repositories
+need the <code>.git</code> suffix here, others are more forgiving.</p></li>
+<li><p><code>&lt;detail&gt;</code> specifies a certain version of the package:
+a git branch, tag or (prefix of) a commit hash: <code>@&lt;commitish&gt;</code>.</p></li>
+</ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
+branch is used.</p>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span>84be6207</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span>branch</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>gitlab.com<span class="sc">/</span>gaborcsardi<span class="sc">/</span>cli.git</span></code></pre><p></p></div>
+<p>Note that pak has a built-in git client, and does
+<strong>not</strong> require a system git installation.</p>
+<p>If the system has git installed, then pak will use the
+credentials stored in the configured git credential store, automatically,
+via the gitcreds package.</p>
+<p>Currently pak only supports git servers that use
+version 2 of the git protocol.
+Most git servers do that, but there are some exceptions, a notable one is
+https://bitbucket.org/.</p>
 </div><div class="section">
 <h5 id="local-packages-local-">Local packages (<code>local::</code>)<a class="anchor" aria-label="anchor" href="#local-packages-local-"></a></h5><p>A path that refers to a package file built with <code>R CMD build</code>, or a
 directory that contains a package. Full syntax:</p>
