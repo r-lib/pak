@@ -818,11 +818,11 @@
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.4.0",
+          "pak.version": "0.5.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-01-16T05:38:42+00:00",
-          "size": 8048929,
-          "digest": "sha256:82919f86043183121dc419b29cb13251d9461579ef0d09e6ad36e66e89246fc2"
+          "buildtime": "2023-04-21T09:03:41+00:00",
+          "size": 8216944,
+          "digest": "sha256:49cb4680ea82a4b5c132146b6061d96e1212f1f257cd0f1e5495518547a145d7"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
