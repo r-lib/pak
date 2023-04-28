@@ -20,7 +20,7 @@ lib/R-%.done: lib/%/_pak.done
 	rm -rf lib/$*/pak/library/_cache
 	rm -rf lib/$*/pak/library/*/help
 	rm -rf lib/$*/pak/library/*/doc
-	cd lib/$* && zip -r pak_$(PAKVERSION).zip pak
+	cd lib/$* && Compress-Archive -path pak -destination pak_$(PAKVERSION).zip
 	touch $@
 
 lib/%/pak:

@@ -182,6 +182,7 @@ jobs:
         rim add next
         rim add devel
         rim add rtools35
+        rim add rtools42
         # rim add rtools40 # already installed
         rim default 4.2.3
 
