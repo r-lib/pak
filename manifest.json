@@ -881,11 +881,11 @@
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.5.0",
+          "pak.version": "0.5.1",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-21T09:16:37+00:00",
-          "size": 8232908,
-          "digest": "sha256:7a6745f16f5208abea7b2dd22d0668e380d01fddd730ada5ee3a887df2f5163a"
+          "buildtime": "2023-04-28T14:42:57+00:00",
+          "size": 8232646,
+          "digest": "sha256:19da581a22580f8c1b430faca841fd39dad527ebb44e22b7aedbd2ae748e8cda"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
