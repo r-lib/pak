@@ -1,8 +1,8 @@
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= $(shell rig ls | tail +3 | cut -b 3- | cut -w -f 1)
-RVERSION_DEFAULT ?= $(shell R -s  -e 'cat(as.character(getRversion()[,1:2]))')
+RVERSIONS ?= $(shell rig ls | tail +3 | cut -b 3- | cut -f 1 -d" ")
+RVERSION_DEFAULT ?= $(shell rig default)
 
 PKGCONFIGVERSION=0.29.2
 PKGCONFIGURLS=https://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIGVERSION).tar.gz \
