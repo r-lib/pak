@@ -93,7 +93,7 @@ jobs:
     - name: Install rig
       run: |
         brew tap r-lib/rig
-        brew install rig
+        brew install r-lib/rig/rig
 
     - name: Install R
       run: |

@@ -1,7 +1,7 @@
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= $(shell rig list --json | jq -r 'map ( .name ) | .[]')
+RVERSIONS ?= $(shell rig ls | tail +3 | cut -b 3- | cut -w -f 1)
 RVERSION_DEFAULT ?= $(shell R -s  -e 'cat(as.character(getRversion()[,1:2]))')
 
 PKGCONFIGVERSION=0.29.2
