@@ -1,5 +1,6 @@
 
-RVERSIONS ?= $(shell rim list)
+# Need the `tr` part because of a rig bug, \ is not escaped
+RVERSIONS ?= $(shell rig list --json | tr '\\' '/' | jq -r "map ( .name ) | .[]")
 RVERSION_DEFAULT ?= $(shell R.bat -s  -e 'cat(as.character(getRversion()))')
 
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
