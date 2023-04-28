@@ -92,8 +92,8 @@ jobs:
 
     - name: Install rig
       run: |
-        curl -OL https://github.com/r-lib/rig/releases/download/v0.5.3pre/rig-0.5.3-macOS-x86_64.pkg
-        sudo installer -pkg rig-0.5.3-macOS-x86_64.pkg -target /
+        brew tap r-lib/rig
+        brew install rig
 
     - name: Install R
       run: |
@@ -103,8 +103,9 @@ jobs:
         sudo rig add 4.0
         sudo rig add 4.1
         sudo rig add 4.2
-        sudo rig add next
+        sudo rig add release
         sudo rig add devel
+        rig default release
 
     - name: Install skopeo
       run: |
@@ -115,16 +116,10 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
-      env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
-        RVERSION_DEFAULT: 4.2
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
-      env:
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
-        RVERSION_DEFAULT: 4.2
 
     - name: Deploy packages
       run: |
@@ -132,8 +127,6 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 3.4 3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4
-        RVERSION_DEFAULT: 4.2
 
   # -----------------------------------------------------------------------
   windows:
@@ -154,8 +147,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.2.2/rim-windows-0.2.2.exe -OutFile rim.exe
-        Start-Process ".\rim.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
+        choco install rig
         # For make
         echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
@@ -173,17 +165,17 @@ jobs:
     # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
-        rim add 3.4
-        rim add 3.5
-        rim add 3.6
-        rim add 4.0
-        rim add 4.1
-        rim add 4.2
-        rim add 4.3
-        rim add devel
-        rim add rtools35
-        rim add rtools40
-        rim default 4.2.3
+        rig add 3.4
+        rig add 3.5
+        rig add 3.6
+        rig add 4.0
+        rig add 4.1
+        rig add 4.2
+        rig add 4.3
+        rig add devel
+        rig add rtools35
+        rig add rtools40
+        rig default 4.2.3
 
     - name: Build pak binaries
       run: |
@@ -261,16 +253,10 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
-      env:
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
-        RVERSION_DEFAULT: 4.2-arm64
 
     - name: Run tests
       run: |
         cd tools/build/macos && make test
-      env:
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
-        RVERSION_DEFAULT: 4.2-arm64
 
     - name: Deploy packages
       run: |
@@ -278,8 +264,6 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        RVERSIONS: 4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64
-        RVERSION_DEFAULT: 4.2-arm64
 
   # ------------------------------------------------------------------------
 
