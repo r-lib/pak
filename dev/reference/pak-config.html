@@ -104,6 +104,10 @@ directory within the R session temporary directory, see
 (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), if that's not set then
 <code>https://cran.rstudio.com</code>. See also <code><a href="repo_add.html">pak::repo_add()</a></code> and
 <code><a href="repo_get.html">pak::repo_get()</a></code></p></li>
+<li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
+of and installation, even if they are needed because the packages
+are installed from binaries. This is sometimes useful, see e.g.
+<a href="https://github.com/r-lib/pak/issues/485" class="external-link">https://github.com/r-lib/pak/issues/485</a> for an example use case.</p></li>
 <li><p>‘library’: (Env var: <code>PKG_LIBRARY</code>, option: <code>pkg.library</code>.) Package library to install packages to. It is also used for
 already installed packages when considering dependencies.</p></li>
 <li><p>‘metadata_cache_dir’: (Env var: <code>PKG_METADATA_CACHE_DIR</code>, option: <code>pkg.metadata_cache_dir</code>.) Location of metadata replica of
