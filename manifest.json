@@ -962,11 +962,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.5.0",
+          "pak.version": "0.5.1",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-21T09:05:22+00:00",
-          "size": 8120562,
-          "digest": "sha256:22978fa3d54c5c22dbc05af463291bf9f23bc6db8ee7852b4d9394c4808cdf13"
+          "buildtime": "2023-04-29T14:17:18+00:00",
+          "size": 8119764,
+          "digest": "sha256:dfc0a68c37df79dc8ac32a1241fb26c7a3213d8fc0188f5f1bb27243f4ca5467"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
