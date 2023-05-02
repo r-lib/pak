@@ -47,6 +47,7 @@ Suggests:
     testthat,
     withr
 Remotes:
+    r-lib/pkgcache,
     r-lib/pkgdepends
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
@@ -58,7 +59,7 @@ Config/needs/dependencies:
     filelock,
     glue,
     jsonlite,
-    pkgcache,
+    r-lib/pkgcache,
     r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
