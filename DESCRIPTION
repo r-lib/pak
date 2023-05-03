@@ -48,7 +48,7 @@ Suggests:
     withr
 Remotes:
     r-lib/pkgcache,
-    r-lib/pkgdepends
+    r-lib/pkgdepends@feature/builder
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
@@ -60,7 +60,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     r-lib/pkgcache,
-    r-lib/pkgdepends,
+    r-lib/pkgdepends@feature/builder,
     pkgsearch,
     prettyunits,
     processx,
