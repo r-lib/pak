@@ -119,7 +119,7 @@ NULL
 #' @rdname package-dependency-types
 NULL
 
-#' Environment variables and options that modify the defualt behavior
+#' Environment variables and options that modify the default behavior
 #'
 #' @name pak configuration
 #' @rdname pak-config
