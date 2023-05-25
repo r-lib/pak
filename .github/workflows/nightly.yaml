@@ -236,7 +236,7 @@ jobs:
     name: macos arm64 pak binaries
     defaults:
       run:
-        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
+        shell: "/usr/bin/arch -arch arm64 /bin/bash {0}"
 
     steps:
 
