@@ -234,6 +234,9 @@ jobs:
     runs-on: [macos-arm64]
     if: ${{ github.event.inputs.macos-m1 == '' || github.event.inputs.macos-m1 == 'yes' }}
     name: macos arm64 pak binaries
+    env:
+      R_VERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64"
+      RVRESION_DEFAULT: 4.3-arm64
     defaults:
       run:
         shell: "/usr/bin/arch -arch arm64 /bin/bash {0}"
