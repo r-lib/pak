@@ -54,7 +54,7 @@ pak::pkg_install("tibble")
 pak::pkg_install("tibble", upgrade = TRUE)
 ```
 
-`update = TRUE` updates the package itself and all of its dependencies, if
+`upgrade = TRUE` updates the package itself and all of its dependencies, if
 necessary.
 
 ## Reinstall a package
