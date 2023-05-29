@@ -102,6 +102,7 @@ We will discuss each in detail below.</p><ul><li><p><code>cran</code>: a CRAN pa
 <li><p><code>bioc</code>: a Bioconductor package.</p></li>
 <li><p><code>standard</code>: a package from a configured CRAN-like repository.</p></li>
 <li><p><code>github</code>: a package from GitHub.</p></li>
+<li><p><code>gitlab</code>: a package from GitLab.</p></li>
 <li><p><code>git</code>: a package in a git repository.</p></li>
 <li><p><code>local</code>: a local package file or directory.</p></li>
 <li><p><code>url</code>: an URL that points to a package archive.</p></li>
@@ -139,10 +140,10 @@ pak throws an error.</p>
 <h4 id="package-names">Package names<a class="anchor" aria-label="anchor" href="#package-names"></a></h4><p>When pak is looking up the dependencies of a package,
 it needs to be able to determine the name of the dependency from the
 package reference.
-This is sometimes not easy for dependencies in <code>Remotes</code> (or similar) fields.</p><ul><li><p>For <code>github::</code> dependencies pak assumes that the package
-name is the same as the name of the repository. If this does not hold,
-then you need to specify the package name explicitly, using a
-<code>&lt;package&gt;=</code> prefix. E.g. <code>pins=rstudio/pins-r</code>. If you specify both the
+This is sometimes not easy for dependencies in <code>Remotes</code> (or similar) fields.</p><ul><li><p>For <code>github::</code> and <code>gitlab::</code> dependencies pak assumes
+that the package name is the same as the name of the repository. If this
+does not hold, then you need to specify the package name explicitly, using
+a <code>&lt;package&gt;=</code> prefix. E.g. <code>pins=rstudio/pins-r</code>. If you specify both the
 package source type and the package name, the package name comes first:
 <code>pins=github::rstudio/pins-r</code>.</p></li>
 <li><p>For <code>git::</code> dependencies, pak assumes that the package
@@ -189,12 +190,12 @@ is requested from a CRAN-like repository. For package installations
 <code>reinstall</code> parameter. This parameter is supported for <code>bioc::</code>, <code>cran::</code>
 and <code>standard::</code> remote types, and it is ignored for others.</p></li>
 <li><p><code>reinstall</code> requests a re-install for package installations. It is
-supported by the <code>bioc::</code>, <code>cran::</code>, <code>git::</code>, <code>github::</code>, <code>local::</code>,
-<code>standard::</code>, and <code>url::</code> remote types.</p></li>
+supported by the <code>bioc::</code>, <code>cran::</code>, <code>git::</code>, <code>github::</code>, <code>gitlab::</code>,
+<code>local::</code>, <code>standard::</code>, and <code>url::</code> remote types.</p></li>
 <li><p><code>nocache</code> will ignore the package cache. It will always download the
 package file, and it will not add the downloaded (and built) package(s)
 to the package cache. It is supported by the <code>bioc::</code>, <code>cran::</code>, <code>git::</code>,
-<code>github::</code>, <code>standard::</code> and <code>url::</code> remote types.</p></li>
+<code>github::</code>, <code>gitlab::</code>, <code>standard::</code> and <code>url::</code> remote types.</p></li>
 </ul></div></div><div class="section">
 <h4 id="package-source-details">Package source details<a class="anchor" aria-label="anchor" href="#package-source-details"></a></h4><div class="section">
 <h5 id="cran-packages-cran-">CRAN packages (<code>cran::</code>)<a class="anchor" aria-label="anchor" href="#cran-packages-cran-"></a></h5><p>A package from CRAN. Full syntax:</p>
@@ -254,6 +255,20 @@ package from GitHub. Examples:</p>
 <p>A GitHub remote string can also be used instead of an URL, for example:
 <code>git@github.com:r-lib/pak.git</code></p>
 </div><div class="section">
+<h5 id="gitlab-packages-gitlab-">GitLab packages (<code>gitlab::</code>)<a class="anchor" aria-label="anchor" href="#gitlab-packages-gitlab-"></a></h5><p>Packages from a GitLab repository. Full syntax:</p>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+the name of the repository is used.</p></li>
+<li><p><code>&lt;username&gt;</code> is a GitLab username or group name.</p></li>
+<li><p><code>&lt;repository&gt;</code> is the name of the repository.</p></li>
+<li><p><code>&lt;subdir&gt;</code> optional subdirectory, if the package is within a
+subdirectory in the repository.</p></li>
+<li><p><code>&lt;detail&gt;</code> may specify a git branch, tag or (prefix of) a commit hash.</p></li>
+</ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
+branch is used.</p>
+<p>Examples:</p>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gitlab<span class="sc">::</span>gaborcsardi<span class="sc">/</span>cli</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gitlab<span class="sc">::</span>r<span class="sc">-</span>hub<span class="sc">/</span>filelock<span class="sc">@</span>main</span></code></pre><p></p></div>
+</div><div class="section">
 <h5 id="packages-in-git-repositories-git-">Packages in git repositories (<code>git::</code>)<a class="anchor" aria-label="anchor" href="#packages-in-git-repositories-git-"></a></h5><p>Full syntax:</p>
 <p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>]git<span class="sc">::</span>https?<span class="sc">:</span><span class="er">//&lt;</span>host<span class="sc">&gt;</span>[<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
 the last component of the <code>&lt;host&gt;</code> is used.</p></li>
@@ -274,10 +289,6 @@ branch is used.</p>
 <p>If the system has git installed, then pak will use the
 credentials stored in the configured git credential store, automatically,
 via the gitcreds package.</p>
-<p>Currently pak only supports git servers that use
-version 2 of the git protocol.
-Most git servers do that, but there are some exceptions, a notable one is
-https://bitbucket.org/.</p>
 </div><div class="section">
 <h5 id="local-packages-local-">Local packages (<code>local::</code>)<a class="anchor" aria-label="anchor" href="#local-packages-local-"></a></h5><p>A path that refers to a package file built with <code>R CMD build</code>, or a
 directory that contains a package. Full syntax:</p>
