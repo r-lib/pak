@@ -30,6 +30,7 @@ sysreqs_platforms()
 }
 \seealso{
 Other system requirements functions: 
+\code{\link{pkg_sysreqs}()},
 \code{\link{sysreqs_check_installed}()},
 \code{\link{sysreqs_db_list}()},
 \code{\link{sysreqs_db_match}()},

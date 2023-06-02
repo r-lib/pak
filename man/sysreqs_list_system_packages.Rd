@@ -33,6 +33,7 @@ sysreqs_list_system_packages()[1:10,]
 }
 \seealso{
 Other system requirements functions: 
+\code{\link{pkg_sysreqs}()},
 \code{\link{sysreqs_check_installed}()},
 \code{\link{sysreqs_db_list}()},
 \code{\link{sysreqs_db_match}()},

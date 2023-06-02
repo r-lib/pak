@@ -4,12 +4,12 @@
 \alias{sysreqs_db_match}
 \title{Match system requirement descriptions to the database}
 \usage{
-sysreqs_db_match(specs, platform = NULL)
+sysreqs_db_match(specs, sysreqs_platform = NULL)
 }
 \arguments{
 \item{specs}{Character vector of system requirements descriptions.}
 
-\item{platform}{System requirements platform. If \code{NULL}, then the
+\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
 \code{sysreqs_platform} \eval{man_config_link("configuration option")}
 is used, which defaults to the current platform. Set this option if
 \eval{.packageName} does not detect your platform correctly.}
@@ -40,12 +40,13 @@ mainly useful for debugging.
 \dontshow{if (Sys.getenv("IN_PKGDOWN") == "true") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 sysreqs_db_match(
   c("Needs libcurl", "Java, libssl"),
-  platform = "ubuntu-22.04"
+  sysreqs_platform = "ubuntu-22.04"
 )
 \dontshow{\}) # examplesIf}
 }
 \seealso{
 Other system requirements functions: 
+\code{\link{pkg_sysreqs}()},
 \code{\link{sysreqs_check_installed}()},
 \code{\link{sysreqs_db_list}()},
 \code{\link{sysreqs_db_update}()},

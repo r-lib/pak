@@ -27,9 +27,9 @@ sysreqs_platforms
 #' Check if a platform has system requirements support
 #'
 #' @usage
-#' sysreqs_is_supported(platform = NULL)
+#' sysreqs_is_supported(sysreqs_platform = NULL)
 #'
-#' @param platform System requirements platform. If `NULL`, then the
+#' @param sysreqs_platform System requirements platform. If `NULL`, then the
 #'   `sysreqs_platform` \eval{man_config_link("configuration option")}
 #'   is used, which defaults to the current platform. Set this option if
 #'   \eval{.packageName} does not detect your platform correctly.
@@ -52,9 +52,9 @@ sysreqs_is_supported
 #' \eval{man_config_link("configuration option")}.
 #'
 #' @usage
-#' sysreqs_db_list(platform = NULL)
+#' sysreqs_db_list(sysreqs_platform = NULL)
 #'
-#' @param platform System requirements platform. If `NULL`, then the
+#' @param sysreqs_platform System requirements platform. If `NULL`, then the
 #'   `sysreqs_platform` \eval{man_config_link("configuration option")}
 #'   is used, which defaults to the current platform. Set this option if
 #'   \eval{.packageName} does not detect your platform correctly.
@@ -70,7 +70,7 @@ sysreqs_is_supported
 #' @export
 #' @family system requirements functions
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
-#' sysreqs_db_list(platform = "ubuntu-22.04")
+#' sysreqs_db_list(sysreqs_platform = "ubuntu-22.04")
 
 sysreqs_db_list
 
@@ -83,10 +83,10 @@ sysreqs_db_list
 #' mainly useful for debugging.
 #'
 #' @usage
-#' sysreqs_db_match(specs, platform = NULL)
+#' sysreqs_db_match(specs, sysreqs_platform = NULL)
 #'
 #' @param specs Character vector of system requirements descriptions.
-#' @param platform System requirements platform. If `NULL`, then the
+#' @param sysreqs_platform System requirements platform. If `NULL`, then the
 #'   `sysreqs_platform` \eval{man_config_link("configuration option")}
 #'   is used, which defaults to the current platform. Set this option if
 #'   \eval{.packageName} does not detect your platform correctly.
@@ -107,7 +107,7 @@ sysreqs_db_list
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
 #' sysreqs_db_match(
 #'   c("Needs libcurl", "Java, libssl"),
-#'   platform = "ubuntu-22.04"
+#'   sysreqs_platform = "ubuntu-22.04"
 #' )
 
 sysreqs_db_match

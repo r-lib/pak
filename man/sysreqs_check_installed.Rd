@@ -40,6 +40,7 @@ sysreqs_check_installed()
 }
 \seealso{
 Other system requirements functions: 
+\code{\link{pkg_sysreqs}()},
 \code{\link{sysreqs_db_list}()},
 \code{\link{sysreqs_db_match}()},
 \code{\link{sysreqs_db_update}()},

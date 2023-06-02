@@ -4,10 +4,10 @@
 \alias{sysreqs_is_supported}
 \title{Check if a platform has system requirements support}
 \usage{
-sysreqs_is_supported(platform = NULL)
+sysreqs_is_supported(sysreqs_platform = NULL)
 }
 \arguments{
-\item{platform}{System requirements platform. If \code{NULL}, then the
+\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
 \code{sysreqs_platform} \eval{man_config_link("configuration option")}
 is used, which defaults to the current platform. Set this option if
 \eval{.packageName} does not detect your platform correctly.}
@@ -28,6 +28,7 @@ The \code{sysreqs_platform}
 \eval{man_config_link("configuration option")}.
 
 Other system requirements functions: 
+\code{\link{pkg_sysreqs}()},
 \code{\link{sysreqs_check_installed}()},
 \code{\link{sysreqs_db_list}()},
 \code{\link{sysreqs_db_match}()},
