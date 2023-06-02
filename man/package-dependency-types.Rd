@@ -7,5 +7,5 @@
 Various types of R package dependencies
 }
 \details{
-\eval{pak:::include_docs("pkgdepends", "docs/deps.rds")}
+\eval{include_docs("pkgdepends", "docs/deps.rds")}
 }

@@ -50,7 +50,7 @@ the current R version.}
 \value{
 Data frame with information about the downloaded
 packages, invisibly. Columns:
-\eval{pak:::include_docs("pkgdepends", "docs/download-result.rds")}
+\eval{include_docs("pkgdepends", "docs/download-result.rds")}
 }
 \description{
 TODO: explain result

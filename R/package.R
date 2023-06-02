@@ -139,7 +139,7 @@ pkg_install_do_plan <- function(proposal) {
 #' @param lib One or more library paths to lookup packages status in.
 #'   By default all libraries are used.
 #' @return Data frame with data about installations of `pkg`.
-#'   \eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
+#'   \eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
 #'
 #' @export
 #' @family package functions
@@ -193,7 +193,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' @inheritParams pkg_install
 #' @return A data frame with the dependency data, it includes `pkg`
 #'   as well. It has the following columns.
-#'   \eval{pak:::include_docs("pkgdepends", "docs/resolution-result.rds")}
+#'   \eval{include_docs("pkgdepends", "docs/resolution-result.rds")}
 #'
 #' @family package functions
 #' @export
@@ -299,7 +299,7 @@ pkg_list <- function(lib = .libPaths()[1]) {
 #' @inheritParams pkg_install
 #' @return Data frame with information about the downloaded
 #'   packages, invisibly. Columns:
-#'   \eval{pak:::include_docs("pkgdepends", "docs/download-result.rds")}
+#'   \eval{include_docs("pkgdepends", "docs/download-result.rds")}
 #'
 #' @export
 #' @family package functions

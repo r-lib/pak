@@ -16,7 +16,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-RoxygenNote: 7.2.1.9000
+RoxygenNote: 7.2.3
 Depends:
     R (>= 3.2)
 Imports:
@@ -48,7 +48,7 @@ Suggests:
     withr
 Remotes:
     r-lib/pkgcache,
-    r-lib/pkgdepends
+    r-lib/pkgdepends@feature/sysreqs-ui
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
@@ -60,7 +60,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     r-lib/pkgcache,
-    r-lib/pkgdepends,
+    r-lib/pkgdepends@feature/sysreqs-ui,
     pkgsearch,
     prettyunits,
     processx,

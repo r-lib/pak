@@ -37,7 +37,7 @@ information about package dependencies.
 \value{
 A data frame with the dependency data, it includes \code{pkg}
 as well. It has the following columns.
-\eval{pak:::include_docs("pkgdepends", "docs/resolution-result.rds")}
+\eval{include_docs("pkgdepends", "docs/resolution-result.rds")}
 }
 \description{
 Look up the dependencies of a package

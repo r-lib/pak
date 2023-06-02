@@ -44,7 +44,7 @@ NULL
 #' "[Get started with pak]".
 #'
 #' @details
-#' \eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
+#' \eval{include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
 #'
 #' @name Package sources
 #' @rdname pak_package_sources
@@ -113,7 +113,7 @@ NULL
 #' Various types of R package dependencies
 #'
 #' @details
-#' \eval{pak:::include_docs("pkgdepends", "docs/deps.rds")}
+#' \eval{include_docs("pkgdepends", "docs/deps.rds")}
 #'
 #' @name Package dependency types
 #' @rdname package-dependency-types
@@ -162,7 +162,7 @@ NULL
 #'
 #' ## pak configuration entries
 #'
-#' \eval{pak:::doc_config()}
+#' \eval{doc_config()}
 #'
 #' ## Notes
 #'
@@ -229,4 +229,10 @@ include_docs <- function(pkg, file, top = FALSE) {
   )
 
   rd
+}
+
+pak_or_pkgdepends <- function() "pak"
+
+man_config_link <- function(txt) {
+  paste0("\\link[=pak-config]{", txt, "}")
 }

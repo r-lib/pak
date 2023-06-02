@@ -14,7 +14,7 @@ By default all libraries are used.}
 }
 \value{
 Data frame with data about installations of \code{pkg}.
-\eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
+\eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
 }
 \description{
 Display installed locations of a package

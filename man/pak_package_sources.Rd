@@ -12,5 +12,5 @@ If you want a quick overview of package sources, see
 "\link{Get started with pak}".
 }
 \details{
-\eval{pak:::include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
+\eval{include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}
 }
