@@ -70,6 +70,17 @@ reference:
   contents:
   - lib_status
 
+- title: System requirements
+  contents:
+  - pkg_sysreqs
+  - sysreqs_check_installed
+  - sysreqs_db_list
+  - sysreqs_db_match
+  - sysreqs_db_update
+  - sysreqs_is_supported
+  - sysreqs_list_system_packages
+  - sysreqs_platforms
+
 - title: Repositories
   contents:
   - ppm_has_binaries
