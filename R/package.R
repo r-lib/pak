@@ -208,7 +208,7 @@ pkg_remove_internal <- function(pkg, lib) {
 #' ```
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   load_extra("pillar")
   remote(
     function(...) {
