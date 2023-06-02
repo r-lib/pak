@@ -98,6 +98,18 @@ NULL
 #' @rdname pak_solver
 NULL
 
+#' System requirements
+#'
+#' @name System requirements
+#' @rdname sysreqs
+#' @description
+#' pak takes care of your system requirements.
+#'
+#' @details
+#' ```{r child = "man/chunks/sysreqs.Rmd"}
+#' ```
+NULL
+
 #' All about installing pak.
 #'
 #' @name Installing pak
