@@ -47,6 +47,7 @@ Suggests:
     testthat,
     withr
 Remotes:
+    r-lib/pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
