@@ -1,0 +1,305 @@
+---
+output:
+  github_document:
+always_allow_html: yes
+---
+
+```{r, setup, include = FALSE, cache = FALSE}
+library(pillar)
+pkgload::load_all()
+options(asciicast_timeout = 600)
+if (exists(".knitr_asciicast_process", envir = .GlobalEnv)) {
+  rm(list = ".knitr_asciicast_process", envir = .GlobalEnv)
+}
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  interactive = FALSE,
+  timeout = as.integer(Sys.getenv("ASCIICAST_TIMEOUT", 300)),
+  startup = quote({
+    options(width = 72)
+    options(cli.width = 72)
+    options(cli.progress_show_after = 0)
+    options(cli.progress_clear = FALSE)
+    library(cli)
+    pkgload::load_all()
+    set.seed(1)
+  })
+)
+
+knitr::opts_chunk$set(
+  cache = TRUE,
+  asciicast_knitr_output = "html",
+  asciicast_include_style = FALSE,
+  asciicast_theme = "pkgdown",
+  asciicast_width = 72,
+  asciicast_cols = 72
+)
+```
+
+```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+pkgload::load_all()
+library(pillar)
+dir.create(lib <- file.path(tempdir(), "lib"))
+.libPaths(c(lib, .libPaths()))
+```
+
+# Introduction
+
+Many R packages need external software to be present on the machine,
+otherwise they do not work, or not even load.
+For example the RPostgres R package uses the PostgreSQL client library,
+and by default dynamically links to it on Linux systems.
+This means that you (or the administrators of your system) need to install
+this library, typically in the form of a system package: `libpq-dev` on
+Ubuntu and Debian systems, or `postgresql-server-devel` or `postgresql-devel`
+on RedHat, Fedora, etc. systems.
+
+The good news is that pak helps you with this:
+- it looks up the required system packages when installing R packages,
+- it checks if the required system packages are installed, and
+- it installs them automatically, if you are a superuser, or you can use
+  password-less `sudo` to start a superuser shell.
+
+In addition, pak also has some functions to query system requirements and
+system packages.
+
+# Requirements, supported platforms
+
+Call `pak::sysreqs_platforms()` to list all platforms that support system
+requirements:
+```{asciicast sysreqs-platforms}
+pak::sysreqs_platforms()
+```
+
+Call `pak::sysreqs_is_supported()` to see if your system is supported:
+```{asciicast sysreqs-is-supported}
+pak::sysreqs_is_supported()
+```
+
+This vignette was built on `r sessionInfo()$running`, which is a platform
+pak `r if (sysreqs_is_supported()) "does" else "does not"` support. So in the
+following you will `r if (sysreqs_is_supported()) "" else "not"` see the output
+of the code.
+
+# R package installation
+
+If you are using pak as a superuser, on a supported platform, then pak
+will look up system requirements, and install the missing ones. Here is
+an example:
+```{asciicast pkg-inst-setup, include=FALSE, cache = FALSE}
+system("apt-get remove -y libpq5")
+try(pak::pkg_remove("RPostres"))
+```
+
+```{asciicast pkg-inst}
+pak::pkg_install("RPostgres")
+```
+
+## Running R as a regular user
+
+If you don't want to use R as the superuser, but you can set up `sudo`
+without a password, that works as well.
+pak will automatically detect the password-less `sudo` capability, and use
+it to install system packages, as needed.
+
+If you run R as a regular (not root) user, and password-less `sudo` is
+not available, then pak will print the system requirements, but it will
+not try to install or update them.
+If you are installing source packages that need to link to system
+libraries, then their installation will probably fail, until you install
+these system packages.
+If you are installing binary R packages, then the installation typically
+succeeds, but you won't be able to load these packages into R, until you
+install the required system packages. Here is an example, on a system that
+does not have the required system package installed for RPostgres.
+If you are installing a source R package, the installation already fails:
+
+```{asciicast pkg-inst-user-setup, include=FALSE, cache = FALSE}
+system("apt-get remove -y libpq5")
+try(pak::pkg_remove("RPostgres"))
+options(pkg.sysreqs = FALSE)
+```
+
+```{asciicast pkg-install-user-src, error = TRUE}
+pak::pkg_install("RPostgres?source")
+```
+
+On the other hand, if you are installing binary packages, e.g. from the
+Posit Package Manager, then the installation typically succeeds, but then
+loading the package fails:
+
+```{asciicast pkg-inst-user, error = TRUE}
+pak::pkg_install("RPostgres")
+library(RPostgres)
+```
+
+# Other queries
+
+In addition to the automatic system package lookup and installation, pak
+also has some other functions to help you with system dependencies.
+The `sysreqs_db_list()` function lists all system requirements pak knows
+about.
+```{asciicast db-list}
+pak::sysreqs_db_list()
+```
+
+`sysreqs_db_match()` manually matches `SystemREquirements` fields
+againts these system requirements:
+```{asciicast db-match}
+sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
+sq
+```
+
+```{asciicast db-match-2}
+sq[[1]]$packages
+```
+
+You can also use it to query system requirements for other platfosm:
+```{asciicast db-match-3}
+sqrhel9 <- pak::sysreqs_db_match("Needs libcurl and also Java.", "redhat-9")
+sqrhel9
+```
+
+```{asciicast db-match-4}
+sqrhel9[[1]]$packages
+```
+
+`sysreqs_list_system_packages()` is a cross-platform way of listing all
+installed system packages and capabilities:
+```{asciicast list-system-packages}
+pak::sysreqs_list_system_packages()
+```
+
+Finally, `sysreqs_check_installed()` is a handy function that checks if all
+system requirements are installed for some or all R packages that are
+installed in your library:
+```{asciicast check-installed-setup, include = FALSE}
+.libPaths(.libPaths()[-1])
+```
+
+```{asciicast check-installed}
+pak::sysreqs_check_installed()
+```
+
+# Build-time and run-time dependencies
+
+The system requirements database that pak uses does not currently
+differentiate between build-time and run-time dependencies.
+A build-time dependency is a system package that you need when _installing_
+an R package from source.
+A run-time dependency is a system package that you need when _using_ an
+R package.
+Most Linux distribution create (at least) two packages for each software
+library: a runtime package and a development package.
+For an R package that uses such a software library, the runtime package is
+a run-time dependency and the development package is a build-time
+dependency.
+However, pak does not currently know the difference between build-time
+and run-time dependencies, and it will install both types of dependencies,
+always.
+This means that pak usually installs system packages that are not strictly
+necessary.
+These are typically development packages of libraries, i.e. header files,
+and typically do not cause any issues.
+If you are short on disk space, then you can try removing them.
+
+# How it works
+
+pak uses the database of system requirements at
+https://github.com/rstudio/r-system-requirements.
+It has its own copy of the database embedded into the package, and it also
+tries to download updated versions of the database from GitHub, if its 
+current copy is older than one day.
+You can explicitly update the database from GitHub using the
+`sysreqs_db_update()` function.
+
+For CRAN packages, it downloads the `SystemRequierements` fields from
+https://cran2.r-pkg.org/metadata/, which is a database updated daily.
+We are planning on moving this database to GitHub, and creating a
+similar database for Bioconductor.
+
+For packages sources that require pak to obtain a package `DESCRIPTION` file
+(e.g. `github::`, `git::`, etc.), pak obtrains `SystemRequirements` directly
+from the `DESCRIPTION` file.
+
+Once having the `SystemRequirements` fields, pak matches them to the database,
+to obtain the cacnonized list of system requirements.
+
+Then pak queries the local platform, to see the exact system packages
+needed.
+It also queries the installed system packages, to avoid trying to install
+system packages that are already installed.
+
+# Configuration
+
+There are several pak configuration options you can use to adjust how
+system requirements are handled.
+We will list some of them here, please see the options with a `sysreqs`
+prefix in the `?pak-config` manual page for a complete and current list.
+
+* `sysreqs`: whether to install system requirements. The default is `TRUE`
+  if the platform is supported and the user can install system packages,
+  either because it is the superuser, or via `sudo`. If it is `FALSE` (or
+  the user cannot install system packages), but the platform is supported,
+  system requirements are printed, but not installed.
+* `sysreqs_db_update`: whether to try to update the system requirements
+  database from GitHub.
+* `sysreqs_db_update_timeout`: timeout for the system requirements update
+  from GitHub.
+* `sysreqs_dry_run`: if `TRUE` then pak only prints the install commands,
+  but does not actually run them.
+* `sysreqs_platform`: the platform name to use for determining system
+  requirements. Defaults to the current platform. If you are using a
+  Linux distribution that is compatible with some distribution that pak
+  supports, then you can set this option manually. E.g. Ubuntu-based
+  distros can set it to `ubuntu-22.04`, or the appropriate Ubuntu version.
+* `sysreqs_sudo`: whether to use `sudo` to install system packages. If this
+  is not set, then pak tries to auto-detect if `sudo` is needed or not.
+* `sysreqs_update`: whether to try to update system packages that are
+  already installed. pak does not know which version of a system package
+  is required, and it does not try to update system packages by default.
+  If you think that you need newer system packages, then you can set this
+  option to `TRUE`.
+* `sysreqs_verbose`: whether to print the output of the system package
+  installation commands. Useful for debugging, and it is `TRUE` by default
+  in a CI environment.
+
+# About other OSes
+
+## Windows
+
+While the system requirements database has some information about
+system dependencies on Windows, pak does not use this information and it
+does not try to install system software on Windows.
+CRAN, PPM and Bioconductor have Windows binary packages available for the
+majority of R packages they serve, and these packages practically always
+link to system libraries statically, so they don't need any external
+software.
+
+If you wish to compile Windows packages from source, then you need to
+install the appropriate version of Rtools, and possibly extra packages
+using the `pacman` tool of Rtools4x.
+
+Rtools42 and newer Rtools versions bundle lots of libraries, so most
+likely no extra `pacman` packages are needed. 
+Rtools40 has a leaner default installation, and you'll probably need
+to install packages manually:
+https://github.com/r-windows/docs/blob/master/rtools40.md#readme
+
+We are planning on adding better Windows system software support to pak in
+the future.
+
+## macOS
+
+pak does not currently have system requirement information for macOS.
+macOS is similar to Windows, in that most repositories will serve
+statically linked macOS binary packages that do not need system software.
+
+If you do need to compile packages from source, then you possibly need
+to install some sytem libraries, either via Homebrew, or by downloading
+CRAN's static library builds from https://mac.r-project.org/bin/
+
+We are planning on adding better macOS system software support to pak in
+the future.

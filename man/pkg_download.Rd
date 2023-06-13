@@ -50,7 +50,7 @@ the current R version.}
 \value{
 Data frame with information about the downloaded
 packages, invisibly. Columns:
-\eval{pak:::include_docs("pkgdepends", "docs/download-result.rds")}
+\eval{include_docs("pkgdepends", "docs/download-result.rds")}
 }
 \description{
 TODO: explain result
@@ -110,6 +110,7 @@ Other package functions:
 \code{\link{pkg_deps}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
-\code{\link{pkg_status}()}
+\code{\link{pkg_status}()},
+\code{\link{pkg_sysreqs}()}
 }
 \concept{package functions}

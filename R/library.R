@@ -5,7 +5,7 @@
 #' @param lib Path to library.
 #' @return Data frame the contains data about the packages
 #'   installed in the library.
-#'   \eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
+#'   \eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
 
 #' @export
 #' @family library functions

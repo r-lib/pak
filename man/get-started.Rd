@@ -109,7 +109,7 @@ The URL may point to an R package file, made with \verb{R CMD build}, or a
 }}
 
 
-\code{update = TRUE} updates the package itself and all of its dependencies, if
+\code{upgrade = TRUE} updates the package itself and all of its dependencies, if
 necessary.
 }
 

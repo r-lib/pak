@@ -40,7 +40,7 @@ Some examples:\tabular{lll}{
 
 \subsection{pak configuration entries}{
 
-\eval{pak:::doc_config()}
+\eval{doc_config()}
 }
 
 \subsection{Notes}{
@@ -51,3 +51,4 @@ used, so you don't need to restart R or reaload pak after a
 configuration change.
 }
 }
+

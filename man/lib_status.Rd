@@ -15,7 +15,7 @@ pkg_list(lib = .libPaths()[1])
 \value{
 Data frame the contains data about the packages
 installed in the library.
-\eval{pak:::include_docs("pkgdepends", "docs/lib-status-return.rds")}
+\eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
 }
 \description{
 Status of packages in a library
@@ -58,7 +58,8 @@ Other package functions:
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
-\code{\link{pkg_status}()}
+\code{\link{pkg_status}()},
+\code{\link{pkg_sysreqs}()}
 }
 \concept{library functions}
 \concept{package functions}

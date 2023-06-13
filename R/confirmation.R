@@ -74,6 +74,26 @@ print_install_details <- function(prop, lib, loaded) {
     prop$show_solution(key = FALSE)
   }
 
+  sysreqs <- prop$get_sysreqs()
+  if (!is.null(sysreqs)) {
+    num <- length(sysreqs$miss) + length(sysreqs$upd)
+    if (length(sysreqs$inst) > 0 && num == 0) {
+      cli::cli_alert_success("All system requirements are already installed.")
+    } else if (num > 0) {
+      install_sysreqs <- prop$get_config()$get("sysreqs")
+      if (install_sysreqs) {
+        cli::cli_alert("Will {.emph install} {num} system package{?s}:")
+      } else {
+        cli::cli_alert_danger(
+          "Missing {num} system package{?s}. You'll probably need to
+           install {?it/them} manually:",
+          wrap = TRUE
+        )
+      }
+    }
+    prop$show_sysreqs()
+  }
+
   if (length(loaded) > 0 || get_os() == "win") {
     ls <- warn_for_loaded_packages(sol$package[newly | upd], lib, loaded)
   } else {
