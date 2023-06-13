@@ -60,7 +60,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     r-lib/pkgcache,
-    r-lib/pkgdepends
+    r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
