@@ -16,7 +16,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.2.3.9000
 Depends:
     R (>= 3.2)
 Imports:
@@ -68,7 +68,8 @@ Config/needs/dependencies:
     rprojroot
 Config/Needs/website:
     r-lib/asciicast,
-    r-lib/roxygen2,
+    rmarkdown,
+    roxygen2,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Config/build/extra-sources: configure*

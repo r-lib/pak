@@ -102,11 +102,12 @@ NULL
 #'
 #' @name System requirements
 #' @rdname sysreqs
+#' @aliases sysreqs
 #' @description
 #' pak takes care of your system requirements.
 #'
 #' @details
-#' ```{r child = "man/chunks/sysreqs.Rmd"}
+#' ```{r child = "man/chunks/sysreqs.md"}
 #' ```
 NULL
 
