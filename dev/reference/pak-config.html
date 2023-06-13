@@ -127,14 +127,25 @@ names. Defaults to the platform of the current R session, plus
 <code>"source"</code>.</p></li>
 <li><p>‘r_versions’: (Env var: <code>PKG_R_VERSIONS</code>, option: <code>pkg.r_versions</code>.) Character vector, R versions to download or install
 packages for. It defaults to the current R version.</p></li>
-<li><p>‘sysreqs’: (Env var: <code>PKG_SYSREQS</code>, option: <code>pkg.sysreqs</code>.) Whether to look up and install system requirements.
-By default this is <code>TRUE</code> if the <code>CI</code> environment variable is set
-and the operating system is a supported Linux distribution:
-CentOS, Debian, Fedora, openSUSE, RedHat Linux, Ubuntu Linux or SUSE
-Linux Enterprise. The default will change as new platforms gain
-system requirements support.</p></li>
+<li><p>‘sysreqs’: (Env var: <code>PKG_SYSREQS</code>, option: <code>pkg.sysreqs</code>.) Whether to automatically look up and install system requirements.
+If <code>TRUE</code>, then pkgdepends will try to install required
+system packages. If <code>FALSE</code>, then system requirements are still
+printed (including OS packages on supported platforms), but they
+are not installed.
+By default it is <code>TRUE</code> on supported platforms,
+if the current user is the root user or password-less <code>sudo</code> is
+configured for the current user.</p></li>
+<li><p>‘sysreqs_db_update’: (Env var: <code>PKG_SYSREQS_DB_UPDATE</code>, option: <code>pkg.sysreqs_db_update</code>.) Whether to try to update the system requirements database from
+GitHub. If the update fails, then the cached or the build-in
+database if used. Defaults to TRUE.</p></li>
+<li><p>‘sysreqs_db_update_timeout’: (Env var: <code>PKG_SYSREQS_DB_UPDATE_TIMEOUT</code>, option: <code>pkg.sysreqs_db_update_timeout</code>.) Timeout for the system requirements database update.
+Defaults to five seconds.</p></li>
 <li><p>‘sysreqs_dry_run’: (Env var: <code>PKG_SYSREQS_DRY_RUN</code>, option: <code>pkg.sysreqs_dry_run</code>.) If <code>TRUE</code>, then pak only prints the system commands to
 install system requirements, but does not execute them.</p></li>
+<li><p>‘sysreqs_platform’: (Env var: <code>PKG_SYSREQS_PLATFORM</code>, option: <code>pkg.sysreqs_platform</code>.) The platform to use for system requirements lookup. On Linux, where
+system requirements are currently supported, it must be a string
+containing the distribution name and release, separated by a dash.
+E.g.: <code>"ubuntu-22.04"</code>, or <code>"rhel-9"</code>.</p></li>
 <li><p>‘sysreqs_rspm_repo_id’: (Env var: <code>PKG_SYSREQS_RSPM_REPO_ID</code>, option: <code>pkg.sysreqs_rspm_repo_id</code>.) Posit Package Manager (formerly RStudio Package Manager) repository
 id to use for CRAN system requirements lookup. Defaults to the
 <code>RSPM_REPO_ID</code> environment variable, if set. If not set, then it
@@ -146,6 +157,9 @@ it defaults to <code>https://packagemanager.posit.co</code>.</p></li>
 <li><p>‘sysreqs_sudo’: (Env var: <code>PKG_SYSREQS_SUDO</code>, option: <code>pkg.sysreqs_sudo</code>.) Whether to use <code>sudo</code> to install system requirements,
 on Unix. By default it is <code>TRUE</code> on Linux if the effective user id
 of the current process is not the <code>root</code> user.</p></li>
+<li><p>‘sysreqs_update’: (Env var: <code>PKG_SYSREQS_UPDATE</code>, option: <code>pkg.sysreqs_update</code>.) Whether to try to update system packages that are already installed.
+It defaults to <code>TRUE</code> on CI systems: if the <code>CI</code> environment
+variable is set to <code>true</code>.</p></li>
 <li><p>‘sysreqs_verbose’: (Env var: <code>PKG_SYSREQS_VERBOSE</code>, option: <code>pkg.sysreqs_verbose</code>.) Whether to echo the output of system requirements installation.
 Defaults to <code>TRUE</code> if the <code>CI</code> environment variable is set.</p></li>
 <li><p>‘use_bioconductor’: (Env var: <code>PKG_USE_BIOCONDUCTOR</code>, option: <code>pkg.use_bioconductor</code>.) Whether to automatically use the Bioconductor repositories.
