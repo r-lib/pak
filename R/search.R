@@ -52,6 +52,7 @@ print.pak_search_result <- function(x, ...) {
   }
 
   md <- attr(x, "metadata")
+  md$size <- min(md$size, md$total - md$from + 1)
   catln(
     "# '", md$query, "' -- hits ", md$from, "-",
     md$from + md$size - 1, " of ", md$total
