@@ -69,7 +69,7 @@ extract_deps <- function(path) {
     if ("Depends" %in% colnames(dcf)) dcf[, "Depends"]
   ), collapse = ", ")
 
-  parse_dep_fields(deps)
+  na_omit(parse_dep_fields(deps))
 }
 
 parse_dep_fields <- function(deps) {
