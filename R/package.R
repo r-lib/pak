@@ -5,12 +5,12 @@
 #' package library.
 #'
 #' @param pkg Package names or package references. E.g.
-#'   - `ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
+#'   - `ggplot2` or `cran::ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
 #'     in general,
-#'   - `tidyverse/ggplot2`: package from GitHub,
-#'   - `tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
-#'   - `https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
-#'   - `.`: package in the current working directory.
+#'   - `tidyverse/ggplot2` or `github::tidyverse/ggplot2`: package from GitHub,
+#'   - `tidyverse/ggplot2@v3.4.0` or `github::tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
+#'   - `url::https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
+#'   - `.` or `local::.`: package in the current working directory.
 #'
 #'   See "[Package sources]" for more details.
 #' @param lib Package library to install the packages to. Note that _all_
