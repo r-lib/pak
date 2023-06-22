@@ -20,7 +20,7 @@ data.}
 \item{pak_lib}{This argument is now deprecated and does nothing.}
 
 \item{force}{Do not ask for confirmation. Note that to use this function
-in non-interactive mode, you have to specify \code{force = FALSE}.}
+in non-interactive mode, you have to specify \code{force = TRUE}.}
 }
 \description{
 Clean up pak caches

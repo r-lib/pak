@@ -6,7 +6,7 @@
 #'   data.
 #' @param pak_lib This argument is now deprecated and does nothing.
 #' @param force Do not ask for confirmation. Note that to use this function
-#'   in non-interactive mode, you have to specify `force = FALSE`.
+#'   in non-interactive mode, you have to specify `force = TRUE`.
 #'
 #' @export
 #' @family pak housekeeping
