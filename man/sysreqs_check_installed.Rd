@@ -2,9 +2,11 @@
 % Please edit documentation in R/sysreqsdocs.R
 \name{sysreqs_check_installed}
 \alias{sysreqs_check_installed}
+\alias{sysreqs_fix_installed}
 \title{Check if installed packages have all their system requirements}
 \usage{
 sysreqs_check_installed(packages = NULL, library = .libPaths()[1])
+sysreqs_fix_installed(packages = NULL, library = .libPaths()[1])
 }
 \arguments{
 \item{packages}{If not \code{NULL}, then only these packages are checked.
@@ -22,13 +24,28 @@ Data frame with a custom print and format method, and a
 installed.
 \item \code{packages}: list column of character vectors. The names of the
 installed R packages that need this system package.
+\item \code{pre_install}: list column of character vectors. Commands to run
+before the installation of the the system package.
+\item \code{post_install}: list column of character vectors. Commands to run
+after the installation of the system package.
 }
+
+The data frame also have two attributes with additional data:
+\itemize{
+\item \code{sysreqs_records}: the raw system requirements records, and
+\item \code{system_packages}: the list of the installed system packages.
+}
+
+\code{sysreqs_fix_packages()} returns the same value, but invisibly.
 }
 \description{
-Check if installed packages have all their system requirements
+\code{sysreqs_check_installed()} checks if the system requirements of all
+packages (or a subset of packages) are installed.
+
+\code{sysreqs_fix_installed()} installs the missing system packages.
 }
 \details{
-This function uses the \code{sysreqs_platform} configuration option,
+These functions use the \code{sysreqs_platform} configuration option,
 see \eval{man_config_link("Configuration")}. Set this if
 pak does not detect your platform correctly.
 }

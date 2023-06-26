@@ -454,7 +454,7 @@ installed system packages and capabilities:
 }}
 
 
-Finally, \code{sysreqs_check_installed()} is a handy function that checks if
+\code{sysreqs_check_installed()} is a handy function that checks if
 all system requirements are installed for some or all R packages that
 are installed in your library:
 
@@ -492,6 +492,10 @@ are installed in your library:
 \if{html}{\out{
 </div>
 }}
+
+
+\code{sysreqs_fix_installed()} goes one step further and also tries to install
+the missing system requirements.
 }
 
 \section{Build-time and run-time dependencies}{

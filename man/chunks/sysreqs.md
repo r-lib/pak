@@ -425,7 +425,7 @@ pak::sysreqs_list_system_packages()
 
 </div>
 
-Finally, `sysreqs_check_installed()` is a handy function that checks if
+`sysreqs_check_installed()` is a handy function that checks if
 all system requirements are installed for some or all R packages that
 are installed in your library:
 
@@ -462,6 +462,9 @@ pak::sysreqs_check_installed()
 </pre>
 
 </div>
+
+`sysreqs_fix_installed()` goes one step further and also tries to install
+the missing system requirements.
 
 # Build-time and run-time dependencies
 

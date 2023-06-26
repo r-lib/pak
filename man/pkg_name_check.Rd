@@ -13,7 +13,6 @@ pkg_name_check(name, dictionaries = NULL)
 Available dictionaries:
 * \code{wikipedia}
 * \code{wiktionary},
-* \code{acromine} (\url{http://www.nactem.ac.uk/software/acromine/}),
 * \code{sentiment} (\url{https://github.com/fnielsen/afinn}),
 * \code{urban} (Urban Dictionary).
 If \code{NULL} (by default), the Urban Dictionary is omitted, as it
@@ -82,9 +81,6 @@ See the \code{dictionaries} argument.
 #> <span style="color: #525252;">┌ </span><span style="color: #859900;">Wiktionary</span><span style="color: #525252;"> ──────────────────────────────────────────────────────────┐</span>
 #> <span style="color: #525252;">│</span> <span style="text-decoration: underline;">sicily</span> No English definition found                                   <span style="color: #525252;">│</span>
 #> <span style="color: #525252;">└────────────────────────────────────────────────────────────────────  ┘</span>
-#> <span style="color: #525252;">┌ </span><span style="color: #859900;">Acroynms (from Acromine)</span><span style="color: #525252;"> ────────────────────────────────────────────┐</span>
-#> <span style="color: #525252;">│</span> No acronyms found.                                                   <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">└──────────────────────────────────────────────────────────────────────┘</span>
 #> <span style="color: #525252;">┌──────────────────────────────────────────────────────────────────────┐</span>
 #> <span style="color: #525252;">│</span> Sentiment: 😐<span style="color: #525252;"> (0)</span>                                                    <span style="color: #525252;">│</span> 
 #> <span style="color: #525252;">└──────────────────────────────────────────────────────────────────────┘</span>

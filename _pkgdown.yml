@@ -75,6 +75,7 @@ reference:
   contents:
   - pkg_sysreqs
   - sysreqs_check_installed
+  - sysreqs_fix_installed
   - sysreqs_db_list
   - sysreqs_db_match
   - sysreqs_db_update

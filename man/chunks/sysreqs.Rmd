@@ -1,7 +1,7 @@
 ---
 output:
   github_document:
-always_allow_html: yes
+    always_allow_html: yes
 ---
 
 ```{r, setup, include = FALSE, cache = FALSE}
@@ -172,7 +172,7 @@ installed system packages and capabilities:
 pak::sysreqs_list_system_packages()
 ```
 
-Finally, `sysreqs_check_installed()` is a handy function that checks if all
+`sysreqs_check_installed()` is a handy function that checks if all
 system requirements are installed for some or all R packages that are
 installed in your library:
 ```{asciicast check-installed-setup, include = FALSE}
@@ -182,6 +182,9 @@ installed in your library:
 ```{asciicast check-installed}
 pak::sysreqs_check_installed()
 ```
+
+`sysreqs_fix_installed()` goes one step further and also tries to install
+the missing system requirements.
 
 # Build-time and run-time dependencies
 

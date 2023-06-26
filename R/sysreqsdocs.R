@@ -131,9 +131,16 @@ sysreqs_db_update
 #'
 #' @usage
 #' sysreqs_check_installed(packages = NULL, library = .libPaths()[1])
+#' sysreqs_fix_installed(packages = NULL, library = .libPaths()[1])
+#'
+#' @description
+#' `sysreqs_check_installed()` checks if the system requirements of all
+#' packages (or a subset of packages) are installed.
+#'
+#' `sysreqs_fix_installed()` installs the missing system packages.
 #'
 #' @details
-#' This function uses the `sysreqs_platform` configuration option,
+#' These functions use the `sysreqs_platform` configuration option,
 #' see \eval{man_config_link("Configuration")}. Set this if
 #' `r pak_or_pkgdepends()` does not detect your platform correctly.
 #'
@@ -148,8 +155,19 @@ sysreqs_db_update
 #'      installed.
 #'    * `packages`: list column of character vectors. The names of the
 #'      installed R packages that need this system package.
+#'    * `pre_install`: list column of character vectors. Commands to run
+#'      before the installation of the the system package.
+#'    * `post_install`: list column of character vectors. Commands to run
+#'      after the installation of the system package.
+#'
+#' The data frame also have two attributes with additional data:
+#' * `sysreqs_records`: the raw system requirements records, and
+#' * `system_packages`: the list of the installed system packages.
+#'
+#' `sysreqs_fix_packages()` returns the same value, but invisibly.
 #'
 #' @name sysreqs_check_installed
+#' @aliases sysreqs_fix_installed
 #' @export
 #' @family system requirements functions
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true" && Sys.info()[["sysname"]] == "Linux"
@@ -157,6 +175,10 @@ sysreqs_db_update
 #' sysreqs_check_installed()
 
 sysreqs_check_installed
+
+#' @export
+
+sysreqs_fix_installed <- sysreqs_fix_installed
 
 #' List installed system packages
 #'
