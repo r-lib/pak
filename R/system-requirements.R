@@ -1,5 +1,6 @@
 DEFAULT_RSPM_REPO_ID <-  "1" # cran
 DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
+DEFAULT_REQ_URL_EXT <- ""
 
 #' Query system requirements
 #'
@@ -56,7 +57,65 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
   if (execute) invisible(res) else res
 }
 
+filter_repos <- function(rspm_repo_url) {
+  res <- curl::curl_fetch_memory(rspm_repo_url)
+  data <-
+    jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+  repos <- c()
+  for (i in 1:length(data)) {
+    if ((data[[i]]$type == "R") ||
+        (data[[i]]$type == "Bioconductor"))
+      repos = c(repos, data[[i]]$id)
+  }
+  repos
+}
 
+find_package_deps <- function(rspm_repo_url,package,os,os_release,repo_numbers) {
+  appendstr <- ""
+  ctr = 1
+  deps_found <- FALSE
+  if (!is.null(package)) {
+    while (!deps_found) {
+      message(sprintf(">>> %s", ctr))
+      req_url <- sprintf(
+        "%s/%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s%s",
+        rspm_repo_url,
+        repo_numbers[ctr],
+        paste(package, collapse = "&pkgname="),
+        os,
+        os_release,
+        appendstr
+      )
+      message(sprintf("%s: %s", ctr,req_url))
+      res <- curl::curl_fetch_memory(req_url)
+      message(sprintf("A %s: %s", ctr, res$status_code))
+      if (res$status_code == "404" && length(res$content) == 0) {
+        ctr = ctr + 1
+        message(sprintf("B %s: %s", ctr, res$status_code))
+      } else {
+        data <-
+          jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+        message(sprintf("C %s: %s", ctr, data$error))
+        if (!is.null(data$error) &&
+            data$error == sprintf("Could not locate package '%s'", package)) {
+          ctr <- ctr + 1
+        }
+        appendstr <- ""
+        if (!is.null(data$error) &&
+            data$error == "Bioconductor version not provided") {
+          if (!exists("biocvers")) {
+            biocvers <- BiocManager::version()
+          }
+          appendstr = sprintf("&bioc_version=%s", biocvers)
+        }
+        if (res$status_code == "200") {
+          deps_found <- TRUE
+        }
+      }
+    }
+    data
+  }
+}
 
 
 system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
@@ -80,66 +139,6 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
 
 
   if (!is.null(package)) {
-    
-    filter_repos <- function(rspm_repo_url) {
-      res <- curl::curl_fetch_memory(rspm_repo_url)
-      data <-
-        jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
-      repos <- c()
-      for (i in 1:length(data)) {
-        if ((data[[i]]$type == "R") ||
-            (data[[i]]$type == "Bioconductor"))
-          repos = c(repos, data[[i]]$id)
-      }
-      repos
-    }
-    
-    find_package_deps <- function(rspm_repo_url,package,os,os_release,repo_numbers) {
-      appendstr <- ""
-      ctr = 1
-      deps_found <- FALSE
-      if (!is.null(package)) {
-        while (!deps_found) {
-          message(sprintf(">>> %s", ctr))
-          req_url <- sprintf(
-            "%s/%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s%s",
-            rspm_repo_url,
-            repo_numbers[ctr],
-            paste(package, collapse = "&pkgname="),
-            os,
-            os_release,
-            appendstr
-          )
-          message(sprintf("%s: %s", ctr,req_url))
-          res <- curl::curl_fetch_memory(req_url)
-          message(sprintf("A %s: %s", ctr, res$status_code))
-          if (res$status_code == "404" && length(res$content) == 0) {
-            ctr = ctr + 1
-            message(sprintf("B %s: %s", ctr, res$status_code))
-          } else {
-            data <-
-              jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
-            message(sprintf("C %s: %s", ctr, data$error))
-            if (!is.null(data$error) &&
-                data$error == sprintf("Could not locate package '%s'", package)) {
-              ctr <- ctr + 1
-            }
-            appendstr <- ""
-            if (!is.null(data$error) &&
-                data$error == "Bioconductor version not provided") {
-              if (!exists("biocvers")) {
-                biocvers <- BiocManager::version()
-              }
-              appendstr = sprintf("&bioc_version=%s", biocvers)
-            }
-            if (res$status_code == "200") {
-              deps_found <- TRUE
-            }
-          }
-        }
-        data
-      }
-    }
     
     data<-find_package_deps(rspm_repo_url,package,os,os_release,filter_repos(rspm_repo_url))
 
