@@ -44,6 +44,7 @@ reference:
   - pak
   - pkg_status
   - pkg_remove
+  - pkg_load
 - subtitle: Dependencies
   contents:
   - pkg_deps

@@ -1,3 +1,96 @@
+#' Load packages
+#'
+#' Load packages, if missing try to install one or more packages and their
+#' dependencies into a single package library.
+#'
+#' @param pkg Package names or package references. E.g.
+#'   - `ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
+#'     in general,
+#'   - `tidyverse/ggplot2`: package from GitHub,
+#'   - `tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
+#'   - `https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
+#'   - `.`: package in the current working directory.
+#'
+#' @param install Whether to install missing packages. If TRUE, missing packages
+#'   will be installed with pkg_install(). If FALSE, only try to load the #'
+#'   packages
+#'
+#'   See "[Package sources]" for more details.
+#' @param lib Package library to install the packages to. Note that _all_
+#'   dependent packages will be installed here, even if they are
+#'   already installed in another library. The only exceptions are base
+#'   and recommended packages installed in `.Library`. These are not
+#'   duplicated in `lib`, unless a newer version of a recommemded package
+#'   is needed.
+#' @param upgrade When `FALSE`, the default, pak does the minimum amount
+#'   of work to give you the latest version(s) of `pkg`. It will only upgrade
+#'   dependent packages if `pkg`, or one of their dependencies explicitly
+#'   require a higher version than what you currently have. It will also
+#'   prefer a binary package over to source package, even it the binary
+#'   package is older.
+#'
+#'   When `upgrade = TRUE`, pak will ensure that you have the latest
+#'   version(s) of `pkg` and all their dependencies.
+#' @param ask Whether to ask for confirmation when installing a different
+#'   version of a package that is already installed. Installations that only
+#'   add new packages never require confirmation.
+#' @param dependencies What kinds of dependencies to install. Most commonly
+#'   one of the following values:
+#'   - `NA`: only required (hard) dependencies,
+#'   - `TRUE`: required dependencies plus optional and development
+#'     dependencies,
+#'   - `FALSE`: do not install any dependencies. (You might end up with a
+#'     non-working package, and/or the installation might fail.)
+#'   See [Package dependency types] for other possible values and more
+#'   information about package dependencies.
+#' @return (Invisibly) A data frame with information about the installed
+#'   package(s).
+#'
+#' @export
+#' @seealso [Get started with pak], [Package sources], [FAQ],
+#'   [The dependency solver].
+#' @family package functions
+#' @section Examples:
+#' ```{asciicast pkg-install-dplyr}
+#' pkg_load("dplyr")
+#' ```
+#'
+#' Upgrade dplyr and all its dependencies:
+#' ```{asciicast pkg-install-upgrade}
+#' pkg_load("dplyr", upgrade = TRUE)
+#' ````
+#'
+#' Install the development version of dplyr:
+#' ```{asciicast pkg-install-gh}
+#' pkg_load("tidyverse/dplyr")
+#' ```
+#'
+#' Switch back to the CRAN version. This will be fast because
+#' pak will have cached the prior install.
+#' ```{asciicast pkg-install-cran}
+#' pkg_load("dplyr")
+#' ```
+pkg_load <- function(pkg, install = TRUE, lib = .libPaths()[[1L]], upgrade = FALSE, ask = interactive(), dependencies = NA) {
+  # Try to load packages
+  is_installed <- sapply(pkg, function(x) {
+    return(suppressMessages(
+      suppressWarnings(require(x, character.only = TRUE))
+    ))
+  })
+  # Give feedback to user
+  if (all(is_installed)) {
+    cli::cli_alert_success("All packages are loaded.")
+  } else {
+    cli::cli_alert_warning("{sum(!is_installed)} out of {length(is_installed)} packages are not currently installed.")
+  }
+  # Install missing packages if requested
+  if (install && length(pkg[!is_installed]) > 0) {
+    cli::cli_alert_info("Installing {sum(!is_installed)} missing package(s).")
+    pak::pkg_install(pkg[!is_installed])
+  } else {
+    cli::cli_alert_info("Do not install missing packages.")
+  }
+}
 
 #' Install packages
 #'
@@ -70,20 +163,23 @@
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         ask = interactive(), dependencies = NA) {
-
   start <- Sys.time()
 
   status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
-    list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, dependencies = dependencies,
-         loaded = loaded_packages(lib)))
+    list(
+      pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
+      start = start, dependencies = dependencies,
+      loaded = loaded_packages(lib)
+    )
+  )
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(proposal = NULL))
+    list(proposal = NULL)
+  )
 
   if (length(unloaded) > 0) offer_restart(unloaded)
 
@@ -106,9 +202,8 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
 }
 
 pkg_install_do_plan <- function(proposal) {
-
   proposal <- proposal %||% pkg_data$tmp$proposal
-  start  <- pkg_data$tmp$start
+  start <- pkg_data$tmp$start
   pkg_data$tmp <- NULL
 
   # Actually download packages as needed
@@ -154,7 +249,8 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$pkg_status_internal(...),
-    list(pkg = pkg, lib = lib))
+    list(pkg = pkg, lib = lib)
+  )
 }
 
 pkg_status_internal <- function(pkg, lib = .libPaths()) {
