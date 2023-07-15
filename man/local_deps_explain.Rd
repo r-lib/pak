@@ -19,19 +19,17 @@ versions.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \description{
-These functions are similar to \code{\link[=pkg_deps_explain]{pkg_deps_explain()}}, but work on a
-local package tree. \code{local_dev_deps_explain()} also includes development
+These functions are similar to [pkg_deps_explain()], but work on a
+local package tree. `local_dev_deps_explain()` also includes development
 dependencies.
 }
 \seealso{

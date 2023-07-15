@@ -11,7 +11,7 @@ Update the cached copy of the system requirements database
 }
 \details{
 If the the cached copy is recent, then no update is attempted. See the
-\code{metadata_update_after} \eval{man_config_link("configuration option")}.
+`metadata_update_after` \eval{man_config_link("configuration option")}.
 }
 \seealso{
 Other system requirements functions: 

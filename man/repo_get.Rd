@@ -8,39 +8,27 @@ repo_get(r_version = getRversion(), bioc = TRUE, cran_mirror = NULL)
 }
 \arguments{
 \item{r_version}{R version to use to determine the correct Bioconductor
-version, if \code{bioc = TRUE}.}
+version, if `bioc = TRUE`.}
 
 \item{bioc}{Whether to automatically add the Bioconductor repositories
 to the result.}
 
-\item{cran_mirror}{CRAN mirror to use. Leave it at \code{NULL} to use the
-mirror in \code{getOption("repos")} or an automatically selected one.}
+\item{cran_mirror}{CRAN mirror to use. Leave it at `NULL` to use the
+mirror in `getOption("repos")` or an automatically selected one.}
 }
 \description{
-pak uses the \code{repos} option, see \code{\link[=options]{options()}}. It also automatically
+pak uses the `repos` option, see [options()]. It also automatically
 adds a CRAN mirror if none is set up, and the correct version of the
-Bioconductor repositories. See the \code{cran_mirror} and \code{bioc} arguments.
+Bioconductor repositories. See the `cran_mirror` and `bioc` arguments.
 }
 \details{
-\code{repo_get()} returns the table of the currently configured repositories.
+`repo_get()` returns the table of the currently configured repositories.
 }
 \section{Examples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_get()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                   
-#>   name          url                                type  r_ver…¹ bioc_…²
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
-</pre></div>
-}}
+```{asciicast repo-get}
+repo_get()
+```
 }
 
 \seealso{

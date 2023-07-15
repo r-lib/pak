@@ -8,15 +8,13 @@ ppm_platforms()
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{name}: platform name, this is essentially an identifier,
-\item \code{os}: operating system, \code{linux}, \code{windows} or \code{macOS} currently,
-\item \code{binary_url}: the URL segment of the binary repository URL of this
-platform, see \code{\link[=ppm_snapshots]{ppm_snapshots()}}.
-\item \code{distribution}: for Linux platforms the name of the distribution,
-\item \code{release}: for Linux platforms, the name of the release,
-\item \code{binaries}: whether PPM builds binaries for this platform.
-}
+- `name`: platform name, this is essentially an identifier,
+- `os`: operating system, `linux`, `windows` or `macOS` currently,
+- `binary_url`: the URL segment of the binary repository URL of this
+  platform, see [ppm_snapshots()].
+- `distribution`: for Linux platforms the name of the distribution,
+- `release`: for Linux platforms, the name of the release,
+- `binaries`: whether PPM builds binaries for this platform.
 }
 \description{
 List all platforms supported by Posit Package Manager (PPM)
@@ -28,7 +26,7 @@ ppm_platforms()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev/}.
+  article at <`r pkgcache:::pkgdown_url()`>.
 
 Other PPM functions: 
 \code{\link{ppm_has_binaries}()},

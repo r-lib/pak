@@ -13,32 +13,17 @@ pkg_status(pkg, lib = .libPaths())
 By default all libraries are used.}
 }
 \value{
-Data frame with data about installations of \code{pkg}.
-\eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
+Data frame with data about installations of `pkg`.
+  \eval{include_docs("pkgdepends", "docs/lib-status-return.rds")}
 }
 \description{
 Display installed locations of a package
 }
 \section{Examples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_status("MASS")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 2 × 39</span>                                                  
-#>   library    package title version depends repos…¹ license needs…² built
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>      <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>
-#> <span style="color: #c2c2c2;">1</span> /Users/ga… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.…
-#> <span style="color: #c2c2c2;">2</span> /Library/… MASS    Supp… 7.3-58… R (&gt;= … CRAN    GPL-2 … TRUE    R 4.…
-#> <span style="color: #999999;"># … with 30 more variables: remotetype &lt;chr&gt;, remotepkgref &lt;chr&gt;,</span>       
-#> <span style="color: #999999;">#   remoteref &lt;chr&gt;, remoterepos &lt;chr&gt;, remotepkgplatform &lt;chr&gt;,</span>        
-#> <span style="color: #999999;">#   remotesha &lt;chr&gt;, imports &lt;chr&gt;, suggests &lt;chr&gt;, linkingto &lt;chr&gt;,</span>    
-#> <span style="color: #999999;">#   remotes &lt;chr&gt;, remotehost &lt;chr&gt;, remoterepo &lt;chr&gt;,</span>                  
-#> <span style="color: #999999;">#   remoteusername &lt;chr&gt;, enhances &lt;chr&gt;, biocviews &lt;chr&gt;,</span>              
-#> <span style="color: #999999;">#   remoteurl &lt;chr&gt;, remotesubdir &lt;chr&gt;, priority &lt;chr&gt;,</span>                
-#> <span style="color: #999999;">#   remoteetag &lt;chr&gt;, remotepackaged &lt;chr&gt;, md5sum &lt;chr&gt;, …</span>             
-</pre></div>
-}}
+```{asciicast pkg-status}
+pkg_status("MASS")
+```
 }
 
 \seealso{
@@ -49,6 +34,7 @@ Other package functions:
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
+\code{\link{pkg_load}()},
 \code{\link{pkg_remove}()},
 \code{\link{pkg_sysreqs}()}
 }

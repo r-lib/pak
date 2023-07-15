@@ -6,49 +6,47 @@
 \title{Environment variables and options that modify the default behavior}
 \description{
 pak behavior can be finetuned with environment variables and
-options (as in \code{\link[base:options]{base::options()}}).
+options (as in [base::options()]).
 }
-\section{R options affecting pak's behavior}{
-\subsection{\code{Ncpus}}{
+\details{
+# R options affecting pak's behavior
+
+## `Ncpus`
 
 Set to the desired number of worker processes for package installation.
 If not set, then pak will use the number of logical processors in the
 machine.
-}
 
-\subsection{\code{repos}}{
+## `repos`
 
-The CRAN-like repositories to use. See \code{\link[base:options]{base::options()}} for details.
-}
-}
+The CRAN-like repositories to use. See [base::options()] for details.
 
-\section{pak configuration}{
+# pak configuration
+
 Configuration entries (unless noted otherwise on this manual page)
 have a corresponding environment variable, and a corresponding option.
 
 The environment variable is always uppercase and uses underscores as the
-word separator. It always has the \code{PKG_} prefix.
+word separator. It always has the `PKG_` prefix.
 
 The option is typically lowercase, use it uses underscores as the word
-separator, but it always has the \code{pkg.} prefix (notice the dot!).
+separator, but it always has the `pkg.` prefix (notice the dot!).
 
-Some examples:\tabular{lll}{
-   Config entry name \tab Env var name \tab Option name \cr
-   platforms \tab \code{PKG_PLATFORMS} \tab \code{pkg.platforms} \cr
-   cran_mirror \tab \code{PKG_CRAN_MIRROR} \tab \code{pkg.cran_mirror} \cr
-}
+Some examples:
 
-\subsection{pak configuration entries}{
+| Config entry name  | Env var name      |  Option name      |
+|:-------------------|:------------------|:------------------|
+| platforms          | `PKG_PLATFORMS`   | `pkg.platforms`   |
+| cran_mirror        | `PKG_CRAN_MIRROR` | `pkg.cran_mirror` |
+
+## pak configuration entries
 
 \eval{doc_config()}
-}
 
-\subsection{Notes}{
+## Notes
 
-From version 0.4.0 pak copies the \verb{PKG_*} environment variables and
-the \verb{pkg.*} options to the pak subprocess, where they are actually
+From version 0.4.0 pak copies the `PKG_*` environment variables and
+the `pkg.*` options to the pak subprocess, where they are actually
 used, so you don't need to restart R or reaload pak after a
 configuration change.
 }
-}
-

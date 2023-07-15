@@ -7,25 +7,23 @@
 sysreqs_db_list(sysreqs_platform = NULL)
 }
 \arguments{
-\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
-\code{sysreqs_platform} \eval{man_config_link("configuration option")}
+\item{sysreqs_platform}{System requirements platform. If `NULL`, then the
+`sysreqs_platform` \eval{man_config_link("configuration option")}
 is used, which defaults to the current platform. Set this option if
 \eval{.packageName} does not detect your platform correctly.}
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{name}: cross platform system dependency name in the database.
-\item \code{patterns}: one or more regular expressions to match to
-\code{SystemRequirements} fields.
-\item \code{packages}: one or more system package names to install.
-\item \code{pre_install}: command(s) to run before installing the packages.
-\item \code{post_install}:: command(s) to run after installing the packages.
-}
+* `name`: cross platform system dependency name in the database.
+* `patterns`: one or more regular expressions to match to
+  `SystemRequirements` fields.
+* `packages`: one or more system package names to install.
+* `pre_install`: command(s) to run before installing the packages.
+* `post_install`:: command(s) to run after installing the packages.
 }
 \description{
 It also tries to update the system dependency database, if it is
-outdated. (I.e. older than allowed in the \code{metadata_update_after}
+outdated. (I.e. older than allowed in the `metadata_update_after`
 \eval{man_config_link("configuration option")}.
 }
 \examples{

@@ -8,10 +8,8 @@ ppm_r_versions()
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{r_version}: minor R versions, i.e. version numbers containing the
-first two components of R versions supported by this PPM instance.
-}
+- `r_version`: minor R versions, i.e. version numbers containing the
+  first two components of R versions supported by this PPM instance.
 }
 \description{
 List all R versions supported by Posit Package Manager (PPM)
@@ -23,7 +21,7 @@ ppm_r_versions()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev/}.
+  article at <`r pkgcache:::pkgdown_url()`>.
 
 Other PPM functions: 
 \code{\link{ppm_has_binaries}()},

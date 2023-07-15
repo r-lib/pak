@@ -15,22 +15,22 @@ local_install(
 \arguments{
 \item{root}{Path to the package tree.}
 
-\item{lib}{Package library to install the packages to. Note that \emph{all}
+\item{lib}{Package library to install the packages to. Note that _all_
 dependent packages will be installed here, even if they are
 already installed in another library. The only exceptions are base
-and recommended packages installed in \code{.Library}. These are not
-duplicated in \code{lib}, unless a newer version of a recommemded package
+and recommended packages installed in `.Library`. These are not
+duplicated in `lib`, unless a newer version of a recommemded package
 is needed.}
 
-\item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version(s) of \code{pkg}. It will only upgrade
-dependent packages if \code{pkg}, or one of their dependencies explicitly
-require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
-package is older.
+\item{upgrade}{When `FALSE`, the default, pak does the minimum amount
+  of work to give you the latest version(s) of `pkg`. It will only upgrade
+  dependent packages if `pkg`, or one of their dependencies explicitly
+  require a higher version than what you currently have. It will also
+  prefer a binary package over to source package, even it the binary
+  package is older.
 
-When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version(s) of \code{pkg} and all their dependencies.}
+  When `upgrade = TRUE`, pak will ensure that you have the latest
+  version(s) of `pkg` and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
@@ -38,15 +38,13 @@ add new packages never require confirmation.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \value{
 Data frame, with information about the installed package(s).
@@ -56,7 +54,7 @@ Installs a package tree (or source package file), together with its
 dependencies.
 }
 \details{
-\code{local_install()} is equivalent to \code{pkg_install("local::.")}.
+`local_install()` is equivalent to `pkg_install("local::.")`.
 }
 \seealso{
 Other local package trees: 

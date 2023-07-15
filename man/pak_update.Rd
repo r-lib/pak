@@ -11,15 +11,13 @@ pak_update(force = FALSE, stream = c("auto", "stable", "rc", "devel"))
 available.}
 
 \item{stream}{Whether to update to the
-\itemize{
-\item \code{"stable"},
-\item \code{"rc"} (release candidate) or
-\item \code{"devel"} (development) version.
-\item \code{"auto"} updates to the same stream as the current one.
-}
+  * `"stable"`,
+  * `"rc"` (release candidate) or
+  * `"devel"` (development) version.
+  * `"auto"` updates to the same stream as the current one.
 
-Often there is no release candidate version, then \code{"rc"} also
-installs the stable version.}
+  Often there is no release candidate version, then `"rc"` also
+  installs the stable version.}
 }
 \value{
 Nothing.

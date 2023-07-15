@@ -25,34 +25,34 @@ pkg_system_requirements(
 }
 \arguments{
 \item{os, os_release}{The operating system and operating system release
-version, e.g. "ubuntu", "debian", "centos", "redhat". See
-\url{https://github.com/rstudio/r-system-requirements#operating-systems} for
-all full list of supported operating systems.
+  version, e.g. "ubuntu", "debian", "centos", "redhat". See
+  <https://github.com/rstudio/r-system-requirements#operating-systems> for
+  all full list of supported operating systems.
 
-If \code{NULL}, the default, these will be looked up using \code{\link[distro:distro]{distro::distro()}}.}
+  If `NULL`, the default, these will be looked up using [distro::distro()].}
 
 \item{root}{Path to the package tree.}
 
-\item{execute, sudo}{If \code{execute} is \code{TRUE}, pak will execute the system
-commands (if any). If \code{sudo} is \code{TRUE}, pak will prepend the commands with
-\href{https://en.wikipedia.org/wiki/Sudo}{sudo}.}
+\item{execute, sudo}{If `execute` is `TRUE`, pak will execute the system
+commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
+[sudo](https://en.wikipedia.org/wiki/Sudo).}
 
-\item{echo}{If \code{echo} is \code{TRUE} and \code{execute} is \code{TRUE}, echo the command output.}
+\item{echo}{If `echo` is `TRUE` and `execute` is `TRUE`, echo the command output.}
 
 \item{package}{Package names to lookup system requirements for.}
 }
 \value{
 A character vector of commands needed to install the system
-requirements for the package.
+  requirements for the package.
 }
 \description{
 Returns a character vector of commands to run that will install system
 requirements for the queried operating system.
 
-\code{local_system_requirements()} queries system requirements for a dev package
-(and its dependencies) given its \code{root} path.
+`local_system_requirements()` queries system requirements for a dev package
+(and its dependencies) given its `root` path.
 
-\code{pkg_system_requirements()} queries system requirements for existing packages
+`pkg_system_requirements()` queries system requirements for existing packages
 (and their dependencies).
 }
 \examples{

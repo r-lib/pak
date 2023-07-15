@@ -9,31 +9,29 @@ sysreqs_db_match(specs, sysreqs_platform = NULL)
 \arguments{
 \item{specs}{Character vector of system requirements descriptions.}
 
-\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
-\code{sysreqs_platform} \eval{man_config_link("configuration option")}
+\item{sysreqs_platform}{System requirements platform. If `NULL`, then the
+`sysreqs_platform` \eval{man_config_link("configuration option")}
 is used, which defaults to the current platform. Set this option if
 \eval{.packageName} does not detect your platform correctly.}
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{spec}: the input \code{specs}.
-\item \code{sysreq}:  name of the system library or tool.
-\item \code{packages}: system packages, list column of character vectors.
-Rarely it can be an empty string, e.g. if a \code{pre_install} script
-performs the installation.
-\item \code{pre_install}: list column of character vectors. Shell script(s) to
-run before the installation.
-\item \code{post_install}: list column of character vectors. Shell script(s) to
-run after the installation.
-}
+* `spec`: the input `specs`.
+* `sysreq`:  name of the system library or tool.
+* `packages`: system packages, list column of character vectors.
+   Rarely it can be an empty string, e.g. if a `pre_install` script
+   performs the installation.
+* `pre_install`: list column of character vectors. Shell script(s) to
+   run before the installation.
+* `post_install`: list column of character vectors. Shell script(s) to
+   run after the installation.
 }
 \description{
-In the usual workflow pak matches the
-\code{SystemRequirements} fields of the \code{DESCRIPTION} files to the database.
+In the usual workflow `r pak_or_pkgdepends()` matches the
+`SystemRequirements` fields of the `DESCRIPTION` files to the database.
 }
 \details{
-The \code{sysreqs_db_match()} function lets you match any string, and it is
+The `sysreqs_db_match()` function lets you match any string, and it is
 mainly useful for debugging.
 }
 \examples{

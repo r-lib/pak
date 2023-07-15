@@ -16,150 +16,73 @@ meta_update()
 meta_clean(force = FALSE)
 }
 \arguments{
-\item{pkg}{Package names, if specified then only entries for \code{pkg}
+\item{pkg}{Package names, if specified then only entries for `pkg`
 are returned.}
 
-\item{force}{If \code{FALSE}, then pak will ask for confirmation.}
+\item{force}{If `FALSE`, then pak will ask for confirmation.}
 }
 \value{
-\code{meta_summary()} returns a list with entries:
-\itemize{
-\item \code{cachepath}: absolute path of the metadata cache.
-\item \code{current_db}: the file that contains the current metadata database.
-It is currently an RDS file, but this might change in the future.
-\item \code{raw_files}: the files that are the downloaded \verb{PACKAGES*} files.
-\item \code{db_files}: all metadata database files.
-\item \code{size}: total size of the metadata cache.
-}
+`meta_summary()` returns a list with entries:
+* `cachepath`: absolute path of the metadata cache.
+* `current_db`: the file that contains the current metadata database.
+  It is currently an RDS file, but this might change in the future.
+* `raw_files`: the files that are the downloaded `PACKAGES*` files.
+* `db_files`: all metadata database files.
+* `size`: total size of the metadata cache.
 
-\code{meta_list()} returns a data frame of all available
+`meta_list()` returns a data frame of all available
 packages in the configured repositories.
 
-\code{meta_update()} returns nothing.
+`meta_update()` returns nothing.
 
-\code{meta_clean()} returns nothing
+`meta_clean()` returns nothing
 }
 \description{
 Various utilities to inspect, update and clean the metadata cache.
 See the pkgcache package if you need for control over the metadata cache.
 }
 \details{
-\code{meta_summary()} returns a summary of the metadata cache.
+`meta_summary()` returns a summary of the metadata cache.
 
-\code{meta_list()} lists all (or some) packages in the metadata
+`meta_list()` lists all (or some) packages in the metadata
 database.
 
-\code{meta_update()} updates the metadata database. You don't
+`meta_update()` updates the metadata database. You don't
 normally need to call this function manually, because all pak functions
-(e.g. \code{\link[=pkg_install]{pkg_install()}}, \code{\link[=pkg_download]{pkg_download()}}, etc.) call it automatically,
+(e.g. [pkg_install()], [pkg_download()], etc.) call it automatically,
 to make sure that they use the latest available metadata.
 
-\code{meta_clean()} deletes the whole metadata DB.
+`meta_clean()` deletes the whole metadata DB.
 }
 \section{Examples}{
 
 Metadata cache summary:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_summary()
-#> $cachepath
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata"
-#> 
-#> $current_db
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/pkgs-34444e3072.rds"
-#> 
-#> $raw_files
-#>  [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCann-59693086a0/bin/macosx/big-sur-arm64/contrib/4.2/PACKAGES.gz"      
-#>  [2] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCann-59693086a0/src/contrib/PACKAGES.gz"                               
-#>  [3] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCexp-90d4a3978b/bin/macosx/big-sur-arm64/contrib/4.2/PACKAGES.gz"      
-#>  [4] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCexp-90d4a3978b/src/contrib/PACKAGES.gz"                               
-#>  [5] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCsoft-2a43920999/bin/macosx/big-sur-arm64/contrib/4.2/PACKAGES.gz"     
-#>  [6] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCsoft-2a43920999/src/contrib/PACKAGES.gz"                              
-#>  [7] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCworkflows-26330ba3ca/bin/macosx/big-sur-arm64/contrib/4.2/PACKAGES.gz"
-#>  [8] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/BioCworkflows-26330ba3ca/src/contrib/PACKAGES.gz"                         
-#>  [9] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/CRAN-075c426938/bin/macosx/big-sur-arm64/contrib/4.2/PACKAGES.gz"         
-#> [10] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/CRAN-075c426938/src/contrib/PACKAGES.gz"                                  
-#> 
-#> $db_files
-#> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/pkgs-34444e3072.rds"
-#> [2] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metadata/pkgs-ccacf1b389.rds"
-#> 
-#> $size
-#> [1] 174848200
-}\if{html}{\out{</div>}}
+```{r meta-summary}
+meta_summary()
+```
 
 
 The current metadata DB:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_list()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                    
-#> <span style="color: #999999;"># A data frame: 45,279 × 32</span>                                             
-#>    package version depends sugge…¹ license imports linki…² archs enhan…³
-#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;"> 1</span> A3      1.0.0   R (&gt;= … random… GPL (&gt;… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 2</span> AATtoo… 0.0.2   R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL-3   magrit… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 3</span> ABACUS  1.0.0   R (&gt;= … rmarkd… GPL-3   ggplot… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 4</span> ABC.RAP 0.9.0   R (&gt;= … knitr,… GPL-3   graphi… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 5</span> ABCana… 1.2.1   R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL-3   plotrix <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 6</span> ABCopt… 0.15.0  <span style="color: #DC322F;">NA</span>      testth… MIT + … Rcpp, … Rcpp    ABCo… <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 7</span> ABCp2   1.2     MASS    <span style="color: #DC322F;">NA</span>      GPL-2   <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 8</span> ABHgen… 1.0.1   <span style="color: #DC322F;">NA</span>      knitr,… GPL-3   ggplot… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;"> 9</span> ABPS    0.3     <span style="color: #DC322F;">NA</span>      testth… GPL (&gt;… kernlab <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">10</span> ACA     1.1     R (&gt;= … <span style="color: #DC322F;">NA</span>      GPL     graphi… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #999999;"># … with 45,269 more rows, 23 more variables:</span>                           
-#> <span style="color: #999999;">#   license_restricts_use &lt;chr&gt;, os_type &lt;chr&gt;, priority &lt;chr&gt;,</span>         
-#> <span style="color: #999999;">#   license_is_foss &lt;chr&gt;, repodir &lt;chr&gt;, rversion &lt;chr&gt;,</span>               
-#> <span style="color: #999999;">#   platform &lt;chr&gt;, needscompilation &lt;chr&gt;, ref &lt;chr&gt;, type &lt;chr&gt;,</span>      
-#> <span style="color: #999999;">#   direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;, mirror &lt;chr&gt;,</span>             
-#> <span style="color: #999999;">#   sources &lt;list&gt;, filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;,</span>        
-#> <span style="color: #999999;">#   built &lt;chr&gt;, published &lt;dttm&gt;, deps &lt;list&gt;, md5sum &lt;chr&gt;, …</span>         
-</pre></div>
-}}
-
+```{asciicast meta-list}
+meta_list()
+```
 
 Selected packages only:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_list(pkg = c("shiny", "htmlwidgets"))
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>   package  version depends sugge…¹ license imports linki…² archs enhan…³
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> htmlwid… 1.5.4   <span style="color: #DC322F;">NA</span>      <span style="color: #999999;">"</span>knitr… MIT + … <span style="color: #999999;">"</span>grDev… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    shiny …
-#> <span style="color: #c2c2c2;">2</span> shiny    1.7.3   R (&gt;= … <span style="color: #999999;">"</span>datas… GPL-3 … <span style="color: #999999;">"</span>utils… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">3</span> htmlwid… 1.6.0   <span style="color: #DC322F;">NA</span>      <span style="color: #999999;">"</span>testt… MIT + … <span style="color: #999999;">"</span>grDev… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    shiny …
-#> <span style="color: #c2c2c2;">4</span> shiny    1.7.4   R (&gt;= … <span style="color: #999999;">"</span>datas… GPL-3 … <span style="color: #999999;">"</span>utils… <span style="color: #DC322F;">NA</span>      <span style="color: #DC322F;">NA</span>    <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #999999;"># … with 23 more variables: license_restricts_use &lt;chr&gt;, os_type &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   priority &lt;chr&gt;, license_is_foss &lt;chr&gt;, repodir &lt;chr&gt;,</span>               
-#> <span style="color: #999999;">#   rversion &lt;chr&gt;, platform &lt;chr&gt;, needscompilation &lt;chr&gt;, ref &lt;chr&gt;,</span>  
-#> <span style="color: #999999;">#   type &lt;chr&gt;, direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;, mirror &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   sources &lt;list&gt;, filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;,</span>        
-#> <span style="color: #999999;">#   built &lt;chr&gt;, published &lt;dttm&gt;, deps &lt;list&gt;, md5sum &lt;chr&gt;,</span>           
-#> <span style="color: #999999;">#   path &lt;chr&gt;, and abbreviated variable names ¹​suggests, ²​linkingto, </span>
-#> <span style="color: #999999;">…</span>                                                                      <span style="color: #999999;"> </span>
-</pre></div>
-}}
+```{asciicast meta-list-2}
+meta_list(pkg = c("shiny", "htmlwidgets"))
+```
 
 
 Update the metadata DB
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_update()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Updated metadata database: 1.23 MB in 1 file.                         
-#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                   
-</pre></div>
-}}
+```{asciicast meta-update}
+meta_update()
+```
 
 
 Delete the metadata DB
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_clean()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> Cleaning up cache directory <span style="color: #268BD2;">/Users/gaborcsardi/Library/Caches/org.R-pr</span>
-#> <span style="color: #268BD2;">oject.R/R/pkgcache/_metadata</span>.                                          <span style="color: #268BD2;"> </span>
-</pre></div>
-}}
+```{asciicast meta-clean}
+meta_clean()
+```
 }
 

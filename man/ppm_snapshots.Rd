@@ -8,38 +8,34 @@ ppm_snapshots()
 }
 \value{
 Data frame with two columns:
-\itemize{
-\item \code{date}: the time the snapshot was taken, a \code{POSIXct} vector,
-\item \code{id}:  integer id of the snapshot, this can be used in the repository
-URL.
-}
+- `date`: the time the snapshot was taken, a `POSIXct` vector,
+- `id`:  integer id of the snapshot, this can be used in the repository
+  URL.
 }
 \description{
 List all available Posit Package Manager (PPM) snapshots
 }
 \details{
 The repository URL of a snapshot has the following form on Windows:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\{base\}/\{repo\}/\{id\}
-}\if{html}{\out{</div>}}
-
-where \code{{base}} is the base URL for PPM (see \code{\link[=ppm_repo_url]{ppm_repo_url()}}) and
-\code{{id}} is either the date or id of the snapshot, or \code{latest} for
+```
+{base}/{repo}/{id}
+```
+where `{base}` is the base URL for PPM (see [ppm_repo_url()]) and
+`{id}` is either the date or id of the snapshot, or `latest` for
 the latest snapshot. E.g. these are equivalent:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{https://packagemanager.posit.co/cran/5
+```
+https://packagemanager.posit.co/cran/5
 https://packagemanager.posit.co/cran/2017-10-10
-}\if{html}{\out{</div>}}
+```
 
 On a Linux distribution that has PPM support, the repository URL that
 contains the binary packages looks like this:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\{base\}/\{repo\}/__linux__/\{binary_url\}/\{id\}
-}\if{html}{\out{</div>}}
-
-where \code{{id}} is as before, and \code{{binary_url}} is a code name for a release
-of a supported Linux distribution. See the \code{binary_url} column of the
-result of \code{\link[=ppm_platforms]{ppm_platforms()}} for these code names.
+```
+{base}/{repo}/__linux__/{binary_url}/{id}
+```
+where `{id}` is as before, and `{binary_url}` is a code name for a release
+of a supported Linux distribution. See the `binary_url` column of the
+result of [ppm_platforms()] for these code names.
 }
 \examples{
 \dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -48,7 +44,7 @@ ppm_snapshots()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev/}.
+  article at <`r pkgcache:::pkgdown_url()`>.
 
 Other PPM functions: 
 \code{\link{ppm_has_binaries}()},

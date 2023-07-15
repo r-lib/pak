@@ -14,56 +14,52 @@ lockfile_create(
 }
 \arguments{
 \item{pkg}{Package names or package references. E.g.
-\itemize{
-\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
-in general,
-\item \code{tidyverse/ggplot2}: package from GitHub,
-\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
-\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
-\item \code{.}: package in the current working directory.
-}
+  - `ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
+    in general,
+  - `tidyverse/ggplot2`: package from GitHub,
+  - `tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
+  - `https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
+  - `.`: package in the current working directory.
 
-See "\link{Package sources}" for more details.}
+  See "[Package sources]" for more details.}
 
 \item{lockfile}{Path to the lock file.}
 
-\item{lib}{Package library to install the packages to. Note that \emph{all}
+\item{lib}{Package library to install the packages to. Note that _all_
 dependent packages will be installed here, even if they are
 already installed in another library. The only exceptions are base
-and recommended packages installed in \code{.Library}. These are not
-duplicated in \code{lib}, unless a newer version of a recommemded package
+and recommended packages installed in `.Library`. These are not
+duplicated in `lib`, unless a newer version of a recommemded package
 is needed.}
 
-\item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version(s) of \code{pkg}. It will only upgrade
-dependent packages if \code{pkg}, or one of their dependencies explicitly
-require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
-package is older.
+\item{upgrade}{When `FALSE`, the default, pak does the minimum amount
+  of work to give you the latest version(s) of `pkg`. It will only upgrade
+  dependent packages if `pkg`, or one of their dependencies explicitly
+  require a higher version than what you currently have. It will also
+  prefer a binary package over to source package, even it the binary
+  package is older.
 
-When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version(s) of \code{pkg} and all their dependencies.}
+  When `upgrade = TRUE`, pak will ensure that you have the latest
+  version(s) of `pkg` and all their dependencies.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \description{
 The lock file can be used later, possibly in a new R session, to carry
 out the installation of the dependencies, with
-\code{\link[=lockfile_install]{lockfile_install()}}.
+[lockfile_install()].
 }
 \details{
 Note, since the URLs of CRAN and most CRAN-like repositories change
-over time, in practice you cannot use the lock file \emph{much} later.
+over time, in practice you cannot use the lock file _much_ later.
 For example, binary packages of older package version
 might be deleted from the repository, breaking the URLs in the
 lock file.

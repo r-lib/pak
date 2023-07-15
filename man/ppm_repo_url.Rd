@@ -8,34 +8,34 @@ ppm_repo_url()
 }
 \value{
 String scalar, the repository URL of the configured PPM
-instance. If no PPM instance is configured, then the URL of the Posit
-Public Package Manager instance. It includes the repository name, e.g.
-\verb{https://packagemanager.posit.co/all}.
+  instance. If no PPM instance is configured, then the URL of the Posit
+  Public Package Manager instance. It includes the repository name, e.g.
+  `https://packagemanager.posit.co/all`.
 }
 \description{
 Returns the current Posit Package Manager (PPM) repository URL
 }
 \details{
-This URL has the form \code{{base}/{repo}}, e.g.
-\verb{https://packagemanager.posit.co/all}.
+This URL has the form `{base}/{repo}`, e.g.
+`https://packagemanager.posit.co/all`.
 
-To configure a hosted PPM instance, set the \code{PKGCACHE_PPM_URL}
+To configure a hosted PPM instance, set the `PKGCACHE_PPM_URL`
 environment variable to the base URL (e.g.
-\verb{https://packagemanager.posit.co}).
+`https://packagemanager.posit.co`).
 
-To use \code{\link[=repo_add]{repo_add()}} with PPM snapshots, you may also set the
-\code{PKGCACHE_PPM_REPO} environment variable to the name of the default
+To use [repo_add()] with PPM snapshots, you may also set the
+`PKGCACHE_PPM_REPO` environment variable to the name of the default
 repository.
 
 On Linux, instead of setting these environment variables, you can also
-add a PPM repository to the \code{repos} option, see \code{\link[base:options]{base::options()}}.
-In the environment variables are not set, then \code{ppm_repo_url()} will
+add a PPM repository to the `repos` option, see [base::options()].
+In the environment variables are not set, then `ppm_repo_url()` will
 try extract the PPM base URL and repository name from this option.
 
-If the \code{PKGCACHE_PPM_URL} environment variable is not set, and the
-\code{repos} option does not contain a PPM URL (on Linux), then pak
-uses the public PPM instance at \verb{https://packagemanager.posit.co}, with
-the \code{cran} repository.
+If the `PKGCACHE_PPM_URL` environment variable is not set, and the
+`repos` option does not contain a PPM URL (on Linux), then pak
+uses the public PPM instance at `https://packagemanager.posit.co`, with
+the `cran` repository.
 }
 \examples{
 \dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -44,10 +44,10 @@ ppm_repo_url()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev/}.
+  article at <`r pkgcache:::pkgdown_url()`>.
 
-\code{\link[=repo_resolve]{repo_resolve()}} and \code{\link[=repo_add]{repo_add()}} to find and configure PPM
-snapshots.
+[repo_resolve()] and [repo_add()] to find and configure PPM
+  snapshots.
 
 Other PPM functions: 
 \code{\link{ppm_has_binaries}()},

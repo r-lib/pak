@@ -8,11 +8,11 @@ pak(pkg = NULL, ...)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
-See \link[=Package sources]{pak package sources} for details. If \code{NULL},
+See [pak package sources][Package sources] for details. If `NULL`,
 will install all development dependencies for the current package.}
 
-\item{...}{Extra arguments are passed to \code{\link[=pkg_install]{pkg_install()}} or
-\code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.}
+\item{...}{Extra arguments are passed to [pkg_install()] or
+[local_install_dev_deps()].}
 }
 \description{
 Install the specified packages, or the ones required by
@@ -20,15 +20,13 @@ the package or project in the current working directory.
 }
 \details{
 This is a convenience function:
-\itemize{
-\item If you want to install some packages, it is easier to type
-than \code{\link[=pkg_install]{pkg_install()}}.
-\item If you want to install all the packages that are needed
-for the development of a package or project, then it is
-easier to type than \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.
-\item You don't need to remember two functions to install
-packages, just one.
-}
+* If you want to install some packages, it is easier to type
+  than [pak::pkg_install()].
+* If you want to install all the packages that are needed
+  for the development of a package or project, then it is
+  easier to type than [pak::local_install_dev_deps()].
+* You don't need to remember two functions to install
+  packages, just one.
 }
 \seealso{
 Other package functions: 
@@ -37,6 +35,7 @@ Other package functions:
 \code{\link{pkg_deps}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
+\code{\link{pkg_load}()},
 \code{\link{pkg_remove}()},
 \code{\link{pkg_status}()},
 \code{\link{pkg_sysreqs}()}

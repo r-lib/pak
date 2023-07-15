@@ -6,19 +6,17 @@
 \description{
 pak can install packages from local package trees. This is convenient
 for package development. See the following functions:
-\itemize{
-\item \code{\link[=local_install]{local_install()}} installs a package from a package tree and all of its
-dependencies.
-\item \code{\link[=local_install_deps]{local_install_deps()}} installs all hard dependencies of a package.
-\item \code{\link[=local_install_dev_deps]{local_install_dev_deps()}} installs all hard and soft dependencies
-of a package. This function is intended for package development.
-}
+* [local_install()] installs a package from a package tree and all of its
+  dependencies.
+* [local_install_deps()] installs all hard dependencies of a package.
+* [local_install_dev_deps()] installs all hard and soft dependencies
+  of a package. This function is intended for package development.
 }
 \details{
 Note that the last two functions do not install the package in the
 specified package tree itself, only its dependencies. This is convenient
 if the package itself is loaded via some other means, e.g.
-\code{devtools::load_all()}, for development.
+`devtools::load_all()`, for development.
 }
 \seealso{
 Other local package trees: 

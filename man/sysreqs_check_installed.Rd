@@ -9,45 +9,41 @@ sysreqs_check_installed(packages = NULL, library = .libPaths()[1])
 sysreqs_fix_installed(packages = NULL, library = .libPaths()[1])
 }
 \arguments{
-\item{packages}{If not \code{NULL}, then only these packages are checked.
-If a package in \code{packages} is not installed, then
-pak throws a warning.}
+\item{packages}{If not `NULL`, then only these packages are checked.
+If a package in `packages` is not installed, then
+`r pak_or_pkgdepends()` throws a warning.}
 
 \item{library}{Library or libraries to check.}
 }
 \value{
 Data frame with a custom print and format method, and a
-\code{pkg_sysreqs_check_result} class. Its columns are:
-\itemize{
-\item \code{system_package}: string, name of the required system package.
-\item \code{installed}: logical, whether the system package is correctly
-installed.
-\item \code{packages}: list column of character vectors. The names of the
-installed R packages that need this system package.
-\item \code{pre_install}: list column of character vectors. Commands to run
-before the installation of the the system package.
-\item \code{post_install}: list column of character vectors. Commands to run
-after the installation of the system package.
-}
+  `pkg_sysreqs_check_result` class. Its columns are:
+   * `system_package`: string, name of the required system package.
+   * `installed`: logical, whether the system package is correctly
+     installed.
+   * `packages`: list column of character vectors. The names of the
+     installed R packages that need this system package.
+   * `pre_install`: list column of character vectors. Commands to run
+     before the installation of the the system package.
+   * `post_install`: list column of character vectors. Commands to run
+     after the installation of the system package.
 
 The data frame also have two attributes with additional data:
-\itemize{
-\item \code{sysreqs_records}: the raw system requirements records, and
-\item \code{system_packages}: the list of the installed system packages.
-}
+* `sysreqs_records`: the raw system requirements records, and
+* `system_packages`: the list of the installed system packages.
 
-\code{sysreqs_fix_packages()} returns the same value, but invisibly.
+`sysreqs_fix_packages()` returns the same value, but invisibly.
 }
 \description{
-\code{sysreqs_check_installed()} checks if the system requirements of all
+`sysreqs_check_installed()` checks if the system requirements of all
 packages (or a subset of packages) are installed.
 
-\code{sysreqs_fix_installed()} installs the missing system packages.
+`sysreqs_fix_installed()` installs the missing system packages.
 }
 \details{
-These functions use the \code{sysreqs_platform} configuration option,
+These functions use the `sysreqs_platform` configuration option,
 see \eval{man_config_link("Configuration")}. Set this if
-pak does not detect your platform correctly.
+`r pak_or_pkgdepends()` does not detect your platform correctly.
 }
 \examples{
 \dontshow{if (Sys.getenv("IN_PKGDOWN") == "true" && Sys.info()[["sysname"]] == "Linux") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

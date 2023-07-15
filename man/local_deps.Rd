@@ -23,20 +23,18 @@ versions.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \value{
 All of these functions return the dependencies in a data
-frame. \code{local_deps_tree()} and \code{local_dev_deps_tree()} also
-print the dependency tree.
+  frame. `local_deps_tree()` and `local_dev_deps_tree()` also
+  print the dependency tree.
 }
 \description{
 Dependencies of a package tree

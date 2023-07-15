@@ -14,14 +14,14 @@ repo_resolve(spec)
 See details below.}
 
 \item{.list}{List or character vector of repository specifications.
-This argument is easier to use programmatically than \code{...}. See
+This argument is easier to use programmatically than `...`. See
 details below.}
 
 \item{spec}{Repository specification, a possibly named character
 scalar.}
 }
 \value{
-\code{repo_resolve()} returns a named character scalar, the URL
+`repo_resolve()` returns a named character scalar, the URL
 of the repository.
 }
 \description{
@@ -29,130 +29,80 @@ Add a new repository to the list of repositories that pak uses to
 look for packages.
 }
 \details{
-\code{repo_add()} adds new repositories. It resolves the specified
-repositories using \code{repo_resolve()} and then modifies the \code{repos}
+`repo_add()` adds new repositories. It resolves the specified
+repositories using `repo_resolve()` and then modifies the `repos`
 global option.
 
-\code{repo_add()} only has an effect in the current R session. If you
+`repo_add()` only has an effect in the current R session. If you
 want to keep your configuration between R sessions, then set the
-\code{repos} option to the desired value in your user or project \code{.Rprofile}
+`repos` option to the desired value in your user or project `.Rprofile`
 file.
-}
-\section{Repository specifications}{
+
+
+# Repository specifications
+
 The format of a repository specification is a named or unnamed
 character scalar. If the name is missing, pak adds a name
-automatically. The repository named \code{CRAN} is the main CRAN repository,
+automatically. The repository named `CRAN` is the main CRAN repository,
 but otherwise names are informational.
 
 Currently supported repository specifications:
-\itemize{
-\item URL pointing to the root of the CRAN-like repository. Example:
+- URL pointing to the root of the CRAN-like repository. Example:
+  ```
+  https://cloud.r-project.org
+  ```
+- `RSPM@<date>`, RSPM (RStudio Package Manager) snapshot, at the
+  specified date.
+- `RSPM@<package>-<version>` RSPM snapshot, for the day after the
+  release of `<version>` of `<package>`.
+- `RSPM@R-<version>` RSPM snapshot, for the day after R `<version>`
+  was released.
+- `MRAN@<date>`, MRAN (Microsoft R Application Network) snapshot, at
+  the specified date.
+- `MRAN@<package>-<version>` MRAN snapshot, for the
+  day after the release of `<version>` of `<package>`.
+- `MRAN@R-<version>` MRAN snapshot, for the day
+  after R `<version>` was released.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{https://cloud.r-project.org
-}\if{html}{\out{</div>}}
-\item \verb{RSPM@<date>}, RSPM (RStudio Package Manager) snapshot, at the
-specified date.
-\item \verb{RSPM@<package>-<version>} RSPM snapshot, for the day after the
-release of \verb{<version>} of \verb{<package>}.
-\item \verb{RSPM@R-<version>} RSPM snapshot, for the day after R \verb{<version>}
-was released.
-\item \verb{MRAN@<date>}, MRAN (Microsoft R Application Network) snapshot, at
-the specified date.
-\item \verb{MRAN@<package>-<version>} MRAN snapshot, for the
-day after the release of \verb{<version>} of \verb{<package>}.
-\item \verb{MRAN@R-<version>} MRAN snapshot, for the day
-after R \verb{<version>} was released.
-}
 
 Notes:
-\itemize{
-\item See more about RSPM at \verb{https://packagemanager.rstudio.com/client/#/}.
-\item See more about MRAN snapshots at
-\url{https://mran.microsoft.com/timemachine}.
-\item All dates (or times) can be specified in the ISO 8601 format.
-\item If RSPM does not have a snapshot available for a date, the next
-available date is used.
-\item Dates that are before the first, or after the last RSPM snapshot
-will trigger an error.
-\item Dates before the first, or after the last MRAN snapshot will trigger
-an error.
-\item Unknown R or package versions will trigger an error.
+* See more about RSPM at `https://packagemanager.rstudio.com/client/#/`.
+* See more about MRAN snapshots at
+  <https://mran.microsoft.com/timemachine>.
+* All dates (or times) can be specified in the ISO 8601 format.
+* If RSPM does not have a snapshot available for a date, the next
+  available date is used.
+* Dates that are before the first, or after the last RSPM snapshot
+  will trigger an error.
+* Dates before the first, or after the last MRAN snapshot will trigger
+  an error.
+* Unknown R or package versions will trigger an error.
 }
-}
-
 \section{Exaples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
+```{asciicast repo-add}
+repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
 repo_get()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 6 × 5</span>                                                   
-#>   name          url                                type  r_ver…¹ bioc_…²
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">2</span> RSPMdplyr100  https://packagemanager.posit.co/c… cran… *       <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
-</pre></div>
-}}
+```
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@2020-01-21")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                             CRAN                        
-#> "https://cran.microsoft.com/snapshot/2020-01-21"                        
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@2020-01-21")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/245"                              
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@dplyr-1.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                             CRAN                        
-#> "https://cran.microsoft.com/snapshot/2020-05-30"                        
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@dplyr-1.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/289"                              
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("MRAN@R-4.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                             CRAN                        
-#> "https://cran.microsoft.com/snapshot/2020-04-25"                        
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("RSPM@R-4.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/276"                              
-</pre></div>
-}}
+```{asciicast repo-add-2}
+repo_resolve("MRAN@2020-01-21")
+```
+```{asciicast repo-add-3}
+repo_resolve("RSPM@2020-01-21")
+```
+```{asciicast repo-add-4}
+repo_resolve("MRAN@dplyr-1.0.0")
+```
+```{asciicast repo-add-5}
+repo_resolve("RSPM@dplyr-1.0.0")
+```
+```{asciicast repo-add-6}
+repo_resolve("MRAN@R-4.0.0")
+```
+```{asciicast repo-add-7}
+repo_resolve("RSPM@R-4.0.0")
+```
 }
 
 \seealso{

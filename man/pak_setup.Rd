@@ -19,5 +19,5 @@ The path to the private library, invisibly.
 }
 \description{
 This function is deprecated and does nothing.
-Recent versions of pak do not need a \code{pak_setup()} call.
+Recent versions of pak do not need a `pak_setup()` call.
 }

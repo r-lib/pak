@@ -7,8 +7,8 @@
 sysreqs_is_supported(sysreqs_platform = NULL)
 }
 \arguments{
-\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
-\code{sysreqs_platform} \eval{man_config_link("configuration option")}
+\item{sysreqs_platform}{System requirements platform. If `NULL`, then the
+`sysreqs_platform` \eval{man_config_link("configuration option")}
 is used, which defaults to the current platform. Set this option if
 \eval{.packageName} does not detect your platform correctly.}
 }
@@ -24,8 +24,8 @@ sysreqs_is_supported()
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-The \code{sysreqs_platform}
-\eval{man_config_link("configuration option")}.
+The `sysreqs_platform`
+  \eval{man_config_link("configuration option")}.
 
 Other system requirements functions: 
 \code{\link{pkg_sysreqs}()},

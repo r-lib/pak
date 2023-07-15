@@ -70,6 +70,7 @@
 #' ```{asciicast pkg-install-cran}
 #' pkg_load("dplyr")
 #' ```
+
 pkg_load <- function(pkg, install = TRUE, lib = .libPaths()[[1L]], upgrade = FALSE, ask = interactive(), dependencies = NA) {
   # Try to load packages
   is_installed <- sapply(pkg, function(x) {

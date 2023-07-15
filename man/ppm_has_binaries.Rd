@@ -7,7 +7,7 @@
 ppm_has_binaries()
 }
 \value{
-\code{TRUE} or \code{FALSE}.
+`TRUE` or `FALSE`.
 }
 \description{
 Does PPM build binary packages for the current platform?
@@ -20,7 +20,7 @@ ppm_has_binaries()
 }
 \seealso{
 The 'pkgcache and Posit Package Manager on Linux'
-article at \url{https://r-lib.github.io/pkgcache/dev/}.
+  article at <`r pkgcache:::pkgdown_url()`>.
 
 Other PPM functions: 
 \code{\link{ppm_platforms}()},

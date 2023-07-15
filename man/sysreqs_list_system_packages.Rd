@@ -8,23 +8,21 @@ sysreqs_list_system_packages()
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{status}. two or three characters, the notation of \code{dpkg} on Debian
-based systems. \code{"ii"} means the package is correctly installed.
-On \code{RPM} based systems it is always \code{"ii"} currently.
-\item \code{package}: name of the system package.
-\item \code{version}: installed version of the system package.
-\item \code{capabilities}: list column of character vectors, the capabilities
-provided by the package.
-}
+  * `status`. two or three characters, the notation of `dpkg` on Debian
+    based systems. `"ii"` means the package is correctly installed.
+    On `RPM` based systems it is always `"ii"` currently.
+  * `package`: name of the system package.
+  * `version`: installed version of the system package.
+  * `capabilities`: list column of character vectors, the capabilities
+    provided by the package.
 }
 \description{
 List installed system packages
 }
 \details{
-This function uses the \code{sysreqs_platform} configuration option,
+This function uses the `sysreqs_platform` configuration option,
 see \eval{man_config_link("Configuration")}. Set this if
-pak does not detect your platform correctly.
+`r pak_or_pkgdepends()` does not detect your platform correctly.
 }
 \examples{
 \dontshow{if (Sys.getenv("IN_PKGDOWN") == "true" && Sys.info()[["sysname"]] == "Linux") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
