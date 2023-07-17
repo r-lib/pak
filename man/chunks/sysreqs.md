@@ -425,9 +425,9 @@ pak::sysreqs_list_system_packages()
 
 </div>
 
-`sysreqs_check_installed()` is a handy function that checks if
-all system requirements are installed for some or all R packages that
-are installed in your library:
+`sysreqs_check_installed()` is a handy function that checks if all
+system requirements are installed for some or all R packages that are
+installed in your library:
 
 ``` r
 pak::sysreqs_check_installed()
@@ -463,8 +463,8 @@ pak::sysreqs_check_installed()
 
 </div>
 
-`sysreqs_fix_installed()` goes one step further and also tries to install
-the missing system requirements.
+`sysreqs_fix_installed()` goes one step further and also tries to
+install the missing system requirements.
 
 # Build-time and run-time dependencies
 
@@ -495,8 +495,8 @@ using the `sysreqs_db_update()` function.
 
 For CRAN packages, it downloads the `SystemRequierements` fields from
 <https://cran2.r-pkg.org/metadata/>, which is a database updated daily.
-We are planning on moving this database to GitHub, and creating a
-similar database for Bioconductor.
+For Bioconductor packages, it downloads then from GitHub. (We are
+planning on moving CRAN database to GitHub as well.)
 
 For packages sources that require pak to obtain a package `DESCRIPTION`
 file (e.g. `github::`, `git::`, etc.), pak obtrains `SystemRequirements`

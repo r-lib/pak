@@ -1,7 +1,6 @@
 ---
 output:
   github_document:
-    always_allow_html: yes
 ---
 
 ```{r, setup, include = FALSE, cache = FALSE}
@@ -220,8 +219,8 @@ You can explicitly update the database from GitHub using the
 
 For CRAN packages, it downloads the `SystemRequierements` fields from
 https://cran2.r-pkg.org/metadata/, which is a database updated daily.
-We are planning on moving this database to GitHub, and creating a
-similar database for Bioconductor.
+For Bioconductor packages, it downloads then from GitHub.
+(We are planning on moving CRAN database to GitHub as well.)
 
 For packages sources that require pak to obtain a package `DESCRIPTION` file
 (e.g. `github::`, `git::`, etc.), pak obtrains `SystemRequirements` directly
