@@ -161,10 +161,18 @@ format.pak_sysreqs <- function(x, ...) {
     }
   }
 
+  sh_wrap <- function(x) {
+    out <- cli$ansi_strwrap(x, exdent = 2, width = cli$console_width() - 2)
+    if (length(out) > 1) {
+      out[-length(out)] <- paste0(out[-length(out)], " \\")
+    }
+    out
+  }
+
   c(
     cli$rule(left = "Install scripts", right = label),
     x$pre_install,
-    cli$ansi_strwrap(x$install_scripts, exdent = 2),
+    sh_wrap(x$install_scripts),
     x$post_install,
     "",
     cli$rule(left = "Packages and their system dependencies"),
