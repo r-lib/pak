@@ -4,6 +4,31 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' Query system requirements
 #'
 #' @description
+#' `r lifecycle::badge('deprecated')`
+#'
+#' Note that these functions are now *deprecated*, in favor of
+#' [pkg_sysreqs()] and the `sysreqs_*`  functions, which are more
+#' powerful, as they work for all package sources (packages at Github,
+#' GitLab, URLs, etc.) and they have more detailed output.
+#'
+#' Instead of
+#' ```r
+#' pak::pkg_system_requirement("curl")
+#' ```
+#' call
+#' ```r
+#' pak::pkg_sysreqs("curl")$install_scripts
+#' ```
+#' and the equivalent of
+#' ```r
+#' pak::local_system_requirements()
+#' ```
+#' is
+#' ```r
+#' pak::pkg_sysreqs("local::.", dependencies = TRUE)$install_script
+#' ```
+#'
+#' @details
 #' Returns a character vector of commands to run that will install system
 #' requirements for the queried operating system.
 #'
@@ -27,13 +52,20 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @examplesIf FALSE
 #' local_system_requirements("ubuntu", "20.04")
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
+
+  once_per_session(warning(
+    "`pak::local_system_requirements()` is deprecated since pak 0.6.0.\n",
+    "Please use `pak::pkg_sysreqs()` instead.",
+    call. = FALSE
+  ))
+
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
     list(os = os, os_release = os_release, root = root, package = NULL, execute = execute, sudo = sudo, echo = echo))
   if (execute) invisible(res) else res
 }
 
-#' @description
+#' @details
 #' `pkg_system_requirements()` queries system requirements for existing packages
 #' (and their dependencies).
 #' @param package Package names to lookup system requirements for.
@@ -50,6 +82,13 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 #' pkg_system_requirements("iDontExist", "ubuntu", "20.04")
 #' pkg_system_requirements(c("curl", "iDontExist"), "ubuntu", "20.04")
 pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
+
+  once_per_session(warning(
+    "`pak::pkg_system_requirements()` is deprecated since pak 0.6.0.\n",
+    "Please use `pak::pkg_sysreqs()` instead.",
+    call. = FALSE
+  ))
+
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
     list(os = os, os_release = os_release, root = NULL, package = package, execute = execute, sudo = sudo, echo = echo))

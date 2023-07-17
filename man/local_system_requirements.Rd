@@ -46,6 +46,34 @@ A character vector of commands needed to install the system
 requirements for the package.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Note that these functions are now \emph{deprecated}, in favor of
+\code{\link[=pkg_sysreqs]{pkg_sysreqs()}} and the \verb{sysreqs_*}  functions, which are more
+powerful, as they work for all package sources (packages at Github,
+GitLab, URLs, etc.) and they have more detailed output.
+
+Instead of
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_system_requirement("curl")
+}\if{html}{\out{</div>}}
+
+call
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_sysreqs("curl")$install_scripts
+}\if{html}{\out{</div>}}
+
+and the equivalent of
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::local_system_requirements()
+}\if{html}{\out{</div>}}
+
+is
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::pkg_sysreqs("local::.", dependencies = TRUE)$install_script
+}\if{html}{\out{</div>}}
+}
+\details{
 Returns a character vector of commands to run that will install system
 requirements for the queried operating system.
 
