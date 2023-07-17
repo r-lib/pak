@@ -134,6 +134,20 @@ pak::pkg_install("RPostgres")
 library(RPostgres)
 ```
 
+# Query system requirements without installation
+
+If you only want to query system requirements, without installing any
+packages, use the `pkg_sysreqs()` function. This is similar to `pkg_deps()`
+but in addition to looking up package dependencies, it also looks up
+system dependencies, and only reports the latter:
+
+```{asciicast pkg-sysreqs}
+pak::pkg_sysreqs(c("curl", "xml2", "devtools", "CHRONOS"))
+```
+
+See the manual of `pkg_sysreqs()` to see how to programmatically extract
+information from its return value.
+
 # Other queries
 
 In addition to the automatic system package lookup and installation, pak

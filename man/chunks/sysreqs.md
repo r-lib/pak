@@ -288,6 +288,61 @@ library(RPostgres)
 
 </div>
 
+# Query system requirements without installation
+
+If you only want to query system requirements, without installing any
+packages, use the `pkg_sysreqs()` function. This is similar to
+`pkg_deps()` but in addition to looking up package dependencies, it also
+looks up system dependencies, and only reports the latter:
+
+``` r
+pak::pkg_sysreqs(c("curl", "xml2", "devtools", "CHRONOS"))
+```
+
+<div class="asciicast" style="color: #172431;font-family: &#39;Fira Code&#39;,Monaco,Consolas,Menlo,&#39;Bitstream Vera Sans Mono&#39;,&#39;Powerline Symbols&#39;,monospace;line-height: 1.300000">
+
+<pre>
+## <span style="color: #859900;">✔</span> Loading metadata database ... done                                    
+## ── Install scripts ───────────────────────────────────── Ubuntu 22.04 ──
+## apt-get -y update                                                       
+## apt-get -y install libcurl4-openssl-dev libssl-dev libxml2-dev git make 
+##   libgit2-dev zlib1g-dev pandoc libfreetype6-dev libjpeg-dev libpng-dev 
+##   libtiff-dev libicu-dev libfontconfig1-dev libfribidi-dev              
+##   libharfbuzz-dev libglpk-dev libgmp3-dev default-jdk                   
+## R CMD javareconf                                                        
+## R CMD javareconf                                                        
+##                                                                         
+## ── Packages and their system dependencies ──────────────────────────────
+## CHRONOS     – default-jdk, pandoc                                       
+## credentials – git                                                       
+## curl        – libcurl4-openssl-dev, libssl-dev                          
+## fs          – make                                                      
+## gert        – libgit2-dev                                               
+## gitcreds    – git                                                       
+## httpuv      – make, zlib1g-dev                                          
+## igraph      – libglpk-dev, libgmp3-dev, libxml2-dev                     
+## knitr       – pandoc                                                    
+## openssl     – libssl-dev                                                
+## pkgdown     – pandoc                                                    
+## png         – libpng-dev                                                
+## ragg        – libfreetype6-dev, libjpeg-dev, libpng-dev, libtiff-dev    
+## RCurl       – libcurl4-openssl-dev, make                                
+## remotes     – git                                                       
+## rJava       – default-jdk, make                                         
+## rmarkdown   – pandoc                                                    
+## sass        – make                                                      
+## stringi     – libicu-dev                                                
+## systemfonts – libfontconfig1-dev, libfreetype6-dev                      
+## textshaping – libfreetype6-dev, libfribidi-dev, libharfbuzz-dev         
+## XML         – libxml2-dev                                               
+## xml2        – libxml2-dev                                               
+</pre>
+
+</div>
+
+See the manual of `pkg_sysreqs()` to see how to programmatically extract
+information from its return value.
+
 # Other queries
 
 In addition to the automatic system package lookup and installation, pak

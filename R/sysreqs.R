@@ -132,5 +132,58 @@ pkg_sysreqs_internal <- function(pkg, upgrade = TRUE, dependencies = NA,
     upgrade = upgrade,
     config = config
   )
+  class(srq) <- "pak_sysreqs"
   srq
+}
+
+os_label <- function(x) {
+  dist <- if (x$distribution != tolower(x$distribution)) {
+    x$distribution
+  } else {
+    paste0(
+      toupper(substr(x$distribution, 1, 1)),
+      substr(x$distribution, 2, nchar(x$distribution))
+    )
+  }
+  paste0(dist, " ", x$version)
+}
+
+#' @export
+
+format.pak_sysreqs <- function(x, ...) {
+  cli <- load_private_cli()
+  label <- os_label(x)
+  pkgs <- cisort(unique(unlist(x$packages$packages)))
+  pkgs <- structure(vector("list", length(pkgs)), names = pkgs)
+  for (i in seq_len(nrow(x$packages))) {
+    for (p in x$packages$packages[[i]]) {
+      pkgs[[p]] <- c(pkgs[[p]], x$packages$system_packages[[i]])
+    }
+  }
+
+  c(
+    cli$rule(left = "Install scripts", right = label),
+    x$pre_install,
+    cli$ansi_strwrap(x$install_scripts, exdent = 2),
+    x$post_install,
+    "",
+    cli$rule(left = "Packages and their system dependencies"),
+    paste0(
+      format(names(pkgs)), " ", cli$symbol$en_dash, " ",
+      vcapply(pkgs, function(x) paste(cisort(x), collapse = ", "))
+    )
+  )
+}
+
+#' @export
+
+print.pak_sysreqs <- function(x, ...) {
+  writeLines(format(x, ...))
+}
+
+#' @export
+
+`[.pak_sysreqs` <- function (x, i, j, drop = FALSE) {
+  class(x) <- setdiff(class(x), "pak_sysreqs")
+  NextMethod("[")
 }

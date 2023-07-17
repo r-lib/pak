@@ -314,3 +314,7 @@ rbind_expand <- function(..., .list = list()) {
 
   do.call(rbind, data)
 }
+
+cisort <- function(x) {
+  x[order(tolower(x))]
+}
