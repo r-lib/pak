@@ -342,6 +342,59 @@ then loading the package fails:</p>
 
     </div>
     <div class="section level2">
+    <h2 id="query-system-requirements-without-installation">Query system requirements without installation<a class="anchor" aria-label="anchor" href="#query-system-requirements-without-installation"></a></h2>
+    <p>If you only want to query system requirements, without installing any
+packages, use the <code><a href="pkg_sysreqs.html">pkg_sysreqs()</a></code> function. This is similar to
+<code><a href="pkg_deps.html">pkg_deps()</a></code> but in addition to looking up package dependencies, it also
+looks up system dependencies, and only reports the latter:</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_sysreqs.html">pkg_sysreqs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"curl"</span>, <span class="st">"xml2"</span>, <span class="st">"devtools"</span>, <span class="st">"CHRONOS"</span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+
+
+<div class="sourceCode"><pre>
+## <span style="color: #859900;">✔</span> Loading metadata database ... done                                    
+## ── Install scripts ───────────────────────────────────── Ubuntu 22.04 ──
+## apt-get -y update                                                       
+## apt-get -y install libcurl4-openssl-dev libssl-dev libxml2-dev git make 
+##   libgit2-dev zlib1g-dev pandoc libfreetype6-dev libjpeg-dev libpng-dev 
+##   libtiff-dev libicu-dev libfontconfig1-dev libfribidi-dev              
+##   libharfbuzz-dev libglpk-dev libgmp3-dev default-jdk                   
+## R CMD javareconf                                                        
+## R CMD javareconf                                                        
+##                                                                         
+## ── Packages and their system dependencies ──────────────────────────────
+## CHRONOS     – default-jdk, pandoc                                       
+## credentials – git                                                       
+## curl        – libcurl4-openssl-dev, libssl-dev                          
+## fs          – make                                                      
+## gert        – libgit2-dev                                               
+## gitcreds    – git                                                       
+## httpuv      – make, zlib1g-dev                                          
+## igraph      – libglpk-dev, libgmp3-dev, libxml2-dev                     
+## knitr       – pandoc                                                    
+## openssl     – libssl-dev                                                
+## pkgdown     – pandoc                                                    
+## png         – libpng-dev                                                
+## ragg        – libfreetype6-dev, libjpeg-dev, libpng-dev, libtiff-dev    
+## RCurl       – libcurl4-openssl-dev, make                                
+## remotes     – git                                                       
+## rJava       – default-jdk, make                                         
+## rmarkdown   – pandoc                                                    
+## sass        – make                                                      
+## stringi     – libicu-dev                                                
+## systemfonts – libfontconfig1-dev, libfreetype6-dev                      
+## textshaping – libfreetype6-dev, libfribidi-dev, libharfbuzz-dev         
+## XML         – libxml2-dev                                               
+## xml2        – libxml2-dev                                               
+</pre></div>
+
+
+</div>
+
+<p>See the manual of <code><a href="pkg_sysreqs.html">pkg_sysreqs()</a></code> to see how to programmatically extract
+information from its return value.</p>
+    </div>
+    <div class="section level2">
     <h2 id="other-queries">Other queries<a class="anchor" aria-label="anchor" href="#other-queries"></a></h2>
     <p>In addition to the automatic system package lookup and installation, pak
 also has some other functions to help you with system dependencies. The
@@ -468,9 +521,9 @@ installed system packages and capabilities:</p>
 
 </div>
 
-<p><code><a href="sysreqs_check_installed.html">sysreqs_check_installed()</a></code> is a handy function that checks if
-all system requirements are installed for some or all R packages that
-are installed in your library:</p>
+<p><code><a href="sysreqs_check_installed.html">sysreqs_check_installed()</a></code> is a handy function that checks if all
+system requirements are installed for some or all R packages that are
+installed in your library:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/sysreqs_check_installed.html">sysreqs_check_installed</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
@@ -504,8 +557,8 @@ are installed in your library:</p>
 
 </div>
 
-<p><code><a href="sysreqs_check_installed.html">sysreqs_fix_installed()</a></code> goes one step further and also tries to install
-the missing system requirements.</p>
+<p><code><a href="sysreqs_check_installed.html">sysreqs_fix_installed()</a></code> goes one step further and also tries to
+install the missing system requirements.</p>
     </div>
     <div class="section level2">
     <h2 id="build-time-and-run-time-dependencies">Build-time and run-time dependencies<a class="anchor" aria-label="anchor" href="#build-time-and-run-time-dependencies"></a></h2>
@@ -535,8 +588,8 @@ older than one day. You can explicitly update the database from GitHub
 using the <code><a href="sysreqs_db_update.html">sysreqs_db_update()</a></code> function.</p>
 <p>For CRAN packages, it downloads the <code>SystemRequierements</code> fields from
 <a href="https://cran2.r-pkg.org/metadata/" class="external-link">https://cran2.r-pkg.org/metadata/</a>, which is a database updated daily.
-We are planning on moving this database to GitHub, and creating a
-similar database for Bioconductor.</p>
+For Bioconductor packages, it downloads then from GitHub. (We are
+planning on moving CRAN database to GitHub as well.)</p>
 <p>For packages sources that require pak to obtain a package <code>DESCRIPTION</code>
 file (e.g. <code>github::</code>, <code>git::</code>, etc.), pak obtrains <code>SystemRequirements</code>
 directly from the <code>DESCRIPTION</code> file.</p>
