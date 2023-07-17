@@ -36,7 +36,7 @@ Suggests:
     mockery,
     pingr,
     jsonlite (>= 1.8.0),
-    pkgbuild (>= 1.4.1.9000),
+    pkgbuild (>= 1.4.2),
     pkgcache (>= 2.0.4),
     pkgdepends (>= 0.5.0.9001),
     pkgsearch (>= 3.1.0),
@@ -48,12 +48,10 @@ Suggests:
     testthat,
     withr
 Remotes:
-    r-lib/pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
-    r-lib/pkgbuild,
     callr,
     desc,
     cli,
