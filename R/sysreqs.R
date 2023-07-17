@@ -168,10 +168,12 @@ format.pak_sysreqs <- function(x, ...) {
     x$post_install,
     "",
     cli$rule(left = "Packages and their system dependencies"),
-    paste0(
-      format(names(pkgs)), " ", cli$symbol$en_dash, " ",
-      vcapply(pkgs, function(x) paste(cisort(x), collapse = ", "))
-    )
+    if (length(pkgs)) {
+      paste0(
+        format(names(pkgs)), " ", cli$symbol$en_dash, " ",
+        vcapply(pkgs, function(x) paste(cisort(x), collapse = ", "))
+      )
+    }
   )
 }
 
