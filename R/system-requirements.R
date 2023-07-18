@@ -53,7 +53,7 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' local_system_requirements("ubuntu", "20.04")
 local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
 
-  once_per_session(warning(
+  once_per_session(message(
     "`pak::local_system_requirements()` is deprecated since pak 0.6.0.\n",
     "Please use `pak::pkg_sysreqs()` instead.",
     call. = FALSE
@@ -83,7 +83,7 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 #' pkg_system_requirements(c("curl", "iDontExist"), "ubuntu", "20.04")
 pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
 
-  once_per_session(warning(
+  once_per_session(message(
     "`pak::pkg_system_requirements()` is deprecated since pak 0.6.0.\n",
     "Please use `pak::pkg_sysreqs()` instead.",
     call. = FALSE
