@@ -1,5 +1,6 @@
 DEFAULT_RSPM_REPO_ID <-  "1" # cran
 DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
+DEFAULT_REQ_URL_EXT <- ""
 
 #' Query system requirements
 #'
@@ -95,12 +96,119 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
   if (execute) invisible(res) else res
 }
 
+filter_repos <- function(rspm_repo_url) {
+  res <- curl::curl_fetch_memory(rspm_repo_url)
+  data <-
+    jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+  repos <- list()
+  for (i in 1:length(data)) {
+    if ((data[[i]]$type == "R") && !data[[i]]$hidden) {
+      packages=as.data.frame(
+        available.packages(
+          repos=paste(DEFAULT_RSPM,data[[i]]$name,"latest",sep="/")
+        )
+      )$Package
+      message(paste(DEFAULT_RSPM,data[[i]]$name,"latest",sep="/"))
+      repos[[length(repos)+1]]=list(id=data[[i]]$id, packages=packages)
+    }
+    if ((data[[i]]$type == "Bioconductor") && (data[[i]]$name != "all") && !data[[i]]$hidden) {  
+      Sys.setenv(BioC_mirror=paste(DEFAULT_RSPM,data[[i]]$name,sep="/"))
+      bioc_repos<-BiocManager::repositories()
+      bioc_repos[names(bioc_repos)[grep("BioC",names(bioc_repos),invert=TRUE)]]<-""
+      packages=as.data.frame(available.packages(repos=bioc_repos))$Package
+      repos[[length(repos)+1]]=list(id=data[[i]]$id, packages=packages)
+    }
+    
+    
+  }
+  repos
+}
+
+
+find_package_deps <-  function(rspm_repo_url,
+                               package,
+                               os,
+                               os_release,
+                               repos) {
+  appendstr <- ""
+  repo_ctr = 1
+  deps<-c()
+  deps_found <- FALSE
+  message(sprintf("%s: length_repos %s", repo_ctr, length(repos)))
+  if (!is.null(package)) {
+    while (repo_ctr<=length(repos)) {
+    packages_in_repo <-
+      repos[[repo_ctr]]$packages[repos[[repo_ctr]]$packages %in% package]
+    message(sprintf("%s: length %s", repo_ctr, length(packages_in_repo)))
+    message(repo_ctr, packages_in_repo)
+    
+    if (length(packages_in_repo) == 0) {
+      message(paste("none of ", package, "found in repo", repo_ctr))
+      repo_ctr <- repo_ctr + 1
+    } else {
+      deps_found <- FALSE
+      while (!deps_found) {
+        message(sprintf(">>> %s", repo_ctr))
+        req_url <- sprintf(
+          "%s/%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s%s",
+          rspm_repo_url,
+          repos[[repo_ctr]]$id,
+          paste(packages_in_repo, collapse = "&pkgname="),
+          os,
+          os_release,
+          appendstr
+        )
+        message(sprintf("%s: %s", repo_ctr, req_url))
+        res <- curl::curl_fetch_memory(req_url)
+        message(sprintf("A %s: %s", repo_ctr, res$status_code))
+        if (res$status_code == "404" &&
+            length(res$content) == 0) {
+          repo_ctr = repo_ctr + 1
+          message(sprintf("B %s: %s", repo_ctr, res$status_code))
+        } else {
+          data <-
+            jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
+          message(sprintf("C %s: %s", repo_ctr, data$error))
+          if (!is.null(data$error) &&
+              data$error == sprintf("Could not locate package '%s'", "test")) {
+            repo_ctr <- repo_ctr + 1
+          }
+          appendstr <- ""
+          if (!is.null(data$error) &&
+              data$error == "Bioconductor version not provided") {
+            if (!exists("biocvers")) {
+              biocvers <- BiocManager::version()
+            }
+            appendstr = sprintf("&bioc_version=%s", biocvers)
+          }
+          if (res$status_code == "200") {
+            deps_found <- TRUE
+            repo_ctr <- repo_ctr + 1
+            data
+            deps=c(deps,data$requirements)
+            message(rawToChar(res$content))
+          }
+          
+        }
+        
+      }
+      
+    }
+    
+    }
+    deps
+  }
+}
+
+
 system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
   if (is.null(os) || is.null(os_release)) {
     d <- distro::distro()
     os <- os %||% d$id
     os_release <- os_release %||% d$short_version
   }
+  
+  
 
   os_versions <- supported_os_versions()
 
@@ -110,28 +218,16 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
 
   rspm <- Sys.getenv("RSPM_ROOT", DEFAULT_RSPM)
   rspm_repo_id <- Sys.getenv("RSPM_REPO_ID", DEFAULT_RSPM_REPO_ID)
-  rspm_repo_url <- sprintf("%s/__api__/repos/%s", rspm, rspm_repo_id)
+  rspm_repo_url <- sprintf("%s/__api__/repos", rspm)
 
 
   if (!is.null(package)) {
-    req_url <- sprintf(
-      "%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s",
-      rspm_repo_url,
-      paste(package, collapse = "&pkgname="),
-      os,
-      os_release
-    )
-    res <- curl::curl_fetch_memory(req_url)
-    data <- jsonlite::fromJSON(rawToChar(res$content), simplifyVector = FALSE)
-    if (!is.null(data$error)) {
-      stop(data$error)
-    }
+    
+    data<-find_package_deps(rspm_repo_url,package,os,os_release,filter_repos(rspm_repo_url))
 
-    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], `[[`, c("requirements", "pre_install")))))
-    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], `[[`, c("requirements", "install_scripts")))))
-  }
-
-  else {
+    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data, `[[`, c("requirements", "pre_install")))))
+    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data, `[[`, c("requirements", "install_scripts")))))
+  } else {
     desc_file <- normalizePath(file.path(root, "DESCRIPTION"), mustWork = FALSE)
     if (!file.exists(desc_file)) {
       stop("`", root, "` must contain a package.", call. = FALSE)
@@ -208,13 +304,20 @@ supported_os_versions <- function() {
 # Grouping multiple `apt-get install -y` calls in install scripts.
 # This should be done by the server, but isn't (yet).
 simplify_install <- function(x) {
-  rx <- "^apt-get install -y ([a-z0-9-]+)$"
-  if (length(x) == 0 || !all(grepl(rx, x))) {
+  rx <- "^apt-get install -y"
+  ry <- "^yum install -y"
+  if (length(x) == 0 ||
+      (!all(grepl(rx, x)) && !all(grepl(ry, x)))) {
     return(x)
   }
-
-  paste0(
-    "apt-get install -y ",
-    paste(gsub(rx, "\\1", x), collapse = " ")
-  )
+  
+  if (all(grepl(rx, x))) {
+    return(paste0("apt-get install -y ",
+           paste(gsub(rx, "", x), collapse = " ")))
+  }
+  
+  if (all(grepl(ry, x))) {
+    return(paste0("yum install -y ",
+           paste(gsub(ry, "", x), collapse = " ")))
+  }
 }
