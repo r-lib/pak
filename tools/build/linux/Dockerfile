@@ -20,9 +20,10 @@ RUN PAK_BUNDLE=false R CMD INSTALL .
 
 RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf
 
-# Install pkgdepends ------------------------------------------------------
+# Install packages needed for bundling ------------------------------------
 
-RUN PROCESSX_UNLINK_R=true R -q -e 'pak:::safe_cran_install("pkgdepends")'
+RUN PROCESSX_UNLINK_R=true R -q -e \
+    'pak:::safe_cran_install(c("pkgdepends", "withr"))'
 
 # Install pak dependencies ------------------------------------------------
 
