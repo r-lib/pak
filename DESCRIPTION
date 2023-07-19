@@ -18,7 +18,7 @@ LazyData: true
 ByteCompile: true
 RoxygenNote: 7.2.3.9000
 Depends:
-    R (>= 3.2)
+    R (>= 3.5)
 Imports:
     tools,
     utils

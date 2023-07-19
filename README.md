@@ -243,11 +243,11 @@ This is supported for the following systems:
 
 | OS                 | CPU     | R version         |
 |--------------------|---------|-------------------|
-| Linux              | x86_64  | R 3.4.0 - R-devel |
-| Linux              | aarch64 | R 3.4.0 - R-devel |
-| macOS High Sierra+ | x86_64  | R 3.4.0 - R-devel |
+| Linux              | x86_64  | R 3.5.0 - R-devel |
+| Linux              | aarch64 | R 3.5.0 - R-devel |
+| macOS High Sierra+ | x86_64  | R 3.5.0 - R-devel |
 | macOS Big Sur+     | aarch64 | R 4.1.0 - R-devel |
-| Windows            | x86_64  | R 3.4.0 - R-devel |
+| Windows            | x86_64  | R 3.5.0 - R-devel |
 
 For macOS we only support the official CRAN R build. Other builds, e.g.
 Homebrew R, are not supported.

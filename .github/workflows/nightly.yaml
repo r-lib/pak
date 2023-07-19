@@ -97,7 +97,6 @@ jobs:
 
     - name: Install R
       run: |
-        sudo rig add 3.4
         sudo rig add 3.5
         sudo rig add 3.6
         sudo rig add 4.0
@@ -165,7 +164,6 @@ jobs:
     # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
-        rig add 3.4
         rig add 3.5
         rig add 3.6
         rig add 4.0
@@ -209,7 +207,6 @@ jobs:
           - { r: '4.0', platform: 'linux/amd64' }
           - { r: '3.6', platform: 'linux/amd64' }
           - { r: '3.5', platform: 'linux/amd64' }
-          - { r: '3.4', platform: 'linux/amd64' }
 
     steps:
 
@@ -286,7 +283,6 @@ jobs:
           - { r: '4.0', platform: 'linux/arm64' }
           - { r: '3.6', platform: 'linux/arm64' }
           - { r: '3.5', platform: 'linux/arm64' }
-          - { r: '3.4', platform: 'linux/arm64' }
 
     steps:
 
