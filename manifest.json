@@ -51,15 +51,6 @@
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
-          "r.version": "3.4",
-          "pak.version": "0.5.1.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2023-07-19T05:53:12+00:00",
-          "size": 3311691,
-          "digest": "sha256:b014c84625a9c5bb8ebf55a6b651affdbc9bfeffda25d79fbb34312696f8fa9d"
-        },
-        {
-          "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.5",
           "pak.version": "0.5.1.9000",
           "pak.revision": "TODO",
@@ -75,15 +66,6 @@
           "buildtime": "2023-07-19T07:44:23+00:00",
           "size": 5779471,
           "digest": "sha256:2751512646b11e9577ee069407e45d2c3ee22d32c21dcf1c473ea9e8105a653c"
-        },
-        {
-          "r.platform": "x86_64-w64-mingw32",
-          "r.version": "3.4",
-          "pak.version": "0.5.1.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2023-07-18T05:53:38+00:00",
-          "size": 9175313,
-          "digest": "sha256:90ae8e0794ae2e2e319e929cd8933d6853e4cdb7477f7899f71d1281f40c0540"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
@@ -132,15 +114,6 @@
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
-          "r.version": "3.4",
-          "pak.version": "0.5.1.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2023-07-19T06:48:39+00:00",
-          "size": 5875792,
-          "digest": "sha256:fbf63072c28985444da38257d81f4170dc909496dac0fa4110d258b95da1211d"
-        },
-        {
-          "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
           "pak.version": "0.5.1.9000",
           "pak.revision": "TODO",
@@ -183,15 +156,6 @@
           "buildtime": "2023-07-19T07:16:03+00:00",
           "size": 8212427,
           "digest": "sha256:b54ccae599f1a1fdd6ce29c3750b066563103a338769293106adf4ca9d0dbe2f"
-        },
-        {
-          "r.platform": "aarch64-unknown-linux-gnu",
-          "r.version": "3.4",
-          "pak.version": "0.5.1.9000",
-          "pak.revision": "TODO",
-          "buildtime": "2023-07-18T07:43:41+00:00",
-          "size": 5898946,
-          "digest": "sha256:123f46cd81bba26844f530c0e42d8546cdf1d45f9abef55e76fe2e5c21f14db6"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
