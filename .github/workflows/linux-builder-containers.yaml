@@ -13,7 +13,7 @@ jobs:
 
   # -----------------------------------------------------------------------
   x86_64:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Build pak builder containers, x86_64
     strategy:
       fail-fast: false
@@ -65,7 +65,6 @@ jobs:
           - { r: '4.0' }
           - { r: '3.6' }
           - { r: '3.5' }
-          - { r: '3.4' }
 
     steps:
 
