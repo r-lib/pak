@@ -55,8 +55,7 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 
   once_per_session(message(
     "`pak::local_system_requirements()` is deprecated since pak 0.6.0.\n",
-    "Please use `pak::pkg_sysreqs()` instead.",
-    call. = FALSE
+    "Please use `pak::pkg_sysreqs()` instead."
   ))
 
   res <- remote(
@@ -85,8 +84,7 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
 
   once_per_session(message(
     "`pak::pkg_system_requirements()` is deprecated since pak 0.6.0.\n",
-    "Please use `pak::pkg_sysreqs()` instead.",
-    call. = FALSE
+    "Please use `pak::pkg_sysreqs()` instead."
   ))
 
   res <- remote(
