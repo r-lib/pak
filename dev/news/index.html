@@ -58,7 +58,33 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
-</div>
+<ul><li><p>pak now required R &gt;= 3.5.0.</p></li>
+<li>
+<p>Many improvements in system requirements support:</p>
+<ul><li>New functions:
+<ul><li>
+<code><a href="../reference/pkg_sysreqs.html">pkg_sysreqs()</a></code>: calculate system requirements of packages.</li>
+<li>
+<code><a href="../reference/sysreqs_db_list.html">sysreqs_db_list()</a></code>, <code><a href="../reference/sysreqs_db_match.html">sysreqs_db_match()</a></code>, <code><a href="../reference/sysreqs_db_update.html">sysreqs_db_update()</a></code>: query the system requirements database.</li>
+<li>
+<code><a href="../reference/sysreqs_list_system_packages.html">sysreqs_list_system_packages()</a></code>, <code><a href="../reference/sysreqs_check_installed.html">sysreqs_check_installed()</a></code>, <code><a href="../reference/sysreqs_check_installed.html">sysreqs_fix_installed()</a></code>: query and install missing system packages.</li>
+<li>
+<code><a href="../reference/sysreqs_platforms.html">sysreqs_platforms()</a></code>: list supported platforms.</li>
+</ul></li>
+<li>The installation proposal, printed before installation, now includes required and missing system packages, on supported platforms.</li>
+<li>New <code>sysreqs_platform</code> configuration option to override the auto-detected platform.</li>
+<li>Faster, asynchronous system requirements lookup.</li>
+<li>pak now does not reinstall system requirements by default, if they are already installed. (You can force a reinstall/upgrade with the <code>sysreqs_update</code> configuration option.)</li>
+</ul></li>
+<li><p>New <code>gitlab::</code> package source to install packages from GitLab (<a href="https://github.com/r-lib/pkgdepends/pull/315" class="external-link uri">https://github.com/r-lib/pkgdepends/pull/315</a>).</p></li>
+<li><p>pak now correctly parses multiple <code>git::</code> packages at once (<a href="https://github.com/r-lib/pkgdepends/issues/318" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/318</a>).</p></li>
+<li><p><code>git::</code> package sources now support version 1 of the git protocol. E.g. the Bioconductor git repositories now work: <code>git::https://git.bioconductor.org/packages/limma</code> (<a href="https://github.com/r-lib/pkgdepends/issues/314" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/314</a>).</p></li>
+<li><p>The <code>platforms</code> config parameter now works correctly with <code>deps::</code> package sources (<a href="https://github.com/r-lib/pak/issues/522" class="external-link">#522</a>).</p></li>
+<li><p>New <code>include_linkingto</code> config parameter to always include <code>LinkingTo</code> packages in the solution, even for binaries (<a href="https://github.com/r-lib/pkgdepends/issues/485" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/485</a>).</p></li>
+<li><p><code><a href="../reference/pkg_name_check.html">pkg_name_check()</a></code> now does not include Acromine results, because the web site was unstable.</p></li>
+<li><p>In <code><a href="../reference/repo_add.html">repo_add()</a></code> and <code><a href="../reference/repo_add.html">repo_resolve()</a></code> the <code>MRAN@</code> prefix is now deprecated and resolves to PPM, because MRAN will be retired soon. See more at <a href="https://posit.co/blog/migrating-from-mran-to-posit-package-manager/" class="external-link uri">https://posit.co/blog/migrating-from-mran-to-posit-package-manager/</a>.</p></li>
+<li><p>The metadata cache now has <code>SystemRequirements</code> information for Bioconductor packages.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="pak-051">pak 0.5.1<a class="anchor" aria-label="anchor" href="#pak-051"></a></h2><p class="text-muted">CRAN release: 2023-04-27</p>
 <ul><li>No user visible changes.</li>

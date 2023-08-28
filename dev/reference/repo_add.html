@@ -114,28 +114,35 @@ automatically. The repository named <code>CRAN</code> is the main CRAN repositor
 but otherwise names are informational.</p>
 <p>Currently supported repository specifications:</p><ul><li><p>URL pointing to the root of the CRAN-like repository. Example:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>cloud.r<span class="sc">-</span>project.org</span></code></pre><p></p></div></li>
-<li><p><code>RSPM@&lt;date&gt;</code>, RSPM (RStudio Package Manager) snapshot, at the
-specified date.</p></li>
-<li><p><code>RSPM@&lt;package&gt;-&lt;version&gt;</code> RSPM snapshot, for the day after the
+<li><p><code>PPM@latest</code>, PPM (Posit Package Manager, formerly RStudio Package
+Manager), the latest snapshot.</p></li>
+<li><p><code>PPM@&lt;date&gt;</code>, PPM (Posit Package Manager, formerly RStudio Package
+Manager) snapshot, at the specified date.</p></li>
+<li><p><code>PPM@&lt;package&gt;-&lt;version&gt;</code> PPM snapshot, for the day after the
 release of <code>&lt;version&gt;</code> of <code>&lt;package&gt;</code>.</p></li>
-<li><p><code>RSPM@R-&lt;version&gt;</code> RSPM snapshot, for the day after R <code>&lt;version&gt;</code>
+<li><p><code>PPM@R-&lt;version&gt;</code> PPM snapshot, for the day after R <code>&lt;version&gt;</code>
 was released.</p></li>
-<li><p><code>MRAN@&lt;date&gt;</code>, MRAN (Microsoft R Application Network) snapshot, at
+</ul><p>Still works for dates starting from 2017-10-10, but now deprecated,
+because MRAN is discontinued:</p><ul><li><p><code>MRAN@&lt;date&gt;</code>, MRAN (Microsoft R Application Network) snapshot, at
 the specified date.</p></li>
 <li><p><code>MRAN@&lt;package&gt;-&lt;version&gt;</code> MRAN snapshot, for the
 day after the release of <code>&lt;version&gt;</code> of <code>&lt;package&gt;</code>.</p></li>
 <li><p><code>MRAN@R-&lt;version&gt;</code> MRAN snapshot, for the day
 after R <code>&lt;version&gt;</code> was released.</p></li>
-</ul><p>Notes:</p><ul><li><p>See more about RSPM at <code>https://packagemanager.rstudio.com/client/#/</code>.</p></li>
-<li><p>See more about MRAN snapshots at
-<a href="https://mran.microsoft.com/timemachine" class="external-link">https://mran.microsoft.com/timemachine</a>.</p></li>
+</ul><p>Notes:</p><ul><li><p>See more about PPM at <a href="https://packagemanager.posit.co/client/#/" class="external-link">https://packagemanager.posit.co/client/#/</a>.</p></li>
+<li><p>The <code>RSPM@</code> prefix is still supported and treated the same way as
+<code>PPM@</code>.</p></li>
+<li><p>The MRAN service is now retired, see
+<a href="https://techcommunity.microsoft.com/t5/azure-sql-blog/microsoft-r-application-network-retirement/ba-p/3707161" class="external-link">https://techcommunity.microsoft.com/t5/azure-sql-blog/microsoft-r-application-network-retirement/ba-p/3707161</a>
+for details.</p></li>
+<li><p><code>MRAN@...</code> repository specifications now resolve to PPM, but note that
+PPM snapshots are only available from 2017-10-10. See more about this
+at <a href="https://posit.co/blog/migrating-from-mran-to-posit-package-manager/" class="external-link">https://posit.co/blog/migrating-from-mran-to-posit-package-manager/</a>.</p></li>
 <li><p>All dates (or times) can be specified in the ISO 8601 format.</p></li>
-<li><p>If RSPM does not have a snapshot available for a date, the next
+<li><p>If PPM does not have a snapshot available for a date, the next
 available date is used.</p></li>
-<li><p>Dates that are before the first, or after the last RSPM snapshot
+<li><p>Dates that are before the first, or after the last PPM snapshot
 will trigger an error.</p></li>
-<li><p>Dates before the first, or after the last MRAN snapshot will trigger
-an error.</p></li>
 <li><p>Unknown R or package versions will trigger an error.</p></li>
 </ul></div>
     <div class="section level2">
@@ -143,52 +150,34 @@ an error.</p></li>
     
 
 
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>RSPMdplyr100 <span class="op">=</span> <span class="st">"RSPM@dplyr-1.0.0"</span><span class="op">)</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>PPMdplyr100 <span class="op">=</span> <span class="st">"PPM@dplyr-1.0.0"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt; <span style="color: #999999;"># A data frame: 6 × 5</span>                                                   
-#&gt;   name          url                                type  r_ver…¹ bioc_…²
-#&gt; <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#&gt; <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>     
-#&gt; <span style="color: #c2c2c2;">2</span> RSPMdplyr100  https://packagemanager.posit.co/c… cran… *       <span style="color: #DC322F;">NA</span>     
-#&gt; <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#&gt; <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#&gt; <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#&gt; <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#&gt; <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
+#&gt; <span style="color: #999999;"># A data frame: 7 × 5</span>                                                   
+#&gt;   name          url                         type  r_version bioc_version
+#&gt; <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>       
+#&gt; <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>          
+#&gt; <span style="color: #c2c2c2;">2</span> PPMdplyr100   https://packagemanager.pos… cran… *         <span style="color: #DC322F;">NA</span>          
+#&gt; <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.3.1     3.17        
+#&gt; <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.3.1     3.17        
+#&gt; <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.3.1     3.17        
+#&gt; <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.3.1     3.17        
+#&gt; <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.3.1     3.17        
 </pre></div></div>
 
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"MRAN@2020-01-21"</span><span class="op">)</span></span></code></pre><p></p></div>
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                             CRAN                        
-#&gt; "https://cran.microsoft.com/snapshot/2020-01-21"                        
-</pre></div></div>
-
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"RSPM@2020-01-21"</span><span class="op">)</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@2020-01-21"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
 #&gt;                                       CRAN                              
 #&gt; "https://packagemanager.posit.co/cran/245"                              
 </pre></div></div>
 
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"MRAN@dplyr-1.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                             CRAN                        
-#&gt; "https://cran.microsoft.com/snapshot/2020-05-30"                        
-</pre></div></div>
-
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"RSPM@dplyr-1.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@dplyr-1.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
 #&gt;                                       CRAN                              
 #&gt; "https://packagemanager.posit.co/cran/289"                              
 </pre></div></div>
 
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"MRAN@R-4.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                             CRAN                        
-#&gt; "https://cran.microsoft.com/snapshot/2020-04-25"                        
-</pre></div></div>
-
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"RSPM@R-4.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@R-4.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
 #&gt;                                       CRAN                              
 #&gt; "https://packagemanager.posit.co/cran/276"                              
