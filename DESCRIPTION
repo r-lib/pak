@@ -71,6 +71,6 @@ Config/Needs/website:
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Config/build/extra-sources: configure*
-URL: https://pak.r-lib.org/
+URL: https://pak.r-lib.org/, https://github.com/r-lib/pak
 BugReports: https://github.com/r-lib/pak/issues
 BuildResaveData: no
