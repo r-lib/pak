@@ -1,5 +1,52 @@
 # pak (development version)
 
+* pak now required R >= 3.5.0.
+
+* Many improvements in system requirements support:
+  - New functions:
+    - `pkg_sysreqs()`: calculate system requirements of packages.
+    - `sysreqs_db_list()`, `sysreqs_db_match()`, `sysreqs_db_update()`:
+      query the system requirements database.
+    - `sysreqs_list_system_packages()`, `sysreqs_check_installed()`,
+      `sysreqs_fix_installed()`: query and install missing system packages.
+    - `sysreqs_platforms()`: list supported platforms.
+  - The installation proposal, printed before installation, now includes
+    required and missing system packages, on supported platforms.
+  - New `sysreqs_platform` configuration option to override the auto-detected
+    platform.
+  - Faster, asynchronous system requirements lookup.
+  - pak now does not reinstall system requirements by default,
+    if they are already installed. (You can force a reinstall/upgrade
+    with the `sysreqs_update` configuration option.)
+
+* New `gitlab::` package source to install packages from GitLab
+  (https://github.com/r-lib/pkgdepends/pull/315).
+
+* pak now correctly parses multiple `git::` packages at once
+  (https://github.com/r-lib/pkgdepends/issues/318).
+
+* `git::` package sources now support version 1 of the git protocol.
+  E.g. the Bioconductor git repositories now work:
+  `git::https://git.bioconductor.org/packages/limma`
+  (https://github.com/r-lib/pkgdepends/issues/314).
+
+* The `platforms` config parameter now works correctly with `deps::`
+  package sources (#522).
+
+* New `include_linkingto` config parameter to always include `LinkingTo`
+  packages in the solution, even for binaries
+  (https://github.com/r-lib/pkgdepends/issues/485).
+
+* `pkg_name_check()` now does not include Acromine results, because the web
+  site was unstable.
+
+* In `repo_add()` and `repo_resolve()` the `MRAN@` prefix is now deprecated
+  and resolves to PPM, because MRAN will be retired soon. See more at
+  <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
+
+* The metadata cache now has `SystemRequirements` information for Bioconductor
+  packages.
+
 # pak 0.5.1
 
 * No user visible changes.
