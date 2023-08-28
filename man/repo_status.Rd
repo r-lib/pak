@@ -38,7 +38,7 @@ queried platform and R version. It has these columns:
 \itemize{
 \item \code{name}: the name of the repository. This comes from the names
 of the configured repositories in \code{options("repos")}, or
-added by pkgcache. It is typically \code{CRAN} for CRAN, and the
+added by pak. It is typically \code{CRAN} for CRAN, and the
 current Bioconductor repositories are \code{BioCsoft}, \code{BioCann},
 \code{BioCexp}, \code{BioCworkflows}.
 \item \code{url}: base URL of the repository.

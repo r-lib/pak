@@ -18,7 +18,7 @@
 #' queried platform and R version. It has these columns:
 #' * `name`: the name of the repository. This comes from the names
 #'   of the configured repositories in `options("repos")`, or
-#'   added by pkgcache. It is typically `CRAN` for CRAN, and the
+#'   added by pak. It is typically `CRAN` for CRAN, and the
 #'   current Bioconductor repositories are `BioCsoft`, `BioCann`,
 #'   `BioCexp`, `BioCworkflows`.
 #' * `url`: base URL of the repository.
@@ -182,12 +182,17 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #'   ```
 #'   https://cloud.r-project.org
 #'   ```
-#' - `RSPM@<date>`, RSPM (RStudio Package Manager) snapshot, at the
-#'   specified date.
-#' - `RSPM@<package>-<version>` RSPM snapshot, for the day after the
+#' - `PPM@latest`, PPM (Posit Package Manager, formerly RStudio Package
+#'   Manager), the latest snapshot.
+#' - `PPM@<date>`, PPM (Posit Package Manager, formerly RStudio Package
+#'   Manager) snapshot, at the specified date.
+#' - `PPM@<package>-<version>` PPM snapshot, for the day after the
 #'   release of `<version>` of `<package>`.
-#' - `RSPM@R-<version>` RSPM snapshot, for the day after R `<version>`
+#' - `PPM@R-<version>` PPM snapshot, for the day after R `<version>`
 #'   was released.
+#'
+#' Still works for dates starting from 2017-10-10, but now deprecated,
+#' because MRAN is discontinued:
 #' - `MRAN@<date>`, MRAN (Microsoft R Application Network) snapshot, at
 #'   the specified date.
 #' - `MRAN@<package>-<version>` MRAN snapshot, for the
@@ -195,45 +200,39 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #' - `MRAN@R-<version>` MRAN snapshot, for the day
 #'   after R `<version>` was released.
 #'
-#'
 #' Notes:
-#' * See more about RSPM at `https://packagemanager.rstudio.com/client/#/`.
-#' * See more about MRAN snapshots at
-#'   <https://mran.microsoft.com/timemachine>.
+#' * See more about PPM at <https://packagemanager.posit.co/client/#/>.
+#' * The `RSPM@` prefix is still supported and treated the same way as
+#'   `PPM@`.
+#' * The MRAN service is now retired, see
+#'   <https://techcommunity.microsoft.com/t5/azure-sql-blog/microsoft-r-application-network-retirement/ba-p/3707161>
+#'   for details.
+#' * `MRAN@...` repository specifications now resolve to PPM, but note that
+#'   PPM snapshots are only available from 2017-10-10. See more about this
+#'   at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
 #' * All dates (or times) can be specified in the ISO 8601 format.
-#' * If RSPM does not have a snapshot available for a date, the next
+#' * If PPM does not have a snapshot available for a date, the next
 #'   available date is used.
-#' * Dates that are before the first, or after the last RSPM snapshot
+#' * Dates that are before the first, or after the last PPM snapshot
 #'   will trigger an error.
-#' * Dates before the first, or after the last MRAN snapshot will trigger
-#'   an error.
 #' * Unknown R or package versions will trigger an error.
 #'
 #' @family repository functions
 #' @export
 #' @section Exaples:
 #' ```{asciicast repo-add}
-#' repo_add(RSPMdplyr100 = "RSPM@dplyr-1.0.0")
+#' repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
 #' repo_get()
 #' ```
 #'
-#' ```{asciicast repo-add-2}
-#' repo_resolve("MRAN@2020-01-21")
-#' ```
 #' ```{asciicast repo-add-3}
-#' repo_resolve("RSPM@2020-01-21")
-#' ```
-#' ```{asciicast repo-add-4}
-#' repo_resolve("MRAN@dplyr-1.0.0")
+#' repo_resolve("PPM@2020-01-21")
 #' ```
 #' ```{asciicast repo-add-5}
-#' repo_resolve("RSPM@dplyr-1.0.0")
-#' ```
-#' ```{asciicast repo-add-6}
-#' repo_resolve("MRAN@R-4.0.0")
+#' repo_resolve("PPM@dplyr-1.0.0")
 #' ```
 #' ```{asciicast repo-add-7}
-#' repo_resolve("RSPM@R-4.0.0")
+#' repo_resolve("PPM@R-4.0.0")
 #' ```
 
 repo_add <- function(..., .list = NULL) {
