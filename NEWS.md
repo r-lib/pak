@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.6.0
 
 * pak now requires R >= 3.5.0.
 
