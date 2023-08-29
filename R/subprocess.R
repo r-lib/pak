@@ -51,6 +51,7 @@ remote <- function(func, args = list()) {
             cli.width = `__width__`,
             width = `__width__`
           )
+          asNamespace("pak")
           `__body__`
         }
       )
