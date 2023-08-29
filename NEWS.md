@@ -1,6 +1,6 @@
 # pak (development version)
 
-* pak now required R >= 3.5.0.
+* pak now requires R >= 3.5.0.
 
 * Many improvements in system requirements support:
   - New functions:

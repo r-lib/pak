@@ -56,13 +56,13 @@ sysreqs_check_installed <- function(packages = NULL,
 sysreqs_fix_installed <- function(packages = NULL,
                                     library = .libPaths()[1]) {
   load_extra("pillar")
-  remote(
+  invisible(remote(
     function(...) {
       ret <- pkgdepends::sysreqs_fix_installed(...)
       asNamespace("pak")$pak_preformat(ret)
     },
     list(packages = packages, library = library)
-  )
+  ))
 }
 
 #' Calculate system requirements of one of more packages
