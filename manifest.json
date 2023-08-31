@@ -746,47 +746,47 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.5",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:06:41+00:00",
-          "size": 11492658,
-          "digest": "sha256:e3484e4566d61a756e6bdc577299d787557ba14e28112192e87eccaab50144ec"
+          "buildtime": "2023-08-31T07:29:32+00:00",
+          "size": 11589097,
+          "digest": "sha256:d6a66d8443fed6d4c7e88eef083149fed0deb1faf539120978aa772baddec42c"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.6",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:14:14+00:00",
-          "size": 11532476,
-          "digest": "sha256:e3ab50a3a4c48c6fd9f558440e29861cb2dff007d8005bc72716c6ec0f627d97"
+          "buildtime": "2023-08-31T07:36:22+00:00",
+          "size": 11633735,
+          "digest": "sha256:952af9ea664736270a7f0a5d4f80c197c86d40e7e609bd959fa3d6a438068e66"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.0",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:22:46+00:00",
-          "size": 13155665,
-          "digest": "sha256:d9f709b4ae7405581912e16389fde2ab28049161de6107b7c81735a40a6df8e9"
+          "buildtime": "2023-08-31T07:44:03+00:00",
+          "size": 13054316,
+          "digest": "sha256:dcde8e0a839c4ac6d4447e83d744db2e1d6acef92d1d049d2ca887d971af204c"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.1",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:24:44+00:00",
-          "size": 13194677,
-          "digest": "sha256:742036e83055e8c4a3648ec30125f7dd92d469df46c32f32cc89fc6c01712e1f"
+          "buildtime": "2023-08-31T07:48:25+00:00",
+          "size": 13100699,
+          "digest": "sha256:cc3abb4d393e1f9578d87e52415d4781b05b5e12d23192338973b750d0d41154"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:26:39+00:00",
-          "size": 8408689,
-          "digest": "sha256:bc62587c031f2a55992bfa676fa2c3827af1efc17ed2e5a0c7e17742ac5ec60c"
+          "buildtime": "2023-08-31T07:50:13+00:00",
+          "size": 8377981,
+          "digest": "sha256:48b981a6451ca470f32f7aad40104ae7c067ed3cefb6ef4be5c0652de4371939"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
@@ -926,11 +926,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:28:05+00:00",
-          "size": 8428991,
-          "digest": "sha256:e85548fafd9cf94a86b9603fca3cdbe2ed64ba15db9eb65ceab9cd6de6bd5cf3"
+          "buildtime": "2023-08-31T07:51:43+00:00",
+          "size": 8390452,
+          "digest": "sha256:f24de1e09980904a4d6eac50c8ce4e0985d845cc267e67685ebb02715739abb2"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
@@ -953,11 +953,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.4",
-          "pak.version": "0.5.1",
+          "pak.version": "0.6.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-04-28T15:29:27+00:00",
-          "size": 8480401,
-          "digest": "sha256:241f7fb548857e8ddf672be0633d618a8212ba93d5f24abdf54124767edee9f0"
+          "buildtime": "2023-08-31T07:53:02+00:00",
+          "size": 8436154,
+          "digest": "sha256:d0e2ebb07bced31ca3062755781015c38a331ad38949750a2d45dd9d3fe63c80"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
