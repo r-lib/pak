@@ -70,47 +70,47 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.5",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T05:51:36+00:00",
-          "size": 11586833,
-          "digest": "sha256:39fb6d8de75f6c46f27909a578fee2c8d1834064ada068d4c23f2fd14fdf064a"
+          "buildtime": "2023-09-01T05:53:38+00:00",
+          "size": 11588861,
+          "digest": "sha256:d2d748839ff1dab76cc3da3982cc7c2fec49ea83cfdef8e5a31374436fb7fe8a"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.6",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T05:56:52+00:00",
-          "size": 11633158,
-          "digest": "sha256:87b29767e2c29bb3528534af1eecf971a377e4eb6e11e758a8491c3dd21c61b9"
+          "buildtime": "2023-09-01T06:00:00+00:00",
+          "size": 11634555,
+          "digest": "sha256:5c9438c4ce26f6b575a4c59905fa09db393f692531d0a59bf34ae4fe16014726"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.0",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:02:53+00:00",
-          "size": 13054014,
-          "digest": "sha256:8a3cb9c0792a2899bdeeb94ef3b4897e932ce07f47d276483dc1da6db7b1995a"
+          "buildtime": "2023-09-01T06:07:22+00:00",
+          "size": 13054929,
+          "digest": "sha256:8efc015a24bdb2f192606bff5c5afd791cdada5ede0518833de8e65e3d5783a2"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.1",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:06:13+00:00",
-          "size": 13100870,
-          "digest": "sha256:f7019fddf6061b6ddf08382de2fc6fb9d54d169b8a39984be6c6651ad2507eb7"
+          "buildtime": "2023-09-01T06:11:26+00:00",
+          "size": 13100585,
+          "digest": "sha256:845420723cc119d64043541ee0448cf7ab70ebe0198e909524f0a2bbd251458b"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:07:35+00:00",
-          "size": 8377819,
-          "digest": "sha256:1a7cdc74c31790bb65d799b62e46caed68a46e1a837d851f19b329d52809cb66"
+          "buildtime": "2023-09-01T06:13:08+00:00",
+          "size": 8378559,
+          "digest": "sha256:161ba8abbe731c4e87ba3cc48b132ca07832cf8a7e5479d298c68db0a2c8e465"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
@@ -223,11 +223,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:08:41+00:00",
-          "size": 8391582,
-          "digest": "sha256:991af48830217a1fcfdf3737c896c4c19b7fd908bd9f788da8e0d5354829a870"
+          "buildtime": "2023-09-01T06:14:28+00:00",
+          "size": 8392685,
+          "digest": "sha256:070c800c516975c35da617d25c42e06ee3c601d5591d1b7965d98c5e2adb3bc1"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
@@ -259,11 +259,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.4",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:09:41+00:00",
-          "size": 8435344,
-          "digest": "sha256:12a1b84dd013e5917865a3ed0489755235a5f22ceb27a67adce900504aaad8a6"
+          "buildtime": "2023-09-01T06:15:40+00:00",
+          "size": 8435349,
+          "digest": "sha256:1dfb7f1f08cdd559f0a635092703ca3f540994427a934dfe89cd0f7c3d089930"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
