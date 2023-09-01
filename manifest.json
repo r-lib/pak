@@ -25,47 +25,47 @@
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.0",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:06:23+00:00",
-          "size": 5755824,
-          "digest": "sha256:a4c0bfa5d9dfb9bd7404df91028d5e549b76c2f2bbf72c8b0bef40b013a9cb20"
+          "buildtime": "2023-09-01T06:07:04+00:00",
+          "size": 5756085,
+          "digest": "sha256:d1e30cd6303c0066edac4a8a9395197ca79d8e2dd4aacd0d57cdc1f1cca40855"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.1",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:09:30+00:00",
-          "size": 5752721,
-          "digest": "sha256:55601f9e277fa08f3a0da5345add183c3670dec7b115e2321d79abc1a1bf063f"
+          "buildtime": "2023-09-01T06:10:23+00:00",
+          "size": 5754815,
+          "digest": "sha256:08717978acb372571137123a6e10c45c37abda6d5d420abb827459f3bf0e3f21"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.2",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:11:02+00:00",
-          "size": 5749206,
-          "digest": "sha256:5717f9d71ed3bfa185f57775790505d7f41c422aa97c83c42c6de0da2a37dcd2"
+          "buildtime": "2023-09-01T06:12:06+00:00",
+          "size": 5750199,
+          "digest": "sha256:2a8c00217dda6cf9f1246d039e7bb6a7e0784cdcd451c8ddd7e1cd6f97fe1989"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.5",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T05:56:26+00:00",
-          "size": 5730933,
-          "digest": "sha256:c7a501ae3da6062143b89b57e874695b4166d9de2cac79901f176e0e76cb7a96"
+          "buildtime": "2023-09-01T05:56:59+00:00",
+          "size": 5731679,
+          "digest": "sha256:75e910c9ec8128c9b314f278b61c2999fd94d81d959d7b6bef226f1d8a69c464"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.6",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:01:21+00:00",
-          "size": 5772773,
-          "digest": "sha256:86fa73a963752aa26205a9a228feb2c90bbb60bf4fbd1b3363f286a69c880ec4"
+          "buildtime": "2023-09-01T06:02:08+00:00",
+          "size": 5774229,
+          "digest": "sha256:fe72a94389b03641145bb2fbf5334ef6e3c1442e53a9c61c3a506e34c124c049"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
@@ -295,20 +295,20 @@
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.3",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:12:13+00:00",
-          "size": 5757059,
-          "digest": "sha256:862df0e9c0137071d6dd570b7bdee2df23c64b40d873eff2191c7a945e4efca3"
+          "buildtime": "2023-09-01T06:13:31+00:00",
+          "size": 5758140,
+          "digest": "sha256:4ce359bd8eea2417d9f515bae95b34e16c1cddb16ea19eeecb00fb44ec735996"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.4",
-          "pak.version": "0.5.1.9999",
+          "pak.version": "0.6.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-30T06:17:23+00:00",
-          "size": 5773065,
-          "digest": "sha256:a9528416bc98b6b91c31e4e2e1cb91b201ee60728bbf98305c4f409364ed52e4"
+          "buildtime": "2023-09-01T06:19:14+00:00",
+          "size": 5775915,
+          "digest": "sha256:31940139fe70f0b9eae2e836f4b016366b4b4aac765cced208b25e3da5b510d0"
         }
       ]
     },
