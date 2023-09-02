@@ -58,7 +58,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     pkgcache,
-    pkgdepends,
+    r-lib/pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
@@ -69,6 +69,8 @@ Config/Needs/website:
     rmarkdown,
     roxygen2,
     tidyverse/tidytemplate
+Remotes:
+    r-lib/pkgdepends
 Config/testthat/edition: 3
 Config/build/extra-sources: configure*
 URL: https://pak.r-lib.org/, https://github.com/r-lib/pak
