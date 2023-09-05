@@ -71,7 +71,7 @@ print_install_summary <- function(x) {
     bytes <- prettyunits::pretty_bytes(dlbytes)
     paste0(
       ", dld {downloaded}",
-      if (!is.na(bytes) && bytes != 0) " ({bytes})"
+      if (!is.na(bytes) && bytes != 0) " ({bytes}) "
     )
   } else {
     ""
