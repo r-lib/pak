@@ -7,7 +7,7 @@
 #' etc.
 #'
 #' @param query Search query string.
-#' @param ... Additional arguments passed to [pkgsearch::pkg_search()]
+#' @inheritDotParams pkgsearch::pkg_search size from
 #' @return A data frame, that is also a `pak_search_result` object
 #' with a custom print method. To see the underlying table, you
 #' can use `[]` to drop the extra classes. See examples below.
