@@ -128,7 +128,11 @@ new_remote_session <- function() {
   load_private_packages()
   callr <- pkg_data$ns$callr
   cli <- pkg_data$ns$cli
-  opts <- callr$r_session_options(stderr = NULL,  stdout = NULL)
+  opts <- callr$r_session_options(
+    stderr = NULL,
+    stdout = NULL,
+    user_profile = if (Sys.getenv("RENV_PROJECT") != "") FALSE else "project"
+  )
   opts$env <- c(
     opts$env,
     R_PKG_SHOW_PROGRESS = is_verbose(),
