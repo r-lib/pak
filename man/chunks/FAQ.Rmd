@@ -32,7 +32,7 @@ always chooses binaries over source packages, so if you use `pkg_install()`
 you don't need to do anything extra.
 
 The `local_install_*` functions default to `upgrade = TRUE`, as does `pak()`
-with `pkf = NULL`, so for these you need to explicitly use `upgrade = FALSE`.
+with `pkg = NULL`, so for these you need to explicitly use `upgrade = FALSE`.
 
 ## How do I install a package from source?
 
