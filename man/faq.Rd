@@ -79,7 +79,7 @@ always chooses binaries over source packages, so if you use \code{pkg_install()}
 you don't need to do anything extra.
 
 The \verb{local_install_*} functions default to \code{upgrade = TRUE}, as does \code{pak()}
-with \code{pkf = NULL}, so for these you need to explicitly use \code{upgrade = FALSE}.
+with \code{pkg = NULL}, so for these you need to explicitly use \code{upgrade = FALSE}.
 }
 
 \subsection{How do I install a package from source?}{
