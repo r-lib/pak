@@ -189,6 +189,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        TAR: internal
 
   # -----------------------------------------------------------------------
   linux:
