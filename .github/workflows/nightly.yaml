@@ -180,6 +180,8 @@ jobs:
         Sys.getenv("TAR")
         Sys.which("tar")
       shell: Rscript {0}
+      env:
+        TAR: "c:/rtools40/usr/bin/tar.exe"
 
     - name: Build pak binaries
       run: |
@@ -195,7 +197,7 @@ jobs:
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        TAR: internal
+        TAR: "c:/rtools40/usr/bin/tar.exe"
 
   # -----------------------------------------------------------------------
   linux:
