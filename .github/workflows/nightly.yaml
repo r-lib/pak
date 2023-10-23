@@ -175,6 +175,12 @@ jobs:
         rig add rtools40
         rig default 4.2.3
 
+    - name: Find tar.exe
+      run: |
+        Sys.getenv("TAR")
+        Sys.which("tar")
+      shell: Rscript {0}
+
     - name: Build pak binaries
       run: |
         cd tools/build/windows && make build
