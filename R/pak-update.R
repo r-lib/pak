@@ -37,7 +37,11 @@ pak_repo_metadata <- function(repo = NULL, stream = "auto") {
   url <- paste0(repo, "metadata.json")
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
-  utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
+
+  # utils::download.file(url, tmp, mode = "wb", quiet = TRUE  )
+
+  download_file(url, tmp , mode = "wb", quiet = TRUE ,  method = NULL    )
+
   df <- json$parse_file(tmp)
   meta <- do.call(rbind, lapply(df, as.data.frame, stringsAsFactors = FALSE))
   rver <- sub("R ", "", sapply(strsplit(meta$Built, ";"), "[[", 1))
@@ -112,7 +116,10 @@ pak_update <- function(
 
   url <- paste0(repo, me$os, "/", me$arch, "/", meta$File[cand])
   tgt <- file.path(tempdir(), meta$File[cand])
-  utils::download.file(url, tgt, mode = "wb")
+
+  # utils::download.file(url, tgt, mode = "wb"  )
+  download_file(url, tgt , mode = "wb",    method = NULL    )
+
 
   date <- get_built_date(meta$Built[cand])
   message("\nUpdating to version ", meta$Version[cand], " (", date, ")\n")
