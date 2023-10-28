@@ -127,13 +127,14 @@ test_ensure_method_type( ){
 
   m1 <- ensure_method_type(NULL )
   stopifnot(m1 == "auto")
+
   m2 <- ensure_method_type("xx")
   stopifnot(m2 == "auto")
 
 
   m3 <- ensure_method_type("internal")
   stopifnot(m3 == "internal")
-  m4 <- ensure_method_type("xx")
+
 
   m_last <- getOption(option_name )
   stopifnot(m0 == m_last )
