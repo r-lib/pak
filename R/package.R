@@ -95,7 +95,13 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
 
 ensure_method_type<-function(method = NULL    ){
-
+  # utils::download.file {utils}
+  # ...
+  # method
+  #     Method to be used for downloading files.
+  #     Current download methods are "internal", "libcurl", "wget", "curl" and "wininet" (Windows only),
+  #     and there is a value "auto": see ‘Details’ and ‘Note’.
+  #     The method can also be set through the option "download.file.method": see options().
   types <- c("internal", "libcurl", "wget", "curl" , "wininet" , "auto")
 
 
