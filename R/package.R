@@ -69,9 +69,11 @@
 #' ```
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-                        ask = interactive(), dependencies = NA) {
+                        ask = interactive(), dependencies = NA , method = NULL  ) {
 
   start <- Sys.time()
+
+  ensure_method_type(method)
 
   status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
@@ -88,6 +90,47 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
   if (length(unloaded) > 0) offer_restart(unloaded)
 
   invisible(inst)
+}
+
+
+
+ensure_method_type<-function(method = NULL    ){
+
+  types <- c("internal", "libcurl", "wget", "curl" , "wininet" , "auto")
+
+
+  if(is.null(method))
+    method<- getOption("download.file.method", default = "auto")
+
+  # to avoid side effect we will return without changing/setting options
+  # if no `download.file.method` option set
+  if( method %in% types )  return( invisible(method) )
+
+  # if only there is an invalid value set in the options at least set smt valid
+  # @`side effect` it will set it with the default value
+  options("download.file.method" = "auto"   )
+  return(  invisible("auto") )
+
+
+}
+
+test_ensure_method_type( ){
+  option_name <- "download.file.method"
+
+  m0 <- getOption(option_name  )
+
+  m1 <- ensure_method_type(NULL )
+  stopifnot(m1 == "auto")
+  m2 <- ensure_method_type("xx")
+  stopifnot(m2 == "auto")
+
+
+  m3 <- ensure_method_type("internal")
+  stopifnot(m3 == "internal")
+  m4 <- ensure_method_type("xx")
+
+  m_last <- getOption(option_name )
+  stopifnot(m0 == m_last )
 }
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,

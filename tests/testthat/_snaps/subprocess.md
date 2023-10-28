@@ -2,7 +2,7 @@
 
     Code
       invisible(remote(function() cli::cli_text("just once")))
-    Message <callr_message>
+    Message
       just once
 
 ---
@@ -13,6 +13,6 @@
     Output
       <callr_message: just once
       >
-    Message <callr_message>
+    Message
       just once
 
