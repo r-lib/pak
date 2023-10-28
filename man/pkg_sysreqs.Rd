@@ -9,12 +9,12 @@ pkg_sysreqs(pkg, upgrade = TRUE, dependencies = NA, sysreqs_platform = NULL)
 \arguments{
 \item{pkg}{Package names or package references. E.g.
 \itemize{
-\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
+\item \code{ggplot2} or \code{cran::ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
 in general,
-\item \code{tidyverse/ggplot2}: package from GitHub,
-\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
-\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
-\item \code{.}: package in the current working directory.
+\item \code{tidyverse/ggplot2} or \code{github::tidyverse/ggplot2}: package from GitHub,
+\item \code{tidyverse/ggplot2@v3.4.0} or \code{github::tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
+\item \verb{url::https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
+\item \code{.} or \code{local::.}: package in the current working directory.
 }
 
 See "\link{Package sources}" for more details.}

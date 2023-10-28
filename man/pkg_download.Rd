@@ -15,12 +15,12 @@ pkg_download(
 \arguments{
 \item{pkg}{Package names or package references. E.g.
 \itemize{
-\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
+\item \code{ggplot2} or \code{cran::ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
 in general,
-\item \code{tidyverse/ggplot2}: package from GitHub,
-\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
-\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
-\item \code{.}: package in the current working directory.
+\item \code{tidyverse/ggplot2} or \code{github::tidyverse/ggplot2}: package from GitHub,
+\item \code{tidyverse/ggplot2@v3.4.0} or \code{github::tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
+\item \verb{url::https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
+\item \code{.} or \code{local::.}: package in the current working directory.
 }
 
 See "\link{Package sources}" for more details.}
@@ -58,48 +58,17 @@ TODO: explain result
 \section{Examples}{
 
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{dl <- pkg_download("forcats")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (641.53 kB) are cached                
-</pre></div>
-}}
+\if{html}{\out{<div class="sourceCode asciicast">}}\preformatted{dl <- pkg_download("forcats")
+}\if{html}{\out{</div>}}
 
+\if{html}{\out{<div class="sourceCode asciicast">}}\preformatted{dl
+}\if{html}{\out{</div>}}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{dl
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 2 × 35</span>                                                  
-#>   ref     type     direct direc…¹ status package version license needs…²
-#>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> forcats standard TRUE   TRUE    OK     forcats 0.5.2   MIT + … FALSE  
-#> <span style="color: #c2c2c2;">2</span> forcats standard TRUE   TRUE    OK     forcats 0.5.2   MIT + … FALSE  
-#> <span style="color: #999999;"># … with 26 more variables: priority &lt;chr&gt;, md5sum &lt;chr&gt;, sha256 &lt;chr&gt;,</span> 
-#> <span style="color: #999999;">#   filesize &lt;int&gt;, built &lt;chr&gt;, platform &lt;chr&gt;, rversion &lt;chr&gt;,</span>        
-#> <span style="color: #999999;">#   repotype &lt;chr&gt;, repodir &lt;chr&gt;, target &lt;chr&gt;, deps &lt;list&gt;,</span>           
-#> <span style="color: #999999;">#   mirror &lt;chr&gt;, sources &lt;list&gt;, remote &lt;list&gt;, error &lt;list&gt;,</span>          
-#> <span style="color: #999999;">#   metadata &lt;list&gt;, extra &lt;list&gt;, dep_types &lt;list&gt;, params &lt;list&gt;,</span>     
-#> <span style="color: #999999;">#   sysreqs &lt;chr&gt;, cache_status &lt;chr&gt;, fulltarget &lt;chr&gt;,</span>                
-#> <span style="color: #999999;">#   fulltarget_tree &lt;chr&gt;, download_status &lt;chr&gt;, …</span>                     
-</pre></div>
-}}
+\if{html}{\out{<div class="sourceCode asciicast">}}\preformatted{dl$fulltarget
+}\if{html}{\out{</div>}}
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{dl$fulltarget
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> [1] "./bin/macosx/big-sur-arm64/contrib/4.2/forcats_0.5.2.tgz"          
-#> [2] "./src/contrib/forcats_0.5.2.tar.gz"                                
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_download("r-lib/pak", platforms = "source")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                              
-</pre></div>
-}}
+\if{html}{\out{<div class="sourceCode asciicast">}}\preformatted{pkg_download("r-lib/pak", platforms = "source")
+}\if{html}{\out{</div>}}
 }
 
 \seealso{
