@@ -95,7 +95,7 @@ pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
 
 
 ensure_method_type<-function(method = NULL    ){
-  # utils::download.file {utils}
+  # utils::download.file
   # ...
   # method
   #     Method to be used for downloading files.
