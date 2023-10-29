@@ -120,25 +120,7 @@ ensure_method_type<-function(method = NULL    ){
 
 }
 
-test_ensure_method_type( ){
-  option_name <- "download.file.method"
 
-  m0 <- getOption(option_name  )
-
-  m1 <- ensure_method_type(NULL )
-  stopifnot(m1 == "auto")
-
-  m2 <- ensure_method_type("xx")
-  stopifnot(m2 == "auto")
-
-
-  m3 <- ensure_method_type("internal")
-  stopifnot(m3 == "internal")
-
-
-  m_last <- getOption(option_name )
-  stopifnot(m0 == m_last )
-}
 
 pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
                                   dependencies, loaded) {

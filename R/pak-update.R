@@ -40,7 +40,6 @@ pak_repo_metadata <- function(repo = NULL, stream = "auto") {
 
   utils::download.file(url, tmp, mode = "wb", quiet = TRUE  )
 
-
   df <- json$parse_file(tmp)
   meta <- do.call(rbind, lapply(df, as.data.frame, stringsAsFactors = FALSE))
   rver <- sub("R ", "", sapply(strsplit(meta$Built, ";"), "[[", 1))
