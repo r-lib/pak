@@ -1,22 +1,21 @@
 Package: pak
-Version: 0.6.0.9000
 Title: Another Approach to Package Installation
-Description: The goal of 'pak' is to make package installation faster and
-    more reliable. In particular, it performs all HTTP operations in parallel,
-    so metadata resolution and package downloads are fast. Metadata and package
-    files are cached on the local disk as well. 'pak' has a dependency solver,
-    so it finds version conflicts before performing the installation. This
-    version of 'pak' supports CRAN, 'Bioconductor' and 'GitHub' packages as well.
+Version: 0.6.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
     person("Posit Software, PBC", role = c("cph", "fnd"))
   )
+Description: The goal of 'pak' is to make package installation faster and
+    more reliable. In particular, it performs all HTTP operations in
+    parallel, so metadata resolution and package downloads are fast.
+    Metadata and package files are cached on the local disk as well. 'pak'
+    has a dependency solver, so it finds version conflicts before
+    performing the installation. This version of 'pak' supports CRAN,
+    'Bioconductor' and 'GitHub' packages as well.
 License: GPL-3
-Encoding: UTF-8
-LazyData: true
-ByteCompile: true
-RoxygenNote: 7.2.3.9000
+URL: https://pak.r-lib.org/, https://github.com/r-lib/pak
+BugReports: https://github.com/r-lib/pak/issues
 Depends:
     R (>= 3.5)
 Imports:
@@ -33,9 +32,9 @@ Suggests:
     filelock (>= 1.0.2),
     gitcreds,
     glue (>= 1.6.2),
+    jsonlite (>= 1.8.0),
     mockery,
     pingr,
-    jsonlite (>= 1.8.0),
     pkgbuild (>= 1.4.2),
     pkgcache (>= 2.0.4),
     pkgdepends (>= 0.5.0.9001),
@@ -47,6 +46,11 @@ Suggests:
     rstudioapi,
     testthat (>= 3.2.0),
     withr
+Remotes:
+    r-lib/pkgdepends
+BuildResaveData: no
+ByteCompile: true
+Config/build/extra-sources: configure*
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
@@ -69,10 +73,7 @@ Config/Needs/website:
     rmarkdown,
     roxygen2,
     tidyverse/tidytemplate
-Remotes:
-    r-lib/pkgdepends
 Config/testthat/edition: 3
-Config/build/extra-sources: configure*
-URL: https://pak.r-lib.org/, https://github.com/r-lib/pak
-BugReports: https://github.com/r-lib/pak/issues
-BuildResaveData: no
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3.9000
