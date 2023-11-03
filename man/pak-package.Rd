@@ -21,12 +21,12 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Jim Hester \email{jim.hester@rstudio.com}
+  \item Jim Hester
 }
 
 Other contributors:
 \itemize{
-  \item RStudio [copyright holder, funder]
+  \item Posit Software, PBC [copyright holder, funder]
 }
 
 }
