@@ -45,7 +45,7 @@ Suggests:
     ps (>= 1.6.0),
     rprojroot (>= 2.0.2),
     rstudioapi,
-    testthat,
+    testthat (>= 3.2.0),
     withr
 Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
