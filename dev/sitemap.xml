@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://pak.r-lib.org/dev/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
     <loc>https://pak.r-lib.org/dev/articles/index.html</loc>
   </url>
   <url>
@@ -74,6 +77,9 @@
   </url>
   <url>
     <loc>https://pak.r-lib.org/dev/reference/pak-config.html</loc>
+  </url>
+  <url>
+    <loc>https://pak.r-lib.org/dev/reference/pak-package.html</loc>
   </url>
   <url>
     <loc>https://pak.r-lib.org/dev/reference/pak.html</loc>
