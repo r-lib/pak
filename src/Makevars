@@ -4,7 +4,7 @@ clean:
 	@echo Nothing to clean.
 
 mylibs:
-	unset SHLIB R_PACKAGE_NAME R_INSTALL_PKG MAKEFLAGS \
+	@unset SHLIB R_PACKAGE_NAME R_INSTALL_PKG MAKEFLAGS \
 		R_DEFAULT_PACKAGES && \
 	"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" --vanilla \
 		"install-embedded.R" 2>&1 | grep -v "^\\*"
