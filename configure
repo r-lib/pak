@@ -16,5 +16,3 @@ fi
 export RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 "$RBIN" --vanilla --slave -f tools/dynamic-help.R
-
-"$RBIN" --vanilla --slave -f tools/install-embedded.R

@@ -1,4 +1,3 @@
-
 pak_sitrep_data <- list(
   deps = logical(),
   failed = FALSE,
