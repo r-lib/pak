@@ -1,0 +1,7 @@
+
+OBJECTS = init.o filelock-unix.o locklist.o
+
+all: clean
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)

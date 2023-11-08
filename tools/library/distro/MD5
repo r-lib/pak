@@ -1,0 +1,14 @@
+a0e29e92f9ae775f8172e6402cd8c089 *DESCRIPTION
+3048dc12ba317a7d9489cd905fca039b *NAMESPACE
+d3ce37a273df0f90959943b619bf31ef *R/distro.R
+26f108050f137357f731c4576ad7b5e2 *README.md
+f73991f754e804c1a432ebf44c23f35a *man/distro.Rd
+d1e27a78dd31f0e09233000dbaa5fcd8 *tests/testthat.R
+6038e70c459d5f53686e47be9c6c8781 *tests/testthat/os-release/centos7
+5ccf572738163c4eb68d9cc1ac777b2b *tests/testthat/os-release/debian-bullseye
+f9e0b30996d1237fe6059bf7bb2e0834 *tests/testthat/os-release/fedora31
+2bce5e8a18fc52a2c3da8bbeba350371 *tests/testthat/os-release/ubuntu-xenial
+47c60295df072d5545db5680257e8a2a *tests/testthat/test-distro.R
+2dc1ba5026f9ef289058aee6d551e5f2 *tests/testthat/test-lsb-release.R
+c5e3b2bd1aeb3f3b2c7efe10ff033434 *tests/testthat/test-os-release.R
+cb2358b2654ce529f34dad3f20c6ff7d *tests/testthat/test-system-release.R

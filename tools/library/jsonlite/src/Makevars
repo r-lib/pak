@@ -1,0 +1,20 @@
+PKG_CPPFLAGS = -Iyajl/api
+PKG_LIBS = -Lyajl -lstatyajl
+
+# Hack to add a windows-only flag
+PKG_CFLAGS = $(C_VISIBILITY) \
+	$(subst 64,-D__USE_MINGW_ANSI_STDIO,$(subst 32,64,$(WIN)))
+
+LIBYAJL = yajl/yajl.o yajl/yajl_alloc.o yajl/yajl_buf.o yajl/yajl_encode.o \
+	yajl/yajl_gen.o yajl/yajl_lex.o yajl/yajl_parser.o yajl/yajl_tree.o
+
+#all: clean
+STATLIB = yajl/libstatyajl.a
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB): $(LIBYAJL)
+	$(AR) rcs $(STATLIB) $(LIBYAJL)
+
+clean:
+	rm -f $(LIBYAJL) $(SHLIB) $(OBJECTS) $(STATLIB)

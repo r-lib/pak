@@ -1,0 +1,20 @@
+
+## utf8lite
+
+Some parts of cli are based on the utf8lite library
+(https://github.com/patperry/utf8lite), which is licensed
+under the Apache License 2.0.
+
+In particular,
+
+* `src/utf8.c` contains parts modified from utf8lite,
+* `src/cli.h` contains parts modified from utf8lite,
+* The `src/graphbreak.h` and `src/charwidth` files are generated
+  with scripts from utf8lite.
+
+## vtparse
+
+The files `src/vtparse.h`, `src/vtparse.c`, `src/vtparse_table.h`,
+`src/vtparse_tablre.c` are in the public domain, see
+https://github.com/haberman/vtparse/
+Pull request #1 is also included.

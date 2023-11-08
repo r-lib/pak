@@ -13,6 +13,8 @@ fi
 # Find the R binary we need to use. This is a bit trickier on
 # Windows, because it has two architectures. On windows R_ARCH_BIN
 # is set, so this should work everywhere.
-RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
+export RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 "$RBIN" --vanilla --slave -f tools/dynamic-help.R
+
+"$RBIN" --vanilla --slave -f tools/install-embedded.R

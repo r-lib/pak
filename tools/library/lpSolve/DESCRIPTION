@@ -1,0 +1,19 @@
+Package: lpSolve
+Version: 5.6.19
+Title: Interface to 'Lp_solve' v. 5.5 to Solve Linear/Integer Programs
+Author: Michel Berkelaar and others
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Description: Lp_solve is freely available (under LGPL 2) software for
+        solving linear, integer and mixed integer programs. In this
+        implementation we supply a "wrapper" function in C and some R
+        functions that solve general linear/integer problems,
+        assignment problems, and transportation problems. This version
+        calls lp_solve version 5.5.
+License: LGPL-2
+URL: https://github.com/gaborcsardi/lpSolve
+BugReports: https://github.com/gaborcsardi/lpSolve/issues
+Encoding: UTF-8
+NeedsCompilation: yes
+Packaged: 2023-09-12 18:07:47 UTC; gaborcsardi
+Repository: CRAN
+Date/Publication: 2023-09-13 11:20:02 UTC

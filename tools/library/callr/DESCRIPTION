@@ -1,0 +1,35 @@
+Package: callr
+Title: Call R from R
+Version: 3.7.3
+Authors@R: c(
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0001-7098-9676")),
+    person("Winston", "Chang", role = "aut"),
+    person("RStudio", role = c("cph", "fnd")),
+    person("Mango Solutions", role = c("cph", "fnd"))
+  )
+Description: It is sometimes useful to perform a computation in a separate
+    R process, without affecting the current R process at all.  This
+    packages does exactly that.
+License: MIT + file LICENSE
+URL: https://callr.r-lib.org, https://github.com/r-lib/callr#readme
+BugReports: https://github.com/r-lib/callr/issues
+Depends: R (>= 3.4)
+Imports: processx (>= 3.6.1), R6, utils
+Suggests: asciicast, cli (>= 1.1.0), covr, mockery, ps, rprojroot,
+        spelling, testthat (>= 3.0.0), withr (>= 2.3.0)
+Encoding: UTF-8
+Language: en-US
+RoxygenNote: 7.2.1.9000
+Config/testthat/edition: 3
+Config/Needs/website: r-lib/asciicast, glue, htmlwidgets, igraph,
+        tibble, tidyverse/tidytemplate
+NeedsCompilation: no
+Packaged: 2022-11-02 15:17:20 UTC; gaborcsardi
+Author: Gábor Csárdi [aut, cre, cph] (<https://orcid.org/0000-0001-7098-9676>),
+  Winston Chang [aut],
+  RStudio [cph, fnd],
+  Mango Solutions [cph, fnd]
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2022-11-02 16:40:11 UTC

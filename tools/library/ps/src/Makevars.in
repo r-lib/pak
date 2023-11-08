@@ -1,0 +1,17 @@
+
+OBJECTS = @OBJECTS@
+
+PKG_LIBS = @LIBS@
+
+.PHONY: all clean
+
+all: px @TARGETS@ $(SHLIB)
+
+px: px.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -Wall px.c -o px
+
+interrupt: interrupt.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -Wall interrupt.c -o interrupt
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS) px.exe px interrupt.exe interrupt

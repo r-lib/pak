@@ -1,0 +1,234 @@
+---
+## Lines that must be updated when we release a new software version are 
+## indicated in comments below
+
+output_dir: output
+staging_deploy_root: biocadmin@staging.bioconductor.org:/loc/www/bioconductor-test.fhcrc.org
+production_deploy_root: webadmin@master.bioconductor.org:/extra/www/bioc
+
+## CHANGE THIS WHEN WE RELEASE A VERSION:
+release_version: "3.16"
+r_version_associated_with_release: "4.2.0"
+r_version_associated_with_devel: "4.3.0"
+
+## CHANGE THIS WHEN WE RELEASE A VERSION:
+devel_version: "3.17"
+
+## CHANGE THIS WHEN WE ADD A VERSION:
+## This is the list of all versions for which we want to generate "new" 
+## bioc-views, package index, and package detail pages.
+## if old versions (no older than 2.5) need to be rebuilt for any reason,
+## add them here, but in most cases this should just contain the
+## release and devel versions (though after a release you should
+## let the no-longer-release version build one last time so package
+## landing pages won't say "release version"):
+versions:
+- "3.16"
+- "3.17"
+
+## CHANGE THIS (i.e., uncomment) as various parts of the new devel version 
+## become available. set to "[]" if none are available.
+devel_repos:
+- "bioc"
+- "data/experiment"
+- "workflows"
+- "data/annotation"
+
+## CHANGE this when the build machines change:
+## also, don't include machines that are not building yet (comment them out)
+active_devel_builders:
+  linux: "nebbiolo1"
+  windows: "palomino3"
+  mac_mojave: "merida1"
+active_release_builders:
+  linux: "nebbiolo2"
+  windows: "palomino4"
+  mac_monterey: "lconway"
+
+## CHANGE this when the single package builder builds
+## on a newer version of bioc
+single_package_builder:
+  bioc_version: "3.17"
+  r_version: "4.3"
+
+rss_hub_url: "https://pubsubhubbub.appspot.com/"
+## CHANGE these as AMI IDS change
+ami_ids:
+ bioc2_8: ami-3a2ef452
+ bioc2_9: ami-2623f94e
+ bioc2_10: ami-5621fb3e
+ bioc2_11: ami-f827fd90
+ bioc2_12: ami-7224fe1a
+ bioc2_13: ami-4a25ff22
+ bioc2_14: ami-9c25fff4
+ bioc3_0: ami-be7917d6
+ bioc3_1: ami-a3d126c8
+ bioc3_2: ami-85d88de0
+ bioc3_3: ami-abd0b3bc
+ bioc3_4: ami-8946709f
+ bioc3_5: ami-279a315d
+ bioc3_6: ami-ac5df1d3
+ bioc3_7: ami-01bcd08e357360496
+ bioc3_8: ami-0565362d8bfb9cbed
+ bioc3_9: ami-0f5d1990d8c571cdf
+ bioc3_10: ami-0c5ab50ca03a54468
+ bioc3_11: ami-071b80cf0d8ca085c
+ bioc3_12: ami-04c69d122c1cf7e81
+ bioc3_13: ami-0e7efd11a6eab85a6
+string_pattern_type: legacy
+data_sources:
+- items_root: /
+  layouts_root: /
+  type: filesystem_unified
+  identifier_type: legacy
+  encoding: utf-8
+  config:
+    encoding: utf-8
+- items_root: /
+  type: biostar_list
+  identifier_type: legacy
+  encoding: utf-8
+  config:
+    gmane_rss_url: 'http://rss.gmane.org/messages/excerpts/gmane.science.biology.informatics.conductor'
+    cache_file: tmp/gmane_list_cache_file.yaml
+    encoding: utf-8
+    ttl: 10
+- items_root: /help/bioc-views/package-pages
+  layouts_root: /
+  type: bioc_views
+  identifier_type: legacy
+  encoding: utf-8
+  config:
+    json_dir: "assets/packages/json"
+    encoding: utf-8
+- items_root: /help/publications/papers/pubmed
+  type: pubmed_papers
+  identifier_type: legacy
+  encoding: utf-8
+  config:
+    cache_file: tmp/pubmed_cache_file.yaml
+    retmax: 20
+    ttl: 24
+    baseurl: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
+#   queried database, e.g. "pubmed" or "pmc"; can be a vector
+    db: [pubmed, pmc]
+    term: bioconductor
+#   Sorting of query results. This one is database-specific; possible values include
+#   pubmed: pub+date, first+author, last+author, journal, title, relevance
+#   pmc: print+pub+date, electronic+pub+date, journal, pmc+live+date
+#   For default sorting leave this field out
+    sort: [ "", electronic+pub+date]
+# CHANGE THIS when it becomes apparent which future versions of BioC will
+# work with which versions of R:
+r_ver_for_bioc_ver:
+  "1.6": "2.1"
+  "1.7": "2.2"
+  "1.8": "2.3"
+  "1.9": "2.4"
+  "2.0": "2.5"
+  "2.1": "2.6"
+  "2.2": "2.7"
+  "2.3": "2.8"
+  "2.4": "2.9"
+  "2.5": "2.10"
+  "2.6": "2.11"
+  "2.7": "2.12"
+  "2.8": "2.13"
+  "2.9": "2.14"
+  "2.10": "2.15"
+  "2.11": "2.15" # R switching to yearly releases, BioC remaining the same
+  "2.12": "3.0"
+  "2.13": "3.0"
+  "2.14": "3.1"
+  "3.0": "3.1"
+  "3.1": "3.2"
+  "3.2": "3.2"
+  "3.3": "3.3"
+  "3.4": "3.3"
+  "3.5": "3.4"
+  "3.6": "3.4"
+  "3.7": "3.5"
+  "3.8": "3.5"
+  "3.9": "3.6"
+  "3.10": "3.6"
+  "3.11": "4.0"
+  "3.12": "4.0"
+  "3.13": "4.1"
+  "3.14": "4.1"
+  "3.15": "4.2"
+  "3.16": "4.2"
+  "3.17": "4.3"
+# UPDATE THIS when we release a version
+release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milestones
+  "1.0": "1/5/2001"
+  "1.1": "11/19/2002"
+  "1.2": "5/29/2003"
+  "1.3": "10/30/2003"
+  "1.4": "5/17/2004"
+  "1.5": "10/25/2004"
+  "1.6": "5/18/2005"
+  "1.7": "10/14/2005"
+  "1.8": "4/27/2006"
+  "1.9": "10/4/2006"
+  "2.0": "4/26/2007"
+  "2.1": "10/8/2007"
+  "2.2": "5/1/2008"
+  "2.3": "10/22/2008"
+  "2.4": "4/21/2009"
+  "2.5": "10/28/2009"
+  "2.6": "4/23/2010"
+  "2.7": "10/18/2010"
+  "2.8": "4/14/2011"
+  "2.9": "11/1/2011"
+  "2.10": "4/2/2012"
+  "2.11": "10/3/2012"
+  "2.12": "4/4/2013"
+  "2.13": "10/15/2013"
+  "2.14": "4/14/2014"
+  "3.0": "10/14/2014"
+  "3.1": "4/17/2015"
+  "3.2": "10/14/2015"
+  "3.3": "5/4/2016"
+  "3.4": "10/18/2016"
+  "3.5": "4/25/2017"
+  "3.6": "10/31/2017"
+  "3.7": "05/01/2018"
+  "3.8": "10/31/2018"
+  "3.9": "05/03/2019"
+  "3.10": "10/30/2019"
+  "3.11": "04/28/2020"
+  "3.12": "10/28/2020"
+  "3.13": "05/20/2021"
+  "3.14": "10/27/2021"
+  "3.15": "04/27/2022"
+  "3.16": "11/02/2022"
+mirrors:
+ - 0-Bioconductor:
+   - institution: Bioconductor, automatic redirection to servers worldwide
+     institution_url: https://bioconductor.org
+     contact: Bioconductor Maintainer
+     contact_email: maintainer@bioconductor.org
+     city: World-wide
+     mirror_url: http://bioconductor.org/
+     https_mirror_url: https://bioconductor.org/
+     rsync: secure_mirror_from_master
+     country_code: us
+ - Germany:
+   - institution: Department of Statistics, TU Dortmund
+     institution_url: https://www.statistik.tu-dortmund.de/
+     contact: Uwe Ligges
+     contact_email: ligges@statistik.tu-dortmund.de
+     mirror_url: http://bioconductor.statistik.tu-dortmund.de/
+     https_mirror_url: https://bioconductor.statistik.tu-dortmund.de/
+     rsync: 
+     city: Dortmund
+     country_code: de
+   - institution: GWDG
+     institution_url: https://ftp.gwdg.de/
+     contact: Tim Ehlers and Steffen Klemer
+     contact_email: ftpmaster@gwdg.de
+     mirror_url: http://ftp.gwdg.de/pub/misc/bioconductor/
+     https_mirror_url: https://ftp.gwdg.de/pub/misc/bioconductor/
+     rsync: secure_mirror_from_master
+     city: Gottingen
+     country_code: de

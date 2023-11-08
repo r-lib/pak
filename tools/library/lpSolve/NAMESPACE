@@ -1,0 +1,3 @@
+useDynLib("lpSolve")
+export("lp", "lp.transport", "lp.assign", "make.q8")
+S3method("print", "lp")

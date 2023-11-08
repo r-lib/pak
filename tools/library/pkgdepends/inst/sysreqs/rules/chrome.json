@@ -1,0 +1,58 @@
+{
+  "patterns": [
+    "\\bchrome\\b"
+  ],
+  "dependencies": [
+    {
+      "pre_install": [
+        { "command": "[ $(which google-chrome) ] || apt-get install -y gnupg curl" },
+        { "command": "[ $(which google-chrome) ] || curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" },
+        { "command": "[ $(which google-chrome) ] || DEBIAN_FRONTEND='noninteractive' apt-get install -y /tmp/google-chrome.deb" }
+      ],
+      "packages": [],
+      "post_install": [
+        { "command": "rm -f /tmp/google-chrome.deb" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu"
+        },
+        {
+          "os": "linux",
+          "distribution": "debian"
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        { "command": "yum install -y which" },
+        { "command": "[ $(which google-chrome) ] || curl -fsSL -o /tmp/google-chrome.rpm https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm" },
+        { "command": "[ $(which google-chrome) ] || yum install -y /tmp/google-chrome.rpm" }
+      ],
+      "packages": [],
+      "post_install": [
+        { "command": "rm -f /tmp/google-chrome.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos"
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux"
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat"
+        },
+        {
+          "os": "linux",
+          "distribution": "fedora",
+          "versions": [ "36", "37" ]
+        }
+      ]
+    }
+  ]
+}
