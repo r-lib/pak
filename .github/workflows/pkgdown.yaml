@@ -36,19 +36,6 @@ jobs:
           needs: website
           pak-version: devel
 
-      - name: Install local pak
-        run: |
-          install.packages(".", repos = NULL, type = "source")
-          pak:::create_dev_lib()
-        shell: Rscript {0}
-        env:
-          PAK_BUNDLE: none
-
-      - name: Check if pak works
-        run: |
-          pak::pkg_install("tibble")
-        shell: Rscript {0}
-
       - name: Build site
         run: |
           options(asciicast_timeout = 600)
