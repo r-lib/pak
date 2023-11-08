@@ -2,6 +2,9 @@
 pkg_data <- new.env(parent = emptyenv())
 
 .onLoad <- function(libname, pkgname) {
+  if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
+    create_dev_lib()
+  }
   utils::data(
     pak_sitrep_data,
     package = pkgname,

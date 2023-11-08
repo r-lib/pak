@@ -20,53 +20,54 @@ install_one <- function(pkg) {
     INSTALL_opts = opts
   ))))
 
+  if (!file.exists(file.path(lib, pkg))) {
+    stop("FAILED")
+  }
+
   invisible()
 }
 
 install_all <- function() {
   ## TODO: look up the correct order
 
-  # No deps
-  install_one("R6")
-  install_one("cli")
-  install_one("crayon")
-  install_one("curl")
-  install_one("distro")
-  install_one("filelock")
-  install_one("glue")
-  install_one("jsonlite")
-  install_one("lpSolve")
-  install_one("parsedate")
-  install_one("prettyunits")
-  install_one("ps")
-  install_one("rappdirs")
-  install_one("rprojroot")
-  install_one("zip")
+  pkgs <- c(
+    # no deps
+    "R6", "cli", "crayon", "curl", "distro", "filelock", "glue", "jsonlite",
+    "lpSolve", "parsedate", "prettyunits", "ps", "rappdirs", "rprojroot",
+    "zip",
+    # ps, R6
+    "processx",
+    # processx, R6
+    "callr",
+    # cli, R6, rprojroot
+    "desc",
+    # callr, cli, crayon, desc, prettyunits, processx, R6, rprojroot
+    "pkgbuild",
+    # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6, rappdirs
+    "pkgcache",
+    # curl, jsonlite, parsedate, prettyunits
+    "pkgsearch",
+    # callr, cli, curl, desc, filelock, glue, jsonlite, lpSolve, pkgbuild,
+    # pkgcache, prettyunits, processx, ps, R6, rprojroot, zip
+    "pkgdepends"
+  )
 
-  # ps, R6
-  install_one("processx")
-
-  # processx, R6
-  install_one("callr")
-
-  # cli, R6, rprojroot
-  install_one("desc")
-
-  # callr, cli, crayon, desc, prettyunits, processx, R6, rprojroot
-  install_one("pkgbuild")
-
-  # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6, rappdirs
-  install_one("pkgcache")
-
-  # curl, jsonlite, parsedate, prettyunits
-  install_one("pkgsearch")
-
-  # callr, cli, curl, desc, filelock, glue, jsonlite, lpSolve, pkgbuild,
-  # pkgcache, prettyunits, processx, ps, R6, rprojroot, zip
-  install_one("pkgdepends")
+  for (pkg in pkgs) install_one(pkg)
 }
 
-# print(Sys.getenv())
+install_pkgload <- function() {
+  message("Not embedding dependencies in `pkgload::load_all()`.")
+}
 
-install_all()
+install_embedded_main <- function() {
+  if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
+    install_pkgload()
+  } else {
+    install_all()
+  }
+  invisible()
+}
 
+if (is.null(sys.calls())) {
+  install_embedded_main()
+}
