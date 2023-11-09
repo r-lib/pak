@@ -4,12 +4,6 @@ pkg_data <- new.env(parent = emptyenv())
   if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
     create_dev_lib()
   }
-  utils::data(
-    pak_sitrep_data,
-    package = pkgname,
-    envir = environment(.onLoad)
-  )
-
   if (Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") == "") {
     check_platform(libname, pkgname)
   }

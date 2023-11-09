@@ -2,7 +2,6 @@
 % Please edit documentation in R/pak-sitrep.R
 \name{pak_sitrep}
 \alias{pak_sitrep}
-\alias{pak_sitrep_data}
 \title{pak SITuation REPort}
 \usage{
 pak_sitrep()
@@ -23,28 +22,28 @@ It prints
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pak_sitrep()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>  compatible)                                                            
-#> - pak repository: - (local install?)                                    
-#> * Optional packages installed:                                          
-#> - pillar                                                                
-#> * Library path:                                                         
+#>  compatible)
+#> - pak repository: - (local install?)
+#> * Optional packages installed:
+#> - pillar
+#> * Library path:
 #> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpRxl7Vu/fi
-#> le1868066d6ae59                                                         
+#> le1868066d6ae59
 #> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpRxl7Vu/fi
-#> le186806281b34a                                                         
-#> - /Users/gaborcsardi/Library/R/arm64/4.3/library                        
-#> - /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library  
-#> * Private library location:                                             
+#> le186806281b34a
+#> - /Users/gaborcsardi/Library/R/arm64/4.3/library
+#> - /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library
+#> * Private library location:
 #> - /Users/gaborcsardi/Library/Caches/org.R-project.R/R/pak/lib/4.3/aarch6
-#> 4                                                                       
-#> * Private library exists.                                               
-#> * Private library is functional                                         
+#> 4
+#> * Private library exists.
+#> * Private library is functional
 </pre></div>
 }}
 }
 
 \seealso{
-Other pak housekeeping: 
+Other pak housekeeping:
 \code{\link{pak_cleanup}()}
 }
 \concept{pak housekeeping}

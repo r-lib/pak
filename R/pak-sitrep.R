@@ -7,7 +7,6 @@
 #' * versions of dependencies,
 #' * whether dependencies can be loaded.
 #'
-#' @aliases pak_sitrep_data
 #' @export
 #' @family pak housekeeping
 #' @section Examples:

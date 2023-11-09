@@ -1,18 +1,5 @@
-pak_sitrep_data <- list(
-  deps = logical(),
-  failed = FALSE,
-  fails = list(),
-  method = "embedded",
-  bundledata = NULL
-)
-
-local({
+pak_sitrep_data <- local({
   pkgdir <- Sys.getenv("R_PACKAGE_DIR", "")
-
-  # print(dir(".."))
-  # print(getwd())
-  # print(Sys.getenv())
-  # message(pkgdir)
 
   rot1 <- function(x) {
     as.integer(charToRaw(as.character(x))) + 1L
@@ -27,7 +14,7 @@ local({
     remotes <- dcf$Remotes
   }
 
-  pak_sitrep_data$bundledata <<- list(
+  bundledata <- list(
     pkgdir = rot1(Sys.getenv("R_PACKAGE_DIR", "")),
     rpkgname = rot1(Sys.getenv("R_PACKAGE_NAME", "")),
     devtools = !is.null(asNamespace("pak")$.__DEVTOOLS__),
@@ -36,8 +23,11 @@ local({
     remotes = if (!is.null(remotes)) rot1(remotes)
   )
 
-  pak_sitrep_data$platform <<- R.Version()$platform
-  pak_sitrep_data$`github-repository` <<- Sys.getenv("GITHUB_REPOSITORY", "-")
-  pak_sitrep_data$`github-sha` <<- Sys.getenv("GITHUB_SHA", "-")
-  pak_sitrep_data$`github-ref` <<- Sys.getenv("GITHUB_REF", "-")
+  list(
+    platform = R.Version()$platform,
+    "github-repository" = Sys.getenv("GITHUB_REPOSITORY", "-"),
+    "github-sha" = Sys.getenv("GITHUB_SHA", "-"),
+    "github-ref" <- Sys.getenv("GITHUB_REF", "-"),
+    bundledata = bundledata
+  )
 })
