@@ -165,7 +165,8 @@ push_packages <- local({
     untar(
       pkg,
       exdir = tmp,
-      c("pak/DESCRIPTION", "pak/library/curl/DESCRIPTION")
+      c("pak/DESCRIPTION", "pak/library/curl/DESCRIPTION"),
+      tar = "internal"
     )
     pakdsc <- desc::desc(file = file.path(tmp, "pak", "DESCRIPTION"))
     curldsc <- desc::desc(
