@@ -202,6 +202,7 @@ embed <- local({
     pkgs <- pkgs %||% get_current()
     lib <- lib_dir()
     for (pkg in pkgs) {
+      rimraf(file.path(lib, pkg, "inst", "doc"))
       rimraf(file.path(lib, pkg, "inst", "docs"))
       rimraf(file.path(lib, pkg, "man", "figures"))
       rd <- dir(file.path(lib, pkg, "man"), pattern = "[.]Rd$")
