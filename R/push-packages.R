@@ -156,17 +156,25 @@ push_packages <- local({
     )
   }
 
+  uncompress <- function(path, ...) {
+    head <- readBin(path, what = "raw", n = 4)
+    if (head[1] == 0x50 && head[2] == 0x4b) {
+      utils::unzip(path, ...)
+    } else {
+      utils::untar(path, ...)
+    }
+  }
+
   extract_info <- function(pkg) {
     mkdirp(tmp <- tempfile())
     on.exit(rimraf(tmp), add = TRUE)
 
     # We need curl's DESCRIPTION as well, because pak's does not have the
     # arch, because R thinks that it does not have compiled code.
-    untar(
+    uncompress(
       pkg,
       exdir = tmp,
-      c("pak/DESCRIPTION", "pak/library/curl/DESCRIPTION"),
-      tar = "internal"
+      files = c("pak/DESCRIPTION", "pak/library/curl/DESCRIPTION")
     )
     pakdsc <- desc::desc(file = file.path(tmp, "pak", "DESCRIPTION"))
     curldsc <- desc::desc(
