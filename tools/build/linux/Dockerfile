@@ -12,26 +12,14 @@ COPY ${PAK_ROOT} /root/pak
 
 WORKDIR /root/pak
 
-# Install pak without the dependencies ------------------------------------
-
-RUN PAK_BUNDLE=false R CMD INSTALL .
-
 # system requirements -----------------------------------------------------
 
 RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf
 
-# Install packages needed for bundling ------------------------------------
+# Build binary package ----------------------------------------------------
 
-RUN PROCESSX_UNLINK_R=true R -q -e \
-    'pak:::safe_cran_install(c("pkgdepends", "withr"))'
-
-# Install pak dependencies ------------------------------------------------
-
-RUN PROCESSX_UNLINK_R=true R -q -e 'pak:::embed_lib(".")'
-
-# Embed CA certs ----------------------------------------------------------
-
-RUN R -q -e 'pak:::embed_ca_certs()'
+RUN cd .. && R CMD build pak
+RUN cd .. && R CMD INSTALL pak_*.tar.gz
 
 # Minimize library --------------------------------------------------------
 
@@ -44,6 +32,10 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
     rm -rf ${PAKROOT}/library/*/help && \
     rm -rf ${PAKROOT}/library/*/doc &&  \
     find ${PAKROOT}/library -name "*.so" | xargs strip -x
+
+# Embed CA certs ----------------------------------------------------------
+
+RUN R -q -e 'pak:::embed_ca_certs()'
 
 # Build binary package ----------------------------------------------------
 
@@ -62,7 +54,7 @@ RUN apk add skopeo --repository=http://dl-cdn.alpinelinux.org/alpine/edge/commun
 
 # Deploy
 
-RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", "desc"))'
+RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", "desc", "jsonlite"))'
 
 RUN apk add git
 RUN git config --global user.email "csardi.gabor@gmail.com"
