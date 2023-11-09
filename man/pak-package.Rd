@@ -27,6 +27,33 @@ Authors:
 Other contributors:
 \itemize{
   \item Posit Software, PBC [copyright holder, funder]
+  \item Winston Chang (R6, callr, processx) [contributor]
+  \item Mango Solutions (callr, processx) [copyright holder, funder]
+  \item Hadley Wickham (cli, curl, pkgbuild, rappdirs) [contributor, copyright holder]
+  \item Brodie Gaslam (crayon) [contributor]
+  \item Jeroen Ooms (curl, jsonlite) [contributor]
+  \item Kirill Müller (cli, desc, rprojroot) [contributor]
+  \item Maëlle Salmon (desc, pkgsearch) [contributor]
+  \item Neal Richardson (distro) [contributor]
+  \item Jennifer Bryan (glue) [contributor]
+  \item Duncan Temple Lang (jsonlite) [contributor]
+  \item Lloyd Hilaiel (jsonlite) [copyright holder]
+  \item Michel Berkelaar and lpSolve authors (lpSolve) [contributor]
+  \item Linus Torvalds (parsedate) [contributor]
+  \item R Consortium (pkgsearch) [funder]
+  \item Bill Denney (prettyunits) [contributor]
+  \item Christophe Regouby (prettyunits) [contributor]
+  \item Jay Loden (ps) [contributor]
+  \item Dave Daeschler (ps) [contributor]
+  \item Giampaolo Rodola' (ps) [contributor]
+  \item Sridhar Ratnakumar (rappdirs) [contributor]
+  \item Trent Mick (rappdirs) [contributor]
+  \item ActiveState (rappdirs) [copyright holder]
+  \item Eddy Petrisor (rappdirs) [contributor]
+  \item Trevor Davis (rappdirs) [contributor]
+  \item Gregory Jefferis (rappdirs) [contributor]
+  \item Kuba Podgórski (zip) [contributor]
+  \item Rich Geldreich (zip) [contributor]
 }
 
 }

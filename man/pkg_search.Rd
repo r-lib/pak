@@ -9,7 +9,12 @@ pkg_search(query, ...)
 \arguments{
 \item{query}{Search query string.}
 
-\item{...}{Additional arguments passed to \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search()}}}
+\item{...}{
+  Arguments passed on to \code{\link[pkgsearch:pkg_search]{pkgsearch::pkg_search}}
+  \describe{
+    \item{\code{from}}{Where to start listing the results, for pagination.}
+    \item{\code{size}}{The number of results to list.}
+  }}
 }
 \value{
 A data frame, that is also a \code{pak_search_result} object
