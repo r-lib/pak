@@ -1,5 +1,4 @@
 embed <- local({
-
   `%||%` <- function(l, r) {
     if (is.null(l)) r else l
   }
@@ -17,14 +16,15 @@ embed <- local({
   }
 
   base_packages <- function() {
-    c("base", "compiler", "datasets", "graphics", "grDevices", "grid",
+    c(
+      "base", "compiler", "datasets", "graphics", "grDevices", "grid",
       "methods", "parallel", "splines", "stats", "stats4", "tcltk",
       "tools", "utils"
-      )
+    )
   }
 
   is_string <- function(x) {
-    is.character(x) && length(x) == 1 && ! is.na(x)
+    is.character(x) && length(x) == 1 && !is.na(x)
   }
 
   check_pak_root <- function() {
@@ -40,7 +40,7 @@ embed <- local({
 
   lib_dir <- function() {
     check_pak_root()
-    ld <- file.path("tools", "library")
+    ld <- file.path("src", "library")
     mkdirp(ld)
     ld
   }
@@ -212,11 +212,9 @@ embed <- local({
       if (is.na(pkg$required)) {
         message("Deleting ", pkg$package)
         delete_package(pkg$package)
-
       } else if (is.na(pkg$current)) {
         message("Adding ", pkg$package)
         add_package(pkg$package, pkg$required)
-
       } else {
         message("Updating ", pkg$package)
         update_package(pkg$package, pkg$required)

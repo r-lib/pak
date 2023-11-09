@@ -11,10 +11,10 @@ pak_sitrep()
 It prints
 \itemize{
 \item pak version,
+\item platform the package was built on, and the current platform,
 \item the current library path,
-\item location of the private library,
-\item whether the pak private library exists,
-\item whether the pak private library is functional.
+\item versions of dependencies,
+\item whether dependencies can be loaded.
 }
 }
 \section{Examples}{
@@ -28,14 +28,14 @@ It prints
 #> * Optional packages installed:                                          
 #> - pillar                                                                
 #> * Library path:                                                         
-#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpcpVAdU/fi
-#> led8ef3d7a46fc                                                          
-#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpcpVAdU/fi
-#> led8ef2562d6ef                                                          
-#> - /Users/gaborcsardi/Library/R/arm64/4.2/library                        
-#> - /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library  
+#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpRxl7Vu/fi
+#> le1868066d6ae59                                                         
+#> - /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpRxl7Vu/fi
+#> le186806281b34a                                                         
+#> - /Users/gaborcsardi/Library/R/arm64/4.3/library                        
+#> - /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library  
 #> * Private library location:                                             
-#> - /Users/gaborcsardi/Library/Caches/org.R-project.R/R/pak/lib/4.2/aarch6
+#> - /Users/gaborcsardi/Library/Caches/org.R-project.R/R/pak/lib/4.3/aarch6
 #> 4                                                                       
 #> * Private library exists.                                               
 #> * Private library is functional                                         
