@@ -20,8 +20,7 @@ Depends:
     R (>= 3.5)
 Imports:
     tools,
-    utils,
-    pkgdepends (>= 0.5.0.9001)
+    utils
 Suggests:
     callr (>= 3.7.0),
     cli (>= 3.2.0),
@@ -38,6 +37,7 @@ Suggests:
     pingr,
     pkgbuild (>= 1.4.2),
     pkgcache (>= 2.0.4),
+    pkgdepends (>= 0.5.0.9001),
     pkgsearch (>= 3.1.0),
     prettyunits,
     processx (>= 3.8.1),
@@ -46,8 +46,6 @@ Suggests:
     rstudioapi,
     testthat (>= 3.2.0),
     withr
-Remotes:
-    r-lib/pkgdepends
 BuildResaveData: no
 ByteCompile: true
 Config/build/extra-sources: configure*
