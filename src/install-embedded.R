@@ -1,10 +1,10 @@
-
 opts <- paste(
   "--without-keep.source",
   "--no-html",
   "--no-help",
   "--no-data",
-  "--strip",
+  "--no-docs",
+  if (getRversion() >= "3.6") "--strip",
   if (getRversion() >= "3.6") "--no-staged-install"
 )
 
@@ -64,7 +64,7 @@ install_order <- function() {
   )
 
   pkgs
-}  
+}
 
 install_all <- function(lib = NULL) {
   pkgs <- install_order()
@@ -72,9 +72,13 @@ install_all <- function(lib = NULL) {
 }
 
 get_ver <- function(path) {
-  if (!file.exists(path)) return(NA_character_)
+  if (!file.exists(path)) {
+    return(NA_character_)
+  }
   desc <- file.path(path, "DESCRIPTION")
-  if (!file.exists(desc)) return(NA_character_)
+  if (!file.exists(desc)) {
+    return(NA_character_)
+  }
   dsc <- read.dcf(desc)
   ver <- package_version(dsc[, "Version"])
   devver <- ver[1, 4]
@@ -97,7 +101,7 @@ update_all <- function(lib = NULL) {
     if (is.na(newver)) stop("Cannot find embedded ", pkg)
     if (is.na(oldver)) {
       message("Adding ", pkg)
-      rimraf(file.path(lib, pkg))   # in case it is a broken install
+      rimraf(file.path(lib, pkg)) # in case it is a broken install
       install_one(pkg, lib)
     } else if (oldver != newver) {
       message("Updating ", pkg, " ", oldver, " -> ", newver)
@@ -121,12 +125,13 @@ install_embedded_main <- function() {
       stop("Usage: install-embedded.R [ --load-all library-dir ]")
     }
     update_all(args[2])
-
   } else {
     if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
       install_pkgload_src()
     } else {
+      unlink("DONE")
       install_all()
+      file.create("DONE")
     }
   }
   invisible()
