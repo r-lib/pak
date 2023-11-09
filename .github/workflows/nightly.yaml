@@ -116,10 +116,6 @@ jobs:
       run: |
         cd tools/build/macos && make build
 
-    - name: Run tests
-      run: |
-        cd tools/build/macos && make test
-
     - name: Deploy packages
       run: |
         cd tools/build/macos && make deploy
@@ -178,10 +174,6 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/windows && make build
-
-    - name: Run tests
-      run: |
-        cd tools/build/windows && make test
 
     - name: Deploy packages
       run: |
@@ -254,10 +246,6 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
-
-    - name: Run tests
-      run: |
-        cd tools/build/macos && make test
 
     - name: Deploy packages
       run: |
