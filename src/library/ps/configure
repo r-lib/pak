@@ -1,0 +1,170 @@
+#! /usr/bin/env sh
+
+# Check that this is not just ./configure. We need to run this
+# from R CMD INSTALL, to have the R env vars set.
+
+if [ -z "$R_HOME" ]; then
+    echo >&2 R_HOME is not set, are you running R CMD INSTALL?
+    exit 1
+fi
+
+# Find the R binary we need to use. This is a bit trickier on
+# Windows, because it has two architectures. On windows R_ARCH_BIN
+# is set, so this should work everywhere.
+RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
+
+# ------------------------------------------------------------------------
+# Detect system
+# ------------------------------------------------------------------------
+
+unset POSIX
+if [ "$R_OSTYPE" = "unix" ]; then
+    UNAME=`uname`
+else
+    UNAME=Windows
+fi
+
+unset WINDOWS
+if [ "$R_OSTYPE" = "windows" ]; then WINDOWS=true; fi
+
+unset LINUX
+if [ "$UNAME" = "Linux" ]; then LINUX=true; POSIX=true; fi
+
+unset MACOS
+if [ "$UNAME" = "Darwin" ]; then MACOS=true; POSIX=true; fi
+
+unset FREEBSD
+## if [ "UNAME" = "FreeBSD" ]; then FREEBSD=true; POSIX=true; fi
+
+unset OPENBSD
+## if [ "UNAME" = "OpenBSD" ]; then OPENBSD=true; POSIX=true; fi
+
+unset NETBSD
+## if [ "UNAME" = "NetBSD" ]; then NETBSD=true; POSIX=true; fi
+
+unset BSD
+if [ -n "$FREEBSD" ] || [ -n "$OPENBSD" ] || [ -n "$NETBSD" ]; then
+    BSD=true
+fi
+
+unset SUNOS
+## if [ "UNAME" = "SunOS" ]; then SUNOS=true; POSIX=true; fi
+
+unset AIX
+##  if [ "UNAME" = "AIX" ]; then AIX=true; POSIX=true; fi
+
+# ------------------------------------------------------------------------
+# Set source files, macros, libs, compile flags
+# ------------------------------------------------------------------------
+
+MACROS=""
+OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o"
+
+if [ -n "$POSIX" ]; then
+    OBJECTS="${OBJECTS} posix.o api-posix.o";
+    MACROS="${MACROS} PS__POSIX"
+    PS__POSIX=1
+fi
+
+if [ -n "$BSD" ]; then
+    MACROS="${MACROS} PS__BSD"
+    PS__BSD=1
+fi
+
+MACROS="$MACROS PS__VERSION"
+PS__VERSION=546
+
+if [ -n "$WINDOWS" ]; then
+    VER=`"$RBIN" --vanilla --slave -f inst/tools/winver.R`
+    MAJOR=`echo $VER | cut -f1 -d.`
+    MINOR=`echo $VER | cut -f2 -d.`
+    WINVER=`"$RBIN" --vanilla --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
+    MACROS="${MACROS} PS__WINDOWS _WIN32_WINNT _AVAIL_WINVER"
+    MACROS="${MACROS} _CRT_SECURE_NO_WARNINGS PSAPI_VERSION"
+    PS__WINDOWS=1
+    _WIN32_WINNT=$WINVER
+    _AVAIL_WINVER=$WINVER
+    _CT_SECURE_NO_WARNINGS=""
+    PSAPI_VERSION=1
+
+    OBJECTS="${OBJECTS} windows.o api-windows.o api-windows-conn.o"
+    OBJECTS="${OBJECTS} arch/windows/process_info.o"
+    OBJECTS="${OBJECTS} arch/windows/process_handles.o"
+    OBJECTS="${OBJECTS} arch/windows/wmi.o"
+
+    LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"
+    LIBRARIES="${LIBRARIES} ws2_32 PowrProf Pdh"
+
+    TARGETS=interrupt
+
+elif [ -n "$MACOS" ]; then
+    MACROS="${MACROS} PS__MACOS"
+    PS__MACOS=1
+    OBJECTS="${OBJECTS} macos.o api-macos.o arch/macos/process_info.o"
+
+elif [ -n "$FREEBSD" ]; then
+    MACROS="${MACROS} PS__FREEBSD"
+    PS__FREEBSD=1
+    OBJECTS="${OBJECTS} bsd.o arch/freebsd/specific.o"
+    OBJECTS="${OBJECTS} arch/freebsd/sys_socks.o"
+    OBJECTS="${OBJECTS} arch/freebsd/proc_socks.o"
+    LIBRARIES="devstat"
+
+elif [ -n "$OPENBSD" ]; then
+    MACROS="${MACROS} PS__OPENBSD"
+    PS__OPENBSD=1
+    OBJECTS="${OBJECTS} bsd.o arch/openbsd/specific.o"
+    LIBRARIES="kvm"
+
+elif [ -n "$NETBSD" ]; then
+    MACROS="${MACROS} PS__NETBSD"
+    PS__NETBSD=1
+    OBJECTS="${OBJECTS} bsd.o arch/netbsd/specific.o"
+    OBJECTS="${OBJECTS} arch/netbsd/sys_socks.o"
+    OBJECTS="${OBJECTS} arch/netbsd/proc_socks.o"
+    LIBRARIES="kvm"
+
+elif [ -n "$LINUX" ]; then
+    MACROS="${MACROS} PS__LINUX"
+    PS__LINUX=1
+    OBJECTS="${OBJECTS} linux.o  api-linux.o"
+
+elif [ -n "$SUNOS" ]; then
+    MACROS="${MACROS} PS__SUNOS"
+    PS__SUNOS=1
+    OBJECTS="${OBJECTS} sunos.o arch/solaris/v10/ifaddrs.o"
+    OBJECTS="${OBJECTS} arch/solaris/environ.o"
+
+elif [ -n "$AIX" ]; then
+    MACROS="${MACROS} PS__AIX"
+    PS__AIX=1
+    OBJECTS="${OBJECTS} aix.o"
+    OBJECTS="${OBJECTS} arch/aix/net_connections.o"
+    OBJECTS="${OBJECTS} arch/aix/common.o"
+    OBJECTS="${OBJECTS} arch/aix/ifaddrs.o"
+fi
+
+# ------------------------------------------------------------------------
+# Create Makevars file
+# ------------------------------------------------------------------------
+
+"$RBIN" --vanilla --slave -f inst/tools/error-codes.R
+
+# OBJECTS (= source files)
+# LIBRARIES -> PKG_LIBS
+
+LIBS=`for l in $LIBRARIES; do echo "-l${l}"; done | tr "\n", " "`
+
+cat src/Makevars.in | \
+    sed "s|@OBJECTS@|${OBJECTS}|" | \
+    sed "s/@LIBS@/${LIBS}/" | \
+    sed "s/@TARGETS@/${TARGETS}/" > src/Makevars
+
+# MACROS will be set as preprocessor macros
+echo "/* Macros created by configure */" > src/config.h
+for m in $MACROS; do
+    ind='$'$m
+    echo \#undef $m
+    eval echo '\#'define $m $ind
+done >> src/config.h
+

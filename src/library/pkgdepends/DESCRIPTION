@@ -1,0 +1,42 @@
+Package: pkgdepends
+Title: Package Dependency Resolution and Downloads
+Version: 0.6.0
+Authors@R: c(
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("RStudio", role = c("cph", "fnd"))
+  )
+Description: Find recursive dependencies of 'R' packages from various
+    sources. Solve the dependencies to obtain a consistent set of packages
+    to install. Download packages, and install them. It supports packages
+    on 'CRAN', 'Bioconductor' and other 'CRAN-like' repositories,
+    'GitHub', package 'URLs', and local package trees and files. It caches
+    metadata and package files via the 'pkgcache' package, and performs
+    all 'HTTP' requests, downloads, builds and installations in parallel.
+    'pkgdepends' is the workhorse of the 'pak' package.
+License: MIT + file LICENSE
+URL: https://r-lib.github.io/pkgdepends/,
+        https://github.com/r-lib/pkgdepends#readme
+BugReports: https://github.com/r-lib/pkgdepends/issues
+Depends: R (>= 3.4)
+Imports: callr (>= 3.3.1), cli (>= 3.6.0), curl, desc (>= 1.2.0),
+        filelock (>= 1.0.2), glue, jsonlite, lpSolve, pkgbuild (>=
+        1.0.2), pkgcache (>= 2.2.0), prettyunits (>= 1.1.1), processx
+        (>= 3.4.2), ps, R6, rprojroot, stats, utils, zip (>= 2.3.0)
+Suggests: asciicast (>= 2.2.0.9000), covr, debugme, fansi, fs,
+        htmlwidgets, mockery, pak, pingr (>= 2.0.0), rmarkdown,
+        rstudioapi, spelling, testthat, tibble, webfakes (>=
+        1.1.5.9000), withr (>= 2.1.1),
+Config/Needs/coverage: r-lib/asciicast, covr, rmarkdown, svglite
+Config/Needs/dev: rmarkdown, svglite
+Config/Needs/website: r-lib/asciicast, pkgdown (>= 2.0.2),
+        tidyverse/tidytemplate
+Config/testthat/edition: 3
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2023-07-18 16:06:49 UTC; gaborcsardi
+Author: Gábor Csárdi [aut, cre],
+  RStudio [cph, fnd]
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2023-07-18 19:20:02 UTC

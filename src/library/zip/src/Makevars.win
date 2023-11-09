@@ -1,0 +1,23 @@
+
+OBJECTS = init.o miniz.o rzip.o zip.o winutils.o
+
+.PHONY: all clean
+
+all: tools/cmdzip.exe tools/cmdunzip.exe tools/zip.exe $(SHLIB)
+
+tools/cmdzip.exe: miniz.c zip.c winutils.c tools/cmdzip.c
+	$(CC) $(CFLAGS) -DCMDZIP miniz.c zip.c winutils.c tools/cmdzip.c \
+	-municode -o tools/cmdzip.exe
+
+tools/cmdunzip.exe: miniz.c zip.c winutils.c tools/cmdunzip.c
+	$(CC) $(CFLAGS) -DCMDZIP miniz.c zip.c winutils.c tools/cmdunzip.c \
+	-municode -o tools/cmdunzip.exe
+
+tools/zip.exe:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/getzipexe.R"
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS) \
+	tools/cmdunzip tools/cmdunzip.exe tools/cmdunzip.dSYM \
+	tools/cmdzip tools/cmdzip.exe tools/cmdzip.dSYM \
+	tools/zip.exe

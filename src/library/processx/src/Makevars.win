@@ -1,0 +1,41 @@
+# -*- makefile -*-
+
+OBJECTS = init.o poll.o errors.o processx-connection.o		     \
+          processx-vector.o create-time.o base64.o                   \
+          win/processx.o win/stdio.o win/named_pipe.o                \
+	  win/utils.o win/thread.o cleancall.o
+
+.PHONY: all clean
+
+PKG_CFLAGS = -DSTRICT_R_HEADERS
+
+PKG_LIBS = -lws2_32
+
+all: tools/px.exe tools/sock.exe tools/interrupt.exe \
+	supervisor/supervisor.exe $(SHLIB) client$(SHLIB_EXT)
+
+tools/px.exe: tools/px.c
+	$(CC) $(CFLAGS) -Wall $< -o $@
+
+tools/sock.exe: tools/sock.c
+	$(CC) $(CFLAGS) -I../inst/include -Wall $< -o $@
+
+tools/interrupt.exe: tools/interrupt.c
+	$(CC) $(CFLAGS) -Wall $< -o $@
+
+supervisor/supervisor.exe: supervisor/supervisor.c supervisor/utils.c \
+			   supervisor/windows.c
+	$(CC) $(CFLAGS) $^ -o supervisor/supervisor.exe
+
+CLIENT_OBJECTS = base64.o client.o errors.o
+
+client$(SHLIB_EXT): $(CLIENT_OBJECTS)
+	$(SHLIB_LD) -shared $(DLLFLAGS) -o client$(SHLIB_EXT) \
+		$(CLIENT_OBJECTS) $(PKG_LIBS) $(SHLIB_LIBADD) $(LIBR)
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS) $(CLIENT_OBJECTS)			\
+	    supervisor/supervisor supervisor/supervisor.dSYM 		\
+	    supervisor/supervisor.exe tools/px.exe tools/interrupt.exe  \
+	    tools/sock.exe						\
+	    client$(SHLIB_EXT)

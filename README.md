@@ -193,19 +193,19 @@ style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream 
 
 ### How do I … ?
 
-Start with at [*Get
-Started with pak*](https://pak.r-lib.org/dev/reference/get-started.html) to
+Start at [*Get
+Started with pak*](https://pak.r-lib.org/reference/get-started.html) to
 solve specific issues.
 
 ### FAQ
 
-Check out [list of frequently asked
-questions](https://pak.r-lib.org/dev/reference/faq.html).
+Check out the [list of frequently asked
+questions](https://pak.r-lib.org/reference/faq.html).
 
 ### Reference
 
 [The complete reference of pak
-functions](https://pak.r-lib.org/dev/reference/) is the most complete
+functions](https://pak.r-lib.org/reference/) is the most complete
 source of information about pak.
 
 ### I have a(nother) question
@@ -227,7 +227,7 @@ Head to the [pak issue tracker](https://github.com/r-lib/pak/issues).
 travel, etc.
 
 See the [complete list of awesome
-features](https://pak.r-lib.org/dev/reference/features.html).
+features](https://pak.r-lib.org/reference/features.html).
 
 ## [:arrow_down:](https://github.com/r-lib/rig#%EF%B8%8F--installation) Installation
 
@@ -266,7 +266,7 @@ binaries packages for.
 ### Other platforms and nightly builds
 
 See the [installation
-page](https://pak.r-lib.org/dev/reference/install.html)!
+page](https://pak.r-lib.org/reference/install.html)!
 
 ## **:blue_book:** License
 

@@ -1,0 +1,37 @@
+# -*- makefile -*-
+
+OBJECTS = init.o poll.o errors.o processx-connection.o   \
+          processx-vector.o create-time.o base64.o       \
+	  unix/childlist.o unix/connection.o             \
+          unix/processx.o unix/sigchld.o unix/utils.o    \
+	  unix/named_pipe.o cleancall.o
+
+.PHONY: all clean
+
+all: tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT) $(SHLIB)
+
+tools/px: tools/px.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -Wall tools/px.c -o tools/px
+
+supervisor/supervisor: supervisor/supervisor.c supervisor/utils.c
+	$(CC) $(CFLAGS) $(LDFLAGS) supervisor/supervisor.c \
+	      supervisor/utils.c -o supervisor/supervisor
+
+tools/sock: tools/sock.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -I../inst/include -Wall tools/sock.c -o tools/sock
+
+CLIENT_OBJECTS = base64.o client.o errors.o
+
+client$(SHLIB_EXT): $(CLIENT_OBJECTS)
+	$(SHLIB_LINK) -o client$(SHLIB_EXT) $(CLIENT_OBJECTS) $(PKG_LIBS) \
+		$(SHLIB_LIBADD) $(LIBR)
+	if [ -n "${PROCESSX_UNLINK_R}" ]; then \
+	    echo Removing libR.so dependency from client.so; \
+	    patchelf --remove-needed libR.so client$(SHLIB_EXT); \
+	fi
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS) $(CLIENT_OBJECTS)		\
+	    supervisor/supervisor supervisor/supervisor.dSYM 	\
+	    supervisor/supervisor.exe tools/px tools/sock	\
+	    client$(SHLIB_EXT)

@@ -1,6 +1,6 @@
 #! /usr/bin/env sh
 
-echo "*** Running ./configure"
+echo "** Running ./configure"
 
 # Check that this is not just ./configure. We need to run this
 # from R CMD INSTALL, to have the R env vars set.
@@ -13,6 +13,6 @@ fi
 # Find the R binary we need to use. This is a bit trickier on
 # Windows, because it has two architectures. On windows R_ARCH_BIN
 # is set, so this should work everywhere.
-RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
+export RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 "$RBIN" --vanilla --slave -f tools/dynamic-help.R

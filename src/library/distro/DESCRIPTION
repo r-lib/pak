@@ -1,0 +1,22 @@
+Package: distro
+Type: Package
+Title: Linux Distribution Properties
+Version: 0.1.0
+Authors@R: c(
+    person("Neal", "Richardson", email = "neal.p.richardson@gmail.com", role = c("aut", "cre"))
+  )
+Description: In order to provide unified access to Linux distribution details
+    in R, this package wraps the various files and commands that may exist
+    on a system. It is similar in spirit to the 'lsb_release' command and the
+    'Python' package of the same name.
+License: Apache License (>= 2.0)
+Encoding: UTF-8
+LazyData: true
+Suggests: testthat (>= 2.1.0)
+RoxygenNote: 7.1.0.9000
+NeedsCompilation: no
+Packaged: 2020-11-03 19:37:29 UTC; enpiar
+Author: Neal Richardson [aut, cre]
+Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
+Repository: CRAN
+Date/Publication: 2020-11-09 09:50:02 UTC

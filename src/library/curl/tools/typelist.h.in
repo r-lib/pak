@@ -1,0 +1,62 @@
+/* if headers are not included, we provide a copy */
+#ifndef CURLINC_TYPECHECK_GCC_H
+
+/* evaluates to true if option takes a long argument */
+#define curlcheck_long_option(option)                   \
+  (0 < (option) && (option) < CURLOPTTYPE_OBJECTPOINT)
+
+#ifdef CURLOPTTYPE_BLOB
+#define curlcheck_off_t_option(option) ((option) > CURLOPTTYPE_OFF_T && (option) < CURLOPTTYPE_BLOB)
+#else
+#define curlcheck_off_t_option(option) ((option) > CURLOPTTYPE_OFF_T)
+#endif
+
+/* evaluates to true if option takes a data argument to pass to a callback */
+#define curlcheck_cb_data_option(option)                                      \
+  ((option) == CURLOPT_CHUNK_DATA ||                                          \
+   (option) == CURLOPT_CLOSESOCKETDATA ||                                     \
+   (option) == CURLOPT_DEBUGDATA ||                                           \
+   (option) == CURLOPT_FNMATCH_DATA ||                                        \
+   (option) == CURLOPT_HEADERDATA ||                                          \
+   (option) == CURLOPT_HSTSREADDATA ||                                        \
+   (option) == CURLOPT_HSTSWRITEDATA ||                                       \
+   (option) == CURLOPT_INTERLEAVEDATA ||                                      \
+   (option) == CURLOPT_IOCTLDATA ||                                           \
+   (option) == CURLOPT_OPENSOCKETDATA ||                                      \
+   (option) == CURLOPT_PREREQDATA ||                                          \
+   (option) == CURLOPT_PROGRESSDATA ||                                        \
+   (option) == CURLOPT_READDATA ||                                            \
+   (option) == CURLOPT_SEEKDATA ||                                            \
+   (option) == CURLOPT_SOCKOPTDATA ||                                         \
+   (option) == CURLOPT_SSH_KEYDATA ||                                         \
+   (option) == CURLOPT_SSL_CTX_DATA ||                                        \
+   (option) == CURLOPT_WRITEDATA ||                                           \
+   (option) == CURLOPT_RESOLVER_START_DATA ||                                 \
+   (option) == CURLOPT_TRAILERDATA ||                                         \
+   (option) == CURLOPT_SSH_HOSTKEYDATA ||                                     \
+   0)
+
+/* evaluates to true if option takes a POST data argument (void* or char*) */
+#define curlcheck_postfields_option(option)                                   \
+  ((option) == CURLOPT_POSTFIELDS ||                                          \
+   (option) == CURLOPT_COPYPOSTFIELDS ||                                      \
+   0)
+
+/* evaluates to true if option takes a struct curl_slist * argument */
+#define curlcheck_slist_option(option)                                        \
+  ((option) == CURLOPT_HTTP200ALIASES ||                                      \
+   (option) == CURLOPT_HTTPHEADER ||                                          \
+   (option) == CURLOPT_MAIL_RCPT ||                                           \
+   (option) == CURLOPT_POSTQUOTE ||                                           \
+   (option) == CURLOPT_PREQUOTE ||                                            \
+   (option) == CURLOPT_PROXYHEADER ||                                         \
+   (option) == CURLOPT_QUOTE ||                                               \
+   (option) == CURLOPT_RESOLVE ||                                             \
+   (option) == CURLOPT_TELNETOPTIONS ||                                       \
+   (option) == CURLOPT_CONNECT_TO ||                                          \
+   0)
+
+#define curlcheck_string_option(x) \
+(x > 10000 && x < 20000 && !curlcheck_slist_option(x) && !curlcheck_cb_data_option(x));
+
+#endif

@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------
 
 RVERSIONS ?= $(shell rig ls | tail +3 | cut -b 3- | cut -f 1 -d" ")
@@ -58,7 +57,10 @@ LIBNAMES=pkgconfig cares nghttp2 libcurl
 LIBSARM=$(patsubst %,opt/arm64/%.done,$(LIBNAMES))
 LIBSX86=$(patsubst %,opt/x86_64/%.done,$(LIBNAMES))
 
-LIBS=$(LIBSX86)
+LIBS=
+ifneq ($(strip $(RVERSIONSX86)),)
+  LIBS+=$(LIBSX86)
+endif
 ifneq ($(strip $(RVERSIONSARM)),)
   LIBS+=$(LIBSARM)
 endif
@@ -236,16 +238,19 @@ opt/x86_64/libcurl.done: $(LIBCURLFILE) opt/x86_64/pkgconfig.done \
 
 # ------------------------------------------------------------------------
 
-export PAK_BUNDLE = false
 export PAK_ROOT = $(ROOT)
 
 R-%: lib/R-%.done
 	@true
 
-lib/R-%.done: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done \
-	      $(ROOT)/lib/%/pkgdepends $(ROOT)/lib/%/_pak.done
-	@echo "----- CLEANING INSTALLATION ($*) ---------------------------"
-	rm -rf $@
+R=/usr/local/bin/R-$(RVERSION_DEFAULT)
+pak_$(PAKVERSION).tar.gz:
+	cp Makevars-curl.in $(PKGROOT)/src/library/curl/src/Makevars.in
+	$(R) CMD build $(PKGROOT)
+
+lib/R-%.done: $(LIBS) pak_$(PAKVERSION).tar.gz
+	mkdir -p lib/$*
+	/usr/local/bin/R-$* CMD INSTALL -l $(ROOT)/lib/$* pak_$(PAKVERSION).tar.gz
 	rm -rf $(ROOT)/lib/$*/pak/library/_cache
 	rm -rf $(ROOT)/lib/$*/pak/library/*/help
 	rm -rf $(ROOT)/lib/$*/pak/library/*/doc
@@ -254,64 +259,12 @@ lib/R-%.done: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done \
 	cd $(ROOT)/lib/$* && tar czf pak_$(PAKVERSION).tgz pak
 	touch $@
 
-$(ROOT)/lib/%/_pak0.done:
-	@echo "----- INSTALLING pak ($*) ----------------------------------"
-	rm -rf $@
-	mkdir -p $(ROOT)/lib/$*
-	/usr/local/bin/R-$* CMD INSTALL -l $(ROOT)/lib/$* $(PKGROOT)
-	touch $@
-
-$(ROOT)/lib/%/_curl.done: curl.tar.gz $(LIBS) $(eval PATH := $(X86PATH))
-	@echo "----- INSTALLING curl ($*) ---------------------------------"
-	rm -rf $@
-	rm -rf $(ROOT)/lib/$*/_curl
-	mkdir -p $(ROOT)/lib/$*/_curl
-	tar xzf curl.tar.gz -C $(ROOT)/lib/$*/_curl
-	cp Makevars-curl.in $(ROOT)/lib/$*/_curl/curl/src/Makevars.in
-	mkdir -p $(ROOT)/lib/$*/pak/library
-	/usr/local/bin/R-$* CMD INSTALL -l $(ROOT)/lib/$*/pak/library $(ROOT)/lib/$*/_curl/curl
-	cp -r $(ROOT)/lib/$*/pak/library/curl $(ROOT)/lib/$*/
-	touch $@
-
-curl.tar.gz:
-	@echo "----- DOWNLOADING curl -------------------------------------"
-	/usr/local/bin/R -q -e 'options(repos = c(CRAN = "https://cran.rstudio.com")); download.packages("curl", ".")' && \
-	mv curl_*.tar.gz curl.tar.gz
-
-$(ROOT)/lib/%/pkgdepends: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done
-	@echo "----- INSTALLING pkgdepends ($*) ---------------------------"
-	rm -rf $@
-	mkdir -p $(ROOT)/lib/$*/pak/library
-	R_LIBS="$(ROOT)/lib/$*" /usr/local/bin/R-$* -q -e \
-		'pak:::safe_cran_install("pkgdepends", lib = "$(ROOT)/lib/$*", exclude = "curl")'
-	touch $@
-
-$(ROOT)/lib/%/_pak.done: $(ROOT)/lib/%/_curl.done $(ROOT)/lib/%/pkgdepends
-	@echo "----- INSTALLING pak dependences ($*) ----------------------"
-	rm -rf $@
-	R_LIBS="$(ROOT)/lib/$*" /usr/local/bin/R-$* -q -e \
-		'pak:::embed_lib("$(PKGROOT)")'
-	touch $@
-
 # ------------------------------------------------------------------------
 
-TESTS=$(patsubst %,$(ROOT)/lib/R-%.tested,$(RVERSIONS))
-
-test: $(TESTS)
-
-$(ROOT)/lib/R-%.tested: $(ROOT)/lib/%/_pak.done
-	@echo "----- TESTING ($*) -----------------------------------------"
-	rm -rf $@
-	echo TODO
-	touch $@
-
-# ------------------------------------------------------------------------
-
-R=/usr/local/bin/R-$(RVERSION_DEFAULT)
 RLIB=$(ROOT)/lib/$(RVERSION_DEFAULT)
 export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).tgz,$(RVERSIONS))
 
-deploy: test
+deploy:
 	@echo "----- DEPLOYING packages -----------------------------------"
 	R_LIBS=$(RLIB) $(R) -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = TRUE)'
 	R_LIBS=$(RLIB) $(R) -q -e \
@@ -322,8 +275,6 @@ deploy: test
 clean:
 	rm -rf src opt lib *.tar.gz *.tar.bz2
 
-.PRECIOUS: $(ROOT)/lib/%/_pak0.done $(ROOT)/lib/%/_curl.done \
-	   $(ROOT)/lib/%/pkgdepends $(ROOT)/lib/%/_pak.done \
-	   $(ROOT)/lib/R-%.tested
+.PHONY: all build deploy clean R-%
 
-.PHONY: all build test deploy clean R-%
+.PRECIOUS: lib/R-%.done

@@ -1,0 +1,13 @@
+diff --git a/src/library/filelock/src/filelock-windows.c b/src/library/filelock/src/filelock-windows.c
+index f1e4aae7..5fa7cc2f 100644
+--- a/src/library/filelock/src/filelock-windows.c
++++ b/src/library/filelock/src/filelock-windows.c
+@@ -14,7 +14,7 @@ void filelock__check_interrupt_fn(void *dummy) {
+   R_CheckUserInterrupt();
+ }
+ 
+-int filelock__is_interrupt_pending() {
++int filelock__is_interrupt_pending(void) {
+   return !(R_ToplevelExec(filelock__check_interrupt_fn, NULL));
+ }
+ 

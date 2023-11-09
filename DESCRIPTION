@@ -4,7 +4,34 @@ Version: 0.6.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd")),
+    person("Winston", "Chang", role = "ctb", comment = "R6, callr, processx"),
+    person("Mango Solutions", role = c("cph", "fnd"), comment = "callr, processx"),
+    person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild, rappdirs"),
+    person("Brodie", "Gaslam",  role = "ctb", comment = "crayon"),
+    person("Jeroen", "Ooms", role = "ctb", comment = "curl, jsonlite"),
+    person("Kirill", "Müller", role = "ctb", comment = "cli, desc, rprojroot"),
+    person("Maëlle", "Salmon", role = "ctb", comment = "desc, pkgsearch"),
+    person("Neal", "Richardson", role = "ctb", comment = "distro"),
+    person("Jennifer", "Bryan", role = "ctb", comment = "glue"),
+    person("Duncan", "Temple Lang", role = "ctb", comment = "jsonlite"),
+    person("Lloyd", "Hilaiel", role = "cph", comment = "jsonlite"),
+    person("Michel Berkelaar and lpSolve authors", role = "ctb", comment = "lpSolve"),
+    person("Linus", "Torvalds", role = "ctb", comment = "parsedate"),
+    person("R Consortium", role = "fnd", comment = "pkgsearch"),
+    person("Bill", "Denney", role = "ctb", comment = "prettyunits"),
+    person("Christophe", "Regouby", role = "ctb", comment = "prettyunits"),
+    person("Jay", "Loden", role = "ctb", comment = "ps"),
+    person("Dave", "Daeschler", role = "ctb", comment = "ps"),
+    person("Giampaolo", "Rodola'", role = "ctb", comment = "ps"),
+    person("Sridhar", "Ratnakumar", role = "ctb", comment = "rappdirs"),
+    person("Trent", "Mick", role = "ctb", comment = "rappdirs"),
+    person("ActiveState",   role = "cph", comment = "rappdirs"),
+    person("Eddy", "Petrisor", role = "ctb", comment = "rappdirs"),
+    person("Trevor", "Davis", role = "ctb", comment = "rappdirs"),
+    person("Gregory", "Jefferis", role = "ctb", comment = "rappdirs"),
+    person("Kuba", "Podgórski", role = "ctb", comment = "zip"),
+    person("Rich", "Geldreich", role = "ctb", comment = "zip")
   )
 Description: The goal of 'pak' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in
@@ -46,12 +73,8 @@ Suggests:
     rstudioapi,
     testthat (>= 3.2.0),
     withr
-Remotes:
-    r-lib/pkgdepends
-BuildResaveData: no
 ByteCompile: true
 Config/build/extra-sources: configure*
-Note: This field has Remotes syntax, but repeat remotes in `Remotes`!
 Config/needs/dependencies:
     callr,
     desc,
@@ -62,7 +85,7 @@ Config/needs/dependencies:
     glue,
     jsonlite,
     pkgcache,
-    r-lib/pkgdepends,
+    pkgdepends,
     pkgsearch,
     prettyunits,
     processx,
@@ -75,5 +98,5 @@ Config/Needs/website:
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.2.3.9000
+BiArch: true

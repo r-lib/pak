@@ -35,8 +35,3 @@ use_private_lib <- function() {
   new <- c(lib, old[old != lib])
   .libPaths(new)
 }
-
-is_private_lib_embedded <- function() {
-  lib <- private_lib_dir()
-  identical(names(lib), "embedded")
-}

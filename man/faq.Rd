@@ -70,7 +70,7 @@ In this case you can delete the package and then install it, or use the
 
 \subsection{How do I install a dependency from a binary package}{
 
-Sometimes it is suffifient to install the binary package of an older
+Sometimes it is sufficient to install the binary package of an older
 version of a dependency, instead of the newer source package that
 potentially needs compilers, system tools or libraries.
 
