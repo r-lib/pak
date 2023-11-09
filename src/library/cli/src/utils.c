@@ -12,7 +12,7 @@
 
 #ifdef _WIN32
 
-SEXP clic_getppid() {
+SEXP clic_getppid(void) {
   DWORD pid = GetCurrentProcessId();
   HANDLE handle = NULL;
   PROCESSENTRY32W pe = { 0 };

@@ -14,7 +14,7 @@ void filelock__check_interrupt_fn(void *dummy) {
   R_CheckUserInterrupt();
 }
 
-int filelock__is_interrupt_pending() {
+int filelock__is_interrupt_pending(void) {
   return !(R_ToplevelExec(filelock__check_interrupt_fn, NULL));
 }
 

@@ -176,6 +176,15 @@ embed <- local({
       }
     }
 
+    patch <- file.path(lib_dir(), paste0(pkg, ".patch"))
+    if (file.exists(patch)) {
+      message("Patching ", pkg)
+      system2(
+        "patch",
+        c("-d", tmp1, "-p", "3", "-i", normalizePath(patch))
+      )
+    }
+
     rimraf(file.path(lib, pkg))
     file.rename(file.path(tmp1, pkg), file.path(lib, pkg))
     clean_package(pkg)
