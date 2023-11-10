@@ -113,8 +113,7 @@ installedok_remote_standard <- function(installed, solution, config, ...) {
     # the repo must match
     identical(installed$package, solution$package) &&
       identical(installed$version, solution$version) &&
-      (identical(installed[["platform"]], solution[["platform"]]) ||
-       identical(installed[["platform"]], "*")) &&
+      installedok_remote_standard_platform(installed, solution, config, ...) &&
       identical(installed$remoterepos, solution$metadata[[1]][["RemoteRepos"]])
 
   } else {
@@ -123,4 +122,14 @@ installedok_remote_standard <- function(installed, solution, config, ...) {
       identical(installed$version, solution$version) &&
       identical(installed$remoterepos, solution$metadata[[1]][["RemoteRepos"]])
   }
+}
+
+installedok_remote_standard_platform <- function(installed, solution,
+                                                 config, ...) {
+  if (identical(installed[["platform"]], solution[["platform"]])) return(TRUE)
+  if (identical(installed[["platform"]], "*")) return(TRUE)
+  if (identical(installed$remotepkgplatform, solution$platform)) return(TRUE)
+  if (is_string(solution$platform) && is_string(installed$platform) &&
+      startsWith(solution$platform, installed$platform)) return(TRUE)
+  FALSE
 }

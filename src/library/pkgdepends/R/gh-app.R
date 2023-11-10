@@ -201,13 +201,14 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
   })
 
   app$post("/graphql", function(req, res) {
-    re_pull_1 <- paste0(
+    re_pull <- paste0(
       "owner:[ ]*\"(?<user>[^\"]+)\"", "(?s:.)*",
       "name:[ ]*\"(?<repo>[^\"]+)\"", "(?s:.)*",
-      "number:[ ]*(?<pull>[0-9]+)[)]"
+      "pullRequest[(]number:[ ]*(?<pull>[0-9]+)[)]", "(?s:.)*",
+      "file[(]path:[ ]*\"(?<path>.*)\""
     )
 
-    psd <- re_match(req$json$query, re_pull_1)
+    psd <- re_match(req$json$query, re_pull)
     if (is.na(psd$.match)) return("next")
 
     if (!psd$user %in% names(app$locals$repos$users)) {
@@ -223,10 +224,12 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     for (cmt in commits) {
       if (!is.null(cmt$pull) && cmt$pull == psd$pull) {
         add_gh_headers(res)
+        dsc <- cmt$files[[psd$path]]
         res$send_json(
           auto_unbox = TRUE,
           list(data = list(repository = list(pullRequest = list(
-            headRefOid = cmt$sha
+            headRefOid = cmt$sha,
+            headRef = list(target = list(file = list(object = gh_fmt_desc(dsc))))
           ))))
         )
         return()
@@ -236,41 +239,37 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     send_pull_not_found(res, psd)
   })
 
+  # @*release
   app$post("/graphql", function(req, res) {
-    re_pull_2 <- paste0(
+    re_release <- paste0(
       "owner:[ ]*\"(?<user>[^\"]+)\"", "(?s:.)*",
       "name:[ ]*\"(?<repo>[^\"]+)\"", "(?s:.)*",
-      "object[(]expression:[ ]*\"(?<sha>[^:]+):(?<path>.*)\""
+      "file[(]path:[ ]*\"(?<path>.*)\""
     )
 
-    psd <- re_match(req$json$query, re_pull_2)
+    psd <- re_match(req$json$query, re_release)
     if (is.na(psd$.match)) return("next")
-
-    if (!psd$user %in% names(app$locals$repos$users)) {
-      send_user_not_found(res, psd)
-      return()
-    }
-    if (!psd$repo %in% names(app$locals$repos$users[[psd$user]]$repos)) {
-      send_repo_not_found(res, psd)
-      return()
-    }
 
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {
-      if (cmt$sha == psd$sha) {
+      if (isTRUE(cmt$latestRelease)) {
         add_gh_headers(res)
         dsc <- cmt$files[[psd$path]]
         res$send_json(
           auto_unbox = TRUE,
-          list(data = list(repository = list(
-            object = gh_fmt_desc(dsc)
-          )))
+          list(data = list(repository = list(latestRelease = list(
+            tagName = cmt$tagName,
+            tagCommit = list(
+              oid = cmt$sha,
+              file = list(object = gh_fmt_desc(dsc))
+            )
+          ))))
         )
         return()
       }
     }
 
-    send_sha_not_found(res, psd)
+    send_no_releases(res, psd)
   })
 
   app$get("/repos/:user/:repo/zipball/:sha", function(req, res) {
@@ -366,6 +365,15 @@ send_pull_not_found <- function(res, psd) {
 send_sha_not_found <- function(res, psd) {
   # TODO
   res$send_status(404)
+}
+
+send_no_releases <- function(res, psd) {
+  res$set_status(200)
+  res$send_json(auto_unbox = TRUE,
+    list(
+      data = list(repository = list(latestRelease = NA))
+    )
+  )
 }
 
 # nocov end

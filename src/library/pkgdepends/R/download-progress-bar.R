@@ -386,7 +386,7 @@ pkgplan__done_progress_bar <- function(bar) {
     cli_alert_success(
       paste0(
         "Downloaded {dld} package{?s} {.size ({bts})}",
-        if (bar$show_time) "in {.time {dt}}"
+        if (bar$show_time) " in {.time {dt}}"
       )
     )
   } else {

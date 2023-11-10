@@ -40,10 +40,16 @@ package manager, see [pak](https://github.com/r-lib/pak).
 
 # Install
 
-Once on CRAN, install the package with:
+Install the package with:
 
 ``` r
 install.packages("pkgdepends")
+```
+
+If you need the development version, install it with
+
+``` r
+pak::pak("r-lib/pkgdepends")
 ```
 
 # Usage
