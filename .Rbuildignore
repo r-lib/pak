@@ -34,7 +34,10 @@
 ^man/chunks/sysreqs[.]html$
 ^man/chunks/sysreqs_cache$
 ^src/DONE$
-*.DSYM$
+^src/library/.*[.]o$
+^src/library/.*[.]so$
+^src/library/.*[.]dll$
+.DSYM$
 ^src/library/curl/configure.log$
 ^src/library/curl/src/Makevars$
 ^src/library/curl/tools/option_table[.]txt$
