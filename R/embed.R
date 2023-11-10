@@ -12,7 +12,7 @@ embed <- local({
   }
 
   get_repos <- function() {
-    c(CRAN = "https://cran.rstudio.com")
+    c(CRAN = "https://cran.r-project.org")
   }
 
   base_packages <- function() {
@@ -49,6 +49,7 @@ embed <- local({
     check_pak_root()
     lib <- lib_dir()
     pkgs <- dir(lib)
+    pkgs <- pkgs[!endsWith(pkgs, ".patch")]
     vers <- lapply(pkgs, function(pkg) {
       dsc <- read.dcf(file.path(lib, pkg, "DESCRIPTION"))
       dpkg <- dsc[, "Package"]
@@ -164,7 +165,7 @@ embed <- local({
 
     dir.create(tmp <- tempfile())
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
-    path <- utils::download.packages(pkg, tmp)
+    path <- utils::download.packages(pkg, tmp, repos = get_repos())
     tmp1 <- file.path(tmp, "pkg")
     untar(path[, 2], exdir = tmp1)
 
