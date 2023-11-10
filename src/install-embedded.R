@@ -1,12 +1,15 @@
-opts <- paste(
-  "--without-keep.source",
-  "--no-html",
-  "--no-help",
-  "--no-data",
-  "--no-docs",
-  if (getRversion() >= "3.6") "--strip",
-  if (getRversion() >= "3.6") "--no-staged-install"
-)
+opts <- function() {
+  paste(
+    "--without-keep.source",
+    "--no-html",
+    "--no-help",
+    "--no-data",
+    "--no-docs",
+    if (Sys.getenv("CROSS_COMPILING") == "yes") "--no-test-load",
+    if (getRversion() >= "3.6") "--strip",
+    if (getRversion() >= "3.6") "--no-staged-install"
+  )
+}
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
@@ -29,7 +32,7 @@ install_one <- function(pkg, lib = NULL) {
     lib = lib,
     repos = NULL,
     type = "source",
-    INSTALL_opts = opts
+    INSTALL_opts = opts()
   ))))
 
   if (!file.exists(file.path(lib, pkg))) {
@@ -68,7 +71,18 @@ install_order <- function() {
 
 install_all <- function(lib = NULL) {
   pkgs <- install_order()
-  for (pkg in pkgs) install_one(pkg, lib = lib)
+  if (Sys.getenv("CROSS_COMPILING") == "yes") {
+    lib <- get_lib(lib)
+    for (pkg in pkgs) {
+      install_one(pkg, lib = paste0(lib, "-", pkg))
+    }
+    for (pkg in pkgs) {
+      file.rename(file.path(paste0(lib, "-", pkg), pkg), file.path(lib, pkg))
+      unlink(file.path(paste0(lib, "-", pkg)), recursive = TRUE)
+    }
+  } else {
+    for (pkg in pkgs) install_one(pkg, lib = lib)
+  }
 }
 
 get_ver <- function(path) {
@@ -138,5 +152,10 @@ install_embedded_main <- function() {
 }
 
 if (is.null(sys.calls())) {
+  conf_flags <- trimws(strsplit(Sys.getenv("R_CONFIGURE_FLAGS"), " ")[[1]])
+  if ("--build=x86_64-pc-linux-gnu" %in% conf_flags &&
+      "--host=x86_64-apple-darwin22" %in% conf_flags) {
+    Sys.setenv(CROSS_COMPILING = "yes")
+  }
   install_embedded_main()
 }
