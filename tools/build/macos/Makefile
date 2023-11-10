@@ -256,7 +256,7 @@ lib/R-%.done: $(LIBS) pak_$(PAKVERSION).tar.gz
 	rm -rf $(ROOT)/lib/$*/pak/library/*/doc
 	find $(ROOT)/lib/$*/pak/library -name "*.so.dSYM" | xargs rm -rf
 	find $(ROOT)/lib/$*/pak/library -name "*.so" | xargs strip -x
-	cd $(ROOT)/lib/$* && tar czf pak_$(PAKVERSION).tgz pak
+	cd $(ROOT)/lib/$* && tar czf pak_$(PAKVERSION).tgz --no-xattrs pak
 	touch $@
 
 # ------------------------------------------------------------------------
