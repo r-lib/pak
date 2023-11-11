@@ -154,7 +154,8 @@ install_embedded_main <- function() {
 if (is.null(sys.calls())) {
   conf_flags <- trimws(strsplit(Sys.getenv("R_CONFIGURE_FLAGS"), " ")[[1]])
   if ("--build=x86_64-pc-linux-gnu" %in% conf_flags &&
-      "--host=x86_64-apple-darwin22" %in% conf_flags) {
+      ("--host=x86_64-apple-darwin22" %in% conf_flags ||
+       "--host=aarch64-apple-darwin22" %in% conf_flags)) {
     Sys.setenv(CROSS_COMPILING = "yes")
   }
   install_embedded_main()
