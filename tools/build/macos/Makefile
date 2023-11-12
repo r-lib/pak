@@ -14,9 +14,6 @@ ARMPATH=$(ROOT)/opt/arm64/bin:$(BASEPATH)
 X86PATH=$(ROOT)/opt/x86_64/bin:$(BASEPATH)
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 
-RVERSIONSARM=$(filter %-arm64,$(RVERSIONS))
-RVERSIONSX86=$(filter-out %-arm64,$(RVERSIONS))
-
 DONE=$(patsubst %,lib/R-%.done,$(RVERSIONS))
 
 build: $(DONE)
@@ -35,7 +32,9 @@ pak_$(PAKVERSION).tar.gz:
 
 lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	mkdir -p lib/$*
-	/usr/local/bin/R-$* CMD INSTALL -l $(ROOT)/lib/$* pak_$(PAKVERSION).tar.gz
+	R_MAKEVARS_USER="`pwd`/Makevars-macos-$*" \
+		/usr/local/bin/R-$* CMD INSTALL \
+		-l $(ROOT)/lib/$* pak_$(PAKVERSION).tar.gz
 	rm -rf $(ROOT)/lib/$*/pak/library/_cache
 	rm -rf $(ROOT)/lib/$*/pak/library/*/help
 	rm -rf $(ROOT)/lib/$*/pak/library/*/doc
