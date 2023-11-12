@@ -83,6 +83,8 @@ install_all <- function(lib = NULL) {
   } else {
     for (pkg in pkgs) install_one(pkg, lib = lib)
   }
+  file.create("DONE")
+  invisible()
 }
 
 get_ver <- function(path) {
@@ -108,6 +110,7 @@ get_ver <- function(path) {
 
 update_all <- function(lib = NULL) {
   lib <- get_lib(lib)
+  cat("Updating dev lib at", lib, "\n")
   pkgs <- install_order()
   for (pkg in pkgs) {
     oldver <- get_ver(file.path(lib, pkg))
@@ -125,38 +128,76 @@ update_all <- function(lib = NULL) {
   }
 }
 
-install_pkgload_src <- function() {
-  # TODO: we could do this here, if we get rid of rappdirs and
-  # write our on code to determine the user cache directory.
-  message("Delayed embedding dependencies in `pkgload::load_all()`.")
+load_all <- function() {
+  args <- commandArgs(TRUE)
+  if (length(args) < 2) {
+    stop("Usage: install-embedded.R [ --load-all library-dir ]")
+  }
+  update_all(args[2])
+}
+
+parse_platforms <- function(args) {
+  build <- if (grepl("^--build=", args[1])) {
+    substr(args[1], 9, 1000)
+  }
+  target <- if (grepl("^--target=", args[2])) {
+    substr(args[2], 10, 1000)
+  }
+  list(
+    load_all = "--load-all" %in% args,
+    current = R.Version()$platform,
+    build = build %||% NA_character_,
+    target = target %||% NA_character_
+  )
 }
 
 install_embedded_main <- function() {
-  args <- commandArgs(TRUE)
+  unlink("DONE")
+  # Parse platforms
+  pl <- parse_platforms(commandArgs(TRUE))
 
-  if (length(args) >= 1 && "--load-all" == args[1]) {
-    if (length(args) < 2) {
-      stop("Usage: install-embedded.R [ --load-all library-dir ]")
-    }
-    update_all(args[2])
-  } else {
-    if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
-      install_pkgload_src()
-    } else {
-      unlink("DONE")
-      install_all()
-      file.create("DONE")
-    }
+  # From .onLoad()'s call after load_all(), create separate lib
+  if (pl[["load_all"]]) {
+    return(load_all())
   }
-  invisible()
+
+  # From load_all()'s ./configure call, do nothing
+  if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
+    # TODO: we could do this here, if we get rid of rappdirs and
+    # write our on code to determine the user cache directory.
+    cat("Delayed embedding dependencies in `pkgload::load_all()`.\n")
+    file.create("DONE")
+    return(invisible())
+  }
+
+  # Otherwise R CMD INSTALL, check if we are cross-compiling
+  cat("Current platform:", pl$current, "\n")
+  cat("Build platform: ", pl$build, "\n")
+  cat("Target platform: ", pl$target, "\n")
+
+  if (grepl("linux", pl$current) &&
+    grepl("darwin", pl$target)) {
+    # PPM: current is Linux, target is (some) Darwin
+    Sys.setenv(CROSS_COMPILING = "yes")
+  } else if (grepl("x86_64-apple-darwin", pl$current) &&
+    grepl("aarch64-apple-darwin", pl$target)) {
+    # Current is Darwin x86_64, target is Darwin aarch64
+    Sys.setenv(CROSS_COMPILING = "yes")
+    Sys.setenv(R_MAKEVARS_USER = file.path(
+      getwd(),
+      "Makevars-macos-arm64"
+    ))
+  } else if (grepl("x86_64.*linux", pl$current) &&
+    grepl("aarch64.*linux, pl$target")) {
+    # Current is Linux x86_64, target is Linux aarch64
+    Sys.setenv(CROSS_COMPILING = "yes")
+  } else {
+    # Not cross compiling or cross compiling handled externally
+  }
+
+  install_all()
 }
 
 if (is.null(sys.calls())) {
-  conf_flags <- trimws(strsplit(Sys.getenv("R_CONFIGURE_FLAGS"), " ")[[1]])
-  if ("--build=x86_64-pc-linux-gnu" %in% conf_flags &&
-      ("--host=x86_64-apple-darwin22" %in% conf_flags ||
-       "--host=aarch64-apple-darwin22" %in% conf_flags)) {
-    Sys.setenv(CROSS_COMPILING = "yes")
-  }
   install_embedded_main()
 }

@@ -33,7 +33,9 @@
 ^man/macros/eval2.Rd$
 ^man/chunks/sysreqs[.]html$
 ^man/chunks/sysreqs_cache$
+^R/build-data[.]R$
 ^src/DONE$
+^src/Makevars$
 ^src/library/.*[.]o$
 ^src/library/.*[.]so$
 ^src/library/.*[.]dll$

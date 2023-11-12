@@ -16,3 +16,52 @@ fi
 export RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 "$RBIN" --vanilla --slave -f tools/dynamic-help.R
+
+BUILD_PLATFORM=
+TARGET_PLATFORM=
+
+while [ -n "$1" ]; do
+  case $1 in
+    --build)
+      if [ -n "$2" ]; then
+        BUILD_PLATFORM="$2"
+        shift
+      else
+        printf 'ERROR: "--build" requires a non-empty option argument.\n' >&2
+        exit 1
+      fi
+      ;;
+    --build=?*)
+      BUILD_PLATFORM="${1#*=}"
+      ;;
+    --build=)
+      printf 'ERROR: "--build" requires a non-empty option argument.\n' >&2
+      exit 1
+      ;;
+    --host)
+      if [ -n "$2" ]; then
+        TARGET_PLATFORM="$2"
+        shift
+      else
+        printf 'ERROR: "--hosr" requires a non-empty option argument.\n' >&2
+        exit 1
+      fi
+      ;;
+    --host=)
+      printf 'ERROR: "--host" requires a non-empty option argument.\n' >&2
+      exit 1
+      ;;
+    --host=?*)
+      TARGET_PLATFORM=${1#*=}
+      ;;
+  esac
+  shift
+done
+
+cat src/Makevars.in | \
+  sed "s|@BUILD_PLATFORM@|${BUILD_PLATFORM}|" | \
+  sed "s|@TARGET_PLATFORM@|${TARGET_PLATFORM}|" > src/Makevars
+
+cat R/build-data.R.in | \
+  sed "s|@BUILD_PLATFORM@|${BUILD_PLATFORM}|" | \
+  sed "s|@TARGET_PLATFORM@|${TARGET_PLATFORM}|" > R/build-data.R
