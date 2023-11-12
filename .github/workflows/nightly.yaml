@@ -34,7 +34,7 @@ on:
         options:
         - 'yes'
         - 'no'
-        default: 'no'
+        default: 'yes'
       linux-arm64:
         description: 'Build arm64 Linux packages'
         required: true
