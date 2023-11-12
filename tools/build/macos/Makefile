@@ -28,9 +28,7 @@ pak_$(PAKVERSION).tar.gz:
 
 lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	mkdir -p lib/$*
-	R_MAKEVARS_USER="`pwd`/Makevars-macos-$*" \
-		/usr/local/bin/R-$* CMD INSTALL \
-		-l $(ROOT)/lib/$* pak_$(PAKVERSION).tar.gz
+	./build.sh "$*" "pak_$(PAKVERSION).tar.gz" "$(ROOT)/lib/$*"
 	rm -rf $(ROOT)/lib/$*/pak/library/_cache
 	rm -rf $(ROOT)/lib/$*/pak/library/*/help
 	rm -rf $(ROOT)/lib/$*/pak/library/*/doc
