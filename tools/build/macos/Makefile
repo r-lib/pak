@@ -8,10 +8,6 @@ RVERSION_DEFAULT ?= $(shell rig default)
 ROOT=$(shell pwd)
 PKGROOT=$(ROOT)/../../..
 
-# We leave out homebrew on purpose
-BASEPATH=/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
-ARMPATH=$(ROOT)/opt/arm64/bin:$(BASEPATH)
-X86PATH=$(ROOT)/opt/x86_64/bin:$(BASEPATH)
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 
 DONE=$(patsubst %,lib/R-%.done,$(RVERSIONS))
