@@ -9,6 +9,7 @@ if [[ -e "/usr/local/bin/R-${RVER}" ]]; then
     # nope
     R_MAKEVARS_USER="`pwd`/Makevars-macos-${RVER}" \
         "/usr/local/bin/R-${RVER}" CMD INSTALL -l "$LIB" "$PKGFILE"
+    exit 0
 elif [[ "$RVER" =~ -arm64$ ]]; then
     RVERX861="${RVER%-arm64}"
     RVERX862="${RVER%-arm64}-x86_64"
@@ -24,6 +25,9 @@ else
     printf "ERROR: don't know how to build pak with R-${RVER}\n" >&2
     exit 1
 fi
+
+# -------------------------------------------------------------------------
+# The rest is for cros-compilation only
 
 echo "Cross compiling for R ${RVER} using R ${RVERX86}."
 
