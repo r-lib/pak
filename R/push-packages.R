@@ -539,7 +539,7 @@ push_packages <- local({
     dry_run
 
     if (tag == "auto") {
-      version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
+      version <- desc::desc_get(file = paths[1], "Version")[[1]]
       if (length(version) >= 4 && version[4] == 9999) {
         # rc is also pushed to devel, as devel should be the latest
         p1 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
