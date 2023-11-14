@@ -1,9 +1,17 @@
-
-ARG ARCH
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-lib/pak-builder:${ARCH}-${R_MAJOR}
+FROM ghcr.io/r-lib/pak-libs:latest AS libs
+FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
+COPY --from=libs /usr/local /usr/local
+
 ARG TOKEN=dummy
+
+# -------------------------------------------------------------------------
+# set up static compilation
+# -------------------------------------------------------------------------
+
+RUN mkdir -p /root/.R
+COPY Makevars-x86_64 /root/.R/Makevars
 
 # Need the copy of the package --------------------------------------------
 
@@ -14,7 +22,8 @@ WORKDIR /root/pak
 
 # system requirements -----------------------------------------------------
 
-RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf \
+    coreutils findutils
 
 # Build binary package ----------------------------------------------------
 

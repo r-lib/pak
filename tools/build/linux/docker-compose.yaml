@@ -1,0 +1,74 @@
+
+services:
+
+  # Create a GCC that can cross-compile from x86_64 (or the native arch)
+  # to aarch64. See `Dockerfile-cross-aarc64` for more.
+  cross-aarch64:
+    build:
+      context: .
+      dockerfile: Dockerfile-cross-aarch64
+    image: "ghcr.io/r-lib/pak-cross-aarch64:latest"
+
+  # Compile a static build of libcurl. See `Dockerfile-libs` for more.
+  libs:
+    build:
+      context: .
+      dockerfile: Dockerfile-libs
+    image: "ghcr.io/r-lib/pak-libs:latest"
+  
+  # Compile a static build of libcurl, for aarch64. See 
+  # `Dockerfile-libs-aarch64` for more.
+  libs-aarch64:
+    build:
+      context: .
+      dockerfile: Dockerfile-libs-aarch64
+    image: "ghcr.io/r-lib/pak-libs-aarch64:latest"
+  
+  r-3.5:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 3.5
+
+  r-3.6:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 3.6
+        
+  r-4.0:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 4.0
+        
+  r-4.1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 4.1
+        
+  r-4.2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 4.2
+        
+  r-4.3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 4.3
+        
+  r-4.4:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        R_MAJOR: 4.4

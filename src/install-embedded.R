@@ -225,7 +225,7 @@ install_embedded_main <- function() {
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)
   } else if (grepl("x86_64.*linux", pl$current) &&
-    grepl("aarch64.*linux, pl$target")) {
+    grepl("aarch64.*linux", pl$target)) {
     # Current is Linux x86_64, target is Linux aarch64
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)

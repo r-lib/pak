@@ -1,0 +1,28 @@
+# Build a cross-compiler from x86_64 (or whatever platform this
+# Dockerfile) is built on, to aarch64. This uses the Alpine Linux
+# cross compiler toolchain, which is not for general use, but works
+# pretty well. We build two APK packages, one for binutils and one
+# for gcc.
+
+# The aports script works best with Alpine Edge. The built packages
+# should work on earlier Alpine versions as well.
+FROM alpine:edge
+
+RUN apk add alpine-sdk sudo git
+
+# abuild does not like to run as woot, so let's create a regular user
+RUN adduser -D csardi
+RUN addgroup csardi abuild
+RUN addgroup csardi wheel
+RUN echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER csardi
+WORKDIR /home/csardi
+
+# THe default sysroot of the compiler will be set to 
+# /home/csardi/sysroot-aarch64 but gcc commands have command line
+# options to change that
+RUN abuild-keygen -a -i -n
+RUN git clone https://github.com/alpinelinux/aports --depth 1
+ENV BARCH=aarch64
+RUN CBUILDROOT=~/sysroot-$BARCH ~/aports/scripts/bootstrap.sh $BARCH
+
