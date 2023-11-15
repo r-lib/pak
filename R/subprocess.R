@@ -1,4 +1,3 @@
-
 ## ----------------------------------------------------------------------
 ## Helper functions
 ## ----------------------------------------------------------------------
@@ -15,7 +14,11 @@ remote <- function(func, args = list()) {
   rs <- pkg_data$remote
   state <- rs$get_state()
   if (state %in% c("busy", "starting")) {
-    pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), 5000)[[1]]
+    timeout <- suppressWarnings(as.numeric(
+      Sys.getenv("PKG_SUBPROCESS_TIMEOUT", "")
+    ))
+    if (is.na(timeout)) timeout <- 5000
+    pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), timeout)[[1]]
     state <- rs$get_state()
     if (state == "starting") {
       rs$read()
@@ -31,7 +34,8 @@ remote <- function(func, args = list()) {
     "__repos__" = getOption("repos"),
     "__width__" = pkg_data$ns$cli$console_width()
   )
-  body(func2) <- substitute({
+  body(func2) <- substitute(
+    {
       withCallingHandlers(
         cli_message = function(msg) {
           withCallingHandlers(
@@ -55,7 +59,9 @@ remote <- function(func, args = list()) {
           `__body__`
         }
       )
-  }, subst_args)
+    },
+    subst_args
+  )
 
   opts <- options()
   extraopts <- c("Ncpus", "BioC_mirror")
@@ -82,11 +88,14 @@ remote <- function(func, args = list()) {
 
   res <- withCallingHandlers(
     callr_message = function(msg) {
-      withRestarts({
-        signalCondition(msg)
-        out <- if (is_interactive() || sink.number() > 0) stdout() else stderr()
-        cat(conditionMessage(msg), file = out, sep = "")
-      }, muffleMessage = function() NULL)
+      withRestarts(
+        {
+          signalCondition(msg)
+          out <- if (is_interactive() || sink.number() > 0) stdout() else stderr()
+          cat(conditionMessage(msg), file = out, sep = "")
+        },
+        muffleMessage = function() NULL
+      )
       if (!is.null(findRestart("cli_message_handled"))) {
         invokeRestart("cli_message_handled")
       }
@@ -106,7 +115,7 @@ remote <- function(func, args = list()) {
     # This is a temporary workaround until we have a principled way of
     # printing the various error types in the main process.
     if (inherits(res$error$parent, "package_build_error") &&
-        !is.null(res$error$parent$data$stdout)) {
+      !is.null(res$error$parent$data$stdout)) {
       res$error$parent$message <- paste0(
         res$error$parent$message,
         "\nFull installation output:\n",
@@ -145,18 +154,23 @@ new_remote_session <- function() {
 }
 
 try_new_remote_session <- function() {
-  tryCatch({
-    load_private_packages()
-    new_remote_session()
-  }, error = function(e) e)
+  tryCatch(
+    {
+      load_private_packages()
+      new_remote_session()
+    },
+    error = function(e) e
+  )
 }
 
 restart_remote_if_needed <- function() {
   "!DEBUG Restarting background process"
   rs <- pkg_data$remote
   if (inherits(rs, "r_session") &&
-      rs$is_alive() &&
-      rs$get_state() != "busy") return()
+    rs$is_alive() &&
+    rs$get_state() != "busy") {
+    return()
+  }
 
   ## Try to interrupt nicely (SIGINT/CTRL+C), if that fails within 100ms,
   ## kill it.
@@ -170,7 +184,9 @@ restart_remote_if_needed <- function() {
 }
 
 load_private_cli <- function() {
-  if (!is.null(pkg_data$ns$cli)) return(pkg_data$ns$cli)
+  if (!is.null(pkg_data$ns$cli)) {
+    return(pkg_data$ns$cli)
+  }
   load_private_package("glue")
   old <- Sys.getenv("CLI_NO_THREAD", NA_character_)
   Sys.setenv(CLI_NO_THREAD = "1")
@@ -196,7 +212,9 @@ load_private_packages <- function() {
 
 load_private_package <- function(package, reg_prefix = "",
                                  lib = private_lib_dir()) {
-  if (!is.null(pkg_data$ns[[package]])) return()
+  if (!is.null(pkg_data$ns[[package]])) {
+    return()
+  }
 
   ## Load the R code
   pkg_env <- new.env(parent = asNamespace(.packageName))
@@ -211,22 +229,25 @@ load_private_package <- function(package, reg_prefix = "",
   pkg_env[["__pkg-dir__"]] <- pkg_dir
 
   reg.finalizer(pkg_env, onexit = TRUE, function(x) {
-    tryCatch({
-      pkg_dir <- pkg_env[["__pkg-dir__"]]
-      if (!is.null(pkg_dir)) pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
-      if (!is.null(pkg_env[[".onUnload"]])) {
-        tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
-      }
-      libs <- .dynLibs()
-      paths <- suppressWarnings(normalizePath(vcapply(libs, "[[", "path")))
-      matchidx <- grepl(pkg_dir, paths, fixed = TRUE)
-      if (any(matchidx)) {
-        pkglibs <- libs[matchidx]
-        for (lib in pkglibs) dyn.unload(lib[["path"]])
-        .dynLibs(libs[!matchidx])
-      }
-      unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)
-    }, error = function(e) e)
+    tryCatch(
+      {
+        pkg_dir <- pkg_env[["__pkg-dir__"]]
+        if (!is.null(pkg_dir)) pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
+        if (!is.null(pkg_env[[".onUnload"]])) {
+          tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
+        }
+        libs <- .dynLibs()
+        paths <- suppressWarnings(normalizePath(vcapply(libs, "[[", "path")))
+        matchidx <- grepl(pkg_dir, paths, fixed = TRUE)
+        if (any(matchidx)) {
+          pkglibs <- libs[matchidx]
+          for (lib in pkglibs) dyn.unload(lib[["path"]])
+          .dynLibs(libs[!matchidx])
+        }
+        unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)
+      },
+      error = function(e) e
+    )
   })
 
   tryCatch(
@@ -278,8 +299,10 @@ load_private_package <- function(package, reg_prefix = "",
   }
 
   ## Load shared library
-  dll_file <- file.path(pkg_dir, "libs", .Platform$r_arch,
-                        paste0(package, .Platform$dynlib.ext))
+  dll_file <- file.path(
+    pkg_dir, "libs", .Platform$r_arch,
+    paste0(package, .Platform$dynlib.ext)
+  )
   if (file.exists(dll_file)) {
     dll <- dyn.load(dll_file)
     dll[["name"]] <- paste0("pkg-", dll[["name"]])
@@ -346,7 +369,7 @@ set_function_envs <- function(within, new) {
   suppressWarnings({
     for (nm in nms) {
       if (is.function(within[[nm]])) {
-        if (is_target_env(environment(within[[nm]])))  {
+        if (is_target_env(environment(within[[nm]]))) {
           environment(within[[nm]]) <- new
         } else if (is_target_env(parent.env(environment(within[[nm]])))) {
           parent.env(environment(within[[nm]])) <- new
