@@ -1,0 +1,5 @@
+CC=aarch64-alpine-linux-musl-gcc
+LD=aarch64-alpine-linux-musl-ld
+LIBR=
+PKG_LIBS+=-static-libgcc $(AARCH64_ROOT)/usr/lib/libc.a
+CFLAGS+=-static-libgcc -static

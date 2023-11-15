@@ -27,6 +27,7 @@ pak_$(PAKVERSION).tar.gz:
 	$(R) CMD build $(PKGROOT)
 
 lib/R-%.done: pak_$(PAKVERSION).tar.gz
+	rm -f $@
 	mkdir -p lib/$*
 	./build.sh "$*" "pak_$(PAKVERSION).tar.gz" "$(ROOT)/lib/$*"
 	rm -rf $(ROOT)/lib/$*/pak/library/_cache

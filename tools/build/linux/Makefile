@@ -1,29 +1,44 @@
-
+# Build static pak binary package on Linux, x86_64 and aarch64
 # ------------------------------------------------------------------------
 
 RVERSIONS ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4
+PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
+DONE=$(patsubst %,R-%.done,$(RVERSIONS))
+DONE_AARCH64=$(patsubst %,R-%-aarch64.done,$(RVERSIONS))
 
-# ------------------------------------------------------------------------
+all: build
+
+aarch64: $(DONE_AARCH64)
 
 build: $(DONE)
 
-all: build
+R-%-aarch64.done: libs-aarch64 pak_$(PAKVERSION).tar.gz
+	rm -f $@
+	docker build -f Dockerfile-aarch64 --build-arg R_MAJOR=$* \
+		--build-arg TOKEN="$GHCR_TOKEN" .
+	touch $@
+
+R-%.done: libs pak_$(PAKVERSION).tar.gz
+	rm -f $@
+	docker build -f Dockerfile --build-arg R_MAJOR=$* \
+		--build-arg TOKEN="$GHCR_TOKEN" .
+	touch $@
 
 # ------------------------------------------------------------------------
 
 cross-aarch64:
-	docker compose build cross-aarch64
+	docker build -t ghcr.io/r-lib/pak-cross-aarch64:latest \
+		-f Dockerfile-cross-aarch64 .
 
-libs: 
-	docker compose build libs
+libs:
+	docker build -t ghcr.io/r-lib/pak-libs:latest \
+		-f Dockerfile-libs .
 
-libs-aarch64: cross-aarch64
-	docker compose build libs-aarch64
+libs-aarch64:
+	docker build -t ghcr.io/r-lib/pak-libs-aarch64:latest \
+		-f Dockerfile-libs-aarch64 .
 
-push:
-	docker compose push cross-aarch64 libs libs-aarch64
-
-rcmdbuild:
+pak_$(PAKVERSION).tar.gz:
 	R CMD build ../../..
 
 # ------------------------------------------------------------------------
