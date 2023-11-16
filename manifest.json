@@ -755,11 +755,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "3.6",
-          "pak.version": "0.6.0",
+          "pak.version": "0.6.0.9001",
           "pak.revision": "TODO",
-          "buildtime": "2023-08-31T07:28:05+00:00",
-          "size": 8237980,
-          "digest": "sha256:730e6332bcc859aafc529b409fed88b6e9563d36fc8a07430b31091d25770be8"
+          "buildtime": "2023-11-16T22:09:13+00:00",
+          "size": 8406364,
+          "digest": "sha256:d6a5ca8565a7f9442ae30f7717ad7421f37770a2634035e73c0aca88443b1066"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
