@@ -886,69 +886,6 @@
           "buildtime": "2023-11-16T15:20:48+00:00",
           "size": 8400052,
           "digest": "sha256:4b2015f2e908c751cdb35102f2ac3cf9a523358ea2e33d2f1f68fc702467e9ba"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "3.6",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:45:16+00:00",
-          "size": 8405714,
-          "digest": "sha256:33434b280d25ac4a3d6c04c6370096b452fbca43e14a9f1383031e1f9845aa6b"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "4.4",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:46:10+00:00",
-          "size": 8396454,
-          "digest": "sha256:3acaacefb2f37f29b419ec38772e27f162bad5bdc259227f3c37c4b477b10989"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "4.2",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:46:09+00:00",
-          "size": 8399371,
-          "digest": "sha256:760dce0c2e6b7e4cb624db111deec732fcd9efed96b90a3f63d1afd1661f023b"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "4.1",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:45:57+00:00",
-          "size": 8401347,
-          "digest": "sha256:7b0ccd51b905195b08b008c16d2ee93f0d6b6868ad43e64a40dfcf7d60ca5d42"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "4.0",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:46:07+00:00",
-          "size": 8389529,
-          "digest": "sha256:47d4a63fd2519bd92d6beb95686c978951e7ee9d2a0913fd43612353bc3d20b7"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-gnu",
-          "r.version": "3.5",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:45:08+00:00",
-          "size": 8363095,
-          "digest": "sha256:962897801c3c3f601ae97775c2561abd40b74f07d83a37287bc6d6f8323a131c"
-        },
-        {
-          "r.platform": "aarch64-pc-linux-musl",
-          "r.version": "4.3",
-          "pak.version": "0.6.0.9001",
-          "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:46:03+00:00",
-          "size": 8399913,
-          "digest": "sha256:95ca3de0659231a64ef37afd544885040130abda77f080e14085ba2032211b36"
         }
       ]
     }
