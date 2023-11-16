@@ -81,12 +81,15 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
 
 # Embed CA certs ----------------------------------------------------------
 
-RUN R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::embed_ca_certs()'
+# This uses the native pak, but that's the same, we just installed it
+
+RUN R -q -e 'pak:::embed_ca_certs(lib = "/root/lib")'
 
 # Build binary package ----------------------------------------------------
 
-RUN R_TARGET_PLATFORM="`cat /tmp/r-target-platform`" \
-    R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::build_pak_binary_linux()'
+# This uses the native pak, but that's the same, we just installed it
+
+RUN R -q -e 'pak:::build_pak_binary_linux(lib = "/root/lib")'
 RUN ls -l /tmp
 
 # =========================================================================
@@ -131,10 +134,10 @@ RUN git config --global credential.helper cache
 ENV GITHUB_PAT=${TOKEN}
 RUN git clone --depth 1 https://github.com/r-lib/pak.git
 
+# This uses the native pak, but that's the same, we just installed it.
 # This has to be in one step, because the cache credential helper is
 # very ephemeral.
 RUN cd pak && R -q -e '                                          \
-    library(pak, lib.loc = "/root/lib");                         \
     gitcreds::gitcreds_approve(list(                             \
       url = "https://github.com",                                \
       username = "PersonalAccessToken",                          \

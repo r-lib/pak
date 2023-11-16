@@ -39,11 +39,11 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
 
 # Embed CA certs ----------------------------------------------------------
 
-RUN R -q -e 'pak:::embed_ca_certs()'
+RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
 
 # Build binary package ----------------------------------------------------
 
-RUN R -q -e 'pak:::build_pak_binary_linux()'
+RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
 # Install skopeo ----------------------------------------------------------
 
