@@ -886,6 +886,15 @@
           "buildtime": "2023-11-16T15:20:48+00:00",
           "size": 8400052,
           "digest": "sha256:4b2015f2e908c751cdb35102f2ac3cf9a523358ea2e33d2f1f68fc702467e9ba"
+        },
+        {
+          "r.platform": "aarch64-pc-linux-musl",
+          "r.version": "3.6",
+          "pak.version": "0.6.0.9001",
+          "pak.revision": "TODO",
+          "buildtime": "2023-11-16T16:21:59+00:00",
+          "size": 8404928,
+          "digest": "sha256:53e570548f8ba0e14b402660c813a003c9b8b2f0cfbcd394c57e889687bb34cf"
         }
       ]
     }
