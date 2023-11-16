@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       macos:
-        description: 'Build x86_64 macOS packages'
+        description: 'macOS x86_64'
         required: true
         type: choice
         options:
@@ -12,7 +12,7 @@ on:
         - 'no'
         default: 'yes'
       macos-arm64:
-        description: 'Build arm64 macOS packages'
+        description: 'macOS arm64'
         required: true
         type: choice
         options:
@@ -20,7 +20,7 @@ on:
         - 'no'
         default: 'yes'
       windows:
-        description: 'Build Windows packages'
+        description: 'Windows'
         required: true
         type: choice
         options:
@@ -28,7 +28,7 @@ on:
         - 'no'
         default: 'yes'
       linux:
-        description: 'Build x86_64 Linux packages'
+        description: 'Linux x86_64'
         required: true
         type: choice
         options:
@@ -36,7 +36,7 @@ on:
         - 'no'
         default: 'yes'
       linux-arm64:
-        description: 'Build arm64 Linux packages'
+        description: 'Linux aarch64'
         required: true
         type: choice
         options:
@@ -44,7 +44,7 @@ on:
         - 'no'
         default: 'yes'
       deploy:
-        description: 'Deploy packages'
+        description: 'Deploy'
         required: true
         type: choice
         options:
