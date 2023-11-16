@@ -11,6 +11,9 @@
 # /root/packages/*/x86_64 go on the host, packages in
 # /root/packages/*/aarch64 gp on the cross, which is in
 # /home/csardi/sysroot-aarch64. (Yes, not a great directory, but whatever.)
+#
+# TODO: make the arch a build arg, so it is easy to create cross compilers
+# for other architectures.
 
 # We use Alpine 3.16, because that's what r-minimal uses currently.
 # When we update r-minimal, this image needs an update as well.
@@ -20,7 +23,7 @@ FROM alpine:3.16 AS build
 
 RUN apk add alpine-sdk sudo git
 
-# abuild does not like to run as woot, so let's create a regular user
+# abuild does not like to run as root, so let's create a regular user
 RUN adduser -D csardi
 RUN addgroup csardi abuild
 RUN addgroup csardi wheel

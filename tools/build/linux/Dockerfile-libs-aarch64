@@ -1,7 +1,15 @@
 # ghcr.io/r-lib/pak-libs-aarch64:latest
 
+# Cross-compile a static libcurl (and its dependencies) and install it
+# into /usr/local/. Dockerfiles can then build on this container by
+# copying over /usr/local/.
+
+# TODO: this should be merged into Dockerfile-libs, so they a single
+# Dockerfile can create a multi-arch image. That would make it much
+# easier to arch new arches as well.
+
 # -------------------------------------------------------------------------
-# Init system for cross compiling
+# Init system for cross compiling (see Dockerfile-cross-aarch64)
 
 FROM ghcr.io/r-lib/pak-cross-aarch64:latest AS cross
 
@@ -40,6 +48,7 @@ RUN apk add --arch aarch64 --root $AARCH64_ROOT \
 RUN apk add bash make perl pkgconfig
 
 # Cross dependencies, other libraries are already installed above.
+# TODO: is this really needed? For What?
 
 RUN apk add --arch aarch64 --root $AARCH64_ROOT \
     linux-headers
@@ -56,6 +65,10 @@ RUN cd zlib-* &&                                                     \
 
 # openssl -----------------------------------------------------------------
 
+# The `-U__GNUC__` might not be needed any more. When compiling
+# aarch64 libs in qemu on x86_64, the built libs were buggy on real
+# aarch64 hardware later without it.
+
 RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
 RUN cd openssl-* &&                                                  \
@@ -68,6 +81,10 @@ RUN cd openssl-* &&                                                  \
        /usr/local/share/{man/doc}
 
 # libcurl -----------------------------------------------------------------
+
+# The `--enbale-debug might not be needed any more. When compiling
+# aarch64 libs in qemu on x86_64, the built libs were buggy on real
+# aarch64 hardware later without it.
 
 RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz

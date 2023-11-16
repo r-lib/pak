@@ -1,3 +1,5 @@
+# Build a static Linux x86_64 binary package
+
 ARG R_MAJOR=4.1
 
 FROM ghcr.io/r-lib/pak-libs:latest AS libs
@@ -39,9 +41,13 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
 
 # Embed CA certs ----------------------------------------------------------
 
+# We use the pak build that we just installed.
+
 RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
 
 # Build binary package ----------------------------------------------------
+
+# We use the pak build that we just installed.
 
 RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
@@ -51,16 +57,23 @@ RUN apk add skopeo
 
 # Test --------------------------------------------------------------------
 
-# TODO
+# TODO: have a proper test suite here.
 
 # Deploy ------------------------------------------------------------------
 
-RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", "desc", "jsonlite"))'
+# This also serves as a minimal test suite that we can download and
+# install real packages, with the new build.
+
+RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", \
+    "desc", "jsonlite"))'
 
 RUN apk add git
 RUN git config --global user.email "csardi.gabor@gmail.com"
 RUN git config --global user.name "Gabor Csardi"
 RUN git config --global credential.helper cache
+
+# `push_packages() only works from within the pak git repo, because it
+# checks out the `packaged` branch in another subtree.
 
 ENV GITHUB_PAT=${TOKEN}
 RUN git clone --depth 1 https://github.com/r-lib/pak.git

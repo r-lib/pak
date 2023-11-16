@@ -1,4 +1,15 @@
 # Build static pak binary package on Linux, x86_64 and aarch64
+
+# To build some R versions, on x86_64:
+# ```
+# RVERSIONS="4.3 4.4" make
+# ```
+#
+# To do the same for aarch64:
+# ```
+# RVERSIONS=4.3 4.4" make aarch64
+# ```
+
 # ------------------------------------------------------------------------
 
 RVERSIONS ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4
