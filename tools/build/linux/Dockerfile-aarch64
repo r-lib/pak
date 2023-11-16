@@ -61,8 +61,10 @@ COPY Makevars-aarch64 /root/.R/Makevars
 # Build binary package ----------------------------------------------------
 
 RUN mkdir -p /root/lib
+RUN R -s -e 'cat(R.Version()$platform)' | \
+    sed 's/^x86_64/aarch64/' > /tmp/r-target-platform
 RUN R CMD INSTALL -l /root/lib --no-test-load \
-    --configure-args=--host=aarch64-unknown-linux \
+    --configure-args="--host=`cat /tmp/r-target-platform`" \
     pak_*.tar.gz
 
 # Minimize library --------------------------------------------------------
@@ -83,7 +85,7 @@ RUN R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::embed_ca_certs()'
 
 # Build binary package ----------------------------------------------------
 
-RUN R_TARGET_PLATFORM=aarch64-unknown-linux \
+RUN R_TARGET_PLATFORM="`cat /tmp/r-target-platform`" \
     R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::build_pak_binary_linux()'
 RUN ls -l /tmp
 
