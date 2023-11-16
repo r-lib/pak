@@ -12,13 +12,13 @@ aarch64: $(DONE_AARCH64)
 
 build: $(DONE)
 
-R-%-aarch64.done: libs-aarch64 pak_$(PAKVERSION).tar.gz
+R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker build -f Dockerfile-aarch64 --build-arg R_MAJOR=$* \
 		--build-arg TOKEN="$GHCR_TOKEN" .
 	touch $@
 
-R-%.done: libs pak_$(PAKVERSION).tar.gz
+R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker build -f Dockerfile --build-arg R_MAJOR=$* \
 		--build-arg TOKEN="$GHCR_TOKEN" .
@@ -34,9 +34,19 @@ libs:
 	docker build -t ghcr.io/r-lib/pak-libs:latest \
 		-f Dockerfile-libs .
 
+libs.done:
+	rm -f $@
+	docker pull ghcr.io/r-lib/pak-libs:latest
+	touch $@
+
 libs-aarch64:
 	docker build -t ghcr.io/r-lib/pak-libs-aarch64:latest \
 		-f Dockerfile-libs-aarch64 .
+
+libs-aarch64.done:
+	rm -f $@
+	docker pull ghcr.io/r-lib/pak-libs-aarch64:latest
+	touch $@
 
 pak_$(PAKVERSION).tar.gz:
 	R CMD build ../../..
