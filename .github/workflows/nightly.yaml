@@ -196,13 +196,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { r: '4.4', platform: 'linux/amd64' }
-          - { r: '4.3', platform: 'linux/amd64' }
-          - { r: '4.2', platform: 'linux/amd64' }
-          - { r: '4.1', platform: 'linux/amd64' }
-          - { r: '4.0', platform: 'linux/amd64' }
-          - { r: '3.6', platform: 'linux/amd64' }
-          - { r: '3.5', platform: 'linux/amd64' }
+          - { r: '4.4' }
+          - { r: '4.3' }
+          - { r: '4.2' }
+          - { r: '4.1' }
+          - { r: '4.0' }
+          - { r: '3.6' }
+          - { r: '3.5' }
 
     steps:
 
@@ -213,13 +213,10 @@ jobs:
 
     - name: Build and push
       run: |
-        docker build \
-            --pull \
-            --build-arg ARCH=x86_64 \
-            --build-arg R_MAJOR=${{ matrix.config.r }} \
-            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
-            --build-arg PAK_ROOT=. \
-            -f tools/build/linux/Dockerfile .
+        cd tools/build/linux && make
+      env:
+        RVERSIONS: ${{ matrix.config.r }}
+        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
 
   # ------------------------------------------------------------------------
 
@@ -271,7 +268,7 @@ jobs:
   # ------------------------------------------------------------------------
 
   linux-arm64:
-    runs-on: [linux-arm64]
+    runs-on: ubuntu-latest
     if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 == 'yes' }}
     name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
 
@@ -279,13 +276,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { r: '4.4', platform: 'linux/arm64' }
-          - { r: '4.3', platform: 'linux/arm64' }
-          - { r: '4.2', platform: 'linux/arm64' }
-          - { r: '4.1', platform: 'linux/arm64' }
-          - { r: '4.0', platform: 'linux/arm64' }
-          - { r: '3.6', platform: 'linux/arm64' }
-          - { r: '3.5', platform: 'linux/arm64' }
+          - { r: '4.4' }
+          - { r: '4.3' }
+          - { r: '4.2' }
+          - { r: '4.1' }
+          - { r: '4.0' }
+          - { r: '3.6' }
+          - { r: '3.5' }
 
     steps:
 
@@ -296,14 +293,10 @@ jobs:
 
     - name: Build and push
       run: |
-        docker system prune -f
-        docker build \
-            --pull \
-            --build-arg ARCH=aarch64 \
-            --build-arg R_MAJOR=${{ matrix.config.r }} \
-            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
-            --build-arg PAK_ROOT=. \
-            -f tools/build/linux/Dockerfile .
+        cd tools/build/linux && make aarch64
+      env:
+        RVERSIONS: ${{ matrix.config.r }}
+        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
 
   # ------------------------------------------------------------------------
 
