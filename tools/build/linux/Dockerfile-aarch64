@@ -83,7 +83,9 @@ RUN R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::embed_ca_certs()'
 
 # Build binary package ----------------------------------------------------
 
-RUN R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::build_pak_binary_linux()'
+RUN R_TARGET_PLATFORM=aarch64-unknown-linux \
+    R -q -e 'library(pak, lib.loc = "/root/lib"); pak:::build_pak_binary_linux()'
+RUN ls -l /tmp
 
 # =========================================================================
 

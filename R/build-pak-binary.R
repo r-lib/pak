@@ -23,5 +23,5 @@ build_pak_binary_linux <- function() {
 
   file.copy(file.path(lib, pkg_file), local, overwrite = TRUE)
 
-  pkg_file
+  local
 }
