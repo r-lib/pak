@@ -41,7 +41,7 @@ update_description_build <- function(path, platform) {
   if (source_built[["Platform"]] != "") {
     source_built[["Platform"]] <- platform
     source_desc[, "Built"] <- deparse_built(source_built)
-    write.dcf(source_desc, source_path)
+    write.dcf(source_desc, source_path, keep.white = "Built")
   }
 
   binary_path <- file.path(path, "Meta", "package.rds")
