@@ -62,7 +62,7 @@ COPY Makevars-aarch64 /root/.R/Makevars
 
 RUN mkdir -p /root/lib
 RUN R -s -e 'cat(R.Version()$platform)' | \
-    sed 's/^x86_64/aarch64/' > /tmp/r-target-platform
+    sed 's/^x86_64-pc/aarch64-unknown/' > /tmp/r-target-platform
 RUN R CMD INSTALL -l /root/lib --no-test-load \
     --configure-args="--host=`cat /tmp/r-target-platform`" \
     pak_*.tar.gz
