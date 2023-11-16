@@ -15,13 +15,13 @@ build: $(DONE)
 R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker build -f Dockerfile-aarch64 --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="$GHCR_TOKEN" .
+		--build-arg TOKEN="${GHCR_TOKEN}" .
 	touch $@
 
 R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker build -f Dockerfile --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="$GHCR_TOKEN" .
+		--build-arg TOKEN="${GHCR_TOKEN}" .
 	touch $@
 
 # ------------------------------------------------------------------------
