@@ -37,11 +37,7 @@ RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN apk add pkgconfig
 RUN cd curl-* && \
-    if [ "`uname -m`" = "aarch64" ]; then                            \
-      ./configure --enable-static --disable-shared --enable-debug;   \
-    else                                                             \
-      ./configure --enable-static --disable-shared;                  \
-    fi &&                                                            \
+    ./configure --enable-static --disable-shared;                    \
     make &&                                                          \
     make install &&                                                  \
     rm -rf /usr/local/bin/curl                                       \
