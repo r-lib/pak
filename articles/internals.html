@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,76 +91,203 @@
 <div class="section level2">
 <h2 id="the-embedded-library">The embedded library<a class="anchor" aria-label="anchor" href="#the-embedded-library"></a>
 </h2>
-<p>pak bundles its dependencies into the installed package, or into the
-user’s cache directory. This can happen several ways:</p>
+<p>From version 0.7.0, the pak source repo and the pak source package
+includes all of the dependent packages in <code>src/library</code>. They
+are installed during <code>R CMD INSTALL</code>. in the compilation
+step. It is started from <code>Makevars</code> (generaged from
+<code>Makevars.in</code>), and it is implemented via the
+<code>src/install-embedded.R</code> script.</p>
+<p><code>install-embedded.R</code> istalls all embedded dependencies in
+the correct order, into <code>/library</code> in the package we are
+building.</p>
+<div class="section level3">
+<h3 id="advantages">Advantages<a class="anchor" aria-label="anchor" href="#advantages"></a>
+</h3>
+<ul>
+<li>Much simpler installation. No need to download anything. Hopefully
+it works fine on CRAN.</li>
+<li>It is now possible to write real tests for pak, that can also run on
+CRAN, if we want.</li>
+<li>A pak version always has the same dependencies. In the past the
+versions of the embedded packages could be different.</li>
+<li>Better development. No need to manually install dependencies before
+calling <code>load_all()</code>.</li>
+<li>We can install dev pak from GitHub or other sources now seemlessly,
+using pak itself (in another library), or remotes, or from a local git
+clone, etc.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="disadvantages">Disadvantages<a class="anchor" aria-label="anchor" href="#disadvantages"></a>
+</h3>
+<ul>
+<li>Starting another installation during the installation is slightly
+tricky. We need to unset a number of environment variables (see them in
+<code>Makevars.in</code>). Hopefully this won’t be too fragile.</li>
+<li>The source package is bigger. Still not very big.</li>
+<li>pak always needs a compiler now when it is being installed from
+source.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="undating-embedded-packages">Undating embedded packages<a class="anchor" aria-label="anchor" href="#undating-embedded-packages"></a>
+</h3>
+<p>The <code>embed.R</code> file has some tools for * listing the
+versions of the embedded packages, * listing the versions available on
+CRAN, * checking if we need to update a dependency, * updating a
+dependency, etc.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pkgload</span><span class="fu">::</span><span class="fu"><a href="https://pkgload.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">embed</span><span class="op">$</span><span class="fu">check_update</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">embed</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">...</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="pkgloadload_all">
+<code>pkgload::load_all()</code><a class="anchor" aria-label="anchor" href="#pkgloadload_all"></a>
+</h3>
+<p>We do not embed dependencies in this case, but we create a separate
+library in the user cache directory. This happens from
+<code>.onLoad()</code>. <code>.onLoad()</code> regcognizes
+<code>load_all()</code> and calls <code>install-embedded.R</code> again,
+with a special argument, to install dependencies into the user cache
+library. If the same version of a dependency is already installed, then
+that dependency is skipped, to make <code>load_all()</code> fairly
+quick.</p>
+</div>
+<div class="section level3">
+<h3 id="cross-compilation">Cross compilation<a class="anchor" aria-label="anchor" href="#cross-compilation"></a>
+</h3>
+<p>pak supports cross-compilation now. You need to pass
+<code>--host=&lt;platform&gt;</code> to <code>./configure</code> via the
+<code>--configure-args</code> argument of <code>R CMD INSTALL</code> to
+do cross-compilation. You also need to set up the compilers, e.g. via
+<code>~/.R/Makevars</code>.</p>
+<p>Currently you need to install all of pak’s dependencies (ideally the
+vendored ones) before cross-compiling. This is because the dependencies
+have to be able to load their dependencies during cross compilation.
+This is not great, and I am planning to improve it in the near future.
+In particular, PPM cannot build pak binaries now for macOS because of
+this, because the PPM build system only installs the declared
+dependencies before cross compilation, but of course it does not know
+about the embedded dependencies.</p>
+<p><code>install-embedded.R</code> handles cross-compoilation specially.
+(It has to.) It installs each dependency into its own library, and then
+moves them into the common library at the end. This is so that they can
+load their dependencies from the native library during their
+installation.</p>
+<p><code>install-embedded.R</code> updates the <code>Built</code> fields
+in the metadata of the embedded packages, and also for the pak package
+itself, after compilation.</p>
+<p>Cross-compilation is currently used</p>
+<ul>
+<li>to build the macOS arm64 binaries on x86_64 macOS (see
+<code>tools/build/macos</code>),</li>
+<li>to build static aarch64 Linux binaries on x86_64 Linux (see
+<code>tools/build/Linux/Dockerfile-aarch64</code> and other files
+there),</li>
+<li>on PPM, to cross compile (x86_64 and arm64) macOS binaries on x86_64
+Linux. (This does not work currently.)</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="our-repository-of-pak-builds">Our repository of pak builds<a class="anchor" aria-label="anchor" href="#our-repository-of-pak-builds"></a>
+</h2>
+<div class="section level3">
+<h3 id="r-versions">R versions<a class="anchor" aria-label="anchor" href="#r-versions"></a>
+</h3>
+<p>We usually support at least one more R version than the tidyverse, so
+the last six release and R-devel. This is to give people time to update
+their GitHub actions.</p>
+</div>
+<div class="section level3">
+<h3 id="platforms">Platforms<a class="anchor" aria-label="anchor" href="#platforms"></a>
+</h3>
+<p>Currently:</p>
+<ul>
+<li>Windows x86_64.</li>
+<li>macOS x86_64.</li>
+<li>macOS arm64 (cross compiled on x86_64 macOS).</li>
+<li>Linux x86_64 static.</li>
+<li>Linux aarch64 static (cross compiled on x86_64 Linux).</li>
+</ul>
+<p>Hopefully soon:</p>
+<ul>
+<li>Windows arm64. (The challenge is that we either need to
+cross-compile or have a self-hosted runner to build packages.)</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="streams">Streams<a class="anchor" aria-label="anchor" href="#streams"></a>
+</h3>
+<div class="section level4">
+<h4 id="stable">Stable<a class="anchor" aria-label="anchor" href="#stable"></a>
+</h4>
+<p>Latest CRAN release, with a version number with three components.</p>
+</div>
+<div class="section level4">
+<h4 id="rc">RC<a class="anchor" aria-label="anchor" href="#rc"></a>
+</h4>
+<p>Release condidate, typically shortly before a release, with a version
+number with four or more components, the fourth one is
+<code>9999</code>.</p>
+<p>At other times it is the same as the stable stream.</p>
+</div>
+<div class="section level4">
+<h4 id="devel">Devel<a class="anchor" aria-label="anchor" href="#devel"></a>
+</h4>
+<p>Build daily from the <code>main</code> branch of <a href="https://github.com/r-lib/pak" class="external-link uri">https://github.com/r-lib/pak</a>. It has a version number
+with four or more components, the fourth one is <code>9000</code> or
+larger, but it is not <code>9999</code> (as that would be an RC
+version).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="update-procedure">Update procedure<a class="anchor" aria-label="anchor" href="#update-procedure"></a>
+</h3>
 <ol style="list-style-type: decimal">
-<li><p>If not running inside <code>R CMD check</code>,
-<code>R CMD INSTALL</code> installs all dependencies when installing
-package data, into <code>/library</code> within the installed package.
-Downloading and installing the (currently) 37 dependencies takes about
-1-1.5 minutes for platforms with binaries, and about 4 minutes for
-platforms that compile everything from source (measured on Linux). The
-goal of this is to create self-contained binaries on CRAN.</p></li>
-<li><p>The main advantage of doing this in the data step is that we can
-show the progress and/or other messages to the user.</p></li>
-<li><p>If the bundling fails, pak errors. This is to avoid creating a
-non-functional binary package. Hopefully CRAN will just try creating the
-binary again, later.</p></li>
-<li><p>This also works well on platforms that do not (yet) have
-binaries, e.g. M1 macs, Linux or the new experimental Windows
-platform.</p></li>
-<li><p>When running inside <code>R CMD check</code>, pak does not bundle
-its dependencies, to make the checks faster.</p></li>
-<li><p>Unlike the traditional <code>R CMD check</code> setup, CRAN does
-not install the package during the check. Instead, they pre-install it,
-and then refer to the install log in the check. They do set up the same
-env vars for the pre-install, so pak still does not bundle the
-dependencies in this case.</p></li>
-<li><p>When pak is installed from GitHub, using
-<code>remotes::install_github()</code> or similar, the same dependency
-bundling happens. This is nice on platforms for which we do not build a
-self-contained binary. But see also the next item.</p></li>
-<li><p>If <code>DESCRIPTION</code> has a <code>Remotes</code> field,
-then pak does not bundle its dependencies, only emits a message that
-suggests using <code>create_dev_lib()</code>. This is because we can’t
-easily install from GitHub using base R functions only.</p></li>
-<li><p>When running <code>R CMD check</code>, pak uses
-<code>testthat.R</code> to bundle the dependencies into the temporary
-installation that is used in the check. However, pak <em>copies</em> the
-dependencies in this case, to make the check faster. If copying the
-dependencies fails, then pak skips the test suite. The reason for
-copying in <code>testthat.R</code> instead of install time is that this
-way we avoid the check warning about the large <code>/library</code>
-directory.</p></li>
-<li><p>If the pak installation currently being tested does not have
-bundled dependencies, then <code>setup.R</code> bundles them, but into
-the user’s cache directory. This is to make sure that we can still use
-<code>devtools::test()</code> and alike for development.</p></li>
-<li><p>When developing pak interactively, e.g. using
-<code>load_all()</code>, use <code>create_dev_lib()</code> to copy
-dependencies into the user’s cache directory.</p></li>
-</ol>
-<p>In summary, these are the various bundling modes:</p>
-<ol style="list-style-type: decimal">
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> binary pkg from CRAN → pak is
-ready to use</p></li>
-<li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> source pkg from CRAN → install
-into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> on CRAN (to build binaries) → install
-into <code>/library</code></p></li>
-<li><p><code>R CMD INSTALL</code> (on CRAN) for <code>R CMD check</code>
-→ no not bundle</p></li>
-<li><p><code>R CMD check</code> → copy into <code>/library</code>,
-ignore errors</p></li>
-<li><p><code>remotes::install_github()</code> without
-<code>Remotes</code> → install into <code>/library</code></p></li>
-<li><p><code>remotes::install_github()</code> with <code>Remotes</code>
-→ no not bundle</p></li>
-<li><p><code>devtools::test()</code> and similar → copy into user’s
-cache directory</p></li>
+<li>Package binaries are built on GitHub Actions, in the
+<code>nightly.yaml</code> workflow.</li>
+<li>They are pushed to GitHub Packages, to the <code>pak</code> package,
+in the <code>r-lib/pak</code> repo: <a href="https://github.com/r-lib/pak/pkgs/container/pak" class="external-link uri">https://github.com/r-lib/pak/pkgs/container/pak</a>.</li>
+<li>For each successful push, the manifest file on the
+<code>packages</code> branch is updated: <a href="https://github.com/r-lib/pak/tree/packages" class="external-link uri">https://github.com/r-lib/pak/tree/packages</a>.</li>
+<li>They are deployed to GitHub Packages, to this repo: <a href="https://github.com/r-lib/r-lib.github.io" class="external-link uri">https://github.com/r-lib/r-lib.github.io</a>.</li>
 </ol>
 </div>
-  </main>
+<div class="section level3">
+<h3 id="the-nightly-yaml-workflow">The <code>nightly.yaml</code> workflow<a class="anchor" aria-label="anchor" href="#the-nightly-yaml-workflow"></a>
+</h3>
+<p>Can be also run manually, on a subset of all platforms, if needed.
+Othewise it runs daily: <a href="https://github.com/r-lib/pak/actions/workflows/nightly.yaml" class="external-link uri">https://github.com/r-lib/pak/actions/workflows/nightly.yaml</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="github-packages">GitHub Packages<a class="anchor" aria-label="anchor" href="#github-packages"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="github-pages">GitHub Pages<a class="anchor" aria-label="anchor" href="#github-pages"></a>
+</h3>
+<p>The challenge is that the site is very close to the 1GB limit,
+sometimes it is slightly over, which still works, but we won’t be able
+to add new platforms to it.</p>
+<p>An alternative would be to keep the package in a repository, and use
+<a href="https://raw.githubusercontent.com" class="external-link uri">https://raw.githubusercontent.com</a>. We would need to
+create a <code>repo</code> branch, and have <a href="https://raw.githubusercontent.com/r-lib/pak/repo" class="external-link uri">https://raw.githubusercontent.com/r-lib/pak/repo</a> as the
+repo URL. So the Windows and macOS binaries would go into</p>
+<pre><code>https://raw.githubusercontent.com/r-lib/pak/repo/bin/windows/...
+https://raw.githubusercontent.com/r-lib/pak/repo/bin/macosx/...</code></pre>
+<p>etc.</p>
+<div class="section level4">
+<h4 id="challenges">Challenges<a class="anchor" aria-label="anchor" href="#challenges"></a>
+</h4>
+<p>TODO</p>
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
@@ -169,7 +296,7 @@ cache directory</p></li>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>.</p>
+<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>, Mango Solutions, R Consortium.</p>
 </div>
 
 <div class="pkgdown-footer-right">
