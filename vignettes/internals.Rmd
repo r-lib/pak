@@ -7,61 +7,175 @@ editor_options:
     canonical: true
 ---
 
-## The embedded library
+# The embedded library
 
-pak bundles its dependencies into the installed package, or into the user's cache directory.
-This can happen several ways:
+From version 0.7.0, the pak source repo and the pak source package
+includes all of the dependent packages in `src/library`. They are
+installed during `R CMD INSTALL`. in the compilation step. It is
+started from `Makevars` (generaged from `Makevars.in`), and it is
+implemented via the `src/install-embedded.R` script.
 
-1.  If not running inside `R CMD check`, `R CMD INSTALL` installs all dependencies when installing package data, into `/library` within the installed package.
-    Downloading and installing the (currently) 37 dependencies takes about 1-1.5 minutes for platforms with binaries, and about 4 minutes for platforms that compile everything from source (measured on Linux).
-    The goal of this is to create self-contained binaries on CRAN.
+`install-embedded.R` istalls all embedded dependencies in the correct
+order, into `/library` in the package we are building.
 
-2.  The main advantage of doing this in the data step is that we can show the progress and/or other messages to the user.
+## Advantages
 
-3.  If the bundling fails, pak errors.
-    This is to avoid creating a non-functional binary package.
-    Hopefully CRAN will just try creating the binary again, later.
+* Much simpler installation. No need to download anything. Hopefully it
+  works fine on CRAN.
+* It is now possible to write real tests for pak, that can also run on
+  CRAN, if we want.
+* A pak version always has the same dependencies. In the past the versions
+  of the embedded packages could be different.
+* Better development. No need to manually install dependencies before
+  calling `load_all()`.
+* We can install dev pak from GitHub or other sources now seemlessly,
+  using pak itself (in another library), or remotes, or from a local
+  git clone, etc.
 
-4.  This also works well on platforms that do not (yet) have binaries, e.g.
-    M1 macs, Linux or the new experimental Windows platform.
+## Disadvantages
 
-5.  When running inside `R CMD check`, pak does not bundle its dependencies, to make the checks faster.
+* Starting another installation during the installation is slightly
+  tricky. We need to unset a number of environment variables (see them in
+  `Makevars.in`). Hopefully this won't be too fragile.
+* The source package is bigger. Still not very big.
+* pak always needs a compiler now when it is being installed from source.
 
-6.  Unlike the traditional `R CMD check` setup, CRAN does not install the package during the check.
-    Instead, they pre-install it, and then refer to the install log in the check.
-    They do set up the same env vars for the pre-install, so pak still does not bundle the dependencies in this case.
+## Undating embedded packages
 
-7.  When pak is installed from GitHub, using `remotes::install_github()` or similar, the same dependency bundling happens.
-    This is nice on platforms for which we do not build a self-contained binary.
-    But see also the next item.
+The `embed.R` file has some tools for
+* listing the versions of the embedded packages,
+* listing the versions available on CRAN,
+* checking if we need to update a dependency,
+* updating a dependency,
+etc.
 
-8.  If `DESCRIPTION` has a `Remotes` field, then pak does not bundle its dependencies, only emits a message that suggests using `create_dev_lib()`.
-    This is because we can't easily install from GitHub using base R functions only.
+```r
+pkgload::load_all()
+embed$check_update()
+embed$update()
+...
+```
 
-9.  When running `R CMD check`, pak uses `testthat.R` to bundle the dependencies into the temporary installation that is used in the check.
-    However, pak *copies* the dependencies in this case, to make the check faster.
-    If copying the dependencies fails, then pak skips the test suite.
-    The reason for copying in `testthat.R` instead of install time is that this way we avoid the check warning about the large `/library` directory.
+## `pkgload::load_all()`
 
-10. If the pak installation currently being tested does not have bundled dependencies, then `setup.R` bundles them, but into the user's cache directory.
-    This is to make sure that we can still use `devtools::test()` and alike for development.
+We do not embed dependencies in this case, but we create a separate
+library in the user cache directory. This happens from `.onLoad()`.
+`.onLoad()` regcognizes `load_all()` and calls `install-embedded.R`
+again, with a special argument, to install dependencies into the user
+cache library. If the same version of a dependency is already installed,
+then that dependency is skipped, to make `load_all()` fairly quick.
 
-11. When developing pak interactively, e.g. using `load_all()`, use `create_dev_lib()` to copy dependencies into the user's cache directory.
+## Cross compilation
 
-In summary, these are the various bundling modes:
+pak supports cross-compilation now. You need to pass `--host=<platform>`
+to `./configure` via the `--configure-args` argument of `R CMD INSTALL`
+to do cross-compilation. You also need to set up the compilers, e.g. via
+`~/.R/Makevars`.
 
-1.  `install.packages()` binary pkg from CRAN → pak is ready to use
+Currently you need to install all of pak's dependencies (ideally the
+vendored ones) before cross-compiling. This is because the dependencies
+have to be able to load their dependencies during cross compilation.
+This is not great, and I am planning to improve it in the near future.
+In particular, PPM cannot build pak binaries now for macOS because of this,
+because the PPM build system only installs the declared dependencies
+before cross compilation, but of course it does not know about the
+embedded dependencies.
 
-2.  `install.packages()` source pkg from CRAN → install into `/library`
+`install-embedded.R` handles cross-compoilation specially. (It has to.)
+It installs each dependency into its own library, and then moves them
+into the common library at the end. This is so that they can load their
+dependencies from the native library during their installation.
 
-3.  `R CMD INSTALL` on CRAN (to build binaries) → install into `/library`
+`install-embedded.R` updates the `Built` fields in the metadata of the
+embedded packages, and also for the pak package itself, after
+compilation.
 
-4.  `R CMD INSTALL` (on CRAN) for `R CMD check` → no not bundle
+Cross-compilation is currently used
 
-5.  `R CMD check` → copy into `/library`, ignore errors
+- to build the macOS arm64 binaries on x86_64 macOS (see
+  `tools/build/macos`),
+- to build static aarch64 Linux binaries on x86_64 Linux (see
+  `tools/build/Linux/Dockerfile-aarch64` and other files there),
+- on PPM, to cross compile (x86_64 and arm64) macOS binaries on x86_64
+  Linux. (This does not work currently.)
 
-6.  `remotes::install_github()` without `Remotes` → install into `/library`
+# Our repository of pak builds
 
-7.  `remotes::install_github()` with `Remotes` → no not bundle
+## R versions
 
-8.  `devtools::test()` and similar → copy into user's cache directory
+We usually support at least one more R version than the tidyverse, so
+the last six release and R-devel. This is to give people time to update
+their GitHub actions.
+
+## Platforms
+
+Currently:
+
+* Windows x86_64.
+* macOS x86_64.
+* macOS arm64 (cross compiled on x86_64 macOS).
+* Linux x86_64 static.
+* Linux aarch64 static (cross compiled on x86_64 Linux).
+
+Hopefully soon:
+
+* Windows arm64. (The challenge is that we either need to cross-compile
+  or have a self-hosted runner to build packages.)
+
+## Streams
+
+### Stable
+
+Latest CRAN release, with a version number with three components.
+
+### RC
+
+Release condidate, typically shortly before a release, with a version
+number with four or more components, the fourth one is `9999`.
+
+At other times it is the same as the stable stream.
+
+### Devel
+
+Build daily from the `main` branch of <https://github.com/r-lib/pak>.
+It has a version number with four or more components, the fourth one
+is `9000` or larger, but it is not `9999` (as that would be an RC version).
+
+## Update procedure
+
+1. Package binaries are built on GitHub Actions, in the `nightly.yaml`
+   workflow.
+2. They are pushed to GitHub Packages, to the `pak` package, in the
+   `r-lib/pak` repo: <https://github.com/r-lib/pak/pkgs/container/pak>.
+3. For each successful push, the manifest file on the `packages` branch is
+   updated: <https://github.com/r-lib/pak/tree/packages>.
+3. They are deployed to GitHub Packages, to this repo:
+   <https://github.com/r-lib/r-lib.github.io>.
+
+## The `nightly.yaml` workflow
+
+Can be also run manually, on a subset of all platforms, if needed.
+Othewise it runs daily:
+<https://github.com/r-lib/pak/actions/workflows/nightly.yaml>.
+
+## GitHub Packages
+
+## GitHub Pages
+
+The challenge is that the site is very close to the 1GB limit, sometimes
+it is slightly over, which still works, but we won't be able to add
+new platforms to it.
+
+An alternative would be to keep the package in a repository, and use
+<https://raw.githubusercontent.com>. We would need to create a `repo`
+branch, and have <https://raw.githubusercontent.com/r-lib/pak/repo> as
+the repo URL. So the Windows and macOS binaries would go into
+```
+https://raw.githubusercontent.com/r-lib/pak/repo/bin/windows/...
+https://raw.githubusercontent.com/r-lib/pak/repo/bin/macosx/...
+```
+etc.
+
+### Challenges
+
+TODO

@@ -24,7 +24,18 @@ pak_sitrep_data <- local({
   )
 
   list(
-    platform = R.Version()$platform,
+    platform = if (target_platform != "") {
+      target_platform
+    } else {
+      R.Version()$platform
+    },
+    build_platform = if (build_platform != "") {
+      build_platform
+    } else {
+      R.Version()$platform
+    },
+    build_platform_arg = build_platform,
+    target_platform_arg = target_platform,
     "github-repository" = Sys.getenv("GITHUB_REPOSITORY", "-"),
     "github-sha" = Sys.getenv("GITHUB_SHA", "-"),
     "github-ref" <- Sys.getenv("GITHUB_REF", "-"),

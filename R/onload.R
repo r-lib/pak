@@ -112,7 +112,7 @@ platform_match <- function(install, current) {
     libc_ins <- get_libc_from_platform(install)
     libc_cur <- get_libc_from_platform(current)
     same <- !is.na(libc_ins) && !is.na(libc_cur) && libc_ins == libc_cur
-    return(same || identical(libc_ins, "musl"))
+    return(same || identical(libc_ins, "musl") || is.na(libc_ins))
   }
 
   # Otherwise, the whole platform string must match. We might improve

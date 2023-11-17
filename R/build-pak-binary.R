@@ -1,9 +1,11 @@
-build_pak_binary_linux <- function() {
-  ver <- as.character(utils::packageVersion("pak"))
+build_pak_binary_linux <- function(lib) {
+  ver <- as.character(utils::packageVersion("pak", lib.loc = lib))
   rver <- paste0("R", gsub(".", "-", getRversion()[, 1:2], fixed = TRUE))
-  platform <- R.Version()$platform
+  curlpkg <- readRDS(
+    file.path(lib, "pak", "library", "curl", "Meta", "package.rds")
+  )
+  platform <- curlpkg[["Built"]][["Platform"]]
   platform <- sub("-(gnu|musl)$", "", platform)
-  lib <- dirname(system.file(package = "pak"))
   pkg_file <- paste0("pak_", ver, "_", rver, "_", platform, ".tar.gz")
 
   wd <- getwd()
@@ -23,5 +25,5 @@ build_pak_binary_linux <- function() {
 
   file.copy(file.path(lib, pkg_file), local, overwrite = TRUE)
 
-  pkg_file
+  local
 }

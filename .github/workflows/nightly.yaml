@@ -4,7 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       macos:
-        description: 'Build x86_64 macOS packages'
+        description: 'macOS x86_64'
+        required: true
+        type: choice
+        options:
+        - 'yes'
+        - 'no'
+        default: 'yes'
+      macos-arm64:
+        description: 'macOS arm64'
         required: true
         type: choice
         options:
@@ -12,7 +20,7 @@ on:
         - 'no'
         default: 'yes'
       windows:
-        description: 'Build Windows packages'
+        description: 'Windows'
         required: true
         type: choice
         options:
@@ -20,23 +28,15 @@ on:
         - 'no'
         default: 'yes'
       linux:
-        description: 'Build x86_64 Linux packages'
+        description: 'Linux x86_64'
         required: true
         type: choice
         options:
         - 'yes'
         - 'no'
         default: 'yes'
-      macos-m1:
-        description: 'Build arm64 macOS packages'
-        required: true
-        type: choice
-        options:
-        - 'yes'
-        - 'no'
-        default: 'no'
       linux-arm64:
-        description: 'Build arm64 Linux packages'
+        description: 'Linux aarch64'
         required: true
         type: choice
         options:
@@ -44,7 +44,7 @@ on:
         - 'no'
         default: 'yes'
       deploy:
-        description: 'Deploy packages'
+        description: 'Deploy'
         required: true
         type: choice
         options:
@@ -68,21 +68,24 @@ jobs:
           echo "macos: ${{ github.event.inputs.macos }}"
           echo "windows: ${{ github.event.inputs.windows }}"
           echo "linux: ${{ github.event.inputs.linux }}"
-          echo "macos-m1: ${{ github.event.inputs.macos-m1 }}"
+          echo "macos-arm64: ${{ github.event.inputs.macos-arm64 }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 }}"
           echo "deploy: ${{ github.event.inputs.deploy }}"
           echo "macos: ${{ github.event.inputs.macos == 'yes' }}"
           echo "windows: ${{ github.event.inputs.windows == 'yes' }}"
           echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
-          echo "macos-m1: ${{ github.event.inputs.macos-m1 == 'yes' }}"
+          echo "macos-arm64: ${{ github.event.inputs.macos-arm64 == 'yes' }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 == 'yes' }}"
           echo "deploy: ${{ github.event.inputs.deploy == 'yes' }}"
 
   # -----------------------------------------------------------------------
   macos:
-    runs-on: macos-11
+    runs-on: macos-12
     if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
-    name: macOS x86_64 pak binaries
+    name: macOS x86_64
+    env:
+      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64"
+      RVERSION_DEFAULT: "4.3-x86_64"
     steps:
 
     - name: Checkout
@@ -124,10 +127,58 @@ jobs:
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
   # -----------------------------------------------------------------------
+
+  macos-arm64:
+    runs-on: macos-12
+    if: ${{ github.event.inputs.macos-arm64 == '' || github.event.inputs.macos-arm64 == 'yes' }}
+    name: macos arm64
+    env:
+      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64"
+      RVERSION_DEFAULT: "4.3-x86_64"
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 10
+
+    - name: Install rig
+      run: |
+        brew tap r-lib/rig
+        brew install r-lib/rig/rig
+
+    - name: Install R
+      run: |
+        sudo rig add 4.1
+        sudo rig add 4.2
+        sudo rig add release
+        sudo rig add devel
+        rig default release
+
+    - name: Install skopeo
+      run: |
+        brew install skopeo
+        brew link skopeo
+        skopeo --version
+
+    - name: Build pak binaries
+      run: |
+        cd tools/build/macos && make build
+
+    - name: Deploy packages
+      run: |
+        cd tools/build/macos && make deploy
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+  # ------------------------------------------------------------------------
+
   windows:
     runs-on: windows-latest
     if: ${{ github.event.inputs.windows == '' || github.event.inputs.windows == 'yes' }}
-    name: Windows pak binaries
+    name: Windows x86_64
     steps:
 
     - name: Checkout
@@ -187,19 +238,19 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.linux == '' || github.event.inputs.linux == 'yes' }}
-    name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
+    name: Linux x86_64 R ${{ matrix.config.r }}
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { r: '4.4', platform: 'linux/amd64' }
-          - { r: '4.3', platform: 'linux/amd64' }
-          - { r: '4.2', platform: 'linux/amd64' }
-          - { r: '4.1', platform: 'linux/amd64' }
-          - { r: '4.0', platform: 'linux/amd64' }
-          - { r: '3.6', platform: 'linux/amd64' }
-          - { r: '3.5', platform: 'linux/amd64' }
+          - { r: '4.4' }
+          - { r: '4.3' }
+          - { r: '4.2' }
+          - { r: '4.1' }
+          - { r: '4.0' }
+          - { r: '3.6' }
+          - { r: '3.5' }
 
     steps:
 
@@ -210,70 +261,36 @@ jobs:
 
     - name: Build and push
       run: |
-        docker build \
-            --pull \
-            --build-arg ARCH=x86_64 \
-            --build-arg R_MAJOR=${{ matrix.config.r }} \
-            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
-            --build-arg PAK_ROOT=. \
-            -f tools/build/linux/Dockerfile .
-
-  # ------------------------------------------------------------------------
-
-  macos-m1:
-    runs-on: [macos-arm64]
-    if: ${{ github.event.inputs.macos-m1 == 'yes' }}
-    name: macos arm64 pak binaries
-    env:
-      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64"
-      RVERSION_DEFAULT: 4.3-arm64
-    defaults:
-      run:
-        shell: "/usr/bin/arch -arch arm64 /bin/bash {0}"
-
-    steps:
-
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 10
-
-    - name: git config
-      run: |
-        git config --local user.name "$GITHUB_ACTOR"
-        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-    - name: Build pak binaries
-      run: |
-        cd tools/build/macos && make build
-
-    - name: Deploy packages
-      run: |
-        cd tools/build/macos && make deploy
+        cd tools/build/linux && make
       env:
-        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        RVERSIONS: ${{ matrix.config.r }}
+        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
 
   # ------------------------------------------------------------------------
 
   linux-arm64:
-    runs-on: [linux-arm64]
+    runs-on: ubuntu-latest
     if: ${{ github.event.inputs.linux-arm64 == '' || github.event.inputs.linux-arm64 == 'yes' }}
-    name: Linux static pak binaries for R ${{ matrix.config.r }}, ${{ matrix.config.platform }}
+    name: Linux aarch64 R ${{ matrix.config.r }}
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { r: '4.4', platform: 'linux/arm64' }
-          - { r: '4.3', platform: 'linux/arm64' }
-          - { r: '4.2', platform: 'linux/arm64' }
-          - { r: '4.1', platform: 'linux/arm64' }
-          - { r: '4.0', platform: 'linux/arm64' }
-          - { r: '3.6', platform: 'linux/arm64' }
-          - { r: '3.5', platform: 'linux/arm64' }
+          - { r: '4.4' }
+          - { r: '4.3' }
+          - { r: '4.2' }
+          - { r: '4.1' }
+          - { r: '4.0' }
+          - { r: '3.6' }
+          - { r: '3.5' }
 
     steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -282,21 +299,17 @@ jobs:
 
     - name: Build and push
       run: |
-        docker system prune -f
-        docker build \
-            --pull \
-            --build-arg ARCH=aarch64 \
-            --build-arg R_MAJOR=${{ matrix.config.r }} \
-            --build-arg TOKEN=${{ secrets.PAK_GHCR_TOKEN }} \
-            --build-arg PAK_ROOT=. \
-            -f tools/build/linux/Dockerfile .
+        cd tools/build/linux && make aarch64
+      env:
+        RVERSIONS: ${{ matrix.config.r }}
+        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
 
   # ------------------------------------------------------------------------
 
   deploy:
     runs-on: ubuntu-latest
     if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && always() }}
-    needs: [ macos, windows, linux, macos-m1, linux-arm64 ]
+    needs: [ macos, windows, linux, macos-arm64, linux-arm64 ]
 
     steps:
 

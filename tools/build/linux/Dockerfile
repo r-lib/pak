@@ -1,25 +1,31 @@
+# Build a static Linux x86_64 binary package
 
-ARG ARCH
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-lib/pak-builder:${ARCH}-${R_MAJOR}
+FROM ghcr.io/r-lib/pak-libs:latest AS libs
+FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
+COPY --from=libs /usr/local /usr/local
+USER root
+WORKDIR /root
+
 ARG TOKEN=dummy
 
-# Need the copy of the package --------------------------------------------
+# -------------------------------------------------------------------------
+# set up static compilation
+# -------------------------------------------------------------------------
 
-ARG PAK_ROOT=../../..
-COPY ${PAK_ROOT} /root/pak
-
-WORKDIR /root/pak
+RUN mkdir -p /root/.R
+COPY Makevars-x86_64 /root/.R/Makevars
 
 # system requirements -----------------------------------------------------
 
-RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf \
+    coreutils findutils
 
 # Build binary package ----------------------------------------------------
 
-RUN cd .. && R CMD build pak
-RUN cd .. && R CMD INSTALL pak_*.tar.gz
+COPY pak_*.tar.gz /root/
+RUN R CMD INSTALL pak_*.tar.gz
 
 # Minimize library --------------------------------------------------------
 
@@ -35,34 +41,51 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
 
 # Embed CA certs ----------------------------------------------------------
 
-RUN R -q -e 'pak:::embed_ca_certs()'
+# We use the pak build that we just installed.
+
+RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
 
 # Build binary package ----------------------------------------------------
 
-RUN R -q -e 'pak:::build_pak_binary_linux()'
+# We use the pak build that we just installed.
+
+RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
 # Install skopeo ----------------------------------------------------------
 
-# Temporarily, to get skopeo 1.6.0, once this is in a stable Alpine,
-# we should get it from there, and eventually from the current version
-
-RUN apk add skopeo --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+RUN apk add skopeo
 
 # Test --------------------------------------------------------------------
 
-# TODO
+# TODO: have a proper test suite here.
 
-# Deploy
+# Deploy ------------------------------------------------------------------
 
-RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", "desc", "jsonlite"))'
+# This also serves as a minimal test suite that we can download and
+# install real packages, with the new build.
+
+RUN R -q -e 'pak::pkg_install(c("glue", "gitcreds", "processx", "digest", \
+    "desc", "jsonlite"))'
 
 RUN apk add git
 RUN git config --global user.email "csardi.gabor@gmail.com"
 RUN git config --global user.name "Gabor Csardi"
-RUN git config credential.helper cache
+RUN git config --global credential.helper cache
+
+# `push_packages() only works from within the pak git repo, because it
+# checks out the `packaged` branch in another subtree.
 
 ENV GITHUB_PAT=${TOKEN}
+RUN git clone --depth 1 https://github.com/r-lib/pak.git
 
 # This has to be in one step, because the cache credential helper is
 # very ephemeral.
-RUN R -q -e 'gitcreds::gitcreds_approve(list(url = "https://github.com", username = "PersonalAccessToken", password = Sys.getenv("GITHUB_PAT"))); pak:::push_packages(dir("/tmp/", patter = "pak_.*.tar.gz", full.names=TRUE))'
+RUN cd pak && R -q -e '                                          \
+    gitcreds::gitcreds_approve(list(                             \
+      url = "https://github.com",                                \
+      username = "PersonalAccessToken",                          \
+      password = Sys.getenv("GITHUB_PAT")                        \
+    ));                                                          \
+    pak:::push_packages(                                         \
+      dir("/tmp/", pattern = "pak_.*.tar.gz", full.names=TRUE)   \
+    )'

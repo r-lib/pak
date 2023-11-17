@@ -1,0 +1,13 @@
+diff --git a/scripts/bootstrap.sh b/scripts/bootstrap.sh
+index ddb3ad15..4feb759f 100755
+--- a/scripts/bootstrap.sh
++++ b/scripts/bootstrap.sh
+@@ -96,6 +96,8 @@ fi
+ EXTRADEPENDS_TARGET="musl musl-dev" \
+ CTARGET=$TARGET_ARCH BOOTSTRAP=nobase APKBUILD=$(apkbuildname gcc) abuild -r
+ 
++exit 0
++
+ # Cross build-base
+ CTARGET=$TARGET_ARCH BOOTSTRAP=nobase APKBUILD=$(apkbuildname build-base) abuild -r
+ 

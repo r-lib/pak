@@ -20,7 +20,9 @@
 /man/macros/eval2.Rd
 /man/chunks/sysreqs.html
 /man/chunks/sysreqs_cache
+/R/build-data.R
 /src/DONE
+/src/Makevars
 *.o
 *.so
 *.DSYM
@@ -39,3 +41,5 @@
 /src/library/ps/src/px
 /src/library/zip/src/tools/cmdunzip
 /src/library/zip/src/tools/cmdzip
+/tools/build/linux/pak_*.tar.gz
+/tools/build/linux/*.done

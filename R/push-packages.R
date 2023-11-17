@@ -1,10 +1,8 @@
-
 import_from <- function(env, symbol) {
   environment(get(env))[[symbol]]
 }
 
 push_packages <- local({
-
   const_annotations <- list(
     com.github.package.type = "r_package",
     org.opencontainers.image.authors = "Gabor Csardi",
@@ -46,13 +44,15 @@ push_packages <- local({
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
 
-  git <- function (..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE,
-                   stderr_to_stdout = FALSE) {
+  git <- function(..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE,
+                  stderr_to_stdout = FALSE) {
     if (dry_run) {
       cat("git", c(...), "\n")
     } else {
-      processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo,
-                    stderr_to_stdout = stderr_to_stdout)
+      processx::run("git", c(...),
+        echo_cmd = echo_cmd, echo = echo,
+        stderr_to_stdout = stderr_to_stdout
+      )
     }
   }
 
@@ -90,7 +90,7 @@ push_packages <- local({
   }
 
   sha256str <- function(str) {
-    vapply(str, digest::digest, character(1), algo = "sha256", serialize=FALSE)
+    vapply(str, digest::digest, character(1), algo = "sha256", serialize = FALSE)
   }
 
   mkdirp <- function(dir, msg = NULL) {
@@ -134,7 +134,9 @@ push_packages <- local({
     pcs <- strsplit(path, ".", fixed = TRUE)
     vapply(pcs, function(x) {
       x <- rev(x)
-      if (length(x) == 1) return("")
+      if (length(x) == 1) {
+        return("")
+      }
       if (x[1] == "gz" && length(x) > 1 && x[2] == "tar") {
         "tar.gz"
       } else {
@@ -184,7 +186,7 @@ push_packages <- local({
     data.frame(
       stringsAsFactors = FALSE,
       r.platform = curldsc$get_built()$Platform,
-      r.version = as.character(pakdsc$get_built()$R[,1:2]),
+      r.version = as.character(pakdsc$get_built()$R[, 1:2]),
       pak.version = pakdsc$get_field("Version"),
       pak.revision = "TODO",
       buildtime = format_iso_8601(file.info(pkg)$mtime),
@@ -214,10 +216,12 @@ push_packages <- local({
 
   read_metadata <- function(dir, tag) {
     path <- file.path(dir, "manifest.json")
-    if (!file.exists(path)) return(NULL)
+    if (!file.exists(path)) {
+      return(NULL)
+    }
     mnft <- jsonlite::fromJSON(path)
     if (tag %in% mnft$tags$tag) {
-      pfms <- mnft$tags$platforms[[ which(mnft$tags$tag == tag) ]]
+      pfms <- mnft$tags$platforms[[which(mnft$tags$tag == tag)]]
       pfms$path <- NA_character_
     } else {
       pfms <- parse_metadata(character())
@@ -227,7 +231,8 @@ push_packages <- local({
 
   update_df <- function(old, new, by) {
     clp <- function(df) {
-      vapply(seq_len(nrow(df)),
+      vapply(
+        seq_len(nrow(df)),
         function(i) paste0(df[i, ], collapse = ";"),
         character(1)
       )
@@ -262,7 +267,6 @@ push_packages <- local({
   }
 
   image_manifest <- function(pkgs) {
-
     tmpl <- '
       {
         "schemaVersion": 2,
@@ -334,9 +338,15 @@ push_packages <- local({
 
   find_skopeo <- function() {
     path <- Sys.which("skopeo")
-    if (path != "") return(path)
-    if (file.exists(cand <- "/usr/local/bin/skopeo")) return(cand)
-    if (file.exists(cand <- "/opt/homebrew/bin/skopeo")) return(cand)
+    if (path != "") {
+      return(path)
+    }
+    if (file.exists(cand <- "/usr/local/bin/skopeo")) {
+      return(cand)
+    }
+    if (file.exists(cand <- "/opt/homebrew/bin/skopeo")) {
+      return(cand)
+    }
     stop("Need skopeo to push packages")
   }
 
@@ -352,12 +362,11 @@ push_packages <- local({
   }
 
   update_packages <- function(
-    paths,
-    workdir,
-    tag = "devel",
-    keep_old = TRUE,
-    dry_run = FALSE) {
-
+      paths,
+      workdir,
+      tag = "devel",
+      keep_old = TRUE,
+      dry_run = FALSE) {
     shadir <- file.path(workdir, "blobs", "sha256")
     mkdirp(shadir)
 
@@ -417,7 +426,8 @@ push_packages <- local({
               "size": <<nchar(imidx, "bytes")>>
             }
          ]
-       }', .open = "<<", .close = ">>"
+       }',
+      .open = "<<", .close = ">>"
     ))
     write_files(idxjs, file.path(workdir, "index.json"))
 
@@ -442,7 +452,8 @@ push_packages <- local({
                  "": [{"type":"insecureAcceptAnything"}]
                }
            }
-       }')
+       }'
+    )
     write_files(policy, policy_file)
 
     skopeo <- find_skopeo()
@@ -464,7 +475,7 @@ push_packages <- local({
     if (is_gha()) {
       cat("BLOBS:\n")
       print(
-        file.info(dir(shadir, full.names=TRUE))[, c("size"), drop = FALSE]
+        file.info(dir(shadir, full.names = TRUE))[, c("size"), drop = FALSE]
       )
     }
 
@@ -474,13 +485,16 @@ push_packages <- local({
       tries <- 10
       repeat {
         tries <- tries - 1
-        tryCatch({
-          processx::run(skopeo, args, echo_cmd = TRUE, echo = TRUE)
-          break;
-        }, error = function(e) {
-          if (tries == 0) stop(e)
-          tries <<- tries - 1
-        })
+        tryCatch(
+          {
+            processx::run(skopeo, args, echo_cmd = TRUE, echo = TRUE)
+            break
+          },
+          error = function(e) {
+            if (tries == 0) stop(e)
+            tries <<- tries - 1
+          }
+        )
       }
     }
 
@@ -488,9 +502,11 @@ push_packages <- local({
   }
 
   update_manifest <- function(workdir, tag, pkgs) {
-    cols <- c("r.platform", "r.version", "pak.version", "pak.revision",
-              "buildtime", "size", "digest")
-    pfms <- pkgs[,cols]
+    cols <- c(
+      "r.platform", "r.version", "pak.version", "pak.revision",
+      "buildtime", "size", "digest"
+    )
+    pfms <- pkgs[, cols]
     newtags <- data.frame(
       stringsAsFactors = FALSE,
       tag = tag,
@@ -539,16 +555,16 @@ push_packages <- local({
     dry_run
 
     if (tag == "auto") {
-      version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
+      version <- unclass(package_version(
+        desc::desc_get(file = paths[1], "Version")
+      ))[[1]]
       if (length(version) >= 4 && version[4] == 9999) {
         # rc is also pushed to devel, as devel should be the latest
         p1 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
         p2 <- push_packages(paths, "devel", keep_old, dry_run, cleanup)
         return(invisible(rbind(p1, p2)))
-
       } else if (length(version) >= 4 && version[4] >= 9000) {
         tag <- "devel"
-
       } else {
         # stable is also pushed to rc
         p1 <- push_packages(paths, "stable", keep_old, dry_run, cleanup)
@@ -573,20 +589,25 @@ push_packages <- local({
       git_pull(workdir, dry_run = dry_run)
       pkgs <- update_packages(paths, workdir, tag, keep_old, dry_run)
       update_manifest(workdir, tag, pkgs)
-      tryCatch({
-        push_manifest(workdir, dry_run = dry_run)
-        break
-      }, error = function(err) {
-        if (!grepl("(non-fast-forward|fetch first|cannot lock ref)",
-                   err$stderr)) {
-          stop(err)
+      tryCatch(
+        {
+          push_manifest(workdir, dry_run = dry_run)
+          break
+        },
+        error = function(err) {
+          if (!grepl(
+            "(non-fast-forward|fetch first|cannot lock ref)",
+            err$stderr
+          )) {
+            stop(err)
+          }
+          old <- getwd()
+          on.exit(setwd(old), add = TRUE)
+          setwd(workdir)
+          git("reset", "HEAD^", dry_run = dry_run)
+          git("checkout", "--", ".", dry_run = dry_run)
         }
-        old <- getwd()
-        on.exit(setwd(old), add = TRUE)
-        setwd(workdir)
-        git("reset", "HEAD^", dry_run = dry_run)
-        git("checkout", "--", ".", dry_run = dry_run)
-      })
+      )
     }
 
     invisible(pkgs)
@@ -594,14 +615,13 @@ push_packages <- local({
 })
 
 create_pak_repo <- local({
-
-  init_package_dir    <- import_from("push_packages", "init_package_dir")
+  init_package_dir <- import_from("push_packages", "init_package_dir")
   cleanup_package_dir <- import_from("push_packages", "cleanup_package_dir")
-  git_pull            <- import_from("push_packages", "git_pull")
-  mkdirp              <- import_from("push_packages", "mkdirp")
-  package_dir         <- import_from("push_packages", "package_dir")
-  read_metadata       <- import_from("push_packages", "read_metadata")
-  sha256              <- import_from("push_packages", "sha256")
+  git_pull <- import_from("push_packages", "git_pull")
+  mkdirp <- import_from("push_packages", "mkdirp")
+  package_dir <- import_from("push_packages", "package_dir")
+  read_metadata <- import_from("push_packages", "read_metadata")
+  sha256 <- import_from("push_packages", "sha256")
 
   tags <- c("stable", "rc", "devel")
 
@@ -658,36 +678,34 @@ create_pak_repo <- local({
 
   links <- c(
     # Make sure all Linux maps to the same place since we fully static pkgs
-    "linux-gnu/x86_64"       = "../../linux/x86_64",
-    "linux-musl/x86_64"      = "../../linux/x86_64",
-    "linux-uclibc/x86_64"    = "../../linux/x86_64",
-    "linux-dietlibc/x86_64"  = "../../linux/x86_64",
-    "linux-unknown/x86_64"   = "../../linux/x86_64",
-
-    "linux-gnu/aarch64"      = "../../linux/aarch64",
-    "linux-musl/aarch64"     = "../../linux/aarch64",
-    "linux-uclibc/aarch64"   = "../../linux/aarch64",
+    "linux-gnu/x86_64" = "../../linux/x86_64",
+    "linux-musl/x86_64" = "../../linux/x86_64",
+    "linux-uclibc/x86_64" = "../../linux/x86_64",
+    "linux-dietlibc/x86_64" = "../../linux/x86_64",
+    "linux-unknown/x86_64" = "../../linux/x86_64",
+    "linux-gnu/aarch64" = "../../linux/aarch64",
+    "linux-musl/aarch64" = "../../linux/aarch64",
+    "linux-uclibc/aarch64" = "../../linux/aarch64",
     "linux-dietlibc/aarch64" = "../../linux/aarch64",
-    "linux-unknown/aarch64"  = "../../linux/aarch64",
+    "linux-unknown/aarch64" = "../../linux/aarch64",
 
     # On Windows we server bi-arch packages:
     "mingw32/i386" = "../x86_64",
 
     # Map the pkgType/os/arch packages to os/arch on Linux, because on
     # Linux we serve binaries as sources, but on other OSes not.
-    "source/linux/x86_64/src/contrib"           = "../../../../../linux/x86_64",
-    "source/linux-gnu/x86_64/src/contrib"       = "../../../../../linux/x86_64",
-    "source/linux-musl/x86_64/src/contrib"      = "../../../../../linux/x86_64",
-    "source/linux-uclibc/x86_64/src/contrib"    = "../../../../../linux/x86_64",
-    "source/linux-dietlibc/x86_64/src/contrib"  = "../../../../../linux/x86_64",
-    "source/linux-unknown/x86_64/src/contrib"   = "../../../../../linux/x86_64",
-
-    "source/linux/aarch64/src/contrib"          = "../../../../../linux/aarch64",
-    "source/linux-gnu/aarch64/src/contrib"      = "../../../../../linux/aarch64",
-    "source/linux-musl/aarch64/src/contrib"     = "../../../../../linux/aarch64",
-    "source/linux-uclibc/aarch64/src/contrib"   = "../../../../../linux/aarch64",
+    "source/linux/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux-musl/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux-uclibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux-dietlibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux-unknown/x86_64/src/contrib" = "../../../../../linux/x86_64",
+    "source/linux/aarch64/src/contrib" = "../../../../../linux/aarch64",
+    "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux/aarch64",
+    "source/linux-musl/aarch64/src/contrib" = "../../../../../linux/aarch64",
+    "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
-    "source/linux-unknown/aarch64/src/contrib"  = "../../../../../linux/aarch64",
+    "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux/aarch64",
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
     "win.binary/mingw32/x86_64/src/contrib" = "../../../../../mingw32/x86_64",
@@ -695,7 +713,6 @@ create_pak_repo <- local({
     "mac.binary/darwin17.0/x86_64/src/contrib" = "../../../../../darwin17.0/x86_64",
     "mac.binary.el-capitan/darwin15.6.0/x86_64/src/contrib" = "../../../../../darwin15.6.0/x86_64",
     "mac.binary.big-sur-x86_64/darwin20/x86_64/src/contrib" = "../../../../../darwin20/x86_64",
-
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.4" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.5" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/3.6" = "../../../../../../../mingw32/x86_64",
@@ -704,7 +721,6 @@ create_pak_repo <- local({
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.2" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.3" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.4" = "../../../../../../../mingw32/x86_64",
-
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.1" = "../../../../../../../../darwin20/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.2" = "../../../../../../../../darwin20/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.3" = "../../../../../../../../darwin20/aarch64",
@@ -730,7 +746,6 @@ create_pak_repo <- local({
     "bin/windows/contrib/4.2" = "../../../../mingw32/x86_64",
     "bin/windows/contrib/4.3" = "../../../../mingw32/x86_64",
     "bin/windows/contrib/4.4" = "../../../../mingw32/x86_64",
-
     "bin/macosx/big-sur-arm64/contrib/4.1" = "../../../../../darwin20/aarch64",
     "bin/macosx/big-sur-arm64/contrib/4.2" = "../../../../../darwin20/aarch64",
     "bin/macosx/big-sur-arm64/contrib/4.3" = "../../../../../darwin20/aarch64",
@@ -745,7 +760,6 @@ create_pak_repo <- local({
     "bin/macosx/el-capitan/contrib/3.6" = "../../../../../darwin15.6.0/x86_64",
     "bin/macosx/big-sur-x86_64/contrib/4.3" = "../../../../../darwin20/x86_64",
     "bin/macosx/big-sur-x86_64/contrib/4.4" = "../../../../../darwin20/x86_64",
-
     "src/contrib" = "../../linux/x86_64"
   )
 
@@ -858,9 +872,11 @@ create_pak_repo <- local({
       )
     }
 
-    cols <- c("Package", "Version", "Depends", "Imports", "License",
-              "MD5sum", "Sha256", "NeedsCompilation", "Built", "File",
-              "DownloadURL", "OS", "Arch")
+    cols <- c(
+      "Package", "Version", "Depends", "Imports", "License",
+      "MD5sum", "Sha256", "NeedsCompilation", "Built", "File",
+      "DownloadURL", "OS", "Arch"
+    )
     meta <- main <- data[, cols]
 
     main_file <- file.path(root, tag, "metadata.json")

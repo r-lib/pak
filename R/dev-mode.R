@@ -1,4 +1,3 @@
-
 # These functions are only used for pak development
 
 create_dev_lib <- function() {
@@ -17,6 +16,5 @@ create_dev_lib <- function() {
   on.exit(setwd(wd), add = TRUE)
   setwd(dirname(inst_script))
 
-  message("Updating dev lib at ", lib)
   system2(rscript, c("--vanilla", "install-embedded.R", "--load-all", lib))
 }

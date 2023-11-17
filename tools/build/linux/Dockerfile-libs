@@ -1,13 +1,14 @@
+# ghcr.io/r-lib/pak-libs:latest
 
-ARG R_MAJOR=4.1
+# Compile a static libcurl (and its dependencies) and install it into
+# /usr/local/. Dockerfiles can then build on this container by copying
+# over /usr/local/.
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} as build
+FROM alpine:3.16 AS build
 
 WORKDIR /root
 
-# system requirements -----------------------------------------------------
-
-RUN apk add linux-headers bash gcc musl-dev g++ pkgconf
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf make
 
 # zlib --------------------------------------------------------------------
 
@@ -36,33 +37,24 @@ RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN apk add pkgconfig
 RUN cd curl-* && \
-    if [ "`uname -m`" = "aarch64" ]; then                            \
-      ./configure --enable-static --disable-shared --enable-debug;   \
-    else                                                             \
-      ./configure --enable-static --disable-shared;                  \
-    fi &&                                                            \
+    ./configure --enable-static --disable-shared;                    \
     make &&                                                          \
     make install &&                                                  \
     rm -rf /usr/local/bin/curl                                       \
        /usr/local/share/{man/doc}
 
 # =========================================================================
+# We don't need to keep the compilation artifacts, so copy the results
+# to a clean image
 
-FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
+FROM alpine:3.16
+COPY --from=build /usr/local /usr/local/
 
-COPY --from=build /usr/local /usr/local
+# Some of this info is shown on the GH packages pages
 
-WORKDIR /root
-
-# -------------------------------------------------------------------------
-# set up static compilation
-# -------------------------------------------------------------------------
-
-RUN mkdir -p /root/.R
-COPY tools/build/linux/Makevars-builder /root/.R/Makevars
-
-# -------------------------------------------------------------------------
-# Need a proper cp command for older R versions
-# -------------------------------------------------------------------------
-
-RUN apk add --no-cache coreutils findutils
+LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
+LABEL org.opencontainers.image.description="This image builds and contains \
+    static libraries for libcurl and its dependencies. See \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs \
+    for details."
+LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"
