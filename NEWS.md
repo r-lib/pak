@@ -1,5 +1,22 @@
 # pak (development version)
 
+* pak now correctly handles the latest GitHub release with
+  the `@*release` notation (@pawelru,
+  https://github.com/r-lib/pkgdepends/pull/321)
+
+* pak now correctly handles having multiple instances of the same
+  package in the metadata, with different R version requirements
+  (#534, #538, https://github.com/r-lib/pkgdepends/pull/331).
+
+* `git::` package references work better now for Azure DevOps
+  (@jameslairdsmith, https://github.com/r-lib/pkgdepends/pull/333,
+  https://github.com/r-lib/pkgdepends/pull/342).
+
+* pak now does a better job at accepting installed packages, and
+  avoids reinstalling more packages than needed when using a lock file
+  (https://github.com/r-lib/actions/issues/759,
+  https://github.com/r-lib/pkgdepends/pull/338).
+
 # pak 0.6.0
 
 * pak now requires R >= 3.5.0.
