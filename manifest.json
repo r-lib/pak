@@ -241,11 +241,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-17T11:03:34+00:00",
-          "size": 8265175,
-          "digest": "sha256:c26e81cdc6a254edaf277a16ee2eb79e34077651f300cdcec8cc5ae126084277"
+          "buildtime": "2023-11-18T05:36:50+00:00",
+          "size": 8265123,
+          "digest": "sha256:7f81987e9117943489b1322edfb07affb8ddddbf2d29e5de22c1ac6eeeef05f8"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
