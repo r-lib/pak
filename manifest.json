@@ -444,11 +444,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.2",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-16T20:43:52+00:00",
-          "size": 8260277,
-          "digest": "sha256:fa36e32e810b9c2f9a8dd4c4521dfde40201a39ad08d4404c2c027e954d577b4"
+          "buildtime": "2023-11-18T08:13:04+00:00",
+          "size": 8263734,
+          "digest": "sha256:cc882d2afcefc7d7ad9c6c7a16f768a19bbc7fc76c7206670561937d4f0efd21"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
