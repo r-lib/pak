@@ -764,11 +764,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.0",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-17T08:19:54+00:00",
-          "size": 8396146,
-          "digest": "sha256:4fc53efb6b9ba51e9014a6bbe19558920392ad96eeca8bd73ae4193986b0d2d0"
+          "buildtime": "2023-11-18T08:15:24+00:00",
+          "size": 8396432,
+          "digest": "sha256:517ac3b89cf0d7e683e9e2616f4d7e15df5c8dd35db0e51352dece496718a730"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
