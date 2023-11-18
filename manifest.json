@@ -593,20 +593,20 @@
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.1",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-16T14:53:17+00:00",
-          "size": 5457123,
-          "digest": "sha256:b2aaa7c8fd97833524ebda1532cdab5fe119ae1d17441c7bb3d5d3e380db0208"
+          "buildtime": "2023-11-18T08:19:34+00:00",
+          "size": 5456605,
+          "digest": "sha256:2fda9cfd1a5d44e02a9b206171ce36cab5e7eca87fc6bed149ff6e97f163259e"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.2",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-16T14:55:23+00:00",
-          "size": 5454784,
-          "digest": "sha256:9f0ed8a841616cd4077bb412c4fd7cd279f6ead27ffd6b04293ab30e8e20428f"
+          "buildtime": "2023-11-18T08:21:54+00:00",
+          "size": 5455818,
+          "digest": "sha256:fec1b0d467a6b69e4d107fb9cb1c664851d341052a7fdc79c7db14380bbe8940"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
@@ -773,11 +773,11 @@
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.3",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-16T14:57:59+00:00",
-          "size": 5457706,
-          "digest": "sha256:9c8a2a6822c2e218674593457ce60779be0e4ee25c714c619e3523a7bddeabbe"
+          "buildtime": "2023-11-18T08:23:57+00:00",
+          "size": 5456048,
+          "digest": "sha256:de2d955d1553760b3c1b943ef05547d79fc839c0181deb6ebe3c5e4addad3004"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
@@ -863,11 +863,11 @@
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.4",
-          "pak.version": "0.6.0.9001",
+          "pak.version": "0.7.0",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-16T15:03:09+00:00",
-          "size": 5459002,
-          "digest": "sha256:33688d17e63bd057f850813124edadb0bb23e0e006bd6a7cfb41496ec7322aa7"
+          "buildtime": "2023-11-18T08:28:13+00:00",
+          "size": 5459074,
+          "digest": "sha256:14a80287649a5b04910dc8c8b27e42b77ce6aba414fbe8519a385776187724ff"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
