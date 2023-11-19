@@ -96,6 +96,14 @@ Config/Needs/website:
     rmarkdown,
     roxygen2,
     tidyverse/tidytemplate
+Config/Needs/deploy:
+    curl,
+    desc,
+    digest,
+    gitcreds,
+    glue,
+    jsonlite,
+    processx
 Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.2.3.9000
