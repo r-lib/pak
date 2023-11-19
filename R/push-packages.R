@@ -86,11 +86,11 @@ push_packages <- local({
   }
 
   sha256 <- function(path) {
-    digest::digest(path, algo = "sha256", file = TRUE)
+    cli::hash_file_sha256(path)
   }
 
   sha256str <- function(str) {
-    vapply(str, digest::digest, character(1), algo = "sha256", serialize = FALSE)
+    cli::hash_sha256(str)
   }
 
   mkdirp <- function(dir, msg = NULL) {
@@ -361,12 +361,11 @@ push_packages <- local({
     package_version(substr(out$stdout, beg, end))
   }
 
-  update_packages <- function(
-      paths,
-      workdir,
-      tag = "devel",
-      keep_old = TRUE,
-      dry_run = FALSE) {
+  update_packages <- function(paths,
+                              workdir,
+                              tag = "devel",
+                              keep_old = TRUE,
+                              dry_run = FALSE) {
     shadir <- file.path(workdir, "blobs", "sha256")
     mkdirp(shadir)
 

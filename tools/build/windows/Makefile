@@ -1,7 +1,11 @@
+# For this to work, you need `make` and `zip` on the PATH.
+# You can have them from RtoolsXX, e.g. at `C:\rtools43\usr\bin`
+# if you use Rtools43.
+# You also need rig, or set the `RVERSIONS` and `RVERSION_DEFAULT`
+# environment variables.
 
-# Need the `tr` part because of a rig bug, \ is not escaped
-RVERSIONS ?= $(shell rig list --json | tr '\\' '/' | jq -r "map ( .name ) | .[]")
-RVERSION_DEFAULT ?= $(shell R.bat -s  -e 'cat(as.character(getRversion()))')
+RVERSIONS ?= $(shell rig list --plain)
+RVERSION_DEFAULT ?= $(shell rig default)
 
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 PKGROOT=../../..
@@ -39,7 +43,7 @@ export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).zip,$(RVERSIONS))
 deploy:
 	@echo "----- DEPLOYING packages -----------------------------------"
 	@echo $(PKGFILES)
-	R_LIBS=$(RLIB) $(R) -q -e "library(pak);pkg_install('deps::.', dependencies = TRUE)"
+	R_LIBS=$(RLIB) $(R) -q -e "pak::pkg_install('deps::.', dependencies = 'Config/Needs/deploy')"
 	R_LIBS=$(RLIB) $(R) -q -e \
 		"pak:::push_packages(strsplit(Sys.getenv('PKGFILES'), ' ')[[1]])"
 
