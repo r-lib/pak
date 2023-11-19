@@ -179,6 +179,19 @@ jobs:
     runs-on: windows-latest
     if: ${{ github.event.inputs.windows == '' || github.event.inputs.windows == 'yes' }}
     name: Windows x86_64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: '3.5' }
+          - { r: '3.6' }
+          - { r: '4.0' }
+          - { r: '4.1' }
+          - { r: '4.2' }
+          - { r: '4.3' }
+          - { r: devel }
+
     steps:
 
     - name: Checkout
@@ -194,8 +207,6 @@ jobs:
     - name: Install rig
       run: |
         choco install rig
-        # For make
-        echo "C:\rtools40\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Install skopeo
       run: |
@@ -211,16 +222,11 @@ jobs:
     # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
     - name: Install R and RTools
       run: |
-        rig add 3.5
-        rig add 3.6
-        rig add 4.0
-        rig add 4.1
-        rig add 4.2
-        rig add 4.3
-        rig add devel
-        rig add rtools35
-        rig add rtools40
-        rig default 4.2.3
+        Foreach($ver in (rig ls --plain)) { rig rm $ver }
+        rig add ${{ matrix.config.r }}
+        rig add rtools
+        # For make and zip
+        echo "C:\rtools43\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Build pak binaries
       run: |
