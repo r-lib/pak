@@ -75,7 +75,7 @@ install_order <- function() {
   ## TODO: look up the correct order
   pkgs <- c(
     # no deps
-    "R6", "cli", "crayon", "curl", "distro", "filelock", "glue", "jsonlite",
+    "R6", "cli", "crayon", "curl", "filelock", "glue", "jsonlite",
     "lpSolve", "parsedate", "prettyunits", "ps", "rappdirs", "rprojroot",
     "zip",
     # ps, R6

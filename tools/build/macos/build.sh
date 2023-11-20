@@ -38,7 +38,7 @@ echo "Cross compiling for R ${RVER} using R ${RVERX86}."
 R_MAKEVARS_USER="`pwd`/Makevars-macos-${RVERX86}" \
     R_COMPILE_AND_INSTALL_PACKAGES=always \
     "/usr/local/bin/R-${RVERX86}" -q \
-    -e 'install.packages(c("pkgdepends", "pkgsearch", "distro"))'
+    -e 'install.packages(c("pkgdepends", "pkgsearch"))'
 
 # TODO: we will need to hsve R-version specific platform triplets,
 # when a version of R starts using a newer build than the current

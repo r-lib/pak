@@ -29,7 +29,7 @@ version, e.g. "ubuntu", "debian", "centos", "redhat". See
 \url{https://github.com/rstudio/r-system-requirements#operating-systems} for
 all full list of supported operating systems.
 
-If \code{NULL}, the default, these will be looked up using \code{\link[distro:distro]{distro::distro()}}.}
+If \code{NULL}, the default, these will be looked up.}
 
 \item{root}{Path to the package tree.}
 

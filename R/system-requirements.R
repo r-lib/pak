@@ -41,7 +41,7 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #'   <https://github.com/rstudio/r-system-requirements#operating-systems> for
 #'   all full list of supported operating systems.
 #'
-#'   If `NULL`, the default, these will be looked up using [distro::distro()].
+#'   If `NULL`, the default, these will be looked up.
 #' @param execute,sudo If `execute` is `TRUE`, pak will execute the system
 #'   commands (if any). If `sudo` is `TRUE`, pak will prepend the commands with
 #'   [sudo](https://en.wikipedia.org/wiki/Sudo).
@@ -95,9 +95,9 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
 
 system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
   if (is.null(os) || is.null(os_release)) {
-    d <- distro::distro()
-    os <- os %||% d$id
-    os_release <- os_release %||% d$short_version
+    d <- pkgcache::current_r_platform_data()
+    os <- os %||% d$distribution
+    os_release <- os_release %||% d$release
   }
 
   os_versions <- supported_os_versions()
