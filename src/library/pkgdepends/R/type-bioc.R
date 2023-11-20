@@ -2,8 +2,6 @@
 ## ------------------------------------------------------------------------
 ## API
 
-#' @importFrom glue glue_data
-
 parse_remote_bioc <- function(specs, config, ...) {
 
   ## BioC is the same as CRAN, except for cran:: -> bioc::

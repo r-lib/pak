@@ -324,10 +324,10 @@ get_user_cache_dir <- function(...) {
 
 format_error_with_stdout <- function(x, ...) {
   msg <- conditionMessage(x)
-  if (is.null(x$data$stdout)) {
+  if (is.null(x$stdout)) {
     paste0(msg, " (output not available)")
   } else {
-    out <- last_stdout_lines(x$data$stdout, "stdout + stderr", "OE> ")
+    out <- last_stdout_lines(x$stdout, "stdout + stderr", "OE> ")
     c(paste0(msg, out[1]), out[-1])
   }
 }
@@ -475,4 +475,16 @@ parse_platform <- function(x) {
       if (length(y) < 3) NA_character_ else paste(y[-(1:2)], collapse = "-")
     })
   )
+}
+
+single_quote <- function(x) {
+  encodeString(x, quote = "'", na.encode = FALSE)
+}
+
+backtick <- function(x) {
+  encodeString(x, quote = "`", na.encode = FALSE)
+}
+
+collapse <- function(x, ...) {
+  cli::ansi_collapse(x, ...)
 }

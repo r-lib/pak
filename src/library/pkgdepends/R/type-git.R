@@ -265,7 +265,7 @@ type_git_make_resolution <- function(data) {
     version = version,
     license = data$desc$get_field("License", NA_character_),
     sources = data$remote$url,
-    target = unclass(glue("src/contrib/{package}_{version}_git_{sha7}")),
+    target = unclass(sprintf("src/contrib/%s_%s_git_%s", package, version, sha7)),
     remote = list(data$remote),
     deps = list(deps),
     unknown_deps = unknown,

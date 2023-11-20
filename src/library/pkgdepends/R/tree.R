@@ -115,10 +115,8 @@ annotate_tree <- function(sol, ann, builder = NULL) {
   ))
 }
 
-#' @importFrom prettyunits pretty_bytes
-
 format_file_size <- function(x) {
-  bts <- str_trim(pretty_bytes(x))
+  bts <- str_trim(format_bytes$pretty_bytes(x))
   cli::col_silver(
     ifelse(is.na(x), "(unknown size)", paste0("(", bts, ")"))
   )

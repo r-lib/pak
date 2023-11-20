@@ -54,8 +54,6 @@
 #' @aliases pkg_resolution_result
 NULL
 
-#' @importFrom prettyunits pretty_dt
-
 pkgplan_resolve <- function(self, private) {
   "!DEBUG pkgplan_resolve (sync)"
   synchronise(self$async_resolve())
@@ -633,12 +631,20 @@ resolve_from_description <- function(path, sources, remote, direct,
   )
 }
 
+drop_config_needs <- function(x) {
+  x[!grepl("^config/needs", x, ignore.case = TRUE)]
+}
+
 # TODO: Parse remotes and Config/Needs/* fields
 
 resolve_from_metadata <- function(remotes, direct, config, cache,
                                   dependencies) {
 
   remotes; direct; config; cache; dependencies
+  if (is.list(dependencies)) {
+    dependencies$direct <- drop_config_needs(dependencies$direct)
+    dependencies$indirect <- drop_config_needs(dependencies$indirect)
+  }
 
   ## Single remote, or a list of remotes
   if ("ref" %in% names(remotes)) {

@@ -281,8 +281,10 @@ make_uncompress_process <- function(archive, exdir = ".", ...) {
   type <- detect_package_archive_type(archive)
 
   if (type == "unknown") {
-    throw(new_input_error(
-      "Cannot extract {archive}, unknown archive type?"))
+    throw(pkg_error(
+      "Cannot extract {.path {archive}}, unknown archive type.",
+      .class = "install_input_error"
+    ))
   }
 
   if (type == "zip") {
@@ -297,8 +299,9 @@ make_uncompress_process <- function(archive, exdir = ".", ...) {
 run_uncompress_process <- function(archive, exdir = ".", ...) {
   type <- detect_package_archive_type(archive)
   if (type == "unknown") {
-    throw(new_input_error(
-      "Cannot extract {.path {archive}}, unknown archive type?"
+    throw(pkg_error(
+      "Cannot extract {.path {archive}}, unknown archive type.",
+      .class = "install_input_error"
     ))
   }
 

@@ -87,11 +87,13 @@ github_url_pull_rx <- function() "(?:pull/(?<pull>.+$))"
 github_url_release_rx <- function() "(?:releases/)(?<release>.+$)"
 
 github_url_detail_rx <- function() {
-  glue("(?:/(?:",
-       "{github_url_commitish_rx()}",
-       "|{github_url_pull_rx()}",
-       "|{github_url_release_rx()}",
-       "))?")
+  paste0(
+    "(?:/(?:",
+    github_url_commitish_rx(),
+    "|", github_url_pull_rx(),
+    "|", github_url_release_rx(),
+    "))?"
+  )
 }
 
 ## We need to select the shortest match here, to avoid matching a

@@ -29,31 +29,41 @@ install_extracted_binary <- function(filename, lib_cache, pkg_cache, lib,
       dir.create(dirname(move_to), showWarnings = FALSE, recursive = TRUE)
       ret <- file.rename(installed_path, move_to)
       if (!ret) {
-        throw(new_fs_error(
-          "Failed to move installed package at {installed_path}",
-          package = pkg_name))
+        throw(pkg_error(
+          "Failed to move installed package {.pkg {pkg_name}} at
+          {.path {installed_path}}.",
+          .data = list(package = pkg_name),
+          .class = "install_filesystem_error"
+        ))
       }
       ret <- unlink(move_to, recursive = TRUE, force = TRUE)
       if (ret != 0) {
-        throw(new_fs_warning(
-          "Failed to remove installed package at {move_to}",
-          package = pkg_name))
+        throw(pkg_warning(
+          "Failed to remove installed package at {.path {move_to}}.",
+          .data = list(package = pkg_name),
+          .class = "install_filesystem_warning"
+        ))
       }
     } else {
       # On Unix we are fine with just deleting the old package
       ret <- unlink(installed_path, recursive = TRUE, force = TRUE)
       if (ret != 0) {
-        throw(new_fs_warning(
-          "Failed to remove installed package at {installed_path}",
-          package = pkg_name))
+        throw(pkg_warning(
+          "Failed to remove installed package at {.path {installed_path}}.",
+          .data = list(package = pkg_name),
+          .class = "install_filesystem_warning"
+        ))
       }
     }
   }
   ret <- file.rename(pkg$path, installed_path)
   if (!ret) {
-    throw(new_fs_error(
-      "Unable to move package from {pkg$path} to {installed_path}",
-      package = pkg_name))
+    throw(pkg_error(
+      "Unable to move package from {.path {pkg$path}} to
+      {.path {installed_path}}",
+      .data = list(package = pkg_name),
+      .class = "install_filesystem_error"
+    ))
   }
 
   installed_path
@@ -116,8 +126,10 @@ make_install_process <- function(filename, lib = .libPaths()[[1L]],
 
   type <- detect_package_archive_type(filename)
   if (type == "unknown") {
-    throw(new_input_error(
-      "Cannot extract {filename}, unknown archive type?"))
+    throw(pkg_error(
+      "Cannot extract {.path {filename}}, unknown archive type.",
+      .class = "install_input_error"
+    ))
   }
 
   lib_cache <- library_cache(lib)

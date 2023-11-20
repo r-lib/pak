@@ -7,13 +7,17 @@ verify_extracted_package <- function(filename, parent_path) {
   pkg_path <- file.path(parent_path, pkg_name)
 
   if (length(pkg_name) == 0) {
-    throw(new_input_error(
-      "{filename} is not a valid R package, it is an empty archive"))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid R package, it is an empty archive.",
+      .class = "install_input_error"
+    ))
 
   } else if (length(pkg_name) > 1) {
-    throw(new_input_error(
-      "{filename} is not a valid R package, it should contain a
-      single directory"))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid R package, it should contain a
+      single directory",
+      .class = "install_input_error"
+    ))
   }
 
   rel_package_files <- c(
@@ -25,9 +29,11 @@ verify_extracted_package <- function(filename, parent_path) {
   has_files <- file.exists(package_files)
   if (!all(has_files)) {
     miss <- rel_package_files[! has_files]
-    throw(new_input_error(
-      "{filename} is not a valid binary, it does not contain {miss*}.",
-      package = pkg_name))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid binary, it is missing {miss}.",
+      .data = list(package = pkg_name),
+      .class = "install_input_error"
+    ))
   }
 
   rel_dsc_file <- file.path(pkg_name, "DESCRIPTION")
@@ -35,36 +41,50 @@ verify_extracted_package <- function(filename, parent_path) {
   dsc <- tryCatch(
     desc(dsc_file),
     error = function(e) {
-      throw(new_input_error(
-        "{filename} is not a valid binary, invalid {rel_dsc_file}.",
-        package = pkg_name))
+      throw(pkg_error(
+        "{.path {filename}} is not a valid binary, invalid DESCRIPTION
+        file at {.path {rel_dsc_file}}.",
+        .data = list(package = pkg_name),
+        .class = "install_input_error"
+      ))
     }
   )
 
   if (!length(dsc$fields())) {
-    throw(new_input_error(
-      "{filename} is not a valid binary, {rel_dsc_file} is empty.",
-      package = pkg_name))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid binary, empty DESCRIPTION file
+      at {.path {rel_dsc_file}}.",
+      .data = list(package = pkg_name),
+      .class = "install_input_error"
+    ))
   }
 
   dsc_pkg <- dsc$get("Package")
   if (is.na(dsc_pkg)) {
-    throw(new_input_error(
-      "{filename} has no `Package` entry in {rel_dsc_file}",
-      package = pkg_name))
+    throw(pkg_error(
+      "{.path {filename}} has no `Package` entry in DESCRIPTION at
+      {.path {rel_dsc_file}}.",
+      .data = list(package = pkg_name),
+      .class = "install_input_error"
+    ))
   }
 
   if (pkg_name != str_trim(dsc_pkg[[1]])) {
-    throw(new_input_error(
-      "{filename} is not a valid binary, package name mismatch in
-      archive and in {rel_dsc_file}",
-      package = pkg_name))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid binary, package name mismatch in
+      archive and in {.path {rel_dsc_file}}.",
+      .data = list(package = pkg_name),
+      .class = "install_input_error"
+    ))
   }
 
   if (is.na(dsc$get("Built"))) {
-    throw(new_input_error(
-      "{filename} is not a valid binary, no 'Built' entry in {rel_dsc_file}.",
-      package = pkg_name))
+    throw(pkg_error(
+      "{.path {filename}} is not a valid binary, no 'Built' entry in
+      {.path {rel_dsc_file}}.",
+      .data = list(package = pkg_name),
+      .class = "install_input_error"
+    ))
   }
 
   list(name = pkg_name, path = pkg_path, desc = dsc)

@@ -54,15 +54,21 @@ embed <- local({
       dsc <- read.dcf(file.path(lib, pkg, "DESCRIPTION"))
       dpkg <- dsc[, "Package"]
       dver <- dsc[, "Version"]
+      dsha <- if ("RemoteSha" %in% colnames(dsc)) {
+        dsc[, "RemoteSha"]
+      } else {
+        NA_character_
+      }
       if (!is_string(dpkg) || dpkg != pkg || !is_string(dver)) {
         stop("Invalid ", pkg, "DESCRIPTION")
       }
-      dver
+      list(version = dver, sha = dsha)
     })
     tab <- data.frame(
       stringsAsFactors = FALSE,
       package = pkgs,
-      version = as.character(unlist(vers))
+      version = as.character(sapply(vers, "[[", "version")),
+      sha = as.character(sapply(vers, "[[", "sha"))
     )
     tab[order(tab$package), ]
   }
@@ -75,8 +81,25 @@ embed <- local({
     }
   }
 
+  get_gh_desc <- function(slug) {
+    url <- sprintf(
+      "https://raw.githubusercontent.com/%s/main/DESCRIPTION",
+      slug
+    )
+    tmp <- tempfile()
+    on.exit(unlink(tmp), add = TRUE)
+    utils::download.file(url, tmp, quiet = TRUE)
+    # NOTE: we do not handle recursive Remotes and such...
+    dsc <- read.dcf(tmp)
+    dsc
+  }
+
   lookup_dep_gh <- function(slug) {
-    "TODO":"TODO"
+    dsc <- get_gh_desc(slug)
+    imports <- dsc[, "Imports"]
+    depsver <- trimws(strsplit(imports, ",")[[1]])
+    deps <- sub("[ (].*$", "", depsver)
+    unique(c(deps, unlist(lapply(deps, lookup_dep))))
   }
 
   lookup_dep_cran <- function(pkg) {
@@ -94,42 +117,69 @@ embed <- local({
     sort(setdiff(allpkgs, base_packages()))
   }
 
+  get_gh_sha <- function(slug) {
+    cmd <- sprintf(
+      "git ls-remote https://github.com/%s refs/heads/main",
+      slug
+    )
+    out <- system(cmd, intern = TRUE)
+    sub("\\t.*$", "", out)
+  }
+
+  lookup_gh_version <- function(slug) {
+    dsc <- get_gh_desc(slug)
+    sha <- get_gh_sha(slug)
+    list(version = dsc[, "Version"], sha = sha)
+  }
+
   check_update <- function(pkg = NULL) {
     check_pak_root()
     rpkg <- pkg %||% get_required()
 
     av <- utils::available.packages(repos = get_repos(), type = "source")
+    vers <- sha <- rep(NA_character_, length(rpkg))
     wh <- match(rpkg, av[, "Package"])
-    if (anyNA(wh)) {
+    vers <- av[wh, "Version"]
+    gh <- grepl("/", rpkg)
+    ghver <- lapply(rpkg[gh], lookup_gh_version)
+    vers[gh] <- sapply(ghver, "[[", "version")
+    sha[gh] <- sapply(ghver, "[[", "sha")
+    if (anyNA(vers)) {
       stop(
-        "REquired packages not available: ",
-        paste(rpkg[is.na(wh)], collapse = ", ")
+        "Required packages not available: ",
+        paste(rpkg[is.na(vers)], collapse = ", ")
       )
     }
-    vers <- av[wh, "Version"]
 
     crnt <- get_current()
-    wh <- match(rpkg, crnt$package)
+    pkg_name <- sub("^.*/", "", rpkg)
+    wh <- match(pkg_name, crnt$package)
 
     tab <- data.frame(
       stringsAsFactors = FALSE,
-      package = rpkg,
-      required = vers,
-      current = crnt$version[wh]
+      ref = rpkg,
+      package = pkg_name,
+      required = unname(vers),
+      required_sha = sha,
+      current = crnt$version[wh],
+      current_sha = crnt$sha[wh]
     )
     rownames(tab) <- NULL
 
     if (is.null(pkg)) {
-      xtr <- setdiff(crnt$package, rpkg)
+      xtr <- setdiff(crnt$package, pkg_name)
       if (length(xtr) > 0) {
         wh <- match(xtr, crnt$package)
         tab <- rbind(
           tab,
           data.frame(
             stringsAsFactors = FALSE,
+            ref = NA_character_,
             package = xtr,
             required = NA_character_,
-            current = crnt$version[wh]
+            required_sha = NA_character_,
+            current = crnt$version[wh],
+            current_sha = NA_character_
           )
         )
       }
@@ -149,7 +199,10 @@ embed <- local({
     rimraf(file.path(lib_dir(), pkg))
   }
 
-  addupdate_package <- function(pkg, ver = NULL, mode = c("add", "update")) {
+  addupdate_package <- function(
+      pkg,
+      ver = NULL,
+      mode = c("add", "update")) {
     mode <- match.arg(mode)
     stopifnot(
       is_string(pkg),
@@ -157,38 +210,60 @@ embed <- local({
     )
 
     lib <- lib_dir()
+    pkg_name <- sub("^.*/", "", pkg)
     if (mode == "add") {
-      if (file.exists(file.path(lib, pkg))) {
-        stop("Package already in library: ", pkg)
+      if (file.exists(file.path(lib, pkg_name))) {
+        stop("Package already in library: ", pkg_name)
       }
     }
 
     dir.create(tmp <- tempfile())
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
-    path <- utils::download.packages(pkg, tmp, repos = get_repos())
+    if (grepl("/", pkg)) {
+      url <- sprintf(
+        "https://github.com/%s/archive/refs/heads/main.tar.gz",
+        pkg
+      )
+      path1 <- file.path(tmp, paste0(pkg_name, ".tar.gz"))
+      download.file(url, path1)
+
+      path2 <- file.path(tmp, "pkgraw")
+      untar(path1, exdir = path2)
+      wd <- getwd()
+      on.exit(setwd(wd), add = TRUE)
+      setwd(path2)
+      system2("R", c("CMD", "build ", dir()))
+      path <- normalizePath(dir(pattern = "[.]tar[.]gz$"))
+      setwd(wd)
+
+    } else {
+      path <- utils::download.packages(pkg, tmp, repos = get_repos())[, 2]
+    }
+
     tmp1 <- file.path(tmp, "pkg")
-    untar(path[, 2], exdir = tmp1)
+    mkdirp(tmp1)
+    untar(path, exdir = tmp1)
 
     if (!is.null(ver)) {
-      dsc <- read.dcf(file.path(tmp1, pkg, "DESCRIPTION"))
+      dsc <- read.dcf(file.path(tmp1, pkg_name, "DESCRIPTION"))
       iver <- dsc[, "Version"]
       if (iver != ver) {
         stop("Could not add ", pkg, " ", ver, ", CRAN has ", iver)
       }
     }
 
-    patch <- file.path(lib_dir(), paste0(pkg, ".patch"))
+    patch <- file.path(lib_dir(), paste0(pkg_name, ".patch"))
     if (file.exists(patch)) {
-      message("Patching ", pkg)
+      message("Patching ", pkg_name)
       system2(
         "patch",
         c("-d", tmp1, "-p", "3", "-i", normalizePath(patch))
       )
     }
 
-    rimraf(file.path(lib, pkg))
-    file.rename(file.path(tmp1, pkg), file.path(lib, pkg))
-    clean_package(pkg)
+    rimraf(file.path(lib, pkg_name))
+    file.rename(file.path(tmp1, pkg_name), file.path(lib, pkg_name))
+    clean_package(pkg_name)
   }
 
   add_package <- function(pkg, ver = NULL) {

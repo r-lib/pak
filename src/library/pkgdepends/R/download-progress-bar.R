@@ -139,17 +139,17 @@ pkgplan__initial_pb_message <- function(bar) {
     cli_alert_info(c(
       "No downloads are needed",
       if (nch > 0) ", {nch} pkg{?s} ",
-      if (cbt > 0) "{.size ({pretty_bytes(cbt)})} ",
+      if (cbt > 0) "{.size ({format_bytes$pretty_bytes(cbt)})} ",
       if (nch > 0) "{qty(nch)}{?is/are} cached"
     ))
   } else {
     cli_alert_info(c(
       "Getting",
-      if (bts > 0) " {num-unk} pkg{?s} {.size ({pretty_bytes(bts)})}",
+      if (bts > 0) " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}",
       if (bts > 0 && unk > 0) " and",
       if (unk > 0) " {unk} pkg{?s} with unknown size{?s}",
       if (nch > 0) ", {nch} ",
-      if (cbt > 0) "{.size ({pretty_bytes(cbt)})} ",
+      if (cbt > 0) "{.size ({format_bytes$pretty_bytes(cbt)})} ",
       if (nch > 0) "cached"
     ))
   }
@@ -192,7 +192,7 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
       cli_alert_success(c(
         "Got {.pkg {data$package}} ",
         "{.version {data$version}} ({data$platform})",
-        if (!is.na(sz) && bar$show_size) " {.size ({pretty_bytes(sz)})}"
+        if (!is.na(sz) && bar$show_size) " {.size ({format_bytes$pretty_bytes(sz)})}"
       ))
       if (!is.na(bar$what$filesize[idx])) {
         bar$chunks[[sec]] <- (bar$chunks[[sec]] %||% 0) -
@@ -255,8 +255,6 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
 #' @param bar The progress bar object.
 #'
 #' @noRd
-#' @importFrom glue glue_collapse
-#' @importFrom prettyunits pretty_bytes pretty_dt
 
 pkgplan__show_progress_bar <- function(bar) {
   if (is.null(bar$status)) return()
@@ -290,7 +288,7 @@ calculate_rate <- function(start, now, chunks) {
   if (rate == 0 && time_at < 4) {
     rstr <- strrep(" ", 8)
   } else {
-    rstr <- paste0(pretty_bytes(rate, style = "6"), "/s")
+    rstr <- paste0(format_bytes$pretty_bytes(rate, style = "6"), "/s")
   }
   list(rate = rate, rstr = rstr)
 }
@@ -305,7 +303,7 @@ calculate_eta <- function(total, current, rate) {
     if (etas < 1) {
       estr <- "<1s   "
     } else {
-      estr <- format(pretty_dt(etas, compact = TRUE), width = 6)
+      estr <- format(format_time$pretty_dt(etas, compact = TRUE), width = 6)
     }
   }
   list(etas = etas, estr = estr)
@@ -348,7 +346,7 @@ calculate_progress_parts <- function(bar) {
     pkgs <- bar$what$package[bar$what$idx %in% bar$events$data]
     parts$msg <- paste0(
       "Getting ",
-      glue_collapse(pkgs, sep = ", ", last = " and ")
+      cli::ansi_collapse(pkgs, sep = ", ", last = " and ")
     )
     bar$lastmsg <- parts$msg
   }
@@ -368,12 +366,12 @@ pkgplan__done_progress_bar <- function(bar) {
   if (is.null(bar$status)) return()
 
   end_at <- Sys.time()
-  dt <- pretty_dt(Sys.time() - bar$start_at)
+  dt <- format_time$pretty_dt(Sys.time() - bar$start_at)
 
   cli_status_clear(bar$status)
   bar$status <- NULL
 
-  bts <- pretty_bytes(sum(bar$what$current))
+  bts <- format_bytes$pretty_bytes(sum(bar$what$current))
   dld <- sum(bar$what$status == "got")
   cch <- sum(bar$what$status == "had")
   err <- sum(bar$what$status == "error")

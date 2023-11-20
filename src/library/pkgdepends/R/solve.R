@@ -664,8 +664,10 @@ pkgplan_i_lp_dependencies <- function(lp, config) {
         },
         if (! length(cand)) "but no candidates"
       )
-      txt <- glue("{pkgs$ref[wh]} depends on {depref}: \\
-                   {collapse(report, sep = ', ')}")
+      txt <- sprintf(
+        "%s depends on %s: %s",
+        pkgs$ref[wh], depref, collapse(report, sep = ", ")
+      )
       note <- list(wh = wh, ref = depref, cand = cand,
                    good_cand = good_cand, txt = txt, depop = depop,
                    depver = depver)
@@ -690,76 +692,76 @@ print.pkgplan_lp_problem <- function(x, ...) {
 
 format_cond <- function(x, cond) {
   if (cond$type == "dependency") {
-    glue("{cond$note$txt}")
+    paste0(cond$note$txt)
 
   } else if (cond$type == "satisfy-refs") {
     ref <- x$pkgs$ref[cond$note]
     cand <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` is not satisfied by `{cand}`")
+    sprintf("`%s` is not satisfied by `%s`", ref, cand)
 
   } else if (cond$type == "ok-resolution") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` resolution failed")
+    sprintf("`%s` resolution failed", ref)
 
   } else if (cond$type == "source-required") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("a source package was required for `{ref}` by the user")
+    sprintf("a source package was required for `%s` by the user", ref)
 
   } else if (cond$type == "ignored-by-user") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` explicitly ignored by user")
+    sprintf("`%s` explicitly ignored by user", ref)
 
   } else if (cond$type == "matching-platform") {
     ref <- x$pkgs$ref[cond$vars]
     plat <- x$pkgs$platform[cond$vars]
-    glue("Platform `{plat}` does not match for `{ref}`")
+    sprintf("Platform `%s` does not match for `%s`", plat, ref)
 
   } else if (cond$type == "old-rversion") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` needs a newer R version: {cond$note}")
+    sprintf("`%s` needs a newer R version: %s", ref, cond$note)
 
   } else if (cond$type == "new-rversion") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` needs an older R version: {cond$note}")
+    sprintf("`%s` needs an older R version: %s", ref, cond$node)
 
   } else if (cond$type == "different-rversion") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` needs a different R version: {cond$note}")
+    sprintf("`%s` needs a different R version: %s", ref, cond$note)
 
   } else if (cond$type == "direct-update") {
     package <- x$pkgs$package[cond$vars]
-    glue("`{package}` is direct, needs latest version")
+    sprintf("`%s` is direct, needs latest version", package)
 
   } else if (cond$type == "choose-latest") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("`{ref}` has a newer version of the same platform")
+    sprintf("`%s` has a newer version of the same platform", ref)
 
   } else if (cond$type == "prefer-installed") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("installed is preferred for `{ref}`")
+    sprintf("installed is preferred for `%s`", ref)
 
   } else if (cond$type == "prefer-binary")  {
     ref <- x$pkgs$ref[cond$vars]
-    glue("binary is preferred for `{ref}`")
+    sprintf("binary is preferred for `%s`", ref)
 
   } else if (cond$type == "prefer-new-binary")  {
     ref <- x$pkgs$ref[cond$vars]
-    glue("newer binary is preferred for `{ref}`")
+    sprintf("newer binary is preferred for `%s`", ref)
 
   } else if (cond$type == "source-requested") {
     ref <- x$pkgs$ref[cond$vars]
-    glue("source package is requested for `{ref}`")
+    sprintf("source package is requested for `%s`", ref)
 
   } else if (cond$type == "exactly-once") {
     ref <- na.omit(x$pkgs$package[cond$vars])[1]
-    glue("select {ref} exactly once")
+    sprintf("select %s exactly once", ref)
 
   } else if (cond$type == "at-most-once") {
     ref <- na.omit(x$pkgs$package[cond$vars])[1]
-    glue("select {ref} at most once")
+    sprintf("select %s at most once", ref)
 
   } else {
-    glue("Unknown constraint")
+    "Unknown constraint"
   }
 }
 
@@ -771,16 +773,16 @@ format.pkgplan_lp_problem <- function(x, ...) {
   push <- function(...) result <<- c(result, ...)
 
   push("<pkgplan_lp_problem>")
-  push(glue("+ refs ({x$num_candidates}):"))
+  push(sprintf("+ refs (%s):", x$num_candidates))
   pn <- sort(x$pkgs$ref)
   push(paste0("  - ", x$pkgs$ref))
 
   if (length(x$conds)) {
-    push(glue("+ constraints ({length(x$conds)}):"))
+    push(sprintf("+ constraints (%s):", length(x$conds)))
     conds <- drop_nulls(lapply(x$conds, format_cond, x = x))
     push(paste0("  - ", conds))
   } else {
-    push(glue("+ no constraints"))
+    push("+ no constraints")
   }
 
   result
@@ -1113,11 +1115,9 @@ pkgplan_install_plan <- function(self, private, downloads) {
   sol
 }
 
-#' @importFrom rprojroot find_package_root_file
 #' @importFrom jsonlite unbox
 
 pkgplan_export_install_plan <- function(self, private, plan_file, version) {
-  plan_file <- plan_file %||% find_package_root_file("resolution.json")
   pkgs <- pkgplan_install_plan(self, private, downloads = FALSE)
   cols <- unique(c(
     "ref", "package", "version", "type", "direct", "binary",
@@ -1317,7 +1317,7 @@ describe_solution_error <- function(pkgs, solution) {
     if (state[sv] != "maybe-good") next
     needs <- cnd[[w]]$note
     state[sv] <- typ[[w]]
-    note[[sv]] <- c(note[[sv]], glue("Needs R {needs}"))
+    note[[sv]] <- c(note[[sv]], sprintf("Needs R %s", needs))
   }
 
   ## Candidates with platform mismatch
@@ -1325,7 +1325,7 @@ describe_solution_error <- function(pkgs, solution) {
     sv <- var[[w]]
     if (state[sv] != "maybe-good") next
     state[sv] <- "matching-platform"
-    note[[sv]] <- c(note[[sv]], glue("Platform mismatch"))
+    note[[sv]] <- c(note[[sv]], "Platform mismatch")
   }
 
   ## Candidates that conflict with a direct package
@@ -1334,7 +1334,7 @@ describe_solution_error <- function(pkgs, solution) {
     down <- pkgs$ref[sv]
     up <- pkgs$ref[cnd[[w]]$note]
     state[sv] <- "satisfy-direct"
-    note[[sv]] <- c(note[[sv]], glue("Conflicts with {up}"))
+    note[[sv]] <- c(note[[sv]], sprintf("Conflicts with %s", up))
   }
 
   ## Find "conflict". These are candidates that are not installed,
@@ -1350,7 +1350,7 @@ describe_solution_error <- function(pkgs, solution) {
       for (v in vv) {
         note[[v]] <- c(
           note[[v]],
-          glue("{pkgs$ref[v]} conflicts with {inst}, to be installed"))
+          sprintf("%s conflicts with %s, to be installed", pkgs$ref[v], inst))
       }
     }
   }
@@ -1366,7 +1366,7 @@ describe_solution_error <- function(pkgs, solution) {
     pkg <- cnd[type_dep][[x]]$note$ref
     state[dep_up[x]] <- "dep-failed"
     note[[ dep_up[x] ]] <-
-      c(note[[ dep_up[x] ]], glue("Can't install dependency {pkg}"))
+      c(note[[ dep_up[x] ]], sprintf("Can't install dependency %s", pkg))
     depop <- cnd[type_dep][[x]]$note$depop %||% ""
     depver <- cnd[type_dep][[x]]$note$depver %||% ""
     if (nzchar(depver)) {
@@ -1385,7 +1385,7 @@ describe_solution_error <- function(pkgs, solution) {
       pkg <- cnd[type_dep][[x]]$note$ref
       state[ dep_up[x] ] <- "dep-failed"
       note[[ dep_up[x] ]] <- c(
-        note[[ dep_up[x] ]], glue("Can't install dependency {pkg}"))
+        note[[ dep_up[x] ]], sprintf("Can't install dependency %s", pkg))
       depop <- cnd[type_dep][[x]]$note$depop %||% ""
       depver <- cnd[type_dep][[x]]$note$depver %||% ""
       if (nzchar(depver)) {
