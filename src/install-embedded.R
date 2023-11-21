@@ -17,7 +17,7 @@ rimraf <- function(path) {
   unlink(path, force = TRUE, recursive = TRUE)
 }
 
-get_lib <- function(lib) {
+get_lib <- function(lib = NULL) {
   lib <- lib %||% file.path(Sys.getenv("R_PACKAGE_DIR"), "library")
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   lib
@@ -120,7 +120,6 @@ install_all <- function(lib = NULL) {
   } else {
     for (pkg in pkgs) install_one(pkg, lib = lib)
   }
-  file.create("DONE")
   invisible()
 }
 
@@ -171,6 +170,7 @@ load_all <- function() {
     stop("Usage: install-embedded.R [ --load-all library-dir ]")
   }
   update_all(args[2])
+  bundle_rds(args[2])
 }
 
 parse_platforms <- function(args) {
@@ -186,6 +186,96 @@ parse_platforms <- function(args) {
     build = build %||% NA_character_,
     target = target %||% NA_character_
   )
+}
+
+# This is currently repeated from subprocess.R
+
+set_function_envs <- function(within, new) {
+  old <- .libPaths()
+  .libPaths(character())
+  on.exit(.libPaths(old), add = TRUE)
+  nms <- names(within)
+
+  is_target_env <- function(x) {
+    identical(x, base::.GlobalEnv) || environmentName(x) != ""
+  }
+
+  suppressWarnings({
+    for (nm in nms) {
+      if (is.function(within[[nm]])) {
+        if (is_target_env(environment(within[[nm]]))) {
+          environment(within[[nm]]) <- new
+        } else if (is_target_env(parent.env(environment(within[[nm]])))) {
+          parent.env(environment(within[[nm]])) <- new
+        }
+      } else if ("R6ClassGenerator" %in% class(within[[nm]])) {
+        within[[nm]]$parent_env <- new
+        for (mth in names(within[[nm]]$public_methods)) {
+          environment(within[[nm]]$public_methods[[mth]]) <- new
+        }
+        for (mth in names(within[[nm]]$private_methods)) {
+          environment(within[[nm]]$private_methods[[mth]]) <- new
+        }
+      }
+    }
+  })
+
+  invisible()
+}
+
+patch_env_refs <- function(pkg_env) {
+  pkg_env[["::"]] <- function(pkg, name) {
+    pkg <- as.character(substitute(pkg))
+    name <- as.character(substitute(name))
+    if (pkg %in% names(pkg_data$ns)) {
+      pkg_data$ns[[pkg]][[name]]
+    } else {
+      # FIXME: should we really fall back to a regular package?
+      getExportedValue(pkg, name)
+    }
+  }
+  environment(pkg_env[["::"]]) <- pkg_env
+
+  pkg_env[["asNamespace"]] <- function(ns, ...) {
+    if (ns %in% names(pkg_data$ns)) {
+      pkg_data$ns[[ns]]
+    } else {
+      base::asNamespace(ns, ...)
+    }
+  }
+  environment(pkg_env[["asNamespace"]]) <- pkg_env
+
+  pkg_env[["UseMethod"]] <- function(generic, object) {
+    base::UseMethod(generic, object)
+  }
+  environment(pkg_env[["UseMethod"]]) <- pkg_env
+}
+
+bundle_rds <- function(lib = NULL) {
+  lib <- lib %||% get_lib(lib)
+  ns <- new.env(parent = emptyenv())
+  pkgs <- setdiff(dir(lib), "deps.rds")
+  for (pkg in pkgs) {
+    pkg_env <- new.env(parent = emptyenv())
+    pkg_env[[".packageName"]] <- pkg
+    lazyLoad(file.path(lib, pkg, "R", pkg), envir = pkg_env)
+    sysdata <- file.path(lib, pkg, "R", "sysdata.rdb")
+    if (file.exists(sysdata)) {
+      lazyLoad(file.path(lib, pkg, "R", "sysdata"), envir = pkg_env)
+    }
+    set_function_envs(pkg_env, pkg_env)
+    ## Sometimes a package refers to its env, this is one known instance.
+    ## We could also walk the whole tree, but probably not worth it.
+    if (!is.null(pkg_env$err$.internal$package_env)) {
+      pkg_env$err$.internal$package_env <- pkg_env
+    }
+
+    patch_env_refs(pkg_env)
+
+    ns[[pkg]] <- pkg_env
+  }
+
+  saveRDS(ns, file.path(lib, "deps.rds"))
 }
 
 install_embedded_main <- function() {
@@ -231,6 +321,8 @@ install_embedded_main <- function() {
   }
 
   install_all()
+  bundle_rds()
+  file.create("DONE")
 }
 
 if (is.null(sys.calls())) {

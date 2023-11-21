@@ -1,17 +1,39 @@
 load_all_private <- function() {
-  load_private_cli()
-  load_private_package("R6")
-  load_private_package("curl")
-  load_private_package("distro")
-  load_private_package("filelock")
-  load_private_package("jsonlite")
-  load_private_package("lpSolve")
-  load_private_package("ps")
-  load_private_package("zip")
-  load_private_package("processx", "c_")
-  load_private_package("callr")
-  load_private_package("desc")
-  load_private_package("pkgbuild")
-  load_private_package("pkgsearch")
-  load_private_package("pkgdepends")
+  if (length(pkg_data[["ns"]]) > 0) {
+    return()
+  }
+  lib <- private_lib_dir()
+  deps_path <- file.path(lib, "deps.rds")
+  pkg_data[["ns"]] <- readRDS(deps_path)
+  parent.env(pkg_data[["ns"]]) <- getNamespace(.packageName)
+  for (pkg in names(pkg_data[["ns"]])) {
+    pkg_env <- pkg_data[["ns"]][[pkg]]
+    reg_prefix <- if (pkg == "processx") "c_" else ""
+    parent.env(pkg_env) <- getNamespace(.packageName)
+
+    pkg_env[["__pkg-dir__"]] <- normalizePath(file.path(lib, pkg))
+
+    dll_file <- paste0(pkg, .Platform$dynlib.ext)
+    dll_path <- file.path(lib, pkg, "libs", .Platform$r_arch, dll_file)
+    if (file.exists(dll_path)) {
+      # TODO: copy it on windows (or always?)
+      dll <- dyn.load(dll_path)
+      dll[["name"]] <- paste0("pak-", dll[["name"]])
+      .dynLibs(c(.dynLibs(), list(dll)))
+      natfuns <- getDLLRegisteredRoutines(dll)$.Call
+      for (natfun in natfuns) {
+        pkg_env[[paste0(reg_prefix, natfun$name)]] <- natfun
+      }
+    }
+  }
+
+  cldir <- pkg_data[["ns"]][["processx"]][["__pkg-dir__"]]
+  Sys.setenv("CALLR_PROCESSX_CLIENT_LIB" = cldir)
+  Sys.setenv("PKGCACHE_NO_PILLAR" = "true")
+  for (pkg in names(pkg_data[["ns"]])) {
+    pkg_env <- pkg_data[["ns"]][[pkg]]
+    if (".onLoad" %in% names(pkg_env)) {
+      pkg_env[[".onLoad"]](lib, pkg)
+    }
+  }
 }
