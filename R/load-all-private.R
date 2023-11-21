@@ -1,7 +1,6 @@
 load_all_private <- function() {
   load_private_cli()
   load_private_package("R6")
-  load_private_package("crayon")
   load_private_package("curl")
   load_private_package("distro")
   load_private_package("filelock")
