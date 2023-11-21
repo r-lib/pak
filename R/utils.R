@@ -1,3 +1,6 @@
+# Needed for pkgcache
+#' @rawNamespace if (getRversion() >= "4.0.0") importFrom(tools, R_user_dir)
+NULL
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
