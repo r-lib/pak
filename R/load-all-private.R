@@ -10,7 +10,6 @@ load_all_private <- function() {
   load_private_package("prettyunits")
   load_private_package("ps")
   load_private_package("rappdirs")
-  load_private_package("rprojroot")
   load_private_package("zip")
   load_private_package("processx", "c_")
   load_private_package("callr")

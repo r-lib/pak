@@ -32,7 +32,6 @@ Other contributors:
   \item Hadley Wickham (cli, curl, pkgbuild, rappdirs) [contributor, copyright holder]
   \item Brodie Gaslam (crayon) [contributor]
   \item Jeroen Ooms (curl, jsonlite) [contributor]
-  \item Kirill Müller (cli, desc, rprojroot) [contributor]
   \item Maëlle Salmon (desc, pkgsearch) [contributor]
   \item Duncan Temple Lang (jsonlite) [contributor]
   \item Lloyd Hilaiel (jsonlite) [copyright holder]

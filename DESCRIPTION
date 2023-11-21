@@ -9,7 +9,6 @@ Authors@R: c(
     person("Mango Solutions", role = c("cph", "fnd"), comment = "callr, processx"),
     person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild, rappdirs"),
     person("Jeroen", "Ooms", role = "ctb", comment = "curl, jsonlite"),
-    person("Kirill", "Müller", role = "ctb", comment = "cli, desc, rprojroot"),
     person("Maëlle", "Salmon", role = "ctb", comment = "desc, pkgsearch"),
     person("Duncan", "Temple Lang", role = "ctb", comment = "jsonlite"),
     person("Lloyd", "Hilaiel", role = "cph", comment = "jsonlite"),
@@ -64,7 +63,6 @@ Suggests:
     prettyunits,
     processx (>= 3.8.1),
     ps (>= 1.6.0),
-    rprojroot (>= 2.0.2),
     rstudioapi,
     testthat (>= 3.2.0),
     withr
@@ -72,7 +70,7 @@ ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
     callr,
-    desc,
+    r-lib/desc,
     cli,
     curl,
     filelock,
@@ -84,7 +82,6 @@ Config/needs/dependencies:
     prettyunits,
     processx,
     ps,
-    rprojroot
 Config/Needs/website:
     r-lib/asciicast,
     rmarkdown,
