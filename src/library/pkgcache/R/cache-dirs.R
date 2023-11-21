@@ -16,7 +16,7 @@ get_user_cache_dir <- function() {
 
   # R_PKG_CACHE_DIR first. R_user_dir uses R_USER_CACHE_DIR, if set.
   if (cdir == "") {
-    cdir <- tools::R_user_dir("pkgcache", "cache")
+    cdir <- R_user_dir("pkgcache", "cache")
   } else {
     cdir <- file.path(cdir, "R", "pkgcache")
   }
