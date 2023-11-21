@@ -1757,8 +1757,6 @@ el_init <- function(self, private) {
   invisible(self)
 }
 
-#' @importFrom curl multi_add parse_headers_list handle_data
-
 el_add_http <- function(self, private, handle, callback, progress, file,
                         data) {
   self; private; handle; callback; progress; outfile <- file; data
@@ -1770,7 +1768,7 @@ el_add_http <- function(self, private, handle, callback, progress, file,
 
   content <- NULL
 
-  multi_add(
+  curl::multi_add(
     handle = handle,
     pool = private$pool,
     done = function(response) {
@@ -1852,13 +1850,11 @@ el_add_next_tick <- function(self, private, func, callback, data) {
   private$next_ticks <- c(private$next_ticks, id)
 }
 
-#' @importFrom curl multi_cancel
-
 el_cancel <- function(self, private, id) {
   private$next_ticks <- setdiff(private$next_ticks, id)
   private$timers  <- private$timers[setdiff(names(private$timers), id)]
   if (id %in% names(private$tasks) && private$tasks[[id]]$type == "http") {
-    multi_cancel(private$tasks[[id]]$data$handle)
+    curl::multi_cancel(private$tasks[[id]]$data$handle)
   } else if (id %in% names(private$tasks) &&
              private$tasks[[id]]$type %in% c("process", "r-process")) {
     private$tasks[[id]]$data$process$kill()
@@ -1870,11 +1866,9 @@ el_cancel <- function(self, private, id) {
   invisible(self)
 }
 
-#' @importFrom curl multi_cancel multi_list
-
 el_cancel_all <- function(self, private) {
-  http <- multi_list(pool = private$pool)
-  lapply(http, multi_cancel)
+  http <- curl::multi_list(pool = private$pool)
+  lapply(http, curl::multi_cancel)
   private$next_ticks <- character()
   private$timers <- Sys.time()[numeric()]
 
@@ -1969,8 +1963,6 @@ el__run_pending <- function(self, private) {
   length(next_ticks) > 0 || finished_pool
 }
 
-#' @importFrom curl multi_run multi_fdset
-
 el__io_poll <- function(self, private, timeout) {
 
   types <- vcapply(private$tasks, "[[", "type")
@@ -2026,7 +2018,7 @@ el__io_poll <- function(self, private, timeout) {
   }
 
   if (!is.null(private$curl_timer) && private$curl_timer <= private$time) {
-    multi_run(timeout = 0L, poll = TRUE, pool = private$pool)
+    curl::multi_run(timeout = 0L, poll = TRUE, pool = private$pool)
     private$curl_timer <- NULL
   }
 
@@ -2038,7 +2030,7 @@ el__io_poll <- function(self, private, timeout) {
     ## Any HTTP?
     if (private$curl_poll &&
         pollables$ready[match("curl", pollables$type)] == "event") {
-      multi_run(timeout = 0L, poll = TRUE, pool = private$pool)
+      curl::multi_run(timeout = 0L, poll = TRUE, pool = private$pool)
     }
 
     ## Any processes
@@ -2111,8 +2103,6 @@ el__create_task <- function(self, private, callback, data, ..., id, type) {
   id
 }
 
-#' @importFrom curl new_pool
-
 el__ensure_pool <- function(self, private) {
   getopt <- function(nm) {
     anm <- paste0("async_http_", nm)
@@ -2126,7 +2116,7 @@ el__ensure_pool <- function(self, private) {
       host_con = getopt("host_con") %||%  6,
       multiplex  = getopt("multiplex") %||% TRUE
     )
-    private$pool <- new_pool(
+    private$pool <- curl::new_pool(
       total_con = private$http_opts$total_con,
       host_con =  private$http_opts$host_con,
       multiplex = private$http_opts$multiplex
@@ -2134,14 +2124,12 @@ el__ensure_pool <- function(self, private) {
   }
 }
 
-#' @importFrom curl multi_set
-
 el_http_setopt <- function(self, private, total_con, host_con, multiplex) {
   private$ensure_pool()
   if (!is.null(total_con)) private$http_opts$total_con <- total_con
   if (!is.null(host_con))  private$http_opts$host_con  <- host_con
   if (!is.null(multiplex)) private$http_opts$multiplex <- multiplex
-  multi_set(
+  curl::multi_set(
     pool = private$pool,
     total_con = private$http_opts$total_con,
     host_con = private$http_opts$host_con,
@@ -2195,10 +2183,8 @@ el__update_time <- function(self, private) {
   private$time <- Sys.time()
 }
 
-#' @importFrom curl multi_fdset
-#'
 el__update_curl_data <- function(self, private) {
-  private$curl_fdset <- multi_fdset(private$pool)
+  private$curl_fdset <- curl::multi_fdset(private$pool)
   num_fds <- length(unique(unlist(private$curl_fdset[1:3])))
   private$curl_poll <- num_fds > 0
   private$curl_timer <- if ((t <- private$curl_fdset$timeout) != -1) {
@@ -2536,7 +2522,6 @@ async_reject <- mark_as_async(async_reject)
 #'
 #' @family asyncronous HTTP calls
 #' @noRd
-#' @importFrom curl new_handle handle_setheaders
 #' @examples
 #' \donttest{
 #' afun <- async(function() {
@@ -2555,8 +2540,8 @@ http_get <- function(url, headers = character(), file = NULL,
   make_deferred_http(
     function() {
       assert_that(is_string(url))
-      handle <- new_handle(url = url)
-      handle_setheaders(handle, .list = headers)
+      handle <- curl::new_handle(url = url)
+      curl::handle_setheaders(handle, .list = headers)
 
       if (!is.null(on_progress)) {
         options$noprogress <- FALSE
@@ -2575,7 +2560,7 @@ http_get <- function(url, headers = character(), file = NULL,
         reg.finalizer(handle, function(...) fun, onexit = TRUE)
       }
 
-      handle_setopt(handle, .list = options)
+      curl::handle_setopt(handle, .list = options)
       list(handle = handle, options = options)
     },
     file
@@ -2591,7 +2576,6 @@ http_get <- mark_as_async(http_get)
 #'
 #' @family asyncronous HTTP calls
 #' @noRd
-#' @importFrom curl handle_setopt
 #' @examples
 #' \donttest{
 #' afun <- async(function() {
@@ -2618,9 +2602,9 @@ http_head <- function(url, headers = character(), file = NULL,
   make_deferred_http(
     function() {
       assert_that(is_string(url))
-      handle <- new_handle(url = url)
-      handle_setheaders(handle, .list = headers)
-      handle_setopt(handle, customrequest = "HEAD", nobody = TRUE,
+      handle <- curl::new_handle(url = url)
+      curl::handle_setheaders(handle, .list = headers)
+      curl::handle_setopt(handle, customrequest = "HEAD", nobody = TRUE,
                     .list = options)
       list(handle = handle, options = options)
     },
@@ -2676,9 +2660,9 @@ http_post <- function(url, data = NULL, data_file = NULL,
   make_deferred_http(
     function() {
       assert_that(is_string(url))
-      handle <- new_handle(url = url)
-      handle_setheaders(handle, .list = headers)
-      handle_setopt(handle, customrequest = "POST",
+      handle <- curl::new_handle(url = url)
+      curl::handle_setheaders(handle, .list = headers)
+      curl::handle_setopt(handle, customrequest = "POST",
                     postfieldsize = length(data), postfields = data,
                     .list = options)
       list(handle = handle, options = options)
@@ -2696,9 +2680,9 @@ http_delete <- function(url, headers = character(), file = NULL,
   make_deferred_http(
     function() {
       assert_that(is_string(url))
-      handle <- new_handle(url = url)
-      handle_setheaders(handle, .list = headers)
-      handle_setopt(handle, customrequest = "DELETE", .list = options)
+      handle <- curl::new_handle(url = url)
+      curl::handle_setheaders(handle, .list = headers)
+      curl::handle_setopt(handle, customrequest = "DELETE", .list = options)
       list(handle = handle, options = options)
     },
     file
@@ -2985,7 +2969,10 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 ## nocov start
 
 .onLoad <- function(libname, pkgname) {
-  if (requireNamespace("debugme", quietly = TRUE)) debugme::debugme()
+  if (Sys.getenv("DEBUGME") != "" &&
+    requireNamespace("debugme", quietly = TRUE)) {
+    debugme::debugme()
+  }
 }
 
 ## nocov end
@@ -3002,7 +2989,6 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 #'
 #' @family asynchronous external processes
 #' @noRd
-#' @importFrom processx process
 #' @examples
 #' \dontrun{
 #' afun <- function() {
@@ -3029,7 +3015,7 @@ run_process <- function(command = NULL, args = character(),
       reject <- environment(resolve)$private$reject
       stdout <- tempfile()
       stderr <- tempfile()
-      px <- process$new(command, args = args,
+      px <- processx::process$new(command, args = args,
         stdout = stdout, stderr = stderr, poll_connection = TRUE,
         env = env, cleanup = TRUE, cleanup_tree = TRUE, wd = wd,
         encoding = encoding, ...)
@@ -3055,7 +3041,6 @@ run_process <- mark_as_async(run_process)
 #'
 #' @inheritParams callr::r_bg
 #' @noRd
-#' @importFrom callr r_process_options r_process rcmd_safe_env
 #'
 #' @examples
 #' \dontrun{
@@ -3068,7 +3053,7 @@ run_process <- mark_as_async(run_process)
 run_r_process <- function(func, args = list(), libpath = .libPaths(),
   repos = c(getOption("repos"), c(CRAN = "https://cloud.r-project.org")),
   cmdargs = c("--no-site-file", "--slave", "--no-save", "--no-restore"),
-  system_profile = FALSE, user_profile = FALSE, env = rcmd_safe_env()) {
+  system_profile = FALSE, user_profile = FALSE, env = callr::rcmd_safe_env()) {
 
   func; args; libpath; repos; cmdargs; system_profile; user_profile; env
 
@@ -3081,13 +3066,13 @@ run_r_process <- function(func, args = list(), libpath = .libPaths(),
       reject <- environment(resolve)$private$reject
       stdout <- tempfile()
       stderr <- tempfile()
-      opts <- r_process_options(
+      opts <- callr::r_process_options(
         func = func, args = args, libpath = libpath, repos = repos,
         cmdargs = cmdargs, system_profile = system_profile,
         user_profile = user_profile, env = env, stdout = stdout,
         stderr = stderr, extra = list(cleanup_tree = TRUE))
 
-      rx <- r_process$new(opts)
+      rx <- callr::r_process$new(opts)
       pipe <- rx$get_poll_connection()
       id <<- get_default_event_loop()$add_r_process(
         list(pipe),
@@ -4278,9 +4263,6 @@ wp_init <- function(self, private) {
   invisible(self)
 }
 
-#' @importFrom callr r_session
-#' @importFrom processx conn_get_fileno
-
 wp_start_workers <- function(self, private) {
   num <- worker_pool_size()
 
@@ -4289,8 +4271,8 @@ wp_start_workers <- function(self, private) {
 
   ## Yeah, start some more
   to_start <- num - NROW(private$workers)
-  sess <- lapply(1:to_start, function(x) r_session$new(wait = FALSE))
-  fd <- viapply(sess, function(x) conn_get_fileno(x$get_poll_connection()))
+  sess <- lapply(1:to_start, function(x) callr::r_session$new(wait = FALSE))
+  fd <- viapply(sess, function(x) processx::conn_get_fileno(x$get_poll_connection()))
   new_workers <- data.frame(
     stringsAsFactors = FALSE,
     session = I(sess),

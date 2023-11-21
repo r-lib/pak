@@ -376,8 +376,6 @@ cmc_summary <- function(self, private) {
   )
 }
 
-#' @importFrom cli cli_alert_info
-
 cmc_cleanup <- function(self, private, force) {
   if (!force && !interactive()) {
     stop("Not cleaning up cache, please specify `force = TRUE`")
@@ -396,12 +394,15 @@ cmc_cleanup <- function(self, private, force) {
   unlink(local_cache_dir, recursive = TRUE, force = TRUE)
   private$data <- NULL
   private$data_messaged <- NULL
-  cli_alert_info("Cleaning up cache directory {.path {cache_dir}}.")
+  cli::cli_alert_info("Cleaning up cache directory {.path {cache_dir}}.")
   unlink(cache_dir, recursive = TRUE, force = TRUE)
 }
 
-#' @importFrom cli hash_obj_md5
 #' @importFrom utils URLencode
+
+hash_obj_md5 <- function(x, ...) {
+  cli::hash_obj_md5(x, ...)
+}
 
 repo_encode <- function(repos) {
   paste0(
@@ -603,7 +604,6 @@ cmc__get_memory_cache  <- function(self, private, max_age) {
 #'   as current.
 #' @return The metadata.
 #' @keywords internal
-#' @importFrom cli cli_process_start cli_process_done
 
 cmc__load_replica_rds <- function(self, private, max_age) {
   "!!DEBUG Load replica RDS?"
@@ -613,13 +613,13 @@ cmc__load_replica_rds <- function(self, private, max_age) {
   time <- file_get_time(rds)
   if (Sys.time() - time > max_age) stop("Replica RDS cache file outdated")
 
-  sts <- cli_process_start("Loading metadata database")
+  sts <- cli::cli_process_start("Loading metadata database")
   private$data <- readRDS(rds)
   private$data_time <- time
   private$data_messaged <- NULL
   "!!DEBUG Loaded replica RDS!"
   private$update_memory_cache()
-  cli_process_done(sts)
+  cli::cli_process_done(sts)
 
   private$data
 }
@@ -632,7 +632,6 @@ cmc__load_replica_rds <- function(self, private, max_age) {
 #' @inheritParams cmc__load_replica_rds
 #' @return Metadata.
 #' @keywords internal
-#' @importFrom cli cli_process_start cli_process_done
 
 cmc__load_primary_rds <- function(self, private, max_age) {
   "!!DEBUG Load primary RDS?"
@@ -640,9 +639,9 @@ cmc__load_primary_rds <- function(self, private, max_age) {
   rep_files <- private$get_cache_files("replica")
 
   mkdirp(dirname(pri_files$lock))
-  l <- lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
+  l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
   if (is.null(l)) stop("Cannot acquire lock to copy RDS")
-  on.exit(unlock(l), add = TRUE)
+  on.exit(filelock::unlock(l), add = TRUE)
 
   if (!file.exists(pri_files$rds)) stop("No primary RDS file in cache")
   time <- file_get_time(pri_files$rds)
@@ -655,16 +654,16 @@ cmc__load_primary_rds <- function(self, private, max_age) {
     stop("Primary PACKAGES missing or newer than replica RDS, removing")
   }
 
-  sts <- cli_process_start("Loading metadata database")
+  sts <- cli::cli_process_start("Loading metadata database")
   file_copy_with_time(pri_files$rds, rep_files$rds)
-  unlock(l)
+  filelock::unlock(l)
 
   private$data <- readRDS(rep_files$rds)
   private$data_time <- time
   private$data_messaged <- NULL
 
   private$update_memory_cache()
-  cli_process_done(sts)
+  cli::cli_process_done(sts)
 
   private$data
 }
@@ -681,7 +680,6 @@ cmc__load_primary_rds <- function(self, private, max_age) {
 #' @param max_age Max age to consider the files current.
 #' @return Metadata.
 #' @keywords internal
-#' @importFrom cli cli_process_start cli_process_done
 
 cmc__load_primary_pkgs <- function(self, private, max_age) {
   "!!DEBUG Load replica PACKAGES*?"
@@ -690,9 +688,9 @@ cmc__load_primary_pkgs <- function(self, private, max_age) {
 
   ## Lock
   mkdirp(dirname(pri_files$lock))
-  l <- lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
+  l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
   if (is.null(l)) stop("Cannot acquire lock to copy PACKAGES files")
-  on.exit(unlock(l), add = TRUE)
+  on.exit(filelock::unlock(l), add = TRUE)
 
   ## Check if PACKAGES exist and current. It is OK if metadata is missing
   pkg_files <- pri_files$pkgs$path
@@ -705,7 +703,7 @@ cmc__load_primary_pkgs <- function(self, private, max_age) {
   }
 
   ## Copy to replica, if we cannot copy the etags, that's ok
-  sts <- cli_process_start("Loading metadata database")
+  sts <- cli::cli_process_start("Loading metadata database")
   private$copy_to_replica(rds = FALSE, pkgs = TRUE, etags = TRUE)
 
   ## Update RDS in replica, this also loads it
@@ -713,7 +711,7 @@ cmc__load_primary_pkgs <- function(self, private, max_age) {
 
   ## Update primary, but not the PACKAGES
   private$update_primary(rds = TRUE, packages = FALSE, lock = FALSE)
-  cli_process_done(sts)
+  cli::cli_process_done(sts)
 
   private$data
 }
@@ -785,7 +783,7 @@ missing_pkgs_note <- function(pkgs, result) {
   where <- vcapply(msgs, "[[", 2)
   for (wt in unique(what)) {
     wh <- unique(where[what == wt])
-    cli_alert_info("{wt} packages are missing from {wh}")
+    cli::cli_alert_info("{wt} packages are missing from {wh}")
   }
 }
 
@@ -797,11 +795,10 @@ missing_pkgs_note <- function(pkgs, result) {
 #' @param private private self
 #' @param alert whether to show message about the update
 #' @keywords internal
-#' @importFrom cli cli_process_start cli_process_done
 
 cmc__update_replica_rds <- function(self, private, alert) {
   "!!DEBUG Update replica RDS"
-  if (alert) sts <- cli_process_start("Updating metadata database")
+  if (alert) sts <- cli::cli_process_start("Updating metadata database")
   rep_files <- private$get_cache_files("replica")
 
   data_list <- lapply_rows(
@@ -827,7 +824,7 @@ cmc__update_replica_rds <- function(self, private, alert) {
 
   private$update_memory_cache()
 
-  if (alert) cli_process_done(sts)
+  if (alert) cli::cli_process_done(sts)
   private$data
 }
 
@@ -851,9 +848,9 @@ cmc__update_primary <- function(self, private, rds, packages, lock) {
 
   if (lock) {
     mkdirp(dirname(pri_files$lock))
-    l <- lock(pri_files$lock, exclusive = TRUE, private$lock_timeout)
+    l <- filelock::lock(pri_files$lock, exclusive = TRUE, private$lock_timeout)
     if (is.null(l)) stop("Cannot acquire lock to update primary cache")
-    on.exit(unlock(l), add = TRUE)
+    on.exit(filelock::unlock(l), add = TRUE)
   }
 
   if (rds) {
@@ -884,9 +881,9 @@ cmc__copy_to_replica <- function(self, private, rds, pkgs, etags) {
   rep_files <- private$get_cache_files("replica")
 
   mkdirp(dirname(pri_files$lock))
-  l <- lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
+  l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
   if (is.null(l)) stop("Cannot acquire lock to copy primary cache")
-  on.exit(unlock(l), add = TRUE)
+  on.exit(filelock::unlock(l), add = TRUE)
 
   if (rds) {
     file_copy_with_time(pri_files$rds, rep_files$rds)

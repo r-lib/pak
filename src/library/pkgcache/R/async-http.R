@@ -67,7 +67,6 @@ update_async_timeouts <- function(options) {
 #'   * `etag_file`: The file the ETag was written to, or `NULL` otherwise
 #'
 #' @family async HTTP tools
-#' @importFrom curl parse_headers_list
 #' @noRd
 #' @section Examples:
 #' ```
@@ -122,7 +121,7 @@ download_file <- function(url, destfile, etag_file = NULL,
     then(function(resp) {
       "!DEBUG downloaded `url`"
       file.rename(tmp_destfile, destfile)
-      etag <- parse_headers_list(resp$headers)[["etag"]] %||% NA_character_
+      etag <- curl::parse_headers_list(resp$headers)[["etag"]] %||% NA_character_
       if (!is.null(etag_file) && !is.na(etag[1])) {
         mkdirp(dirname(etag_file))
         writeLines(etag, etag_file)
@@ -245,7 +244,7 @@ download_if_newer <- function(url, destfile, etag_file = NULL,
       } else if (resp$status_code == 200 || resp$status_code == 0) {
         "!DEBUG downloaded `url`"
         file.rename(tmp_destfile, destfile)
-        etag <- parse_headers_list(resp$headers)[["etag"]] %||% NA_character_
+        etag <- curl::parse_headers_list(resp$headers)[["etag"]] %||% NA_character_
         if (!is.null(etag_file) && !is.na(etag[1])) {
           mkdirp(dirname(etag_file))
           writeLines(etag, etag_file)
