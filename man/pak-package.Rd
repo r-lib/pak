@@ -34,7 +34,6 @@ Other contributors:
   \item Jeroen Ooms (curl, jsonlite) [contributor]
   \item Kirill Müller (cli, desc, rprojroot) [contributor]
   \item Maëlle Salmon (desc, pkgsearch) [contributor]
-  \item Jennifer Bryan (glue) [contributor]
   \item Duncan Temple Lang (jsonlite) [contributor]
   \item Lloyd Hilaiel (jsonlite) [copyright holder]
   \item Michel Berkelaar and lpSolve authors (lpSolve) [contributor]

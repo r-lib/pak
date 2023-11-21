@@ -4,7 +4,6 @@ load_all_private <- function() {
   load_private_package("curl")
   load_private_package("distro")
   load_private_package("filelock")
-  load_private_package("glue")
   load_private_package("jsonlite")
   load_private_package("lpSolve")
   load_private_package("parsedate")

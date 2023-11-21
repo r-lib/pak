@@ -187,7 +187,6 @@ load_private_cli <- function() {
   if (!is.null(pkg_data$ns$cli)) {
     return(pkg_data$ns$cli)
   }
-  load_private_package("glue")
   old <- Sys.getenv("CLI_NO_THREAD", NA_character_)
   Sys.setenv(CLI_NO_THREAD = "1")
   on.exit(
@@ -203,7 +202,6 @@ load_private_cli <- function() {
 }
 
 load_private_packages <- function() {
-  load_private_package("glue")
   load_private_cli()
   load_private_package("ps")
   load_private_package("processx", "c_")
@@ -291,11 +289,6 @@ load_private_package <- function(package, reg_prefix = "",
       pkg_env$print.callr_status_error,
       baseenv()
     )
-  }
-
-  # Hack to avoid S3 dispatch
-  if (package == "glue") {
-    pkg_env$as_glue <- pkg_env$as_glue.character
   }
 
   ## Load shared library
@@ -392,7 +385,6 @@ set_function_envs <- function(within, new) {
 ## This is a workaround for R CMD check
 
 r_cmd_check_fix <- function() {
-  glue::glue
   callr::r
   cli::rule
   filelock::lock

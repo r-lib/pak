@@ -75,7 +75,7 @@ install_order <- function() {
   ## TODO: look up the correct order
   pkgs <- c(
     # no deps
-    "R6", "cli", "curl", "filelock", "glue", "jsonlite",
+    "R6", "cli", "curl", "filelock", "jsonlite",
     "lpSolve", "parsedate", "prettyunits", "ps", "rappdirs", "rprojroot",
     "zip",
     # ps, R6
@@ -90,7 +90,7 @@ install_order <- function() {
     "pkgcache",
     # curl, jsonlite, parsedate, prettyunits
     "pkgsearch",
-    # callr, cli, curl, desc, filelock, glue, jsonlite, lpSolve, pkgbuild,
+    # callr, cli, curl, desc, filelock, jsonlite, lpSolve, pkgbuild,
     # pkgcache, prettyunits, processx, ps, R6, rprojroot, zip
     "pkgdepends"
   )
