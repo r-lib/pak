@@ -641,7 +641,7 @@ if (exists(".onLoad", inherits = FALSE)) {
 
 get_cranlike_metadata_cache <- function() {
   repos <- repo_get()
-  hash <- cli::hash_obj_md5(repos$url)
+  hash <- hash_obj_md5(repos$url)
   if (is.null(pkgenv$global_metadata_cache[[hash]])) {
     pkgenv$global_metadata_cache[[hash]] <- cranlike_metadata_cache$new()
   }

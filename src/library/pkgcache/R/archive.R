@@ -264,7 +264,7 @@ cac_cleanup <- function(self, private, force) {
   rep_etag <- paste0(rep_rds, "-etag")
   unlink(c(rep_rds, rep_etag), recursive = TRUE, force = TRUE)
   private$data <- NULL
-  cli_alert_info("Cleaning up archive cache in {.path {pri_rds}}.")
+  cli::cli_alert_info("Cleaning up archive cache in {.path {pri_rds}}.")
   unlink(c(pri_rds, pri_etag, pri_lock), recursive = TRUE, force = TRUE)
   invisible(self)
 }
@@ -331,9 +331,9 @@ cac__load_primary <- function(self, private, max_age) {
 
   pri_lock <- paste0(pri_file, "-lock")
   mkdirp(dirname(pri_lock))
-  l <- lock(pri_lock, exclusive = FALSE, private$lock_timeout)
+  l <- filelock::lock(pri_lock, exclusive = FALSE, private$lock_timeout)
   if (is.null(l)) stop("Cannot acquire lock to copy RDS")
-  on.exit(unlock(l), add = TRUE)
+  on.exit(filelock::unlock(l), add = TRUE)
 
   if (!file.exists(pri_file)) stop("No primary RDS file in cache")
   time <- file_get_time(pri_file)
@@ -345,7 +345,7 @@ cac__load_primary <- function(self, private, max_age) {
   rep_etag <- paste0(rep_file, "-etag")
   file_copy_with_time(pri_etag, rep_etag)
 
-  unlock(l)
+  filelock::unlock(l)
 
   private$data <- readRDS(rep_file)
   private$data_time <- time
@@ -422,9 +422,9 @@ cac__update_primary <- function(self, private, lock) {
   if (lock) {
     pri_lock <- paste0(pri_file, "-lock")
     mkdirp(dirname(pri_lock))
-    l <- lock(pri_lock, exclusive = FALSE, private$lock_timeout)
+    l <- filelock::lock(pri_lock, exclusive = FALSE, private$lock_timeout)
     if (is.null(l)) stop("Cannot acquire lock to copy RDS")
-    on.exit(unlock(l), add = TRUE)
+    on.exit(filelock::unlock(l), add = TRUE)
   }
 
   file_copy_with_time(rep_file, pri_file)

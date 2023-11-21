@@ -1,19 +1,17 @@
 
-#' @importFrom cli get_spinner cli_status
-
 create_progress_bar <- function(data) {
   bar <- new.env(parent = emptyenv())
 
   if (isTRUE(getOption("pkg.show_progress", FALSE))) {
-    bar$status <- cli_status(
+    bar$status <- cli::cli_status(
       "Checking for {nrow(data)} new metadata file{?s}",
       .auto_close = FALSE
     )
   } else {
-    bar$status <- cli_status(character(), .auto_close = FALSE)
+    bar$status <- cli::cli_status(character(), .auto_close = FALSE)
   }
 
-  bar$spinner <- get_spinner()
+  bar$spinner <- cli::get_spinner()
   bar$spinner_state <- 1L
 
   bar$data <- data
@@ -52,8 +50,6 @@ update_progress_bar_done  <- function(bar, url) {
     file.size(bar$data$path[[wh]])
 }
 
-#' @importFrom cli cli_status_update
-
 show_progress_bar <- function(bar) {
   if (is.null(bar$status) ||
     !isTRUE(getOption("pkg.show_progress", FALSE))) {
@@ -76,18 +72,16 @@ show_progress_bar <- function(bar) {
     bar$spinner_state <- 1L
   }
 
-  cli_status_update(
+  cli::cli_status_update(
     bar$status,
     c("{spinner} Updating metadata database [{uptodate}/{numfiles}] | ",
       "Downloading {downloads}")
   )
 }
 
-#' @importFrom cli cli_status_clear
-
 finish_progress_bar <- function(ok, bar) {
   if (!ok) {
-    cli_status_clear(
+    cli::cli_status_clear(
       bar$status,
       result = "failed",
       msg_failed = "{.alert-danger Metadata update failed}"
@@ -97,14 +91,14 @@ finish_progress_bar <- function(ok, bar) {
     dl <- vlapply(bar$data$uptodate, identical, FALSE)
     files <- sum(dl)
     bytes <- format_bytes$pretty_bytes(sum(bar$data$size[dl], na.rm = TRUE))
-    cli_status_clear(
+    cli::cli_status_clear(
       bar$status,
       result = "done",
       msg_done = "{.alert-success Updated metadata database: {bytes} in {files} file{?s}.}"
     )
 
   } else {
-    cli_status_clear(bar$status)
+    cli::cli_status_clear(bar$status)
   }
 
   bar$status <- NULL
