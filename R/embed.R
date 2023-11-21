@@ -287,6 +287,7 @@ embed <- local({
       rimraf(file.path(lib, pkg, ".aspell"))
       rimraf(file.path(lib, pkg, "inst", "CITATION"))
       rimraf(file.path(lib, pkg, "MD5"))
+      rimraf(file.path(lib, pkg, "README.md"))
     }
   }
 
