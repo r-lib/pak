@@ -39,7 +39,7 @@ verify_extracted_package <- function(filename, parent_path) {
   rel_dsc_file <- file.path(pkg_name, "DESCRIPTION")
   dsc_file <- file.path(pkg_path, "DESCRIPTION")
   dsc <- tryCatch(
-    desc(dsc_file),
+    desc::desc(dsc_file),
     error = function(e) {
       throw(pkg_error(
         "{.path {filename}} is not a valid binary, invalid DESCRIPTION

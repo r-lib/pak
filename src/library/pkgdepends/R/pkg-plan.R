@@ -184,7 +184,7 @@ pkgplan_init_lockfile <- function(self, private, lockfile, config,
   }
   mkdirp(private$download_cache <- private$config$get("cache_dir"))
 
-  raw <- fromJSON(readLines(lockfile), simplifyVector = FALSE)
+  raw <- jsonlite::fromJSON(readLines(lockfile), simplifyVector = FALSE)
   if (raw$lockfile_version != 1) {
     throw(pkg_error(
       "This version of {pak_or_pkgdepends()} (version {pakx_version()})

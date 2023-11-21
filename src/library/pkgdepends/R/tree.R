@@ -1,6 +1,3 @@
-
-#' @importFrom cli tree symbol
-
 pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
 
   assert_that(is.null(pkgs) || is_character(pkgs))
@@ -58,7 +55,7 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
 
   trees <- unlist(lapply(
     pkgs,
-    function(p) c(tree(data, root = p, trim = TRUE), "")
+    function(p) c(cli::tree(data, root = p, trim = TRUE), "")
   ))
 
   if (annotate && any(unlist(ann))) {
@@ -78,10 +75,8 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
   trees
 }
 
-#' @importFrom cli is_utf8_output
-
 has_emoji <- function() {
-  if (!is_utf8_output()) return(FALSE)
+  if (!cli::is_utf8_output()) return(FALSE)
   if (isTRUE(opt <- getOption("pkg.emoji"))) return(TRUE)
   if (identical(opt, FALSE)) return(FALSE)
   if (Sys.info()[["sysname"]] != "Darwin") return(FALSE)

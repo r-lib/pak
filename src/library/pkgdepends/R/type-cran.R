@@ -3,7 +3,6 @@
 ## API
 
 #' @importFrom stats na.omit
-#' @importFrom desc desc_get_deps
 
 parse_remote_cran <- function(specs, ...) {
 

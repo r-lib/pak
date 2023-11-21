@@ -1,32 +1,26 @@
 
-#' @importFrom cli symbol cli_alert_success cli_alert_danger
-
 alert <- function(type, msg, ..., .envir = parent.frame()) {
   switch (
     type,
-    success = cli_alert_success(msg, ..., .envir = .envir),
-    info = cli_alert_info(msg, ..., .envir = .envir),
-    warning = cli_alert_warning(msg, ..., .envir = .envir),
-    danger = cli_alert_danger(msg, ..., .envir = .envir)
+    success = cli::cli_alert_success(msg, ..., .envir = .envir),
+    info = cli::cli_alert_info(msg, ..., .envir = .envir),
+    warning = cli::cli_alert_warning(msg, ..., .envir = .envir),
+    danger = cli::cli_alert_danger(msg, ..., .envir = .envir)
   )
 }
 
-#' @importFrom cli get_spinner cli_status
-
 create_progress_bar <- function(state) {
   bar <- new.env(parent = emptyenv())
-  bar$spinner <- get_spinner()
+  bar$spinner <- cli::get_spinner()
   bar$spinner_state <- 1L
   if (should_show_progress_bar()) {
-    bar$status <- cli_status("Installing...", .auto_close = FALSE)
+    bar$status <- cli::cli_status("Installing...", .auto_close = FALSE)
   }
 
   bar$simple <- is_older_rstudio()
 
   bar
 }
-
-#' @importFrom cli cli_status_update
 
 update_progress_bar <- function(state, tick = 0) {
   if (is.null(state$progress$status)) return()
@@ -59,7 +53,7 @@ update_progress_bar <- function(state, tick = 0) {
   }
 
   if (state$progress$simple) st <- cli::ansi_strip(st)
-  cli_status_update(state$progress$status, st)
+  cli::cli_status_update(state$progress$status, st)
 }
 
 ## p1 <= p2 must hold
@@ -91,11 +85,9 @@ make_progress_block <- function(state, sym, done, total, prog) {
   )
 }
 
-#' @importFrom cli cli_status_clear
-
 done_progress_bar <- function(state) {
   if (!is.null(state$progress$status)) {
-    cli_status_clear(state$progress$status)
+    cli::cli_status_clear(state$progress$status)
   }
 }
 

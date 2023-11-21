@@ -209,7 +209,7 @@ sysreqs2_match <- function(sysreqs, path = NULL, sysreqs_platform = NULL,
 
   rsysreqs <- sysreqs[todo]
   for (r in rules) {
-    rule <- fromJSON(r, simplifyVector = FALSE)
+    rule <- jsonlite::fromJSON(r, simplifyVector = FALSE)
     pats <- unlist(rule$patterns)
     mch <- vapply(
       pats,

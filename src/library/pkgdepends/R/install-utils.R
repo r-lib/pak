@@ -61,7 +61,7 @@ lock_cache <- function(cache, pkg_name, lock = TRUE) {
   if (use_lock) {
     lockfile <- file.path(cache, sprintf("%s.lock", pkg_name))
     # TODO: timeout and fail?
-    my_lock <- lock(lockfile)
+    my_lock <- filelock::lock(lockfile)
   }
   my_lock
 }

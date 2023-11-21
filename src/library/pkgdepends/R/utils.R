@@ -206,6 +206,9 @@ drop_nulls <- function(x) {
 
 ## R CMD check fixes
 self <- private <- "foobar"
+dummy <- function() {
+  callr::r
+}
 
 get_num_workers <- function() {
   n <- tryCatch(

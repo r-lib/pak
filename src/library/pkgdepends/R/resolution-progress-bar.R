@@ -1,8 +1,6 @@
 
-#' @importFrom cli is_utf8_output
-
 progress_chars <- function() {
-  if (is_utf8_output()) {
+  if (cli::is_utf8_output()) {
     list(
       build = "\U0001f4e6",
       inst = "\u2705",
@@ -24,19 +22,17 @@ progress_chars <- function() {
   }
 }
 
-#' @importFrom cli get_spinner
-
 res__create_progress_bar <- function(self, private) {
   self; private
 
   if (!should_show_progress_bar()) return()
 
   bar <- new.env(parent = emptyenv())
-  bar$spinner <- get_spinner()
+  bar$spinner <- cli::get_spinner()
   bar$spinner_state <- 1L
   bar$chars <- progress_chars()
 
-  bar$status <- cli_status("", .auto_close = FALSE)
+  bar$status <- cli::cli_status("", .auto_close = FALSE)
 
   bar$timer <- new_async_timer(
     1/10,
@@ -70,7 +66,7 @@ res__show_progress_bar <- function(self, private) {
 
   # TODO: check width
   str <- "{bar} {state} {spinner} {msg}"
-  cli_status_update(private$bar$status, str)
+  cli::cli_status_update(private$bar$status, str)
 }
 
 make_bar <- function(chars, p, width =  15) {
@@ -135,6 +131,6 @@ make_trailing_progress_msg <- function(self, private) {
 
 res__done_progress_bar <- function(self, private) {
   if (is.null(private$bar)) return()
-  cli_status_clear(private$bar$status, result = "clear")
+  cli::cli_status_clear(private$bar$status, result = "clear")
   private$bar <- NULL
 }

@@ -564,7 +564,7 @@ update_dep_types <- function(self, private) {
 resolve_from_description <- function(path, sources, remote, direct,
                                      config, cache, dependencies) {
 
-  dsc <- desc(file = path)
+  dsc <- desc::desc(file = path)
   deps <- resolve_ref_deps(
     dsc$get_deps(),
     dsc$get("Remotes")[[1]],

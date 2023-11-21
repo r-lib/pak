@@ -17,7 +17,7 @@ sysreqs_db_list <- function(sysreqs_platform = NULL) {
 
   sysreqs_db_update()
   rule_files <- sysreqs2_list_rules()
-  rules <- lapply(rule_files, fromJSON, simplifyVector = FALSE)
+  rules <- lapply(rule_files, jsonlite::fromJSON, simplifyVector = FALSE)
 
   matching_deps <- function(rule) {
     for (dep in rule$dependencies) {
