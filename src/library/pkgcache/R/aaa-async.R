@@ -2637,7 +2637,10 @@ http_head <- mark_as_async(http_head)
 #'
 #' @inheritParams http_get
 #' @param data Data to send. Either a raw vector, or a character string
-#'   that will be converted to raw with [base::charToRaw].
+#'   that will be converted to raw with [base::charToRaw]. At most one of
+#'   `data` and `data_file` must be non `NULL`.
+#' @param data_file Data file to send. At most one of `data` and
+#'   `data_file` must be non `NULL`.
 #' @param on_progress Progress handler function. It is only used if the
 #'   response body is written to a file. See details at [http_get()].
 #'
@@ -2656,10 +2659,17 @@ http_head <- mark_as_async(http_head)
 #'
 #' synchronise(do())
 
-http_post <- function(url, data, headers = character(), file = NULL,
+http_post <- function(url, data = NULL, data_file = NULL,
+                      headers = character(), file = NULL,
                       options = list(), on_progress = NULL) {
 
-  url; data; headers; file; options; on_progress
+  url; data; data_file; headers; file; options; on_progress
+  if (!is.null(data) && !is.null(data_file)) {
+    stop("At most one of `data` and `data_file` can be non `NULL`.")
+  }
+  if (!is.null(data_file)) {
+    data <- readBin(data_file, "raw", file.size(data_file))
+  }
   if (!is.raw(data)) data <- charToRaw(data)
   options <- get_default_curl_options(options)
 
@@ -3021,7 +3031,8 @@ run_process <- function(command = NULL, args = character(),
       stderr <- tempfile()
       px <- process$new(command, args = args,
         stdout = stdout, stderr = stderr, poll_connection = TRUE,
-        env = env, cleanup = TRUE, wd = wd, encoding = encoding, ...)
+        env = env, cleanup = TRUE, cleanup_tree = TRUE, wd = wd,
+        encoding = encoding, ...)
       pipe <- px$get_poll_connection()
       id <<- get_default_event_loop()$add_process(
         list(pipe),
@@ -3074,7 +3085,8 @@ run_r_process <- function(func, args = list(), libpath = .libPaths(),
         func = func, args = args, libpath = libpath, repos = repos,
         cmdargs = cmdargs, system_profile = system_profile,
         user_profile = user_profile, env = env, stdout = stdout,
-        stderr = stderr)
+        stderr = stderr, extra = list(cleanup_tree = TRUE))
+
       rx <- r_process$new(opts)
       pipe <- rx$get_poll_connection()
       id <<- get_default_event_loop()$add_r_process(
@@ -3090,6 +3102,43 @@ run_r_process <- function(func, args = list(), libpath = .libPaths(),
 }
 
 run_r_process <- mark_as_async(run_r_process)
+
+#' A deferred value that resolves when the specified number of deferred
+#' values resolve, or is rejected when one of them is rejected
+#'
+#' These functions are similar to [when_some()] and [when_any()], but they
+#' do not ignore errors. If a deferred is rejected, then `async_race_some()` and
+#' `async_race()` are rejected as well.
+#'
+#' `async_race()` is a special case of `count = `: it resolves or is rejected
+#' as soon as one deferred resolves or is rejected.
+#'
+#' async has auto-cancellation, so if the required number of deferred values
+#' are resolved, or any deferred value is rejected, the rest are cancelled.
+#'
+#' @param count Number of deferred values that need to resolve.
+#' @param ... Deferred values.
+#' @param .list More deferred values.
+#' @return A deferred value, that is conditioned on all deferred values
+#'   in `...` and `.list`.
+#'
+#' @noRd
+
+async_race_some <- function(count, ..., .list = list()) {
+  when_some_internal(count, ..., .list = .list, .race = TRUE)
+}
+
+async_race_some <- mark_as_async(async_race_some)
+
+#' @noRd
+#' @rdname async_race_some
+
+async_race <- function(..., .list = list()) {
+  when_some_internal(1L, ..., .list = .list, .race = TRUE)$
+    then(function(x) x[[1]])
+}
+
+async_race <- mark_as_async(async_race)
 
 #' Make an asynchronous function that always succeeds
 #'
@@ -4063,7 +4112,14 @@ when_all <- mark_as_async(when_all)
 #' }
 
 when_some <- function(count, ..., .list = list()) {
+  when_some_internal(count, ..., .list = .list, .race = FALSE)
+}
+
+when_some <- mark_as_async(when_some)
+
+when_some_internal <- function(count, ..., .list, .race) {
   force(count)
+  force(.race)
   defs <- c(list(...), .list)
   num_defs <- length(defs)
   num_failed <- 0L
@@ -4090,6 +4146,9 @@ when_some <- function(count, ..., .list = list()) {
       }
     },
     parent_reject = function(value, resolve) {
+      if (.race) {
+        stop(value)
+      }
       num_failed <<- num_failed + 1L
       errors <<- c(errors, list(value))
       if (num_failed + count == num_defs + 1L) {
@@ -4101,8 +4160,6 @@ when_some <- function(count, ..., .list = list()) {
     }
   )
 }
-
-when_some <- mark_as_async(when_some)
 
 #' @noRd
 #' @rdname when_some
@@ -4499,6 +4556,7 @@ external_process <- function(process_generator, error_on_status = TRUE,
 
   process_generator; error_on_status; args <- list(...)
   args$encoding <- args$encoding %||% ""
+  args$cleanup_tree <- args$cleanup_tree %||% TRUE
 
   id <- NULL
 
@@ -4515,7 +4573,7 @@ external_process <- function(process_generator, error_on_status = TRUE,
         list(pipe),
         function(err, res) if (is.null(err)) resolve(res) else reject(err),
         list(process = px, stdout = stdout, stderr = stderr,
-             error_on_status = TRUE, encoding = args$encoding)
+             error_on_status = error_on_status, encoding = args$encoding)
       )
     },
     on_cancel = function(reason) {

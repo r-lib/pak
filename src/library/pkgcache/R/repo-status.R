@@ -163,7 +163,7 @@ print.pkgcache_repo_status_summary <- function(x, ...) {
 
   repo <- format(c("Repository summary:", x$repository))
   ping <- format(
-    c("", paste0("   (", format(prettyunits::pretty_sec(x$ping)), ")")),
+    c("", paste0("   (", format(format_time$pretty_sec(x$ping)), ")")),
     justify = "right"
   )
   ping <- sub("\\(NA.*\\)", "  ", ping)

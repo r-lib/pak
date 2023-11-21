@@ -47,7 +47,7 @@ get_all_bioc_sysreqs <- function(ref = "HEAD") {
   prog <- function() {
     cat(
       "\r[", paste(format(done), collapse = "/"), "]", sep = "",
-      " -- ", prettyunits::pretty_dt(Sys.time() - start_at)
+      " -- ", format_time$pretty_dt(Sys.time() - start_at)
     )
   }
 

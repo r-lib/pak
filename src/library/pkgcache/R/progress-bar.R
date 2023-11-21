@@ -52,7 +52,6 @@ update_progress_bar_done  <- function(bar, url) {
     file.size(bar$data$path[[wh]])
 }
 
-#' @importFrom prettyunits pretty_bytes
 #' @importFrom cli cli_status_update
 
 show_progress_bar <- function(bar) {
@@ -67,7 +66,9 @@ show_progress_bar <- function(bar) {
   current <- sum(data$current, na.rm = TRUE)
   total <- sum(data$size, na.rm = TRUE)
   downloads <- paste0(
-    "[", pretty_bytes(current), " / ", pretty_bytes(total), "]")
+    "[", format_bytes$pretty_bytes(current), " / ",
+    format_bytes$pretty_bytes(total), "]"
+  )
 
   spinner <- bar$spinner$frames[bar$spinner_state]
   bar$spinner_state <- bar$spinner_state + 1L
@@ -95,7 +96,7 @@ finish_progress_bar <- function(ok, bar) {
   } else if (FALSE %in% bar$data$uptodate) {
     dl <- vlapply(bar$data$uptodate, identical, FALSE)
     files <- sum(dl)
-    bytes <- pretty_bytes(sum(bar$data$size[dl], na.rm = TRUE))
+    bytes <- format_bytes$pretty_bytes(sum(bar$data$size[dl], na.rm = TRUE))
     cli_status_clear(
       bar$status,
       result = "done",
