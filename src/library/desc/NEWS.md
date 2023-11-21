@@ -1,3 +1,5 @@
+# desc (development version)
+
 # desc 1.4.2
 
 * The `description$write()` method, and thus all `desc_*()` functions work

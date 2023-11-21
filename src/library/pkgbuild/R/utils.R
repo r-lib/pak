@@ -4,7 +4,7 @@ dir.exists <- function(x) {
 }
 
 pkg_path <- function(path = ".") {
-  rprojroot::find_root("DESCRIPTION", path)
+  find_package_root(path)
 }
 
 pkg_name <- function(path = ".") {
@@ -85,9 +85,15 @@ flag_false_values <- c("false", "no", "off", "0")
 
 interpret_envvar_flag <- function(name, default = "false") {
   env <- tolower(Sys.getenv(name, default))
-  if (env %in% flag_true_values) return(TRUE)
-  if (env %in% flag_false_values) return(FALSE)
-  if (is.na(env)) return(NA)
+  if (env %in% flag_true_values) {
+    return(TRUE)
+  }
+  if (env %in% flag_false_values) {
+    return(FALSE)
+  }
+  if (is.na(env)) {
+    return(NA)
+  }
 
   stop(cli::format_error(
     "The {.envvar {name}} environment variable must be {.code true} or
@@ -116,15 +122,21 @@ should_stop_for_warnings <- function() {
   get_config_flag_value("stop_for_warnings")
 }
 
-isFALSE <- function (x) {
+isFALSE <- function(x) {
   is.logical(x) && length(x) == 1L && !is.na(x) && !x
 }
 
 should_add_compiler_flags <- function() {
   val <- getOption("pkg.build_extra_flags", NULL)
-  if (isTRUE(val)) return(TRUE)
-  if (isFALSE(val)) return(FALSE)
-  if (identical(val, "missing")) return(length(makevars_user()) == 0)
+  if (isTRUE(val)) {
+    return(TRUE)
+  }
+  if (isFALSE(val)) {
+    return(FALSE)
+  }
+  if (identical(val, "missing")) {
+    return(length(makevars_user()) == 0)
+  }
   if (!is.null(val)) {
     if (!is_string(val)) {
       stop(cli::format_error(c(
@@ -142,9 +154,15 @@ should_add_compiler_flags <- function() {
   }
 
   val <- Sys.getenv("PKG_BUILD_EXTRA_FLAGS", "true")
-  if (val %in% flag_true_values) return(TRUE)
-  if (val %in% flag_false_values) return(FALSE)
-  if (val %in% "missing") return(length(makevars_user()) == 0)
+  if (val %in% flag_true_values) {
+    return(TRUE)
+  }
+  if (val %in% flag_false_values) {
+    return(FALSE)
+  }
+  if (val %in% "missing") {
+    return(length(makevars_user()) == 0)
+  }
 
   stop(cli::format_error(c(
     "Invalid {.envvar PKG_BUILD_EXTRA_FLAGS} environment variable.",
@@ -155,10 +173,16 @@ should_add_compiler_flags <- function() {
 get_desc_config_flag <- function(path, name) {
   name <- paste0("Config/build/", name)
   val <- desc::desc_get(name, file = path)
-  if (is.na(val)) return(NULL)
+  if (is.na(val)) {
+    return(NULL)
+  }
   lval <- tolower(val)
-  if (lval %in% flag_true_values) return(TRUE)
-  if (lval %in% flag_false_values) return(FALSE)
+  if (lval %in% flag_true_values) {
+    return(TRUE)
+  }
+  if (lval %in% flag_false_values) {
+    return(FALSE)
+  }
 
   stop(cli::format_error(
     "The {.code {name}} entry in {.path DESCRIPTION} must be {.code TRUE}
@@ -170,10 +194,14 @@ get_desc_config_flag <- function(path, name) {
 mkdirp <- function(path, mode = NULL) {
   if (file.exists(path)) {
     if (file.info(path)$isdir) {
-      if (is.null(mode)) return()
+      if (is.null(mode)) {
+        return()
+      }
       mode <- as.octmode(mode)
       emode <- as.octmode(file.info(path)$mode)
-      if (emode == mode) return()
+      if (emode == mode) {
+        return()
+      }
       ret <- Sys.chmod(path, mode, use_umask = FALSE)
       if (!ret) {
         stop(cli::format_error(c(

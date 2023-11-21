@@ -54,7 +54,7 @@ print_install_summary <- function(x) {
   cached <- sum(x$download_status == "Had" &
                 ! x$type %in% c("installed", "deps"))
   dlbytes <- sum(x$file_size[x$download_status == "Got"])
-  total_time <- prettyunits::pretty_dt(attr(x, "total_time")) %||% ""
+  total_time <- format_time$pretty_dt(attr(x, "total_time")) %||% ""
 
   pkgsum <- paste0(
     if (direct > 0) "{direct} pkg{?s}",
@@ -68,7 +68,7 @@ print_install_summary <- function(x) {
   ), collapse = ", ")
 
   dlsum <- if (downloaded > 0) {
-    bytes <- prettyunits::pretty_bytes(dlbytes)
+    bytes <- format_bytes$pretty_bytes(dlbytes)
     paste0(
       ", dld {downloaded}",
       if (!is.na(bytes) && bytes != 0) " ({bytes})"

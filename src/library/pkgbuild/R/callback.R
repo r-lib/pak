@@ -1,6 +1,5 @@
 #' @importFrom cli symbol
 #' @importFrom utils head tail
-#' @importFrom prettyunits pretty_dt
 
 # This is adapted from https://github.com/r-lib/rcmdcheck/blob/7ee14764c2b17ee2c2f4131a9e19d1b56a66ed0f/R/callback.R
 block_callback <- function(quiet) {
@@ -20,7 +19,7 @@ block_callback <- function(quiet) {
   time_if_long <- function() {
     elapsed <- now - line_started
     if (elapsed > as.difftime(1 / 3, units = "secs")) {
-      style(timing = paste0(" (", pretty_dt(elapsed), ")"))
+      style(timing = paste0(" (", format_time$pretty_dt(elapsed), ")"))
     } else {
       ""
     }

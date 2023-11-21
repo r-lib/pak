@@ -37,7 +37,7 @@ pkg_search <- function(query, ...) {
 
 pkg_search_internal <- function(query, ...) {
   res <- pkgsearch::pkg_search(query, ...)
-  res$ago <- prettyunits::time_ago(res$date)
+  res$ago <- format_time_ago$time_ago(res$date)
   class(res) <- c("pak_search_result", class(res))
   res
 }

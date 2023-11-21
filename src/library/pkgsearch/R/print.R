@@ -26,7 +26,7 @@ summary.pkg_search_result <- function(object, ...) {
       package = object$package,
       version = object$version,
       by = object$maintainer_name,
-      "  @" = time_ago(object$date, format = "terse")
+      "  @" = format_time_ago$time_ago(object$date, format = "terse")
     )
 
     w <- max(nchar(capture.output(print(pkgs, row.names = FALSE))))
@@ -59,8 +59,6 @@ print.pkg_search_result <- function(x, ...) {
   }
 }
 
-#' @importFrom prettyunits time_ago
-
 cat_hit <- function(x, no) {
 
   cat("\n")
@@ -68,7 +66,7 @@ cat_hit <- function(x, no) {
   pkg <- x[no, ]
 
   ## Header
-  ago <- time_ago(pkg$date)
+  ago <- format_time_ago$time_ago(pkg$date)
   pkg_ver <- as.character(meta(x)$from + no - 1) %+% " " %+%
     pkg$package %+% " @ " %+% as.character(pkg$version)
   cat(left_right(pkg_ver, pkg$maintainer_name %+% ", " %+% ago), sep = "\n")
@@ -156,12 +154,10 @@ summary.cran_event_list <- function(object, ...) {
 #' @rdname cran_events
 #' @param x Object to print.
 #' @param ... Additional arguments are ignored currently.
-#' @importFrom prettyunits time_ago
-#' @importFrom parsedate parse_date
 
 print.cran_event_list <- function(x, ...) {
   cat_fill("CRAN events (" %+% attr(x, "mode") %+% ")")
-  when <- time_ago(format = "short", parse_date(sapply(x, "[[", "date")))
+  when <- format_time_ago$time_ago(format = "short", parse_iso_8601(sapply(x, "[[", "date")))
   pkgs <- data.frame(
     stringsAsFactors = FALSE, check.names = FALSE,
     "." = ifelse(sapply(x, "[[", "event") == "released", "+", "-"),
@@ -170,7 +166,7 @@ print.cran_event_list <- function(x, ...) {
     Version = sapply(x, function(xx) xx$package$Version),
     RTitle = gsub("\\s+", " ", sapply(x, function(xx) xx$package$Title))
   )
-  
+
   tw <- getOption("width") - 7 - 3 -
     max(nchar("When"), max(nchar(pkgs$When))) -
     max(nchar("Package"), max(nchar(pkgs$Package))) -
@@ -179,9 +175,9 @@ print.cran_event_list <- function(x, ...) {
   pkgs$Title <- ifelse(pkgs$Title == pkgs$RTitle, pkgs$Title,
                        paste0(pkgs$Title, "..."))
   pkgs$RTitle <- NULL
-  
+
   print.data.frame(pkgs, row.names = FALSE, right = FALSE)
-  
+
   invisible(x)
 }
 

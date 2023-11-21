@@ -56,7 +56,7 @@ local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
 
 local_install_make_plan <- function(type, root, lib, upgrade, ask, start,
                                     dependencies, loaded) {
-  root <- rprojroot::find_package_root_file(path = root)
+  root <- find_package_root(path = root)
   pkg <- paste0(type, "::", root)
   pkg_install_make_plan(pkg, lib, upgrade, ask, start, dependencies, loaded)
 }
@@ -213,7 +213,7 @@ local_dev_deps_explain <- function(deps, root = ".", upgrade = TRUE,
 
 local_install_dev_deps_make_plan <- function(root, lib, upgrade, start,
                                              dependencies, loaded) {
-  root <- rprojroot::find_package_root_file(path = root)
+  root <- find_package_root(path = root)
   prop <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", root),
     config = list(library = lib, dependencies = dependencies)

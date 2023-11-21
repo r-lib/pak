@@ -36,7 +36,6 @@ get_user_cache_dir <- function() {
   res
 }
 
-#' @importFrom rappdirs user_cache_dir
 #' @rawNamespace if (getRversion() >= "4.0.0") importFrom(tools, R_user_dir)
 
 # nocov start
@@ -50,9 +49,53 @@ my_R_user_dir <- function(package, which = "cache") {
   } else if (Sys.info()[["sysname"]] == "Darwin") {
     path.expand(file.path(user_cache_dir(), "org.R-project.R", "R", package))
   } else if (.Platform$OS.type == "windows") {
-    path.expand(file.path(dirname(user_cache_dir()), "R", "cache", "R", package))
+    path.expand(file.path(user_cache_dir(), "R", "cache", "R", package))
   } else {
     path.expand(file.path(user_cache_dir(), "R", package))
+  }
+}
+
+user_cache_dir <- function() {
+  if (nzchar(cache <- Sys.getenv("R_PKG_CACHE_DIR", ""))) {
+    return(cache)
+  }
+  if (nzchar(cache <- Sys.getenv("R_USER_CACHE_DIR", ""))) {
+    return(file.path(cache, "R"))
+  }
+  switch(
+    get_os(),
+    win = file_path(win_path_local()),
+    mac = "~/Library/Caches",
+    unix = ,
+    unknown = file_path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"))
+  )
+}
+
+get_os <- function() {
+  if (.Platform$OS.type == "windows") {
+    "win"
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    "mac"
+  } else if (.Platform$OS.type == "unix") {
+    "unix"
+  } else {
+    "unknown"
+  }
+}
+
+file_path <- function(...) {
+  normalizePath(do.call("file.path", as.list(c(...))), mustWork = FALSE)
+}
+
+win_path_local <- function() {
+  if (nzchar(lapp <- Sys.getenv("LOCALAPPDATA", ""))) {
+    lapp
+
+  } else if (nzchar(usrprof <- Sys.getenv("USERPROFILE", ""))) {
+    file.path(usrprof, "AppData", "Local")
+
+  } else {
+    file.path(tempdir(), "r-pkg-cache")
   }
 }
 
@@ -63,7 +106,7 @@ if (getRversion() < "4.0.0") {
 }
 
 cleanup_old_cache_dir <- function(force = FALSE) {
-  dir <- user_cache_dir("R-pkg")
+  dir <- file.path(user_cache_dir(), "R-pkg")
   if (!file.exists(dir)) {
     message("Old cache directory does not exists, nothing to do")
     return(invisible())

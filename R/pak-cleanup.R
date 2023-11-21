@@ -45,7 +45,7 @@ pak_cleanup_package_cache <- function(force) {
 
 pak_cleanup_package_cache_print <- function() {
   sum <- pkgcache::pkg_cache_summary()
-  size <- prettyunits::pretty_bytes(sum$size)
+  size <- format_bytes$pretty_bytes(sum$size)
   cli::cli_alert(
     "{.emph Package cache} is in {.path {sum$cachepath}} ({size})")
 }
@@ -79,7 +79,7 @@ pak_cleanup_metadata_cache <- function(force) {
 
 pak_cleanup_metadata_cache_print <- function() {
   sum <- pkgcache::meta_cache_summary()
-  size <- prettyunits::pretty_bytes(sum$size)
+  size <- format_bytes$pretty_bytes(sum$size)
   cli::cli_alert(
     "{.emph Metadata cache} is in {.path {sum$cachepath}} ({size})")
 }

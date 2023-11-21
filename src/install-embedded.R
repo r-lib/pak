@@ -75,23 +75,21 @@ install_order <- function() {
   ## TODO: look up the correct order
   pkgs <- c(
     # no deps
-    "R6", "cli", "crayon", "curl", "filelock", "glue", "jsonlite",
-    "lpSolve", "parsedate", "prettyunits", "ps", "rappdirs", "rprojroot",
-    "zip",
+    "R6", "cli", "curl", "filelock", "jsonlite", "lpSolve", "ps", "zip",
     # ps, R6
     "processx",
     # processx, R6
     "callr",
-    # cli, R6, rprojroot
+    # cli, R6
     "desc",
-    # callr, cli, crayon, desc, prettyunits, processx, R6, rprojroot
+    # callr, cli, desc, processx, R6
     "pkgbuild",
-    # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6, rappdirs
+    # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6
     "pkgcache",
-    # curl, jsonlite, parsedate, prettyunits
+    # curl, jsonlite
     "pkgsearch",
-    # callr, cli, curl, desc, filelock, glue, jsonlite, lpSolve, pkgbuild,
-    # pkgcache, prettyunits, processx, ps, R6, rprojroot, zip
+    # callr, cli, curl, desc, filelock, jsonlite, lpSolve, pkgbuild,
+    # pkgcache, processx, ps, R6, zip
     "pkgdepends"
   )
 
@@ -202,8 +200,7 @@ install_embedded_main <- function() {
 
   # From load_all()'s ./configure call, do nothing
   if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
-    # TODO: we could do this here, if we get rid of rappdirs and
-    # write our on code to determine the user cache directory.
+    # TODO: we could do this here, now that we don't use rappdirs.
     cat("Delayed embedding dependencies in `pkgload::load_all()`.\n")
     file.create("DONE")
     return(invisible())

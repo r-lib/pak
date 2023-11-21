@@ -42,8 +42,12 @@ is_verbose <- function() {
   }
 }
 
+backtick <- function (x) {
+  encodeString(x, quote = "`", na.encode = FALSE)
+}
+
 format_items <- function (x) {
-  paste0(glue::glue_collapse(glue::backtick(x), sep = ", ", last = " and "))
+  paste0(cli::ansi_collapse(backtick(x), sep = ", ", last = " and "))
 }
 
 str_trim <- function (x) {

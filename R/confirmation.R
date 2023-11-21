@@ -34,8 +34,8 @@ print_install_details <- function(prop, lib, loaded) {
   n_dl <- sum(w_dl, na.rm = TRUE)
   u_dl <- sum(is.na(sol$filesize[w_dl]))
   n_ch <- sum(w_ch, na.rm = TRUE)
-  b_dl <- prettyunits::pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
-  b_ch <- prettyunits::pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
+  b_dl <- format_bytes$pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
+  b_ch <- format_bytes$pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
 
   any_unk <- length(u_dl) > 0
 

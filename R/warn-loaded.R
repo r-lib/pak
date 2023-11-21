@@ -116,11 +116,11 @@ warn_for_loaded_packages_locked_none <- function(current) {
 
 warn_for_loaded_packages_none_locked <- function(others) {
   pcs <- others$users[!duplicated(others$users$pid), , drop = FALSE]
-  sess <- glue::glue("{pcs$name} ({pcs$pid})")
+  sess <- sprintf("%s %s", pcs$name, pcs$pid)
   apps <- ifelse(
     pcs$pid == pcs$app_pid,
     "",
-    glue::glue(" in {pcs$app_name} ({pcs$app_pid})")
+    sprintf(" in %s (%s)", pcs$app_name, pcs$app_pid)
   )
   sess <- paste0(sess, apps)
   cli::cli_alert_warning(
@@ -158,11 +158,11 @@ warn_for_loaded_packages_loaded_locked <- function(current, others) {
 
 warn_for_loaded_packages_locked_locked <- function(current, others) {
   pcs <- others$users[!duplicated(others$users$pid), , drop = FALSE]
-  sess <- glue::glue("{pcs$name} ({pcs$pid})")
+  sess <- sprintf("%s (%s)", pcs$name, pcs$pid)
   apps <- ifelse(
     pcs$pid == pcs$app_pid,
     "",
-    glue::glue(", in {pcs$app_name} ({pcs$app_pid})")
+    sprintf(", in %s (%s)", pcs$app_name, pcs$app_pid)
   )
   sess <- paste0(sess, apps)
   if (identical(sort(current$locked), sort(others$locked))) {

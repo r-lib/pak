@@ -48,7 +48,7 @@ compiler_flags <- function(debug = FALSE) {
       )
     }
 
-  if (crayon::has_color() && has_compiler_colored_diagnostics()) {
+  if (cli::num_ansi_colors() > 1 && has_compiler_colored_diagnostics()) {
     flags <- c(
       "CFLAGS", "CXXFLAGS", "CXX11FLAGS",
       "CXX14FLAGS", "CXX17FLAGS", "CXX20FLAGS"
@@ -60,7 +60,9 @@ compiler_flags <- function(debug = FALSE) {
 
 has_compiler_colored_diagnostics <- function() {
   val <- interpret_envvar_flag("PKG_BUILD_COLOR_DIAGNOSTICS", NA_character_)
-  if (!is.na(val)) return(val)
+  if (!is.na(val)) {
+    return(val)
+  }
 
   if (cache_exists("has_compiler_colored_diagnostics")) {
     return(cache_get("has_compiler_colored_diagnostics"))
