@@ -6,9 +6,11 @@ load_all_private <- function() {
   deps_path <- file.path(lib, "deps.rds")
   pkg_data[["ns"]] <- readRDS(deps_path)
   parent.env(pkg_data[["ns"]]) <- getNamespace(.packageName)
+  # These register C functions with a c_ prefix
+  prefix_pkgs <- c("filelock", "processx", "zip")
   for (pkg in names(pkg_data[["ns"]])) {
     pkg_env <- pkg_data[["ns"]][[pkg]]
-    reg_prefix <- if (pkg == "processx") "c_" else ""
+    reg_prefix <- if (pkg %in% prefix_pkgs) "c_" else ""
     parent.env(pkg_env) <- getNamespace(.packageName)
 
     pkg_env[["__pkg-dir__"]] <- normalizePath(file.path(lib, pkg))
