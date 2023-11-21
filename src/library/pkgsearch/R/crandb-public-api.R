@@ -125,7 +125,7 @@ cran_trending <- function() {
   resp <- http_stop_for_status(http_get(ept))
   cnt <- rawToChar(resp$content)
   Encoding(cnt) <- "UTF-8"
-  tb <- fromJSON(cnt, simplifyDataFrame = TRUE)
+  tb <- jsonlite::fromJSON(cnt, simplifyDataFrame = TRUE)
   colnames(tb) <- c("package", "score")
   as_data_frame(tb)
 }
@@ -148,7 +148,7 @@ cran_top_downloaded <- function() {
   resp <- http_stop_for_status(http_get(ept))
   cnt <- rawToChar(resp$content)
   Encoding(cnt) <- "UTF-8"
-  tb <- fromJSON(cnt, simplifyDataFrame = TRUE)$downloads
+  tb <- jsonlite::fromJSON(cnt, simplifyDataFrame = TRUE)$downloads
   names(tb) <- c("package", "count")
   as_data_frame(tb)
 }
@@ -213,7 +213,7 @@ cran_new <- function(from = "last-week", to = "now", last = Inf) {
   rsp <- http_get(url)
   cnt <- rawToChar(rsp$content)
   Encoding(cnt) <- "UTF-8"
-  rst <- fromJSON(cnt, simplifyVector = FALSE)
+  rst <- jsonlite::fromJSON(cnt, simplifyVector = FALSE)
 
   pkgs <- lapply(rst$rows, function(r) r$value$package)
   dsc <- rectangle_packages(pkgs)
@@ -264,7 +264,7 @@ crandb_query <- function(url, error = TRUE, ...) {
   rsp <- http_get(url0)
   cnt <- rawToChar(rsp$content)
   Encoding(cnt) <- "UTF-8"
-  rst <- fromJSON(cnt, ...)
+  rst <- jsonlite::fromJSON(cnt, ...)
 
   if (error && ("error" %in% names(rst))) {
     throw(new_error("crandb query: ", rst$reason, call. = FALSE))
