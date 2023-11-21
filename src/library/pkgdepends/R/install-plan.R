@@ -59,7 +59,6 @@ NULL
 #' @param cache Package cache to use, or `NULL`.
 #' @return Information about the installation process.
 #'
-#' @importFrom callr poll
 #' @export
 
 install_package_plan <- function(plan, lib = .libPaths()[[1]],
@@ -193,13 +192,11 @@ are_we_done <- function(state) {
   all(state$plan$install_done)
 }
 
-#' @importFrom callr poll
-
 poll_workers <- function(state) {
   if (length(state$workers)) {
     timeout <- get_timeout(state)
     procs <- lapply(state$workers, "[[", "process")
-    res <- poll(procs, ms = timeout)
+    res <- processx::poll(procs, ms = timeout)
     vlapply(res, function(x) "ready" %in% x)
 
   } else {
@@ -390,7 +387,7 @@ make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
   ## lib path in the child process.
   mkdirp(tmplib <- tempfile("pkg-lib"))
   withr_with_libpaths(c(tmplib, lib), action = "prefix",
-    pkgbuild_process$new(
+    pkgbuild::pkgbuild_process$new(
       path, tmp_dir, binary = binary, vignettes = vignettes,
       needs_compilation = needscompilation, compile_attributes = FALSE,
       args = c("--no-lock", cmd_args, if (binary) sprintf("--library=%s", tmplib))
@@ -495,8 +492,6 @@ start_task_package_build <- function(state, task) {
   state$plan$build_time[[pkgidx]] <- Sys.time()
   state
 }
-
-#' @importFrom pkgbuild pkgbuild_process
 
 start_task_build <- function(state, task) {
   pkgidx <- task$args$pkgidx
@@ -845,7 +840,7 @@ print.pkginstall_result <- function(x, ...) {
     }
   )
 
-  cli_alert_success(paste0(res, collapse = "  "))
+  cli::cli_alert_success(paste0(res, collapse = "  "))
 
   invisible(x)
 }

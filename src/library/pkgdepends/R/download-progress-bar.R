@@ -83,8 +83,6 @@
 #' @noRd
 NULL
 
-#' @importFrom cli get_spinner cli_status qty
-
 pkgplan__create_progress_bar <- function(what) {
   bar <- new.env(parent = emptyenv())
 
@@ -136,14 +134,14 @@ pkgplan__initial_pb_message <- function(bar) {
   cbt <- sum(bar$what$filesize[bar$what$cache_status %in% "hit"], na.rm = TRUE)
 
   if (num == 0) {
-    cli_alert_info(c(
+    cli::cli_alert_info(c(
       "No downloads are needed",
       if (nch > 0) ", {nch} pkg{?s} ",
       if (cbt > 0) "{.size ({format_bytes$pretty_bytes(cbt)})} ",
-      if (nch > 0) "{qty(nch)}{?is/are} cached"
+      if (nch > 0) "{cli::qty(nch)}{?is/are} cached"
     ))
   } else {
-    cli_alert_info(c(
+    cli::cli_alert_info(c(
       "Getting",
       if (bts > 0) " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}",
       if (bts > 0 && unk > 0) " and",
@@ -154,7 +152,7 @@ pkgplan__initial_pb_message <- function(bar) {
     ))
   }
   if (should_show_progress_bar()) {
-    bar$status <- cli_status("", .auto_close = FALSE)
+    bar$status <-cli::cli_status("", .auto_close = FALSE)
   }
 }
 
@@ -170,7 +168,6 @@ pkgplan__initial_pb_message <- function(bar) {
 #'   `"done"`, and on error `"error"`.
 #'
 #' @noRd
-#' @importFrom cli cli_alert_success cli_alert_danger
 
 pkgplan__update_progress_bar <- function(bar, idx, event, data) {
   # Record the time here, and use it in this function, so that this
@@ -189,7 +186,7 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
       bar$what$status[idx] <- "got"
       sz <- na.omit(file.size(c(data$fulltarget, data$fulltarget_tree)))[1]
       if (!is.na(sz)) bar$what$filesize[idx] <- sz
-      cli_alert_success(c(
+      cli::cli_alert_success(c(
         "Got {.pkg {data$package}} ",
         "{.version {data$version}} ({data$platform})",
         if (!is.na(sz) && bar$show_size) " {.size ({format_bytes$pretty_bytes(sz)})}"
@@ -204,13 +201,13 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
       bar$what$current[idx] <- 0L
       bar$what$need[idx] <- 0L
       if (identical(data$cache_status, "miss") && data$type != "deps") {
-        cli_alert_success(c(
+        cli::cli_alert_success(c(
           "Cached copy of {.pkg {data$package}} ",
           "{.version {data$version}} ({data$platform}) is the latest build"
         ))
       }
     } else if (data$download_status == "Failed") {
-      cli_alert_danger(c(
+      cli::cli_alert_danger(c(
         "Failed to download {.pkg {data$package}} ",
         "{.version {data$version}} ({data$platform})"
       ))
@@ -225,7 +222,7 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
   }
 
   if (event == "error") {
-    cli_alert_danger(c(
+    cli::cli_alert_danger(c(
       "Failed to download {.pkg {data$package}} ",
       "{.version {data$version}} ({data$platform})"
     ))
@@ -273,7 +270,7 @@ pkgplan__show_progress_bar <- function(bar) {
   )
 
   bar$events <- list()
-  cli_status_update(bar$status, str)
+  cli::cli_status_update(bar$status, str)
 }
 
 calculate_rate <- function(start, now, chunks) {
@@ -368,7 +365,7 @@ pkgplan__done_progress_bar <- function(bar) {
   end_at <- Sys.time()
   dt <- format_time$pretty_dt(Sys.time() - bar$start_at)
 
-  cli_status_clear(bar$status)
+  cli::cli_status_clear(bar$status)
   bar$status <- NULL
 
   bts <- format_bytes$pretty_bytes(sum(bar$what$current))
@@ -379,16 +376,16 @@ pkgplan__done_progress_bar <- function(bar) {
   if (sum(!bar$what$skip) == 0) {
     # Print nothing, we already printed that no downloads are needed
   } else if (err == 0 && dld == 0) {
-    cli_alert_success("No downloads needed, all packages are cached")
+    cli::cli_alert_success("No downloads needed, all packages are cached")
   } else if (err == 0) {
-    cli_alert_success(
+    cli::cli_alert_success(
       paste0(
         "Downloaded {dld} package{?s} {.size ({bts})}",
         if (bar$show_time) " in {.time {dt}}"
       )
     )
   } else {
-    cli_alert_danger(
+    cli::cli_alert_danger(
       "Failed to download {err} package{?s}. "
     )
   }

@@ -287,7 +287,7 @@ parse_query <- function(ref) {
   })
 
   if (length(bad <- unique(setdiff(keys, known_query_params)))) {
-    cli_alert_warning(c(
+    cli::cli_alert_warning(c(
       "Unknown package{cli::qty(bad)} parameter{?s}: ",
       "{.val {bad}} in {.val {ref}}."
     ))

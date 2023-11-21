@@ -1,4 +1,3 @@
-#' @importFrom cli symbol
 #' @importFrom utils head tail
 
 # This is adapted from https://github.com/r-lib/rcmdcheck/blob/7ee14764c2b17ee2c2f4131a9e19d1b56a66ed0f/R/callback.R
@@ -60,7 +59,7 @@ block_callback <- function(quiet) {
     should_time <<- TRUE
     if (grepl(" \\.\\.\\. OK\\s*$", x)) {
       state <<- "OK"
-      style(ok = symbol$tick, "  ", pale = no(x, "OK"))
+      style(ok = cli::symbol$tick, "  ", pale = no(x, "OK"))
     } else if (grepl(" \\.\\.\\. NOTE\\s*$", x)) {
       state <<- "NOTE"
       style(note = c("N  ", no(x, "NOTE")))
@@ -72,12 +71,12 @@ block_callback <- function(quiet) {
       style(err = c("E  ", no(x, "ERROR")))
     } else if (grepl("^\\* checking tests \\.\\.\\.[ ]?$", x)) {
       state <<- "tests"
-      style(pale = c(symbol$line, "  ", no(x)))
+      style(pale = c(cli::symbol$line, "  ", no(x)))
     } else if (grepl("^\\* DONE\\s*$", x)) {
       state <<- "OK"
       NA_character_
     } else {
-      style(pale = c(symbol$line, "  ", no(x)))
+      style(pale = c(cli::symbol$line, "  ", no(x)))
     }
   }
 

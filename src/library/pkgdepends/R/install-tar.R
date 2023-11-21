@@ -141,7 +141,6 @@ external_untar_process <- R6::R6Class(
 #' @description
 #' Uses [utils::untar()], in a background process.
 #'
-#' @importFrom callr r_process_options
 #' @noRd
 
 r_untar_process <- R6::R6Class(
@@ -176,7 +175,7 @@ r_untar_process <- R6::R6Class(
         tar = tar,
         post_process = post_process)
 
-      process_options <- r_process_options(stdout = stdout, stderr = stderr)
+      process_options <- callr::r_process_options(stdout = stdout, stderr = stderr)
       process_options$func <- function(options) {
         # nocov start
         ret <- utils::untar(

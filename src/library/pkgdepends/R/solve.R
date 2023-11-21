@@ -805,7 +805,14 @@ pkgplan_i_solve_lp_problem <- function(problem) {
 
   dir <- vcapply(problem$conds, "[[", "op")
   rhs <- vapply(problem$conds, "[[", "rhs", FUN.VALUE = double(1))
-  lp("min", problem$obj, condmat, dir, rhs, int.vec = seq_len(problem$total))
+  lpSolve::lp(
+    "min",
+    problem$obj,
+    condmat,
+    dir,
+    rhs,
+    int.vec = seq_len(problem$total)
+  )
 }
 
 pkgplan_get_solution <- function(self, private) {
@@ -824,7 +831,6 @@ pkgplan_get_solution <- function(self, private) {
 #' @return Character vector, like `new`, but the change highlighted
 #'
 #' @noRd
-#' @importFrom cli style_bold
 
 highlight_version <- function(old, new) {
   if (length(old) != length(new)) {
@@ -845,7 +851,7 @@ highlight_version <- function(old, new) {
     n <- na.omit(n)
     paste0(
       if (idx > 1) paste(n[1:(idx-1)], collapse = ""),
-      if (idx <= length(n)) style_bold(paste(n[idx:length(n)]), collapse = "")
+      if (idx <= length(n)) cli::style_bold(paste(n[idx:length(n)]), collapse = "")
     )
   }))
 
@@ -863,15 +869,14 @@ highlight_version <- function(old, new) {
 #' have `NA` in the result.
 #'
 #' @noRd
-#' @importFrom cli symbol col_blue
 
 highlight_package_list <- function(sol) {
-  arrow <- symbol$arrow_right
+  arrow <- cli::symbol$arrow_right
 
   ins <- sol$type != "installed" & sol$type != "deps"
   sol <- sol[ins, ]
 
-  pkg <- ansi_align_width(col_blue(sol$package))
+  pkg <- ansi_align_width(cli::col_blue(sol$package))
   old <- ansi_align_width(ifelse(is.na(sol$old_version), "", sol$old_version))
   arr <- ansi_align_width(ifelse(is.na(sol$old_version), "", arrow))
   new <- ansi_align_width(highlight_version(sol$old_version, sol$version))
@@ -1115,8 +1120,6 @@ pkgplan_install_plan <- function(self, private, downloads) {
   sol
 }
 
-#' @importFrom jsonlite unbox
-
 pkgplan_export_install_plan <- function(self, private, plan_file, version) {
   pkgs <- pkgplan_install_plan(self, private, downloads = FALSE)
   cols <- unique(c(
@@ -1147,14 +1150,14 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
 
   packages$params <- lapply(
     packages$params,
-    function(x) lapply(as.list(x), unbox)
+    function(x) lapply(as.list(x), jsonlite::unbox)
   )
 
   plan <- list(
-    lockfile_version = unbox(version),
-    os = unbox(utils::sessionInfo()$running),
-    r_version = unbox(R.Version()$version.string),
-    platform = unbox(R.Version()$platform),
+    lockfile_version = jsonlite::unbox(version),
+    os = jsonlite::unbox(utils::sessionInfo()$running),
+    r_version = jsonlite::unbox(R.Version()$version.string),
+    platform = jsonlite::unbox(R.Version()$platform),
     packages = packages
   )
 
@@ -1163,10 +1166,10 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
       self$get_solution()$data$sysreqs_packages,
       private$config$get("sysreqs_platform")
     )
-    sysreqs$os <- unbox(sysreqs$os)
-    sysreqs$distribution <- unbox(sysreqs$distribution)
-    sysreqs$version <- unbox(sysreqs$version)
-    sysreqs$url <- unbox(sysreqs$url)
+    sysreqs$os <- jsonlite::unbox(sysreqs$os)
+    sysreqs$distribution <- jsonlite::unbox(sysreqs$distribution)
+    sysreqs$version <- jsonlite::unbox(sysreqs$version)
+    sysreqs$url <- jsonlite::unbox(sysreqs$url)
     sysreqs$total <- NULL
     plan$sysreqs <- sysreqs
   }
@@ -1175,12 +1178,10 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
   writeLines(txt, plan_file)
 }
 
-#' @importFrom jsonlite unbox toJSON
-
 as_json_lite_plan <- function(liteplan, pretty = as.logical(Sys.getenv("PKG_PRETTY_JSON", "TRUE")), ...) {
-  tolist1 <- function(x) lapply(x, function(v) lapply(as.list(v), unbox))
+  tolist1 <- function(x) lapply(x, function(v) lapply(as.list(v), jsonlite::unbox))
   liteplan$packages$metadata <- tolist1(liteplan$packages$metadata)
-  toJSON(liteplan, pretty = pretty, ...)
+  jsonlite::toJSON(liteplan, pretty = pretty, ...)
 }
 
 calculate_lib_status <- function(sol, res) {

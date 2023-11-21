@@ -175,7 +175,7 @@ async_pnc_crandb_query <- function(name) {
 
 pnc_crandb_process <- function(response) {
   http_stop_for_status(response)
-  ans <- fromJSON(rawToChar(response$content), simplifyVector = FALSE)
+  ans <- jsonlite::fromJSON(rawToChar(response$content), simplifyVector = FALSE)
   ret <- list(
     crandb = length(ans$rows) == 0,
     package = if (length(ans$rows) > 0) vcapply(ans$rows, "[[", "value")
