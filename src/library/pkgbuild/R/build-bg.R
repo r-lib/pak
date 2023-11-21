@@ -98,8 +98,6 @@ pkgbuild_process <- R6Class(
   )
 )
 
-#' @importFrom callr rcmd_process rcmd_process_options
-
 rcb_init <- function(self, private, super, path, dest_path, binary,
                      vignettes, manual, clean_doc, args, needs_compilation,
                      compile_attributes, register_routines, quiet) {
@@ -119,7 +117,7 @@ rcb_init <- function(self, private, super, path, dest_path, binary,
   withr_set_makevars(compiler_flags(debug = FALSE), new_path = private$makevars_file)
   withr_with_envvar(
     c("R_MAKEVARS_USER" = private$makevars_file), {
-      options <- rcmd_process_options(
+      options <- callr::rcmd_process_options(
         cmd = options$cmd,
         cmdargs = c(options$path, options$args),
         wd = options$out_dir,
