@@ -42,30 +42,26 @@ field_order <- function(fields) {
   )
 }
 
-#' @importFrom cli col_red
-
 color_bad <- function(x) {
-  if (identical(check_field(x), TRUE)) x$value else col_red(x$value)
+  if (identical(check_field(x), TRUE)) x$value else cli::col_red(x$value)
 }
 
 #' @export
-#' @importFrom cli col_blue
 #' @method format DescriptionField
 
 format.DescriptionField <- function(x, ..., width = 75) {
   mark_continuation_lines(paste(
-    strwrap(paste0(col_blue(x$key), ": ", color_bad(x)), exdent = 4, width = width),
+    strwrap(paste0(cli::col_blue(x$key), ": ", color_bad(x)), exdent = 4, width = width),
     collapse = "\n"
   ))
 }
 
 #' @export
-#' @importFrom cli col_blue
 #' @method format DescriptionDependencyList
 
 format.DescriptionDependencyList <- function(x, ...) {
   paste0(
-    col_blue(x$key), ":\n",
+    cli::col_blue(x$key), ":\n",
     paste0(
       "    ",
       sort(str_trim(strsplit(color_bad(x), ",", fixed = TRUE)[[1]])),
@@ -85,18 +81,16 @@ format.DescriptionPackageList <- format.DescriptionDependencyList
 format.DescriptionRemotes <- format.DescriptionDependencyList
 
 #' @export
-#' @importFrom cli col_blue
 #' @method format DescriptionCollate
 
 format.DescriptionCollate <- function(x, ...) {
   paste0(
-    col_blue(x$key), ":",
+    cli::col_blue(x$key), ":",
     deparse_collate(parse_collate(color_bad(x)))
   )
 }
 
 #' @export
-#' @importFrom cli col_blue col_red
 #' @method format DescriptionAuthorsAtR
 
 format.DescriptionAuthorsAtR <- function(x, mode = c("file", "screen"),
@@ -105,9 +99,9 @@ format.DescriptionAuthorsAtR <- function(x, mode = c("file", "screen"),
 
   if (mode == "screen") {
     good <- check_field(x)
-    xxx <- if (good) xx else col_red(xx)
+    xxx <- if (good) xx else cli::col_red(xx)
     paste0(
-      col_blue(x$key), " (parsed):\n",
+      cli::col_blue(x$key), " (parsed):\n",
       paste0("    * ", format(xxx), collapse = "\n")
     )
 
