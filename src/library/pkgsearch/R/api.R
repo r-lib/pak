@@ -237,8 +237,6 @@ print.pkgsearch_query_error <- function(x, ...) {
   invisible(x)
 }
 
-#' @importFrom parsedate parse_iso_8601
-
 format_result <- function(result, query, format, from, size, server,
                           port, ...) {
   result <- fromJSON(result, simplifyVector = FALSE)

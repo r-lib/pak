@@ -714,7 +714,7 @@ format_pkg <- function(record, id, num, from) {
     ", by ",
     record$maintainer_name,
     ", ",
-    time_ago(record$date)
+    format_time_ago$time_ago(record$date)
   )
   urls <- find_urls(record$url)
   shiny::p(
@@ -782,7 +782,7 @@ rectangle_pkgs <- function(pkgs) {
     version =          pkgs$Version %||% character(),
     title =            pkgs$Title %||% character(),
     description =      pkgs$Description %||% character(),
-    date =             parsedate::parse_iso_8601(pkgs$date %||% character()),
+    date =             parse_iso_8601(pkgs$date %||% character()),
     maintainer_name =  maintainer$maintainer_name,
     maintainer_email = maintainer$maintainer_email,
     license =          pkgs$License %||% character(),
@@ -805,8 +805,7 @@ rectangle_events <- function(ev) {
     version =          map_chr(ev, function(x) x$package$Version),
     title =            map_chr(ev, function(x) x$package$Title),
     description =      map_chr(ev, function(x) x$package$Description),
-    date =
-      parsedate::parse_iso_8601(map_chr(ev, "[[", "date")),
+    date =             parse_iso_8601(map_chr(ev, "[[", "date")),
     maintainer_name =  maintainer$maintainer_name,
     maintainer_email = maintainer$maintainer_email,
     license =          map_chr(ev, function(x) x$package$License),

@@ -1,7 +1,7 @@
 
 re_match <- function(text, pattern, perl = TRUE, ...) {
 
-  stopifnot(is.character(pattern), length(pattern) == 1, !is.na(pattern))
+  assert_that(is_string(pattern))
   text <- as.character(text)
 
   match <- regexpr(pattern, text, perl = perl, ...)
@@ -13,11 +13,7 @@ re_match <- function(text, pattern, perl = TRUE, ...) {
   matchstr <- substring(text, start, end)
   matchstr[ start == -1 ] <- NA_character_
 
-  res <- data.frame(
-    .text = text,
-    .match = matchstr,
-    stringsAsFactors = FALSE
-  )
+  res <- data_frame(.text = text, .match = matchstr)
 
   if (!is.null(attr(match, "capture.start"))) {
 

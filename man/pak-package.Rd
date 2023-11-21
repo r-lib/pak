@@ -36,7 +36,6 @@ Other contributors:
   \item Duncan Temple Lang (jsonlite) [contributor]
   \item Lloyd Hilaiel (jsonlite) [copyright holder]
   \item Michel Berkelaar and lpSolve authors (lpSolve) [contributor]
-  \item Linus Torvalds (parsedate) [contributor]
   \item R Consortium (pkgsearch) [funder]
   \item Bill Denney (prettyunits) [contributor]
   \item Christophe Regouby (prettyunits) [contributor]

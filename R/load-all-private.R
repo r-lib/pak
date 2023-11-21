@@ -6,7 +6,6 @@ load_all_private <- function() {
   load_private_package("filelock")
   load_private_package("jsonlite")
   load_private_package("lpSolve")
-  load_private_package("parsedate")
   load_private_package("prettyunits")
   load_private_package("ps")
   load_private_package("rappdirs")
