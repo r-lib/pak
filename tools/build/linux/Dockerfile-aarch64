@@ -30,7 +30,7 @@ RUN R CMD INSTALL pak_*.tar.gz
 RUN cp -r /usr/local/lib/R/library/pak/library/* /usr/local/lib/R/library
 
 # these are needed to push packages, in addition to pak's dependencies
-RUN R -q -e 'pak::pkg_install(c("gitcreds", "digest"))'
+RUN R -q -e 'pak::pkg_install(c("gitcreds", "digest", "glue"))'
 
 # remove native compilers and libs, to make sure we don't pick them up
 # for cross compilation
