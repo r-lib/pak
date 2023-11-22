@@ -1,4 +1,3 @@
-
 #' Show the status of CRAN-like repositories
 #'
 #' It checks the status of the configured or supplied repositories.
@@ -57,27 +56,63 @@
 repo_status <- function(platforms = NULL, r_version = getRversion(),
                         bioc = TRUE, cran_mirror = NULL) {
   load_extra("pillar")
-  remote(
-    function(...) asNamespace("pak")$repo_status_internal(...),
-    list(platforms, r_version, bioc, cran_mirror)
-  )
-}
+  load_all_private()
 
-repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
-                                 bioc = TRUE, cran_mirror = NULL) {
+  # FIXME: why do we need this explicitly?
+  platforms <- platforms %||%
+    pkg_data[["ns"]][["pkgcache"]][["default_platforms"]]()
+  cran_mirror <- cran_mirror %||%
+    pkg_data[["ns"]][["pkgcache"]][["default_cran_mirror"]]()
 
-  platforms <- platforms %||% pkgcache::default_platforms()
-  cran_mirror <- cran_mirror %||% pkgcache::default_cran_mirror()
-
-  tab <- pkgcache::repo_status(
-    platforms = platforms,
+  tab <- pkg_data[["ns"]][["pkgcache"]][["repo_status"]](
+    platform = platforms,
     r_version = r_version,
     bioc = bioc,
     cran_mirror = cran_mirror
   )
 
-  class(tab) <- setdiff(class(tab), "pkgcache_repo_status")
+  # For the summary() method
+  class(tab) <- c("pak_pkgcache_repo_status", class(tab))
   tab
+}
+
+#' @export
+
+summary.pak_pkgcache_repo_status <- function(object, ...) {
+  load_all_private()
+  ret <- withVisible(
+    pkg_data[["ns"]][["pkgcache"]][["summary.pkgcache_repo_status"]](
+      object,
+      ...
+    )
+  )
+
+  # For the print and `[` methods
+  class(ret$value) <- c("pak_pkgcache_repo_status_summary", class(ret$value))
+  if (ret$visible) ret$value else invisible(ret$value)
+}
+
+#' @export
+
+print.pak_pkgcache_repo_status_summary <- function(x, ...) {
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["print.pkgcache_repo_status_summary"]](
+    x,
+    ...
+  )
+}
+
+#' @export
+
+`[.pak_pkgcache_repo_status_summary` <- function(x, i, j, drop = FALSE) {
+  load_all_private()
+  # FIXME: We can't call NextMethod from the hand-loaded code?
+  # So we do this manually here.
+  class(x) <- setdiff(
+    class(x),
+    c("pak_pkgcache_repo_status_summary", "pkgcache_repo_status_summary")
+  )
+  NextMethod("[")
 }
 
 #' @export
@@ -85,31 +120,14 @@ repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
 
 repo_ping <- function(platforms = NULL, r_version = getRversion(),
                       bioc = TRUE, cran_mirror = NULL) {
-  ret <- remote(
-    function(...) asNamespace("pak")$repo_ping_internal(...),
-    list(platforms, r_version, bioc, cran_mirror)
-  )
-
-  cat(ret$fmt, sep = "\n")
-  invisible(ret$data)
-}
-
-repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
-                               bioc = TRUE, cran_mirror = NULL) {
-
-  platforms <- platforms %||% pkgcache::default_platforms()
-  cran_mirror <- cran_mirror %||% pkgcache::default_cran_mirror()
-
-  tab <- pkgcache::repo_status(
+  rst <- repo_status(
     platforms = platforms,
     r_version = r_version,
     bioc = bioc,
     cran_mirror = cran_mirror
   )
 
-  fmt <- utils::capture.output(summary(tab))
-  class(tab) <- setdiff(class(tab), "pkgcache_repo_status")
-  list(fmt = fmt, data = tab)
+  summary(rst)
 }
 
 #' Query the currently configured CRAN-like repositories
@@ -137,16 +155,15 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 repo_get <- function(r_version = getRversion(),
                      bioc = TRUE, cran_mirror = NULL) {
   load_extra("pillar")
-  remote(
-    function(...) asNamespace("pak")$repo_get_internal(...),
-    list(r_version, bioc, cran_mirror)
-  )
-}
+  load_all_private()
 
-repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
-                              cran_mirror = NULL) {
-  cran_mirror = cran_mirror %||% pkgcache::default_cran_mirror()
-  pkgcache::repo_get(r_version, bioc, cran_mirror)
+  # FIXME: why do we need this explicitly?
+  cran_mirror <- cran_mirror %||%
+    pkg_data[["ns"]][["pkgcache"]][["default_cran_mirror"]]()
+
+  pkg_data[["ns"]][["pkgcache"]][["repo_get"]](
+    r_version, bioc, cran_mirror
+  )
 }
 
 #' Add a new CRAN-like repository
@@ -236,18 +253,9 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #' ```
 
 repo_add <- function(..., .list = NULL) {
-  new <- c(list(...), .list)
-  ret <- remote(
-    function(...) asNamespace("pak")$repo_add_internal(...),
-    list(.list = new)
-  )
-  options(repos = ret$option)
-  invisible(ret$tab)
-}
-
-repo_add_internal <- function(.list) {
-  tab <- pkgcache::repo_add(.list = .list)
-  list(option = getOption("repos"), tab = tab)
+  load_extra("pillar")
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["repo_add"]](..., .list = .list)
 }
 
 #' @param spec Repository specification, a possibly named character
@@ -258,5 +266,6 @@ repo_add_internal <- function(.list) {
 #' @export
 
 repo_resolve <- function(spec) {
-  remote(function(spec) pkgcache::repo_resolve(spec), list(spec))
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["repo_resolve"]](spec)
 }
