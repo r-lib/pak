@@ -4,7 +4,7 @@
 \alias{pkg_search}
 \title{Search CRAN packages}
 \usage{
-pkg_search(query, ...)
+pkg_search(query = NULL, ...)
 }
 \arguments{
 \item{query}{Search query string.}
