@@ -177,7 +177,7 @@ make_query <- function(query) {
     )
   )
 
-  jsonlite::toJSON(query_object, auto_unbox = TRUE, pretty = TRUE)
+  tojson$write_str(query_object)
 }
 
 do_query <- function(query, server, port, from, size) {
