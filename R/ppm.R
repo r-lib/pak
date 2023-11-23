@@ -1,4 +1,3 @@
-
 #' Does PPM build binary packages for the current platform?
 #'
 #' @return `TRUE` or `FALSE`.
@@ -10,16 +9,9 @@
 #' @examplesIf FALSE
 #' system_r_platform()
 #' ppm_has_binaries()
-
 ppm_has_binaries <- function() {
-  remote(
-    function(...) asNamespace("pak")$ppm_has_binaries_internal(...),
-    list()
-  )
-}
-
-ppm_has_binaries_internal <- function() {
-  pkgcache::ppm_has_binaries()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["ppm_has_binaries"]]()
 }
 
 #' List all platforms supported by Posit Package Manager (PPM)
@@ -39,17 +31,10 @@ ppm_has_binaries_internal <- function() {
 #' @export
 #' @examplesIf FALSE
 #' ppm_platforms()
-
 ppm_platforms <- function() {
   load_extra("pillar")
-  remote(
-    function(...) asNamespace("pak")$ppm_platforms_internal(...),
-    list()
-  )
-}
-
-ppm_platforms_internal <- function() {
-  pkgcache::ppm_platforms()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["ppm_platforms"]]()
 }
 
 #' List all R versions supported by Posit Package Manager (PPM)
@@ -64,17 +49,10 @@ ppm_platforms_internal <- function() {
 #' @export
 #' @examplesIf FALSE
 #' ppm_r_versions()
-
 ppm_r_versions <- function() {
   load_extra("pillar")
-  remote(
-    function(...) asNamespace("pak")$ppm_r_versions_internal(...),
-    list()
-  )
-}
-
-ppm_r_versions_internal <- function() {
-  pkgcache::ppm_r_versions()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["ppm_r_versions"]]()
 }
 
 #' Returns the current Posit Package Manager (PPM) repository URL
@@ -113,16 +91,9 @@ ppm_r_versions_internal <- function() {
 #' @family PPM functions
 #' @examplesIf FALSE
 #' ppm_repo_url()
-
 ppm_repo_url <- function() {
-  remote(
-    function(...) asNamespace("pak")$ppm_repo_url_internal(...),
-    list()
-  )
-}
-
-ppm_repo_url_internal <- function() {
-  pkgcache::ppm_repo_url()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["ppm_repo_url"]]()
 }
 
 #' List all available Posit Package Manager (PPM) snapshots
@@ -160,14 +131,8 @@ ppm_repo_url_internal <- function() {
 #' @export
 #' @examplesIf FALSE
 #' ppm_snapshots()
-
 ppm_snapshots <- function() {
-  remote(
-    function(...) asNamespace("pak")$ppm_snapshots_internal(...),
-    list()
-  )
-}
-
-ppm_snapshots_internal <- function() {
-  pkgcache::ppm_snapshots()
+  load_extra("pillar")
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["ppm_snapshots"]]()
 }
