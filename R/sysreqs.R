@@ -1,67 +1,58 @@
-
 sysreqs_is_supported <- function(sysreqs_platform = NULL) {
-  remote(
-    function(...) pkgdepends::sysreqs_is_supported(...),
-    list(sysreqs_platform = sysreqs_platform)
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_is_supported"]](
+    sysreqs_platform
   )
 }
 
 sysreqs_platforms <- function() {
-  remote(
-    function() pkgdepends::sysreqs_platforms()
-  )
+  load_extra("pillar")
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_platforms"]]()
 }
 
 sysreqs_list_system_packages <- function() {
   load_extra("pillar")
-  remote(
-    function() pkgdepends::sysreqs_list_system_packages()
-  )
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_list_system_packages"]]()
 }
 
 sysreqs_db_match <- function(specs, sysreqs_platform = NULL) {
   load_extra("pillar")
-  remote(
-    function(...) pkgdepends::sysreqs_db_match(...),
-    list(specs = specs, sysreqs_platform = sysreqs_platform)
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_db_match"]](
+    specs,
+    sysreqs_platform
   )
 }
 
 sysreqs_db_update <- function() {
-  invisible(remote(
-    function() pkgdepends::sysreqs_db_update()
-  ))
+  load_all_private()
+  invisible(pkg_data[["ns"]][["pkgdepends"]][["sysreqs_db_update"]]())
 }
 
 sysreqs_db_list <- function(sysreqs_platform = NULL) {
   load_extra("pillar")
-  remote(
-    function(...) pkgdepends::sysreqs_db_list(...),
-    list(sysreqs_platform = sysreqs_platform)
-  )
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_db_list"]](sysreqs_platform)
 }
 
 sysreqs_check_installed <- function(packages = NULL,
                                     library = .libPaths()[1]) {
   load_extra("pillar")
-  remote(
-    function(...) {
-      ret <- pkgdepends::sysreqs_check_installed(...)
-      asNamespace("pak")$pak_preformat(ret)
-    },
-    list(packages = packages, library = library)
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["sysreqs_check_installed"]](
+    packages,
+    library
   )
 }
 
 sysreqs_fix_installed <- function(packages = NULL,
-                                    library = .libPaths()[1]) {
+                                  library = .libPaths()[1]) {
   load_extra("pillar")
-  invisible(remote(
-    function(...) {
-      ret <- pkgdepends::sysreqs_fix_installed(...)
-      asNamespace("pak")$pak_preformat(ret)
-    },
-    list(packages = packages, library = library)
+  load_all_private()
+  invisible(pkg_data[["ns"]][["pkgdepends"]][["sysreqs_fix_installed"]](
+    packages,
+    library
   ))
 }
 
@@ -102,24 +93,12 @@ sysreqs_fix_installed <- function(packages = NULL,
 
 pkg_sysreqs <- function(pkg, upgrade = TRUE, dependencies = NA,
                         sysreqs_platform = NULL) {
-  load_extra("pillar")
-  remote(
-    function(...) {
-      get("pkg_sysreqs_internal", asNamespace("pak"))(...)
-    },
-    list(
-      pkg = pkg,
-      upgrade = upgrade,
-      dependencies = dependencies,
-      sysreqs_platform = sysreqs_platform
-    )
-  )
-}
-
-pkg_sysreqs_internal <- function(pkg, upgrade = TRUE, dependencies = NA,
-                                 sysreqs_platform = NULL) {
   dir.create(lib <- tempfile())
   on.exit(rimraf(lib), add = TRUE)
+
+  load_extra("pillar")
+  load_all_private()
+
   config <- list(library = lib)
   if (!is.null(sysreqs_platform)) {
     config[["sysreqs_platform"]] <- sysreqs_platform
@@ -127,7 +106,7 @@ pkg_sysreqs_internal <- function(pkg, upgrade = TRUE, dependencies = NA,
   if (!is.null(dependencies)) {
     config[["dependencies"]] <- dependencies
   }
-  srq <- pkgdepends::sysreqs_install_plan(
+  srq <- pkg_data[["ns"]][["pkgdepends"]][["sysreqs_install_plan"]](
     pkg,
     upgrade = upgrade,
     config = config
@@ -193,7 +172,7 @@ print.pak_sysreqs <- function(x, ...) {
 
 #' @export
 
-`[.pak_sysreqs` <- function (x, i, j, drop = FALSE) {
+`[.pak_sysreqs` <- function(x, i, j, drop = FALSE) {
   class(x) <- setdiff(class(x), "pak_sysreqs")
   NextMethod("[")
 }

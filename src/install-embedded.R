@@ -275,6 +275,15 @@ bundle_rds <- function(lib = NULL) {
     ns[[pkg]] <- pkg_env
   }
 
+  pds <- ns[["pkgdepends"]]
+  pkgdepends_conf <- names(pds[["pkgdepends_config"]])
+  for (nm in pkgdepends_conf) {
+    if (is.function(pds[["pkgdepends_config"]][[nm]][["default"]])) {
+      environment(pds[["pkgdepends_config"]][[nm]][["default"]]) <- pds
+    }
+  }
+  parent.env(pds[["config"]][[".internal"]]) <- pds
+
   saveRDS(ns, file.path(lib, "deps.rds"))
 }
 
