@@ -1182,7 +1182,6 @@ as_json_lite_plan <- function(liteplan) {
   tolist1 <- function(x) lapply(x, function(v) lapply(as.list(v), tojson$unbox))
   liteplan$packages$metadata <- tolist1(liteplan$packages$metadata)
   json <- tojson$write_str(liteplan, opts = list(pretty = TRUE))
-  plan <<- liteplan
   json
 }
 

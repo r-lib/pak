@@ -82,7 +82,10 @@ add_metadata <- function(pkg_path, metadata) {
   source_desc <- file.path(pkg_path, "DESCRIPTION")
   binary_desc <- file.path(pkg_path, "Meta", "package.rds")
   if (file.exists(source_desc)) {
-    do.call(desc::desc_set, c(as.list(metadata), list(file = source_desc)))
+    do.call(
+      desc::desc_set,
+      c(as.list(metadata), list(file = source_desc, check = FALSE))
+    )
   }
 
   if (file.exists(binary_desc)) {
