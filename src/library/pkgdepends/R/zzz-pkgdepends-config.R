@@ -214,7 +214,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs = list(
     type = "flag",
-    default = function() default_sysreqs(),
+    default = function(config) default_sysreqs(config),
     docs =
       "Whether to automatically look up and install system requirements.
        If `TRUE`, then `r pak_or_pkgdepends()` will try to install required
