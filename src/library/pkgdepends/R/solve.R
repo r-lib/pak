@@ -1140,7 +1140,7 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
     for (i in seq_along(spkgs)) {
       elt <- spkgs[[i]]
       for (j in seq_along(elt)) {
-        elt[[j]]$sysreq <- jsonlite::unbox(elt[[j]]$sysreq)
+        elt[[j]]$sysreq <- tojson$unbox(elt[[j]]$sysreq)
         elt[[j]]$packages_missing <- NULL
       }
       if (!is.null(elt)) spkgs[[i]] <- elt
@@ -1150,14 +1150,14 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
 
   packages$params <- lapply(
     packages$params,
-    function(x) lapply(as.list(x), jsonlite::unbox)
+    function(x) lapply(as.list(x), tojson$unbox)
   )
 
   plan <- list(
-    lockfile_version = jsonlite::unbox(version),
-    os = jsonlite::unbox(utils::sessionInfo()$running),
-    r_version = jsonlite::unbox(R.Version()$version.string),
-    platform = jsonlite::unbox(R.Version()$platform),
+    lockfile_version = tojson$unbox(version),
+    os = tojson$unbox(utils::sessionInfo()$running),
+    r_version = tojson$unbox(R.Version()$version.string),
+    platform = tojson$unbox(R.Version()$platform),
     packages = packages
   )
 
@@ -1166,10 +1166,10 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
       self$get_solution()$data$sysreqs_packages,
       private$config$get("sysreqs_platform")
     )
-    sysreqs$os <- jsonlite::unbox(sysreqs$os)
-    sysreqs$distribution <- jsonlite::unbox(sysreqs$distribution)
-    sysreqs$version <- jsonlite::unbox(sysreqs$version)
-    sysreqs$url <- jsonlite::unbox(sysreqs$url)
+    sysreqs$os <- tojson$unbox(sysreqs$os)
+    sysreqs$distribution <- tojson$unbox(sysreqs$distribution)
+    sysreqs$version <- tojson$unbox(sysreqs$version)
+    sysreqs$url <- tojson$unbox(sysreqs$url)
     sysreqs$total <- NULL
     plan$sysreqs <- sysreqs
   }
@@ -1178,10 +1178,12 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
   writeLines(txt, plan_file)
 }
 
-as_json_lite_plan <- function(liteplan, pretty = as.logical(Sys.getenv("PKG_PRETTY_JSON", "TRUE")), ...) {
-  tolist1 <- function(x) lapply(x, function(v) lapply(as.list(v), jsonlite::unbox))
+as_json_lite_plan <- function(liteplan) {
+  tolist1 <- function(x) lapply(x, function(v) lapply(as.list(v), tojson$unbox))
   liteplan$packages$metadata <- tolist1(liteplan$packages$metadata)
-  jsonlite::toJSON(liteplan, pretty = pretty, ...)
+  json <- tojson$write_str(liteplan, opts = list(pretty = TRUE))
+  plan <<- liteplan
+  json
 }
 
 calculate_lib_status <- function(sol, res) {

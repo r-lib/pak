@@ -479,7 +479,10 @@ github_query <- function(query,
   query; url; headers; list(...)
 
   headers <- c(headers, type_github_get_headers())
-  data <- jsonlite::toJSON(list(query = query), auto_unbox = TRUE)
+  data <- tojson$write_str(
+    list(query = query),
+    opts = list(auto_unbox = TRUE)
+  )
   resp <- NULL
   obj <- NULL
 
