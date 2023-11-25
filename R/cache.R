@@ -1,4 +1,3 @@
-
 #' Package cache utilities
 #'
 #' @description
@@ -20,16 +19,8 @@
 #' ```
 
 cache_summary <- function() {
-  remote(
-    function(...) {
-      get("cache_summary_internal", asNamespace("pak"))(...)
-    },
-    list()
-  )
-}
-
-cache_summary_internal <- function() {
-  pkgcache::pkg_cache_summary()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["pkg_cache_summary"]]()
 }
 
 #' @details `cache_list()` lists all (by default), or a subset of
@@ -60,16 +51,8 @@ cache_summary_internal <- function() {
 
 cache_list <- function(...) {
   load_extra("pillar")
-  remote(
-    function(...) {
-      get("cache_list_internal", asNamespace("pak"))(...)
-    },
-    list(...)
-  )
-}
-
-cache_list_internal <- function(...) {
-  pkgcache::pkg_cache_find(...)
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["pkg_cache_find"]](...)
 }
 
 #' @details `cache_delete()` deletes files from the cache.
@@ -84,17 +67,8 @@ cache_list_internal <- function(...) {
 #' ```
 
 cache_delete <- function(...) {
-  remote(
-    function(...) {
-      get("cache_delete_internal", asNamespace("pak"))(...)
-    },
-    list(...)
-  )
-  invisible()
-}
-
-cache_delete_internal <- function(...) {
-  pkgcache::pkg_cache_delete_files(...)
+  load_all_private()
+  pkg_cache[["ns"]][["pkgcache"]][["pkg_cache_delete_files"]](...)
 }
 
 #' @details `cache_clean()` deletes all files from the cache.
@@ -109,17 +83,8 @@ cache_delete_internal <- function(...) {
 #' ```
 
 cache_clean <- function() {
-  remote(
-    function(...) {
-      get("cache_clean_internal", asNamespace("pak"))(...)
-    },
-    list()
-  )
-  invisible()
-}
-
-cache_clean_internal <- function() {
-  pkgcache::pkg_cache_delete_files()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["pkg_cache_delete_files"]]()
 }
 
 #' Metadata cache utilities
@@ -148,19 +113,13 @@ cache_clean_internal <- function() {
 #' ```
 
 meta_summary <- function() {
-  remote(
-    function(...) {
-      get("meta_summary_internal", asNamespace("pak"))(...)
-    },
-    list()
-  )
-}
+  load_all_private()
 
-meta_summary_internal <- function() {
-  cmc <- pkgcache::cranlike_metadata_cache$new(
-    platforms = pkgdepends::current_config()$get("platforms"),
-    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+  config <- pkg_data[["ns"]][["pkgdepends"]][["current_config"]]()
+  cmc <- pkg_data[["ns"]][["pkgcache"]][["cranlike_metadata_cache"]]$new(
+    platforms = config$get("platforms"),
+    cran_mirror = config$get("cran_mirror"),
+    r_version = config$get("r_versions")
   )
   ret <- cmc$summary()
   list(
@@ -195,19 +154,12 @@ meta_summary_internal <- function() {
 
 meta_list <- function(pkg = NULL) {
   load_extra("pillar")
-  remote(
-    function(...) {
-      get("meta_list_internal", asNamespace("pak"))(...)
-    },
-    list(pkg = pkg)
-  )
-}
-
-meta_list_internal <- function(pkg) {
-  cmc <- pkgcache::cranlike_metadata_cache$new(
-    platforms = pkgdepends::current_config()$get("platforms"),
-    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+  load_all_private()
+  config <- pkg_data[["ns"]][["pkgdepends"]][["current_config"]]()
+  cmc <- pkg_data[["ns"]][["pkgcache"]][["cranlike_metadata_cache"]]$new(
+    platforms = config$get("platforms"),
+    cran_mirror = config$get("cran_mirror"),
+    r_version = config$get("r_versions")
   )
   cmc$list(packages = pkg)
 }
@@ -228,20 +180,12 @@ meta_list_internal <- function(pkg) {
 #' ```
 
 meta_update <- function() {
-  remote(
-    function(...) {
-      get("meta_update_internal", asNamespace("pak"))(...)
-    },
-    list()
-  )
-  invisible()
-}
-
-meta_update_internal <- function() {
-  cmc <- pkgcache::cranlike_metadata_cache$new(
-    platforms = pkgdepends::current_config()$get("platforms"),
-    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+  load_all_private()
+  config <- pkg_data[["ns"]][["pkgdepends"]][["current_config"]]()
+  cmc <- pkg_data[["ns"]][["pkgcache"]][["cranlike_metadata_cache"]]$new(
+    platforms = config$get("platforms"),
+    cran_mirror = config$get("cran_mirror"),
+    r_version = config$get("r_versions")
   )
   cmc$update()
   invisible()
@@ -271,20 +215,12 @@ meta_clean <- function(force = FALSE) {
     return(invisible())
   }
 
-  remote(
-    function(...) {
-      get("meta_clean_internal", asNamespace("pak"))(...)
-    },
-    list()
-  )
-  invisible()
-}
-
-meta_clean_internal <- function() {
-  cmc <- pkgcache::cranlike_metadata_cache$new(
-    platforms = pkgdepends::current_config()$get("platforms"),
-    cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+  load_all_private()
+  config <- pkg_data[["ns"]][["pkgdepends"]][["current_config"]]()
+  cmc <- pkg_data[["ns"]][["pkgcache"]][["cranlike_metadata_cache"]]$new(
+    platforms = config$get("platforms"),
+    cran_mirror = config$get("cran_mirror"),
+    r_version = config$get("r_versions")
   )
   cmc$cleanup(force = TRUE)
 }
