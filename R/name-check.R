@@ -1,4 +1,3 @@
-
 #' Check if an R package name is available
 #'
 #' @inherit pkgdepends::pkg_name_check description details return
@@ -12,11 +11,26 @@
 #' ```
 
 pkg_name_check <- function(name, dictionaries = NULL) {
-  remote(
-    function(...) {
-      ret <- pkgdepends::pkg_name_check(...)
-      asNamespace("pak")$pak_preformat(ret)
-    },
-    list(name, dictionaries)
+  load_all_private()
+  ret <- pkg_data[["ns"]][["pkgdepends"]][["pkg_name_check"]](
+    name,
+    dictionaries
   )
+
+  class(ret) <- c("pak_pkg_name_check", class(ret))
+  ret
+}
+
+#' @export
+
+format.pak_pkg_name_check <- function(x, ...) {
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["format.pkg_name_check"]](x, ...)
+}
+
+#' @export
+
+print.pak_pkg_name_check <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
 }
