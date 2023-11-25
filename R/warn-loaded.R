@@ -1,11 +1,12 @@
-
 warn_for_loaded_packages <- function(pkgs, lib, loaded, pid = NULL) {
-  if (length(pkgs) == 0) return(list(status = "none-none"))
-   if (get_os() == "win") {
-     warn_for_loaded_packages_win(pkgs, lib, loaded, pid)
-   } else {
-     warn_for_loaded_packages_unix(pkgs, lib, loaded, pid)
-   }
+  if (length(pkgs) == 0) {
+    return(list(status = "none-none"))
+  }
+  if (get_os() == "win") {
+    warn_for_loaded_packages_win(pkgs, lib, loaded, pid)
+  } else {
+    warn_for_loaded_packages_unix(pkgs, lib, loaded, pid)
+  }
 }
 
 handle_status <- function(status, lib, ask) {
@@ -16,9 +17,10 @@ handle_status <- function(status, lib, ask) {
     ans <- get_answer(loaded_status$answers)
     sts <- loaded_packages_response(loaded_status, ans)
     if (sts$status != "try-again") break
-    loaded_status <- remote(
-      function(...) get("warn_for_loaded_packages", asNamespace("pak"))(...),
-      list(loaded_status$pkgs, lib, loaded_packages(lib))
+    warn_for_loaded_packages(
+      loaded_status$pkgs,
+      lib,
+      loaded_packages(lib)
     )
   }
 
@@ -33,7 +35,9 @@ handle_status <- function(status, lib, ask) {
 # -- Unix ------------------------------------------------------------
 
 warn_for_loaded_packages_unix <- function(pkgs, lib, loaded, pid) {
-  if (is.null(loaded)) return()
+  if (is.null(loaded)) {
+    return()
+  }
   bad <- intersect(pkgs, loaded)
   bad <- setdiff(bad, "pak")
   if (length(bad)) warn_for_loaded_packages_emit(bad)
@@ -65,19 +69,14 @@ warn_for_loaded_packages_win <- function(pkgs, lib, loaded, pid = NULL) {
   status$answers <- if (current$status == "none" && others$status == "none") {
     # Nothing to do
     NULL
-
   } else if (current$status == "loaded" && others$status == "none") {
     warn_for_loaded_packages_loaded_none(current)
-
   } else if (current$status == "locked" && others$status == "none") {
     warn_for_loaded_packages_locked_none(current)
-
   } else if (current$status == "none" && others$status == "locked") {
     warn_for_loaded_packages_none_locked(others)
-
   } else if (current$status == "loaded" && others$status == "locked") {
     warn_for_loaded_packages_loaded_locked(current, others)
-
   } else if (current$status == "locked" && others$status == "locked") {
     warn_for_loaded_packages_locked_locked(current, others)
   }
@@ -218,7 +217,8 @@ r_process_names <- function() {
 #' @noRd
 
 r_app_names <- function() {
-  c("Rgui" = "Rgui.exe",
+  c(
+    "Rgui" = "Rgui.exe",
     "RStudio" = "rstudio.exe",
     "VScode" = "Code.exe",
     "Windows Terminal" = "WindowsTerminal.exe",
@@ -382,11 +382,9 @@ loaded_status_others <- function(locked, pid = NULL) {
 }
 
 loaded_packages_response <- function(status, response) {
-  switch(
-    status$status,
+  switch(status$status,
     "locked-none" = {
-      switch(
-        response,
+      switch(response,
         "1" = {
           # Unload
           unload(status$current$locked)
@@ -404,10 +402,9 @@ loaded_packages_response <- function(status, response) {
       )
     },
     "none-locked" = ,
-    "loaded-locked" =,
+    "loaded-locked" = ,
     "locked-locked" = {
-      switch(
-        response,
+      switch(response,
         "1" = {
           # Unload (if needed), try again
           if (length(status$current$locked) > 0) {
