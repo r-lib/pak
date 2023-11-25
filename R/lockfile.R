@@ -1,4 +1,3 @@
-
 #' Create a lock file
 #'
 #' The lock file can be used later, possibly in a new R session, to carry
@@ -23,31 +22,14 @@
 
 lockfile_create <- function(pkg = "deps::.", lockfile = "pkg.lock", lib = NULL,
                             upgrade = FALSE, dependencies = NA) {
-  ret <- remote(
-    function(...) {
-      get("lockfile_create_internal", asNamespace("pak"))(...)
-    },
-    list(pkg = pkg, lockfile = lockfile, lib = lib, upgrade = upgrade,
-         dependencies = dependencies)
-  )
-
-  invisible(ret)
-}
-
-lockfile_create_internal <- function(pkg, lockfile, lib, upgrade,
-                                     dependencies) {
+  load_all_private()
   if (is.null(lib)) {
     lib <- tempfile()
     mkdirp(lib)
     on.exit(unlink(lib, recursive = TRUE), add = TRUE)
   }
 
-  cli::cli_progress_step(
-    "Creating lockfile {.path {lockfile}}",
-    msg_done = "Created lockfile {.path {lockfile}}"
-  )
-
-  prop <- pkgdepends::new_pkg_installation_proposal(
+  prop <- pkg_data[["ns"]][["pkgdepends"]][["new_pkg_installation_proposal"]](
     pkg,
     config = list(library = lib, dependencies = dependencies)
   )
@@ -73,27 +55,19 @@ lockfile_create_internal <- function(pkg, lockfile, lib, upgrade,
 
 lockfile_install <- function(lockfile = "pkg.lock",
                              lib = .libPaths()[1], update = TRUE) {
-
+  load_extra("pillar")
+  load_all_private()
   start <- Sys.time()
   mkdirp(lib)
-  ret <- remote(
-    function(...) {
-      get("lockfile_install_internal", asNamespace("pak"))(...)
-    },
-    list(lockfile = lockfile, lib = lib, update = update, start = start,
-         loaded = loaded_packages(lib))
-  )
-
-  invisible(ret)
-}
-
-lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
-  cli::cli_alert_info("Installing lockfile {.path {lockfile}}")
 
   config <- list(library = lib)
-  plan <- pkgdepends::new_pkg_installation_plan(lockfile, config = config)
+  plan <- pkg_data[["ns"]][["pkgdepends"]][["new_pkg_installation_plan"]](
+    lockfile,
+    config = config
+  )
   if (update) plan$update()
 
+  loaded <- loaded_packages(lib)
   print_install_details(plan, lib, loaded)
 
   plan$download()
@@ -108,7 +82,5 @@ lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
   ## One line summary of the install
   print_install_summary(inst)
 
-  cli::cli_alert_success("Installed lockfile {.path {lockfile}}")
-
-  inst
+  invisible(inst)
 }
