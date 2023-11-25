@@ -117,9 +117,6 @@ pak_update <- function(
   date <- get_built_date(meta$Built[cand])
   message("\nUpdating to version ", meta$Version[cand], " (", date, ")\n")
 
-  # Otherwise the subprocess might be locking some DLLs
-  try(pkg_data$remote$kill(), silent = TRUE)
-
   # Windows cannot install binaries with arbitrary names, apparently.
   ext <- tools::file_ext(tgt)
   if (.Platform$OS.type == "windows" && ext == "zip") {
