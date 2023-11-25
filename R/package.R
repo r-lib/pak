@@ -69,6 +69,7 @@
 
 pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
                         ask = interactive(), dependencies = NA) {
+  load_extra("pillar")
   load_all_private()
 
   start <- Sys.time()
