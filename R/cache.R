@@ -68,7 +68,7 @@ cache_list <- function(...) {
 
 cache_delete <- function(...) {
   load_all_private()
-  pkg_cache[["ns"]][["pkgcache"]][["pkg_cache_delete_files"]](...)
+  pkg_data[["ns"]][["pkgcache"]][["pkg_cache_delete_files"]](...)
 }
 
 #' @details `cache_clean()` deletes all files from the cache.
