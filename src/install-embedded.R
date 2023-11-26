@@ -258,6 +258,7 @@ bundle_rds <- function(lib = NULL) {
   for (pkg in pkgs) {
     pkg_env <- new.env(parent = emptyenv())
     pkg_env[[".packageName"]] <- pkg
+    ns[[pkg]] <- pkg_env
     lazyLoad(file.path(lib, pkg, "R", pkg), envir = pkg_env)
     sysdata <- file.path(lib, pkg, "R", "sysdata.rdb")
     if (file.exists(sysdata)) {
@@ -272,7 +273,7 @@ bundle_rds <- function(lib = NULL) {
 
     patch_env_refs(pkg_env)
 
-    ns[[pkg]] <- pkg_env
+    invisible()
   }
 
   pds <- ns[["pkgdepends"]]
@@ -284,7 +285,9 @@ bundle_rds <- function(lib = NULL) {
   }
   parent.env(pds[["config"]][[".internal"]]) <- pds
 
+  compiler::compilePKGS(TRUE)
   saveRDS(ns, file.path(lib, "deps.rds"))
+  compiler::compilePKGS(FALSE)
 }
 
 install_embedded_main <- function() {
