@@ -1,4 +1,6 @@
 tojson <- local({
+  `%||%` <- function(l, r) if (is.null(l)) r else l
+
   map2 <- function(x, y, fn, ...) {
     mapply(fn, x, y, ..., SIMPLIFY = FALSE)
   }
