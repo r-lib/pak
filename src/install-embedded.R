@@ -144,24 +144,49 @@ get_ver <- function(path) {
   as.character(ver)
 }
 
+md5 <- function(str) {
+  tmp <- tempfile()
+  on.exit(unlink(tmp), add = TRUE)
+  cat(str, file = tmp)
+  tools::md5sum(tmp)
+}
+
+dir_hash <- function(path) {
+  files <- sort(dir(path, full.names = TRUE, recursive = TRUE))
+  files <- grep(files, pattern = "[.]s?o$", value = TRUE, invert = TRUE)
+  hashes <- unname(tools::md5sum(files))
+  md5(paste(hashes, collapse = " "))
+}
+
 update_all <- function(lib = NULL) {
   lib <- get_lib(lib)
-  cat("Updating dev lib at", lib, "\n")
+  hash_tmpl <- file.path(lib, "_%s.hash")
   pkgs <- install_order()
+  upd <- structure(logical(length(pkgs)), names = pkgs)
   for (pkg in pkgs) {
-    oldver <- get_ver(file.path(lib, pkg))
-    newver <- get_ver(file.path("library", pkg))
-    if (is.na(newver)) stop("Cannot find embedded ", pkg)
-    if (is.na(oldver)) {
+    hash_path <- sprintf(hash_tmpl, pkg)
+    new_hash <- dir_hash(file.path("library", pkg))
+    if (!file.exists(hash_path)) {
       message("Adding ", pkg)
       rimraf(file.path(lib, pkg)) # in case it is a broken install
       install_one(pkg, lib)
-    } else if (oldver != newver) {
-      message("Updating ", pkg, " ", oldver, " -> ", newver)
-      rimraf(file.path(lib, pkg))
-      install_one(pkg, lib)
+      writeLines(new_hash, hash_path)
+      upd[pkg] <- TRUE
+    } else {
+      old_hash <- readLines(hash_path)
+      new_hash <- dir_hash(file.path("library", pkg))
+      oldver <- get_ver(file.path(lib, pkg))
+      newver <- get_ver(file.path("library", pkg))
+      if (old_hash != new_hash) {
+        message("Updating ", pkg, " ", oldver, " -> ", newver)
+        rimraf(file.path(lib, pkg))
+        install_one(pkg, lib)
+        writeLines(new_hash, hash_path)
+        upd[pkg] <- TRUE
+      }
     }
   }
+  upd
 }
 
 load_all <- function() {
@@ -169,8 +194,10 @@ load_all <- function() {
   if (length(args) < 2) {
     stop("Usage: install-embedded.R [ --load-all library-dir ]")
   }
-  update_all(args[2])
-  bundle_rds(args[2])
+  upd <- update_all(args[2])
+  if (any(upd)) {
+    bundle_rds(args[2])
+  }
 }
 
 parse_platforms <- function(args) {
@@ -252,9 +279,10 @@ patch_env_refs <- function(pkg_env) {
 }
 
 bundle_rds <- function(lib = NULL) {
+  message("Updating bundled dependencies")
   lib <- lib %||% get_lib(lib)
   ns <- new.env(parent = emptyenv())
-  pkgs <- setdiff(dir(lib), "deps.rds")
+  pkgs <- setdiff(dir(lib, pattern = "^[^_]"), "deps.rds")
   for (pkg in pkgs) {
     pkg_env <- new.env(parent = emptyenv())
     pkg_env[[".packageName"]] <- pkg
