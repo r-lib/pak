@@ -96,6 +96,16 @@ install_order <- function() {
   pkgs
 }
 
+clean_up_r <- function(lib = NULL) {
+  lib <- get_lib(lib)
+  for (pkg in dir(lib)) {
+    r_dir <- file.path(lib, pkg, "R")
+    if (file.exists(r_dir)) {
+      rimraf(r_dir)
+    }
+  }
+}
+
 install_all <- function(lib = NULL) {
   pkgs <- install_order()
   if (Sys.getenv("CROSS_COMPILING") == "yes") {
@@ -362,6 +372,8 @@ install_embedded_main <- function() {
 
   install_all()
   bundle_rds()
+  clean_up_r()
+
   file.create("DONE")
 }
 
