@@ -20,26 +20,10 @@ vdapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = double(1), ...)
 }
 
-is_verbose <- function() {
-  env <- Sys.getenv("R_PKG_SHOW_PROGRESS", "")
-  if (env != "") {
-    tolower(env) == "true"
-  } else {
-    opt <- getOption("pkg.show_progress")
-    if (!is.null(opt)) {
-      return(isTRUE(opt))
-    } else {
-      interactive()
-    }
-  }
-}
-
-backtick <- function(x) {
-  encodeString(x, quote = "`", na.encode = FALSE)
-}
-
 str_trim <- function(x) {
-  sub("^\\s+", "", sub("\\s+$", "", x))
+  x <- sub("(*UCP)\\s+$", "", x, perl = TRUE)
+  x <- sub("(*UCP)^\\s+", "", x, perl = TRUE)
+  x
 }
 
 get_minor_r_version <- function(x = getRversion()) {
@@ -47,6 +31,7 @@ get_minor_r_version <- function(x = getRversion()) {
   vapply(unclass(x), function(x) paste(x[1:2], collapse = "."), character(1))
 }
 
+# nocov start
 get_os <- function() {
   if (.Platform$OS.type == "windows") {
     "win"
@@ -58,8 +43,9 @@ get_os <- function() {
     "unknown"
   }
 }
+# nocov end
 
-user_cache_dir <- function(appname) {
+user_cache_dir <- function(appname = packageName()) {
   if (nzchar(cache <- Sys.getenv("R_PKG_CACHE_DIR", ""))) {
     return(cache)
   }
@@ -94,7 +80,7 @@ cat0 <- function(..., sep = "") {
 
 mkdirp <- function(dir, msg = NULL) {
   s <- vlapply(dir, dir.create, recursive = TRUE, showWarnings = FALSE)
-  if (any(s) && !is.null(msg) && is_verbose()) {
+  if (any(s) && !is.null(msg)) {
     load_all_private()
     cli <- pkg_data[["ns"]][["cli"]]
     cli$cli_alert_info("{msg}: {.path {dir[s]}}.")
@@ -125,7 +111,7 @@ fix_macos_path_in_rstudio <- function() {
 
 rimraf <- function(...) {
   x <- file.path(...)
-  if ("~" %in% x) stop("Cowardly refusing to delete `~`")
+  if ("~" %in% x) stop("Cowardly refusing to delete `~`") # nocov coward...
   unlink(x, recursive = TRUE, force = TRUE)
 }
 
