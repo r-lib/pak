@@ -29,9 +29,15 @@ load_all_private <- function() {
     }
   }
 
-  cldir <- pkg_data[["ns"]][["processx"]][["__pkg-dir__"]]
-  Sys.setenv("CALLR_PROCESSX_CLIENT_LIB" = cldir)
+  # This is use in .onLoad() in pkgcache
+  pcnp <- Sys.getenv("PKGCACHE_NO_PILLAR")
+  if (pcnp == "") {
+    on.exit(Sys.unsetenv("PKGCACHE_NO_PILLAR"), add = TRUE)
+  } else {
+    on.exit(Sys.setenv(PKGCACHE_NO_PILLAR = pcnp), add = TRUE)
+  }
   Sys.setenv("PKGCACHE_NO_PILLAR" = "true")
+
   for (pkg in names(pkg_data[["ns"]])) {
     pkg_env <- pkg_data[["ns"]][[pkg]]
     if (".onLoad" %in% names(pkg_env)) {
