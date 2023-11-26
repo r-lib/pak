@@ -199,10 +199,9 @@ embed <- local({
     rimraf(file.path(lib_dir(), pkg))
   }
 
-  addupdate_package <- function(
-      pkg,
-      ver = NULL,
-      mode = c("add", "update")) {
+  addupdate_package <- function(pkg,
+                                ver = NULL,
+                                mode = c("add", "update")) {
     mode <- match.arg(mode)
     stopifnot(
       is_string(pkg),
@@ -235,7 +234,6 @@ embed <- local({
       system2("R", c("CMD", "build ", dir()))
       path <- normalizePath(dir(pattern = "[.]tar[.]gz$"))
       setwd(wd)
-
     } else {
       path <- utils::download.packages(pkg, tmp, repos = get_repos())[, 2]
     }
@@ -288,6 +286,7 @@ embed <- local({
       rimraf(file.path(lib, pkg, "inst", "CITATION"))
       rimraf(file.path(lib, pkg, "MD5"))
       rimraf(file.path(lib, pkg, "README.md"))
+      rimraf(file.path(lib, pkg, "vignettes"))
     }
   }
 
