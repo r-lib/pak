@@ -45,7 +45,7 @@ get_os <- function() {
 }
 # nocov end
 
-user_cache_dir <- function(appname = packageName()) {
+user_cache_dir <- function(appname = utils::packageName()) {
   if (nzchar(cache <- Sys.getenv("R_PKG_CACHE_DIR", ""))) {
     return(cache)
   }
