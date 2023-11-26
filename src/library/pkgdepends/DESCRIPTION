@@ -23,10 +23,10 @@ Imports: callr (>= 3.3.1), cli (>= 3.6.0), curl, desc (>= 1.2.0),
         pkgcache (>= 2.2.0), processx (>= 3.4.2), ps, R6, stats, utils,
         zip (>= 2.3.0)
 Remotes: r-lib/desc
-Suggests: asciicast (>= 2.2.0.9000), covr, debugme, fansi, fs, glue,
-        htmlwidgets, mockery, pak, pingr (>= 2.0.0), rmarkdown,
-        rstudioapi, spelling, svglite, testthat (>= 3.2.0), tibble,
-        webfakes (>= 1.1.5.9000), withr (>= 2.1.1)
+Suggests: asciicast (>= 2.2.0.9000), codetools, covr, debugme, fansi,
+        fs, glue, htmlwidgets, mockery, pak, pingr (>= 2.0.0),
+        rmarkdown, rstudioapi, spelling, svglite, testthat (>= 3.2.0),
+        tibble, webfakes (>= 1.1.5.9000), withr (>= 2.1.1)
 Config/Needs/coverage: r-lib/asciicast, covr
 Config/Needs/website: r-lib/asciicast, pkgdown (>= 2.0.2),
         tidyverse/tidytemplate
@@ -34,7 +34,7 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2023-11-26 11:21:08 UTC; gaborcsardi
+Packaged: 2023-11-26 11:39:44 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
