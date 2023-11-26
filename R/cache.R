@@ -211,8 +211,7 @@ meta_clean <- function(force = FALSE) {
     )
   }
   if (!force) {
-    msg("x Metadata cleanup aborted")
-    return(invisible())
+    stop("Metadata cleanup aborted.")
   }
 
   load_all_private()
