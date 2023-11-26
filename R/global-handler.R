@@ -1,4 +1,3 @@
-
 #' Install missing packages on the fly
 #'
 #' Use this function to set up a global error handler, that is called
@@ -37,23 +36,30 @@
 
 handle_package_not_found <- function(err) {
   # TODO: is this what we want? Or refine this? E.g. testthat, knitr?
-  if (!is_interactive()) return()
+  if (!is_interactive()) {
+    return()
+  }
 
   # TODO: what if message output is redirected? we ignore for now
-  if (sink.number() != 0) return()
+  if (sink.number() != 0) {
+    return()
+  }
 
   pkg <- err$package
   lib <- err$lib.loc %||% .libPaths()[1]
 
   can_cont <- !is.null(findRestart("retry_loadNamespace"))
 
-  cli <- load_private_cli()
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
   cli$cli_text()
   cli$cli_alert_danger(
-    c("Failed to load package {.pkg {pkg}}. Do you want to install it ",
-      "into the default library at {.path {lib}}?"),
+    c(
+      "Failed to load package {.pkg {pkg}}. Do you want to install it ",
+      "into the default library at {.path {lib}}?"
+    ),
     wrap = TRUE
-    )
+  )
   cli$cli_text()
 
   dv <- cli$cli_div(theme = list(ol = list("margin-left" = 2)))
@@ -71,7 +77,9 @@ handle_package_not_found <- function(err) {
 
   cat("\n")
 
-  if (ans == "2") return()
+  if (ans == "2") {
+    return()
+  }
 
   cli$cli_rule("start installation")
   pkg_install(pkg, lib = lib[1])

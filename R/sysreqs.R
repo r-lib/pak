@@ -130,7 +130,8 @@ os_label <- function(x) {
 #' @export
 
 format.pak_sysreqs <- function(x, ...) {
-  cli <- load_private_cli()
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
   label <- os_label(x)
   pkgs <- cisort(unique(unlist(x$packages$packages)))
   pkgs <- structure(vector("list", length(pkgs)), names = pkgs)
