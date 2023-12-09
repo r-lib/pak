@@ -1,3 +1,9 @@
+5.2.0
+ - The CURL_CA_BUNDLE envvar is now also used on non-Windows.
+ - curl_echo() now uses a random available port to run httpuv
+ - Add workaround for slowness in curl_echo() on Linux
+ - Fix a few printf format warnings
+
 5.1.0
  - Windows: update to libcurl 8.3.0 + nghttp2 2-1.56 + openssl 3.1.2.
 

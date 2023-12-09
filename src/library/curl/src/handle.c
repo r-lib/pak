@@ -112,7 +112,7 @@ static void set_headers(reference *ref, struct curl_slist *newheaders){
 static int default_verbose_cb(CURL *handle, curl_infotype type, char *data, size_t size, void *userptr){
   if(type < 3){
     char prefix = type == CURLINFO_TEXT ? '*' : (type == CURLINFO_HEADER_IN ? '<' : '>');
-    REprintf("%c %.*s", prefix, size, data);
+    REprintf("%c %.*s", prefix, (int) size, data);
   }
   return 0;
 }
@@ -130,21 +130,23 @@ static void set_handle_defaults(reference *ref){
   curl_easy_setopt(handle, CURLOPT_HEADERFUNCTION, append_buffer);
   curl_easy_setopt(handle, CURLOPT_HEADERDATA, &(ref->resheaders));
 
-  /* Only set a default CA bundle for openssl */
+  /* Respect CURL_CA_BUNDLE like base R, except for Schannel on Windows */
+  const char *ca_bundle = getenv("CURL_CA_BUNDLE");
   #ifdef _WIN32
   curl_easy_setopt(handle, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NO_REVOKE);
   struct curl_tlssessioninfo *tlsinfo = NULL;
   if(curl_easy_getinfo(handle, CURLINFO_TLS_SSL_PTR, &tlsinfo) == CURLE_OK){
-    if(tlsinfo->backend == CURLSSLBACKEND_OPENSSL) {
-      const char *ca_bundle = getenv("CURL_CA_BUNDLE");
-      if(ca_bundle != NULL) {
-        curl_easy_setopt(handle, CURLOPT_CAINFO, ca_bundle);
-      } else {
-        curl_easy_setopt(handle, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NO_REVOKE | CURLSSLOPT_NATIVE_CA);
-      }
+    if(tlsinfo->backend == CURLSSLBACKEND_OPENSSL && ca_bundle == NULL) {
+      curl_easy_setopt(handle, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NO_REVOKE | CURLSSLOPT_NATIVE_CA);
+    } else if(tlsinfo->backend == CURLSSLBACKEND_SCHANNEL){
+      ca_bundle = NULL;
     }
   }
   #endif
+
+  if(ca_bundle != NULL) {
+    curl_easy_setopt(handle, CURLOPT_CAINFO, ca_bundle);
+  }
 
   /* needed to support compressed responses */
   assert(curl_easy_setopt(handle, CURLOPT_ENCODING, ""));
