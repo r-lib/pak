@@ -2,11 +2,11 @@
 #'
 #' The `stream_in` and `stream_out` functions implement line-by-line processing
 #' of JSON data over a [connection], such as a socket, url, file or pipe. JSON
-#' streaming requires the [ndjson](http://ndjson.org) format, which slightly differs
+#' streaming requires the [ndjson](https://ndjson.org) format, which slightly differs
 #' from [fromJSON()] and [toJSON()], see details.
 #'
 #' Because parsing huge JSON strings is difficult and inefficient, JSON streaming is done
-#' using **lines of minified JSON records**, a.k.a. [ndjson](http://ndjson.org).
+#' using **lines of minified JSON records**, a.k.a. [ndjson](https://ndjson.org).
 #' This is pretty standard: JSON databases such as MongoDB use the same format to
 #' import/export datasets. Note that this means that the
 #' total stream combined is not valid JSON itself; only the individual lines are. Also note
