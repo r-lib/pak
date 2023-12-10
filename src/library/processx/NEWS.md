@@ -1,3 +1,7 @@
+# processx 3.8.3
+
+* `*printf()` format strings are now safer (#379).
+
 # processx 3.8.2
 
 * The client library, used by callr, now ignores `SIGPIPE` when writing
