@@ -167,7 +167,7 @@ get_diff_chunks <- function(lcs, context = 3L) {
 
   # chunk starts at operation number sum(length) before it, plus 1, but
   # at the end we change this to include the context chunks are well
-  chunks$op_begin  <- c(0, cumsum(runs$length))[which(runs$values)] + 1
+  chunks$op_begin  <- c(0, cumsum(runs$lengths))[which(runs$values)] + 1
   chunks$op_length <- runs$lengths[runs$values]
 
   # `old` positions are from `old_off`, but need to fix the boundaries

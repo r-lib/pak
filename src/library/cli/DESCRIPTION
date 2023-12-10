@@ -1,11 +1,13 @@
 Package: cli
 Title: Helpers for Developing Command Line Interfaces
-Version: 3.6.1
+Version: 3.6.1.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Hadley", "Wickham", role = "ctb"),
     person("Kirill", "Müller", role = "ctb"),
-    person("RStudio", role = c("cph", "fnd"))
+    person("Salim", "Brüggemann", , "salim-b@pm.me", role = "ctb",
+           comment = c(ORCID = "0000-0002-5329-5987")),
+    person("Posit Software, PBC", role = c("cph", "fnd"))
   )
 Description: A suite of tools to build attractive command line interfaces
     ('CLIs'), from semantic elements: headings, lists, alerts, paragraphs,
@@ -14,7 +16,7 @@ Description: A suite of tools to build attractive command line interfaces
     and 'Unicode' symbols with 'ASCII' alternatives. It support ANSI
     colors and text styles as well.
 License: MIT + file LICENSE
-URL: https://cli.r-lib.org, https://github.com/r-lib/cli#readme
+URL: https://cli.r-lib.org, https://github.com/r-lib/cli
 BugReports: https://github.com/r-lib/cli/issues
 Depends: R (>= 3.4)
 Imports: utils
@@ -27,13 +29,12 @@ Config/Needs/website: r-lib/asciicast, bench, brio, cpp11, decor, desc,
         usethis, vctrs
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.2.1.9000
+RoxygenNote: 7.2.3
 NeedsCompilation: yes
-Packaged: 2023-03-22 13:59:32 UTC; gaborcsardi
+Packaged: 2023-12-10 22:45:11 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Hadley Wickham [ctb],
   Kirill Müller [ctb],
-  RStudio [cph, fnd]
+  Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),
+  Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
-Repository: CRAN
-Date/Publication: 2023-03-23 12:52:05 UTC

@@ -1,3 +1,16 @@
+# cli (development version)
+
+* `ansi_collapse(x, trunc = 1, style = "head")` now indeed shows one
+  element if `length(x) == 2`, as documented (@salim-b, #572).
+
+* `ansi_collapse()` gains a `sep2` argument to specify a seperate separator
+  for length-two inputs. It defaults to `" and "` which, in conjunction with
+  the other defaults, produces a collapsed string that fully adheres to the
+  [serial comma](https://en.wikipedia.org/wiki/Serial_comma) rules.
+  (@salim-b, #569)
+
+* `ansi_string()` is now an exported function (@multimeric, #573).
+
 # cli 3.6.1
 
 * ANSI hyperlinks are now turned off on the RStudio render plane (#581).
