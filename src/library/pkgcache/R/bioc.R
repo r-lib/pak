@@ -300,7 +300,7 @@ bioconductor <- local({
   }
 
   .VERSION_SENTINEL <- local({
-    version <- package_version(list())
+    version <- package_version(character())
     class(version) <- c("unknown_version", class(version))
     version
   })

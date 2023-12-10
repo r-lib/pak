@@ -267,8 +267,6 @@ cranlike_metadata_cache <- R6Class(
   )
 )
 
-#' @importFrom filelock lock unlock
-
 cmc_init <- function(self, private, primary_path, replica_path, platforms,
                      r_version, bioc, cran_mirror, repos, update_after) {
 

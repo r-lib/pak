@@ -89,7 +89,6 @@
 #' `pc$delete()` deletes the file(s) from the cache.
 #'
 #' @importFrom R6 R6Class
-#' @importFrom filelock lock unlock
 #'
 #' @export
 #' @examples
