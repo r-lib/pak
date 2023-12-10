@@ -79,14 +79,14 @@ advanced_search <- function(..., json = NULL, format = c("short", "long"),
       paste0("(", names(terms), ":", terms, ")")
     )
 
-    qstr <- jsonlite::toJSON(list(
+    qstr <- tojson$write_str(list(
       query = list(
         query_string = list(
-          query = jsonlite::unbox(paste0(q, collapse = " AND ")),
-          default_field = jsonlite::unbox("*")
+          query = paste0(q, collapse = " AND "),
+          default_field = "*"
         )
       )
-    ))
+    ), opts = list(auto_unbox = TRUE, pretty = TRUE))
 
   } else {
     qstr <- json
