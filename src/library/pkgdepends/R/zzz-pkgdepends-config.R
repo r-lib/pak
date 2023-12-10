@@ -85,7 +85,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   cache_dir = list(
     type = "string",
-    default = detect_download_cache_dir,
+    default = function() detect_download_cache_dir(),
     docs =
       "Directory to download the packages to. Defaults to a temporary
        directory within the R session temporary directory, see
@@ -95,7 +95,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   cran_mirror = list(
     type = "string",
-    default = default_cran_mirror,
+    default = function() default_cran_mirror(),
     docs =
       "CRAN mirror to use. Defaults to the `repos` option
        (see [base::options()]), if that's not set then
@@ -110,7 +110,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   dependencies = list(
     type = "dependencies",
-    default = pkg_dep_types_hard,
+    default = function() pkg_dep_types_hard(),
     # pak functions take this as an argument, so we do not need it, for now
     pak = FALSE,
     docs =
@@ -163,7 +163,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   metadata_update_after = list(
     type = "difftime",
-    default = default_update_after,
+    default = function() default_update_after(),
     docs =
       "A time interval as a [difftime] object. pkgdepends will update the
        metadata cache if it is older than this. The default is one day.
@@ -192,7 +192,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   platforms = list(
     type = "character",
-    default = default_platforms,
+    default = function() default_platforms(),
     # TODO: do not link to pkgdepends docs from pak
     docs =
       "Character vector of platforms to _download_ or _install_ packages
@@ -204,7 +204,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   r_versions = list(
     type = "character",
-    default = current_r_version,
+    default = function() current_r_version(),
     check = is_r_version_list,
     docs =
       "Character vector, R versions to download or install
@@ -214,7 +214,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs = list(
     type = "flag",
-    default = default_sysreqs,
+    default = function(config) default_sysreqs(config),
     docs =
       "Whether to automatically look up and install system requirements.
        If `TRUE`, then `r pak_or_pkgdepends()` will try to install required
@@ -260,7 +260,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_platform = list(
     type = "string",
-    default = default_sysreqs_platform,
+    default = function() default_sysreqs_platform(),
     docs =
       "The platform to use for system requirements lookup. On Linux, where
        system requirements are currently supported, it must be a string
@@ -271,7 +271,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_rspm_repo_id = list(
     type = "string",
-    default = default_sysreqs_rspm_repo_id,
+    default = function() default_sysreqs_rspm_repo_id(),
     docs =
       "Posit Package Manager (formerly RStudio Package Manager) repository
        id to use for CRAN system requirements lookup. Defaults to the
@@ -282,7 +282,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_rspm_url = list(
     type = "string",
-    default = default_sysreqs_rspm_url,
+    default = function() default_sysreqs_rspm_url(),
     docs = "Root URL of Posit Package Manager (formerly RStudio Package
        Manager) for system requirements lookup. By default the `RSPM_ROOT`
        environment variable is used, if set. If not set,
@@ -292,7 +292,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_sudo = list(
     type = "flag",
-    default = default_sysreqs_sudo,
+    default = function() default_sysreqs_sudo(),
     docs =
       "Whether to use `sudo` to install system requirements,
        on Unix. By default it is `TRUE` on Linux if the effective user id
@@ -302,7 +302,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_update = list(
     type = "flag",
-    default = default_sysreqs_update,
+    default = function() default_sysreqs_update(),
     docs =
       "Whether to try to update system packages that are already installed.
        It defaults to `TRUE` on CI systems: if the `CI` environment
@@ -312,7 +312,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_verbose = list(
     type = "flag",
-    default = default_sysreqs_verbose,
+    default = function() default_sysreqs_verbose(),
     docs =
       "Whether to echo the output of system requirements installation.
        Defaults to `TRUE` if the `CI` environment variable is set."
@@ -330,7 +330,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   windows_archs = list(
     type = "string",
-    default = default_windows_archs,
+    default = function() default_windows_archs(),
     docs =
   # we can't indent this "correctly" because markdown will take it as code
   "Character scalar specifying which architectures
