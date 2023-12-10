@@ -60,7 +60,7 @@ ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
     callr,
-    r-lib/desc,
+    desc,
     cli,
     curl,
     filelock,

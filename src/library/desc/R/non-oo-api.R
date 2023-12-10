@@ -27,6 +27,8 @@ generate_api <- function(member, self = TRUE, norm = TRUE,
   dargs <- structure(lapply(argnames, as.name), names = argnames)
   if (!is.null(formals(func))) {
     member_call[1 + 1:length(formals(func))] <- dargs
+    argnames2 <- c("", ifelse(argnames == "...", "", argnames))
+    names(member_call) <- argnames2
   }
   desc_call <- substitute(
     result <- `_member`,
@@ -140,6 +142,7 @@ desc_get_list <- generate_api("get_list", self = FALSE)
 #' separating the elements by commas.
 #'
 #' @param ... Values to set, see details below.
+#' @param check Whether to check the validity of the new fields.
 #' @param file DESCRIPTION file to use. By default the DESCRIPTION
 #'    file of the current package (i.e. the package the working directory
 #'    is part of) is used.

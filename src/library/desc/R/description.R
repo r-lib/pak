@@ -118,7 +118,7 @@ desc <- function(cmd = NULL, file = NULL, text = NULL, package = NULL) {
 #' ```r
 #' description$get(keys)
 #' description$get_field(key, default, trim_ws = TRUE, squish_ws = trim_ws)
-#' description$set(...)
+#' description$set(..., check = TRUE)
 #' description$fields()
 #' description$has_fields(keys)
 #' description$del(keys)
@@ -135,6 +135,8 @@ desc <- function(cmd = NULL, file = NULL, text = NULL, package = NULL) {
 #'  * `...`: this must be either two unnamed arguments, the key and
 #'     and the value to set; or an arbitrary number of named arguments,
 #'     names are used as keys, values as values to set.
+#'  * `check`: A logical scalar. Whether to check the validity of the
+#'     new values.
 #'
 #' @section Normalizing:
 #' Format DESCRIPTION in a standard way. `$str` formats each
@@ -512,8 +514,8 @@ description <- R6Class("description",
                         sep = ",", trim_ws = TRUE, squish_ws = trim_ws)
       idesc_get_list(self, private, key, default, sep, trim_ws, squish_ws),
 
-    set = function(...)
-      idesc_set(self, private, ...),
+    set = function(..., check = TRUE)
+      idesc_set(self, private, ..., check = check),
 
     set_list = function(key, list_value, sep = ", ")
       idesc_set_list(self, private, key, list_value, sep),
@@ -907,7 +909,7 @@ idesc_get_list <- function(self, private, key, default, sep, trim_ws, squish_ws)
 ## - an arbitrary number of named arguments, the names are the keys,
 ##   the values are the values
 
-idesc_set <- function(self, private, ...) {
+idesc_set <- function(self, private, ..., check = TRUE) {
   args <- list(...)
 
   if (is.null(names(args)) && length(args) == 2) {
@@ -923,8 +925,10 @@ idesc_set <- function(self, private, ...) {
   }
 
   fields <- create_fields(keys, enc2utf8(values))
-  lapply(fields, check_field, warn = TRUE)
-  check_encoding(self, private, lapply(fields, "[[", "value"))
+  if (check) {
+    lapply(fields, check_field, warn = TRUE)
+    check_encoding(self, private, lapply(fields, "[[", "value"))
+  }
   private$data[keys] <- fields
 
   invisible(self)
