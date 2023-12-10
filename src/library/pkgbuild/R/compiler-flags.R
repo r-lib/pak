@@ -9,7 +9,7 @@
 #' possible performance penalty from the debug flags, install the package.
 #'
 #' @param debug If `TRUE` adds `-g -O0` to all flags
-#'   (Adding \env{FFLAGS} and \env{FCFLAGS}
+#'   (Adding \env{FFLAGS} and \env{FCFLAGS})
 #' @family debugging flags
 #' @export
 #' @examples
