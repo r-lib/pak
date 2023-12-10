@@ -2,8 +2,6 @@
 ## ------------------------------------------------------------------------
 ## API
 
-#' @importFrom desc desc
-
 parse_remote_installed <- function(specs, config, ...) {
   parsed_specs <- re_match(specs, type_installed_rx())
 

@@ -1,6 +1,4 @@
 
-#' @importFrom desc desc
-
 verify_extracted_package <- function(filename, parent_path) {
 
   pkg_name <- dir(parent_path)

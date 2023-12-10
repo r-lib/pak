@@ -1,5 +1,4 @@
 
-#' @importFrom pkgbuild build
 #' @importFrom utils modifyList
 
 build_package <- function(path, build_args = list()) {

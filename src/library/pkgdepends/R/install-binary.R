@@ -1,6 +1,4 @@
 
-#' @importFrom filelock lock unlock
-
 install_extracted_binary <- function(filename, lib_cache, pkg_cache, lib,
                                      metadata, now) {
 
