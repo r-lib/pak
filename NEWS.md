@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.7.1
 
 * pak can now handle the case when `Config/Needs/*` dependencies
   are requested for package from a repository.
