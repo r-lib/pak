@@ -95,7 +95,7 @@ SEXP clic_get_time(void) {
 SEXP clic__find_var(SEXP rho, SEXP symbol) {
   SEXP ret = Rf_findVarInFrame3(rho, symbol, TRUE);
   if (ret == R_UnboundValue) {
-    error("Cannot find variable `", PRINTNAME(symbol), "`");
+    error("Cannot find variable `%s`.", CHAR(PRINTNAME(symbol)));
 
   } else if (TYPEOF(ret) == PROMSXP) {
     PROTECT(ret);

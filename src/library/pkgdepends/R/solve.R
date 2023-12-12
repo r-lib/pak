@@ -788,8 +788,6 @@ format.pkgplan_lp_problem <- function(x, ...) {
   result
 }
 
-#' @importFrom lpSolve lp
-
 pkgplan__solve_lp_problem <- function(self, private, problem) {
   res <- pkgplan_i_solve_lp_problem(problem)
   res

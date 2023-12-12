@@ -2,8 +2,6 @@
 ### -----------------------------------------------------------------------
 ### API
 
-#' @importFrom desc desc
-
 parse_remote_github <- function(specs, config, ...) {
 
   pds <- re_match(specs, github_rx())

@@ -39,7 +39,7 @@ void reset_errbuf(reference *ref){
 
 void assert(CURLcode res){
   if(res != CURLE_OK)
-    error(curl_easy_strerror(res));
+    Rf_error("%s", curl_easy_strerror(res));
 }
 
 static char * parse_host(const char * input){
@@ -75,7 +75,7 @@ void assert_status(CURLcode res, reference *ref){
 
 void massert(CURLMcode res){
   if(res != CURLM_OK)
-    error(curl_multi_strerror(res));
+    Rf_error("%s", curl_multi_strerror(res));
 }
 
 void stop_for_status(CURL *http_handle){
@@ -84,7 +84,7 @@ void stop_for_status(CURL *http_handle){
 
   /* check http status code. Not sure what this does for ftp. */
   if(status >= 300)
-    error("HTTP error %d.", status);
+    error("HTTP error %ld.", status);
 }
 
 /* make sure to call curl_slist_free_all on this object */

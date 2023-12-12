@@ -106,7 +106,7 @@ int filelock__lock_wait(HANDLE file, int exclusive) {
 	CloseHandle(ov.hEvent);
 	UnlockFileEx(file, 0, 1, 0, &ov); /* ignore errors */
 	CloseHandle(file);		  /* ignore errors */
-	error("Locking interrupted", 1);
+	error("Locking interrupted");
       }
     }
   }

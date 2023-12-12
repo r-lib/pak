@@ -50,27 +50,29 @@
 #' * `email` for an email address.
 #'   If the terminal supports ANSI hyperlinks (e.g. RStudio, iTerm2, etc.),
 #'   then cli creates a clickable link.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
 #' * `emph` for emphasized text.
 #' * `envvar` for the name of an environment variable.
 #' * `field` for a generic field, e.g. in a named list.
 #' * `file` for a file name. If the terminal supports ANSI hyperlinks (e.g.
 #'   RStudio, iTerm2, etc.), then cli creates a clickable link that opens
 #'   the file in RStudio or with the default app for the file type.
-#'   See [links] for more about cli hyperlinks.
-#' * `fun` for a function name. If it is in the `package::function_name`
+#'   See [links] for more information about cli hyperlinks.
+#' * `fn` for a function name. If it is in the `package::function_name`
 #'   form, and the terminal supports ANSI hyperlinks (e.g. RStudio,
 #'   iTerm2, etc.), then cli creates a clickable link.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
+#' * `fun` same as `fn`.
 #' * `help` is a help page of a _function_.
 #'   If the terminal supports ANSI hyperlinks to help pages (e.g. RStudio),
 #'   then cli creates a clickable link. It supports link text.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
 #' * `href` creates a hyperlink, potentially with a link text.
 #'   If the terminal supports ANSI hyperlinks (e.g. RStudio, iTerm2, etc.),
 #'   then cli creates a clickable link.
-#'   See [links] for more about cli hyperlinks.
-#' * `key` for a keyboard key.
+#'   See [links] for more information about cli hyperlinks.
+#' * `kbd` for a keyboard key.
+#' * `key` same as `kbd`.
 #' * `obj_type_friendly` formats the type of an R object in a readable way,
 #'   and it should be used with `{}`, see an example below.
 #' * `or` changes the string that separates the last two elements of
@@ -79,23 +81,23 @@
 #' * `pkg` for a package name.
 #' * `run` is an R expression, that is potentially clickable if the terminal
 #'   supports ANSI hyperlinks to runnable code (e.g. RStudio).
-#'   It supports link text. See [links] for more about cli hyperlinks.
-#' * `strong` for strong importance.
-#' * `topic` is a help page of a _ropic_.
+#'   It supports link text. See [links] for more information about cli hyperlinks.
+#' * `str` for a double quoted string escaped by [base::encodeString()].#' * `strong` for strong importance.
+#' * `topic` is a help page of a _topic_.
 #'   If the terminal supports ANSI hyperlinks to help pages (e.g. RStudio),
 #'   then cli creates a clickable link. It supports link text.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
 #' * `type` formats the type of an R object in a readable way, and it
 #'   should be used with `{}`, see an example below.
 #' * `url` for a URL. If the terminal supports ANSI hyperlinks (e.g.
 #'   RStudio, iTerm2, etc.), then cli creates a clickable link.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
 #' * `var` for a variable name.
 #' * `val` for a generic "value".
 #' * `vignette` is a vignette.
 #'   If the terminal supports ANSI hyperlinks to help pages (e.g. RStudio),
 #'   then cli creates a clickable link. It supports link text.
-#'   See [links] for more about cli hyperlinks.
+#'   See [links] for more information about cli hyperlinks.
 #'
 #' ```{asciicast inline-examples}
 #' ul <- cli_ul()
@@ -202,7 +204,8 @@
 #' ```{asciicast inline-plural}
 #' ndirs <- 1
 #' nfiles <- 13
-#' cli_alert_info("Found {ndirs} diretor{?y/ies} and {nfiles} file{?s}.")
+#' pkgs <- c("pkg1", "pkg2", "pkg3")
+#' cli_alert_info("Found {ndirs} director{?y/ies} and {nfiles} file{?s}.")
 #' cli_text("Will install {length(pkgs)} package{?s}: {.pkg {pkgs}}")
 #' ```
 #'
@@ -616,7 +619,7 @@ NULL
 #' To link to a help topic that is not a function, use `.topic`:
 #'
 #' ```{asciicast links-topic}
-#' cli::cli_text("... the tibble options at {.help tibble::tibble_options}.")
+#' cli::cli_text("... the tibble options at {.topic tibble::tibble_options}.")
 #' ```
 #'
 #' `.topic` support link text.
@@ -654,13 +657,18 @@ NULL
 #'
 #' ## Security considerations
 #'
-#' To make `.run` hyperlinks more secure, RStudio with not run code
+#' To make `.run` hyperlinks more secure, RStudio will not run code
 #'
 #' * that is not in the `pkg::fun(args)` form,
 #' * if `args` contains `(`, `)` or `;`,
 #' * if it calls a core package (base, stats, etc.),
 #' * if it calls a package that is not loaded, and it is not one of
-#'   testthat, devtools, usethis, or rlang, which are explicitly allowed.
+#'   testthat, devtools, usethis, rlang, pkgload, or pkgdown which are explicitly allowed.
 #'
+#' When RStudio does not run a `.run` hyperlink, then it shows the code
+#' and the user can copy and paste it to the console, if they consider
+#' it safe to run.
+#'
+#' Note that depending on your version of RStudio, the behavior can change.
 #' @name links
 NULL

@@ -386,6 +386,16 @@ make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
   ## with_libpath() is needed for newer callr, which forces the current
   ## lib path in the child process.
   mkdirp(tmplib <- tempfile("pkg-lib"))
+  # Otherwise it is loaded with a modified library path, so potentially from the
+  # wrong place, especially in pak
+  loadNamespace("pkgbuild")
+  loadNamespace("desc")
+  loadNamespace("callr")
+  loadNamespace("processx")
+  loadNamespace("cli")
+  loadNamespace("ps")
+  # loadNamespace("R6") # not needed, built time dependency
+
   withr_with_libpaths(c(tmplib, lib), action = "prefix",
     pkgbuild::pkgbuild_process$new(
       path, tmp_dir, binary = binary, vignettes = vignettes,

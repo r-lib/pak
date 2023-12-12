@@ -144,7 +144,7 @@ double processx__create_time_since_boot(long pid) {
     warning("Cannot parse stat file, parse error: %s", strerror(errno));
     return 0.0;
   } else if (ret != 20) {
-    warning("Cannot parse stat file, unknown parse error.", strerror(errno));
+    warning("Cannot parse stat file, unknown parse error: %s", strerror(errno));
     return 0.0;
   }
 

@@ -1,6 +1,6 @@
 Package: desc
 Title: Manipulate DESCRIPTION Files
-Version: 1.4.2.9000
+Version: 1.4.3
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Kirill", "Müller", role = "aut"),
@@ -14,7 +14,7 @@ Description: Tools to read, write, create, and manipulate DESCRIPTION
     files.  It is intended for packages that create or manipulate other
     packages.
 License: MIT + file LICENSE
-URL: https://github.com/r-lib/desc#readme, https://desc.r-lib.org/
+URL: https://desc.r-lib.org/, https://github.com/r-lib/desc
 BugReports: https://github.com/r-lib/desc/issues
 Depends: R (>= 3.4)
 Imports: cli, R6, utils
@@ -23,7 +23,6 @@ Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
-Roxygen: list(r6 = FALSE, load = "installed", markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate: 'assertions.R' 'authors-at-r.R' 'built.R' 'classes.R'
         'collate.R' 'constants.R' 'deps.R' 'desc-package.R'
@@ -32,9 +31,11 @@ Collate: 'assertions.R' 'authors-at-r.R' 'built.R' 'classes.R'
         'str.R' 'syntax_checks.R' 'urls.R' 'utils.R' 'validate.R'
         'version.R'
 NeedsCompilation: no
-Packaged: 2023-11-24 17:42:01 UTC; gaborcsardi
+Packaged: 2023-12-10 11:07:50 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Kirill Müller [aut],
   Jim Hester [aut],
   Maëlle Salmon [ctb] (<https://orcid.org/0000-0002-2815-0399>),
   Posit Software, PBC [cph, fnd]
+Repository: CRAN
+Date/Publication: 2023-12-10 11:40:08 UTC

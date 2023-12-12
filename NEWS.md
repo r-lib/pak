@@ -1,5 +1,12 @@
 # pak (development version)
 
+# pak 0.7.1
+
+* pak can now handle the case when `Config/Needs/*` dependencies
+  are requested for package from a repository.
+
+* pak uses safer `*printf()` format strings now.
+
 # pak 0.7.0
 
 * pak now correctly handles the latest GitHub release with

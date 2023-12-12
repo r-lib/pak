@@ -107,11 +107,12 @@ New package releases on CRAN
 format_result <- function(result) {
   pkg <- result$package
   ago <- vague_dt(Sys.time() - parse_iso_8601(result$date))
+  url <- paste0("https://r-pkg.org/pkg/", pkg$Package)
   cli_li()
   cli_text("{.pkg {pkg$Package}} {pkg$Version} --
            {ago} by {.emph {pkg$Maintainer}}")
   cli_text("{pkg$Title}")
-  cli_text("{.url https://r-pkg.org/pkg/{pkg$Package}}")
+  cli_text("{.url {url}}")
 }
 
 if (is.null(sys.calls())) {

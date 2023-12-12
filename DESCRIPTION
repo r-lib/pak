@@ -1,6 +1,6 @@
 Package: pak
 Title: Another Approach to Package Installation
-Version: 0.7.0.9000
+Version: 0.7.1.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
@@ -60,15 +60,15 @@ ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
     callr,
-    r-lib/desc,
+    desc,
     cli,
     curl,
     filelock,
     jsonlite,
-    r-lib/pkgbuild,
-    r-lib/pkgcache,
+    pkgbuild,
+    pkgcache,
     r-lib/pkgdepends,
-    r-hub/pkgsearch,
+    pkgsearch,
     processx,
     ps,
 Config/Needs/website:

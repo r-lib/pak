@@ -146,6 +146,10 @@ void clic_utf8_graphscan_next(struct grapheme_iterator *iter,
     NEXT();
     goto Prepend;
 
+  case GRAPH_BREAK_INCB_CONSONANT:
+    NEXT();
+    goto InCB_Consonant;
+
   case GRAPH_BREAK_EXTENDED_PICTOGRAPHIC:
     NEXT();
     goto Extended_Pictographic;
@@ -154,7 +158,9 @@ void clic_utf8_graphscan_next(struct grapheme_iterator *iter,
     NEXT();
     goto Regional_Indicator;
 
-  case GRAPH_BREAK_EXTEND:
+  case GRAPH_BREAK_EXTEND_OTHER:
+  case GRAPH_BREAK_EXTEND_INCB_EXTEND:
+  case GRAPH_BREAK_EXTEND_INCB_LINKER:
   case GRAPH_BREAK_SPACINGMARK:
   case GRAPH_BREAK_ZWJ:
   case GRAPH_BREAK_OTHER:
@@ -232,9 +238,36 @@ void clic_utf8_graphscan_next(struct grapheme_iterator *iter,
     goto Start;
   }
 
+ InCB_Consonant:
+  // GB0c:  Do not break within certain combinations with Indic_Conjunct_Break (InCB)=Linker.
+  while (iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_EXTEND ||
+	 iter->nxt_prop == GRAPH_BREAK_ZWJ) {
+    NEXT();
+  }
+  if (iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_LINKER) {
+    NEXT();
+    goto InCB_Consonant_Linker;
+  }
+  goto MaybeBreak;
+
+ InCB_Consonant_Linker:
+  // GB0c:  Do not break within certain combinations with Indic_Conjunct_Break (InCB)=Linker.
+  while (iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_EXTEND ||
+	 iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_LINKER ||
+	 iter->nxt_prop == GRAPH_BREAK_ZWJ) {
+    NEXT();
+  }
+  if (iter->nxt_prop == GRAPH_BREAK_INCB_CONSONANT) {
+    NEXT();
+    goto InCB_Consonant;
+  }
+  goto MaybeBreak;
+
  Extended_Pictographic:
   // GB9:  Do not break before extending characters
-  while (iter->nxt_prop == GRAPH_BREAK_EXTEND) {
+  while (iter->nxt_prop == GRAPH_BREAK_EXTEND_OTHER ||
+	 iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_EXTEND ||
+	 iter->nxt_prop == GRAPH_BREAK_EXTEND_INCB_LINKER) {
     NEXT();
   }
   // GB9: Do not break before ZWJ
@@ -264,7 +297,9 @@ void clic_utf8_graphscan_next(struct grapheme_iterator *iter,
   // GB9a: Do not break before SpacingMark [extended grapheme clusters]
   // GB999: Otherwise, break everywhere
   switch (iter->nxt_prop) {
-  case GRAPH_BREAK_EXTEND:
+  case GRAPH_BREAK_EXTEND_OTHER:
+  case GRAPH_BREAK_EXTEND_INCB_EXTEND:
+  case GRAPH_BREAK_EXTEND_INCB_LINKER:
   case GRAPH_BREAK_SPACINGMARK:
   case GRAPH_BREAK_ZWJ:
     NEXT();

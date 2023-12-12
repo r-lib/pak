@@ -1,4 +1,15 @@
-
+#' Labels a character vector as containing ANSI control codes.
+#'
+#' This function sets the class of its argument, activating
+#' ANSI-string-specific methods such as for printing.
+#'
+#' @param x A character vector or something that can be
+#'   coerced into one.
+#' @return A `cli_ansi_string` object, a subclass of
+#'   `character`, with the same length and contents
+#'   as `x`.
+#' @family low level ANSI functions
+#' @export
 ansi_string <- function(x) {
   if (!is.character(x)) x <- as.character(x)
   x <- enc2utf8(x)

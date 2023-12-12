@@ -86,7 +86,7 @@ SEXP r_throw_system_error(const char *func, const char *filename, int line,
   va_start(args, msg);
   vsnprintf(errorbuf, ERRORBUF_SIZE, msg, args);
   va_end(args);
-  error("%s (system error %d, %s) @%s:%d (%s)", errorbuf, errorcode,
+  error("%s (system error %ld, %s) @%s:%d (%s)", errorbuf, errorcode,
         realsysmsg, filename, line, func);
   return R_NilValue;
 }

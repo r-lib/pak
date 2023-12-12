@@ -673,7 +673,7 @@ cli_progress_message <- function(msg,
 #' ## Spinner
 #'
 #' You can add a spinner to some or all steps with `spinner = TRUE`,
-#' but not that this will only work if you call [cli_progress_update()]
+#' but note that this will only work if you call [cli_progress_update()]
 #' regularly.
 #'
 #' ```{asciicast progress-step-spin}

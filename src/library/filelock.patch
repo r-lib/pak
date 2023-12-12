@@ -11,3 +11,16 @@ index f1e4aae7..5fa7cc2f 100644
    return !(R_ToplevelExec(filelock__check_interrupt_fn, NULL));
  }
  
+diff --git a/src/library/filelock/src/filelock-windows.c b/src/library/filelock/src/filelock-windows.c
+index 5fa7cc2f..5467df5f 100644
+--- a/src/library/filelock/src/filelock-windows.c
++++ b/src/library/filelock/src/filelock-windows.c
+@@ -106,7 +106,7 @@ int filelock__lock_wait(HANDLE file, int exclusive) {
+ 	CloseHandle(ov.hEvent);
+ 	UnlockFileEx(file, 0, 1, 0, &ov); /* ignore errors */
+ 	CloseHandle(file);		  /* ignore errors */
+-	error("Locking interrupted", 1);
++	error("Locking interrupted");
+       }
+     }
+   }

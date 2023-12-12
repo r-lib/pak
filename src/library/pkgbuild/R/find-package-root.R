@@ -17,7 +17,9 @@ find_package_root <- function(path = ".") {
   )
   max_depth <- 100
   for (i in 1:max_depth) {
-    if (file.exists(file.path(cur_path, "DESCRIPTION"))) {
+    dsc_path <- file.path(cur_path, "DESCRIPTION")
+    if (file.exists(dsc_path) &&
+      any(grepl("^Package: ", readLines(dsc_path)))) {
       return(cur_path)
     } else if (is_root(cur_path)) {
       stop(errmsg)

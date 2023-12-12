@@ -1626,6 +1626,6 @@ void IOHBTerminate(char* message)
 {
 /*   fprintf(stderr,message);
 **   exit(1); */
-    error(message);
+  error("%s", message);
 }
 

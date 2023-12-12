@@ -106,6 +106,11 @@ num_ansi_colors <- function(stream = "auto") {
   # the `stderr()` stream, so we need to catch this case.
   if (is_stderr && sink.number("message") != 2) return(1L)
 
+  #' 1. If the `cli.default_num_colors` option is set, then we use that.
+
+  dopt <- get_default_number_of_colors()
+  if (!is.null(dopt)) return(as.integer(dopt))
+
   #' 1. If R is running inside RGui on Windows, or R.app on macOS, then we
   #'    return 1L.
 
