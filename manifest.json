@@ -827,11 +827,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.7.0",
+          "pak.version": "0.7.1",
           "pak.revision": "TODO",
-          "buildtime": "2023-11-18T08:13:06+00:00",
-          "size": 8264417,
-          "digest": "sha256:fb8d7a47a12132935eef0825f94884b22790540891e12be1624fb70e717262c0"
+          "buildtime": "2023-12-12T10:43:57+00:00",
+          "size": 7935159,
+          "digest": "sha256:98c24bd371de36a40f218b7c8a3b93f2a29c68cb8f6f0c9a8cdb4b7e4e36a988"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
