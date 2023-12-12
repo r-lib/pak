@@ -250,11 +250,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.4",
-          "pak.version": "0.7.0.9000",
+          "pak.version": "0.7.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2023-12-12T05:42:42+00:00",
-          "size": 8632713,
-          "digest": "sha256:18fd053edc8b6b5c6a3f82aa248c263920fc5999be9aee3041da8b2d8ec6c8a4"
+          "buildtime": "2023-12-12T11:52:04+00:00",
+          "size": 8631203,
+          "digest": "sha256:00dfaca06137dff38ed2714a41c7cb79738232b33c60f673f19d4ed627c142e9"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
