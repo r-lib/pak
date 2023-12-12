@@ -36,12 +36,16 @@ jobs:
           needs: website
           pak-version: devel
 
+      # otherwise the dynamics docs fail, not sure why
+      - name: Install package
+        run: R CMD INSTALL .
+
       - name: Build site
         run: |
           options(asciicast_timeout = 600)
           rmarkdown::render("README.Rmd")
           # roxygen2::roxygenize()
-          pkgdown::build_site_github_pages(new_process = TRUE, install = TRUE)
+          pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
         env:
           IN_PKGDOWN: true
