@@ -234,7 +234,8 @@ set_function_envs <- function(within, new) {
   nms <- names(within)
 
   is_target_env <- function(x) {
-    identical(x, base::.GlobalEnv) || environmentName(x) != ""
+    identical(x, base::.GlobalEnv) ||
+      (!environmentName(x) %in% c("", "R6_capsule"))
   }
 
   suppressWarnings({
