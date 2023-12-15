@@ -1,4 +1,4 @@
-opts <- function() {
+install_opts <- function() {
   paste(
     "--without-keep.source",
     "--no-html",
@@ -16,6 +16,8 @@ opts <- function() {
 rimraf <- function(path) {
   unlink(path, force = TRUE, recursive = TRUE)
 }
+
+# For `load_all()` the `lib` argument is passed in.
 
 get_lib <- function(lib = NULL) {
   lib <- lib %||% file.path(Sys.getenv("R_PACKAGE_DIR"), "library")
@@ -55,14 +57,23 @@ update_description_build <- function(path, platform) {
 install_one <- function(pkg, lib = NULL) {
   lib <- get_lib(lib)
 
+  if (file.exists(file.path(lib, pkg))) {
+    warning("Package already installed, this should not happen.")
+  }
+
   cat("\nCompiling", pkg, "\n")
   suppressWarnings(suppressMessages(utils::capture.output(install.packages(
     paste0("library/", pkg),
     lib = lib,
     repos = NULL,
     type = "source",
-    INSTALL_opts = opts()
+    INSTALL_opts = install_opts()
   ))))
+
+  # Need to stop explicitly, because `install.packages()` does not error
+  # on failed installation. Before calling `install_one()` we always
+  # remove the previously installed package, so this check still works if
+  # we are updating.
 
   if (!file.exists(file.path(lib, pkg))) {
     stop("FAILED")
@@ -96,6 +107,10 @@ install_order <- function() {
   pkgs
 }
 
+# we do not need the R/ directory once the R code is bundled into a
+# single RDS file. This is not called for `load_all()`, so that we
+# can update single packages.
+
 clean_up_r <- function(lib = NULL) {
   lib <- get_lib(lib)
   for (pkg in dir(lib)) {
@@ -105,6 +120,15 @@ clean_up_r <- function(lib = NULL) {
     }
   }
 }
+
+# This is used for `R CMD INSTALL`, but not for `load_all()`.
+# This is pretty simple, except when we are cross-compiling.
+#
+# Cross-compiling means that we must be able to load the dependncies
+# on the building platform, and the packages for the target platform
+# must be installed into a separate library. Actually, we put each
+# one into its own library, to be on the safe side. After all
+# dependencies are installed, we move them over to the proper place.
 
 install_all <- function(lib = NULL) {
   pkgs <- install_order()
@@ -133,6 +157,11 @@ install_all <- function(lib = NULL) {
   invisible()
 }
 
+# This is used to decide if we need to update a dependency during
+# `load_all()`. At this point it is only a performance optimization, and
+# it could be removed, because if the vesions match, then we use
+# hashing to make sure that they are the same.
+
 get_ver <- function(path) {
   if (!file.exists(path)) {
     return(NA_character_)
@@ -154,6 +183,8 @@ get_ver <- function(path) {
   as.character(ver)
 }
 
+# MD5 of a string
+
 md5 <- function(str) {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
@@ -161,12 +192,22 @@ md5 <- function(str) {
   tools::md5sum(tmp)
 }
 
+# Hash of a directory. MD5 of each file, and then the MD5 of these.
+# FIXME: hash the path as well, not just the contents, to account
+# for renaming and moving files.
+
 dir_hash <- function(path) {
   files <- sort(dir(path, full.names = TRUE, recursive = TRUE))
   files <- grep(files, pattern = "[.]s?o$", value = TRUE, invert = TRUE)
   hashes <- unname(tools::md5sum(files))
   md5(paste(hashes, collapse = " "))
 }
+
+# This is what we use in `load_all()`. It is not used during
+# `R CMD INSTALL`, that case is covered by `install_all()`.
+#
+# It uses hashing to decide if a dependency needs to be updated in
+# the private library.
 
 update_all <- function(lib = NULL) {
   lib <- get_lib(lib)
@@ -210,6 +251,9 @@ load_all <- function() {
   }
 }
 
+# Parse the `--build` and `--target` arguments passed to
+# `./configure`. Also check if we are called from `load_all()`.
+
 parse_platforms <- function(args) {
   build <- if (grepl("^--build=", args[1])) {
     substr(args[1], 9, 1000)
@@ -225,7 +269,7 @@ parse_platforms <- function(args) {
   )
 }
 
-# This is currently repeated from subprocess.R
+# Need to set the environments of functions within packages.
 
 set_function_envs <- function(within, new) {
   old <- .libPaths()
@@ -233,6 +277,8 @@ set_function_envs <- function(within, new) {
   on.exit(.libPaths(old), add = TRUE)
   nms <- names(within)
 
+  # We don't reset closures. `R6::R6Class()` must be handled specially,
+  # because it is a closure, but its environment has a name.
   is_target_env <- function(x) {
     identical(x, base::.GlobalEnv) ||
       (!environmentName(x) %in% c("", "R6_capsule"))
@@ -268,7 +314,7 @@ patch_env_refs <- function(pkg_env) {
     if (pkg %in% names(pkg_data$ns)) {
       pkg_data$ns[[pkg]][[name]]
     } else {
-      # FIXME: should we really fall back to a regular package?
+      # Fall back to a regular package, so we can call base packages
       getExportedValue(pkg, name)
     }
   }
@@ -288,6 +334,9 @@ patch_env_refs <- function(pkg_env) {
   }
   environment(pkg_env[["UseMethod"]]) <- pkg_env
 }
+
+# Put R code of all dependencies from their R/ directories, into a
+# single RDS file.
 
 bundle_rds <- function(lib = NULL) {
   message("Updating bundled dependencies")
@@ -315,6 +364,7 @@ bundle_rds <- function(lib = NULL) {
     invisible()
   }
 
+  # pkgdepends has functions in a list, update those as well
   pds <- ns[["pkgdepends"]]
   pkgdepends_conf <- names(pds[["pkgdepends_config"]])
   for (nm in pkgdepends_conf) {
@@ -324,10 +374,14 @@ bundle_rds <- function(lib = NULL) {
   }
   parent.env(pds[["config"]][[".internal"]]) <- pds
 
+  # make sure functions are byte-compiled
   compiler::compilePKGS(TRUE)
   saveRDS(ns, file.path(lib, "deps.rds"))
   compiler::compilePKGS(FALSE)
 }
+
+# -------------------------------------------------------------------------
+# Main function, called if we run as a script
 
 install_embedded_main <- function() {
   unlink("DONE")
