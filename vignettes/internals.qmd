@@ -61,16 +61,12 @@ We do not embed dependencies in this case, but we create a separate
 library in the user cache directory. This happens from `.onLoad()`.
 `.onLoad()` regcognizes `load_all()` and calls `install-embedded.R`
 again, with a special argument, to install dependencies into the user
-cache library. If the same version of a dependency is already installed,
-then that dependency is skipped, to make `load_all()` fairly quick.
+cache library. We use hashing to decide if a dependency should be updated
+in the private library, so updates work for dependencies on GitHub.
 
 ## Embedding dev packages from GitHub
 
-There is no support for packages from GitHub currently, that needs to
-be done manually:
-- package has to be added manually,
-- it has to be updated manually.
-I might add some support for them later, when I start to use them.
+Is now supported.
 
 ## Cross compilation
 
@@ -193,7 +189,7 @@ etc.
 
 ### Concurrency
 
-Dealing with concurrency on GHA is a challenge on GHA.
+Dealing with concurrency on GHA is a challenge.
 GitHub Packages requires that we push all architectures (=pak builds) at
 the same time. (The package files do not need to be present of the
 client if they stay the same.) So we treat `manifest.json` as the ground
