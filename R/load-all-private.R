@@ -44,4 +44,10 @@ load_all_private <- function() {
       pkg_env[[".onLoad"]](lib, pkg)
     }
   }
+
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    for (pkg in names(pkg_data[["ns"]])) {
+      asNamespace("covr")$trace_environment(pkg_data[["ns"]][[pkg]])
+    }
+  }
 }

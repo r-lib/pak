@@ -26,6 +26,10 @@
 *.o
 *.so
 *.DSYM
+*.gcda
+*.gcno
+*.gcov
+/covr_trace_*
 /src/library/curl/configure.log
 /src/library/curl/src/Makevars
 /src/library/curl/tools/option_table.txt

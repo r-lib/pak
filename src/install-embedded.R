@@ -1,6 +1,8 @@
 install_opts <- function() {
+  cov <- Sys.getenv("TEST_COVERAGE_PAK") == "true"
   paste(
-    "--without-keep.source",
+    if (cov) "--with-keep.source" else "--without-keep.source",
+    if (cov) "--preclean",
     "--no-html",
     "--no-help",
     "--no-data",
@@ -198,7 +200,12 @@ md5 <- function(str) {
 
 dir_hash <- function(path) {
   files <- sort(dir(path, full.names = TRUE, recursive = TRUE))
-  files <- grep(files, pattern = "[.]s?o$", value = TRUE, invert = TRUE)
+  files <- grep(
+    "[.](s?o|gcda|gcov)$",
+    files,
+    value = TRUE,
+    invert = TRUE
+  )
   hashes <- unname(tools::md5sum(files))
   md5(paste(hashes, collapse = " "))
 }
@@ -210,6 +217,16 @@ dir_hash <- function(path) {
 # the private library.
 
 update_all <- function(lib = NULL) {
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    old <- Sys.getenv("R_MAKEVARS_USER", NA_character_)
+    if (is.na(old)) {
+      on.exit(Sys.unsetenv("R_MAKEVARS_USER"), add = TRUE)
+    } else {
+      on.exit(Sys.setenv("R_MAKEVARS_USER" = old), add = TRUE)
+    }
+    Sys.setenv(R_MAKEVARS_USER = normalizePath("Makevars-covr"))
+    message("Test coverage build!")
+  }
   lib <- get_lib(lib)
   hash_tmpl <- file.path(lib, "_%s.hash")
   pkgs <- install_order()
