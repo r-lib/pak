@@ -16,7 +16,9 @@ WORKDIR /root
 
 # need to install the native package first --------------------------------
 
-# TODO: aboid this, by using dummy packages.
+# this is not needed for the cross-compilation, but it is easier to use
+# the native package for deployment, as long as the deploy code is
+# inside the pak package itself.
 
 COPY pak_*.tar.gz /root/
 

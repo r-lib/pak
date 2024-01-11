@@ -31,18 +31,9 @@ fi
 
 echo "Cross compiling for R ${RVER} using R ${RVERX86}."
 
-# Need to install all dependencies for the build arch first.
-# TODO: look up the needed packages automatically
-# TODO: should make sure the right versions are installed
-
-R_MAKEVARS_USER="`pwd`/Makevars-macos-${RVERX86}" \
-    R_COMPILE_AND_INSTALL_PACKAGES=always \
-    "/usr/local/bin/R-${RVERX86}" -q \
-    -e 'install.packages(c("pkgdepends", "pkgsearch"))'
-
-# TODO: we will need to hsve R-version specific platform triplets,
+# TODO: we will need to have R-version specific platform triplets,
 # when a version of R starts using a newer build than the current
-# Big Sur (darwin 20).
+# Big Sur (darwin 20). (Maybe?)
 
 R_MAKEVARS_USER="`pwd`/Makevars-macos-${RVER}" \
     "/usr/local/bin/R-${RVERX86}" CMD INSTALL \

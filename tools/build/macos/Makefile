@@ -45,6 +45,8 @@ export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).tgz,$(RVERSIONS))
 
 deploy:
 	@echo "----- DEPLOYING packages -----------------------------------"
+	# this is somewhat redundant, but needed when cross-compiling, to have
+	# a native package installed.
 	$(R) CMD INSTALL pak_$(PAKVERSION).tar.gz
 	R_LIBS=$(RLIB) $(R) -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = "Config/Needs/deploy")'
 	R_LIBS=$(RLIB) $(R) -q -e \

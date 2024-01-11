@@ -1,0 +1,41 @@
+diff --git a/src/library/processx/R/client-lib.R b/src/library/processx/R/client-lib.R
+index ab77dfa6..3eefd93a 100644
+--- a/src/library/processx/R/client-lib.R
++++ b/src/library/processx/R/client-lib.R
+@@ -1,6 +1,8 @@
+ 
+ client <- new.env(parent = emptyenv())
+ 
++if (Sys.getenv("PAK_INSTALL_DUMMY_CROSS") != "true") {
++
+ local({
+   ext <- .Platform$dynlib.ext
+   arch <- .Platform$r_arch
+@@ -47,6 +49,8 @@ local({
+   }
+ })
+ 
++}
++
+ # This is really only here for testing
+ 
+ load_client_lib <- function(client) {
+diff --git a/src/library/processx/R/on-load.R b/src/library/processx/R/on-load.R
+index 6ade28dd..eca25dc3 100644
+--- a/src/library/processx/R/on-load.R
++++ b/src/library/processx/R/on-load.R
+@@ -1,6 +1,8 @@
+ 
+ ## nocov start
+ 
++if (Sys.getenv("PAK_INSTALL_DUMMY_CROSS") != "true") {
++
+ .onLoad <- function(libname, pkgname) {
+   ## This is needed to fix the boot time to a given value,
+   ## because in a Docker container (maybe elsewhere as well?) on
+@@ -26,4 +28,5 @@
+   supervisor_reset()
+ }
+ 
++}
+ ## nocov end

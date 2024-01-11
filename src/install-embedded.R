@@ -96,15 +96,89 @@ install_order <- function() {
   pkgs
 }
 
+install_dummies <- function(lib) {
+  pkgs <- dir("dummy")
+  dir.create(lib, showWarnings = FALSE, recursive = TRUE)
+  on.exit(Sys.unsetenv("PAK_INSTALL_DUMMY_CROSS"), add = TRUE)
+  Sys.setenv(PAK_INSTALL_DUMMY_CROSS = "true")
+  message("Dummy packages")
+  for (pkg in pkgs) {
+    install.packages(
+      paste0("dummy/", pkg),
+      lib = lib,
+      repos = NULL,
+      type = "source",
+      INSTALL_opts = opts()
+    )
+    if (!file.exists(file.path(lib, pkg))) {
+      stop("Failed to install dummy ", pkg)
+    }
+  }
+
+  # need real R6
+  message("Real R6")
+  install.packages(
+    "library/R6",
+    lib = lib,
+    repos = NULL,
+    type = "source",
+    INSTALL_opts = opts()
+  )
+  if (!file.exists(file.path(lib, "R6"))) {
+    stop("Failed to install dummy R6")
+  }
+
+  # real processx
+  message("Real-ish processx")
+  install.packages(
+    "library/processx",
+    lib = lib,
+    repos = NULL,
+    type = "source",
+    INSTALL_opts = c(opts(), "--no-libs")
+  )
+  if (!file.exists(file.path(lib, "processx"))) {
+    stop("Failed to install dummy processx")
+  }
+  nspath <- file.path(lib, "processx", "NAMESPACE")
+  ns <- readLines(nspath)
+  ns2 <- grep("useDynLib", ns, invert = TRUE, value = TRUE)
+  writeLines(ns2, nspath)
+  nsipath <- file.path(lib, "processx", "Meta", "nsInfo.rds")
+  nsi <- readRDS(nsipath)
+  nsi$dynlibs <- character()
+  saveRDS(nsi, nsipath)
+
+  # real callr
+  message("Real-ish callr")
+  install.packages(
+    "library/callr",
+    lib = lib,
+    repos = NULL,
+    type = "source",
+    INSTALL_opts = opts()
+  )
+  if (!file.exists(file.path(lib, "callr"))) {
+    stop("Failed to install dummy callr")
+  }
+}
+
 install_all <- function(lib = NULL) {
   pkgs <- install_order()
   if (Sys.getenv("CROSS_COMPILING") == "yes") {
+    # create dummy library
+    lib <- get_lib(lib)
+    dummy <- paste0(lib, "-dummy")
+    .libPaths(c(dummy, .libPaths()))
+    Sys.setenv(R_LIBS_USER = dummy)
+    print(Sys.getenv("R_LIBS_USER"))
+    install_dummies(lib = dummy)
+
     # Update 'Built' field in package itself
     update_description_build(
       Sys.getenv("R_PACKAGE_DIR"),
       Sys.getenv("R_TARGET_PLATFORM")
     )
-    lib <- get_lib(lib)
     for (pkg in pkgs) {
       install_one(pkg, lib = paste0(lib, "-", pkg))
     }
