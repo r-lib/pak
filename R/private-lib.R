@@ -20,7 +20,7 @@ private_lib_dir <- function() {
 
   file.path(
     user_cache_dir("pak"),
-    if (Sys.getenv("TEST_COVERAGE_PAK") == "true") "lib-covr" else "lib",
+    "lib",
     get_minor_r_version(),
     R.Version()$arch
   )

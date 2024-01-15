@@ -18,20 +18,5 @@ create_dev_lib <- function() {
 
   system2(rscript, c("--vanilla", "install-embedded.R", "--load-all", lib))
 
-  # if a test coverage session, then load dependencies now
-  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
-    message("Instrumenting R code for test coverage")
-    # Need to monkey patch covr
-    key <- function(x) {
-      paste(collapse = ":", c(get_source_filename(x, full.names = TRUE), x))
-    }
-    environment(key) <- asNamespace("covr")
-    do.call("unlockBinding", list("key", asNamespace("covr")))
-    assign("key", key, envir = asNamespace("covr"))
-
-    load_all_private()
-    asNamespace("covr")$trace_environment(asNamespace("pak"))
-  }
-
   invisible()
 }

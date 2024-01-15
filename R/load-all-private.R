@@ -3,7 +3,11 @@ load_all_private <- function() {
     return()
   }
   lib <- private_lib_dir()
-  deps_path <- file.path(lib, "deps.rds")
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    deps_path <- file.path(lib, "deps-covr.rds")
+  } else {
+    deps_path <- file.path(lib, "deps.rds")
+  }
   pkg_data[["ns"]] <- readRDS(deps_path)
   parent.env(pkg_data[["ns"]]) <- getNamespace(.packageName)
   # These register C functions with a c_ prefix
@@ -42,12 +46,6 @@ load_all_private <- function() {
     pkg_env <- pkg_data[["ns"]][[pkg]]
     if (".onLoad" %in% names(pkg_env)) {
       pkg_env[[".onLoad"]](lib, pkg)
-    }
-  }
-
-  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
-    for (pkg in names(pkg_data[["ns"]])) {
-      asNamespace("covr")$trace_environment(pkg_data[["ns"]][[pkg]])
     }
   }
 }

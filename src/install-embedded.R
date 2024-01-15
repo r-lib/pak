@@ -206,7 +206,11 @@ dir_hash <- function(path) {
     value = TRUE,
     invert = TRUE
   )
-  hashes <- unname(tools::md5sum(files))
+  # Reinstall if turning hashing on/off
+  hashes <- c(
+    unname(tools::md5sum(files)),
+    Sys.getenv("TEST_COVERAGE_PAK", "false")
+  )
   md5(paste(hashes, collapse = " "))
 }
 
@@ -265,6 +269,9 @@ load_all <- function() {
   upd <- update_all(args[2])
   if (any(upd)) {
     bundle_rds(args[2])
+  }
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    bundle_covr_rds(args[2])
   }
 }
 
@@ -359,7 +366,10 @@ bundle_rds <- function(lib = NULL) {
   message("Updating bundled dependencies")
   lib <- lib %||% get_lib(lib)
   ns <- new.env(parent = emptyenv())
-  pkgs <- setdiff(dir(lib, pattern = "^[^_]"), "deps.rds")
+  pkgs <- setdiff(
+    dir(lib, pattern = "^[^_]"),
+    c("deps.rds", "deps-covr.rds")
+  )
   for (pkg in pkgs) {
     pkg_env <- new.env(parent = emptyenv())
     pkg_env[[".packageName"]] <- pkg
@@ -395,6 +405,23 @@ bundle_rds <- function(lib = NULL) {
   compiler::compilePKGS(TRUE)
   saveRDS(ns, file.path(lib, "deps.rds"))
   compiler::compilePKGS(FALSE)
+}
+
+bundle_covr_rds <- function(lib = NULL) {
+  lib <- lib %||% get_lib(lib)
+  rds <- file.path(lib, "deps.rds")
+  covrds <- file.path(lib, "deps-covr.rds")
+  if (!file.exists(covrds) || file.mtime(covrds) < file.mtime(rds)) {
+    message("Instrumenting dependency code for covr")
+    ns <- readRDS(rds)
+    ns <- covrlabs::serialize_to_file(
+      ns,
+      covrds,
+      closxp_callback = covrlabs::trace_calls
+    )
+  } else {
+    message("Instruments code bundle is current")
+  }
 }
 
 # -------------------------------------------------------------------------
