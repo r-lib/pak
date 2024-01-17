@@ -16,6 +16,11 @@ create_dev_lib <- function() {
   on.exit(setwd(wd), add = TRUE)
   setwd(dirname(inst_script))
 
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    message("Instrumenting pak for test coverage")
+    asNamespace("covrlabs")$trace_package("pak")
+  }
+
   system2(rscript, c("--vanilla", "install-embedded.R", "--load-all", lib))
 
   invisible()

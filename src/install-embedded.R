@@ -411,7 +411,10 @@ bundle_covr_rds <- function(lib = NULL) {
   lib <- lib %||% get_lib(lib)
   rds <- file.path(lib, "deps.rds")
   covrds <- file.path(lib, "deps-covr.rds")
-  if (!file.exists(covrds) || file.mtime(covrds) < file.mtime(rds)) {
+  cntrds <- file.path(lib, "deps-cnt.rds")
+  if (!file.exists(covrds) || !file.exists(cntrds) ||
+    file.mtime(covrds) < file.mtime(rds) ||
+    file.mtime(cntrds) < file.mtime(rds)) {
     message("Instrumenting dependency code for covr")
     ns <- readRDS(rds)
     ns <- covrlabs::serialize_to_file(
@@ -419,6 +422,7 @@ bundle_covr_rds <- function(lib = NULL) {
       covrds,
       closxp_callback = covrlabs::trace_calls
     )
+    covrlabs::serialize_to_file(covrlabs:::.counters, cntrds)
   } else {
     message("Instruments code bundle is current")
   }

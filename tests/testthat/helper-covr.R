@@ -7,13 +7,14 @@ covr <- function(filter = NULL, pre_clean = TRUE, quiet = TRUE, ...) {
     gcda <- list.files(pattern = "[.]gcda$", recursive = TRUE)
     gcov <- list.files(pattern = "[.]gcov$", recursive = TRUE)
     unlink(c(gcda, gcov))
+    asNamespace("covrlabs")$reset_counters()
   }
 
   # Run tests -------------------------------------------------------------
   testthat::test_dir("tests/testthat", filter = filter, ...)
 
   # Save R coverage -------------------------------------------------------
-  asNamespace("covr")$save_trace(".")
+  asNamespace("covrlabs")$save_trace()
 
   # Save C coverage -------------------------------------------------------
   # The rest do not have a gcov_flush hook

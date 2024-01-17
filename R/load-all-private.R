@@ -5,6 +5,8 @@ load_all_private <- function() {
   lib <- private_lib_dir()
   if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
     deps_path <- file.path(lib, "deps-covr.rds")
+    cnt_path <- file.path(lib, "deps-cnt.rds")
+    asNamespace("covrlabs")$add_counters(readRDS(cnt_path))
   } else {
     deps_path <- file.path(lib, "deps.rds")
   }
