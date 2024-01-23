@@ -389,7 +389,7 @@ cmc_cleanup <- function(self, private, force) {
   }
 
   local_cache_dir <- private$get_cache_files("replica")
-  unlink(local_cache_dir, recursive = TRUE, force = TRUE)
+  unlink(local_cache_dir$root, recursive = TRUE, force = TRUE)
   private$data <- NULL
   private$data_messaged <- NULL
   cli::cli_alert_info("Cleaning up cache directory {.path {cache_dir}}.")
