@@ -4,7 +4,9 @@ should_ask_confirmation <- function(sol) {
 }
 
 print_install_details <- function(prop, lib, loaded) {
-  cli::cli_div(
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
+  cli$cli_div(
     theme = list(
       "div.alert-warning" = list("margin-top" = 1, "margin-bottom" = 1)
     )
@@ -19,13 +21,13 @@ print_install_details <- function(prop, lib, loaded) {
   n_curr <- sum(curr <- sol$lib_status == "current")
   n_noupd <- sum(noupd <- sol$lib_status == "no-update")
 
-  cli::cli_verbatim(" ")
+  cli$cli_verbatim(" ")
 
   if (n_newly) {
-    cli::cli_alert("Will {.emph install} {n_newly} package{?s}.")
+    cli$cli_alert("Will {.emph install} {n_newly} package{?s}.")
   }
   if (n_upd) {
-    cli::cli_alert("Will {.emph update} {n_upd} package{?s}.")
+    cli$cli_alert("Will {.emph update} {n_upd} package{?s}.")
   }
 
   w_dl <- sol$cache_status == "miss" & !is.na(sol$cache_status)
@@ -41,30 +43,30 @@ print_install_details <- function(prop, lib, loaded) {
   if (n_dl == 0) {
     if (n_ch > 0) {
       if (n_ch == 1) {
-        cli::cli_alert("The package ({b_ch}) is cached.")
+        cli$cli_alert("The package ({b_ch}) is cached.")
       } else {
-        cli::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
+        cli$cli_alert("All {n_ch} packages ({b_ch}) are cached.")
       }
     }
   } else if (n_ch == 0) {
     if (n_dl - u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}).")
+      cli$cli_alert("Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}).")
     }
     if (u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
+      cli$cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
     }
   } else if (!any_unk) {
-    cli::cli_alert(
+    cli$cli_alert(
       "Will {.emph download} {n_dl} package{?s} ({b_dl}), cached: {n_ch} ({b_ch})."
     )
   } else {
     if (n_dl - u_dl > 0) {
-      cli::cli_alert(
+      cli$cli_alert(
         "Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}), cached: {n_ch} ({b_ch})."
       )
     }
     if (u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
+      cli$cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
     }
   }
 
@@ -76,13 +78,13 @@ print_install_details <- function(prop, lib, loaded) {
   if (!is.null(sysreqs)) {
     num <- length(sysreqs$miss) + length(sysreqs$upd)
     if (length(sysreqs$inst) > 0 && num == 0) {
-      cli::cli_alert_success("All system requirements are already installed.")
+      cli$cli_alert_success("All system requirements are already installed.")
     } else if (num > 0) {
       install_sysreqs <- prop$get_config()$get("sysreqs")
       if (install_sysreqs) {
-        cli::cli_alert("Will {.emph install} {num} system package{?s}:")
+        cli$cli_alert("Will {.emph install} {num} system package{?s}:")
       } else {
-        cli::cli_alert_danger(
+        cli$cli_alert_danger(
           "Missing {num} system package{?s}. You'll probably need to
            install {?it/them} manually:",
           wrap = TRUE

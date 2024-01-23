@@ -45,7 +45,8 @@ warn_for_loaded_packages_unix <- function(pkgs, lib, loaded, pid) {
 }
 
 warn_for_loaded_packages_emit <- function(pkgs) {
-  cli::cli_alert_warning(
+  load_all_private()
+  pkg_data[["ns"]][["cli"]]$cli_alert_warning(
     "{.pkg {pkgs}} {?is/are} loaded in the current R session, \\
        you probably need to restart R after the installation.",
     wrap = TRUE
@@ -90,7 +91,9 @@ warn_for_loaded_packages_loaded_none <- function(current) {
 }
 
 warn_for_loaded_packages_locked_none <- function(current) {
-  cli::cli_alert_warning(
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
+  cli$cli_alert_warning(
     "{.pkg {current$locked}} {?is/are} loaded in the current \\
     R session and {?has/have} locked files in your library. The \\
     installation will probably fail, unless pak unloads {?it/them}, \\
@@ -98,14 +101,14 @@ warn_for_loaded_packages_locked_none <- function(current) {
     wrap = TRUE
   )
 
-  cli::cli_div(theme = list(
+  cli$cli_div(theme = list(
     body = list("margin-left" = 2L),
     par = list("margin-top" = 1L),
     ol = list("margin-top" = 1L)
   ))
-  cli::cli_par()
-  cli::cli_text("What do you want to do?")
-  cli::cli_ol(c(
+  cli$cli_par()
+  cli$cli_text("What do you want to do?")
+  cli$cli_ol(c(
     "Have pak unload them before the installation. (Safest option.)",
     "Try the installation without unloading them",
     "Abort the installation."
@@ -114,6 +117,8 @@ warn_for_loaded_packages_locked_none <- function(current) {
 }
 
 warn_for_loaded_packages_none_locked <- function(others) {
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
   pcs <- others$users[!duplicated(others$users$pid), , drop = FALSE]
   sess <- sprintf("%s %s", pcs$name, pcs$pid)
   apps <- ifelse(
@@ -122,24 +127,24 @@ warn_for_loaded_packages_none_locked <- function(others) {
     sprintf(" in %s (%s)", pcs$app_name, pcs$app_pid)
   )
   sess <- paste0(sess, apps)
-  cli::cli_alert_warning(
+  cli$cli_alert_warning(
     "{.pkg {others$locked}} {?is/are} loaded in other R sessions and \\
     {?has/have} locked files in your library. The installation will \\
-    probably fail, unless you quit from {cli::qty(length(sess))} \\
+    probably fail, unless you quit from {cli$qty(length(sess))} \\
     {?this/these} R session{?s}:",
     wrap = TRUE
   )
 
-  cli::cli_div(theme = list(
+  cli$cli_div(theme = list(
     body = list("margin-left" = 2L),
     par = list("margin-top" = 1L),
     ol = list("margin-top" = 1L),
     ul = list("margin-top" = 1L, "margin-bottom" = 1L)
   ))
-  cli::cli_par()
-  cli::cli_ul(sess)
-  cli::cli_text("What do you want to do?")
-  cli::cli_ol(c(
+  cli$cli_par()
+  cli$cli_ul(sess)
+  cli$cli_text("What do you want to do?")
+  cli$cli_ol(c(
     "Quit these R sessions and try the installation again \\
     (Safest option.)",
     "Terminate the listed R sessions. They may lose data!",
@@ -150,12 +155,15 @@ warn_for_loaded_packages_none_locked <- function(others) {
 }
 
 warn_for_loaded_packages_loaded_locked <- function(current, others) {
+  load_all_private()
   warn_for_loaded_packages_emit(current$loaded)
-  cli::cli_verbatim("")
+  pkg_data[["ns"]][["cli"]]$cli_verbatim("")
   warn_for_loaded_packages_none_locked(others)
 }
 
 warn_for_loaded_packages_locked_locked <- function(current, others) {
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
   pcs <- others$users[!duplicated(others$users$pid), , drop = FALSE]
   sess <- sprintf("%s (%s)", pcs$name, pcs$pid)
   apps <- ifelse(
@@ -165,41 +173,41 @@ warn_for_loaded_packages_locked_locked <- function(current, others) {
   )
   sess <- paste0(sess, apps)
   if (identical(sort(current$locked), sort(others$locked))) {
-    cli::cli_alert_warning(
+    cli$cli_alert_warning(
       "{.pkg {current$locked}} {?is/are} loaded in the current R \\
       session and in other R sessions and {?has/have} locked files \\
       in your library. The installation will probably fail unless \\
       pak unloads {?it/them} from the current R session and you
-      quit from {cli::qty(length(sess))} {?this/these} R session{?s}:",
+      quit from {cli$qty(length(sess))} {?this/these} R session{?s}:",
       wrap = TRUE
     )
   } else {
-    cli::cli_alert_warning(
+    cli$cli_alert_warning(
       "{.pkg {current$locked}} {?is/are} loaded in the current R \\
       session and {?has/have} locked files in your library. The \\
       installation will fail unless pak unloads it.",
       wrap = TRUE
     )
-    cli::cli_verbatim("")
-    cli::cli_alert_warning(
+    cli$cli_verbatim("")
+    cli$cli_alert_warning(
       "{.pkg {others$locked}} {?is/are} loaded in other R sessions \\
       and {?has/have} locked files in your library. The installation \\
-      will fail unless you quit from {cli::qty(length(sess))} \\
+      will fail unless you quit from {cli$qty(length(sess))} \\
       {?this/these} R session{?s}:",
       wrap = TRUE
     )
   }
 
-  cli::cli_div(theme = list(
+  cli$cli_div(theme = list(
     body = list("margin-left" = 2L),
     par = list("margin-top" = 1L),
     ol = list("margin-top" = 1L),
     ul = list("margin-top" = 1L, "margin-bottom" = 1L)
   ))
-  cli::cli_par()
-  cli::cli_ul(sess)
-  cli::cli_text("What do you want to do?")
-  cli::cli_ol(c(
+  cli$cli_par()
+  cli$cli_ul(sess)
+  cli$cli_text("What do you want to do?")
+  cli$cli_ol(c(
     "Quit the listed R sessions and then have pak unload the \\
     packages from the current R session (Safest option.)",
     "Terminate the listed R sessions (they may lose data!) and have \\
@@ -230,7 +238,11 @@ r_app_names <- function() {
 
 guess_r_app <- function(ancestry) {
   names <- vcapply(ancestry, function(p) {
-    tryCatch(ps::ps_name(p), error = function(e) NA_character_)
+    load_all_private()
+    tryCatch(
+      pkg_data[["ns"]][["ps"]]$ps_name(p),
+      error = function(e) NA_character_
+    )
   })
 
   good <- which(!is.na(names) & names %in% r_app_names())[1]
@@ -268,7 +280,8 @@ guess_r_app <- function(ancestry) {
 get_locked_libs <- function(lib, pkgs) {
   libs <- file.path(lib, pkgs, "libs", .Platform$r_arch)
   dlls <- dir(libs, pattern = "\\.dll$", full.names = TRUE)
-  users <- ps::ps_shared_lib_users(
+  load_all_private()
+  users <- pkg_data[["ns"]][["ps"]]$ps_shared_lib_users(
     dlls,
     user = NULL,
     filter = r_process_names()
@@ -300,7 +313,8 @@ get_locked_libs <- function(lib, pkgs) {
 loaded_status_current <- function(pkgs, loaded, locked, pid = NULL) {
   bad <- intersect(pkgs, loaded)
   bad <- setdiff(bad, "pak")
-  pid <- pid %||% ps::ps_ppid()
+  load_all_private()
+  pid <- pid %||% pkg_data[["ns"]][["ps"]]$ps_ppid()
   cur_locked <- locked$package[
     locked$package %in% bad & locked$pid == pid
   ]
@@ -343,20 +357,22 @@ loaded_status_current <- function(pkgs, loaded, locked, pid = NULL) {
 #' @noRd
 
 loaded_status_others <- function(locked, pid = NULL) {
-  pid <- pid %||% ps::ps_ppid()
+  load_all_private()
+  ps <- pkg_data[["ns"]][["ps"]]
+  pid <- pid %||% ps$ps_ppid()
   oth_locked <- locked[locked$pid != pid, , drop = FALSE]
 
   oth_pids <- unique(oth_locked$pid)
   descent <- lapply(oth_pids, function(pid) {
     ps <- oth_locked$ps_handle[[match(pid, oth_locked$pid)]]
-    tryCatch(ps::ps_descent(ps), error = function(e) list(ps))
+    tryCatch(ps$ps_descent(ps), error = function(e) list(ps))
   })
   app_handle <- lapply(descent, guess_r_app)
   app_pid <- viapply(app_handle, function(p) {
-    tryCatch(ps::ps_pid(p), error = function(e) NA_integer_)
+    tryCatch(ps$ps_pid(p), error = function(e) NA_integer_)
   })
   app_name <- vcapply(app_handle, function(p) {
-    tryCatch(ps::ps_name(p), error = function(e) NA_character_)
+    tryCatch(ps$ps_name(p), error = function(e) NA_character_)
   })
 
   map <- match(oth_locked$pid, oth_pids)
@@ -369,8 +385,8 @@ loaded_status_others <- function(locked, pid = NULL) {
 
   status <- if (nrow(oth_locked) > 0) "locked" else "none"
 
-  oth_locked$create_time <- vdapply(oth_locked$ps_handle, ps::ps_create_time)
-  oth_locked$app_create_time <- vdapply(oth_locked$app_handle, ps::ps_create_time)
+  oth_locked$create_time <- vdapply(oth_locked$ps_handle, ps$ps_create_time)
+  oth_locked$app_create_time <- vdapply(oth_locked$app_handle, ps$ps_create_time)
   oth_locked$ps_handle <- NULL
   oth_locked$app_handle <- NULL
 
