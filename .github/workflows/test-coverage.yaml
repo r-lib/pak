@@ -30,8 +30,6 @@ jobs:
         run: |
           pkgload::load_all()
           ac <- covr()
-          sac <- summary(ac)
-          print(sac)
         shell: Rscript {0}
         env:
           TEST_COVERAGE_PAK: true

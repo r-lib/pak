@@ -173,6 +173,11 @@ is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
 
+is_count <- function(x) {
+  is.numeric(x) && length(x) == 1 && !is.na(x) && x >= 0 &&
+    as.integer(x) == x
+}
+
 map_named <- function(x, fun) {
   mapply(names(x), x, SIMPLIFY = FALSE, FUN = fun)
 }

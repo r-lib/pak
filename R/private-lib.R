@@ -25,16 +25,3 @@ private_lib_dir <- function() {
     R.Version()$arch
   )
 }
-
-#' Attach pak's internal library to the search path
-#'
-#' This should be only called in a pak subprocess, from `.onLoad()`.
-#'
-#' @noRd
-
-use_private_lib <- function() {
-  lib <- private_lib_dir()
-  old <- .libPaths()
-  new <- c(lib, old[old != lib])
-  .libPaths(new)
-}

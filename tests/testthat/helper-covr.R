@@ -11,6 +11,7 @@ covr <- function(filter = NULL, pre_clean = TRUE, ...) {
   }
 
   # Run tests -------------------------------------------------------------
+  load_all_private()
   testthat::test_dir("tests/testthat", filter = filter, ...)
 
   # Save R coverage -------------------------------------------------------
@@ -26,5 +27,15 @@ covr <- function(filter = NULL, pre_clean = TRUE, ...) {
   message("Parsing and reading coverage")
   cov <- asNamespace("covrlabs")$parse_coverage()
 
-  cov
+  if (!is.null(filter)) {
+    cov <- cov[grepl(filter, cov$file), ]
+  }
+
+  print(summary(cov))
+  invisible(cov)
+}
+
+test <- function(filter = NULL) {
+  load_all_private()
+  testthat::test_dir("tests/testthat", filter = filter)
 }

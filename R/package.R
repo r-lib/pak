@@ -150,7 +150,7 @@ pkg_status <- function(pkg, lib = .libPaths()) {
 
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   load_all_private()
-  pr <- pkg_data[["ns"]][["pkgdepends"]][["parse_pkg_reg"]](pkg)
+  pr <- pkg_data[["ns"]][["pkgdepends"]][["parse_pkg_ref"]](pkg)
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }
