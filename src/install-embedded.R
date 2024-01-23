@@ -368,7 +368,7 @@ bundle_rds <- function(lib = NULL) {
   ns <- new.env(parent = emptyenv())
   pkgs <- setdiff(
     dir(lib, pattern = "^[^_]"),
-    c("deps.rds", "deps-covr.rds")
+    c("deps.rds", "deps-covr.rds", "deps-cnt.rds")
   )
   for (pkg in pkgs) {
     pkg_env <- new.env(parent = emptyenv())

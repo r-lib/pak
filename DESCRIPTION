@@ -38,7 +38,6 @@ Imports:
 Suggests:
     callr (>= 3.7.0),
     cli (>= 3.2.0),
-    covr,
     curl (>= 4.3.2),
     desc (>= 1.4.1),
     filelock (>= 1.0.2),
