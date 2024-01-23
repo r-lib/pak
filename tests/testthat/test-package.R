@@ -40,6 +40,7 @@ test_that("pkg_deps_tree", {
   skip_on_cran()
   local <- withr::local_tempdir()
   setup_fake_apps()
+  cache_clean()
   suppressMessages(pdt <- pkg_deps_tree("pkg2"))
   expect_equal(sort(pdt$package), sort(c("pkg1", "pkg2")))
   expect_snapshot(print(pdt), transform = transform_bytes)
