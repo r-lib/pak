@@ -1,4 +1,8 @@
 R/aaa-rstudio-detect.R
+R/build-pak-binary.R
+R/embed.R
+R/embed-ca-certs.R
+R/push-packages.R
 R/system-requirements.R
 src/library/R6/
 src/library/callr/
