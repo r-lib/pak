@@ -56,3 +56,6 @@
 ^src/library/zip/src/tools/cmdzip$
 ^[.]vscode$
 ^[.]covrignore$
+[.]gcda$
+[.]gcno$
+[.]gcov$
