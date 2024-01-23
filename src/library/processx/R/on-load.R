@@ -1,6 +1,8 @@
 
 ## nocov start
 
+if (Sys.getenv("PAK_INSTALL_DUMMY_CROSS") != "true") {
+
 .onLoad <- function(libname, pkgname) {
   ## This is needed to fix the boot time to a given value,
   ## because in a Docker container (maybe elsewhere as well?) on
@@ -26,4 +28,5 @@
   supervisor_reset()
 }
 
+}
 ## nocov end

@@ -1,6 +1,8 @@
 
 client <- new.env(parent = emptyenv())
 
+if (Sys.getenv("PAK_INSTALL_DUMMY_CROSS") != "true") {
+
 local({
   ext <- .Platform$dynlib.ext
   arch <- .Platform$r_arch
@@ -46,6 +48,8 @@ local({
     }
   }
 })
+
+}
 
 # This is really only here for testing
 
