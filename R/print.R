@@ -78,7 +78,7 @@ print_install_summary <- function(x) {
   ts <- if (nzchar(total_time)) " {.timestamp {total_time}}" else ""
 
   load_all_private()
-  pkg_data[["ns"]][["cli"]]$alert_success(c(
+  pkg_data[["ns"]][["cli"]]$cli_alert_success(c(
     pkgsum,
     ": ",
     updsum,
