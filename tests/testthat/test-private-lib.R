@@ -11,7 +11,7 @@ test_that("private_lib_dir 2", {
 })
 
 test_that("private_lib_dir 3", {
-  mockery::stub(private_lib_dir, "file.eixsts", FALSE)
+  mockery::stub(private_lib_dir, "file.exists", FALSE)
   withr::local_envvar(c(PAK_PRIVATE_LIBRARY = NA_character_))
   mockery::stub(private_lib_dir, "user_cache_dir", "cached-dir")
   mockery::stub(private_lib_dir, "get_minor_r_version", "4.3")
