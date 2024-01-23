@@ -30,7 +30,3 @@ lib_status <- function(lib = .libPaths()[1]) {
 ## TODO: lib_update()
 
 ## ----------------------------------------------------------------------
-
-lib_status_internal <- function(lib) {
-  pkgdepends::lib_status(lib)
-}
