@@ -44,6 +44,7 @@ Suggests:
     gitcreds,
     glue (>= 1.6.2),
     jsonlite (>= 1.8.0),
+    knitr,
     mockery,
     pingr,
     pkgbuild (>= 1.4.2),
