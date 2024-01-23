@@ -185,3 +185,10 @@ map_named <- function(x, fun) {
 cisort <- function(x) {
   x[order(tolower(x))]
 }
+
+read_char <- function(path) {
+  bin <- readBin(path, "raw", file.info(path)$size)
+  txt <- rawToChar(bin)
+  Encoding(txt) <- "UTF-8"
+  txt
+}
