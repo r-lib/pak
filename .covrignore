@@ -1,7 +1,10 @@
 R/aaa-rstudio-detect.R
 R/build-pak-binary.R
+R/dev-mode.R
 R/embed.R
 R/embed-ca-certs.R
+R/errors.R
+R/git-app.R
 R/push-packages.R
 R/system-requirements.R
 src/library/R6/
