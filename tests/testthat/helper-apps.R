@@ -38,6 +38,11 @@ cran_app_pkgs <- dcf("
   Package: pkg3
   Version: 0.9.9
 
+  Package: pkg4
+  Version: 1.0.0
+  Imports: pkg2
+  Suggests: pkg3
+
   Package: crayon
   Version: 1.0.0
 

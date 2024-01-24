@@ -1,5 +1,6 @@
 pkg_data <- new.env(parent = emptyenv())
 
+# nocov start
 .onLoad <- function(libname, pkgname) {
   if (Sys.getenv("DEVTOOLS_LOAD") == "pak") {
     create_dev_lib()
@@ -12,6 +13,7 @@ pkg_data <- new.env(parent = emptyenv())
 
   invisible()
 }
+# nocov end
 
 check_platform <- function(libname = dirname(find.package("pak")),
                            pkgname = "pak", data = pak_sitrep_data) {
