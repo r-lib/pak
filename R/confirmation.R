@@ -38,8 +38,6 @@ print_install_details <- function(prop, lib, loaded) {
   b_dl <- format_bytes$pretty_bytes(sum(sol$filesize[w_dl], na.rm = TRUE))
   b_ch <- format_bytes$pretty_bytes(sum(sol$filesize[w_ch], na.rm = TRUE))
 
-  any_unk <- length(u_dl) > 0
-
   if (n_dl == 0) {
     if (n_ch > 0) {
       if (n_ch == 1) {
@@ -55,7 +53,7 @@ print_install_details <- function(prop, lib, loaded) {
     if (u_dl > 0) {
       cli$cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
     }
-  } else if (!any_unk) {
+  } else if (u_dl == 0) {
     cli$cli_alert(
       "Will {.emph download} {n_dl} package{?s} ({b_dl}), cached: {n_ch} ({b_ch})."
     )
@@ -74,25 +72,7 @@ print_install_details <- function(prop, lib, loaded) {
     prop$show_solution(key = FALSE)
   }
 
-  sysreqs <- prop$get_sysreqs()
-  if (!is.null(sysreqs)) {
-    num <- length(sysreqs$miss) + length(sysreqs$upd)
-    if (length(sysreqs$inst) > 0 && num == 0) {
-      cli$cli_alert_success("All system requirements are already installed.")
-    } else if (num > 0) {
-      install_sysreqs <- prop$get_config()$get("sysreqs")
-      if (install_sysreqs) {
-        cli$cli_alert("Will {.emph install} {num} system package{?s}:")
-      } else {
-        cli$cli_alert_danger(
-          "Missing {num} system package{?s}. You'll probably need to
-           install {?it/them} manually:",
-          wrap = TRUE
-        )
-      }
-    }
-    prop$show_sysreqs()
-  }
+  print_sysreqs_details(prop)
 
   if (length(loaded) > 0 || get_os() == "win") {
     ls <- warn_for_loaded_packages(sol$package[newly | upd], lib, loaded)
@@ -102,6 +82,32 @@ print_install_details <- function(prop, lib, loaded) {
 
   should_ask <- should_ask_confirmation(sol)
   invisible(list(should_ask = should_ask, loaded_status = ls))
+}
+
+print_sysreqs_details <- function(prop) {
+  sysreqs <- prop$get_sysreqs()
+  if (is.null(sysreqs)) {
+    return()
+  }
+  load_all_private()
+  cli <- pkg_data[["ns"]][["cli"]]
+
+  num <- length(sysreqs$miss) + length(sysreqs$upd)
+  if (length(sysreqs$inst) > 0 && num == 0) {
+    cli$cli_alert_success("All system requirements are already installed.")
+  } else if (num > 0) {
+    install_sysreqs <- prop$get_config()$get("sysreqs")
+    if (install_sysreqs) {
+      cli$cli_alert("Will {.emph install} {num} system package{?s}:")
+    } else {
+      cli$cli_alert_danger(
+        "Missing {num} system package{?s}. You'll probably need to
+         install {?it/them} manually:",
+        wrap = TRUE
+      )
+    }
+  }
+  prop$show_sysreqs()
 }
 
 get_confirmation <- function(q, msg = "Aborted.") {
@@ -135,7 +141,7 @@ offer_restart <- function(unloaded) {
     "  current R session may be unstable. It is best to restart R now.\n"
   )
 
-  rs <- rstudio$detect()$type
+  rs <- rstudio_detect()$type
 
   if (rs == "rstudio_console") {
     message(

@@ -1,4 +1,3 @@
-
 # -------------------------------------------------------------------------
 # Dummy CRAN app
 
@@ -84,41 +83,40 @@ fake_bioc <- webfakes::local_app_process(
 )
 
 setup_fake_apps <- function(
-  cran_app = NULL,
-  bioc_app = NULL,
-  cran_repo = NULL,
-  bioc_repo = NULL,
-  cran_options = NULL,
-  bioc_options = NULL,
-  .local_envir = parent.frame()) {
-
+    cran_app = NULL,
+    bioc_app = NULL,
+    cran_repo = NULL,
+    bioc_repo = NULL,
+    cran_options = NULL,
+    bioc_options = NULL,
+    .local_envir = parent.frame()) {
   cran_app <- if (!is.null(cran_app)) {
-                cran_app
-              } else if (!is.null(cran_repo)) {
-                app <- webfakes::local_app_process(
-                  cran_app(cran_repo, options = as.list(cran_options)),
-                  opts = webfakes::server_opts(num_threads = 3),
-                  .local_envir = .local_envir
-                )
-                assign(".cran_app", app, envir = .local_envir)
-                app
-              } else {
-                fake_cran
-              }
+    cran_app
+  } else if (!is.null(cran_repo)) {
+    app <- webfakes::local_app_process(
+      cran_app(cran_repo, options = as.list(cran_options)),
+      opts = webfakes::server_opts(num_threads = 3),
+      .local_envir = .local_envir
+    )
+    assign(".cran_app", app, envir = .local_envir)
+    app
+  } else {
+    fake_cran
+  }
 
   bioc_app <- if (!is.null(bioc_app)) {
-                bioc_app
-              } else if (!is.null(bioc_repo)) {
-                app <- webfakes::local_app_process(
-                  bioc_app(bioc_repo, options = as.list(bioc_options)),
-                  opts = webfakes::server_opts(num_threads = 3),
-                  .local_envir = .local_envir
-                )
-                assign(".bioc_app", app, envir = .local_envir)
-                app
-              } else {
-                fake_bioc
-              }
+    bioc_app
+  } else if (!is.null(bioc_repo)) {
+    app <- webfakes::local_app_process(
+      bioc_app(bioc_repo, options = as.list(bioc_options)),
+      opts = webfakes::server_opts(num_threads = 3),
+      .local_envir = .local_envir
+    )
+    assign(".bioc_app", app, envir = .local_envir)
+    app
+  } else {
+    fake_bioc
+  }
 
   withr::local_options(
     repos = c(CRAN = cran_app$url()),
@@ -237,7 +235,6 @@ gh_app_repos <- list(
         )
       )
     ),
-
     "wesm" = list(
       repos = list(
         "feather" = list(
@@ -252,7 +249,6 @@ gh_app_repos <- list(
         )
       )
     ),
-
     "gaborcsardi" = list(
       repos = list(
         "secret-test" = list(
@@ -278,7 +274,6 @@ gh_app_repos <- list(
         )
       )
     ),
-
     "tidyverse" = list(
       repos = list(
         "tidyverse.org" = list(
@@ -293,7 +288,6 @@ gh_app_repos <- list(
         )
       )
     ),
-
     "cran" = list(
       repos = list(
         "rJava" = list(
@@ -311,7 +305,6 @@ gh_app_repos <- list(
         )
       )
     )
-
   )
 )
 
@@ -517,12 +510,11 @@ new_sysreqs_app <- function() {
       af <- unlist(lapply(srq, "[[", "post_install"), recursive = FALSE)
 
       res$send_json(list(
-            name = jsonlite::unbox("pkgdependssysreqs"),
-            pre_install = bf,
-            install_scripts = is,
-            post_install = af
-          ))
-
+        name = jsonlite::unbox("pkgdependssysreqs"),
+        pre_install = bf,
+        install_scripts = is,
+        post_install = af
+      ))
     } else {
       res$set_status(400)
       res$send_json(list(
@@ -582,7 +574,7 @@ transform_bioc_version <- function(x) {
 }
 
 transform_bytes <- function(x) {
-  sub("[(][0-9]+ B[)]", "(<size>)", x)
+  gsub("[(][0-9]+ B[)]", "(<size>)", x)
 }
 
 transform_ext <- function(x) {
