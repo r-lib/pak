@@ -11,7 +11,6 @@ covr <- function(filter = NULL, pre_clean = TRUE, ...) {
   }
 
   # Run tests -------------------------------------------------------------
-  load_all_private()
   testthat::test_dir("tests/testthat", filter = filter, ...)
 
   # Save R coverage -------------------------------------------------------

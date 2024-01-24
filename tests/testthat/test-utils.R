@@ -339,3 +339,13 @@ test_that("cisort", {
   vec <- c("abc", "ABD", "abE")
   expect_equal(cisort(sample(vec)), vec)
 })
+
+test_that("read_char", {
+  local <- withr::local_tempdir()
+  path <- file.path(local, "foo")
+  file.create(path)
+  expect_equal(read_char(path), "")
+  writeLines(c("foo", "bar", "\u00f0", "foobar"), path)
+  expect_equal(read_char(path), "foo\nbar\n\u00f0\nfoobar\n")
+  expect_equal(Encoding(read_char(path)), "UTF-8")
+})

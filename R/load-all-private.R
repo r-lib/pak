@@ -8,7 +8,7 @@ load_all_private <- function() {
     cnt_path <- file.path(lib, "deps-cnt.rds")
     asNamespace("covrlabs")$add_counters(readRDS(cnt_path))
   } else {
-    deps_path <- file.path(lib, "deps.rds")
+    deps_path <- file.path(lib, "deps.rds") # nocov
   }
   pkg_data[["ns"]] <- readRDS(deps_path)
   parent.env(pkg_data[["ns"]]) <- getNamespace(.packageName)
@@ -40,7 +40,7 @@ load_all_private <- function() {
   if (pcnp == "") {
     on.exit(Sys.unsetenv("PKGCACHE_NO_PILLAR"), add = TRUE)
   } else {
-    on.exit(Sys.setenv(PKGCACHE_NO_PILLAR = pcnp), add = TRUE)
+    on.exit(Sys.setenv(PKGCACHE_NO_PILLAR = pcnp), add = TRUE) # nocov
   }
   Sys.setenv("PKGCACHE_NO_PILLAR" = "true")
 
