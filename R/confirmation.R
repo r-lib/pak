@@ -92,22 +92,25 @@ print_sysreqs_details <- function(prop) {
   load_all_private()
   cli <- pkg_data[["ns"]][["cli"]]
 
-  num <- length(sysreqs$miss) + length(sysreqs$upd)
-  if (length(sysreqs$inst) > 0 && num == 0) {
+  do <- length(sysreqs$miss) + length(sysreqs$upd)
+  if (length(sysreqs$inst) > 0 && do == 0) {
     cli$cli_alert_success("All system requirements are already installed.")
-  } else if (num > 0) {
+  } else if (do > 0) {
     install_sysreqs <- prop$get_config()$get("sysreqs")
     if (install_sysreqs) {
-      cli$cli_alert("Will {.emph install} {num} system package{?s}:")
+      cli$cli_alert("Will {.emph install} {do} system package{?s}:")
     } else {
       cli$cli_alert_danger(
-        "Missing {num} system package{?s}. You'll probably need to
+        "Missing {do} system package{?s}. You'll probably need to
          install {?it/them} manually:",
         wrap = TRUE
       )
     }
   }
-  prop$show_sysreqs()
+  # workaround for printing an empty line if no sysreqs
+  if (do + length(sysreqs$inst) > 0) {
+    prop$show_sysreqs()
+  }
 }
 
 get_confirmation <- function(q, msg = "Aborted.") {
