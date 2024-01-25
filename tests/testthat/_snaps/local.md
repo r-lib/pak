@@ -18,10 +18,10 @@
       local_deps_tree(file.path(dld, "pkg4"))
     Output
       local::<tempdir>/<tempfile>
-      \-pkg2 1.0.0 [new][bld]
-        \-pkg1 1.0.0 [new][bld]
+      \-pkg2 1.0.0 [new][bld][dl] (<size>)
+        \-pkg1 1.0.0 [new][bld][dl] (<size>)
       
-      Key:  [new] new | [bld] build
+      Key:  [new] new | [dl] download | [bld] build
 
 ---
 
@@ -29,12 +29,12 @@
       local_dev_deps_tree(file.path(dld, "pkg4"))
     Output
       local::<tempdir>/<tempfile>
-      +-pkg2 1.0.0 [new][bld]
-      | \-pkg1 1.0.0 [new][bld]
-      \-pkg3 1.0.0 [new][bld]
+      +-pkg2 1.0.0 [new][bld][dl] (<size>)
+      | \-pkg1 1.0.0 [new][bld][dl] (<size>)
+      \-pkg3 1.0.0 [new][bld][dl] (<size>)
         \-pkg2
       
-      Key:  [new] new | [bld] build
+      Key:  [new] new | [dl] download | [bld] build
 
 ---
 

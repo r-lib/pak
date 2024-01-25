@@ -2,6 +2,7 @@ test_that("local_install", {
   skip_on_cran()
   lib <- withr::local_tempdir()
   dld <- withr::local_tempdir()
+  cache_clean()
   setup_fake_apps()
 
   suppressMessages(dl <- pkg_download("pkg3", dld))
@@ -18,6 +19,7 @@ test_that("local_install_deps", {
   skip_on_cran()
   lib <- withr::local_tempdir()
   dld <- withr::local_tempdir()
+  cache_clean()
   setup_fake_apps()
 
   suppressMessages(dl <- pkg_download("pkg4", dld))
@@ -38,6 +40,7 @@ test_that("local_install_dev_deps", {
   skip_on_cran()
   lib <- withr::local_tempdir()
   dld <- withr::local_tempdir()
+  cache_clean()
   setup_fake_apps()
 
   suppressMessages(dl <- pkg_download("pkg4", dld))
@@ -58,6 +61,7 @@ test_that("local_deps & co", {
   skip_on_cran()
   lib <- withr::local_tempdir()
   dld <- withr::local_tempdir()
+  cache_clean()
   setup_fake_apps()
 
   suppressMessages(dl <- pkg_download("pkg4", dld))
