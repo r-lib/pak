@@ -70,6 +70,9 @@ test_that("local_deps & co", {
   utils::untar(pkg, exdir = dld)
   expect_snapshot(local_deps(file.path(dld, "pkg4"))$package)
   expect_snapshot(local_dev_deps(file.path(dld, "pkg4"))$package)
+
+  # otherwise long temp dir might be cut off
+  withr::local_options(cli.width = 500)
   expect_snapshot(
     local_deps_tree(file.path(dld, "pkg4")),
     transform = function(x) transform_tempdir(transform_bytes(x))

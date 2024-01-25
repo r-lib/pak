@@ -17,7 +17,7 @@
     Code
       local_deps_tree(file.path(dld, "pkg4"))
     Output
-      local::<tempdir>/<tempfile>
+      local::<tempdir>/<tempfile>/pkg4 1.0.0 [new][bld][dl] (unknown size)
       \-pkg2 1.0.0 [new][bld][dl] (<size>)
         \-pkg1 1.0.0 [new][bld][dl] (<size>)
       
@@ -28,7 +28,7 @@
     Code
       local_dev_deps_tree(file.path(dld, "pkg4"))
     Output
-      local::<tempdir>/<tempfile>
+      local::<tempdir>/<tempfile>/pkg4 1.0.0 [new][bld][dl] (unknown size)
       +-pkg2 1.0.0 [new][bld][dl] (<size>)
       | \-pkg1 1.0.0 [new][bld][dl] (<size>)
       \-pkg3 1.0.0 [new][bld][dl] (<size>)
