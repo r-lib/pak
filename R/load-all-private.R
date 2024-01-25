@@ -51,3 +51,8 @@ load_all_private <- function() {
     }
   }
 }
+
+embedded_call <- function(pkg, fun) {
+  load_all_private()
+  pkg_data[["ns"]][[pkg]][[fun]]
+}

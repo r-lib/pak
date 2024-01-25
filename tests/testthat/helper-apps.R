@@ -625,6 +625,16 @@ transform_installed_in_temp <- function(x) {
   x
 }
 
+transform_lockfile <- function(x) {
+  x <- transform_local_port(x)
+  x <- sub("\"os\": \".*\"", "\"os\": \"<os>\"", x)
+  x <- sub("\"r_version\": \".*\"", "\"r_version\": \"<r-version>\"", x)
+  x <- sub("\"platform\": \".*\"", "\"platform\": \"<platform>\"", x)
+  x <- sub("\"filesize\": [0-9]+,", "\"filesize\": 9999,", x)
+  x <- sub("\"sha256\": \".*\"", "\"sha256\": \"<sha256>\"", x)
+  x
+}
+
 fake_git <- local({
   dir.create(tmp <- tempfile())
   untar(testthat::test_path("fixtures/git-repo.tar.gz"), exdir = tmp)

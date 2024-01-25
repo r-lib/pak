@@ -11,21 +11,24 @@
 #' ```
 
 pkg_name_check <- function(name, dictionaries = NULL) {
-  load_all_private()
-  ret <- pkg_data[["ns"]][["pkgdepends"]][["pkg_name_check"]](
-    name,
-    dictionaries
-  )
-
+  ret <- embedded_call("pkgdepends", "pkg_name_check")(name, dictionaries)
   class(ret) <- c("pak_pkg_name_check", class(ret))
   ret
 }
 
 #' @export
 
-format.pak_pkg_name_check <- function(x, ...) {
+format.pak_pkg_name_check <- function(x, limit = 6, ...) {
   load_all_private()
-  pkg_data[["ns"]][["pkgdepends"]][["format.pkg_name_check"]](x, ...)
+  # lots of S3 in pkgdepends for this, we need to do that manually here
+  pd <- pkg_data[["ns"]][["pkgdepends"]]
+  for (n in c("basics", "wikipedia", "wiktionary", "sentiment", "urban")) {
+    if (!is.null(x[[n]])) {
+      fn <- paste0("format.pkg_name_check_", n)
+      x[[n]] <- pd[[fn]](x[[n]], limit = limit)
+    }
+  }
+  unlist(x)
 }
 
 #' @export
