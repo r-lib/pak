@@ -1,6 +1,7 @@
 test_that("lockfile_create, lockfile_install", {
   skip_on_cran()
   dld <- withr::local_tempdir()
+  withr::local_options(pkg.sysreqs_platform = "")
   cache_clean()
   setup_fake_apps()
 
