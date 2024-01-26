@@ -14,7 +14,7 @@ detect_platform <- function() {
   me
 }
 
-pak_stream <- function(stream) {
+pak_stream <- function(stream = "auto") {
   if (stream == "auto") {
     version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
     stream <- if (length(version) >= 4 && version[4] == 9999) {

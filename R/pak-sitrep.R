@@ -58,7 +58,7 @@ pak_sitrep <- function() {
   cat(paste0("- ", .libPaths()), sep = "\n")
 
   lib <- private_lib_dir()
-  if (!is.null(asNamespace("pak")[[".__DEVTOOLS__"]])) {
+  if (is_load_all()) {
     cat0("* Using `load_all()` from ", find.package("pak"), ".\n")
     cat0("* Private library location:\n- ", lib, "\n")
   } else {
@@ -66,4 +66,8 @@ pak_sitrep <- function() {
   }
 
   invisible()
+}
+
+is_load_all <- function() {
+  !is.null(asNamespace("pak")[[".__DEVTOOLS__"]])
 }

@@ -23,65 +23,46 @@ pak_cleanup <- function(package_cache = TRUE, metadata_cache = TRUE,
 }
 
 pak_cleanup_package_cache <- function(force) {
+  load_all_private()
+  sum <- pkg_data[["ns"]][["pkgcache"]][["pkg_cache_summary"]]()
   if (!force) {
-    pak_cleanup_package_cache_print()
+    size <- format_bytes$pretty_bytes(sum$size)
+    pkg_data[["ns"]][["cli"]][["cli_alert"]](
+      "{.emph Package cache} is in {.path {sum$cachepath}} ({size})"
+    )
     force <- get_confirmation2("? Do you want to remove it? (Y/n) ")
   }
 
   if (force) {
-    pak_cleanup_package_cache2()
+    unlink(sum$cachepath, recursive = TRUE)
+    root <- sum$cachepath
+    if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
+    pkg_data[["ns"]][["cli"]][["cli_alert_success"]](
+      "Cleaned up package cache"
+    )
   }
   invisible(force)
-}
-
-pak_cleanup_package_cache_print <- function() {
-  load_all_private()
-  sum <- pkg_data[["ns"]][["pkgcache"]][["pkg_cache_summary"]]()
-  size <- format_bytes$pretty_bytes(sum$size)
-  pkg_data[["ns"]][["cli"]][["cli_alert"]](
-    "{.emph Package cache} is in {.path {sum$cachepath}} ({size})"
-  )
-}
-
-pak_cleanup_package_cache2 <- function() {
-  sum <- pkg_data[["ns"]][["pkgcache"]][["pkg_cache_summary"]]()
-  unlink(sum$cachepath, recursive = TRUE)
-  root <- dirname(sum$cachepath)
-  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
-  pkg_data[["ns"]][["cli"]][["cli_alert_success"]](
-    "Cleaned up package cache"
-  )
-  invisible()
 }
 
 pak_cleanup_metadata_cache <- function(force) {
+  load_all_private()
+  sum <- pkg_data[["ns"]][["pkgcache"]][["meta_cache_summary"]]()
   if (!force) {
-    pak_cleanup_metadata_cache_print()
+    size <- format_bytes$pretty_bytes(sum$size)
+    pkg_data[["ns"]][["cli"]][["cli_alert"]](
+      "{.emph Metadata cache} is in {.path {sum$cachepath}} ({size})"
+    )
     force <- get_confirmation2("? Do you want to remove it? (Y/n) ")
   }
 
   if (force) {
-    pak_cleanup_metadata_cache2()
+    unlink(sum$cachepath, recursive = TRUE)
+    unlink(sum$lockfile, recursive = TRUE)
+    root <- dirname(sum$cachepath)
+    if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
+    pkg_data[["ns"]][["cli"]][["cli_alert_success"]](
+      "Cleaned up metadata cache"
+    )
   }
   invisible(force)
-}
-
-pak_cleanup_metadata_cache_print <- function() {
-  sum <- pkg_data[["ns"]][["pkgcache"]][["meta_cache_summary"]]()
-  size <- format_bytes$pretty_bytes(sum$size)
-  pkg_data[["ns"]][["cli"]][["cli_alert"]](
-    "{.emph Metadata cache} is in {.path {sum$cachepath}} ({size})"
-  )
-}
-
-pak_cleanup_metadata_cache2 <- function() {
-  sum <- pkg_data[["ns"]][["pkgcache"]][["meta_cache_summary"]]()
-  unlink(sum$cachepath, recursive = TRUE)
-  unlink(sum$lockfile, recursive = TRUE)
-  root <- dirname(sum$cachepath)
-  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
-  pkg_data[["ns"]][["cli"]][["cli_alert_success"]](
-    "Cleaned up metadata cache"
-  )
-  invisible()
 }
