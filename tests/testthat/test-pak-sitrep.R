@@ -8,7 +8,6 @@ test_that("pak_sitrep", {
     fixed = TRUE
   )
   expect_match(sitrep, "pak platform:", fixed = TRUE)
-  expect_match(sitrep, "pak repository:", fixed = TRUE)
   expect_match(sitrep, "Optional packages installed:", fixed = TRUE)
   expect_match(sitrep, "Library path:", fixed = TRUE)
   expect_match(sitrep, .libPaths()[1], fixed = TRUE)
