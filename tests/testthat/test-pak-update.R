@@ -66,21 +66,89 @@ test_that("pak_repo_metadata", {
 })
 
 test_that("pak_update", {
+  mockery::stub(
+    pak_update,
+    "pak_repo",
+    paste0("file:///", normalizePath(test_path("fixtures")), "/")
+  )
+  macos <- list(os = "darwin20", arch = "aarch64", rver = "4.3")
+  s390x <- list(os = "linux", arch = "s390x", rver = "4.3")
+  mockery::stub(pak_update, "detect_platform", s390x)
+  mockery::stub(pak_update, "is_load_all", FALSE)
+  expect_snapshot(error = TRUE, pak_update())
 
+  # no need to update, load_all() warning
+  mockery::stub(pak_update, "detect_platform", macos)
+  mockery::stub(pak_update, "check_mac_cran_r", TRUE)
+  mockery::stub(pak_update, "should_update_to", FALSE)
+  mockery::stub(pak_update, "is_load_all", TRUE)
+  transform_lib <- function(x) {
+    sub(.libPaths()[1], "<lib-path>", x, fixed = TRUE)
+  }
+  expect_snapshot(pak_update(), transform = transform_lib)
+
+  # same, w/o load_all() warning
+  mockery::stub(pak_update, "is_load_all", FALSE)
+  expect_snapshot(pak_update(), transform = transform_lib)
+
+  mockery::stub(pak_update, "should_update_to", TRUE)
 })
 
 test_that("pak_update_unsupported_platform", {
-
+  meta_path <- paste0("file:///", normalizePath(test_path("fixtures")), "/")
+  meta <- pak_repo_metadata(meta_path)
+  me <- list(os = "Linux", arch = "s390x", rver = "4.3")
+  expect_snapshot(
+    pak_update_unsupported_platform("devel", me, meta),
+    error = TRUE
+  )
 })
 
 test_that("check_mac_cran_r", {
+  expect_silent(check_mac_cran_r(list(os = "linux")))
+  mockery::stub(check_mac_cran_r, "platform_pkgtype", "source")
+  me <- list(os = "darwin20")
+  expect_snapshot(
+    error = TRUE,
+    check_mac_cran_r(me)
+  )
+})
 
+test_that("platform_pkgtype", {
+  expect_equal(platform_pkgtype(), .Platform$pkgType)
 })
 
 test_that("should_update_to", {
+  mockery::stub(
+    should_update_to,
+    "utils::packageDescription",
+    list(
+      Version = utils::packageVersion("pak"),
+      Built = "R 4.3.2; aarch64-apple-darwin20; 2024-01-25 11:40:41 UTC; unix"
+    )
+  )
+  expect_true(should_update_to(list(Version = "1000.0.0")))
+  expect_true(should_update_to(list(
+    Version = utils::packageVersion("pak"),
+    Built = "R 4.3.2; aarch64-apple-darwin20; 2124-01-25 11:40:41 UTC; unix"
+  )))
+  expect_false(should_update_to(list(
+    Version = utils::packageVersion("pak"),
+    Built = "R 4.3.2; aarch64-apple-darwin20; 2000-01-25 11:40:41 UTC; unix"
+  )))
 
+  mockery::stub(
+    should_update_to,
+    "R.Version",
+    list(platform = "s390x-pc-linux-gnu")
+  )
+  expect_snapshot(expect_true(should_update_to()))
 })
 
 test_that("get_built_date", {
-
+  expect_equal(get_built_date(NULL), NA_character_)
+  expect_equal(
+    get_built_date("R 4.3.2; aarch64-apple-darwin20; 2024-01-25 11:40:41 UTC; unix"),
+    "2024-01-25 11:40:41 UTC"
+  )
 })

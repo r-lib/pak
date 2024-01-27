@@ -313,3 +313,75 @@
       31     darwin20  x86_64      4.3
       32     darwin20  x86_64      4.4
 
+# pak_update
+
+    Code
+      pak_update()
+    Message
+      pak has devel binaries for the following platforms:
+       * Windows (mingw32), x86_64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * linux, aarch64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * linux, x86_64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * macOS darwin15.6.0, x86_64, R 3.5.x, R 3.6.x
+       * macOS darwin17.0, x86_64, R 4.0.x, R 4.1.x, R 4.2.x
+       * macOS darwin20, aarch64, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * macOS darwin20, x86_64, R 4.3.x, R 4.4.x
+      
+    Condition
+      Error in `pak_update_unsupported_platform()`:
+      ! pak is not available for linux, s390x, R 4.3.x. Aborting now
+
+---
+
+    Code
+      pak_update()
+    Condition
+      Warning in `pak_update()`:
+      `load_all()`-d pak package, updating in default library at
+        `<lib-path>`
+    Message
+      
+      Current version is the latest, no need to update.
+
+---
+
+    Code
+      pak_update()
+    Message
+      
+      Current version is the latest, no need to update.
+
+# pak_update_unsupported_platform
+
+    Code
+      pak_update_unsupported_platform("devel", me, meta)
+    Message
+      pak has devel binaries for the following platforms:
+       * Windows (mingw32), x86_64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * linux, aarch64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * linux, x86_64, R 3.5.x, R 3.6.x, R 4.0.x, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * macOS darwin15.6.0, x86_64, R 3.5.x, R 3.6.x
+       * macOS darwin17.0, x86_64, R 4.0.x, R 4.1.x, R 4.2.x
+       * macOS darwin20, aarch64, R 4.1.x, R 4.2.x, R 4.3.x, R 4.4.x
+       * macOS darwin20, x86_64, R 4.3.x, R 4.4.x
+      
+    Condition
+      Error in `pak_update_unsupported_platform()`:
+      ! pak is not available for Linux, s390x, R 4.3.x. Aborting now
+
+# check_mac_cran_r
+
+    Code
+      check_mac_cran_r(me)
+    Condition
+      Error in `check_mac_cran_r()`:
+      ! pak only has binaries for the CRAN build of R, and this seems to be a brew or another non-CRAN build.
+
+# should_update_to
+
+    Code
+      expect_true(should_update_to())
+    Message
+      
+      pak platform mismatch, trying to update to fix this...
+

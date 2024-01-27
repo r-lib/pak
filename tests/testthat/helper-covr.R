@@ -19,8 +19,10 @@ covr <- function(filter = NULL, pre_clean = TRUE, ...) {
   # Save C coverage -------------------------------------------------------
   # The rest do not have a gcov_flush hook
   # TODO: add hook to jsonlite, lpSolve, filelock, zip, curl, ps, processx.
-  .Call(pkg_data$ns$cli$clic__gcov_flush)
-  .Call(pkg_data$ns$pkgcache$pkgcache__gcov_flush)
+  if (!is.null(pkg_data[["ns"]][["cli"]])) {
+    .Call(pkg_data$ns$cli$clic__gcov_flush)
+    .Call(pkg_data$ns$pkgcache$pkgcache__gcov_flush)
+  }
 
   # Load and merge trace files
   message("Parsing and reading coverage")

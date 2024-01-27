@@ -72,9 +72,7 @@ pak_update <- function(
   stream <- match.arg(stream)
   stream <- pak_stream(stream)
 
-  repo <- pak_repo()
-
-  if (!is.null(.getNamespace("pak")$.__DEVTOOLS__)) {
+  if (is_load_all()) {
     lib <- .libPaths()[1]
     warning(
       "`load_all()`-d pak package, updating in default library at\n  ",
@@ -98,11 +96,13 @@ pak_update <- function(
   if (length(cand) == 0) {
     pak_update_unsupported_platform(stream, me, meta)
   } else if (length(cand) > 1) {
+    # nocov start
     warning(
       "Multiple pak candidates are available for this platform, ",
       "this should not happen. Using the first one."
     )
     cand <- cand[1]
+    # nocov end
   }
   check_mac_cran_r(me, meta)
 
@@ -183,13 +183,17 @@ check_mac_cran_r <- function(me, meta) {
   if (!grepl("^darwin", me$os)) {
     return()
   }
-  if (.Platform$pkgType == "source") {
+  if (platform_pkgtype() == "source") {
     stop(
       "pak only has binaries for the CRAN build of R, and this ",
       "seems to be a brew or another non-CRAN build."
     )
     # TODO: tell how to install from source
   }
+}
+
+platform_pkgtype <- function() {
+  .Platform$pkgType
 }
 
 should_update_to <- function(new) {
