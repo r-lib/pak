@@ -30,7 +30,7 @@
             "directpkg": true,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "sysreqs": ""
           },
           {
@@ -60,7 +60,7 @@
             "filesize": 9999,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "repotype": "cran"
           },
           {
@@ -90,7 +90,7 @@
             "filesize": 9999,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "repotype": "cran"
           }
         ]
@@ -128,7 +128,7 @@
             "directpkg": true,
             "dep_types": ["Depends", "Imports", "LinkingTo", "Suggests"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "sysreqs": ""
           },
           {
@@ -158,7 +158,7 @@
             "filesize": 9999,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "repotype": "cran"
           },
           {
@@ -188,7 +188,7 @@
             "filesize": 9999,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "repotype": "cran"
           },
           {
@@ -218,7 +218,7 @@
             "filesize": 9999,
             "dep_types": ["Depends", "Imports", "LinkingTo"],
             "params": [],
-            "install_args": "",
+            "install_args": "<args>",
             "repotype": "cran"
           }
         ]

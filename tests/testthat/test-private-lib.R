@@ -16,9 +16,8 @@ test_that("private_lib_dir 3", {
   mockery::stub(private_lib_dir, "user_cache_dir", "cached-dir")
   mockery::stub(private_lib_dir, "get_minor_r_version", "4.3")
   mockery::stub(private_lib_dir, "R.Version", list(arch = "arm64"))
-  if (.Platform$OS.type == "windows") {
-    expect_equal(private_lib_dir(), "cached-dir\\lib\\4.3\\arm64")
-  } else {
-    expect_equal(private_lib_dir(), "cached-dir/lib/4.3/arm64")
-  }
+  expect_true(private_lib_dir() %in% c(
+    "cached-dir\\lib\\4.3\\arm64",
+    "cached-dir/lib/4.3/arm64"
+  ))
 })

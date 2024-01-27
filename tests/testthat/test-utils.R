@@ -123,7 +123,8 @@ test_that("user_cache_dir", {
 
   withr::local_envvar(R_PKG_CACHE_DIR = NA_character_)
   withr::local_envvar(R_USER_CACHE_DIR = tmp <- basename(tempfile()))
-  expect_equal(user_cache_dir("pak"), file_path(tmp, "R", "pak"))
+  # file.path() expands the path on windows???
+  expect_equal(user_cache_dir("pak"), paste(tmp, "R", "pak", sep = "/"))
 
   withr::local_envvar(R_USER_CACHE_DIR = NA_character_)
   mockery::stub(user_cache_dir, "get_os", "win")
@@ -346,6 +347,10 @@ test_that("read_char", {
   file.create(path)
   expect_equal(read_char(path), "")
   writeLines(c("foo", "bar", "\u00f0", "foobar"), path)
-  expect_equal(read_char(path), "foo\nbar\n\u00f0\nfoobar\n")
+  if (.Platform$OS.type == "windows") {
+    expect_equal(read_char(path), "foo\r\nbar\r\n\u00f0\r\nfoobar\r\n")
+  } else {
+    expect_equal(read_char(path), "foo\nbar\n\u00f0\nfoobar\n")
+  }
   expect_equal(Encoding(read_char(path)), "UTF-8")
 })

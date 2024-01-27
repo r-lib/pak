@@ -104,7 +104,9 @@ fix_macos_path_in_rstudio <- function() {
 
   path <- Sys.getenv("PATH")
   new_path <- readLines("/etc/paths", n = 1000)
-  Sys.setenv(PATH = paste0(path, ":", paste(new_path, collapse = ":")))
+  # it is always : on macOS, but we test this on Windows as well
+  sep <- .Platform$path.sep
+  Sys.setenv(PATH = paste0(path, sep, paste(new_path, collapse = sep)))
 
   invisible()
 }

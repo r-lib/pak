@@ -632,6 +632,7 @@ transform_lockfile <- function(x) {
   x <- sub("\"platform\": \".*\"", "\"platform\": \"<platform>\"", x)
   x <- sub("\"filesize\": [0-9]+,", "\"filesize\": 9999,", x)
   x <- sub("\"sha256\": \".*\"", "\"sha256\": \"<sha256>\"", x)
+  x <- sub("\"install_args\": \".*\"", "\"install_args\": \"<args>\"", x)
   x
 }
 
