@@ -81,7 +81,7 @@ Config/Needs/deploy:
     curl,
     desc,
     gitcreds,
-    glue,
+    glue@1.6.2,
     jsonlite,
     processx
 Config/testthat/edition: 3
