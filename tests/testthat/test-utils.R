@@ -346,11 +346,7 @@ test_that("read_char", {
   path <- file.path(local, "foo")
   file.create(path)
   expect_equal(read_char(path), "")
-  writeLines(c("foo", "bar", "\u00f0", "foobar"), path)
-  if (.Platform$OS.type == "windows") {
-    expect_equal(read_char(path), "foo\r\nbar\r\n\u00f0\r\nfoobar\r\n")
-  } else {
-    expect_equal(read_char(path), "foo\nbar\n\u00f0\nfoobar\n")
-  }
+  writeBin(charToRaw("foo\nbar\n\u00f0\nfoobar\n"), path)
+  expect_equal(read_char(path), "foo\nbar\n\u00f0\nfoobar\n")
   expect_equal(Encoding(read_char(path)), "UTF-8")
 })
