@@ -219,11 +219,11 @@ jobs:
       run: |
         skopeo --version
 
-    # We use the pre-installed R 4.1.3 + Rtools40 for now, to speed this up
+    # no P3M, because a pak bug fails to install glue@1.6.2 from PPM
     - name: Install R and RTools
       run: |
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
-        rig add ${{ matrix.config.r }}
+        rig add ${{ matrix.config.r }} --without-p3m
         rig add rtools
         # For make and zip
         echo "C:\rtools43\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
