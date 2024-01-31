@@ -9,6 +9,7 @@ test_that("local_install", {
   file.copy(dl$fulltarget, dld)
   pkg <- file.path(dld, basename(dl$fulltarget))
   utils::untar(pkg, exdir = dld)
+  mkdirp(lib)
   suppressMessages(local_install(file.path(dld, "pkg3"), lib = lib))
   expect_true(file.exists(file.path(lib, "pkg1")))
   expect_true(file.exists(file.path(lib, "pkg2")))

@@ -45,11 +45,19 @@ test_that("meta_list, meta_summary, meta_update", {
   expect_equal(class(ml), c("tbl", "data.frame"))
   expect_true("pkg3" %in% ml$package)
 
-  repo <- dcf("
-    Package: pkgx
-    Version: 1.0.0
-  ")
-  setup_fake_apps(cran_repo = repo)
+  if (Sys.getenv("PAK_EXTRA_TESTS") != "true") {
+    repo <- dcf("
+      Package: pkgx
+      Version: 1.0.0
+    ")
+    setup_fake_apps(cran_repo = repo)
+  } else {
+    opt <- options(
+      repos = c(CRAN = "http://127.0.0.1:3106"),
+      cran_metadata_url = "http://127.0.0.1:3106"
+    )
+    on.exit(options(opt), add = TRUE)
+  }
   suppressMessages(meta_update())
   ml <- meta_list()
   expect_true("pkgx" %in% ml$package)
@@ -57,6 +65,6 @@ test_that("meta_list, meta_summary, meta_update", {
 })
 
 test_that("meta_clean confirmation", {
-  mockery::stub(meta_clean, "get_confirmation2", FALSE)
+  stub(meta_clean, "get_confirmation2", FALSE)
   expect_error(meta_clean(), "aborted")
 })

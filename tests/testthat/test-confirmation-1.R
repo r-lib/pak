@@ -12,7 +12,7 @@ test_that("should_ask_confirmation", {
 
 test_that("print_install_details", {
   skip_on_cran()
-  local <- withr::local_tempdir()
+  local <- local_tempdir()
   setup_fake_apps()
   cache_clean()
   load_all_private()
@@ -42,7 +42,7 @@ test_that("print_install_details", {
   unlink(file.path(local, "pkg1"), recursive = TRUE)
 
   # cached package, or packages
-  dl <- withr::local_tempdir()
+  dl <- local_tempdir()
   suppressMessages(pkg_download("pkg2", dl, dependencies = TRUE))
   sol <- pkgdepends$new_pkg_installation_proposal("pkg1", config)
   suppressMessages(sol$solve())
@@ -58,6 +58,9 @@ test_that("print_install_details", {
   )
 
   # unknown download size
+  if (Sys.getenv("PAK_EXTRA_TESTS") == "true") {
+    skip("Can't run in extra tests.")
+  }
   xpkgs <- dcf("Package: pkgu\nVersion: 1.0.0\n")
   xrepo <- webfakes::local_app_process(cran_app(
     xpkgs,
@@ -93,40 +96,40 @@ test_that("print_install_details", {
 })
 
 test_that("get_confirmation", {
-  mockery::stub(get_confirmation, "readline", "")
+  stub(get_confirmation, "readline", "")
   expect_silent(get_confirmation("yes"))
-  mockery::stub(get_confirmation, "readline", "y")
+  stub(get_confirmation, "readline", "y")
   expect_silent(get_confirmation("yes"))
-  mockery::stub(get_confirmation, "readline", "Y")
+  stub(get_confirmation, "readline", "Y")
   expect_silent(get_confirmation("yes"))
-  mockery::stub(get_confirmation, "readline", "yes")
+  stub(get_confirmation, "readline", "yes")
   expect_silent(get_confirmation("yes"))
 
-  mockery::stub(get_confirmation, "readline", "n")
+  stub(get_confirmation, "readline", "n")
   expect_error(get_confirmation("yes", msg = "nope"), "nope")
 })
 
 test_that("get_confirmation2", {
-  mockery::stub(get_confirmation2, "readline", "")
+  stub(get_confirmation2, "readline", "")
   expect_true(get_confirmation2())
-  mockery::stub(get_confirmation2, "readline", "y")
+  stub(get_confirmation2, "readline", "y")
   expect_true(get_confirmation2())
-  mockery::stub(get_confirmation2, "readline", "Y")
+  stub(get_confirmation2, "readline", "Y")
   expect_true(get_confirmation2())
-  mockery::stub(get_confirmation2, "readline", "yes")
+  stub(get_confirmation2, "readline", "yes")
   expect_true(get_confirmation2())
 
-  mockery::stub(get_confirmation2, "readline", "n")
+  stub(get_confirmation2, "readline", "n")
   expect_false(get_confirmation2())
 })
 
 test_that("get_answer", {
-  mockery::stub(get_answer, "readline", "foo")
+  stub(get_answer, "readline", "foo")
   expect_equal(get_answer(c("foo", "bar")), "foo")
 
   ans <- c("foo", "bar")
   idx <- 1
-  mockery::stub(get_answer, "readline", function(prompt = "") {
+  stub(get_answer, "readline", function(prompt = "") {
     cat(prompt)
     cat(ans[idx], "\n", sep = "")
     idx <<- idx + 1L
@@ -139,27 +142,27 @@ test_that("get_answer", {
 })
 
 test_that("offer_restart", {
-  mockery::stub(
+  stub(
     offer_restart,
     "rstudio_detect",
     list(type = "not_rstudio")
   )
   expect_snapshot(offer_restart())
 
-  mockery::stub(
+  stub(
     offer_restart,
     "rstudio_detect",
     list(type = "rstudio_console")
   )
-  mockery::stub(offer_restart, "get_answer", "1")
-  mockery::stub(offer_restart, "rstudioapi::restartSession", "restart")
+  stub(offer_restart, "get_answer", "1")
+  stub(offer_restart, "rstudioapi::restartSession", "restart")
   expect_snapshot(offer_restart())
 
-  mockery::stub(offer_restart, "get_answer", "2")
-  mockery::stub(offer_restart, "save.image", NULL)
-  mockery::stub(offer_restart, "rstudioapi::restartSession", "save-restart")
+  stub(offer_restart, "get_answer", "2")
+  stub(offer_restart, "save.image", NULL)
+  stub(offer_restart, "rstudioapi::restartSession", "save-restart")
   expect_snapshot(offer_restart())
 
-  mockery::stub(offer_restart, "get_answer", "3")
+  stub(offer_restart, "get_answer", "3")
   expect_snapshot(expect_equal(offer_restart(), "OK"))
 })

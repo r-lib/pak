@@ -1,4 +1,3 @@
-
 #' R platforms
 #'
 #' @details
@@ -57,7 +56,6 @@
 #' @export
 #' @examples
 #' current_r_platform()
-
 current_r_platform <- function() {
   current_r_platform_data()$platform
 }
@@ -92,16 +90,20 @@ forced_platform <- function() {
       stop("The `pkg.current_platform` option must be a string scalar.")
     }
     if (!valid_platform_string(opt)) {
-      stop("The pkg.current_platform` option must be a valid platform ",
-           "triple: `cpu-vendor-os`. \"", opt, "\" is not.")
+      stop(
+        "The pkg.current_platform` option must be a valid platform ",
+        "triple: `cpu-vendor-os`. \"", opt, "\" is not."
+      )
     }
     return(opt)
   }
   env <- Sys.getenv("PKG_CURRENT_PLATFORM")
   if (env != "") {
     if (is.na(env) || !valid_platform_string(env)) {
-      stop("The `PKG_CURRENT_PLATFORM` environment variable must be a valid ",
-           "platform triple: \"cpu-vendor-os\". \"", env, "\" is not.")
+      stop(
+        "The `PKG_CURRENT_PLATFORM` environment variable must be a valid ",
+        "platform triple: \"cpu-vendor-os\". \"", env, "\" is not."
+      )
     }
     return(env)
   }
@@ -124,7 +126,6 @@ get_platform <- function(forced = TRUE) {
 #' @export
 #' @examples
 #' default_platforms()
-
 default_platforms <- function() {
   unique(c(current_r_platform(), "source"))
 }
@@ -144,8 +145,10 @@ parse_platform <- function(x) {
 get_cran_extension <- function(platform) {
   res <- rep(NA_character_, length(platform))
   res[platform == "source"] <- ".tar.gz"
-  res[platform %in% c("windows", "i386+x86_64-w64-mingw32",
-                      "x86_64-w64-mingw32", "i386-w64-mingw32")] <- ".zip"
+  res[platform %in% c(
+    "windows", "i386+x86_64-w64-mingw32",
+    "x86_64-w64-mingw32", "i386-w64-mingw32"
+  )] <- ".zip"
   res[platform == "macos"] <- ".tgz"
 
   dtl <- parse_platform(platform)
@@ -167,7 +170,10 @@ get_all_package_dirs <- function(platforms, rversions) {
     rversion = character(),
     contriburl = character()
   )
-  res <- lapply(res, function(x) { colnames(x) <- names(empty); x })
+  res <- lapply(res, function(x) {
+    colnames(x) <- names(empty)
+    x
+  })
   res <- c(list(empty), res)
 
   mat <- do.call(rbind, c(res, list(stringsAsFactors = FALSE)))
@@ -190,17 +196,17 @@ get_package_dirs_for_platform <- function(pl, minors) {
 
   if (pl == "source") {
     return(cbind("source", "*", "src/contrib"))
-
   }
 
-  if (pl %in% c("x86_64-w64-mingw32", "i386-w64-mingw32",
-                "i386+x86_64-w64-mingw32")) {
+  if (pl %in% c(
+    "x86_64-w64-mingw32", "i386-w64-mingw32",
+    "i386+x86_64-w64-mingw32"
+  )) {
     return(cbind(
       pl,
       minors,
       paste0("bin/windows/contrib/", minors)
     ))
-
   }
 
   if (pl == "windows") {
@@ -222,7 +228,7 @@ get_package_dirs_for_platform <- function(pl, minors) {
       } else {
         "x86_64"
       }
-      rpl <- rpl[prpl$cpu == target_cpu,, drop = FALSE ]
+      rpl <- rpl[prpl$cpu == target_cpu, , drop = FALSE]
       if (nrow(rpl)) {
         cbind(rpl$platform, v, paste0(
           "bin/macosx/",
@@ -233,12 +239,11 @@ get_package_dirs_for_platform <- function(pl, minors) {
       }
     })
     return(do.call(rbind, res1))
-
   }
 
   ## Which R versions match this platform on CRAN?
   mcp <- macos_cran_platforms
-  cranmrv <- mcp[mcp$platform == pl & mcp$rversion %in% minors,]
+  cranmrv <- mcp[mcp$platform == pl & mcp$rversion %in% minors, ]
 
   rbind(
     if (nrow(cranmrv)) {
@@ -258,7 +263,7 @@ macos_cran_platforms <- read.table(
   header = TRUE,
   stringsAsFactors = FALSE,
   textConnection(
-     "rversion platform subdir
+    "rversion platform subdir
      3.1.3 x86_64-apple-darwin10.8.0 mavericks
      3.2.0 x86_64-apple-darwin13.4.0 mavericks
      3.2.1 x86_64-apple-darwin13.4.0 mavericks
@@ -299,7 +304,9 @@ macos_cran_platforms <- read.table(
      4.3.0 aarch64-apple-darwin20    big-sur-arm64
      4.4.0 x86_64-apple-darwin20     big-sur-x86_64
      4.4.0 aarch64-apple-darwin20    big-sur-arm64
-"))
+"
+  )
+)
 
 # For now we only use the minor version number, because the CRAN OS version
 # does not change for a patch version.
@@ -315,7 +322,7 @@ macos_cran_platforms$rversion <- get_minor_r_version(
 macos_cran_platforms <- unique(macos_cran_platforms)
 
 get_cran_macos_platform <- function(v) {
-  macos_cran_platforms[macos_cran_platforms$rversion %in% v,,drop = FALSE]
+  macos_cran_platforms[macos_cran_platforms$rversion %in% v, , drop = FALSE]
 }
 
 #' Query the default CRAN repository for this session
@@ -332,7 +339,6 @@ get_cran_macos_platform <- function(v) {
 #' @export
 #' @examples
 #' default_cran_mirror()
-
 default_cran_mirror <- function() {
   mirror <- getOption("repos")["CRAN"]
   if (is.null(mirror) || is.na(mirror) || mirror == "@CRAN@") {
@@ -362,7 +368,6 @@ default_cran_mirror <- function() {
 #' bioc_version()
 #' bioc_version("4.0")
 #' bioc_version("4.1")
-
 bioc_version <- function(r_version = getRversion(), forget = FALSE) {
   bioconductor$get_bioc_version(r_version, forget)
 }
@@ -382,7 +387,6 @@ bioc_version <- function(r_version = getRversion(), forget = FALSE) {
 #' @export
 #' @examplesIf pkgcache:::run_examples()
 #' bioc_version_map()
-
 bioc_version_map <- function(forget = FALSE) {
   as_data_frame(bioconductor$get_version_map(forget))
 }
@@ -397,7 +401,6 @@ bioc_version_map <- function(forget = FALSE) {
 #' @export
 #' @examplesIf pkgcache:::run_examples()
 #' bioc_devel_version()
-
 bioc_devel_version <- function(forget = FALSE) {
   bioconductor$get_devel_version(forget)
 }
@@ -412,7 +415,6 @@ bioc_devel_version <- function(forget = FALSE) {
 #' @export
 #' @examplesIf pkgcache:::run_examples()
 #' bioc_release_version()
-
 bioc_release_version <- function(forget = FALSE) {
   bioconductor$get_release_version(forget)
 }
@@ -433,7 +435,6 @@ bioc_release_version <- function(forget = FALSE) {
 #' @export
 #' @examplesIf pkgcache:::run_examples()
 #' bioc_repos()
-
 bioc_repos <- function(bioc_version = "auto", forget = FALSE) {
   bioconductor$get_repos(bioc_version, forget)
 }

@@ -1,4 +1,3 @@
-
 do <- function() {
   old <- Sys.getenv("R_PKG_CACHE_DIR", NA_character_)
   if (is.na(old)) {
@@ -13,6 +12,7 @@ do <- function() {
   test_check("pak", reporter = "summary")
 }
 
-if (Sys.getenv("NOT_CRAN") == "true") {
+if (Sys.getenv("NOT_CRAN") == "true" &&
+  Sys.getenv("PAK_TESTS", "true") != "false") {
   do()
 }

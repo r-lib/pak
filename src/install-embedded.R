@@ -113,9 +113,12 @@ install_order <- function() {
 # single RDS file. This is not called for `load_all()`, so that we
 # can update single packages.
 
+# except that we need it for a couple of packages that are loaded in a
+# subprocess
+
 clean_up_r <- function(lib = NULL) {
   lib <- get_lib(lib)
-  for (pkg in dir(lib)) {
+  for (pkg in setdiff(dir(lib), c("cli", "desc", "filelock", "processx", "R6"))) {
     r_dir <- file.path(lib, pkg, "R")
     if (file.exists(r_dir)) {
       rimraf(r_dir)
@@ -417,6 +420,44 @@ patch_env_refs <- function(pkg_env) {
     }
   }
   environment(pkg_env[["::"]]) <- pkg_env
+
+  pkg_env[["system.file"]] <- function(..., package = "base",
+                                       lib.loc = NULL, mustWork = FALSE) {
+    if (package %in% names(pkg_data$ns)) {
+      base::system.file(
+        ...,
+        package = package,
+        lib.loc = file.path(getNamespaceInfo("pak", "path"), "library"),
+        mustWork = mustWork
+      )
+    } else {
+      base::system.file(
+        ...,
+        package = package,
+        lib.loc = lib.loc,
+        mustWork = mustWork
+      )
+    }
+  }
+  environment(pkg_env[["system.file"]]) <- pkg_env
+
+  pkg_env[["loadNamespace"]] <- function(package, ...) {
+    if (package %in% names(pkg_data$ns)) {
+      TRUE
+    } else {
+      base::loadNamespace(package, ...)
+    }
+  }
+  environment(pkg_env[["loadNamespace"]]) <- pkg_env
+
+  pkg_env[["requireNamespace"]] <- function(package, ..., quietly = FALSE) {
+    if (package %in% names(pkg_data$ns)) {
+      TRUE
+    } else {
+      base::requireNamespace(package, ..., quietly = quietly)
+    }
+  }
+  environment(pkg_env[["requireNamespace"]]) <- pkg_env
 
   pkg_env[["asNamespace"]] <- function(ns, ...) {
     if (ns %in% names(pkg_data$ns)) {
