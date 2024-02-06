@@ -89,7 +89,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -139,7 +139,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -195,7 +195,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -261,7 +261,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -299,7 +299,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -324,7 +324,7 @@ jobs:
         sudo apt-get update
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 10
 
@@ -334,7 +334,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Dependencies
-      uses: r-lib/actions/setup-r-dependencies@v2-branch
+      uses: r-lib/actions/setup-r-dependencies@v2
 
     - name: Install local pak tree
       run: R CMD INSTALL .
@@ -348,7 +348,7 @@ jobs:
 
     - name: Deploy to GitHub pages (test)
       if: github.event_name != 'pull_request'
-      uses: JamesIves/github-pages-deploy-action@v4.4.3
+      uses: JamesIves/github-pages-deploy-action@v4.5.0
       with:
         repository-name: r-lib/r-lib.github.io
         token: ${{ secrets.PAK_GHCR_TOKEN }}
@@ -366,7 +366,7 @@ jobs:
 
     - name: Deploy to GitHub Pages (prod)
       if: github.event_name != 'pull_request'
-      uses: JamesIves/github-pages-deploy-action@v4.4.3
+      uses: JamesIves/github-pages-deploy-action@v4.5.0
       with:
         repository-name: r-lib/r-lib.github.io
         token: ${{ secrets.PAK_GHCR_TOKEN }}
