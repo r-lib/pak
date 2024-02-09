@@ -80,11 +80,11 @@ Config/Needs/website:
     roxygen2,
     tidyverse/tidytemplate
 Config/Needs/deploy:
-    cli,
+    cli@3.6.2,
     curl,
     desc,
     gitcreds,
-    glue,
+    glue@1.6.2,
     jsonlite,
     processx
 Config/testthat/edition: 3
