@@ -1,4 +1,3 @@
-
 detect_platform <- function() {
   me <- list(
     os = R.Version()$os,
@@ -6,14 +5,16 @@ detect_platform <- function() {
     rver = get_minor_r_version(getRversion())
   )
 
-  if (me$os %in% c("linux-dietlibc", "linux-gnu", "linux-musl",
-                   "linux-uclibc", "linux-unknown")) {
+  if (me$os %in% c(
+    "linux-dietlibc", "linux-gnu", "linux-musl",
+    "linux-uclibc", "linux-unknown"
+  )) {
     me$os <- "linux"
   }
   me
 }
 
-pak_stream <- function(stream) {
+pak_stream <- function(stream = "auto") {
   if (stream == "auto") {
     version <- unclass(package_version(utils::packageVersion("pak")))[[1]]
     stream <- if (length(version) >= 4 && version[4] == 9999) {
@@ -65,16 +66,13 @@ pak_repo_metadata <- function(repo = NULL, stream = "auto") {
 #' @export
 
 pak_update <- function(
-  force = FALSE,
-  stream = c("auto", "stable", "rc", "devel")) {
-
+    force = FALSE,
+    stream = c("auto", "stable", "rc", "devel")) {
   stopifnot(is_flag(force))
   stream <- match.arg(stream)
   stream <- pak_stream(stream)
 
-  repo <- pak_repo()
-
-  if (!is.null(.getNamespace("pak")$.__DEVTOOLS__)) {
+  if (is_load_all()) {
     lib <- .libPaths()[1]
     warning(
       "`load_all()`-d pak package, updating in default library at\n  ",
@@ -91,16 +89,20 @@ pak_update <- function(
   me <- detect_platform()
   cand <- which(
     meta$OS == me$os &
-    meta$Arch == me$arch &
-    meta$RVersion == me$rver
+      meta$Arch == me$arch &
+      meta$RVersion == me$rver
   )
 
   if (length(cand) == 0) {
     pak_update_unsupported_platform(stream, me, meta)
   } else if (length(cand) > 1) {
-    warning("Multiple pak candidates are available for this platform, ",
-            "this should not happen. Using the first one.")
+    # nocov start
+    warning(
+      "Multiple pak candidates are available for this platform, ",
+      "this should not happen. Using the first one."
+    )
     cand <- cand[1]
+    # nocov end
   }
   check_mac_cran_r(me, meta)
 
@@ -116,9 +118,6 @@ pak_update <- function(
 
   date <- get_built_date(meta$Built[cand])
   message("\nUpdating to version ", meta$Version[cand], " (", date, ")\n")
-
-  # Otherwise the subprocess might be locking some DLLs
-  try(pkg_data$remote$kill(), silent = TRUE)
 
   # Windows cannot install binaries with arbitrary names, apparently.
   ext <- tools::file_ext(tgt)
@@ -137,22 +136,25 @@ pak_update <- function(
   message("\nReloading pak.")
 
   # Try to use it to see if it was successful
-  suppressWarnings(tryCatch({
-    eapply(asNamespace("pak"), base::force, all.names = TRUE)
-    unloadNamespace("pak")
-    # This works around the help lazy load DB errors
-    intern <- base::.Internal
-    lazyLoadDBflush <- function(...) NULL
-    tryCatch(
-      intern(lazyLoadDBflush(file.path(lib, "pak", "help", "pak.rdb"))),
-      error = function(e) NULL
-    )
-    loadNamespace("pak")
-    if (attached) library(pak)
-    suppressWarnings(tools::Rd_db(package = "pak"))
-  }, error = function(err) {
-    message("\nFailed to reload pak. Please restart your R session.")
-  }))
+  suppressWarnings(tryCatch(
+    {
+      eapply(asNamespace("pak"), base::force, all.names = TRUE)
+      unloadNamespace("pak")
+      # This works around the help lazy load DB errors
+      intern <- base::.Internal
+      lazyLoadDBflush <- function(...) NULL
+      tryCatch(
+        intern(lazyLoadDBflush(file.path(lib, "pak", "help", "pak.rdb"))),
+        error = function(e) NULL
+      )
+      loadNamespace("pak")
+      if (attached) library(pak)
+      suppressWarnings(tools::Rd_db(package = "pak"))
+    },
+    error = function(err) {
+      message("\nFailed to reload pak. Please restart your R session.")
+    }
+  ))
 
   invisible()
 }
@@ -178,14 +180,20 @@ pak_update_unsupported_platform <- function(stream, me, meta) {
 }
 
 check_mac_cran_r <- function(me, meta) {
-  if (! grepl("^darwin", me$os)) return()
-  if (.Platform$pkgType == "source") {
+  if (!grepl("^darwin", me$os)) {
+    return()
+  }
+  if (platform_pkgtype() == "source") {
     stop(
       "pak only has binaries for the CRAN build of R, and this ",
       "seems to be a brew or another non-CRAN build."
     )
     # TODO: tell how to install from source
   }
+}
+
+platform_pkgtype <- function() {
+  .Platform$pkgType
 }
 
 should_update_to <- function(new) {
@@ -198,17 +206,23 @@ should_update_to <- function(new) {
 
   # otherwise use version number first
   dsc <- utils::packageDescription("pak")
-  if (package_version(dsc$Version) < new$Version) return(TRUE)
+  if (package_version(dsc$Version) < new$Version) {
+    return(TRUE)
+  }
 
   # or the build date
   blt_cur <- get_built_date(dsc$Built)
   blt_new <- get_built_date(new$Built)
-  if (is.na(blt_cur) || blt_cur < blt_new) return(TRUE)
+  if (is.na(blt_cur) || blt_cur < blt_new) {
+    return(TRUE)
+  }
   FALSE
 }
 
 get_built_date <- function(x) {
-  if (!is_string(x)) return(NA_character_)
+  if (!is_string(x)) {
+    return(NA_character_)
+  }
   # We can compare these dates as strings, so no need to parse
   strsplit(x, "[ ]*;[ ]*")[[1]][3]
 }

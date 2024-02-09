@@ -4,8 +4,7 @@
 #' * pak version,
 #' * platform the package was built on, and the current platform,
 #' * the current library path,
-#' * versions of dependencies,
-#' * whether dependencies can be loaded.
+#' * versions of dependencies.
 #'
 #' @export
 #' @family pak housekeeping
@@ -59,73 +58,16 @@ pak_sitrep <- function() {
   cat(paste0("- ", .libPaths()), sep = "\n")
 
   lib <- private_lib_dir()
-  if (!is.null(asNamespace("pak")[[".__DEVTOOLS__"]])) {
+  if (is_load_all()) {
     cat0("* Using `load_all()` from ", find.package("pak"), ".\n")
     cat0("* Private library location:\n- ", lib, "\n")
   } else {
     cat0("* pak is installed at ", find.package("pak"), ".\n")
   }
 
-  dver <- pak_library_versions(lib)
-  cat0("* Dependency versions:\n")
-  cat0(paste0(
-    "- ",
-    format(dver$package),
-    " ",
-    format(dver$version),
-    ifelse(is.na(dver$sha), "", paste0(" (", substr(dver$sha, 1, 7), ")")),
-    "\n"
-  ))
-
-  ret <- tryCatch(
-    {
-      new_remote_session()
-      # TODO: check that all packages can be loaded in subprocess
-      TRUE
-    },
-    error = function(e) e
-  )
-
-  if (isTRUE(ret)) {
-    cat0("* Dependencies can be loaded\n")
-  } else {
-    cat("! Could not load dependencies, pak installation is broken. :(\n")
-    cat0("Error: ", conditionMessage(ret))
-  }
-
   invisible()
 }
 
-pak_library_versions <- function(lib) {
-  pkgs <- dir(lib)
-  vers <- lapply(pkgs, function(pkg) get_ver(file.path(lib, pkg)))
-  data.frame(
-    stringsAsFactors = FALSE,
-    package = pkgs,
-    version = vcapply(vers, "[", 1),
-    sha = vcapply(vers, "[", 2)
-  )
-}
-
-# this is slightly different than the one in install-embedded.R
-
-get_ver <- function(path) {
-  if (!file.exists(path)) {
-    return(NA_character_)
-  }
-  desc <- file.path(path, "DESCRIPTION")
-  if (!file.exists(desc)) {
-    return(NA_character_)
-  }
-  dsc <- read.dcf(desc)
-  ver <- package_version(dsc[, "Version"])
-  devver <- ver[1, 4]
-  if (!is.na(devver) && devver >= 90000) {
-    if ("RemoteSha" %in% colnames(dsc)) {
-      sha <- dsc[, "RemoteSha"]
-      return(c(ver, sha))
-    }
-  }
-
-  as.character(ver)
+is_load_all <- function() {
+  !is.null(asNamespace("pak")[[".__DEVTOOLS__"]])
 }

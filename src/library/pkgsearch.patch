@@ -1,0 +1,10 @@
+diff --git a/src/library/pkgsearch/R/compat-vctrs.R b/src/library/pkgsearch/R/compat-vctrs.R
+index 49dd03f9..09f68ba1 100644
+--- a/src/library/pkgsearch/R/compat-vctrs.R
++++ b/src/library/pkgsearch/R/compat-vctrs.R
+@@ -1,4 +1,4 @@
+-
++# nocov start
+ compat_vctrs <- local({
+ 
+ # Modified from https://github.com/r-lib/rlang/blob/main/R/compat-vctrs.R

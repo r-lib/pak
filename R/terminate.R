@@ -1,7 +1,6 @@
-
 terminate <- function(others, msg = "  Terminating %s (%i) ...") {
-  load_private_packages()
-  ps <- pkg_data$ns$ps
+  load_all_private()
+  ps <- pkg_data[["ns"]][["ps"]]
   pcs <- others$users
   pcs <- pcs[!duplicated(pcs$pid), , drop = FALSE]
 

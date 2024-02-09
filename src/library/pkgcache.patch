@@ -1,0 +1,21 @@
+diff --git a/src/library/pkgcache/R/compat-vctrs.R b/src/library/pkgcache/R/compat-vctrs.R
+index 34860cf4..51681766 100644
+--- a/src/library/pkgcache/R/compat-vctrs.R
++++ b/src/library/pkgcache/R/compat-vctrs.R
+@@ -1,4 +1,4 @@
+-
++# nocov start
+ compat_vctrs <- local({
+
+ # Modified from https://github.com/r-lib/rlang/blob/master/R/compat-vctrs.R
+--- a/src/library/pkgcache/R/metadata-cache.R
++++ b/src/library/pkgcache/R/metadata-cache.R
+@@ -389,7 +389,7 @@ cmc_cleanup <- function(self, private, force) {
+   }
+
+   local_cache_dir <- private$get_cache_files("replica")
+-  unlink(local_cache_dir, recursive = TRUE, force = TRUE)
++  unlink(local_cache_dir$root, recursive = TRUE, force = TRUE)
+   private$data <- NULL
+   private$data_messaged <- NULL
+   cli::cli_alert_info("Cleaning up cache directory {.path {cache_dir}}.")

@@ -1,4 +1,3 @@
-
 #' R platforms
 #'
 #' @details
@@ -59,28 +58,15 @@
 #' @examplesIf FALSE
 #' system_r_platform()
 #' system_r_platform_data()
-
 system_r_platform <- function() {
-  remote(
-    function(...) asNamespace("pak")$system_r_platform_internal(...),
-    list()
-  )
-}
-
-system_r_platform_internal <- function() {
-  pkgcache::current_r_platform()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["current_r_platform"]]()
 }
 
 #' @export
 #' @rdname system_r_platform
 
 system_r_platform_data <- function() {
-  remote(
-    function(...) asNamespace("pak")$system_r_platform_data_internal(...),
-    list()
-  )
-}
-
-system_r_platform_data_internal <- function() {
-  pkgcache::current_r_platform_data()
+  load_all_private()
+  pkg_data[["ns"]][["pkgcache"]][["current_r_platform_data"]]()
 }

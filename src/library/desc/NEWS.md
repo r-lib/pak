@@ -3,6 +3,9 @@
 * `$set()` and `desc_set()` now can omit checks if `check = FALSE`
   is set.
 
+* `$set()` and `desc_set()` now can omit checks if `check = FALSE`
+  is set.
+
 # desc 1.4.2
 
 * The `description$write()` method, and thus all `desc_*()` functions work

@@ -1,6 +1,8 @@
-opts <- function() {
+install_opts <- function() {
+  cov <- Sys.getenv("TEST_COVERAGE_PAK") == "true"
   paste(
-    "--without-keep.source",
+    if (cov) "--with-keep.source" else "--without-keep.source",
+    if (cov) "--preclean",
     "--no-html",
     "--no-help",
     "--no-data",
@@ -17,7 +19,9 @@ rimraf <- function(path) {
   unlink(path, force = TRUE, recursive = TRUE)
 }
 
-get_lib <- function(lib) {
+# For `load_all()` the `lib` argument is passed in.
+
+get_lib <- function(lib = NULL) {
   lib <- lib %||% file.path(Sys.getenv("R_PACKAGE_DIR"), "library")
   dir.create(lib, recursive = TRUE, showWarnings = FALSE)
   lib
@@ -55,14 +59,23 @@ update_description_build <- function(path, platform) {
 install_one <- function(pkg, lib = NULL) {
   lib <- get_lib(lib)
 
+  if (file.exists(file.path(lib, pkg))) {
+    warning("Package already installed, this should not happen.")
+  }
+
   cat("\nCompiling", pkg, "\n")
   suppressWarnings(suppressMessages(utils::capture.output(install.packages(
     paste0("library/", pkg),
     lib = lib,
     repos = NULL,
     type = "source",
-    INSTALL_opts = opts()
+    INSTALL_opts = install_opts()
   ))))
+
+  # Need to stop explicitly, because `install.packages()` does not error
+  # on failed installation. Before calling `install_one()` we always
+  # remove the previously installed package, so this check still works if
+  # we are updating.
 
   if (!file.exists(file.path(lib, pkg))) {
     stop("FAILED")
@@ -95,6 +108,32 @@ install_order <- function() {
 
   pkgs
 }
+
+# we do not need the R/ directory once the R code is bundled into a
+# single RDS file. This is not called for `load_all()`, so that we
+# can update single packages.
+
+# except that we need it for a couple of packages that are loaded in a
+# subprocess
+
+clean_up_r <- function(lib = NULL) {
+  lib <- get_lib(lib)
+  for (pkg in setdiff(dir(lib), c("cli", "desc", "filelock", "processx", "R6"))) {
+    r_dir <- file.path(lib, pkg, "R")
+    if (file.exists(r_dir)) {
+      rimraf(r_dir)
+    }
+  }
+}
+
+# This is used for `R CMD INSTALL`, but not for `load_all()`.
+# This is pretty simple, except when we are cross-compiling.
+#
+# Cross-compiling means that we must be able to load the dependncies
+# on the building platform, and the packages for the target platform
+# must be installed into a separate library. Actually, we put each
+# one into its own library, to be on the safe side. After all
+# dependencies are installed, we move them over to the proper place.
 
 install_dummies <- function(lib) {
   pkgs <- dir("dummy")
@@ -194,9 +233,13 @@ install_all <- function(lib = NULL) {
   } else {
     for (pkg in pkgs) install_one(pkg, lib = lib)
   }
-  file.create("DONE")
   invisible()
 }
+
+# This is used to decide if we need to update a dependency during
+# `load_all()`. At this point it is only a performance optimization, and
+# it could be removed, because if the vesions match, then we use
+# hashing to make sure that they are the same.
 
 get_ver <- function(path) {
   if (!file.exists(path)) {
@@ -219,24 +262,80 @@ get_ver <- function(path) {
   as.character(ver)
 }
 
+# MD5 of a string
+
+md5 <- function(str) {
+  tmp <- tempfile()
+  on.exit(unlink(tmp), add = TRUE)
+  cat(str, file = tmp)
+  tools::md5sum(tmp)
+}
+
+# Hash of a directory. MD5 of each file, and then the MD5 of these.
+# FIXME: hash the path as well, not just the contents, to account
+# for renaming and moving files.
+
+dir_hash <- function(path) {
+  files <- sort(dir(path, full.names = TRUE, recursive = TRUE))
+  files <- grep(
+    "[.](s?o|gcda|gcov)$",
+    files,
+    value = TRUE,
+    invert = TRUE
+  )
+  # Reinstall if turning hashing on/off
+  hashes <- c(
+    unname(tools::md5sum(files)),
+    Sys.getenv("TEST_COVERAGE_PAK", "false")
+  )
+  md5(paste(hashes, collapse = " "))
+}
+
+# This is what we use in `load_all()`. It is not used during
+# `R CMD INSTALL`, that case is covered by `install_all()`.
+#
+# It uses hashing to decide if a dependency needs to be updated in
+# the private library.
+
 update_all <- function(lib = NULL) {
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    old <- Sys.getenv("R_MAKEVARS_USER", NA_character_)
+    if (is.na(old)) {
+      on.exit(Sys.unsetenv("R_MAKEVARS_USER"), add = TRUE)
+    } else {
+      on.exit(Sys.setenv("R_MAKEVARS_USER" = old), add = TRUE)
+    }
+    Sys.setenv(R_MAKEVARS_USER = normalizePath("Makevars-covr"))
+    message("Test coverage build!")
+  }
   lib <- get_lib(lib)
-  cat("Updating dev lib at", lib, "\n")
+  hash_tmpl <- file.path(lib, "_%s.hash")
   pkgs <- install_order()
+  upd <- structure(logical(length(pkgs)), names = pkgs)
   for (pkg in pkgs) {
-    oldver <- get_ver(file.path(lib, pkg))
-    newver <- get_ver(file.path("library", pkg))
-    if (is.na(newver)) stop("Cannot find embedded ", pkg)
-    if (is.na(oldver)) {
+    hash_path <- sprintf(hash_tmpl, pkg)
+    new_hash <- dir_hash(file.path("library", pkg))
+    if (!file.exists(hash_path)) {
       message("Adding ", pkg)
       rimraf(file.path(lib, pkg)) # in case it is a broken install
       install_one(pkg, lib)
-    } else if (oldver != newver) {
-      message("Updating ", pkg, " ", oldver, " -> ", newver)
-      rimraf(file.path(lib, pkg))
-      install_one(pkg, lib)
+      writeLines(new_hash, hash_path)
+      upd[pkg] <- TRUE
+    } else {
+      old_hash <- readLines(hash_path)
+      new_hash <- dir_hash(file.path("library", pkg))
+      oldver <- get_ver(file.path(lib, pkg))
+      newver <- get_ver(file.path("library", pkg))
+      if (old_hash != new_hash) {
+        message("Updating ", pkg, " ", oldver, " -> ", newver)
+        rimraf(file.path(lib, pkg))
+        install_one(pkg, lib)
+        writeLines(new_hash, hash_path)
+        upd[pkg] <- TRUE
+      }
     }
   }
+  upd
 }
 
 load_all <- function() {
@@ -244,8 +343,17 @@ load_all <- function() {
   if (length(args) < 2) {
     stop("Usage: install-embedded.R [ --load-all library-dir ]")
   }
-  update_all(args[2])
+  upd <- update_all(args[2])
+  if (any(upd)) {
+    bundle_rds(args[2])
+  }
+  if (Sys.getenv("TEST_COVERAGE_PAK") == "true") {
+    bundle_covr_rds(args[2])
+  }
 }
+
+# Parse the `--build` and `--target` arguments passed to
+# `./configure`. Also check if we are called from `load_all()`.
 
 parse_platforms <- function(args) {
   build <- if (grepl("^--build=", args[1])) {
@@ -261,6 +369,182 @@ parse_platforms <- function(args) {
     target = target %||% NA_character_
   )
 }
+
+# Need to set the environments of functions within packages.
+
+set_function_envs <- function(within, new) {
+  old <- .libPaths()
+  .libPaths(character())
+  on.exit(.libPaths(old), add = TRUE)
+  nms <- names(within)
+
+  # We don't reset closures. `R6::R6Class()` must be handled specially,
+  # because it is a closure, but its environment has a name.
+  is_target_env <- function(x) {
+    identical(x, base::.GlobalEnv) ||
+      (!environmentName(x) %in% c("", "R6_capsule"))
+  }
+
+  suppressWarnings({
+    for (nm in nms) {
+      if (is.function(within[[nm]])) {
+        if (is_target_env(environment(within[[nm]]))) {
+          environment(within[[nm]]) <- new
+        } else if (is_target_env(parent.env(environment(within[[nm]])))) {
+          parent.env(environment(within[[nm]])) <- new
+        }
+      } else if ("R6ClassGenerator" %in% class(within[[nm]])) {
+        within[[nm]]$parent_env <- new
+        for (mth in names(within[[nm]]$public_methods)) {
+          environment(within[[nm]]$public_methods[[mth]]) <- new
+        }
+        for (mth in names(within[[nm]]$private_methods)) {
+          environment(within[[nm]]$private_methods[[mth]]) <- new
+        }
+      }
+    }
+  })
+
+  invisible()
+}
+
+patch_env_refs <- function(pkg_env) {
+  pkg_env[["::"]] <- function(pkg, name) {
+    pkg <- as.character(substitute(pkg))
+    name <- as.character(substitute(name))
+    if (pkg %in% names(pkg_data$ns)) {
+      pkg_data$ns[[pkg]][[name]]
+    } else {
+      # Fall back to a regular package, so we can call base packages
+      getExportedValue(pkg, name)
+    }
+  }
+  environment(pkg_env[["::"]]) <- pkg_env
+
+  pkg_env[["system.file"]] <- function(..., package = "base",
+                                       lib.loc = NULL, mustWork = FALSE) {
+    if (package %in% names(pkg_data$ns)) {
+      base::system.file(
+        ...,
+        package = package,
+        lib.loc = file.path(getNamespaceInfo("pak", "path"), "library"),
+        mustWork = mustWork
+      )
+    } else {
+      base::system.file(
+        ...,
+        package = package,
+        lib.loc = lib.loc,
+        mustWork = mustWork
+      )
+    }
+  }
+  environment(pkg_env[["system.file"]]) <- pkg_env
+
+  pkg_env[["loadNamespace"]] <- function(package, ...) {
+    if (package %in% names(pkg_data$ns)) {
+      TRUE
+    } else {
+      base::loadNamespace(package, ...)
+    }
+  }
+  environment(pkg_env[["loadNamespace"]]) <- pkg_env
+
+  pkg_env[["requireNamespace"]] <- function(package, ..., quietly = FALSE) {
+    if (package %in% names(pkg_data$ns)) {
+      TRUE
+    } else {
+      base::requireNamespace(package, ..., quietly = quietly)
+    }
+  }
+  environment(pkg_env[["requireNamespace"]]) <- pkg_env
+
+  pkg_env[["asNamespace"]] <- function(ns, ...) {
+    if (ns %in% names(pkg_data$ns)) {
+      pkg_data$ns[[ns]]
+    } else {
+      base::asNamespace(ns, ...)
+    }
+  }
+  environment(pkg_env[["asNamespace"]]) <- pkg_env
+
+  pkg_env[["UseMethod"]] <- function(generic, object) {
+    base::UseMethod(generic, object)
+  }
+  environment(pkg_env[["UseMethod"]]) <- pkg_env
+}
+
+# Put R code of all dependencies from their R/ directories, into a
+# single RDS file.
+
+bundle_rds <- function(lib = NULL) {
+  message("Updating bundled dependencies")
+  lib <- lib %||% get_lib(lib)
+  ns <- new.env(parent = emptyenv())
+  pkgs <- setdiff(
+    dir(lib, pattern = "^[^_]"),
+    c("deps.rds", "deps-covr.rds", "deps-cnt.rds")
+  )
+  for (pkg in pkgs) {
+    pkg_env <- new.env(parent = emptyenv())
+    pkg_env[[".packageName"]] <- pkg
+    ns[[pkg]] <- pkg_env
+    lazyLoad(file.path(lib, pkg, "R", pkg), envir = pkg_env)
+    sysdata <- file.path(lib, pkg, "R", "sysdata.rdb")
+    if (file.exists(sysdata)) {
+      lazyLoad(file.path(lib, pkg, "R", "sysdata"), envir = pkg_env)
+    }
+    set_function_envs(pkg_env, pkg_env)
+    ## Sometimes a package refers to its env, this is one known instance.
+    ## We could also walk the whole tree, but probably not worth it.
+    if (!is.null(pkg_env$err$.internal$package_env)) {
+      pkg_env$err$.internal$package_env <- pkg_env
+    }
+
+    patch_env_refs(pkg_env)
+
+    invisible()
+  }
+
+  # pkgdepends has functions in a list, update those as well
+  pds <- ns[["pkgdepends"]]
+  pkgdepends_conf <- names(pds[["pkgdepends_config"]])
+  for (nm in pkgdepends_conf) {
+    if (is.function(pds[["pkgdepends_config"]][[nm]][["default"]])) {
+      environment(pds[["pkgdepends_config"]][[nm]][["default"]]) <- pds
+    }
+  }
+  parent.env(pds[["config"]][[".internal"]]) <- pds
+
+  # make sure functions are byte-compiled
+  compiler::compilePKGS(TRUE)
+  saveRDS(ns, file.path(lib, "deps.rds"))
+  compiler::compilePKGS(FALSE)
+}
+
+bundle_covr_rds <- function(lib = NULL) {
+  lib <- lib %||% get_lib(lib)
+  rds <- file.path(lib, "deps.rds")
+  covrds <- file.path(lib, "deps-covr.rds")
+  cntrds <- file.path(lib, "deps-cnt.rds")
+  if (!file.exists(covrds) || !file.exists(cntrds) ||
+    file.mtime(covrds) < file.mtime(rds) ||
+    file.mtime(cntrds) < file.mtime(rds)) {
+    message("Instrumenting dependency code for covr")
+    ns <- readRDS(rds)
+    ns <- covrlabs::serialize_to_file(
+      ns,
+      covrds,
+      closxp_callback = covrlabs::trace_calls
+    )
+    covrlabs::serialize_to_file(covrlabs:::.counters, cntrds)
+  } else {
+    message("Instruments code bundle is current")
+  }
+}
+
+# -------------------------------------------------------------------------
+# Main function, called if we run as a script
 
 install_embedded_main <- function() {
   unlink("DONE")
@@ -305,6 +589,10 @@ install_embedded_main <- function() {
   }
 
   install_all()
+  bundle_rds()
+  clean_up_r()
+
+  file.create("DONE")
 }
 
 if (is.null(sys.calls())) {

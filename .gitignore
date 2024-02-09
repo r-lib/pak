@@ -26,6 +26,10 @@
 *.o
 *.so
 *.DSYM
+*.gcda
+*.gcno
+*.gcov
+/covr_trace_*
 /src/library/curl/configure.log
 /src/library/curl/src/Makevars
 /src/library/curl/tools/option_table.txt
@@ -45,3 +49,6 @@
 /tools/build/linux/*.done
 /vignettes/internals.html
 /vignettes/internals.md
+/tests/startup.Rs
+/tests/*.Rout
+/tests/*.Rout.fail

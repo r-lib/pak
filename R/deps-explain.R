@@ -1,4 +1,3 @@
-
 #' Explain how a package depends on other packages
 #'
 #' Extract dependency chains from `pkg` to `deps`.
@@ -29,29 +28,22 @@
 
 pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
   stopifnot(length(pkg == 1) && is.character(pkg))
-  remote(
-    function(...) {
-      get("pkg_deps_explain_internal", asNamespace("pak"))(...)
-    },
-    list(pkg = pkg, deps = deps, upgrade = upgrade,
-         dependencies = dependencies)
-  )
-}
-
-pkg_deps_explain_internal <- function(pkg, deps, upgrade, dependencies = NA) {
-  data <- pkg_deps_internal2(pkg, upgrade, dependencies)$get_solution()$data
+  load_all_private()
+  data <- pkg_deps(pkg, upgrade = upgrade, dependencies = dependencies)
   wpkg <- match(pkg, data$ref)
 
   paths <- structure(vector("list", length(deps)), names = deps)
 
-  types <- pkgdepends::as_pkg_dependencies(dependencies)
+  types <- pkg_data[["ns"]][["pkgdepends"]][["as_pkg_dependencies"]](
+    dependencies
+  )
   deps1 <- local({
     d1 <- data$deps[[wpkg]]
-    pk <- d1$package[ tolower(d1$type) %in% tolower(types[[1]]) ]
+    pk <- d1$package[tolower(d1$type) %in% tolower(types[[1]])]
     na_omit(match(pk, data$package))
   })
   adjlist <- lapply(data$deps, function(di) {
-    p <- di$package[ tolower(di$type) %in% tolower(types[[2]]) ]
+    p <- di$package[tolower(di$type) %in% tolower(types[[2]])]
     p <- setdiff(p, "R")
     na_omit(match(p, data$package))
   })
@@ -81,7 +73,6 @@ pkg_deps_explain_internal <- function(pkg, deps, upgrade, dependencies = NA) {
       if (dpkg %in% deps) {
         paths[[dpkg]] <- c(paths[[dpkg]], list(data$package[stack[1:ssize]]))
       }
-
     } else {
       ssize <- ssize - 1L
       nptr[act] <- 1L
@@ -100,7 +91,6 @@ pkg_deps_explain_internal <- function(pkg, deps, upgrade, dependencies = NA) {
 #' @export
 
 format.pak_deps_explain <- function(x, ...) {
-
   format_path1 <- function(p1) {
     strwrap(paste0(p1, collapse = " -> "), exdent = 2L)
   }
@@ -124,6 +114,6 @@ format.pak_deps_explain <- function(x, ...) {
 #' @export
 
 print.pak_deps_explain <- function(x, ...) {
-  cat(format(x, ...), sep = "\n")
+  writeLines(format(x, ...))
   invisible(x)
 }

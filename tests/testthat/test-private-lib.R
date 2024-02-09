@@ -1,64 +1,23 @@
-
-test_that("loading package from private lib", {
-  skip_on_cran()
-  on.exit(pkg_data$ns <- list(), add = TRUE)
-  pkg_data$ns$processx <- NULL
-  gc()
-
-  ## Load
-  load_private_package("processx", "c_")
-  pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
-
-  ## Check if loaded
-  expect_true(is.function(pkg_data$ns$processx$run))
-  expect_true(file.exists(pkgdir))
-  paths <- normalizePath(sapply(.dynLibs(), "[[", "path"))
-  expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
+test_that("private_lib_dir", {
+  mockery::stub(private_lib_dir, "file.path", "foobar")
+  mockery::stub(private_lib_dir, "file.exists", TRUE)
+  expect_equal(private_lib_dir(), c(embedded = "foobar"))
 })
 
-test_that("cleanup of temp files", {
-  skip("cleanup not working")
-  skip_on_cran()
-  on.exit(pkg_data$ns <- list(), add = TRUE)
-  pkg_data$ns$processx <- NULL
-  gc()
-
-  ## Load
-  load_private_package("processx", "c_")
-  pkgdir <- normalizePath(pkg_data$ns$processx[["__pkg-dir__"]])
-
-  ## Check if loaded
-  expect_true(is.function(pkg_data$ns$processx$run))
-  expect_true(file.exists(pkgdir))
-  paths <- normalizePath(sapply(.dynLibs(), "[[", "path"))
-  expect_true(any(grepl(pkgdir, paths, fixed = TRUE)))
-
-  pkg_data <- asNamespace("pak")$pkg_data
-  pkg_data$ns$processx <- NULL
-  gc(); gc()
-
-  expect_false(file.exists(pkgdir))
-  paths <- sapply(.dynLibs(), "[[", "path")
-  expect_false(any(grepl(pkgdir, paths, fixed = TRUE)))
+test_that("private_lib_dir 2", {
+  mockery::stub(private_lib_dir, "file.exists", FALSE)
+  withr::local_envvar(c(PAK_PRIVATE_LIBRARY = "foobar2"))
+  expect_equal(private_lib_dir(), "foobar2")
 })
 
-test_that("no interference", {
-  skip_on_cran()
-  on.exit(pkg_data$ns <- list(), add = TRUE)
-  pkg_data$ns$processx <- NULL
-  gc()
-
-  asNamespace("ps")
-  expect_true("ps" %in%  loadedNamespaces())
-  expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
-
-  load_private_package("ps")
-  expect_true(is.function(pkg_data$ns$ps$ps))
-  expect_true(is.function(asNamespace("ps")$ps))
-
-  pkg_data$ns$ps <- NULL
-  gc(); gc()
-
-  expect_true("ps" %in% loadedNamespaces())
-  expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
+test_that("private_lib_dir 3", {
+  mockery::stub(private_lib_dir, "file.exists", FALSE)
+  withr::local_envvar(c(PAK_PRIVATE_LIBRARY = NA_character_))
+  mockery::stub(private_lib_dir, "user_cache_dir", "cached-dir")
+  mockery::stub(private_lib_dir, "get_minor_r_version", "4.3")
+  mockery::stub(private_lib_dir, "R.Version", list(arch = "arm64"))
+  expect_true(private_lib_dir() %in% c(
+    "cached-dir\\lib\\4.3\\arm64",
+    "cached-dir/lib/4.3/arm64"
+  ))
 })

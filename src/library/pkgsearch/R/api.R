@@ -1,4 +1,3 @@
-
 ## ----------------------------------------------------------------------
 
 s_data <- new.env(parent = emptyenv())
@@ -62,11 +61,11 @@ s_data <- new.env(parent = emptyenv())
 #' # See the underlying data frame
 #' ps("ropensci")
 #' ps()[]
-
 pkg_search <- function(query = NULL, format = c("short", "long"),
                        from = 1, size = 10) {
-
-  if (is.null(query)) return(pkg_search_again())
+  if (is.null(query)) {
+    return(pkg_search_again())
+  }
   format <- match.arg(format)
   server <- Sys.getenv("R_PKG_SEARCH_SERVER", "search.r-pkg.org")
   port <- as.integer(Sys.getenv("R_PKG_SEARCH_PORT", "80"))
@@ -80,12 +79,15 @@ pkg_search <- function(query = NULL, format = c("short", "long"),
 ps <- pkg_search
 
 make_pkg_search <- function(query, format, from, size, server, port) {
-
   qry <- make_query(query = query)
-  rsp <- do_query(qry, server = server, port = port, from = from,
-                  size = size)
-  rst <- format_result(rsp, query = query, format = format, from = from,
-                       size = size, server = server, port = port)
+  rsp <- do_query(qry,
+    server = server, port = port, from = from,
+    size = size
+  )
+  rst <- format_result(rsp,
+    query = query, format = format, from = from,
+    size = size, server = server, port = port
+  )
 
   s_data$prev_q <- list(type = "simple", result = rst)
 
@@ -111,7 +113,6 @@ more <- function(format = NULL, size = NULL) {
       server = meta(rst)$server,
       port = meta(rst)$port
     )
-
   } else if (s_data$prev_q$type == "advanced") {
     advanced_search(
       json = meta(rst)$qstr,
@@ -119,18 +120,18 @@ more <- function(format = NULL, size = NULL) {
       from = meta(rst)$from + meta(rst)$size,
       size = size %||% meta(rst)$size
     )
-
   } else {
     throw(new_error("Unknown search type, internal pkgsearch error :("))
   }
 }
 
 make_query <- function(query) {
-
   check_string(query)
 
-  fields <- c("Package^20", "Title^10", "Description^2",
-              "Author^5", "Maintainer^6", "_all")
+  fields <- c(
+    "Package^20", "Title^10", "Description^2",
+    "Author^5", "Maintainer^6", "_all"
+  )
 
   query_object <- list(
     query = list(
@@ -140,36 +141,36 @@ make_query <- function(query) {
             field_value_factor = list(
               field = "revdeps",
               modifier = "sqrt",
-              factor = 1)
+              factor = 1
+            )
           )
         ),
-
         query = list(
           bool = list(
             ## This is simply word by work match, scores add up for fields
             must = list(
               list(multi_match = list(
-                     query = query,
-                     type = "most_fields"
-                   ))
+                query = query,
+                type = "most_fields"
+              ))
             ),
             should = list(
               ## This is matching the complete phrase, so it takes priority
               list(multi_match = list(
-                     query = query,
-                     fields = c("Title^10", "Description^2", "_all"),
-                     type = "phrase",
-                     analyzer = "english_and_synonyms",
-                     boost = 10
-                   )),
+                query = query,
+                fields = c("Title^10", "Description^2", "_all"),
+                type = "phrase",
+                analyzer = "english_and_synonyms",
+                boost = 10
+              )),
               ## This is if all words match (but not as a phrase)
               list(multi_match = list(
-                     query = query,
-                     fields = fields,
-                     operator = "and",
-                     analyzer = "english_and_synonyms",
-                     boost = 5
-                   ))
+                query = query,
+                fields = fields,
+                operator = "and",
+                analyzer = "english_and_synonyms",
+                boost = 5
+              ))
             )
           )
         )
@@ -184,7 +185,6 @@ make_query <- function(query) {
 }
 
 do_query <- function(query, server, port, from, size) {
-
   check_count(from)
   check_count(size)
 
@@ -192,8 +192,10 @@ do_query <- function(query, server, port, from, size) {
     "/package/_search?from=" %+% as.character(from - 1) %+%
     "&size=" %+% as.character(size)
   result <- http_post(
-    url, body = query,
-    headers = c("Content-Type" = "application/json"))
+    url,
+    body = query,
+    headers = c("Content-Type" = "application/json")
+  )
   chain_error(
     http_stop_for_status(result),
     new_query_error(result, "search server failure")
@@ -220,15 +222,18 @@ print.pkgsearch_query_error <- function(x, ...) {
   err$print_this(x, ...)
 
   # error message from Elastic, if any
-  tryCatch({
-    rsp <- x$response
-    cnt <- jsonlite::fromJSON(rawToChar(rsp$content), simplifyVector = FALSE)
-    if ("error" %in% names(cnt) &&
+  tryCatch(
+    {
+      rsp <- x$response
+      cnt <- jsonlite::fromJSON(rawToChar(rsp$content), simplifyVector = FALSE)
+      if ("error" %in% names(cnt) &&
         "root_cause" %in% names(cnt$error) &&
         "reason" %in% names(cnt$error$root_cause[[1]])) {
-      cat("", cnt$error$root_cause[[1]]$reason, "", sep = "\n")
-    }
-  }, error = function(x) NULL)
+        cat("", cnt$error$root_cause[[1]]$reason, "", sep = "\n")
+      }
+    },
+    error = function(x) NULL
+  )
 
   # parent error(s)
   err$print_parents(x, ...)

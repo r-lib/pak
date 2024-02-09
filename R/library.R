@@ -1,5 +1,3 @@
-
-
 #' Status of packages in a library
 #'
 #' @param lib Path to library.
@@ -16,9 +14,8 @@
 
 lib_status <- function(lib = .libPaths()[1]) {
   load_extra("pillar")
-  remote(
-    function(...) asNamespace("pak")$lib_status_internal(...),
-    list(lib = lib))
+  load_all_private()
+  pkg_data[["ns"]][["pkgdepends"]][["lib_status"]](lib)
 }
 
 ## TODO: lib_check()
@@ -33,7 +30,3 @@ lib_status <- function(lib = .libPaths()[1]) {
 ## TODO: lib_update()
 
 ## ----------------------------------------------------------------------
-
-lib_status_internal <- function(lib) {
-  pkgdepends::lib_status(lib)
-}

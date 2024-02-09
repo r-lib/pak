@@ -1,4 +1,3 @@
-
 #' List platforms with system requirements support
 #'
 #' @usage
@@ -21,7 +20,6 @@
 #' @family system requirements functions
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
 #' sysreqs_platforms()
-
 sysreqs_platforms
 
 #' Check if a platform has system requirements support
@@ -42,7 +40,6 @@ sysreqs_platforms
 #'   \eval{man_config_link("configuration option")}.
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
 #' sysreqs_is_supported()
-
 sysreqs_is_supported
 
 #' List contents of the system requirements DB, for a platform
@@ -64,14 +61,13 @@ sysreqs_is_supported
 #'   `SystemRequirements` fields.
 #' * `packages`: one or more system package names to install.
 #' * `pre_install`: command(s) to run before installing the packages.
-#' * `post_install`:: command(s) to run after installing the packages.
+#' * `post_install`: command(s) to run after installing the packages.
 #'
 #' @name sysreqs_db_list
 #' @export
 #' @family system requirements functions
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
 #' sysreqs_db_list(sysreqs_platform = "ubuntu-22.04")
-
 sysreqs_db_list
 
 #' Match system requirement descriptions to the database
@@ -109,7 +105,6 @@ sysreqs_db_list
 #'   c("Needs libcurl", "Java, libssl"),
 #'   sysreqs_platform = "ubuntu-22.04"
 #' )
-
 sysreqs_db_match
 
 #' Update the cached copy of the system requirements database
@@ -173,7 +168,6 @@ sysreqs_db_update
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true" && Sys.info()[["sysname"]] == "Linux"
 #' # This only works on supported platforms
 #' sysreqs_check_installed()
-
 sysreqs_check_installed
 
 #' @export
@@ -203,6 +197,5 @@ sysreqs_fix_installed <- sysreqs_fix_installed
 #' @export
 #' @family system requirements functions
 #' @examplesIf Sys.getenv("IN_PKGDOWN") == "true" && Sys.info()[["sysname"]] == "Linux"
-#' sysreqs_list_system_packages()[1:10,]
-
+#' sysreqs_list_system_packages()[1:10, ]
 sysreqs_list_system_packages

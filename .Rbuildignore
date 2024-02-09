@@ -54,3 +54,11 @@
 ^src/library/ps/src/px$
 ^src/library/zip/src/tools/cmdunzip$
 ^src/library/zip/src/tools/cmdzip$
+^[.]vscode$
+^[.]covrignore$
+[.]gcda$
+[.]gcno$
+[.]gcov$
+^tests/startup.Rs$
+^tests/.*[.]Rout$
+^tests/.*[.]Rout[.]fail$

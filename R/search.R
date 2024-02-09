@@ -1,4 +1,3 @@
-
 #' Search CRAN packages
 #'
 #' Search the indexed database of current CRAN packages. It uses the
@@ -17,7 +16,7 @@
 #' Simple search
 #' ```{asciicast pkg-search, R.options = list(width = 72)}
 #' pkg_search("survival")
-#'```
+#' ```
 #'
 #' See the underlying data frame
 #' ```{asciicast pkg-search-2, R.options = list(width = 72)}
@@ -25,55 +24,38 @@
 #' psro[]
 #' ```
 
-pkg_search <- function(query, ...) {
+pkg_search <- function(query = NULL, ...) {
   load_extra("pillar")
-  remote(
-    function(...) {
-      get("pkg_search_internal", asNamespace("pak"))(...)
-    },
-    list(query = query, ...)
+  load_all_private()
+  ret <- withVisible(
+    pkg_data[["ns"]][["pkgsearch"]][["pkg_search"]](query, ...)
   )
-}
 
-pkg_search_internal <- function(query, ...) {
-  res <- pkgsearch::pkg_search(query, ...)
-  res$ago <- format_time_ago$time_ago(res$date)
-  class(res) <- c("pak_search_result", class(res))
-  res
+  class(ret$value) <- c("pak_pkg_search_result", class(ret$value))
+  if (ret$visible) ret$value else invisible(ret$value)
 }
 
 #' @export
 
-print.pak_search_result <- function(x, ...) {
-  catln("")
-  if (nrow(x) == 0) {
-    catln("x No result. :(")
-    return(invisible(x))
-  }
-
-  md <- attr(x, "metadata")
-  md$size <- min(md$size, md$total - md$from + 1)
-  catln(
-    "# '", md$query, "' -- hits ", md$from, "-",
-    md$from + md$size - 1, " of ", md$total
-  )
-
-  num <- as.character(seq(md$from, md$from + md$size - 1))
-  for (i in seq_len(nrow(x))) {
-    r <- x[i,]
-    catln("")
-    catln(num[i], " ", r$package, " ", as.character(r$version), " -- by ",
-        r$maintainer_name, ", ", r$ago)
-    catln(paste(strwrap(r$title, indent = 2), collapse = " "))
-  }
-
-  invisible(x)
+print.pak_pkg_search_result <- function(x, ...) {
+  load_all_private()
+  pkg_data[["ns"]][["pkgsearch"]][["print.pkg_search_result"]](x, ...)
 }
 
 #' @export
 
-`[.pak_search_result` <- function(x, i, j, drop = FALSE) {
-  class(x) <- setdiff(class(x), c("pak_search_result", "pkg_search_result"))
+summary.pak_pkg_search_result <- function(object, ...) {
+  load_all_private()
+  pkg_data[["ns"]][["pkgsearch"]][["summary.pkg_search_result"]](
+    object,
+    ...
+  )
+}
+
+#' @export
+
+`[.pak_pkg_search_result` <- function(x, i, j, drop = FALSE) {
+  class(x) <- setdiff(class(x), c("pak_pkg_search_result", "pkg_search_result"))
   NextMethod("[")
 }
 
@@ -92,14 +74,7 @@ print.pak_search_result <- function(x, ...) {
 
 pkg_history <- function(pkg) {
   load_extra("pillar")
-  remote(
-    function(...) {
-      get("pkg_history_internal", asNamespace("pak"))(...)
-    },
-    list(pkg = pkg)
-  )
-}
+  load_all_private()
 
-pkg_history_internal <- function(pkg) {
-  pkgsearch::cran_package_history(pkg)
+  pkg_data[["ns"]][["pkgsearch"]][["cran_package_history"]](pkg)
 }

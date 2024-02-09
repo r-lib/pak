@@ -1,4 +1,3 @@
-
 if_fail <- function(expr, fn) {
   withCallingHandlers(expr, expectation_failure = fn)
 }
@@ -11,7 +10,8 @@ test_temp_file <- function(fileext = "", pattern = "test-file-",
   } else {
     withr::defer(
       try(unlink(tmp, recursive = TRUE, force = TRUE), silent = TRUE),
-      envir = envir)
+      envir = envir
+    )
   }
   if (create) {
     cat("", file = tmp)
@@ -47,4 +47,20 @@ is_offline <- (function() {
 skip_if_offline <- function() {
   skip_on_cran()
   if (is_offline()) skip("Offline")
+}
+
+local_tempdir <- function(...) {
+  withr::local_tempdir(...)
+}
+
+stub <- function(where, what, how, depth = 1) {
+  #  where_name <- deparse(substitute(where))
+  cl <- as.call(list(
+    quote(mockery::stub),
+    substitute(where),
+    what,
+    how,
+    depth
+  ))
+  eval(cl, parent.frame())
 }

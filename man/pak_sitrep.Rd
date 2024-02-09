@@ -12,8 +12,7 @@ It prints
 \item pak version,
 \item platform the package was built on, and the current platform,
 \item the current library path,
-\item versions of dependencies,
-\item whether dependencies can be loaded.
+\item versions of dependencies.
 }
 }
 \section{Examples}{

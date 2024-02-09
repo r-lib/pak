@@ -38,13 +38,14 @@ Imports:
 Suggests:
     callr (>= 3.7.0),
     cli (>= 3.2.0),
-    covr,
+    codetools,
     curl (>= 4.3.2),
     desc (>= 1.4.1),
     filelock (>= 1.0.2),
     gitcreds,
     glue (>= 1.6.2),
     jsonlite (>= 1.8.0),
+    knitr,
     mockery,
     pingr,
     pkgbuild (>= 1.4.2),
@@ -55,7 +56,9 @@ Suggests:
     ps (>= 1.6.0),
     rstudioapi,
     testthat (>= 3.2.0),
-    withr
+    webfakes,
+    withr,
+    zip
 ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
