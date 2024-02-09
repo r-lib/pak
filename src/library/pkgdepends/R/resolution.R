@@ -275,7 +275,7 @@ res_push <- function(self, private, ..., direct, .list = .list) {
   params <- new[new_types == "param"]
   new <- new[new_types != "param"]
 
-  if (length(params)) {
+  if (length(params) + length(private$params)) {
     private$params <- c(private$params, params)
     update_params(self, private, private$params)
   }
@@ -506,7 +506,7 @@ resolve_remote <- function(remote, direct, config, cache, dependencies,
 
 update_params <- function(self, private, params) {
   for (par in params) {
-    if (par$package == "" && length(self$result$params)) {
+    if (par$package %in% c("", "*") && length(self$result$params)) {
       self$result$params <- lapply(self$result$params, function(p) {
         p[names(par$params)] <- par$params
         p

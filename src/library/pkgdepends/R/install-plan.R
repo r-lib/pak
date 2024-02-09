@@ -236,7 +236,6 @@ handle_event <- function(state, evidx) {
   worker <- state$workers[[evidx]]
   state$workers[evidx] <- list(NULL)
 
-  ## Post-process, this will throw on error
   if (is.function(proc$get_result)) proc$get_result()
 
   ## Cut stdout to lines
@@ -690,6 +689,7 @@ stop_task_build <- function(state, worker) {
   version <- state$plan$version[pkgidx]
   time <- Sys.time() - state$plan$build_time[[pkgidx]]
   ptime <- format_time$pretty_sec(as.numeric(time, units = "secs"))
+  prms <- state$plan$params[[pkgidx]]
 
   if (success) {
     alert("success", paste0(
@@ -699,7 +699,14 @@ stop_task_build <- function(state, worker) {
     ## Need to save the name of the built package
     state$plan$file[pkgidx] <- worker$process$get_built_file()
   } else {
-    alert("danger", "Failed to build {.pkg {pkg}} {.version {version}}")
+    ignore_error <- is_true_param(prms, "ignore-build-errors")
+    alert(
+      if (ignore_error) "warning" else "danger",
+      paste0(
+        "Failed to build {.pkg {pkg}} {.version {version}}",
+        if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
+      )
+    )
   }
   update_progress_bar(state, 1L)
 
@@ -709,7 +716,14 @@ stop_task_build <- function(state, worker) {
   state$plan$build_stdout[[pkgidx]] <- worker$stdout
   state$plan$worker_id[[pkgidx]] <- NA_character_
 
-  if (!success) {
+  if (success) {
+    # do nothing
+  } else if (ignore_error) {
+    # upstream will probably fail as well, but march on, neverthelesss
+    state$plan$install_done[[pkgidx]] <- TRUE
+    ## Need to remove from the dependency list
+    state$plan$deps_left <- lapply(state$plan$deps_left, setdiff, pkg)
+  } else {
     throw(pkg_error(
       "Failed to build source package {.pkg {pkg}}.",
       .data = list(
@@ -722,8 +736,7 @@ stop_task_build <- function(state, worker) {
     ))
   }
 
-  prms <- state$plan$params[[pkgidx]]
-  if (!is.null(state$cache) && !is_true_param(prms, "nocache")) {
+  if (success && !is.null(state$cache) && !is_true_param(prms, "nocache")) {
     ptfm <- current_r_platform()
     rv <- current_r_version()
     target <- paste0(state$plan$target[pkgidx], "-", ptfm, "-", rv)

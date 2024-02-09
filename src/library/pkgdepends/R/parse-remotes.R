@@ -246,7 +246,7 @@ parse_pkg_ref <- function(ref, remote_types = NULL, ...) {
 
 param_rx <- function() {
   paste0(
-    "(?:(?<package>", package_name_rx(), ")=)",
+    "(?:(?<package>", package_name_rx(), "|[*])=)",
     "$"
   )
 }
@@ -272,8 +272,8 @@ add_ref_params <- function(res, params) {
   res
 }
 
-known_query_params <- c("ignore", "ignore-before-r", "nocache",
-                        "reinstall", "source")
+known_query_params <- c("ignore", "ignore-before-r", "ignore-build-errors",
+                        "nocache", "reinstall", "source")
 
 parse_query <- function(ref) {
   query <- sub("^[^?]*(\\?|$)", "", ref)
