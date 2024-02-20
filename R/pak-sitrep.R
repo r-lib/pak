@@ -119,8 +119,8 @@ get_ver <- function(path) {
   }
   dsc <- read.dcf(desc)
   ver <- package_version(dsc[, "Version"])
-  devver <- ver[1, 4]
-  if (!is.na(devver) && devver >= 90000) {
+  devver <- as.numeric(ver[1, 4])
+  if (!is.na(devver) && devver >= 9000) {
     if ("RemoteSha" %in% colnames(dsc)) {
       sha <- dsc[, "RemoteSha"]
       return(c(ver, sha))
