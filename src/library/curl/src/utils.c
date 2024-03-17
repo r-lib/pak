@@ -9,7 +9,7 @@ reference* get_ref(SEXP ptr){
   if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "curl_handle"))
     Rf_error("handle is not a curl_handle()");
   if(!R_ExternalPtrAddr(ptr))
-    error("handle is dead");
+    Rf_error("handle is dead");
   reference *ref = (reference*) R_ExternalPtrAddr(ptr);
   return ref;
 }
@@ -84,15 +84,15 @@ void stop_for_status(CURL *http_handle){
 
   /* check http status code. Not sure what this does for ftp. */
   if(status >= 300)
-    error("HTTP error %ld.", status);
+    Rf_error("HTTP error %ld.", status);
 }
 
 /* make sure to call curl_slist_free_all on this object */
 struct curl_slist* vec_to_slist(SEXP vec){
-  if(!isString(vec))
-    error("vec is not a character vector");
+  if(!Rf_isString(vec))
+    Rf_error("vec is not a character vector");
   struct curl_slist *slist = NULL;
-  for(int i = 0; i < length(vec); i++){
+  for(int i = 0; i < Rf_length(vec); i++){
     slist = curl_slist_append(slist, CHAR(STRING_ELT(vec, i)));
   }
   return slist;
@@ -109,10 +109,10 @@ SEXP slist_to_vec(struct curl_slist *slist){
     cursor = cursor->next;
   }
 
-  SEXP out = PROTECT(allocVector(STRSXP, n));
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, n));
   cursor = slist;
   for(int i = 0; i < n; i++){
-    SET_STRING_ELT(out, i, mkChar(cursor->data));
+    SET_STRING_ELT(out, i, Rf_mkChar(cursor->data));
     cursor = cursor->next;
   }
   UNPROTECT(1);
@@ -162,12 +162,12 @@ size_t append_buffer(void *contents, size_t sz, size_t nmemb, void *ctx) {
 
 size_t data_callback(void * data, size_t sz, size_t nmemb, SEXP fun) {
   size_t size = sz * nmemb;
-  SEXP buf = PROTECT(allocVector(RAWSXP, size));
+  SEXP buf = PROTECT(Rf_allocVector(RAWSXP, size));
   memcpy(RAW(buf), data, size);
 
   /* call the R function */
   int err;
-  SEXP call = PROTECT(Rf_lang3(fun, buf, ScalarInteger(0)));
+  SEXP call = PROTECT(Rf_lang3(fun, buf, Rf_ScalarInteger(0)));
   R_tryEval(call, R_GlobalEnv, &err);
   UNPROTECT(2);
   return err ? 0 : size;

@@ -3,7 +3,7 @@
 
 /* Notes:
  *  - First check for unhandled messages in curl_multi_info_read() before curl_multi_perform()
- *  - Use eval() to callback instead of R_tryEval() to propagate interrupt or error back to C
+ *  - Use Rf_eval() to callback instead of R_tryEval() to propagate interrupt or error back to C
  */
 
 #if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 30)
@@ -104,8 +104,8 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
   int total_pending = -1;
   int total_success = 0;
   int total_fail = 0;
-  int result_max = asInteger(max);
-  double time_max = asReal(timeout);
+  int result_max = Rf_asInteger(max);
+  double time_max = Rf_asReal(timeout);
   time_t time_start = time(NULL);
 
   double seconds_elapsed = 0;
@@ -126,7 +126,7 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
         SEXP cb_complete = PROTECT(ref->async.complete);
         SEXP cb_error = PROTECT(ref->async.error);
         SEXP cb_data = PROTECT(ref->async.data);
-        SEXP buf = PROTECT(allocVector(RAWSXP, ref->async.content.size));
+        SEXP buf = PROTECT(Rf_allocVector(RAWSXP, ref->async.content.size));
         if(ref->async.content.buf && ref->async.content.size)
           memcpy(RAW(buf), ref->async.content.buf, ref->async.content.size);
 
@@ -137,8 +137,8 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
         // This also ensures that a file is consistently created, even for empty responses
         if(Rf_isFunction(cb_data)){
           SEXP buf = PROTECT(Rf_allocVector(RAWSXP, 0));
-          SEXP call = PROTECT(Rf_lang3(cb_data, buf, ScalarInteger(1)));
-          eval(call, R_GlobalEnv);
+          SEXP call = PROTECT(Rf_lang3(cb_data, buf, Rf_ScalarInteger(1)));
+          Rf_eval(call, R_GlobalEnv);
           UNPROTECT(2);
         }
 
@@ -149,19 +149,19 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
             int arglen = Rf_length(FORMALS(cb_complete));
             SEXP out = PROTECT(make_handle_response(ref));
             SET_VECTOR_ELT(out, 6, buf);
-            SEXP call = PROTECT(LCONS(cb_complete, arglen ? LCONS(out, R_NilValue) : R_NilValue));
+            SEXP call = PROTECT(Rf_lcons(cb_complete, arglen ? Rf_lcons(out, R_NilValue) : R_NilValue));
             //R_tryEval(call, R_GlobalEnv, &cbfail);
-            eval(call, R_GlobalEnv); //OK to error here
+            Rf_eval(call, R_GlobalEnv); //OK to error here
             UNPROTECT(2);
           }
         } else {
           total_fail++;
           if(Rf_isFunction(cb_error)){
             int arglen = Rf_length(FORMALS(cb_error));
-            SEXP buf = PROTECT(mkString(strlen(ref->errbuf) ? ref->errbuf : curl_easy_strerror(status)));
-            SEXP call = PROTECT(LCONS(cb_error, arglen ? LCONS(buf, R_NilValue) : R_NilValue));
+            SEXP buf = PROTECT(Rf_mkString(strlen(ref->errbuf) ? ref->errbuf : curl_easy_strerror(status)));
+            SEXP call = PROTECT(Rf_lcons(cb_error, arglen ? Rf_lcons(buf, R_NilValue) : R_NilValue));
             //R_tryEval(call, R_GlobalEnv, &cbfail);
-            eval(call, R_GlobalEnv); //OK to error here
+            Rf_eval(call, R_GlobalEnv); //OK to error here
             UNPROTECT(2);
           }
         }
@@ -205,16 +205,16 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
       break;
   }
 
-  SEXP res = PROTECT(allocVector(VECSXP, 3));
-  SET_VECTOR_ELT(res, 0, ScalarInteger(total_success));
-  SET_VECTOR_ELT(res, 1, ScalarInteger(total_fail));
-  SET_VECTOR_ELT(res, 2, ScalarInteger(total_pending));
+  SEXP res = PROTECT(Rf_allocVector(VECSXP, 3));
+  SET_VECTOR_ELT(res, 0, Rf_ScalarInteger(total_success));
+  SET_VECTOR_ELT(res, 1, Rf_ScalarInteger(total_fail));
+  SET_VECTOR_ELT(res, 2, Rf_ScalarInteger(total_pending));
 
-  SEXP names = PROTECT(allocVector(STRSXP, 3));
-  SET_STRING_ELT(names, 0, mkChar("success"));
-  SET_STRING_ELT(names, 1, mkChar("error"));
-  SET_STRING_ELT(names, 2, mkChar("pending"));
-  setAttrib(res, R_NamesSymbol, names);
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, 3));
+  SET_STRING_ELT(names, 0, Rf_mkChar("success"));
+  SET_STRING_ELT(names, 1, Rf_mkChar("error"));
+  SET_STRING_ELT(names, 2, Rf_mkChar("pending"));
+  Rf_setAttrib(res, R_NamesSymbol, names);
   UNPROTECT(2);
   return res;
 }
@@ -238,7 +238,7 @@ SEXP R_multi_new(void){
   SEXP ptr = PROTECT(R_MakeExternalPtr(ref, R_NilValue, ref->handles));
   ref->multiptr = ptr;
   R_RegisterCFinalizerEx(ptr, fin_multi, 1);
-  setAttrib(ptr, R_ClassSymbol, mkString("curl_multi"));
+  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("curl_multi"));
   UNPROTECT(1);
   return ptr;
 }
@@ -246,14 +246,14 @@ SEXP R_multi_new(void){
 SEXP R_multi_setopt(SEXP pool_ptr, SEXP total_con, SEXP host_con, SEXP multiplex){
   #ifdef HAS_CURLMOPT_MAX_TOTAL_CONNECTIONS
     CURLM *multi = get_multiref(pool_ptr)->m;
-    massert(curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, (long) asInteger(total_con)));
-    massert(curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, (long) asInteger(host_con)));
+    massert(curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, (long) Rf_asInteger(total_con)));
+    massert(curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, (long) Rf_asInteger(host_con)));
   #endif
 
   // NOTE: CURLPIPE_HTTP1 is unsafe for non idempotent requests
   #ifdef CURLPIPE_MULTIPLEX
     massert(curl_multi_setopt(multi, CURLMOPT_PIPELINING,
-                              asLogical(multiplex) ? CURLPIPE_MULTIPLEX : CURLPIPE_NOTHING));
+                              Rf_asLogical(multiplex) ? CURLPIPE_MULTIPLEX : CURLPIPE_NOTHING));
   #endif
 
   return pool_ptr;
@@ -287,18 +287,18 @@ SEXP R_multi_fdset(SEXP pool_ptr){
     if (FD_ISSET(i, &exc_fd_set))   num_exc++;
   }
 
-  result = PROTECT(allocVector(VECSXP, 4));
-  SET_VECTOR_ELT(result, 0, allocVector(INTSXP, num_read));
-  SET_VECTOR_ELT(result, 1, allocVector(INTSXP, num_write));
-  SET_VECTOR_ELT(result, 2, allocVector(INTSXP, num_exc));
-  SET_VECTOR_ELT(result, 3, ScalarReal((double) timeout));
+  result = PROTECT(Rf_allocVector(VECSXP, 4));
+  SET_VECTOR_ELT(result, 0, Rf_allocVector(INTSXP, num_read));
+  SET_VECTOR_ELT(result, 1, Rf_allocVector(INTSXP, num_write));
+  SET_VECTOR_ELT(result, 2, Rf_allocVector(INTSXP, num_exc));
+  SET_VECTOR_ELT(result, 3, Rf_ScalarReal((double) timeout));
 
-  names = PROTECT(allocVector(STRSXP, 4));
-  SET_STRING_ELT(names, 0, mkChar("reads"));
-  SET_STRING_ELT(names, 1, mkChar("writes"));
-  SET_STRING_ELT(names, 2, mkChar("exceptions"));
-  SET_STRING_ELT(names, 3, mkChar("timeout"));
-  setAttrib(result, R_NamesSymbol, names);
+  names = PROTECT(Rf_allocVector(STRSXP, 4));
+  SET_STRING_ELT(names, 0, Rf_mkChar("reads"));
+  SET_STRING_ELT(names, 1, Rf_mkChar("writes"));
+  SET_STRING_ELT(names, 2, Rf_mkChar("exceptions"));
+  SET_STRING_ELT(names, 3, Rf_mkChar("timeout"));
+  Rf_setAttrib(result, R_NamesSymbol, names);
 
   pread  = INTEGER(VECTOR_ELT(result, 0));
   pwrite = INTEGER(VECTOR_ELT(result, 1));

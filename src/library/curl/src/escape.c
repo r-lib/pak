@@ -3,17 +3,17 @@
 
 SEXP R_curl_escape(SEXP url, SEXP unescape_) {
   if (!Rf_isString(url))
-    error("`url` must be a character vector.");
+    Rf_error("`url` must be a character vector.");
   CURL *handle = curl_easy_init();
   int n = Rf_length(url);
-  SEXP output = PROTECT(allocVector(STRSXP, n));
+  SEXP output = PROTECT(Rf_allocVector(STRSXP, n));
 
   for (int i = 0; i < n; i++) {
     const char *input = CHAR(STRING_ELT(url, i));
-    char *out = asLogical(unescape_) ?
+    char *out = Rf_asLogical(unescape_) ?
       curl_easy_unescape(handle, input, 0, NULL) : curl_easy_escape(handle, input, 0);
     if(out != NULL){
-      SET_STRING_ELT(output, i, mkCharCE(out, CE_UTF8));
+      SET_STRING_ELT(output, i, Rf_mkCharCE(out, CE_UTF8));
       curl_free(out);
     }
   }

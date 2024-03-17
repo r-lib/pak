@@ -29,7 +29,7 @@ int jeroen_win32_idn_to_ascii(const char *in, char **out);
 SEXP R_nslookup(SEXP hostname, SEXP ipv4_only) {
   /* Because gethostbyname() is deprecated */
   struct addrinfo hints = {0};
-  if(asLogical(ipv4_only))
+  if(Rf_asLogical(ipv4_only))
     hints.ai_family = AF_INET; //only allow ipv4
   struct addrinfo *addr;
   const char * hoststr = CHAR(STRING_ELT(hostname, 0));
@@ -52,7 +52,7 @@ SEXP R_nslookup(SEXP hostname, SEXP ipv4_only) {
   }
 
   //allocate output
-  SEXP out = PROTECT(allocVector(STRSXP, len));
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, len));
 
   //extract the values
   cur = addr;
@@ -68,7 +68,7 @@ SEXP R_nslookup(SEXP hostname, SEXP ipv4_only) {
       struct sockaddr_in6 *sa_in = (struct sockaddr_in6*) sa;
       inet_ntop(AF_INET6, &(sa_in->sin6_addr), ip, INET6_ADDRSTRLEN);
     }
-    SET_STRING_ELT(out, i, mkChar(ip));
+    SET_STRING_ELT(out, i, Rf_mkChar(ip));
     cur = cur->ai_next;
   }
   UNPROTECT(1);
