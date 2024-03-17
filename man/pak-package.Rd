@@ -28,7 +28,7 @@ Other contributors:
 \itemize{
   \item Posit Software, PBC [copyright holder, funder]
   \item Winston Chang (R6, callr, processx) [contributor]
-  \item Mango Solutions (callr, processx) [copyright holder, funder]
+  \item Ascent Digital Services (callr, processx) [copyright holder, funder]
   \item Hadley Wickham (cli, curl, pkgbuild) [contributor, copyright holder]
   \item Jeroen Ooms (curl, jsonlite) [contributor]
   \item Maëlle Salmon (desc, pkgsearch) [contributor]
