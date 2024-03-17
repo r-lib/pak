@@ -1,3 +1,7 @@
+# pkgbuild (development version)
+
+* pkgbuild now supports R 4.4.x and Rtools44 (#183).
+
 # pkgbuild 1.4.3
 
 * pkgbuild now does not need the crayon, rprojroot and prettyunits

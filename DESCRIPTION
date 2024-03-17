@@ -65,7 +65,7 @@ Config/needs/dependencies:
     curl,
     filelock,
     jsonlite,
-    pkgbuild,
+    r-lib/pkgbuild,
     pkgcache,
     r-lib/pkgdepends,
     pkgsearch,
