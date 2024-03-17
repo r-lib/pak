@@ -845,11 +845,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.7.1",
+          "pak.version": "0.7.2",
           "pak.revision": "TODO",
-          "buildtime": "2023-12-12T10:49:06+00:00",
-          "size": 8065025,
-          "digest": "sha256:8dc4e5af298897cf5ef2c5ec157c2a1247ac2c5cc7d45363f9249b307ff7b4ba"
+          "buildtime": "2024-03-17T20:52:59+00:00",
+          "size": 8568881,
+          "digest": "sha256:60e68115e69498113149db32ebf6bf723a60597c2ff61fce5e908fec2497ba58"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
