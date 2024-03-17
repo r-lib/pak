@@ -498,11 +498,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.7.1",
+          "pak.version": "0.7.2",
           "pak.revision": "TODO",
-          "buildtime": "2023-12-12T10:43:23+00:00",
-          "size": 8615600,
-          "digest": "sha256:f4dd52b936d30fddc2259ac5881238faf1e75bf02a43b906f16c4e143ce8be57"
+          "buildtime": "2024-03-17T20:46:35+00:00",
+          "size": 8619786,
+          "digest": "sha256:83add64ea2e6cb4117f0ed4dfef43d8d0b032825a6d72443ad4e5c38a78d0f09"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
