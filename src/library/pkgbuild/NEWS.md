@@ -1,4 +1,4 @@
-# pkgbuild (development version)
+# pkgbuild 1.4.4
 
 * pkgbuild now supports R 4.4.x and Rtools44 (#183).
 
