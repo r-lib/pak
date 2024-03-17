@@ -13,6 +13,23 @@ SEXP processx__echo_on(void);
 SEXP processx__echo_off(void);
 SEXP processx__set_boot_time(SEXP);
 
+#ifdef GCOV_COMPILE
+
+void __gcov_dump();
+SEXP gcov_flush() {
+  REprintf("Flushing coverage info\n");
+  __gcov_dump();
+  return R_NilValue;
+}
+
+#else
+
+SEXP gcov_flush(void) {
+  return R_NilValue;
+}
+
+#endif
+
 static const R_CallMethodDef callMethods[]  = {
   CLEANCALL_METHOD_RECORD,
   { "processx_exec",               (DL_FUNC) &processx_exec,              14 },
@@ -72,6 +89,8 @@ static const R_CallMethodDef callMethods[]  = {
   { "processx_base64_decode", (DL_FUNC) &processx_base64_decode, 1 },
   { "processx__echo_on", (DL_FUNC) &processx__echo_on, 0 },
   { "processx__echo_off", (DL_FUNC) &processx__echo_off, 0 },
+
+  { "gcov_flush", (DL_FUNC) gcov_flush, 0 },
 
   { NULL, NULL, 0 }
 };
