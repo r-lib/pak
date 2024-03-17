@@ -3,6 +3,8 @@
 #include <Rinternals.h>
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
+#include <R_ext/Visibility.h>
+#define r_export attribute_visible extern
 
 /* .Call calls */
 extern SEXP R_zip_list(SEXP);
@@ -22,7 +24,7 @@ static const R_CallMethodDef CallEntries[] = {
   { NULL, NULL, 0 }
 };
 
-void R_init_zip(DllInfo *dll) {
+r_export void R_init_zip(DllInfo *dll) {
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);

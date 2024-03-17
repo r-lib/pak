@@ -1,3 +1,8 @@
+# zip 2.3.1
+
+* The zip shared library now hides its symbols (on platforms that support
+  this), to avoid name clashes with other libraries (#98).
+
 # zip 2.3.0
 
 * zip now handles large zip files on Windows (#65, #75, #79, @weshinsley).
