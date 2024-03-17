@@ -280,6 +280,7 @@ embed <- local({
     for (pkg in pkgs) {
       rimraf(file.path(lib, pkg, "build"))
       rimraf(file.path(lib, pkg, "inst", "doc"))
+      rimraf(file.path(lib, pkg, "inst", "COPYRIGHTS"))
       rimraf(file.path(lib, pkg, "man", "figures"))
       rd <- dir(file.path(lib, pkg, "man"), pattern = "[.]Rd$")
       unlink(file.path(lib, pkg, "man", rd))

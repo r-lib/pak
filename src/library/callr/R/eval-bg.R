@@ -3,6 +3,8 @@
 #'
 #' Starts evaluating an R function call in a background R process, and
 #' returns immediately.
+#' Use `p$get_result()` to collect the result or to throw an error
+#' if the background computation failed.
 #'
 #' @inheritSection r Security considerations
 #' @inheritParams r

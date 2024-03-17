@@ -19,7 +19,10 @@ env_file <- NULL
 prepare_client_files <- function() {
   for (aa in names(client_env$`__callr_data__`$sofile)) {
     fn <- client_env$`__callr_data__`$sofile[[aa]]
-    if (!file.exists(fn)) writeBin(clients[[aa]]$bytes, fn)
+    if (!file.exists(fn)) {
+      dir.create(dirname(fn), recursive = TRUE)
+      writeBin(clients[[aa]]$bytes, fn)
+    }
   }
 
   if (!file.exists(env_file)) {
@@ -31,15 +34,16 @@ prepare_client_files <- function() {
 get_client_files <- function() {
   archs <- ls(clients)
   vapply(archs, function(aa) {
+    hash <- substr(clients[[aa]]$md5, 1, 7)
+
+    # Filename must be `client.ext` so that `dyn.load()` can find
+    # the init function
     file.path(
       tempdir(),
-      paste0(
-        "callr-client-",
-        sub("arch-", "", aa),
-        "-",
-        substr(clients[[aa]]$md5, 1, 7),
-        .Platform$dynlib.ext
-      )
+      "callr",
+      sub("arch-", "", aa),  # Might be empty
+      hash,
+      paste0("client", .Platform$dynlib.ext)
     )
   }, character(1))
 }

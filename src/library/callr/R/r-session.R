@@ -18,7 +18,7 @@
 #'   * `pkg`: set the environment to the `pkg` package namespace.
 #'
 #' @examplesIf FALSE
-#' rs <- r_ression$new()
+#' rs <- r_session$new()
 #'
 #' rs$run(function() 1 + 2)
 #'
@@ -539,8 +539,10 @@ rs_get_state <- function(self, private) {
 rs_get_running_time <- function(self, private) {
   now <- Sys.time()
   finished <- private$state == "finished"
-  c(total = if (finished) now - private$started_at else as.POSIXct(NA),
-    current = now - private$fun_started_at)
+  idle <- private$state == "idle"
+  missing <- as.difftime(NA_real_, units = "secs")
+  c(total = now - private$started_at,
+    current = if (finished | idle) missing else now - private$fun_started_at)
 }
 
 rs_poll_process <- function(self, private, timeout) {

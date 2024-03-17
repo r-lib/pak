@@ -77,7 +77,7 @@ rscript_process <- R6::R6Class(
     #'   [rscript_process_options()].
     initialize = function(options)
       rscript_init(self, private, super, options),
-    #' @description Clean up after an `Rsctipt` process, remove
+    #' @description Clean up after an `Rscript` process, remove
     #' temporary files.
     finalize = function() {
       unlink(private$options$tmp_files, recursive = TRUE)

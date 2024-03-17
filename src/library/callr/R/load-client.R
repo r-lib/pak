@@ -23,9 +23,14 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
     stop("Cannot find client file")
   }
 
+  # We set this to `FALSE` if we load the library from the processx
+  # install path since that library might be shared (e.g. in tests)
+  need_cleanup <- TRUE
+
   if (is.null(sofile)) {
     sofile <- sofile_in_processx()
     lib <- dyn.load(sofile)
+    need_cleanup <- FALSE
   } else {
     # This is the usual case, first we try loading it from the
     # temporary directory. If that fails (e.g. noexec), then
@@ -35,7 +40,10 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
     if (inherits(lib, "error")) {
       sofile <- sofile_in_processx()
       tryCatch(
-        lib <- dyn.load(sofile),
+        expr = {
+          lib <- dyn.load(sofile)
+          need_cleanup <- FALSE
+        },
 	error = function(err2) {
 	  err2$message <- err2$message <- paste0(" after ", lib$message)
 	  stop(err2)
@@ -45,7 +53,9 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   }
 
   # cleanup if setup fails
-  on.exit(try(dyn.unload(sofile), silent = TRUE), add = TRUE)
+  if (need_cleanup) {
+    on.exit(try(dyn.unload(sofile), silent = TRUE), add = TRUE)
+  }
 
   sym_encode <- getNativeSymbolInfo("processx_base64_encode", lib)
   sym_decode <- getNativeSymbolInfo("processx_base64_decode", lib)
@@ -58,6 +68,7 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
 
   env <- new.env(parent = emptyenv())
   env$.path <- sofile
+  env$.lib <- lib
 
   mycall <- .Call
 
@@ -100,7 +111,9 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   }
 
   env$.finalize <- function() {
-    dyn.unload(env$.path)
+    if (need_cleanup) {
+      dyn.unload(env$.path)
+    }
     rm(list = ls(env, all.names = TRUE), envir = env)
   }
 

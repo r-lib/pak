@@ -12,29 +12,30 @@ make_vanilla_script_expr <- function(expr_file, res, error,
 
   err <- if (error == "error") {
     substitute({
-      callr_data <- as.environment("tools:callr")$`__callr_data__`
+      callr_data <- base::as.environment("tools:callr")$`__callr_data__`
       err <- callr_data$err
 
       if (`__traceback__`) {
-        # This might be quieried for R sessions with $traceback()
-        assign(".Traceback", .traceback(4), envir = callr_data)
+        # This might be queried for R sessions with $traceback()
+        base::assign(".Traceback", base::.traceback(4), envir = callr_data)
 
         # Also dump frames, this might be queried as well with $debug()
-        dump.frames("__callr_dump__")
-        assign(".Last.dump", .GlobalEnv$`__callr_dump__`, envir = callr_data)
-        rm("__callr_dump__", envir = .GlobalEnv)
+        utils::dump.frames("__callr_dump__")
+        base::assign(".Last.dump", .GlobalEnv$`__callr_dump__`, envir = callr_data)
+        base::rm("__callr_dump__", envir = .GlobalEnv)
       }
 
       e <- err$process_call(e)
       e2 <- err$new_error("error in callr subprocess")
-      class(e2) <- c("callr_remote_error", class(e2))
+      class <- base::class
+      class(e2) <- base::c("callr_remote_error", class(e2))
       e2 <- err$add_trace_back(e2)
-      cut <- which(e2$trace$scope == "global")[1]
-      if (!is.na(cut)) {
+      cut <- base::which(e2$trace$scope == "global")[1]
+      if (!base::is.na(cut)) {
         e2$trace <- e2$trace[-(1:cut), ]
       }
 
-      saveRDS(list("error", e2, e), file = paste0(`__res__`, ".error"))
+      base::saveRDS(base::list("error", e2, e), file = base::paste0(`__res__`, ".error"))
     }, list(
          `__res__` = res,
          `__traceback__` = getOption("callr.traceback", FALSE)
@@ -44,12 +45,12 @@ make_vanilla_script_expr <- function(expr_file, res, error,
   } else if (error %in% c("stack", "debugger")) {
     substitute(
       {
-        callr_data <- as.environment("tools:callr")$`__callr_data__`
-        assign(".Traceback", .traceback(4), envir = callr_data)
-        dump.frames("__dump__")         # nocov start
-        saveRDS(
-          list(`__type__`, e, .GlobalEnv$`__dump__`),
-          file = paste0(`__res__`, ".error")
+        callr_data <- base::as.environment("tools:callr")$`__callr_data__`
+        base::assign(".Traceback", base::.traceback(4), envir = callr_data)
+        utils::dump.frames("__dump__")         # nocov start
+        base::saveRDS(
+          base::list(`__type__`, e, .GlobalEnv$`__dump__`),
+          file = base::paste0(`__res__`, ".error")
         )                               # nocov end
       },
       list(
@@ -62,23 +63,23 @@ make_vanilla_script_expr <- function(expr_file, res, error,
   if (messages) {
     message <- function() {
       substitute({
-        pxlib <- as.environment("tools:callr")$`__callr_data__`$pxlib
-        if (is.null(e$code)) e$code <- "301"
-        msg <- paste0("base64::", pxlib$base64_encode(serialize(e, NULL)))
-        data <- paste0(e$code, " ", nchar(msg), "\n", msg)
+        pxlib <- base::as.environment("tools:callr")$`__callr_data__`$pxlib
+        if (base::is.null(e$code)) e$code <- "301"
+        msg <- base::paste0("base64::", pxlib$base64_encode(base::serialize(e, NULL)))
+        data <- base::paste0(e$code, " ", base::nchar(msg), "\n", msg)
         pxlib$write_fd(3L, data)
 
-        if (inherits(e, "cli_message") &&
-            !is.null(findRestart("cli_message_handled"))) {
-          invokeRestart("cli_message_handled")
-        } else if (inherits(e, "message") &&
-                   !is.null(findRestart("muffleMessage"))) {
-          invokeRestart("muffleMessage")
+        if (base::inherits(e, "cli_message") &&
+            !base::is.null(base::findRestart("cli_message_handled"))) {
+          base::invokeRestart("cli_message_handled")
+        } else if (base::inherits(e, "message") &&
+                   !base::is.null(base::findRestart("muffleMessage"))) {
+          base::invokeRestart("muffleMessage")
         }
       })
     }
   } else {
-    message <- function() substitute(signalCondition(e))
+    message <- function() substitute(base::signalCondition(e))
   }
 
   ## The function to run and its arguments are saved as a list:
@@ -93,28 +94,31 @@ make_vanilla_script_expr <- function(expr_file, res, error,
   ## the function is called from an empty global environment.
   substitute(
      {
-      tryCatch(                         # nocov start
-        withCallingHandlers(
+      base::tryCatch(                         # nocov start
+        base::withCallingHandlers(
           {
             `__pre_hook__`
-            saveRDS(
-              do.call(
-                do.call,
-                c(readRDS(`__expr_file__`), list(envir = .GlobalEnv, quote = TRUE)),
+            base::saveRDS(
+              base::do.call(
+                base::do.call,
+                base::c(
+                  base::readRDS(`__expr_file__`),
+                  base::list(envir = .GlobalEnv, quote = TRUE)
+                ),
                 envir = .GlobalEnv,
                 quote = TRUE
               ),
               file = `__res__`,
               compress = `__compress__`
             )
-            flush(stdout())
-            flush(stderr())
+            base::flush(base::stdout())
+            base::flush(base::stderr())
             `__post_hook__`
-            invisible()
+            base::invisible()
           },
           error = function(e) { `__error__` },
           interrupt = function(e) { `__error__` },
-          callr_message = function(e) { try(`__message__`) }
+          callr_message = function(e) { base::try(`__message__`) }
         ),
 
         ## We need to `stop()` here again, otherwise the error message
@@ -126,9 +130,9 @@ make_vanilla_script_expr <- function(expr_file, res, error,
         error = function(e) {
           `__post_hook__`;
           if (`__print_error__`) {
-            try(stop(e))
+            base::try(base::stop(e))
           } else {
-            invisible()
+            base::invisible()
           }
         },
         interrupt = function(e) {
@@ -136,7 +140,7 @@ make_vanilla_script_expr <- function(expr_file, res, error,
           if (`__print_error__`) {
             e
           } else {
-            invisible()
+            base::invisible()
           }
         }
       )                                 # nocov end

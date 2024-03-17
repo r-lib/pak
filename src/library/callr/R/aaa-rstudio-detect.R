@@ -111,7 +111,7 @@ rstudio <- local({
 
     } else if (pane == "terminal" && new$tty &&
                new$envs[["ASCIICAST"]] != "true") {
-      # not a direct subproces, so check other criteria as well
+      # not a direct subprocess, so check other criteria as well
       "rstudio_terminal"
 
     } else {
