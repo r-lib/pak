@@ -83,8 +83,8 @@
 #' On Windows, `LockFileEx` is used to create the lock on the file.
 #' If a finite timeout is specified for the lock request, asynchronous
 #' (overlapped) I/O is used to wait for the locking event with a timeout.
-#' See more about `LockFileEx` here:
-#' <https://msdn.microsoft.com/en-us/library/aa365203.aspx>
+#' See more about `LockFileEx` on the first hit here:
+#' <https://www.google.com/search?q=LockFileEx>
 #'
 #' Some important points:
 #' * `LockFileEx` locks are mandatory (as opposed to advisory), so indeed
@@ -142,11 +142,9 @@
 #' ```
 #'
 #' @export
-#' @aliases filelock
 #' @useDynLib filelock, .registration = TRUE, .fixes = "c_"
 
 lock <- function(path, exclusive = TRUE, timeout = Inf) {
-
   stopifnot(is_string(path))
   stopifnot(is_flag(exclusive))
   stopifnot(is_timeout(timeout))
@@ -170,6 +168,9 @@ lock <- function(path, exclusive = TRUE, timeout = Inf) {
 #' @rdname lock
 
 unlock <- function(lock) {
+  if (!inherits(lock, "filelock_lock")) {
+    stop("`unlock()` needs a lock object, not a file name")
+  }
   .Call(c_filelock_unlock, lock)
 }
 
