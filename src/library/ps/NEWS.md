@@ -1,4 +1,12 @@
+# ps 1.7.6
+
+* `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).
+
+* `ps_system_cpu_times()` now returns CPU times divided by the HZ as reported by CLK_TCK, in-line with other OS's and the per-process version. (#144, @michaelwalshe).
+
 # ps 1.7.5
+
+No user visible changes.
 
 # ps 1.7.4
 

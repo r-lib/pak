@@ -284,3 +284,4 @@ SEXP ps__get_modules(HANDLE hProcess) {
   UNPROTECT(1);
   return result;
 }
+

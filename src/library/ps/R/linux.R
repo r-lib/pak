@@ -178,8 +178,12 @@ ps_cpu_count_physical_linux <- function() {
 }
 
 ps__system_cpu_times_linux <- function() {
+  clock_ticks <- tryCatch(
+    as.numeric(system("getconf CLK_TCK", intern=TRUE)),
+    error = function(e) return(250)
+  )
   stat <- readLines("/proc/stat", n = 1)
-  tms <- as.double(strsplit(stat, "\\s+")[[1]][-1])
+  tms <- as.double(strsplit(stat, "\\s+")[[1]][-1]) / clock_ticks
   nms <- c(
     "user", "nice", "system", "idle", "iowait", "irq", "softirq", "steal",
     "guest", "guest_nice"

@@ -1101,7 +1101,7 @@ SEXP ps__memory_maps(SEXP p) {
     ps__throw_error();
   }
 
-  ret = ps__read_file(path, &buf, /* buffer= */ 2048);
+  ret = ps__read_file(path, &buf, /* buffer_size= */ 2048);
   if (ret == -1) {
     ps__wrap_linux_error(handle);
     ps__throw_error();

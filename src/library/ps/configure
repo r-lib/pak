@@ -24,6 +24,10 @@ else
     UNAME=Windows
 fi
 
+if [ -n "$EMSCRIPTEN" ] && [ -n "$CROSS_COMPILE" ]; then
+    UNAME=Emscripten
+fi
+
 unset WINDOWS
 if [ "$R_OSTYPE" = "windows" ]; then WINDOWS=true; fi
 

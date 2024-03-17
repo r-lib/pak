@@ -153,7 +153,7 @@ ps_parent <- function(p = ps_handle()) {
 #'
 #' The name of the program, which is typically the name of the executable.
 #'
-#' On on Unix this can change, e.g. via an exec*() system call.
+#' On Unix this can change, e.g. via an exec*() system call.
 #'
 #' `ps_name()` works on zombie processes.
 #'
@@ -181,7 +181,7 @@ ps_name <- function(p = ps_handle()) {
       ps_cmdline(p),
       error = function(e) NULL
     )
-    if (!is.null(cmdline)) {
+    if (!is.null(cmdline) && length(cmdline) > 0L) {
       exname <- basename(cmdline[1])
       if (str_starts_with(exname, n)) n <- exname
     }
