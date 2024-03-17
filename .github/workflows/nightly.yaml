@@ -206,7 +206,8 @@ jobs:
 
     - name: Install rig
       run: |
-        choco install rig
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.6.1pre/rig-windows-0.6.1pre.exe -OutFile rig-install.exe
+        Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install skopeo
       run: |
