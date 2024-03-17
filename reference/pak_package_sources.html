@@ -3,7 +3,7 @@
 Learn how to tell pak which packages to install, and where those packages
 can be found.
 If you want a quick overview of package sources, see
-"Get started with pak".'><title>Install packages from CRAN, Bioconductor, GitHub, URLs, etc. — Package sources • pak</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.8/font.css" rel="stylesheet"><link href="../deps/Source_Code_Pro-0.4.8/font.css" rel="stylesheet"><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Install packages from CRAN, Bioconductor, GitHub, URLs, etc. — Package sources"><meta property="og:description" content='Install packages from CRAN, Bioconductor, GitHub, URLs, etc.
+"Get started with pak".'><title>Install packages from CRAN, Bioconductor, GitHub, URLs, etc. — Package sources • pak</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.9/font.css" rel="stylesheet"><link href="../deps/Source_Code_Pro-0.4.9/font.css" rel="stylesheet"><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Install packages from CRAN, Bioconductor, GitHub, URLs, etc. — Package sources"><meta property="og:description" content='Install packages from CRAN, Bioconductor, GitHub, URLs, etc.
 Learn how to tell pak which packages to install, and where those packages
 can be found.
 If you want a quick overview of package sources, see
@@ -18,7 +18,7 @@ If you want a quick overview of package sources, see
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,8 +157,8 @@ Different parameters are separated by an ampersand (<code>&amp;</code>) characte
 string value, assigned with an equal sign (<code>=</code>).
 If no value is assigned, then we assume the <code>true</code> value. For example
 these two package refs are equivalent:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="sc">&amp;</span>nocache</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="ot">=</span>true<span class="sc">&amp;</span>nocache<span class="ot">=</span>true</span></code></pre><p></p></div><div class="section">
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="sc">&amp;</span>nocache</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>cran<span class="sc">::</span>testthat?source<span class="ot">=</span>true<span class="sc">&amp;</span>nocache<span class="ot">=</span>true</span></code></pre><p></p></div><div class="section">
 <h5 id="parameters-for-downstream-packages">Parameters for downstream packages<a class="anchor" aria-label="anchor" href="#parameters-for-downstream-packages"></a></h5><p>pak allows specifying parameters for downstream packages,
 using the <code>&lt;package&gt;=?&lt;params&gt;</code> special package reference, where <code>package</code> is
 the name of the package, and <code>&lt;params&gt;</code> are the parameters, as above.
@@ -193,28 +193,28 @@ to the package cache. It is supported by the <code>bioc::</code>, <code>cran::</
 </ul></div></div><div class="section">
 <h4 id="package-source-details">Package source details<a class="anchor" aria-label="anchor" href="#package-source-details"></a></h4><div class="section">
 <h5 id="cran-packages-cran-">CRAN packages (<code>cran::</code>)<a class="anchor" aria-label="anchor" href="#cran-packages-cran-"></a></h5><p>A package from CRAN. Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[cran<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is a valid package name.</p></li>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[cran<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is a valid package name.</p></li>
 <li><p><code>&lt;version&gt;</code> is a version or a version requirement.</p></li>
 </ul><p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>forecast</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span><span class="fl">8.8</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span><span class="er">&gt;=</span><span class="fl">8.8</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cran<span class="sc">::</span>forecast</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span>last</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">@</span>current</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>forecast</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>forecast<span class="sc">@</span><span class="fl">8.8</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>forecast<span class="sc">@</span><span class="er">&gt;=</span><span class="fl">8.8</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>cran<span class="sc">::</span>forecast</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>forecast<span class="sc">@</span>last</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>forecast<span class="sc">@</span>current</span></code></pre><p></p></div>
 <p>Note: pak currently parses the version specification part
 (everything after <code>@</code>), but does not use it.</p>
 </div><div class="section">
 <h5 id="bioconductor-packages-bioc-">Bioconductor packages (<code>bioc::</code>)<a class="anchor" aria-label="anchor" href="#bioconductor-packages-bioc-"></a></h5><p>A package from Bioconductor. The syntax is the same as for CRAN packages,
 except for the prefix.</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[bioc<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[bioc<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> <span class="er">@</span>current <span class="sc">|</span> <span class="er">@</span>last]</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="standard-packages-standard-">Standard packages (<code>standard::</code>)<a class="anchor" aria-label="anchor" href="#standard-packages-standard-"></a></h5><p>These are packages either from CRAN or Bioconductor, the full syntax
 is the same as for CRAN packages, except for the prefix:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[standard<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> current <span class="sc">|</span> last]</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[standard<span class="sc">::</span>]<span class="sc">&lt;</span>package<span class="sc">&gt;</span>[<span class="sc">@</span>[<span class="sc">&gt;=</span>]<span class="sc">&lt;</span>version<span class="sc">&gt;</span> <span class="er">|</span> current <span class="sc">|</span> last]</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="github-packages-github-">GitHub packages (<code>github::</code>)<a class="anchor" aria-label="anchor" href="#github-packages-github-"></a></h5><p>Packages from a GitHub repository. Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
 the name of the repository is used.</p></li>
 <li><p><code>&lt;username&gt;</code> is a GitHub username or organization name.</p></li>
 <li><p><code>&lt;repository&gt;</code> is the name of the repository.</p></li>
@@ -227,30 +227,30 @@ subdirectory in the repository.</p></li>
 </ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
 branch is used.</p>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>github<span class="sc">::</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>84be6207</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>branch</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="co">#41</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>release</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>github<span class="sc">::</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span><span class="dv">84</span>be6207</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>branch</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="co">#41</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>r<span class="sc">-</span>lib<span class="sc">/</span>crayon<span class="sc">@</span>release</span></code></pre><p></p></div>
 <p>For convenience GitHub HTTP URLs can also be used to specify a
 package from GitHub. Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A branch:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>ghactions</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A tag:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>v2.<span class="fl">1.1</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A commit:</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>commit<span class="sc">/</span>8fbcb548e316</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># A pull request:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>pull<span class="sc">/</span><span class="dv">76</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># A release:</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>releases<span class="sc">/</span>tag<span class="sc">/</span>v2.<span class="fl">1.0</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># A branch:</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>ghactions</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># A tag:</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>tree<span class="sc">/</span>v2.<span class="fl">1.1</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># A commit:</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>commit<span class="sc">/</span><span class="dv">8</span>fbcb548e316</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># A pull request:</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>pull<span class="sc">/</span><span class="dv">76</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># A release:</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>withr<span class="sc">/</span>releases<span class="sc">/</span>tag<span class="sc">/</span>v2.<span class="fl">1.0</span></span></code></pre><p></p></div>
 <p>A GitHub remote string can also be used instead of an URL, for example:
 <code>git@github.com:r-lib/pak.git</code></p>
 </div><div class="section">
 <h5 id="gitlab-packages-gitlab-">GitLab packages (<code>gitlab::</code>)<a class="anchor" aria-label="anchor" href="#gitlab-packages-gitlab-"></a></h5><p>Packages from a GitLab repository. Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
 the name of the repository is used.</p></li>
 <li><p><code>&lt;username&gt;</code> is a GitLab username or group name.</p></li>
 <li><p><code>&lt;repository&gt;</code> is the name of the repository.</p></li>
@@ -260,11 +260,11 @@ subdirectory in the repository.</p></li>
 </ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
 branch is used.</p>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gitlab<span class="sc">::</span>gaborcsardi<span class="sc">/</span>cli</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gitlab<span class="sc">::</span>r<span class="sc">-</span>hub<span class="sc">/</span>filelock<span class="sc">@</span>main</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>gitlab<span class="sc">::</span>gaborcsardi<span class="sc">/</span>cli</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>gitlab<span class="sc">::</span>r<span class="sc">-</span>hub<span class="sc">/</span>filelock<span class="sc">@</span>main</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="packages-in-git-repositories-git-">Packages in git repositories (<code>git::</code>)<a class="anchor" aria-label="anchor" href="#packages-in-git-repositories-git-"></a></h5><p>Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>]git<span class="sc">::</span>https?<span class="sc">:</span><span class="er">//&lt;</span>host<span class="sc">&gt;</span>[<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>]git<span class="sc">::</span>https?<span class="sc">:</span><span class="er">//&lt;</span>host<span class="sc">&gt;</span>[<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
 the last component of the <code>&lt;host&gt;</code> is used.</p></li>
 <li><p><code>&lt;host&gt;</code> host name and path of the git repository. Some git repositories
 need the <code>.git</code> suffix here, others are more forgiving.</p></li>
@@ -273,11 +273,11 @@ a git branch, tag or (prefix of) a commit hash: <code>@&lt;commitish&gt;</code>.
 </ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
 branch is used.</p>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span>84be6207</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span>branch</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>gitlab.com<span class="sc">/</span>gaborcsardi<span class="sc">/</span>cli.git</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span><span class="dv">84</span>be6207</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git<span class="sc">@</span>branch</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>gitlab.com<span class="sc">/</span>gaborcsardi<span class="sc">/</span>cli.git</span></code></pre><p></p></div>
 <p>Note that pak has a built-in git client, and does
 <strong>not</strong> require a system git installation.</p>
 <p>If the system has git installed, then pak will use the
@@ -286,20 +286,20 @@ via the gitcreds package.</p>
 </div><div class="section">
 <h5 id="local-packages-local-">Local packages (<code>local::</code>)<a class="anchor" aria-label="anchor" href="#local-packages-local-"></a></h5><p>A path that refers to a package file built with <code>R CMD build</code>, or a
 directory that contains a package. Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>local<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
 <p>For brevity, you can omit the <code>local::</code> prefix, if you specify an
 absolute path, a path from the user's home directory, starting with <code>~</code>,
 or a relative path starting with <code>./</code> or <code>.\\</code>.</p>
 <p>A single dot (<code>"."</code>) is considered to be a local package in the current
 working directory.</p>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>local<span class="sc">::</span>.</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="sc">~</span><span class="er">/</span>path<span class="sc">/</span>from<span class="sc">/</span>home</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>.<span class="sc">/</span>relative<span class="sc">/</span>path</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>.</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>local<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>local<span class="sc">::</span>.</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="sc">~</span><span class="er">/</span>path<span class="sc">/</span>from<span class="sc">/</span>home</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>.<span class="sc">/</span>relative<span class="sc">/</span>path</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>.</span></code></pre><p></p></div>
 <p>If you specify a local package in a dependency (i.e. in <code>DESCRIPTION</code>), then
 you also need to specify the name of the package, see "Package names"
 above.</p>
@@ -314,28 +314,28 @@ download the package file to resolve its dependencies. When this happens,
 it puts the package file in the cache, so no further downloads are
 needed when installing the package later.</p>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>cloud.r<span class="sc">-</span>project.org<span class="sc">/</span>src<span class="sc">/</span>contrib<span class="sc">/</span>Archive<span class="sc">/</span>cli<span class="sc">/</span>cli_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>tidyverse<span class="sc">/</span>stringr<span class="sc">/</span>archive<span class="sc">/</span>HEAD.zip</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>cloud.r<span class="sc">-</span>project.org<span class="sc">/</span>src<span class="sc">/</span>contrib<span class="sc">/</span>Archive<span class="sc">/</span>cli<span class="sc">/</span>cli_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>url<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>tidyverse<span class="sc">/</span>stringr<span class="sc">/</span>archive<span class="sc">/</span>HEAD.zip</span></code></pre><p></p></div>
 <p>If you specify a package from an URL in a dependency (i.e. in <code>DESCRIPTION</code>),
 then you also need to specify the name of the package, see "Package names"
 above.</p>
 </div><div class="section">
 <h5 id="installed-packages-installed-">Installed packages (<code>installed::</code>)<a class="anchor" aria-label="anchor" href="#installed-packages-installed-"></a></h5><p>This is usually used internally, but can also be used directly.
 Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span><span class="er">/&lt;</span>package<span class="sc">&gt;</span></span></code></pre><p></p></div><ul><li><p><code>&lt;path&gt;</code> is the library the package is installed to.</p></li>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span><span class="er">/&lt;</span>package<span class="sc">&gt;</span></span></code></pre><p></p></div><ul><li><p><code>&lt;path&gt;</code> is the library the package is installed to.</p></li>
 <li><p><code>&lt;package&gt;</code> is the package name.</p></li>
 </ul><p>Example:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">~/</span>R<span class="sc">/</span><span class="fl">3.6</span><span class="sc">/</span>crayon</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>installed<span class="sc">::</span><span class="er">~/</span>R<span class="sc">/</span><span class="fl">3.6</span><span class="sc">/</span>crayon</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="package-dependencies-deps-">Package dependencies (<code>deps::</code>)<a class="anchor" aria-label="anchor" href="#package-dependencies-deps-"></a></h5><p>Usually used internally, it specifies the dependencies of a local
 package. It can be used to download or install the dependencies of a
 package, without downloading or installing the package itself.
 Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">&lt;</span>path<span class="sc">&gt;</span></span></code></pre><p></p></div>
 <p>Examples:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>deps<span class="sc">::</span>.</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>package_1.<span class="dv">0</span>.<span class="fl">0.</span>tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>deps<span class="sc">::</span><span class="er">/</span>foo<span class="sc">/</span>bar<span class="sc">/</span>pkg</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>deps<span class="sc">::</span>.</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="any-packages"><code>any::</code> packages<a class="anchor" aria-label="anchor" href="#any-packages"></a></h5><p>Sometimes you need to install additional packages, but you don't mind
 where they are installed from. Here is an example. You want to install
@@ -364,15 +364,15 @@ pak will download and install the package from the
 from the specified location, instead of a CRAN-like repository.</p>
 <p>The remote dependencies specified in <code>Remotes</code> is a comma separated
 list of package sources:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Remotes<span class="sc">:</span> <span class="er">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-1</span><span class="sc">&gt;</span>, <span class="sc">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-2</span><span class="sc">&gt;</span>, [ ... ]</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Remotes<span class="sc">:</span> <span class="er">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-1</span><span class="sc">&gt;</span>, <span class="sc">&lt;</span>pkg<span class="sc">-</span>source<span class="dv">-2</span><span class="sc">&gt;</span>, [ ... ]</span></code></pre><p></p></div>
 <p>Note that you will still need add the package to one of the regular
 dependency fields, i.e. <code>Imports</code>, <code>Suggests</code>, etc. Here is a concrete
 example that specifies the <code>r-lib/glue</code> package:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Imports<span class="sc">:</span> glue</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Remotes<span class="sc">:</span> r<span class="sc">-</span>lib<span class="sc">/</span>glue,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>httr<span class="sc">@</span>v0<span class="fl">.4</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  klutometis<span class="sc">/</span>roxygen<span class="co">#142,</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>testthat<span class="sc">@</span>c67018fa4970</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Imports<span class="sc">:</span> glue</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>Remotes<span class="sc">:</span> r<span class="sc">-</span>lib<span class="sc">/</span>glue,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>httr<span class="sc">@</span>v0<span class="fl">.4</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  klutometis<span class="sc">/</span>roxygen<span class="co">#142,</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  r<span class="sc">-</span>lib<span class="sc">/</span>testthat<span class="sc">@</span>c67018fa4970</span></code></pre><p></p></div>
 <p>The CRAN and Bioconductor repositories do not support the <code>Remotes</code>
 field, so you need to remove this field, before submitting your package
 to either of them.</p>
@@ -386,7 +386,7 @@ to either of them.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>, Mango Solutions, R Consortium.</p>
+  <p></p><p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>, Ascent Digital Services, R Consortium.</p>
 </div>
 
 <div class="pkgdown-footer-right">
