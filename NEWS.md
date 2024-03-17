@@ -1,5 +1,10 @@
 # pak (development version)
 
+* pak now supports using parameters for all packages with the
+  `*=?<param>` form. E.g. `*=?source` installs all packages from source.
+
+* pak now supports R 4.4.0 again, and also Rtools44.
+
 # pak 0.7.1
 
 * pak can now handle the case when `Config/Needs/*` dependencies
