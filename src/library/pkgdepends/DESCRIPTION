@@ -1,6 +1,6 @@
 Package: pkgdepends
 Title: Package Dependency Resolution and Downloads
-Version: 0.7.1.9000
+Version: 0.7.2
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd"))
@@ -33,7 +33,9 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2024-02-09 16:07:22 UTC; gaborcsardi
+Packaged: 2024-03-17 14:42:39 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2024-03-17 15:10:02 UTC
