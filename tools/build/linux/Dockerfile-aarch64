@@ -55,6 +55,7 @@ RUN cp /etc/apk/repositories $AARCH64_ROOT/etc/apk/
 RUN apk add \
     ./packages/main/x86_64/binutils-aarch64-*apk \
     ./packages/main/x86_64/gcc-aarch64-*.apk \
+    ./packages/main/x86_64/libstdc++-dev-aarch64-*.apk \
     ./packages/main/x86_64/g++-aarch64-*.apk
 
 RUN apk add --arch aarch64 --root $AARCH64_ROOT \

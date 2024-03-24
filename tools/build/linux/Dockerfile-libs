@@ -4,7 +4,7 @@
 # /usr/local/. Dockerfiles can then build on this container by copying
 # over /usr/local/.
 
-FROM alpine:3.16 AS build
+FROM alpine:3.19 AS build
 
 WORKDIR /root
 
@@ -47,7 +47,7 @@ RUN cd curl-* && \
 # We don't need to keep the compilation artifacts, so copy the results
 # to a clean image
 
-FROM alpine:3.16
+FROM alpine:3.19
 COPY --from=build /usr/local /usr/local/
 
 # Some of this info is shown on the GH packages pages
