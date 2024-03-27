@@ -1,0 +1,5 @@
+# We don't use += here, because that is problematic when
+# cross compiling. We end up with both `-arch x86_64` and
+# `-arch arm64`, so clang will create a fat binary, which is
+# not what we want.
+CC= clang -arch arm64 -mmacosx-version-min=11.0
