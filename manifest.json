@@ -36,18 +36,18 @@
           "r.version": "4.1",
           "pak.version": "0.7.2.9000",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-26T05:44:34+00:00",
-          "size": 5199606,
-          "digest": "sha256:362e5e4ca4df66a4c133c3f9883b000c33403dd4f30fbcfffda20a21ae8d5f18"
+          "buildtime": "2024-03-27T11:14:44+00:00",
+          "size": 5200084,
+          "digest": "sha256:4197c39e875bf8d0686e0b0ae409f9db9b3c8c2838a8fcd0c8e094c3a5014038"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.2",
           "pak.version": "0.7.2.9000",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-26T05:45:51+00:00",
-          "size": 5198249,
-          "digest": "sha256:a52ad50681fe5a04f1303a8aa826bdbc8adf33d5046b5837afaeaaece23f1be0"
+          "buildtime": "2024-03-27T11:16:14+00:00",
+          "size": 5197139,
+          "digest": "sha256:eef7c0d13791f84fa1eccd4a408c15f6c24515b327a258735ae291ee3c50dca1"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
@@ -279,9 +279,9 @@
           "r.version": "4.3",
           "pak.version": "0.7.2.9000",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-26T05:47:12+00:00",
-          "size": 5197596,
-          "digest": "sha256:a744a4fb991bdbe3de7861031c8a8e29d1f699b1ac8a4a05c193a0cfd46beed1"
+          "buildtime": "2024-03-27T11:17:47+00:00",
+          "size": 5198410,
+          "digest": "sha256:efd957c10f89dcd5cf5e4fb9583cdbd2b9baf88afe826c75e632704e166e21fa"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
@@ -309,6 +309,15 @@
           "buildtime": "2024-03-27T11:11:47+00:00",
           "size": 8043019,
           "digest": "sha256:e1b22db5852357d1d32488c9dd6c5a1e7e33de0735b93f4f875af7fa7634b3fe"
+        },
+        {
+          "r.platform": "x86_64-apple-darwin20",
+          "r.version": "4.5",
+          "pak.version": "0.7.2.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2024-03-27T11:19:25+00:00",
+          "size": 5194418,
+          "digest": "sha256:ac317a973d4945d477b7f7ed381cff6f0ae1ab632cd00e605b3ec3979a2b8b06"
         }
       ]
     },
