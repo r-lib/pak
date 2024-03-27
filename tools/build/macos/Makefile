@@ -49,6 +49,7 @@ deploy:
 	# a native package installed.
 	$(R) CMD INSTALL pak_$(PAKVERSION).tar.gz
 	R_LIBS=$(RLIB) $(R) -q -e 'pak::pkg_install("deps::$(PKGROOT)", dependencies = "Config/Needs/deploy")'
+	@echo Packages: "$$PKGFILES"
 	R_LIBS=$(RLIB) $(R) -q -e \
 		'pak:::push_packages(strsplit(Sys.getenv("PKGFILES"), " ")[[1]])'
 
