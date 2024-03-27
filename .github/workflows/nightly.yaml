@@ -231,6 +231,7 @@ jobs:
         rig add rtools
         # For make and zip
         echo "C:\rtools43\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\rtools44\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Build pak binaries
       run: |
