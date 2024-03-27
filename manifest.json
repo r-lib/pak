@@ -658,18 +658,18 @@
           "r.version": "4.1",
           "pak.version": "0.7.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-17T20:48:48+00:00",
-          "size": 5664423,
-          "digest": "sha256:e568ecd29b8bfb58bb4419c3751b4e64262178772aec8d36c9b50b7932d77c32"
+          "buildtime": "2024-03-27T13:14:00+00:00",
+          "size": 5664277,
+          "digest": "sha256:b60c415ab27294032794eea6fd46f89ecaa90f45b877991d29f457f1fefcfec6"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.2",
           "pak.version": "0.7.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-17T20:51:03+00:00",
-          "size": 5658110,
-          "digest": "sha256:a629d0b3d89a312688273d34a23ebc5410045e24bfe82580dcdd5a11d3106a0f"
+          "buildtime": "2024-03-27T13:15:28+00:00",
+          "size": 5661850,
+          "digest": "sha256:43cb91496a209a11e1312b325a831fb7847a7adf2ed0c5a81be3463149c1a66e"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
@@ -838,9 +838,9 @@
           "r.version": "4.3",
           "pak.version": "0.7.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-17T20:53:15+00:00",
-          "size": 5657719,
-          "digest": "sha256:147864bd540c1691198d6d6c70288525cdd8dadf1405bebc903d28ca9a6f3060"
+          "buildtime": "2024-03-27T13:16:57+00:00",
+          "size": 5660314,
+          "digest": "sha256:790f86cfab9f2f4dba747d13097da2170bcb7b544b22a1a1c174b07d1c3be3fb"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
@@ -967,6 +967,15 @@
           "buildtime": "2024-03-27T11:42:28+00:00",
           "size": 5190362,
           "digest": "sha256:f37d7e10e2e172ce9c775399a6989eef312c30bafc859778fa37e309a5031e44"
+        },
+        {
+          "r.platform": "aarch64-apple-darwin20",
+          "r.version": "4.5",
+          "pak.version": "0.7.2",
+          "pak.revision": "TODO",
+          "buildtime": "2024-03-27T13:18:27+00:00",
+          "size": 5711515,
+          "digest": "sha256:58e8c2d5ff63e75b57f483c4346f05f35debea82b4f43aea75256cf974b44bb3"
         }
       ]
     }
