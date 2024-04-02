@@ -50,6 +50,7 @@ Suggests:
     pkgbuild (>= 1.4.2),
     pkgcache (>= 2.0.4),
     pkgdepends (>= 0.5.0.9001),
+    pkgload,
     pkgsearch (>= 3.1.0),
     processx (>= 3.8.1),
     ps (>= 1.6.0),
