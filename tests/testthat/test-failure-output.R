@@ -1,5 +1,6 @@
 test_that("output is printed on failure", {
   skip_on_cran()
+  skip_on_covr()
 
   # Full output in interactive sessions
   badcompile <- paste0(
