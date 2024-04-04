@@ -5,7 +5,7 @@ client_env <- local({
 
   rsfile <- file.path("R", "aaa-rstudio-detect.R")
   sys.source(rsfile, envir = env$`__callr_data__`, keep.source = FALSE)
-  errfile <- file.path("R", "errors.R")
+  errfile <- file.path("R", "standalone-errors.R")
   sys.source(errfile, envir = env$`__callr_data__`, keep.source = FALSE)
   loadfile <- file.path("R", "load-client.R")
   sys.source(loadfile, envir = env$`__callr_data__`, keep.source = FALSE)

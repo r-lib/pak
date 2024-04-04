@@ -1,14 +1,17 @@
-
-# # Standalone file for better error handling ----------------------------
+# ---
+# repo: r-lib/processx
+# file: standalone-errors.R
+# last-updated: 2023-01-15
+# license: https://unlicense.org
+# ---
 #
-# If can allow package dependencies, then you are probably better off
-# using rlang's functions for errors.
+# Standalone file for better error handling. If you can allow package
+# dependencies, then you are probably better off using rlang's
+# functions for errors.
 #
-# The canonical location of this file is in the processx package:
-# https://github.com/r-lib/processx/blob/main/R/errors.R
+# ## Soft-dependency
 #
-# ## Dependencies
-# - rstudio-detect.R for better printing in RStudio
+# - aaa-standalone-rstudio-detect.R in r-lib/cli
 #
 # ## Features
 #
@@ -54,7 +57,7 @@
 # ## Roadmap:
 # - better printing of anonymous function in the trace
 #
-# ## NEWS:
+# ## Changelog
 #
 # ### 1.0.0 -- 2019-06-18
 #
@@ -155,6 +158,14 @@
 # ### 3.1.2 -- 2022-11-18
 #
 # * The `parent` condition can now be an interrupt.
+#
+# ### 3.1.3 -- 2023-01-15
+#
+# * Now we do not load packages when walking the trace.
+#
+# ### 3.1.4 -- 2023-04-13
+#
+# * `call.` can now be a frame environment as in `rlang::abort()`
 
 err <- local({
 
@@ -220,7 +231,10 @@ err <- local({
   #' @param frame The throwing context. Can be used to hide frames from
   #'   the backtrace.
 
-  throw <- throw_error <- function(cond, parent = NULL, frame = environment()) {
+  throw <- throw_error <- function(cond,
+                                   parent = NULL,
+                                   call = parent.frame(),
+                                   frame = environment()) {
     if (!inherits(cond, "condition")) {
       cond <- new_error(cond)
     }
@@ -229,9 +243,11 @@ err <- local({
     }
 
     if (isTRUE(cond[["call"]])) {
-      cond[["call"]] <- sys.call(-1) %||% sys.call()
+      cond[["call"]] <- frame_call(call)
     } else if (identical(cond[["call"]], FALSE)) {
       cond[["call"]] <- NULL
+    } else if (is.environment(cond[["call"]])) {
+      cond[["call"]] <- frame_call(cond[["call"]])
     }
 
     cond <- process_call(cond)
@@ -547,6 +563,7 @@ err <- local({
     if (ns == "base") return("::")
     if (! ns %in% loadedNamespaces()) return("")
     name <- call_name(call)
+    if (! ns %in% loadedNamespaces()) return("::")
     nsenv <- asNamespace(ns)$.__NAMESPACE__.
     if (is.null(nsenv)) return("::")
     if (is.null(nsenv$exports)) return(":::")
@@ -913,7 +930,10 @@ err <- local({
   }
 
   format_trace_call_cli <- function(call, ns = "") {
-    envir <- tryCatch(asNamespace(ns), error = function(e) .GlobalEnv)
+    envir <- tryCatch({
+      if (!ns %in% loadedNamespaces()) stop("no")
+      asNamespace(ns)
+    }, error = function(e) .GlobalEnv)
     cl <- trimws(format(call))
     if (length(cl) > 1) { cl <- paste0(cl[1], " ", cli::symbol$ellipsis) }
     # Older cli does not have 'envir'.
@@ -1149,6 +1169,35 @@ err <- local({
     }
   }
 
+  frame_call <- function(frame) {
+    out <- NULL
+    delayedAssign("out", base::sys.call(), frame)
+    out
+  }
+
+  # Useful for snapshots so that they print without an unstable backtrace.
+  # Call `register_testthat_print()` before running tests.
+  testthat_print_error <- function(x, ...) {
+    x[["trace"]] <- NULL
+    x[["srcref"]] <- NULL
+    x[["procsrcref"]] <- NULL
+    attr(x[["call"]], "srcref") <- NULL
+    print(x)
+  }
+
+  registered <- FALSE
+  register_testthat_print <- function() {
+    if (!registered) {
+      registerS3method(
+        "testthat_print",
+        "rlib_error",
+        testthat_print_error,
+        asNamespace("testthat")
+      )
+      registered <<- TRUE
+    }
+  }
+
   # -- public API --------------------------------------------------------
 
   err_env <- environment()
@@ -1168,6 +1217,7 @@ err <- local({
       process_call     = process_call,
       onload_hook      = onload_hook,
       is_interactive   = is_interactive,
+      register_testthat_print = register_testthat_print,
       format = list(
         advice        = format_advice,
         call          = format_call,

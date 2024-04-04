@@ -27,7 +27,7 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   # install path since that library might be shared (e.g. in tests)
   need_cleanup <- TRUE
 
-  if (is.null(sofile)) {
+  if (is.null(sofile) || Sys.getenv("CALLR_NO_TEMP_DLLS", "false") == "true") {
     sofile <- sofile_in_processx()
     lib <- dyn.load(sofile)
     need_cleanup <- FALSE
