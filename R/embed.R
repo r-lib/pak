@@ -159,8 +159,8 @@ embed <- local({
       stringsAsFactors = FALSE,
       ref = rpkg,
       package = pkg_name,
-      required = unname(vers),
-      required_sha = sha,
+      required = unname(unlist(vers)),
+      required_sha = unlist(sha),
       current = crnt$version[wh],
       current_sha = crnt$sha[wh]
     )
