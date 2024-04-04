@@ -321,7 +321,11 @@ macos_cran_platforms$rversion <- get_minor_r_version(
 macos_cran_platforms <- unique(macos_cran_platforms)
 
 get_cran_macos_platform <- function(v) {
-  macos_cran_platforms[macos_cran_platforms$rversion %in% v,,drop = FALSE]
+  if (v %in% macos_cran_platforms$rversion) {
+    macos_cran_platforms[macos_cran_platforms$rversion %in% v,,drop = FALSE]
+  } else {
+    utils::tail(macos_cran_platforms, 2)
+  }
 }
 
 #' Query the default CRAN repository for this session
