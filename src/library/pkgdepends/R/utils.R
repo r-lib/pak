@@ -315,6 +315,10 @@ new_async_timer <- function(...) {
   asNamespace("pkgcache")$async_timer$new(...)
 }
 
+async_delay <- function(...) {
+  asNamespace("pkgcache")$delay(...)
+}
+
 external_process <- function(...) {
   asNamespace("pkgcache")$external_process(...)
 }
@@ -490,4 +494,8 @@ backtick <- function(x) {
 
 collapse <- function(x, ...) {
   cli::ansi_collapse(x, ...)
+}
+
+na_omit <- function(x) {
+  x[!is.na(x)]
 }

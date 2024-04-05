@@ -124,6 +124,18 @@ pkgdepends_config <- sort_by_name(list(
   ),
 
   # -----------------------------------------------------------------------
+  git_submodules = list(
+    type = "flag",
+    default = FALSE,
+    docs =
+      "Whether or not to update submodules in git repositories. This
+       affects `git::` and `gitlab::` package sources only.
+       If the R package is in a subdirectory then only the submodules
+       within that directory are updated. If a submodule appears in
+       `.Rbuildignore`, then it is skipped."
+  ),
+
+  # -----------------------------------------------------------------------
   include_linkingto = list(
     type = "flag",
     default = FALSE,

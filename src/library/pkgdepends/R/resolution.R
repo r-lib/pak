@@ -667,7 +667,7 @@ resolve_from_metadata <- function(remotes, direct, config, cache,
         "ref", "type", "status", "package", "version", "license",
         "needscompilation", "priority", "md5sum", "platform",
         "rversion", "repodir", "target", "deps", "sources", "mirror",
-        "filesize", "sha256", "sysreqs")
+        "filesize", "sha256", "sysreqs", "os_type")
 
       cols <- intersect(names(data), cols)
 

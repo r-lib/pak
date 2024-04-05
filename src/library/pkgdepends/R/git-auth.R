@@ -1,4 +1,3 @@
-
 # nocov start
 
 gitcreds_get <- NULL
@@ -379,15 +378,23 @@ gitcreds_run <- function(command, input, args = character()) {
 git_run <- function(args, input = NULL) {
   stderr_file <- tempfile("gitcreds-stderr-")
   on.exit(unlink(stderr_file, recursive = TRUE), add = TRUE)
+  if (!is.null(input)) {
+    stdin_file <- tempfile("gitcreds-stdin-")
+    on.exit(unlink(stdin_file, recursive = TRUE), add = TRUE)
+    writeBin(charToRaw(input), stdin_file)
+    stdin <- stdin_file
+  } else {
+    stdin <- ""
+  }
   out <- tryCatch(
     suppressWarnings(system2(
-      "git", args, input = input, stdout = TRUE, stderr = stderr_file
+      "git", args, stdin = stdin, stdout = TRUE, stderr = stderr_file
     )),
     error = function(e) NULL
   )
 
   if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
-    throw(new_error(
+    throw(new_git_error(
       "git_error",
       args = args,
       stdout = out,
@@ -416,7 +423,7 @@ ack <- function(url, current, what = "Replace") {
   msg(paste0(format(current, header = FALSE), collapse = "\n"), "\n")
 
   choices <- c(
-    "Keep these credentials",
+    "Abort update with error, and keep the existing credentials",
     paste(what, "these credentials"),
     if (has_password(current)) "See the password / token"
   )
@@ -575,6 +582,12 @@ new_error <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
   cond <- list(message = message, ...)
   if (call.) cond$call <- sys.call(-1)
   class(cond) <- c(class, "gitcreds_error", "error", "condition")
+  cond
+}
+
+new_git_error <- function(class, ..., stderr) {
+  cond <- new_error(class, ..., stderr = stderr)
+  cond$message <- paste0(cond$message, ": ", stderr)
   cond
 }
 

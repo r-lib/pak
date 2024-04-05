@@ -192,8 +192,9 @@ parse_url <- function(url) {
   re_url <- paste0(
     "^(?<protocol>[a-zA-Z0-9]+)://",
     "(?:(?<username>[^@/:]+)(?::(?<password>[^@/]+))?@)?",
-    "(?<host>[^/]+)",
-    "(?<path>.*)$"            # don't worry about query params here...
+    "(?<url>(?<host>[^:/]+)",
+    "(?::(?<port>[0-9]+))?",
+    "(?<path>/.*))$"            # don't worry about query params here...
   )
-  re_match(url, re_url)$groups
+  re_match(url, re_url)
 }

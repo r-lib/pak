@@ -68,7 +68,7 @@ Config/needs/dependencies:
     jsonlite,
     pkgbuild,
     pkgcache,
-    pkgdepends,
+    r-lib/pkgdepends,
     pkgsearch,
     processx,
     ps,

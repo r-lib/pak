@@ -667,7 +667,7 @@ stop_task_package_build <- function(state, worker) {
       state$cache$add(state$plan$file[pkgidx], state$plan$target[pkgidx],
                       package = pkg, version = version, built = TRUE,
                       sha256 = state$plan$extra[[pkgidx]]$remotesha,
-                      vignettes = state$plan$vignette[pkgidx],
+                      vignettes = state$plan$vignettes[pkgidx],
                       platform = "source"),
       error = function(err) {
         alert("warning", "Failed to add {.pkg {pkg}} \\
@@ -744,7 +744,7 @@ stop_task_build <- function(state, worker) {
       state$cache$add(state$plan$file[pkgidx], target,
                       package = pkg, version = version, built = TRUE,
                       sha256 = state$plan$extra[[pkgidx]]$remotesha,
-                      vignettes = state$plan$vignette[pkgidx],
+                      vignettes = state$plan$vignettes[pkgidx],
                       platform = ptfm, rversion = rv),
       error = function(err) {
         alert("warning", "Failed to add {.pkg {pkg}} \\

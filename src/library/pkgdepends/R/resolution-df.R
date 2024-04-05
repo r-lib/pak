@@ -33,7 +33,8 @@ res_make_empty_df <- local({
         extra    = list(),              # any extra data (e.g. GitHub sha)
         dep_types= list(),
         params   = list(),
-        sysreqs  = character()
+        sysreqs  = character(),
+        os_type  = character()
       )
     }
     data
@@ -70,7 +71,8 @@ res_df_defaults <- local({
         extra    = list(list()),
         dep_types= list("default"),
         params   = list(character()),
-        sysreqs  = NA_character_
+        sysreqs  = NA_character_,
+        os_type  = NA_character_
       )
     }
     data

@@ -1,4 +1,3 @@
-
 #' git protocol notes, for developers
 #'
 #' Assumptions, they might be relaxed or checked for later:
@@ -38,6 +37,30 @@
 NULL
 
 # -------------------------------------------------------------------------
+
+git_creds_for_url <- function(url) {
+  creds <- tryCatch(
+    gitcreds_get(url)[c("username", "password")],
+    error = function(e) NULL
+  )
+  if (is.null(creds)) {
+    do.call(
+      Sys.setenv,
+      structure(list("FAIL"), names = gitcreds_cache_envvar(url))
+    )
+  }
+  creds
+}
+
+git_http_get <- function(url, options = list(), ...) {
+  options <- c(options, git_creds_for_url(url))
+  http_get(url, options = options, ...)
+}
+
+git_http_post <- function(url, options = list(), ...) {
+  options <- c(options, git_creds_for_url(url))
+  http_post(url, options = options, ...)
+}
 
 #' List references in a remote git repository
 #'
@@ -133,6 +156,7 @@ async_git_resolve_ref <- function(url, ref) {
       paste0(c("", "refs/heads/", "refs/tags/"), ref)
     }
     async_git_list_refs(url, filt)$
+      catch(error = function(e) async_git_list_refs_v1(url))$
       then(function(refs) {
         result <- if (ref %in% refs$refs$ref) {
           refs$refs$hash[refs$refs$ref == ref]
@@ -501,20 +525,30 @@ git_fetch_process <- function(reply, url, sha) {
 
 # -------------------------------------------------------------------------
 
-git_download_repo <- function(url, ref = "HEAD", output = ref) {
-  synchronize(async_git_download_repo(url, ref, output))
+git_download_repo <- function(url, ref = "HEAD", output = ref,
+                              submodules = FALSE) {
+  synchronize(async_git_download_repo(url, ref, output, submodules))
 }
 
-async_git_download_repo <- function(url, ref = "HEAD", output = ref) {
+async_git_download_repo <- function(url, ref = "HEAD", output = ref,
+                                    submodules = FALSE) {
   url; ref
   async_git_resolve_ref(url, ref)$
-    then(function(sha) async_git_download_repo_sha(url, sha, output))
+    then(function(sha) {
+      async_git_download_repo_sha(url, sha, output, submodules)
+    })
 }
 
-async_git_download_repo_sha <- function(url, sha, output) {
+async_git_download_repo_sha <- function(url, sha, output,
+                                        submodules = FALSE) {
   url; sha; output
-  async_git_fetch(url, sha, blobs = TRUE)$
+  p <- async_git_fetch(url, sha, blobs = TRUE)$
     then(function(packfile) unpack_packfile_repo(packfile, output, url))
+  if (!submodules) {
+    p
+  } else {
+    p$then(function() async_update_git_submodules(output))
+  }
 }
 
 unpack_packfile_repo <- function(parsed, output, url) {
@@ -546,7 +580,10 @@ unpack_packfile_repo <- function(parsed, output, url) {
         process_tree(tidx)
         wd <<- utils::head(wd, -1)
       } else if (tr$type[l] == "blob") {
-        writeBin(parsed[[tr$hash[l]]]$raw, opath)
+        # for submodules this is NULL
+        if (!is.null(parsed[[tr$hash[l]]])) {
+          writeBin(parsed[[tr$hash[l]]]$raw, opath)
+        }
       }
     }
   }
@@ -788,7 +825,8 @@ async_git_send_message_v2 <- function(
     "git-protocol" = "version=2",
     "content-length" = as.character(length(msg))
   )
-  http_post(
+
+  git_http_post(
     url2,
     data = msg,
     headers = headers
@@ -807,7 +845,7 @@ async_git_send_message_v1 <- function(url, args, caps) {
     "accept" = "application/x-git-upload-pack-result",
     "content-length" = as.character(length(msg))
   )
-  http_post(
+  git_http_post(
     url2,
     data = msg,
     headers = headers
@@ -880,7 +918,7 @@ git_list_refs_v1 <- function(url) {
 async_git_list_refs_v1 <- function(url) {
   url
   url1 <- paste0(url, "/info/refs?service=git-upload-pack")
-  http_get(url1, headers = c("User-Agent" = git_ua()))$
+  git_http_get(url1, headers = c("User-Agent" = git_ua()))$
     then(http_stop_for_status)$
     then(function(response) git_list_refs_v1_process(response, url))
 }
@@ -1006,11 +1044,13 @@ async_git_list_refs_v2 <- function(url, prefixes = character()) {
   url; prefixes
 
   url1 <- paste0(url, "/info/refs?service=git-upload-pack")
+
   headers <- c(
     "User-Agent" = git_ua(),
     "git-protocol" = "version=2"
   )
-  http_get(url1, headers = headers)$
+
+  git_http_get(url1, headers = headers)$
     then(http_stop_for_status)$
     then(function(res) async_git_list_refs_v2_process_1(res, url, prefixes))
 }
@@ -1656,9 +1696,9 @@ async_git_dumb_list_refs <- function(url) {
     "User-Agent" = git_ua()
   )
   when_all(
-    http_get(url1, headers = headers)$
+    git_http_get(url1, headers = headers)$
       then(http_stop_for_status),
-    http_get(url2, headers = headers)$
+    git_http_get(url2, headers = headers)$
       then(http_stop_for_status)
   )$
     then(function(res) async_git_dumb_list_refs_process(res, url))
@@ -1738,7 +1778,7 @@ async_git_dumb_get_commit <- function(url, sha) {
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  http_get(url = url1, headers = headers)$
+  git_http_get(url = url1, headers = headers)$
     then(http_stop_for_status)$
     then(function(res) {
       cmt <- zip::inflate(res$content)$output
@@ -1767,7 +1807,7 @@ async_git_dumb_get_tree <- function(url, sha) {
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  http_get(url = url1, headers = headers)$
+  git_http_get(url = url1, headers = headers)$
     then(http_stop_for_status)$
     then(function(res) {
       cmt <- zip::inflate(res$content)$output
@@ -1796,7 +1836,7 @@ async_git_dumb_get_blob <- function(url, sha) {
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  http_get(url = url1, headers = headers)$
+  git_http_get(url = url1, headers = headers)$
     then(http_stop_for_status)$
     then(function(res) {
       cmt <- zip::inflate(res$content)$output
