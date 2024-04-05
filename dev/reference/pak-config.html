@@ -98,6 +98,11 @@ directory within the R session temporary directory, see
 (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), if that's not set then
 <code>https://cran.rstudio.com</code>. See also <code><a href="repo_add.html">pak::repo_add()</a></code> and
 <code><a href="repo_get.html">pak::repo_get()</a></code></p></li>
+<li><p>‘git_submodules’: (Env var: <code>PKG_GIT_SUBMODULES</code>, option: <code>pkg.git_submodules</code>.) Whether or not to update submodules in git repositories. This
+affects <code>git::</code> and <code>gitlab::</code> package sources only.
+If the R package is in a subdirectory then only the submodules
+within that directory are updated. If a submodule appears in
+<code>.Rbuildignore</code>, then it is skipped.</p></li>
 <li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
 of and installation, even if they are needed because the packages
 are installed from binaries. This is sometimes useful, see e.g.

@@ -178,6 +178,10 @@ ignored on R versions that are older than the specified one. E.g.
 <code>Matrix=?ignore-before-r=4.1.2</code> will ignore the Matrix package on R versions
 that are older than 4.1.2. This parameter really only makes sense in the
 <code>packgename=?ignore</code> form.</p></li>
+<li><p><code>ignore-unavailable</code> is a flag. It can only be specified for soft
+dependencies. If specified and the package is not available, it will be
+ignored. This parameter really only makes sense in the
+<code>packagename=?ignore-unavailable</code> form.</p></li>
 <li><p><code>source</code> is a flag parameter. If specified, then a source R package
 is requested from a CRAN-like repository. For package installations
 <code>source</code> always triggers a re-install. In other words, <code>source</code> implies the
@@ -250,18 +254,24 @@ package from GitHub. Examples:</p>
 <code>git@github.com:r-lib/pak.git</code></p>
 </div><div class="section">
 <h5 id="gitlab-packages-gitlab-">GitLab packages (<code>gitlab::</code>)<a class="anchor" aria-label="anchor" href="#gitlab-packages-gitlab-"></a></h5><p>Packages from a GitLab repository. Full syntax:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>username<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/</span><span class="er">&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
+<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>][github<span class="sc">::</span>]<span class="sc">&lt;</span>project<span class="sc">-</span>path<span class="sc">&gt;</span><span class="er">/&lt;</span>repository<span class="sc">&gt;</span>[<span class="sc">/-</span><span class="er">/&lt;</span>subdir<span class="sc">&gt;</span>][<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
 the name of the repository is used.</p></li>
-<li><p><code>&lt;username&gt;</code> is a GitLab username or group name.</p></li>
-<li><p><code>&lt;repository&gt;</code> is the name of the repository.</p></li>
+<li><p><code>&lt;project-path&gt;</code> is a typically the GitLab username or group name, but
+it may contain subgroups.</p></li>
+<li><p><code>&lt;repository&gt;</code> is the name of the repository, or the project in GitLab
+terminology.</p></li>
 <li><p><code>&lt;subdir&gt;</code> optional subdirectory, if the package is within a
-subdirectory in the repository.</p></li>
+subdirectory in the repository. Note that for GitLab, this must come
+after a <code>/-</code> prefix, to be able to distinguish it from subgroups.</p></li>
 <li><p><code>&lt;detail&gt;</code> may specify a git branch, tag or (prefix of) a commit hash.</p></li>
 </ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
 branch is used.</p>
+<p><code>gitlab::</code> supports git submodules, see the <code>git-submodules</code> configuration
+entry.</p>
 <p>Examples:</p>
 <p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>gitlab<span class="sc">::</span>gaborcsardi<span class="sc">/</span>cli</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>gitlab<span class="sc">::</span>r<span class="sc">-</span>hub<span class="sc">/</span>filelock<span class="sc">@</span>main</span></code></pre><p></p></div>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>gitlab<span class="sc">::</span>r<span class="sc">-</span>hub<span class="sc">/</span>filelock<span class="sc">@</span>main</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>gitlab<span class="sc">::</span>group<span class="sc">/</span>subgroup<span class="sc">/</span>subsubgroup<span class="sc">/</span>project<span class="sc">/-</span><span class="er">/</span>subdir<span class="sc">@</span>ref</span></code></pre><p></p></div>
 </div><div class="section">
 <h5 id="packages-in-git-repositories-git-">Packages in git repositories (<code>git::</code>)<a class="anchor" aria-label="anchor" href="#packages-in-git-repositories-git-"></a></h5><p>Full syntax:</p>
 <p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>[<span class="sc">&lt;</span>package<span class="sc">&gt;=</span>]git<span class="sc">::</span>https?<span class="sc">:</span><span class="er">//&lt;</span>host<span class="sc">&gt;</span>[<span class="sc">&lt;</span>detail<span class="sc">&gt;</span>]</span></code></pre><p></p></div><ul><li><p><code>&lt;package&gt;</code> is the name of the package. If this is missing, then
@@ -272,6 +282,8 @@ need the <code>.git</code> suffix here, others are more forgiving.</p></li>
 a git branch, tag or (prefix of) a commit hash: <code>@&lt;commitish&gt;</code>.</p></li>
 </ul><p>If <code>&lt;detail&gt;</code> is missing, then the latest commit of the <em>default</em>
 branch is used.</p>
+<p><code>git::</code> supports git submodules, see the <code>git-submodules</code> configuration
+entry.</p>
 <p>Examples:</p>
 <p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>git<span class="sc">::</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>crayon.git</span>
