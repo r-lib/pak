@@ -157,8 +157,9 @@ Note that you can only ignore \emph{optional} dependencies, i.e. packages in
 \section{Others}{
 \subsection{How can I use pak with renv?}{
 
-You cannot currently, but keep on eye on this issue:
-https://github.com/r-lib/pak/issues/343
+Since version 1.0.0 renv has official support for using pak. This needs to be
+enabled with the \code{renv.config.pak.enabled} option or the \code{RENV_CONFIG_PAK_ENABLED} environment variable set to \code{TRUE}. For more information see the renv
+\href{https://rstudio.github.io/renv/reference/config.html?q=pak#renv-config-pak-enabled}{documentation}.
 }
 }
 
