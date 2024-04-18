@@ -8,9 +8,9 @@
 <meta name="description" content="pak">
 <title>pak internals • pak</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.7/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.7/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.9/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.9/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="pak internals">
@@ -25,11 +25,11 @@
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.7.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.7.2.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,8 +83,8 @@
       <img src="" class="logo" alt=""><h1>pak internals</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/HEAD/vignettes/internals.Rmd" class="external-link"><code>vignettes/internals.Rmd</code></a></small>
-      <div class="d-none name"><code>internals.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/HEAD/vignettes/internals.qmd" class="external-link"><code>vignettes/internals.qmd</code></a></small>
+      <div class="d-none name"><code>internals.qmd</code></div>
     </div>
 
     
@@ -131,7 +131,7 @@ source.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="undating-embedded-packages">Undating embedded packages<a class="anchor" aria-label="anchor" href="#undating-embedded-packages"></a>
+<h3 id="updating-embedded-packages">Updating embedded packages<a class="anchor" aria-label="anchor" href="#updating-embedded-packages"></a>
 </h3>
 <p>The <code>embed.R</code> file has some tools for * listing the
 versions of the embedded packages, * listing the versions available on
@@ -152,9 +152,13 @@ library in the user cache directory. This happens from
 <code>.onLoad()</code>. <code>.onLoad()</code> regcognizes
 <code>load_all()</code> and calls <code>install-embedded.R</code> again,
 with a special argument, to install dependencies into the user cache
-library. If the same version of a dependency is already installed, then
-that dependency is skipped, to make <code>load_all()</code> fairly
-quick.</p>
+library. We use hashing to decide if a dependency should be updated in
+the private library, so updates work for dependencies on GitHub.</p>
+</div>
+<div class="section level3">
+<h3 id="embedding-dev-packages-from-github">Embedding dev packages from GitHub<a class="anchor" aria-label="anchor" href="#embedding-dev-packages-from-github"></a>
+</h3>
+<p>Is now supported.</p>
 </div>
 <div class="section level3">
 <h3 id="cross-compilation">Cross compilation<a class="anchor" aria-label="anchor" href="#cross-compilation"></a>
@@ -266,6 +270,10 @@ Othewise it runs daily: <a href="https://github.com/r-lib/pak/actions/workflows/
 <div class="section level3">
 <h3 id="github-packages">GitHub Packages<a class="anchor" aria-label="anchor" href="#github-packages"></a>
 </h3>
+<p>All builds (via <code>Makefile</code>) upload the built packages to
+GitHub Packages: <a href="https://github.com/r-lib/pak/pkgs/container/pak" class="external-link uri">https://github.com/r-lib/pak/pkgs/container/pak</a>. They
+also update <code>manifest.json</code> at <a href="https://github.com/r-lib/pak/tree/packages" class="external-link uri">https://github.com/r-lib/pak/tree/packages</a>.
+<code>manifest.json</code> is the ground truth for the repository.</p>
 </div>
 <div class="section level3">
 <h3 id="github-pages">GitHub Pages<a class="anchor" aria-label="anchor" href="#github-pages"></a>
@@ -280,10 +288,36 @@ repo URL. So the Windows and macOS binaries would go into</p>
 <pre><code>https://raw.githubusercontent.com/r-lib/pak/repo/bin/windows/...
 https://raw.githubusercontent.com/r-lib/pak/repo/bin/macosx/...</code></pre>
 <p>etc.</p>
+</div>
+<div class="section level3">
+<h3 id="challenges">Challenges<a class="anchor" aria-label="anchor" href="#challenges"></a>
+</h3>
 <div class="section level4">
-<h4 id="challenges">Challenges<a class="anchor" aria-label="anchor" href="#challenges"></a>
+<h4 id="concurrency">Concurrency<a class="anchor" aria-label="anchor" href="#concurrency"></a>
 </h4>
-<p>TODO</p>
+<p>Dealing with concurrency on GHA is a challenge. GitHub Packages
+requires that we push all architectures (=pak builds) at the same time.
+(The package files do not need to be present of the client if they stay
+the same.) So we treat <code>manifest.json</code> as the ground truth,
+and we update it for the pak build(s) that we are about to push.</p>
+<p>After pushing to GitHub Packages, we update
+<code>manifest.json</code> and push that to GitHub. If the push is not
+clean, then we need to do the whole update process again. With many
+concurrent builds finishing around the same time, this happens a lot, so
+in the end we do a lot of pushes to GitHub Packages.</p>
+<p>An alternative would be to store each pak build in its own package at
+GitHub Packages, instead of one multi-arch package. But it is also nice
+to have a single package, instead of about a hundred one. (One for each
+platform for each R version, for each stream.)</p>
+</div>
+<div class="section level4">
+<h4 id="cleanup">Cleanup<a class="anchor" aria-label="anchor" href="#cleanup"></a>
+</h4>
+<p>Old packages are not cleaned up on GitHub Packages, so ideally we
+would need to clean them up regularly, to avoid using too much space.
+E.g. we could clean up packages that are older than (say) a week, and
+that are not referenced from the <code>manifest.json</code> file. But we
+don’t do that currently.</p>
 </div>
 </div>
 </div>
@@ -297,12 +331,12 @@ https://raw.githubusercontent.com/r-lib/pak/repo/bin/macosx/...</code></pre>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>, Mango Solutions, R Consortium.</p>
+<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://jimhester.com" class="external-link">Jim Hester</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" width="62" style="margin-bottom: 3px;"></a>, Ascent Digital Services, R Consortium.</p>
 </div>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
   </div></footer>
