@@ -37,8 +37,8 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #'
 #' @inheritParams local_install
 #' @param os,os_release The operating system and operating system release
-#'   version, e.g. "ubuntu", "debian", "centos", "redhat". See
-#'   <https://github.com/rstudio/r-system-requirements#operating-systems> for
+#'   version, e.g. "ubuntu",  "centos", "redhat". See
+#'   `supported_os_versions()` for
 #'   all full list of supported operating systems.
 #'
 #'   If `NULL`, the default, these will be looked up.
