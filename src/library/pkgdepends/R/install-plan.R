@@ -358,14 +358,7 @@ make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
   if (is_windows()) {
     zip_tool_path <- asNamespace("zip")$get_tool("zip")
     rtools <- get_rtools_path()
-    withr_local_path(
-      paste0(
-        dirname(zip_tool_path),
-        .Platform$path.sep,
-        if (!is.null(rtools)) paste0(rtools, .Platform$path.sep),
-        Sys.getenv("PATH")
-      )
-    )
+    withr_local_path(c(dirname(zip_tool_path), rtools))
   }
   # nocov end
 
