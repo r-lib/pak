@@ -67,7 +67,7 @@ remote <- function(func, args = list()) {
   extraopts <- c("Ncpus", "BioC_mirror")
   pkg_options <- opts[grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts]
   envs <- Sys.getenv()
-  extraenvs <- "R_BIOC_VERSION"
+  extraenvs <- c("R_BIOC_VERSION", "PATH")
   pkg_envs <- envs[grepl("^PKG_", names(envs)) | names(envs) %in% extraenvs]
   rs$run(function(new_opts, new_envs) {
     opts <- options()
