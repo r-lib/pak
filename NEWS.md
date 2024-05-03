@@ -1,5 +1,12 @@
 # pak (development version)
 
+* The metadata cache now does not use source URLs for packages in `Archive`
+  on Posit Package Manager repositories. This URLs may serve a different
+  package, even a source package when the main URL for the same package
+  serves a binary package. The alternative URLs are not needed on PPM,
+  anyway, because PPM is in a consistent state w.r.t. metadata and
+  package files (#623).
+
 # pak 0.7.2
 
 * pak now supports using parameters for all packages with the
