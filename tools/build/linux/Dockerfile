@@ -25,7 +25,7 @@ RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf \
 # Build binary package ----------------------------------------------------
 
 COPY pak_*.tar.gz /root/
-RUN R CMD INSTALL pak_*.tar.gz
+RUN PROCESSX_UNLINK_R=true R CMD INSTALL pak_*.tar.gz
 
 # Minimize library --------------------------------------------------------
 
