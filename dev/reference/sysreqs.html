@@ -586,12 +586,12 @@ of the database embedded into the package, and it also tries to download
 updated versions of the database from GitHub, if its current copy is
 older than one day. You can explicitly update the database from GitHub
 using the <code><a href="sysreqs_db_update.html">sysreqs_db_update()</a></code> function.</p>
-<p>For CRAN packages, it downloads the <code>SystemRequierements</code> fields from
+<p>For CRAN packages, it downloads the <code>SystemRequirements</code> fields from
 <a href="https://cran2.r-pkg.org/metadata/" class="external-link">https://cran2.r-pkg.org/metadata/</a>, which is a database updated daily.
 For Bioconductor packages, it downloads then from GitHub. (We are
 planning on moving CRAN database to GitHub as well.)</p>
 <p>For packages sources that require pak to obtain a package <code>DESCRIPTION</code>
-file (e.g. <code>github::</code>, <code>git::</code>, etc.), pak obtrains <code>SystemRequirements</code>
+file (e.g. <code>github::</code>, <code>git::</code>, etc.), pak obtains <code>SystemRequirements</code>
 directly from the <code>DESCRIPTION</code> file.</p>
 <p>Once having the <code>SystemRequirements</code> fields, pak matches them to the
 database, to obtain the cacnonized list of system requirements.</p>
