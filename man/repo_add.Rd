@@ -91,7 +91,7 @@ will trigger an error.
 }
 }
 
-\section{Exaples}{
+\section{Examples}{
 
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
