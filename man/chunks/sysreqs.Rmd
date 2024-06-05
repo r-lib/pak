@@ -231,13 +231,13 @@ current copy is older than one day.
 You can explicitly update the database from GitHub using the
 `sysreqs_db_update()` function.
 
-For CRAN packages, it downloads the `SystemRequierements` fields from
+For CRAN packages, it downloads the `SystemRequirements` fields from
 https://cran2.r-pkg.org/metadata/, which is a database updated daily.
 For Bioconductor packages, it downloads then from GitHub.
 (We are planning on moving CRAN database to GitHub as well.)
 
 For packages sources that require pak to obtain a package `DESCRIPTION` file
-(e.g. `github::`, `git::`, etc.), pak obtrains `SystemRequirements` directly
+(e.g. `github::`, `git::`, etc.), pak obtains `SystemRequirements` directly
 from the `DESCRIPTION` file.
 
 Once having the `SystemRequirements` fields, pak matches them to the database,

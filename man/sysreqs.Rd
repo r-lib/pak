@@ -581,13 +581,13 @@ updated versions of the database from GitHub, if its current copy is
 older than one day. You can explicitly update the database from GitHub
 using the \code{sysreqs_db_update()} function.
 
-For CRAN packages, it downloads the \code{SystemRequierements} fields from
+For CRAN packages, it downloads the \code{SystemRequirements} fields from
 \url{https://cran2.r-pkg.org/metadata/}, which is a database updated daily.
 For Bioconductor packages, it downloads then from GitHub. (We are
 planning on moving CRAN database to GitHub as well.)
 
 For packages sources that require pak to obtain a package \code{DESCRIPTION}
-file (e.g. \verb{github::}, \verb{git::}, etc.), pak obtrains \code{SystemRequirements}
+file (e.g. \verb{github::}, \verb{git::}, etc.), pak obtains \code{SystemRequirements}
 directly from the \code{DESCRIPTION} file.
 
 Once having the \code{SystemRequirements} fields, pak matches them to the
@@ -675,4 +675,3 @@ We are planning on adding better macOS system software support to pak in
 the future.
 }
 }
-
