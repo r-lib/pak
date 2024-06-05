@@ -219,7 +219,7 @@ repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
 #'
 #' @family repository functions
 #' @export
-#' @section Exaples:
+#' @section Examples:
 #' ```{asciicast repo-add}
 #' repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
 #' repo_get()
