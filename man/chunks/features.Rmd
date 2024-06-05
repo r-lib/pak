@@ -86,12 +86,11 @@ data you need to download, before the installation.
 pak automatically selects the Bioconductor version that is appropriate for
 your R version. No need to set any repositories.
 
-## Time travel with MRAN or RSPM
+## Time travel with PPM
 
-pak can use MRAN (Microsoft R Application Network,
-https://mran.microsoft.com/) or RSPM (RStudio Public Package Manager,
-https://packagemanager.rstudio.com/client/#/) to install from snapshots
-or CRAN.
+pak can use PPM
+([Posit Public Package Manager](https://packagemanager.posit.co/))
+to install from snapshots or CRAN.
 
 ## pak can install dependencies of local packages
 
