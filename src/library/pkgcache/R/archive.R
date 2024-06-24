@@ -483,7 +483,7 @@ cran_archive_list <- function(cran_mirror = default_cran_mirror(),
                               packages = NULL) {
   get_archive_cache(cran_mirror)$list(
     update_after = update_after,
-    package = packages
+    packages = packages
   )
 }
 
