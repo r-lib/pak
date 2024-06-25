@@ -115,9 +115,11 @@ read_packages_file <- function(path, mirror, repodir, platform,
     pkgs$sysreqs <- ifelse(is.na(pkgs$sysreqs), sysreqs2, pkgs$sysreqs)
 
   } else {
-    pkgs$filesize <- rep(NA_integer_, nrow(pkgs))
-    pkgs$sha256 <- pkgs$sysreqs <- pkgs$built <- pkgs$published <-
-        rep(NA_character_, nrow(pkgs))
+    pkgs$filesize <- pkgs$filesize %||% rep(NA_integer_, nrow(pkgs))
+    pkgs$sha256 <- pkgs$sha256 %||% rep(NA_character_, nrow(pkgs))
+    pkgs$sysreqs <- pkgs$sysreqs %||% pkgs$systemrequirements %||% rep(NA_character_, nrow(pkgs))
+    pkgs$built <- pkgs$built %||% rep(NA_character_, nrow(pkgs))
+    pkgs$published <- pkgs$published %||% rep(NA_character_, nrow(pkgs))
   }
 
   # We add some Bioconductor system requirements manually
