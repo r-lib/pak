@@ -17,7 +17,7 @@
 #'   dependent packages will be installed here, even if they are
 #'   already installed in another library. The only exceptions are base
 #'   and recommended packages installed in `.Library`. These are not
-#'   duplicated in `lib`, unless a newer version of a recommemded package
+#'   duplicated in `lib`, unless a newer version of a recommended package
 #'   is needed.
 #' @param upgrade When `FALSE`, the default, pak does the minimum amount
 #'   of work to give you the latest version(s) of `pkg`. It will only upgrade
