@@ -206,5 +206,5 @@ print.pak_sysreqs <- function(x, ...) {
 
 
 platforms <- function() {
-  paste0('\\code{"', sysreqs_platforms()$distribution, '"}', collapse = ", ")
+  paste0('\\code{"', sort(sysreqs_platforms()$distribution), '"}', collapse = ", ")
 }
