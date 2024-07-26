@@ -1,5 +1,7 @@
 # pak (development version)
 
+* `pkg_deps()` now accepts a vector of package names.
+
 * The metadata cache now does not use source URLs for packages in `Archive`
   on Posit Package Manager repositories. This URLs may serve a different
   package, even a source package when the main URL for the same package
