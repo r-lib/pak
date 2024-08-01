@@ -58,7 +58,7 @@ format_time <- local({
       }
       approx <- trim(apply(parsed, 2, merge_pieces))
 
-      ifelse(ms < 1000, exact, approx)
+      ifelse(is.na(ms) | ms < 1000, exact, approx)
     }
   }
 

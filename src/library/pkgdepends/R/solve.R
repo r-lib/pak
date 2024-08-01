@@ -478,6 +478,7 @@ pkgplan_i_lp_latest_direct <- function(lp) {
       pkgs$type %in% c("cran", "bioc", "standard")
     )
     cand <- setdiff(cand, lp$ruled_out)
+    if (length(cand) == 0) next
     vers <- package_version(pkgs$version[cand])
     bad <- vers < max(vers)
     for (wh in cand[bad]) {
@@ -507,6 +508,7 @@ pkgplan_i_lp_latest_within_repo <- function(lp) {
   dups <- unique(key[duplicated(key)])
   for (dupkey in dups) {
     cand <- which (key == dupkey)
+    if (length(cand) == 0) next
     vers <- package_version(lp$pkgs$version[cand])
     bad <- vers < max(vers)
     for (wh in cand[bad]) {
@@ -601,6 +603,7 @@ pkgplan_i_lp_prefer_new_binaries <- function(lp) {
         pkgs$type %in% c("cran", "bioc", "standard")
     )
     whp <- setdiff(whp, lp$ruled_out)
+    if (length(whp) == 0) next
     v <- package_version(pkgs$version[whp])
     ruled_out <- c(ruled_out, whp[v != max(v)])
   }

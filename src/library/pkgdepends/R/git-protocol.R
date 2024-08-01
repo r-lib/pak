@@ -187,6 +187,7 @@ async_git_resolve_ref <- function(url, ref) {
         }
 
         attr(result, "protocol") <- if ("version 2" %in% refs$caps) 2 else 1
+        attr(result, "filter") <- any(grepl("\\bfilter\\b", refs$caps))
         result
       })
 
@@ -384,6 +385,10 @@ async_git_fetch_v1 <- function(url, sha, blobs) {
 }
 
 async_git_fetch_v2 <- function(url, sha, blobs) {
+  # If 'filter' is not supported, then we need to get the blobs
+  if (!is.null(attr(sha, "filter")) && !attr(sha, "filter")) {
+    blobs <- TRUE
+  }
   async_git_send_message_v2(
     url,
     "fetch",

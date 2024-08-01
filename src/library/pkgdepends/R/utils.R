@@ -283,6 +283,10 @@ http_post <- function(...) {
   asNamespace("pkgcache")$http_post(...)
 }
 
+http_delete <- function(...) {
+  asNamespace("pkgcache")$http_delete(...)
+}
+
 when_all <- function(...) {
   asNamespace("pkgcache")$when_all(...)
 }
