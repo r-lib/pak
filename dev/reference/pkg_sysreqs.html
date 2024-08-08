@@ -82,12 +82,16 @@ information about package dependencies.</p></li>
 
 
 <dt id="arg-sysreqs-platform">sysreqs_platform<a class="anchor" aria-label="anchor" href="#arg-sysreqs-platform"></a></dt>
-<dd><p>System requirements platform. If <code>NULL</code>, then the
-<code>sysreqs_platform</code> <a href="pak-config.html">configuration option</a>
+<dd><p>System requirements platform.</p>
+<p>If <code>NULL</code>, then the <code>sysreqs_platform</code>
+<a href="pak-config.html">configuration option</a>
+ is used, which defaults to
+the current platform.</p>
+<p>Set this option if to one of <code>"centos"</code>, <code>"debian"</code>, <code>"fedora"</code>, <code>"opensuse"</code>, <code>"redhat"</code>, <code>"redhat"</code>, <code>"redhat"</code>, <code>"rockylinux"</code>, <code>"sle"</code>, <code>"ubuntu"</code>
+ if pak
 
-is used, which defaults to the current platform. Set this option if
-pak
- does not detect your platform correctly.</p></dd>
+fails to correctly detect your platform or if you want to see the system
+requirements for a different platform.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -120,8 +124,8 @@ after the package installation for this system requirement.</p></li>
     <div class="dont-index"><p>Other package functions:
 <code><a href="lib_status.html">lib_status</a>()</code>,
 <code><a href="pak.html">pak</a>()</code>,
-<code><a href="pkg_deps_tree.html">pkg_deps_tree</a>()</code>,
 <code><a href="pkg_deps.html">pkg_deps</a>()</code>,
+<code><a href="pkg_deps_tree.html">pkg_deps_tree</a>()</code>,
 <code><a href="pkg_download.html">pkg_download</a>()</code>,
 <code><a href="pkg_install.html">pkg_install</a>()</code>,
 <code><a href="pkg_remove.html">pkg_remove</a>()</code>,
