@@ -226,13 +226,13 @@ If you are short on disk space, then you can try removing them.
 pak uses the database of system requirements at
 https://github.com/rstudio/r-system-requirements.
 It has its own copy of the database embedded into the package, and it also
-tries to download updated versions of the database from GitHub, if its 
+tries to download updated versions of the database from GitHub, if its
 current copy is older than one day.
 You can explicitly update the database from GitHub using the
 `sysreqs_db_update()` function.
 
 For CRAN packages, it downloads the `SystemRequirements` fields from
-https://cran2.r-pkg.org/metadata/, which is a database updated daily.
+`https://cran.r-pkg.org/metadata/`, which is a database updated daily.
 For Bioconductor packages, it downloads then from GitHub.
 (We are planning on moving CRAN database to GitHub as well.)
 
@@ -299,7 +299,7 @@ install the appropriate version of Rtools, and possibly extra packages
 using the `pacman` tool of Rtools4x.
 
 Rtools42 and newer Rtools versions bundle lots of libraries, so most
-likely no extra `pacman` packages are needed. 
+likely no extra `pacman` packages are needed.
 Rtools40 has a leaner default installation, and you'll probably need
 to install packages manually:
 https://github.com/r-windows/docs/blob/master/rtools40.md#readme

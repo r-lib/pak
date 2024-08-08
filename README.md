@@ -40,34 +40,34 @@ pak::pkg_install("tibble")
 style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
 <pre>
-#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                            
-#>                                                                                 
-#> → Will <span style="font-style: italic;">install</span> 11 packages.                                                     
-#> → All 11 packages (7.48 MB) are cached.                                         
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2                                                             
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1                                                             
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 11 pkgs (7.48 MB) are cached                         
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(68ms)</span>                                                   
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(78ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(95ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(120ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(126ms)</span>                                             
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(125ms)</span>                                            
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(154ms)</span>                                               
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(176ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(77ms)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(44ms)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(35ms)</span>                                                 
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11 <span style="color: #b8b8b8;">[2.8s]</span>                                              
+#> <span style="color: #859900;">✔</span> Loading metadata database ... done
+#>
+#> → Will <span style="font-style: italic;">install</span> 11 packages.
+#> → All 11 packages (7.48 MB) are cached.
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>         3.4.1
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>       1.0.3
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>        1.6.2
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>   1.0.3
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>    2.0.3
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>      1.8.1
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>   2.0.3
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>       1.0.6
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>      3.1.8
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>        1.2.2
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>       0.5.1
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 11 pkgs (7.48 MB) are cached
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(68ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(78ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(95ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(120ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(126ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(125ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(154ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(176ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(77ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(44ms)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(35ms)</span>
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: added 11 <span style="color: #b8b8b8;">[2.8s]</span>
 </pre>
 
 </div>
@@ -82,23 +82,23 @@ pak::pkg_install("tidyverse/tibble")
 style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
 <pre>
-#>                                                                                 
-#> → Will <span style="font-style: italic;">update</span> 2 packages.                                                       
-#> → All 2 packages (0 B) are cached.                                              
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9002</span> 👷🏾🔧 (GitHub: 37ec86a)                               
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>  0.5.1 → 0.5.1<span style="font-weight: bold;">.9000</span> 👷🏼‍♂️🔧 (GitHub: 48794fd)                            
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached                                    
-#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                    
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(1.5s)</span>                                              
-#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.5.1.9000                                                     
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(11s)</span>                                                  
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@48794fd) <span style="color: #a3a3a3;">(36ms)</span>               
-#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                   
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(525ms)</span>                                            
-#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9002                                                    
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(3.1s)</span>                                                
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(34ms)</span>         
-#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2 <span style="color: #b8b8b8;">[18.9s]</span>                                        
+#>
+#> → Will <span style="font-style: italic;">update</span> 2 packages.
+#> → All 2 packages (0 B) are cached.
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span> 3.1.8 → 3.1.8<span style="font-weight: bold;">.9002</span> 👷🏾🔧 (GitHub: 37ec86a)
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>  0.5.1 → 0.5.1<span style="font-weight: bold;">.9000</span> 👷🏼‍♂️🔧 (GitHub: 48794fd)
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs are cached
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">vctrs</span> 0.5.1.9000
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(1.5s)</span>
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">vctrs</span> 0.5.1.9000
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 <span style="color: #a3a3a3;">(11s)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1.9000 (github::r-lib/vctrs@48794fd) <span style="color: #a3a3a3;">(36ms)</span>
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">tibble</span> 3.1.8.9002
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(525ms)</span>
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">tibble</span> 3.1.8.9002
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">tibble</span> 3.1.8.9002 <span style="color: #a3a3a3;">(3.1s)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8.9002 (github::tidyverse/tibble@37ec86a) <span style="color: #a3a3a3;">(34ms)</span>
+#> <span style="color: #859900;">✔</span> 1 pkg + 10 deps: kept 9, upd 2 <span style="color: #b8b8b8;">[18.9s]</span>
 </pre>
 
 </div>
@@ -113,30 +113,30 @@ pak::pkg_deps_tree("tibble")
 style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
 <pre>
-#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8</span> <span style="color: #859900;">✨</span>                                                                  
-#> ├─fansi <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                                 
-#> ├─lifecycle <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>                                                             
-#> │ ├─cli <span style="color: #525252;">3.4.1</span> <span style="color: #859900;">✨</span>                                                                 
-#> │ ├─glue <span style="color: #525252;">1.6.2</span> <span style="color: #859900;">✨</span>                                                                
-#> │ └─rlang <span style="color: #525252;">1.0.6</span> <span style="color: #859900;">✨</span>                                                               
-#> ├─magrittr <span style="color: #525252;">2.0.3</span> <span style="color: #859900;">✨</span>                                                              
-#> ├─pillar <span style="color: #525252;">1.8.1</span> <span style="color: #859900;">✨</span>                                                                
-#> │ ├─cli                                                                         
-#> │ ├─fansi                                                                       
-#> │ ├─glue                                                                        
-#> │ ├─lifecycle                                                                   
-#> │ ├─rlang                                                                       
-#> │ ├─utf8 <span style="color: #525252;">1.2.2</span> <span style="color: #859900;">✨</span>                                                                
-#> │ └─vctrs <span style="color: #525252;">0.5.1</span> <span style="color: #859900;">✨</span>                                                               
-#> │   ├─cli                                                                       
-#> │   ├─glue                                                                      
-#> │   ├─lifecycle                                                                 
-#> │   └─rlang                                                                     
-#> ├─pkgconfig <span style="color: #525252;">2.0.3</span> <span style="color: #859900;">✨</span>                                                             
-#> ├─rlang                                                                         
-#> └─vctrs                                                                         
-#>                                                                                 
-#> Key:  <span style="color: #859900;">✨</span> new                                                                     
+#> <span style="font-weight: bold;font-style: italic;color: #2AA198;">tibble </span><span style="font-weight: bold;font-style: italic;color: #525252;">3.1.8</span> <span style="color: #859900;">✨</span>
+#> ├─fansi <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>
+#> ├─lifecycle <span style="color: #525252;">1.0.3</span> <span style="color: #859900;">✨</span>
+#> │ ├─cli <span style="color: #525252;">3.4.1</span> <span style="color: #859900;">✨</span>
+#> │ ├─glue <span style="color: #525252;">1.6.2</span> <span style="color: #859900;">✨</span>
+#> │ └─rlang <span style="color: #525252;">1.0.6</span> <span style="color: #859900;">✨</span>
+#> ├─magrittr <span style="color: #525252;">2.0.3</span> <span style="color: #859900;">✨</span>
+#> ├─pillar <span style="color: #525252;">1.8.1</span> <span style="color: #859900;">✨</span>
+#> │ ├─cli
+#> │ ├─fansi
+#> │ ├─glue
+#> │ ├─lifecycle
+#> │ ├─rlang
+#> │ ├─utf8 <span style="color: #525252;">1.2.2</span> <span style="color: #859900;">✨</span>
+#> │ └─vctrs <span style="color: #525252;">0.5.1</span> <span style="color: #859900;">✨</span>
+#> │   ├─cli
+#> │   ├─glue
+#> │   ├─lifecycle
+#> │   └─rlang
+#> ├─pkgconfig <span style="color: #525252;">2.0.3</span> <span style="color: #859900;">✨</span>
+#> ├─rlang
+#> └─vctrs
+#>
+#> Key:  <span style="color: #859900;">✨</span> new
 </pre>
 
 </div>
@@ -151,14 +151,14 @@ pak::pkg_deps_explain("tibble", "rlang")
 style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
 <pre>
-#> tibble -&gt; lifecycle -&gt; rlang                                                    
-#> tibble -&gt; pillar -&gt; lifecycle -&gt; rlang                                          
-#> tibble -&gt; pillar -&gt; rlang                                                       
-#> tibble -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang                                 
-#> tibble -&gt; pillar -&gt; vctrs -&gt; rlang                                              
-#> tibble -&gt; rlang                                                                 
-#> tibble -&gt; vctrs -&gt; lifecycle -&gt; rlang                                           
-#> tibble -&gt; vctrs -&gt; rlang                                                        
+#> tibble -&gt; lifecycle -&gt; rlang
+#> tibble -&gt; pillar -&gt; lifecycle -&gt; rlang
+#> tibble -&gt; pillar -&gt; rlang
+#> tibble -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang
+#> tibble -&gt; pillar -&gt; vctrs -&gt; rlang
+#> tibble -&gt; rlang
+#> tibble -&gt; vctrs -&gt; lifecycle -&gt; rlang
+#> tibble -&gt; vctrs -&gt; rlang
 </pre>
 
 </div>
@@ -173,18 +173,18 @@ pak::local_install("cli")
 style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 
 <pre>
-#>                                                                                 
-#> → Will <span style="font-style: italic;">update</span> 1 package.                                                        
-#> → The package (0 B) is cached.                                                  
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span> 3.4.1 → 3.4.1 👷🏿🔧                                                         
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                                      
-#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.1 (source) (96 B)                                                 
-#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">cli</span> 3.4.1                                                           
-#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(664ms)</span>                                                    
-#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1                                                            
-#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(5s)</span>                                                          
-#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1 (local) <span style="color: #a3a3a3;">(42ms)</span>                                            
-#> <span style="color: #859900;">✔</span> 1 pkg: upd 1, dld 1 (NA B) <span style="color: #b8b8b8;">[6.4s]</span>                                             
+#>
+#> → Will <span style="font-style: italic;">update</span> 1 package.
+#> → The package (0 B) is cached.
+#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span> 3.4.1 → 3.4.1 👷🏿🔧
+#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached
+#> <span style="color: #859900;">✔</span> Got <span style="color: #268BD2;">cli</span> 3.4.1 (source) (96 B)
+#> <span style="color: #2AA198;">ℹ</span> Packaging <span style="color: #268BD2;">cli</span> 3.4.1
+#> <span style="color: #859900;">✔</span> Packaged <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(664ms)</span>
+#> <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">cli</span> 3.4.1
+#> <span style="color: #859900;">✔</span> Built <span style="color: #268BD2;">cli</span> 3.4.1 <span style="color: #a3a3a3;">(5s)</span>
+#> <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1 (local) <span style="color: #a3a3a3;">(42ms)</span>
+#> <span style="color: #859900;">✔</span> 1 pkg: upd 1, dld 1 (NA B) <span style="color: #b8b8b8;">[6.4s]</span>
 </pre>
 
 </div>
@@ -211,7 +211,7 @@ source of information about pak.
 ### I have a(nother) question
 
 Don’t hesitate to ask at the [RStudio Community
-forum](https://community.rstudio.com/). Use the `pak` tag.
+forum](https://forum.posit.co/). Use the `pak` tag.
 
 ### I would like to report a bug
 
