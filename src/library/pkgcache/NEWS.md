@@ -7,6 +7,12 @@
   anyway, because PPM is in a consistent state w.r.t. metadata and
   package files (https://github.com/r-lib/pak/issues/623).
 
+* `parse_packages()` now does not throw a warning for empty `PACKAGES*`
+  files (#107).
+
+* `repo_set()` and the `ppm_*()` functions, e.g. `ppm_snapshots()`, now
+  work again after the PPM API changes (#110, #115).
+
 # pkgcache 2.2.2
 
 * pkgcache now treats R 4.5.x (current R-devel) macOS binaries

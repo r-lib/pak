@@ -128,7 +128,7 @@ parse_packages <- function(path, type = NULL) {
     }
   }
 
-  tbl <- as_data_frame(tab)
+  tbl <- as_data_frame(tab %||% list())
 
   tbl
 }

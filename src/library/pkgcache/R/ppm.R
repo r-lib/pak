@@ -107,43 +107,12 @@ get_ppm_base_url <- function() {
 #' ppm_snapshots()
 
 ppm_snapshots <- function() {
-  snp <- synchronise(async_get_ppm_versions(forget = TRUE))
+  last <- as.Date(format_iso_8601(Sys.time())) - 1
+  dts <- seq(as.Date("2017-10-10"), last, by = 1)
   data_frame(
-    date = parse_iso_8601(names(snp)),
-    id = as.integer(unname(snp))
+    date = dts,
+    id = as.character(dts)
   )
-}
-
-async_get_ppm_versions <- function(forget = FALSE, date = NULL) {
-  tmp1 <- tempfile()
-  def <- if (forget ||
-             (!is.null(date) && date < names(pkgenv$ppm_versions[1])) ||
-             (!is.null(date) && date > last(names(pkgenv$ppm_versions)))) {
-    url <- Sys.getenv(
-      "PKGCACHE_PPM_TRANSACTIONS_URL",
-      paste0(get_ppm_base_url(), "/__api__/sources/1/transactions?_limit=10000")
-    )
-    tmp <- tempfile()
-    download_file(url, tmp1)$
-      then(function(res) {
-        resp <- jsonlite::fromJSON(tmp1, simplifyVector = FALSE)
-        vrs <- structure(
-          vcapply(resp, function(x) as.character(x$id)),
-          names = vcapply(resp, function(x) as.character(x$published_to))
-        )
-        pkgenv$ppm_versions <- vrs[order(as.Date(names(vrs)))]
-      })$
-      catch(error = function(err) {
-        warning("Failed to download PPM versions")
-      })
-
-  } else {
-    async_constant()
-  }
-
-  def$
-    finally(function() unlink(tmp1))$
-    then(function() pkgenv$ppm_versions)
 }
 
 #' List all platforms supported by Posit Package Manager (PPM)

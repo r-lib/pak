@@ -59,7 +59,7 @@ repo_get <- function(r_version = getRversion(), bioc = TRUE,
 #'
 #' @export
 #' @examplesIf pkgcache:::run_examples()
-#' repo_resolve("PPM@2020-01-21")
+#' repo_resolve("PPM@2021-01-21")
 #' #' repo_resolve("PPM@dplyr-1.0.0")
 #' #' repo_resolve("PPM@R-4.0.0")
 
@@ -211,7 +211,7 @@ repo_sugar_ppm <- function(x, nm) {
 
   # if we may have binaries, then get the distro data as well
   synchronise(when_all(
-    async_get_ppm_versions(date = if (as.character(date) == "latest") NULL else date),
+    ppm_snapshots(),
     if (binaries) {
       async_get_ppm_status(
         distribution = current$distribution,
@@ -239,16 +239,10 @@ repo_sugar_ppm <- function(x, nm) {
   if (as.character(date) == "latest") {
     ver <- "latest"
   } else {
-    vers <- pkgenv$ppm_versions
-    ppm_dates <- names(vers)
-    if (date < ppm_dates[1]) {
-      stop("PPM snapshots go back to ", as.Date(ppm_dates[1]), " only")
+    if (date < "2017-10-10") {
+      stop("PPM snapshots go back to 2017-10-10 only")
     }
-    sel <- which(date <= ppm_dates)[1]
-    if (is.na(sel)) {
-      stop("Cannot find matching PPM snapshot for ", date)
-    }
-    ver <- vers[[sel]]
+    ver <- as.character(date)
   }
 
   # create repo URL

@@ -33,7 +33,7 @@ static R_INLINE int hash_string(char *str, int strlen) {
 
 struct hash_table {
   SEXP nms;
-  SEXP *nmsptr;
+  const SEXP *nmsptr;
   SEXP cols;
   int *tab;
   int tablen;
@@ -45,7 +45,7 @@ struct hash_table {
 static void hash_create(struct hash_table *table, SEXP nms, SEXP cols,
                         SEXP tab, int max_cols, int npkgs) {
   table->nms = nms;
-  table->nmsptr = STRING_PTR(nms);
+  table->nmsptr = STRING_PTR_RO(nms);
   table->cols = cols;
   table->tab = INTEGER(tab);
   table->tablen = LENGTH(tab);

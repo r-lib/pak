@@ -2886,6 +2886,7 @@ http_post <- mark_as_async(http_post)
 http_delete <- function(url, headers = character(), file = NULL,
                         options = list()) {
   url; headers; options;
+  options <- get_default_curl_options(options)
 
   make_deferred_http(
     function() {
