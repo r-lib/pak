@@ -68,10 +68,16 @@ sysreqs_fix_installed <- function(packages = NULL,
 #' Calculate system requirements of one of more packages
 #'
 #' @inheritParams pkg_install
-#' @param sysreqs_platform System requirements platform. If `NULL`, then the
-#'   `sysreqs_platform` \eval{man_config_link("configuration option")}
-#'   is used, which defaults to the current platform. Set this option if
-#'   \eval{.packageName} does not detect your platform correctly.
+#' @param sysreqs_platform System requirements platform. 
+#' 
+#'   If `NULL`, then the `sysreqs_platform` 
+#'   \eval{man_config_link("configuration option")} is used, which defaults to 
+#'   the current platform. 
+#' 
+#'   Set this option if to one of \eval{platforms()} if \eval{.packageName} 
+#'   fails to correctly detect your platform or if you want to see the system 
+#'   requirements for a different platform.
+#'   
 #' @return List with entries:
 #'   * `os`: character string. Operating system.
 #'   * `distribution`: character string. Linux distribution, `NA` if the
@@ -196,4 +202,9 @@ print.pak_sysreqs <- function(x, ...) {
 `[.pak_sysreqs` <- function (x, i, j, drop = FALSE) {
   class(x) <- setdiff(class(x), "pak_sysreqs")
   NextMethod("[")
+}
+
+
+platforms <- function() {
+  paste0('\\code{"', sort(sysreqs_platforms()$distribution), '"}', collapse = ", ")
 }

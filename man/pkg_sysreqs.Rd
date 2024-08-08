@@ -41,10 +41,15 @@ See \link{Package dependency types} for other possible values and more
 information about package dependencies.
 }}
 
-\item{sysreqs_platform}{System requirements platform. If \code{NULL}, then the
-\code{sysreqs_platform} \eval{man_config_link("configuration option")}
-is used, which defaults to the current platform. Set this option if
-\eval{.packageName} does not detect your platform correctly.}
+\item{sysreqs_platform}{System requirements platform.
+
+If \code{NULL}, then the \code{sysreqs_platform}
+\eval{man_config_link("configuration option")} is used, which defaults to
+the current platform.
+
+Set this option if to one of \eval{platforms()} if \eval{.packageName}
+fails to correctly detect your platform or if you want to see the system
+requirements for a different platform.}
 }
 \value{
 List with entries:
@@ -82,8 +87,8 @@ Calculate system requirements of one of more packages
 Other package functions: 
 \code{\link{lib_status}()},
 \code{\link{pak}()},
-\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
