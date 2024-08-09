@@ -917,11 +917,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.7.2",
+          "pak.version": "0.8.0",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-27T11:30:58+00:00",
-          "size": 8039794,
-          "digest": "sha256:d9969d06afc50f7ffc7fe014464b3cd47510601e1fd3245e3bbe6ff8ad7d30be"
+          "buildtime": "2024-08-09T09:54:39+00:00",
+          "size": 8201785,
+          "digest": "sha256:705faa0a6e86c585a119fc5d0e8620127a41384531c3c7be70b2225cca124493"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
