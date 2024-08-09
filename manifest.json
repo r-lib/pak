@@ -935,11 +935,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.7.2",
+          "pak.version": "0.8.0",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-27T11:32:59+00:00",
-          "size": 8698731,
-          "digest": "sha256:fad0974302ec82a881fbff2409b42710aee2e9c48636fd72b237c22911048adf"
+          "buildtime": "2024-08-09T09:57:10+00:00",
+          "size": 8847947,
+          "digest": "sha256:d7235c97b04fdc28eefba8593bc86444ac3da9818cccc704b395d66077c951ed"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
