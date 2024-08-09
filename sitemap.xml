@@ -1,189 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://pak.r-lib.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/cache.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/faq.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/features.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/get-started.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/handle_package_not_found.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/install.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/lib_status.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_deps.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_deps_explain.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_install.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_install_deps.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_install_dev_deps.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_package_trees.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/local_system_requirements.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/lockfile_create.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/lockfile_install.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/package-dependency-types.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak-config.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak-package.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_cleanup.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_install_extra.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_package_sources.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_setup.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_sitrep.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_solver.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pak_update.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_deps.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_deps_explain.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_deps_tree.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_download.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_history.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_install.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_name_check.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_remove.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_search.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_status.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/pkg_sysreqs.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/ppm_has_binaries.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/ppm_platforms.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/ppm_r_versions.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/ppm_repo_url.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/ppm_snapshots.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/repo_add.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/repo_get.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/repo_status.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_check_installed.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_db_list.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_db_match.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_db_update.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_is_supported.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_list_system_packages.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/sysreqs_platforms.html</loc>
-  </url>
-  <url>
-    <loc>https://pak.r-lib.org/reference/system_r_platform.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://pak.r-lib.org/404.html</loc></url>
+<url><loc>https://pak.r-lib.org/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://pak.r-lib.org/authors.html</loc></url>
+<url><loc>https://pak.r-lib.org/index.html</loc></url>
+<url><loc>https://pak.r-lib.org/news/index.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/cache.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/faq.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/features.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/get-started.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/handle_package_not_found.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/index.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/install.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/lib_status.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_deps.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_deps_explain.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_install.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_install_deps.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_install_dev_deps.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_package_trees.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/local_system_requirements.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/lockfile_create.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/lockfile_install.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/metadata.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/package-dependency-types.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak-config.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak-package.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_cleanup.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_install_extra.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_package_sources.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_setup.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_sitrep.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_solver.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pak_update.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_deps.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_deps_explain.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_deps_tree.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_download.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_history.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_install.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_name_check.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_remove.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_search.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_status.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/pkg_sysreqs.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/ppm_has_binaries.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/ppm_platforms.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/ppm_r_versions.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/ppm_repo_url.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/ppm_snapshots.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/repo_add.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/repo_get.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/repo_status.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_check_installed.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_db_list.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_db_match.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_db_update.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_is_supported.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_list_system_packages.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/sysreqs_platforms.html</loc></url>
+<url><loc>https://pak.r-lib.org/reference/system_r_platform.html</loc></url>
 </urlset>
+
