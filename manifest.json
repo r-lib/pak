@@ -926,11 +926,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.4",
-          "pak.version": "0.7.2",
+          "pak.version": "0.8.0",
           "pak.revision": "TODO",
-          "buildtime": "2024-03-28T09:30:56+00:00",
-          "size": 8610467,
-          "digest": "sha256:758cca636427a44d6f77feb892a97d741a1ceec34e7507b811a1e5ccbdffcd96"
+          "buildtime": "2024-08-09T10:03:52+00:00",
+          "size": 8779973,
+          "digest": "sha256:d85414a291cd840dd71f143c63ced1c21748e20ce133390f7c5e454d47f48728"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
