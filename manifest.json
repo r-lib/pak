@@ -304,11 +304,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.5",
-          "pak.version": "0.7.2.9999",
+          "pak.version": "0.8.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2024-08-09T05:38:08+00:00",
-          "size": 8196249,
-          "digest": "sha256:7910ac0fc89c7763add60329e9ed54e59c99dad725c391801c89613b59b3de07"
+          "buildtime": "2024-08-10T05:37:48+00:00",
+          "size": 8196106,
+          "digest": "sha256:6914e0663774b15b2a86a5a96cf39423cd99e83ef976eb8b2ad30abbb20a9f8a"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
