@@ -126,6 +126,17 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": [
+        "glpk-dev"
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

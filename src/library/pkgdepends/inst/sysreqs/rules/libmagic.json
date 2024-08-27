@@ -100,6 +100,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["file-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

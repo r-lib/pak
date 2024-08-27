@@ -98,6 +98,15 @@
           "versions": ["15.4"]
         }
       ]
+    },
+    {
+      "packages": ["java-jdk"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -91,6 +91,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["libssh2-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

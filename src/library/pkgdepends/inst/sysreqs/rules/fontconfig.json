@@ -48,6 +48,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["fontconfig-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -38,6 +38,15 @@
           "distribution": "fedora"
         }
       ]
+    },
+    {
+      "packages": ["fribidi-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

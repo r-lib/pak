@@ -134,6 +134,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["protobuf-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

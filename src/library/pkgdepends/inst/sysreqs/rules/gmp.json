@@ -58,6 +58,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["gmp-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -198,7 +198,8 @@ supported_os_versions <- function() {
     "centos" = c("6", "7", "8"),
     "redhat" = c("6", "7", "8"),
     "opensuse" = c("42.3", "15.0"),
-    "sle" = c("12.3", "15.0")
+    "sle" = c("12.3", "15.0"),
+    "alpine" = c("")
     #"windows" = c("")
   )
 }

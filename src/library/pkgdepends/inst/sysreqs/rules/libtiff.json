@@ -58,6 +58,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["tiff-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

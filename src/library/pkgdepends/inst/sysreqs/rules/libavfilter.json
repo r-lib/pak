@@ -122,6 +122,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["ffmpeg-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -48,6 +48,17 @@
           "distribution": "fedora"
         }
       ]
+    },
+    {
+      "packages": [
+        "tk-dev"
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

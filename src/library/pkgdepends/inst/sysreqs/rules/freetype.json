@@ -58,6 +58,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["freetype-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

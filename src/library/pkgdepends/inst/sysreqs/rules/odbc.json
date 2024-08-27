@@ -70,6 +70,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["unixodbc-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
-    "patterns": ["\\bglib\\b"],
+    "patterns": ["\\bxz\\b"],
     "dependencies": [
       {
-        "packages": ["libglib2.0-dev"],
+        "packages": ["xz-utils"],
         "constraints": [
           {
             "os": "linux",
@@ -15,7 +15,7 @@
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["xz"],
         "constraints": [
           {
             "os": "linux",
@@ -31,26 +31,16 @@
           },
           {
             "os": "linux",
-            "distribution": "fedora"
-          }
-        ]
-      },
-      {
-        "packages": ["glib2-devel"],
-        "constraints": [
-          {
-            "os": "linux",
             "distribution": "opensuse"
           },
           {
             "os": "linux",
             "distribution": "sle"
-          }
-        ]
-      },
-      {
-        "packages": ["glib-dev"],
-        "constraints": [
+          },
+          {
+            "os": "linux",
+            "distribution": "fedora"
+          },
           {
             "os": "linux",
             "distribution": "alpine"

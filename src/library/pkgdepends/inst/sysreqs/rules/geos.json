@@ -144,6 +144,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["geos-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

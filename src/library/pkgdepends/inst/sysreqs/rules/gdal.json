@@ -190,6 +190,18 @@
           "versions": ["12.3"]
         }
       ]
+    },
+    {
+      "packages": [
+        "gdal-dev",
+        "gdal-tools"
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

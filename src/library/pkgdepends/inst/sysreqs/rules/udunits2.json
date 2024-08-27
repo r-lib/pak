@@ -114,6 +114,15 @@
           "distribution": "rockylinux"
         }
       ]
+    },
+    {
+      "packages": ["udunits-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

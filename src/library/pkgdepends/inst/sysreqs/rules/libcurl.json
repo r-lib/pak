@@ -58,6 +58,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["curl-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

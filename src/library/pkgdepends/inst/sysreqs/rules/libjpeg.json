@@ -58,6 +58,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["jpeg-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

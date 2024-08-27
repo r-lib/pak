@@ -122,6 +122,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["leptonica-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

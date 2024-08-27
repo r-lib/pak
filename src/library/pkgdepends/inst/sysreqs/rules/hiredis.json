@@ -108,6 +108,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["hiredis-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

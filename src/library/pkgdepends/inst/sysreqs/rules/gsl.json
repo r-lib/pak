@@ -81,6 +81,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["gsl-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

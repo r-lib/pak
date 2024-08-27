@@ -64,6 +64,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["pkgconf"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

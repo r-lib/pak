@@ -114,6 +114,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["tesseract-ocr-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

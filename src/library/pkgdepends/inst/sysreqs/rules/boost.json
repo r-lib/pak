@@ -1,8 +1,8 @@
 {
-    "patterns": ["\\bglib\\b"],
+    "patterns": ["\\Boost\\b"],
     "dependencies": [
       {
-        "packages": ["libglib2.0-dev"],
+        "packages": ["libboost-all-dev"],
         "constraints": [
           {
             "os": "linux",
@@ -15,8 +15,12 @@
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["boost-devel"],
         "constraints": [
+          {
+            "os": "linux",
+            "distribution": "fedora"
+          },
           {
             "os": "linux",
             "distribution": "centos"
@@ -28,15 +32,11 @@
           {
             "os": "linux",
             "distribution": "redhat"
-          },
-          {
-            "os": "linux",
-            "distribution": "fedora"
           }
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["boost-gnu-hpc-devel"],
         "constraints": [
           {
             "os": "linux",
@@ -49,7 +49,7 @@
         ]
       },
       {
-        "packages": ["glib-dev"],
+        "packages": ["boost-dev"],
         "constraints": [
           {
             "os": "linux",

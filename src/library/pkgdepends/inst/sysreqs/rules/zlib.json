@@ -58,6 +58,15 @@
             "os": "windows"
           }
         ]
+      },
+      {
+        "packages": ["zlib-dev"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

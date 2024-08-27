@@ -1,8 +1,8 @@
 {
-    "patterns": ["\\bpandoc\\b"],
+    "patterns": ["\\beigen3?\\b"],
     "dependencies": [
       {
-        "packages": ["pandoc"],
+        "packages": ["libeigen3-dev"],
         "constraints": [
           {
             "os": "linux",
@@ -15,16 +15,24 @@
         ]
       },
       {
-        "packages": ["pandoc"],
+        "packages": ["eigen3-devel"],
         "constraints": [
           {
             "os": "linux",
             "distribution": "fedora"
+          },
+          {
+            "os": "linux",
+            "distribution": "opensuse"
+          },
+          {
+            "os": "linux",
+            "distribution": "sle"
           }
         ]
       },
       {
-        "packages": ["pandoc"],
+        "packages": ["eigen3-devel"],
         "pre_install": [
           {
             "command": "yum install -y epel-release"
@@ -34,41 +42,12 @@
           {
             "os": "linux",
             "distribution": "centos",
-            "versions": ["6", "7"]
+            "versions": ["7"]
           }
         ]
       },
       {
-        "packages": ["pandoc"],
-        "pre_install": [
-          { "command": "dnf install -y dnf-plugins-core" },
-          { "command": "dnf config-manager --set-enabled powertools" }
-        ],
-        "constraints": [
-          {
-            "os": "linux",
-            "distribution": "centos",
-            "versions": ["8"]
-          }
-        ]
-      },
-      {
-        "packages": ["pandoc"],
-        "pre_install": [
-          {
-            "command": "rpm -q epel-release || yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
-          }
-        ],
-        "constraints": [
-          {
-            "os": "linux",
-            "distribution": "redhat",
-            "versions": ["6"]
-          }
-        ]
-      },
-      {
-        "packages": ["pandoc"],
+        "packages": ["eigen3-devel"],
         "pre_install": [
           {
             "command": "rpm -q epel-release || yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
@@ -83,16 +62,61 @@
         ]
       },
       {
-        "packages": ["pandoc"],
+        "packages": ["eigen3-devel"],
+        "pre_install": [
+          { "command": "dnf install -y dnf-plugins-core" },
+          { "command": "dnf config-manager --set-enabled powertools" }
+        ],
         "constraints": [
           {
             "os": "linux",
-            "distribution": "opensuse"
+            "distribution": "centos",
+            "versions": ["8"]
           }
         ]
       },
       {
-        "packages": ["pandoc-cli"],
+        "packages": ["eigen3-devel"],
+        "pre_install": [
+          { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" }
+        ],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "redhat",
+            "versions": ["8"]
+          }
+        ]
+      },
+      {
+        "packages": ["eigen3-devel"],
+        "pre_install": [
+          { "command": "dnf install -y dnf-plugins-core" },
+          { "command": "dnf config-manager --set-enabled crb" }
+        ],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "rockylinux",
+            "versions": ["9"]
+          }
+        ]
+      },
+      {
+        "packages": ["eigen3-devel"],
+        "pre_install": [
+          { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
+        ],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "redhat",
+            "versions": ["9"]
+          }
+        ]
+      },
+      {
+        "packages": ["eigen-dev"],
         "constraints": [
           {
             "os": "linux",
@@ -102,3 +126,4 @@
       }
     ]
   }
+  

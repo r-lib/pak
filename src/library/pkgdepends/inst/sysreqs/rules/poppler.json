@@ -98,6 +98,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["poppler-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

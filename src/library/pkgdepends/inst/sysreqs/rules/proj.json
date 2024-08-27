@@ -152,6 +152,15 @@
           "versions": ["12.3"]
         }
       ]
+    },
+    {
+      "packages": ["proj-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

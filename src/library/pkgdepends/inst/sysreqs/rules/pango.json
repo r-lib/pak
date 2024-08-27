@@ -47,6 +47,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["pango-dev"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

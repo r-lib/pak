@@ -50,6 +50,15 @@
           "versions": ["42.3"]
         }
       ]
+    },
+    {
+      "packages": ["mongodb-tools"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

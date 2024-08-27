@@ -135,6 +135,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["zeromq-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -27,6 +27,10 @@
         {
           "os": "linux",
           "distribution": "debian"
+        },
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     },
@@ -100,9 +104,7 @@
     },
     {
       "packages": ["libgit2-devel"],
-      "pre_install": [
-        { "command": "dnf install -y epel-release" }
-      ],
+      "pre_install": [{ "command": "dnf install -y epel-release" }],
       "constraints": [
         {
           "os": "linux",
@@ -129,7 +131,9 @@
     {
       "packages": ["libgit2-devel"],
       "pre_install": [
-        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
+        {
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
+        }
       ],
       "constraints": [
         {

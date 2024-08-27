@@ -123,6 +123,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["libsodium-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

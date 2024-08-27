@@ -127,6 +127,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["haveged-dev"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

@@ -21,6 +21,7 @@ sysreqs2_cmds <- utils::read.table(
    'Fedora Linux'             linux   fedora       *         NA                  'dnf install -y'                    rpm
    'openSUSE Linux'           linux   opensuse     *         NA                  'zypper --non-interactive install'  rpm
    'SUSE Linux Enterprise'    linux   sle          *         NA                  'zypper --non-interactive install'  rpm
+   'Alpine Linux'             linux   alpine       *         NA                  'apk add --no-cache'                apk
 "))
 
 find_sysreqs_platform <- function(sysreqs_platform = NULL) {

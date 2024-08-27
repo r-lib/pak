@@ -53,6 +53,15 @@
           "versions": [ "36", "37" ]
         }
       ]
+    },
+    {
+      "packages": ["chromium"],
+      "constraints": [
+        {
+          "os": "linux",
+            "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

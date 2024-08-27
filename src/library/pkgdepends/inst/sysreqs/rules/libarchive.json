@@ -116,6 +116,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["libarchive-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

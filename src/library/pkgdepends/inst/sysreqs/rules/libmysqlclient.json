@@ -108,6 +108,15 @@
           "versions": ["15.0", "15.2", "15.3", "15.4"]
         }
       ]
+    },
+    {
+      "packages": ["mariadb-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

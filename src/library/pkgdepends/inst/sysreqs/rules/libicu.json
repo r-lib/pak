@@ -85,6 +85,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["icu-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

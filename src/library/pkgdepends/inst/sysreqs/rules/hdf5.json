@@ -139,6 +139,15 @@
           "os": "windows"
         }
       ]
+    },
+    {
+      "packages": ["hdf5-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

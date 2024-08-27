@@ -1,8 +1,8 @@
 {
-    "patterns": ["\\bglib\\b"],
+    "patterns": ["\\blibtool\\b"],
     "dependencies": [
       {
-        "packages": ["libglib2.0-dev"],
+        "packages": ["libtool"],
         "constraints": [
           {
             "os": "linux",
@@ -15,7 +15,7 @@
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["libtool"],
         "constraints": [
           {
             "os": "linux",
@@ -36,7 +36,7 @@
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["libtool"],
         "constraints": [
           {
             "os": "linux",
@@ -49,7 +49,7 @@
         ]
       },
       {
-        "packages": ["glib-dev"],
+        "packages": ["libtool"],
         "constraints": [
           {
             "os": "linux",
@@ -59,3 +59,4 @@
       }
     ]
   }
+  

@@ -1,8 +1,8 @@
 {
-    "patterns": ["\\bglib\\b"],
+    "patterns": ["\\bfluidsynth\\b"],
     "dependencies": [
       {
-        "packages": ["libglib2.0-dev"],
+        "packages": ["libfluidsynth-dev"],
         "constraints": [
           {
             "os": "linux",
@@ -15,7 +15,23 @@
         ]
       },
       {
-        "packages": ["glib2-devel"],
+        "packages": ["fluidsynth-devel"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "opensuse"
+          },
+          {
+            "os": "linux",
+            "distribution": "fedora"
+          }
+        ]
+      },
+      {
+        "packages": ["fluidsynth-devel"],
+        "pre_install": [
+          { "command": "yum install -y epel-release" }
+        ],
         "constraints": [
           {
             "os": "linux",
@@ -28,28 +44,11 @@
           {
             "os": "linux",
             "distribution": "redhat"
-          },
-          {
-            "os": "linux",
-            "distribution": "fedora"
           }
         ]
       },
       {
-        "packages": ["glib2-devel"],
-        "constraints": [
-          {
-            "os": "linux",
-            "distribution": "opensuse"
-          },
-          {
-            "os": "linux",
-            "distribution": "sle"
-          }
-        ]
-      },
-      {
-        "packages": ["glib-dev"],
+        "packages": ["fluidsynth-dev"],
         "constraints": [
           {
             "os": "linux",
@@ -59,3 +58,4 @@
       }
     ]
   }
+  

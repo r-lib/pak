@@ -123,6 +123,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["libbsd-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

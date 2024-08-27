@@ -95,6 +95,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["libsndfile-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

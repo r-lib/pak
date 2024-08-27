@@ -114,6 +114,15 @@
           "versions": ["9"]
         }
       ]
+    },
+    {
+      "packages": ["opencv-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

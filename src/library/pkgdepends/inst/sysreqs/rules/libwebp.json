@@ -99,6 +99,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["libwebp-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -11,6 +11,10 @@
           {
             "os": "linux",
             "distribution": "debian"
+          },
+          {
+            "os": "linux",
+            "distribution": "alpine"
           }
         ]
       },
