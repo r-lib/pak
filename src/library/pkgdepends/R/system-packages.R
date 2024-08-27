@@ -5,6 +5,8 @@ async_system_list_packages <- function(config = NULL) {
   pkgtool <- sysreqs2_command(sysreqs_platform, "query")
   if (pkgtool == "dpkg-query") {
     async_system_list_packages_dpkg_query(config)
+  } else if (pkgtool == "apk") {
+    async_system_list_packages_apk(config)
   } else {
     async_system_list_packages_rpm(config)
   }
@@ -54,7 +56,7 @@ parse_dpkg_query_output <- function(lines) {
   provides <- lapply(provides, sub, pattern = "[ ].*$", replacement = "")
   provides <- lapply(provides, function(x) x[x != ""])
   # sorted by default
-  data_frame(
+  data.frame(
     status = status,
     package = package,
     version = version,
@@ -113,6 +115,46 @@ parse_rpm_output <- function(lines) {
       trimws(blk)
     }
   )
+
+  pkgs <- data_frame(
+    status = "ii",
+    package = package,
+    version = version,
+    provides = provides
+  )
+
+  pkgs <- pkgs[order(tolower(pkgs$package)), ]
+  pkgs
+}
+
+# For APK, we need this query:
+
+async_system_list_packages_apk <- function(config) {
+  args <- c(
+    "list",
+    "-I"
+  )
+  stdout <- tempfile()
+  external_process(function(...) {
+    processx::process$new(
+                        "apk",
+                        stdout = stdout,
+                        stderr = stdout,
+                        args = args,
+                        ...
+                      )
+  })$
+    then(function(ret) {
+      parse_apk_output(strsplit(ret$stdout, "\n")[[1]])
+    })$
+    finally(function() unlink(stdout))
+}
+
+parse_apk_output <- function(lines) {
+
+  package = sub("-[0-9].*", "",  lines)
+  version = sub(".*?-([0-9][^ ]*).*", "\\1", lines)
+  provides = ""
 
   pkgs <- data_frame(
     status = "ii",
