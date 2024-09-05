@@ -1,11 +1,7 @@
 
 #include <sys/types.h>
 
-#ifdef INTEGERTIME
-# include <time.h>
-#else
-# include <sys/timeb.h>
-#endif
+#include <time.h>
 
 #include <stdlib.h>
 #include <stdio.h>
