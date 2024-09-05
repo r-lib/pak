@@ -139,7 +139,7 @@ type_cran_resolve_version <- function(remote, direct, config,
 
   url_remote <- remote
   url_remote$url <- paste0(
-    config$get("cran-mirror"),
+    config$get("cran-mirror")[[1]],
     "/src/contrib/Archive/", remote$package, "/",
     remote$package, "_", remote$version, ".tar.gz"
   )
@@ -155,7 +155,7 @@ type_cran_resolve_version <- function(remote, direct, config,
 
       # Metadata for standard::, not url::
       res$metadata[["RemoteRef"]] <- remote$package
-      res$metadata[["RemoteRepos"]] <- config$get("cran-mirror")
+      res$metadata[["RemoteRepos"]] <- config$get("cran-mirror")[[1]]
       res$metadata[["RemotePkgPlatform"]] <- "source"
       res$metadata[["RemoteSha"]] <- remote$version
       res

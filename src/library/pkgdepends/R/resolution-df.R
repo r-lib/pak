@@ -116,8 +116,14 @@ res_one_row_df <- function(l) {
   assert_that(is.list(l) && all_named(l))
   samp <- res_make_empty_df()[names(l)]
   bad <- vlapply(samp, is.list) & !vlapply(l, is.list)
+  # If col is isn't a list col, but is supposed to be.
+  bad_len <- vlapply(samp, is.list) & !vlapply(l, function(x) length(x) == 1)
+  # If col is supposed to be a list, but isn't length one.
+  bad <- bad | bad_len
   l[bad] <- lapply(l[bad], list)
-  as_data_frame(l)
+  out <- as_data_frame(l)
+  assert_that(nrow(out) == 1)
+  out
 }
 
 res_list_to_df <- function(reslist) {
