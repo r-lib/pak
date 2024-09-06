@@ -56,7 +56,7 @@ parse_dpkg_query_output <- function(lines) {
   provides <- lapply(provides, sub, pattern = "[ ].*$", replacement = "")
   provides <- lapply(provides, function(x) x[x != ""])
   # sorted by default
-  data.frame(
+  data_frame(
     status = status,
     package = package,
     version = version,
