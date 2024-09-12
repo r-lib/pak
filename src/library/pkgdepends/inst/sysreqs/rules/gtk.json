@@ -47,6 +47,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["gtk+2.0-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

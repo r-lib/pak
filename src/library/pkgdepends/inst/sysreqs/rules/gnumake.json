@@ -47,6 +47,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["make"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

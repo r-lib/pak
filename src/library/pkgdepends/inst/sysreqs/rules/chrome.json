@@ -37,7 +37,8 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "centos"
+          "distribution": "centos",
+          "versions": ["8"]
         },
         {
           "os": "linux",
@@ -45,12 +46,45 @@
         },
         {
           "os": "linux",
-          "distribution": "redhat"
+          "distribution": "redhat",
+          "versions": ["8"]
         },
         {
           "os": "linux",
           "distribution": "fedora",
           "versions": [ "36", "37" ]
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        { "command": "yum install -y which" },
+        { "command": "[ $(which google-chrome) ] || curl -fsSL -o /tmp/google-chrome.rpm https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-125.0.6422.141-1.x86_64.rpm" },
+        { "command": "[ $(which google-chrome) ] || yum install -y /tmp/google-chrome.rpm" }
+      ],
+      "packages": [],
+      "post_install": [
+        { "command": "rm -f /tmp/google-chrome.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos",
+          "versions": ["7"]
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["7"]
+        }
+      ]
+    },
+    {
+      "packages": ["chromium"],
+      "constraints": [
+        {
+          "os": "linux",
+            "distribution": "alpine"
         }
       ]
     }

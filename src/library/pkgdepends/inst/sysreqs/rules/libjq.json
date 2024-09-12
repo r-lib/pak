@@ -101,6 +101,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["jq-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

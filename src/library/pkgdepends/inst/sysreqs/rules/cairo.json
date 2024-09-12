@@ -49,6 +49,15 @@
       ]
     },
     {
+      "packages": ["cairo-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
+    },
+    {
       "packages": [
         "mingw-w64-x86_64-cairo",
         "mingw-w64-i686-cairo"

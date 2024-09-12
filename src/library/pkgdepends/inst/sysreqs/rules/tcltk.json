@@ -47,6 +47,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["tcl", "tk"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

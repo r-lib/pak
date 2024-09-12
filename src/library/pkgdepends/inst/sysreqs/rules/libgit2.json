@@ -22,7 +22,7 @@
         {
           "os": "linux",
           "distribution": "ubuntu",
-          "versions": ["20.04", "22.04"]
+          "versions": ["20.04", "22.04", "24.04"]
         },
         {
           "os": "linux",
@@ -114,7 +114,7 @@
     {
       "pre_install": [
         {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms"
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
         }
       ],
       "packages": ["libgit2-devel"],
@@ -149,7 +149,7 @@
         {
           "os": "linux",
           "distribution": "sle",
-          "versions": ["15.0", "15.2", "15.3", "15.4"]
+          "versions": ["15.0", "15.2", "15.3", "15.4", "15.5", "15.6"]
         }
       ]
     },
@@ -160,6 +160,15 @@
           "os": "linux",
           "distribution": "sle",
           "versions": ["12.3"]
+        }
+      ]
+    },
+    {
+      "packages": ["libgit2-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     }

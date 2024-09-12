@@ -47,6 +47,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["automake"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

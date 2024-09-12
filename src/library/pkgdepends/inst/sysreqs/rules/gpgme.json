@@ -90,6 +90,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["gpgme-dev"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

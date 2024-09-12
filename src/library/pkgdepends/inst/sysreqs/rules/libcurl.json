@@ -3,6 +3,7 @@
   "dependencies": [
     {
       "packages": ["libcurl4-openssl-dev"],
+      "apt_satisfy": ["libcurl4-openssl-dev | libcurl4-dev"],
       "constraints": [
         {
           "os": "linux",
@@ -45,6 +46,15 @@
         {
           "os": "linux",
           "distribution": "sle"
+        }
+      ]
+    },
+    {
+      "packages": ["curl-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     },

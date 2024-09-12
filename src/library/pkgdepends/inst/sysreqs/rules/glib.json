@@ -47,6 +47,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["glib-dev"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

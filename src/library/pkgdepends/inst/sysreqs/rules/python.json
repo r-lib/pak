@@ -74,6 +74,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["python3"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

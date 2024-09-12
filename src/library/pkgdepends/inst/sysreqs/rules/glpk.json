@@ -64,6 +64,8 @@
     {
       "packages": ["glpk-devel"],
       "pre_install": [
+        { "command": "dnf install -y dnf-plugins-core" },
+        { "command": "dnf config-manager --set-enabled crb" },
         { "command": "dnf install -y epel-release" }
       ],
       "constraints": [
@@ -106,6 +108,7 @@
     {
       "packages": ["glpk-devel"],
       "pre_install": [
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" },
         { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
       ],
       "constraints": [
@@ -113,6 +116,17 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": [
+        "glpk-dev"
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     },

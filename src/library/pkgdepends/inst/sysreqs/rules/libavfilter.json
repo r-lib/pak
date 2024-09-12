@@ -97,7 +97,7 @@
     },
     {
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms" },
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" },
         { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm" },
         { "command": "dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm" }
       ],
@@ -120,6 +120,15 @@
         {
           "os": "linux",
           "distribution": "sle"
+        }
+      ]
+    },
+    {
+      "packages": ["ffmpeg-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     }

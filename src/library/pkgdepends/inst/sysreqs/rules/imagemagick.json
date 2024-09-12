@@ -105,6 +105,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["imagemagick-dev", "imagemagick-c++"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
   }

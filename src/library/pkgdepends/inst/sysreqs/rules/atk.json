@@ -36,15 +36,52 @@
       ]
     },
     {
+      "packages": ["libatk-1_0-0"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "opensuse",
+          "versions": ["15.6"]
+        },
+        {
+          "os": "linux",
+          "distribution": "sle",
+          "versions": ["15.6"]
+        }
+      ]
+    },
+    {
       "packages": ["atk-devel"],
       "constraints": [
         {
           "os": "linux",
-          "distribution": "opensuse"
+          "distribution": "opensuse",
+          "versions": ["15.3", "15.4", "15.5"]
         },
         {
           "os": "linux",
-          "distribution": "sle"
+          "distribution": "sle",
+          "versions": ["15.3", "15.4", "15.5"]
+        }
+      ]
+    },
+    {
+      "packages": ["atk-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine",
+          "versions": [ "3.15", "3.16" ]
+        }
+      ]
+    },
+    {
+      "packages": ["atkmm-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine",
+          "versions": [ "3.17", "3.18", "3.19", "3.20", "edge" ]
         }
       ]
     }

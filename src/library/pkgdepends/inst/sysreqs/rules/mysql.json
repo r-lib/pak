@@ -69,6 +69,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["mariadb"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

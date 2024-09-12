@@ -105,6 +105,15 @@
           }
         ]
       },
+      {
+        "packages": ["python3"],
+        "constraints": [
+            {
+              "os": "linux",
+              "distribution": "alpine"
+            }
+          ]
+      },
     {
       "packages": [
         "mingw-w64-x86_64-python3",

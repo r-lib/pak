@@ -85,6 +85,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["rust", "cargo"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

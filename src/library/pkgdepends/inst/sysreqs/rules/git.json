@@ -47,6 +47,15 @@
             "distribution": "sle"
           }
         ]
+      },
+      {
+        "packages": ["git"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "alpine"
+          }
+        ]
       }
     ]
-  }
+}

@@ -79,6 +79,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["cmake"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

@@ -43,6 +43,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["cyrus-sasl-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

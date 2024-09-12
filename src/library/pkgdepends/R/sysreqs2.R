@@ -18,9 +18,21 @@ sysreqs2_cmds <- utils::read.table(
    'Red Hat Enterprise Linux' linux   redhat       6         NA                  'yum install -y'                    rpm
    'Red Hat Enterprise Linux' linux   redhat       7         NA                  'yum install -y'                    rpm
    'Red Hat Enterprise Linux' linux   redhat       *         NA                  'dnf install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.0       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.1       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.2       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.3       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.4       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.5       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.6       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.7       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.8       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         7.9       NA                  'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel         *         NA                  'dnf install -y'                    rpm
    'Fedora Linux'             linux   fedora       *         NA                  'dnf install -y'                    rpm
    'openSUSE Linux'           linux   opensuse     *         NA                  'zypper --non-interactive install'  rpm
    'SUSE Linux Enterprise'    linux   sle          *         NA                  'zypper --non-interactive install'  rpm
+   'Alpine Linux'             linux   alpine       *         NA                  'apk add --no-cache'                apk
 "))
 
 find_sysreqs_platform <- function(sysreqs_platform = NULL) {

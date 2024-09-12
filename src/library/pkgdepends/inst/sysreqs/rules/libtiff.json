@@ -49,6 +49,15 @@
       ]
     },
     {
+      "packages": ["tiff-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
+    },
+    {
       "packages": [
         "mingw-w64-x86_64-libtiff",
         "mingw-w64-i686-libtiff"

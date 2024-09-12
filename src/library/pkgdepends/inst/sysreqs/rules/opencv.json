@@ -75,7 +75,7 @@
     },
     {
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms" },
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" },
         { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm" }
       ],
       "packages": ["opencv-devel"],
@@ -112,6 +112,15 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["opencv-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     }

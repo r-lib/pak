@@ -107,6 +107,15 @@
       ]
     },
     {
+      "packages": ["libarchive-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
+    },
+    {
       "packages": [
         "mingw-w64-x86_64-libarchive",
         "mingw-w64-i686-libarchive"

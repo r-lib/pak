@@ -90,12 +90,21 @@
         {
           "os": "linux",
           "distribution": "opensuse",
-          "versions": ["15.4"]
+          "versions": ["15.4", "15.5", "15.6"]
         },
         {
           "os": "linux",
           "distribution": "sle",
-          "versions": ["15.4"]
+          "versions": ["15.4", "15.5", "15.6"]
+        }
+      ]
+    },
+    {
+      "packages": ["java-jdk"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     }

@@ -107,6 +107,15 @@
           "distribution": "opensuse"
         }
       ]
+    },
+    {
+      "packages": ["perl-image-exiftool"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

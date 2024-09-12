@@ -26,6 +26,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["libapparmor-dev", "libapparmor"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }

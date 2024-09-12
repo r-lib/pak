@@ -63,7 +63,7 @@
     {
       "packages": ["poppler-cpp-devel"],
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms" }
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" }
       ],
       "constraints": [
         {
@@ -96,6 +96,15 @@
         {
           "os": "linux",
           "distribution": "sle"
+        }
+      ]
+    },
+    {
+      "packages": ["poppler-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
         }
       ]
     }

@@ -64,6 +64,15 @@
           "distribution": "sle"
         }
       ]
+    },
+    {
+      "packages": ["openmpi-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
     }
   ]
 }
