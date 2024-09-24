@@ -80,9 +80,9 @@ contains <- function(x, y) y %in% x
 isin <- function(x, y) x %in% y
 
 remove_special <- function(list, level = 1) {
-  
+
   assert_that(is_positive_count(level))
-  
+
   if (level == 1) {
     replace(
       grepl(pattern = "^_", names(list)),
@@ -92,7 +92,7 @@ remove_special <- function(list, level = 1) {
   } else {
     lapply(list, remove_special, level = level - 1)
   }
-  
+
 }
 
 pluck <- function(list, idx) list[[idx]]
@@ -104,9 +104,9 @@ needs_packages <- function(pkgs) {
 
   if (!all(has)) {
     not_installed_pkgs <- pkgs[!has]
-    
+
     if (length(not_installed_pkgs) == 1) {
-      
+
       throw(new_error(
         "The ",
         sQuote(not_installed_pkgs),
@@ -114,7 +114,7 @@ needs_packages <- function(pkgs) {
         call. = FALSE
       ))
     } else {
-      
+
       throw(new_error(
         "The ",
         paste(sQuote(not_installed_pkgs), collapse = ", "),
@@ -122,7 +122,7 @@ needs_packages <- function(pkgs) {
         call. = FALSE
       ))
     }
-    
+
   }
 }
 
@@ -132,4 +132,8 @@ clean_description <- function(txt) {
 
 zap_null <- function(x) {
   x[! map_lgl(x, is.null)]
+}
+
+drop_nulls <- function (x) {
+  x[!map_lgl(x, is.null)]
 }

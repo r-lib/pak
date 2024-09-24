@@ -70,7 +70,7 @@ Config/needs/dependencies:
     pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends,
-    pkgsearch,
+    r-hub/pkgsearch,
     processx,
     ps,
 Config/Needs/website:
