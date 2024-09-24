@@ -42,57 +42,10 @@
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>R packages may have various types of dependencies, see
-<a href="https://cran.r-project.org/doc/manuals/R-exts.html" class="external-link">Writing R Extensions</a>.pak groups dependencies into three groups:
-</p><ul><li><p>hard dependencies: "Depends", "Imports", and "LinkingTo",</p></li>
-<li><p>soft dependencies: "Suggests" and "Enhances",</p></li>
-<li><p>extra dependencies, see below.</p></li>
-</ul>pak supports concise ways of specifying which types of
-dependencies of a package should be installed.
-It is similar to how <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code> interprets its
-<code>dependencies</code> argument.You typically use one of these values:
-<ul><li><p><code>NA</code> or <code>"hard"</code> to install a package and its required dependencies,</p></li>
-<li><p><code>TRUE</code> to install all required dependencies, plus optional and development
-dependencies.</p></li>
-</ul>If you need more flexibility, the full description of possible values for
-the <code>dependencies</code> argument are:
-<ul><li><p><code>TRUE</code>: This means all hard dependencies plus <code>Suggests</code> for
-direct installations, and hard dependencies only for dependent
-packages.</p></li>
-<li><p><code>FALSE</code>: no dependencies are installed at all.</p></li>
-<li><p><code>NA</code> (any atomic type, so <code>NA_character_</code>, etc. as well): only hard
-dependencies are installed.</p></li>
-<li><p>If a list with two entries named <code>direct</code> and <code>indirect</code>, it is taken
-as the requested dependency types, for direct installations and
-dependent packages.</p></li>
-<li><p>If a character vector, then it is taken as the dependency types
-for direct installations, and the hard dependencies are
-used for the dependent packages.</p></li>
-</ul>If <code>"hard"</code> is included in the value or a list element, then it is replaced
-by the hard dependency types.
-If <code>"soft"</code> or <code>"all"</code> is included, then it is replaced by all
-hard and soft dependency.
-<div class="section">
-<h3 id="extra-dependencies">Extra dependencies<a class="anchor" aria-label="anchor" href="#extra-dependencies"></a></h3><p>pak supports extra dependency types for direct
-installations not from CRAN-like repositories.
-These are specified with a <code>Config/Needs/</code> prefix in the <code>DESCRIPTION</code>
-and they can contain package references, separated by commas.
-For example you can specify packages that are only needed for the
-pkgdown website of the package:</p>
-<p></p><div class="sourceCode"><p> </p><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Config<span class="sc">/</span>Needs<span class="sc">/</span>website<span class="sc">:</span> r<span class="sc">-</span>lib<span class="sc">/</span>pkgdown</span></code></pre><p></p></div>
-<p>To use these dependency types, you need to specify them in the
-<code>dependencies</code> argument to
-pak functions.</p>
-<p>Note that <code>Config/Needs/*</code> fields are currently <em>not</em> used from CRAN
-packages, and packages in CRAN-like repositories in general.</p>
-<p>Usually you specify that a <code>Config/Needs/*</code> dependency type should be
-installed together with <code>"hard"</code> or <code>"all"</code>, to install all hard or
-soft dependencies as well.</p>
-</div>
+    <p>include_docs("pkgdepends", "docs/deps.rds")</p>
     </div>
 
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside></div>
+  </main></div>
 
 
    </div>
@@ -102,7 +55,7 @@ soft dependencies as well.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
   </div></footer></body></html>
