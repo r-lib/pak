@@ -17,14 +17,18 @@ get_default_curl_options <- function(options) {
   )
 }
 
-http_get <- function(url) {
-  curl::curl_fetch_memory(url)
+http_get <- function(url, options = list()) {
+  handle <- curl::new_handle(url = url)
+  options <- get_default_curl_options(options)
+  curl::handle_setopt(handle, .list = options)
+  curl::curl_fetch_memory(url, handle = handle)
 }
 
 http_post <- function(url, body, headers = character(), options = list()) {
   if (!is.raw(body)) body <- charToRaw(body)
   handle <- curl::new_handle(url = url)
   curl::handle_setheaders(handle, .list = headers)
+  options <- get_default_curl_options(options)
   curl::handle_setopt(
     handle,
     customrequest = "POST",
