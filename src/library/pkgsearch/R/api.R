@@ -68,10 +68,9 @@ pkg_search <- function(query = NULL, format = c("short", "long"),
 
   if (is.null(query)) return(pkg_search_again())
   format <- match.arg(format)
-  server <- Sys.getenv("R_PKG_SEARCH_SERVER", "search.r-pkg.org")
-  port <- as.integer(Sys.getenv("R_PKG_SEARCH_PORT", "80"))
+  server <- Sys.getenv("R_PKG_SEARCH_SERVER", "https://search.r-pkg.org")
 
-  make_pkg_search(query, format, from, size, server, port)
+  make_pkg_search(query, format, from, size, server)
 }
 
 #' @rdname pkg_search
@@ -79,13 +78,12 @@ pkg_search <- function(query = NULL, format = c("short", "long"),
 
 ps <- pkg_search
 
-make_pkg_search <- function(query, format, from, size, server, port) {
+make_pkg_search <- function(query, format, from, size, server) {
 
   qry <- make_query(query = query)
-  rsp <- do_query(qry, server = server, port = port, from = from,
-                  size = size)
+  rsp <- do_query(qry, server = server, from = from, size = size)
   rst <- format_result(rsp, query = query, format = format, from = from,
-                       size = size, server = server, port = port)
+                       size = size, server = server)
 
   s_data$prev_q <- list(type = "simple", result = rst)
 
@@ -108,8 +106,7 @@ more <- function(format = NULL, size = NULL) {
       format = format %||% meta(rst)$format,
       from = meta(rst)$from + meta(rst)$size,
       size = size %||% meta(rst)$size,
-      server = meta(rst)$server,
-      port = meta(rst)$port
+      server = meta(rst)$server
     )
 
   } else if (s_data$prev_q$type == "advanced") {
@@ -183,17 +180,20 @@ make_query <- function(query) {
   )
 }
 
-do_query <- function(query, server, port, from, size) {
+do_query <- function(query, server, from, size) {
 
   check_count(from)
   check_count(size)
 
-  url <- "http://" %+% server %+% ":" %+% as.character(port) %+%
-    "/package/_search?from=" %+% as.character(from - 1) %+%
-    "&size=" %+% as.character(size)
+  # timeout for the curl's connect phase (in seconds)
+  timeout <- getOption("timeout", 60)
+
+  url <- server %+% "/package/_search?from=" %+%
+    as.character(from - 1) %+% "&size=" %+% as.character(size)
   result <- http_post(
     url, body = query,
-    headers = c("Content-Type" = "application/json"))
+    headers = c("Content-Type" = "application/json"),
+    options = list(timeout = timeout))
   chain_error(
     http_stop_for_status(result),
     new_query_error(result, "search server failure")
@@ -236,8 +236,7 @@ print.pkgsearch_query_error <- function(x, ...) {
   invisible(x)
 }
 
-format_result <- function(result, query, format, from, size, server,
-                          port, ...) {
+format_result <- function(result, query, format, from, size, server, ...) {
   result <- jsonlite::fromJSON(result, simplifyVector = FALSE)
 
   meta <- list(
@@ -246,7 +245,6 @@ format_result <- function(result, query, format, from, size, server,
     from = from,
     size = size,
     server = server,
-    port = port,
     total = result$hits$total,
     max_score = result$hits$max_score,
     took = result$took,

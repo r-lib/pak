@@ -1,3 +1,8 @@
+# pkgsearch (development version)
+
+* pkgsearch now uses the `timeout` option to set the limit for the total
+  time of each HTTP request (#125, @gladkia).
+
 # pkgsearch 3.1.3
 
 * No user visible changes.

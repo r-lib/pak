@@ -92,10 +92,9 @@ advanced_search <- function(..., json = NULL, format = c("short", "long"),
     qstr <- json
   }
 
-  server <- Sys.getenv("R_PKG_SEARCH_SERVER", "search.r-pkg.org")
-  port <- as.integer(Sys.getenv("R_PKG_SEARCH_PORT", "80"))
+  server <- Sys.getenv("R_PKG_SEARCH_SERVER", "https://search.r-pkg.org")
 
-  resp <- do_query(qstr, server, port, from, size)
+  resp <- do_query(qstr, server, from, size)
 
   result <- format_result(
     resp,
@@ -104,7 +103,6 @@ advanced_search <- function(..., json = NULL, format = c("short", "long"),
     from = from,
     size = size,
     server = server,
-    port = port,
     qstr = qstr
   )
 
