@@ -210,7 +210,7 @@ embed <- local({
     )
 
     lib <- lib_dir()
-    pkg_name <- sub("^.*/", "", pkg)
+    pkg_name <- sub("^.*/", "", sub("@.*$", "", pkg))
     if (mode == "add") {
       if (file.exists(file.path(lib, pkg_name))) {
         stop("Package already in library: ", pkg_name)
@@ -220,9 +220,15 @@ embed <- local({
     dir.create(tmp <- tempfile())
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
     if (grepl("/", pkg)) {
+      if (grepl("@", pkg)) {
+        branch <- sub("^[^@]*@", "", pkg)
+        pkg <- sub("@.*$", "", pkg)
+      } else {
+        branch <- "main"
+      }
       url <- sprintf(
-        "https://github.com/%s/archive/refs/heads/main.tar.gz",
-        pkg
+        "https://github.com/%s/archive/refs/heads/%s.tar.gz",
+        pkg, branch
       )
       path1 <- file.path(tmp, paste0(pkg_name, ".tar.gz"))
       download.file(url, path1)

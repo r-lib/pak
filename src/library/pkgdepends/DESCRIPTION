@@ -1,6 +1,6 @@
 Package: pkgdepends
 Title: Package Dependency Resolution and Downloads
-Version: 0.7.2.9000
+Version: 0.8.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd"))
@@ -26,16 +26,16 @@ Suggests: asciicast (>= 2.2.0.9000), codetools, covr, debugme, fansi,
         fs, gh, gitcreds, glue, htmlwidgets, mockery, pak, pingr (>=
         2.0.0), rmarkdown, rstudioapi, spelling, svglite, testthat (>=
         3.2.0), tibble, webfakes (>= 1.1.5.9000), withr (>= 2.1.1),
-Remotes: r-lib/pkgcache
 Config/Needs/builder: gh, pkgsearch, withr (>= 2.1.1)
 Config/Needs/coverage: r-lib/asciicast, covr
 Config/Needs/website: r-lib/asciicast, pkgdown (>= 2.0.2),
         tidyverse/tidytemplate
+Remotes: r-lib/cli
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.3.1.9000
-NeedsCompilation: no
-Packaged: 2024-09-12 08:23:16 UTC; gaborcsardi
+RoxygenNote: 7.3.2
+NeedsCompilation: yes
+Packaged: 2024-10-21 12:44:05 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

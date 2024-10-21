@@ -503,3 +503,12 @@ collapse <- function(x, ...) {
 na_omit <- function(x) {
   x[!is.na(x)]
 }
+
+file_ext <- function(x) {
+  re_match(x, "[.]([[:alnum:]]+)$")[[".match"]]
+}
+
+# drop a prefix and a postfix, vectorized
+omit_pre_post <- function(x, pre = 0, post = 0) {
+  substr(x, 1L + pre, nchar(x) - post)
+}
