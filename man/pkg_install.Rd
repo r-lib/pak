@@ -29,7 +29,7 @@ See "\link{Package sources}" for more details.}
 dependent packages will be installed here, even if they are
 already installed in another library. The only exceptions are base
 and recommended packages installed in \code{.Library}. These are not
-duplicated in \code{lib}, unless a newer version of a recommemded package
+duplicated in \code{lib}, unless a newer version of a recommended package
 is needed.}
 
 \item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
@@ -217,8 +217,8 @@ pak will have cached the prior install.
 Other package functions: 
 \code{\link{lib_status}()},
 \code{\link{pak}()},
-\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_remove}()},
 \code{\link{pkg_status}()},

@@ -15,7 +15,11 @@
 #'
 #' @param pkg Package names or remote package specifications to install.
 #'   See [pak package sources][Package sources] for details. If `NULL`,
-#'   will install all development dependencies for the current package.
+#'   will install all development dependencies for the current package, if any.
+#'   If there is no current package (i.e. `DESCRIPTION` file), then it will
+#'   auto-scan package dependencies from R code in `root`.
+#' @param root If `pkg` is `NULL`, then this directory is used as
+#'   the package or project root.
 #' @param ... Extra arguments are passed to [pkg_install()] or
 #'   [local_install_dev_deps()].
 #'
@@ -23,9 +27,13 @@
 #' @family package functions
 #' @family local package trees
 
-pak <- function(pkg = NULL, ...) {
+pak <- function(pkg = NULL, root = ".", ...) {
   if (is.null(pkg)) {
-    local_install_dev_deps(...)
+    if (file.exists(file.path(root, "DESCRIPTION"))) {
+      local_install_dev_deps(...)
+    } else {
+      pkg_install("deps::.", ...)
+    }
   } else {
     pkg_install(pkg, ...)
   }

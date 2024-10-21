@@ -4,12 +4,17 @@
 \alias{pak}
 \title{Install specified required packages}
 \usage{
-pak(pkg = NULL, ...)
+pak(pkg = NULL, root = ".", ...)
 }
 \arguments{
 \item{pkg}{Package names or remote package specifications to install.
 See \link[=Package sources]{pak package sources} for details. If \code{NULL},
-will install all development dependencies for the current package.}
+will install all development dependencies for the current package, if any.
+If there is no current package (i.e. \code{DESCRIPTION} file), then it will
+auto-scan package dependencies from R code in \code{root}.}
+
+\item{root}{If \code{pkg} is \code{NULL}, then this directory is used as
+the package or project root.}
 
 \item{...}{Extra arguments are passed to \code{\link[=pkg_install]{pkg_install()}} or
 \code{\link[=local_install_dev_deps]{local_install_dev_deps()}}.}
@@ -33,8 +38,8 @@ packages, just one.
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
@@ -42,11 +47,11 @@ Other package functions:
 \code{\link{pkg_sysreqs}()}
 
 Other local package trees: 
-\code{\link{local_deps_explain}()},
 \code{\link{local_deps}()},
+\code{\link{local_deps_explain}()},
+\code{\link{local_install}()},
 \code{\link{local_install_deps}()},
 \code{\link{local_install_dev_deps}()},
-\code{\link{local_install}()},
 \code{\link{local_package_trees}}
 }
 \concept{local package trees}

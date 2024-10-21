@@ -38,7 +38,7 @@ Other contributors:
   \item R Consortium (pkgsearch) [funder]
   \item Jay Loden (ps) [contributor]
   \item Dave Daeschler (ps) [contributor]
-  \item Giampaolo Rodola' (ps) [contributor]
+  \item Giampaolo Rodola (ps) [contributor]
   \item Kuba Podgórski (zip) [contributor]
   \item Rich Geldreich (zip) [contributor]
 }
