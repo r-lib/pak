@@ -9,8 +9,8 @@ spinners <- pdt[, c("name", "interval", "frames")]
 usethis::use_data(spinners, internal = TRUE)
 spinners <- rbind(
   spinners,
-  list(name = "growVeriticalDotsLR", interval = 80, frames = strsplit("⠀⡀⣀⣄⣤⣦⣶⣷⣿⣾⣶⣴⣤⣠⣀⢀", "")),
-  list(name = "growVeriticalDotsRL", interval = 80, frames = strsplit("⠀⢀⣀⣠⣤⣴⣶⣾⣿⣷⣶⣦⣤⣄⣀⡀", "")),
-  list(name = "growVeriticalDotsLL", interval = 80, frames = strsplit("⠀⡀⣀⣄⣤⣦⣶⣷⣿⣷⣶⣦⣤⣄⣀⡀", "")),
-  list(name = "growVeriticalDotsRR", interval = 80, frames = strsplit("⠀⡀⣀⣠⣤⣴⣶⣾⣿⣾⣶⣴⣤⣠⣀⢀", ""))
+  list(name = "growVeriticalDotsLR", interval = 80, frames = strsplit("⠀⡀⣀⣄⣤⣦⣶⣷⣿⣾⣶⣴⣤⣠⣀⢀", "", fixed = TRUE)),
+  list(name = "growVeriticalDotsRL", interval = 80, frames = strsplit("⠀⢀⣀⣠⣤⣴⣶⣾⣿⣷⣶⣦⣤⣄⣀⡀", "", fixed = TRUE)),
+  list(name = "growVeriticalDotsLL", interval = 80, frames = strsplit("⠀⡀⣀⣄⣤⣦⣶⣷⣿⣷⣶⣦⣤⣄⣀⡀", "", fixed = TRUE)),
+  list(name = "growVeriticalDotsRR", interval = 80, frames = strsplit("⠀⡀⣀⣠⣤⣴⣶⣾⣿⣾⣶⣴⣤⣠⣀⢀", "", fixed = TRUE))
 )

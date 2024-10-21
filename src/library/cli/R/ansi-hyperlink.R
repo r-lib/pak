@@ -124,7 +124,7 @@ abs_path1 <- function(x) {
 # -- {.fun} ---------------------------------------------------------------
 
 make_link_fun <- function(txt) {
-  tolink <- grepl("::", txt)
+  tolink <- grepl("::", txt, fixed = TRUE)
   linked <- grepl("\007|\033\\\\", txt)
   todo <- tolink & !linked
   if (!any(todo)) return(txt)
