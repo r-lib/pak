@@ -1,8 +1,8 @@
 {
-  "patterns": ["\\bleptonica\\b"],
+  "patterns": ["\\bPoppler glib\\b"],
   "dependencies": [
     {
-      "packages": ["libleptonica-dev"],
+      "packages": ["libpoppler-glib-dev"],
       "constraints": [
         {
           "os": "linux",
@@ -15,22 +15,26 @@
       ]
     },
     {
-      "packages": ["leptonica-devel"],
-      "pre_install": [
-        {
-          "command": "yum install -y epel-release"
-        }
-      ],
+      "packages": ["poppler-glib-devel"],
       "constraints": [
         {
           "os": "linux",
           "distribution": "centos",
-          "versions": ["6", "7"]
+          "versions": ["7"]
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["7"]
+        },
+        {
+          "os": "linux",
+          "distribution": "fedora"
         }
       ]
     },
     {
-      "packages": ["leptonica-devel"],
+      "packages": ["poppler-glib-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled powertools" }
@@ -44,7 +48,7 @@
       ]
     },
     {
-      "packages": ["leptonica-devel"],
+      "packages": ["poppler-glib-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled crb" }
@@ -57,39 +61,26 @@
       ]
     },
     {
-      "packages": ["leptonica-devel"],
+      "packages": ["poppler-glib-devel"],
       "pre_install": [
         {
-          "command": "rpm -q epel-release || yum install -y https://archives.fedoraproject.org/pub/archive/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
         }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["6"]
+          "versions": ["8"]
         }
       ]
     },
     {
-      "packages": ["leptonica-devel"],
+      "packages": ["poppler-glib-devel"],
       "pre_install": [
         {
-          "command": "rpm -q epel-release || yum install -y https://archives.fedoraproject.org/pub/archive/epel/7/x86_64/Packages/e/epel-release-7-14.noarch.rpm"
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms"
         }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["7"]
-        }
-      ]
-    },
-    {
-      "packages": ["leptonica-devel"],
-      "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
       ],
       "constraints": [
         {
@@ -100,7 +91,7 @@
       ]
     },
     {
-      "packages": ["leptonica-devel"],
+      "packages": ["libpoppler-glib-devel"],
       "constraints": [
         {
           "os": "linux",
@@ -108,27 +99,16 @@
         },
         {
           "os": "linux",
-          "distribution": "fedora"
+          "distribution": "sle"
         }
       ]
     },
     {
-      "packages": ["leptonica-dev"],
+      "packages": ["poppler-glib"],
       "constraints": [
         {
           "os": "linux",
           "distribution": "alpine"
-        }
-      ]
-    },
-    {
-      "packages": [
-        "mingw-w64-x86_64-leptonica",
-        "mingw-w64-i686-leptonica"
-      ],
-      "constraints": [
-        {
-          "os": "windows"
         }
       ]
     }

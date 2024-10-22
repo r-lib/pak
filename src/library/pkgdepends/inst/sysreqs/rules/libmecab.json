@@ -1,8 +1,8 @@
 {
-  "patterns": ["\\bPoppler C\\+\\+"],
+  "patterns": ["\\blibmecab\\b", "\\bmecab\\b"],
   "dependencies": [
     {
-      "packages": ["libpoppler-cpp-dev"],
+      "packages": ["libmecab-dev"],
       "constraints": [
         {
           "os": "linux",
@@ -15,30 +15,11 @@
       ]
     },
     {
-      "packages": ["poppler-cpp-devel"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "centos",
-          "versions": ["7"]
-        },
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["7"]
-        },
-        {
-          "os": "linux",
-          "distribution": "fedora"
-        }
-      ]
-    },
-    {
-      "packages": ["poppler-cpp-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled powertools" }
       ],
+      "packages": ["mecab-devel"],
       "constraints": [
         {
           "os": "linux",
@@ -48,7 +29,7 @@
       ]
     },
     {
-      "packages": ["poppler-cpp-devel"],
+      "packages": ["mecab-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled crb" }
@@ -61,12 +42,24 @@
       ]
     },
     {
-      "packages": ["poppler-cpp-devel"],
+      "packages": ["mecab-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "fedora"
+        }
+      ]
+    },
+    {
       "pre_install": [
         {
           "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
+        },
+        {
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
         }
       ],
+      "packages": ["mecab-devel"],
       "constraints": [
         {
           "os": "linux",
@@ -76,12 +69,15 @@
       ]
     },
     {
-      "packages": ["poppler-cpp-devel"],
       "pre_install": [
         {
           "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms"
+        },
+        {
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
         }
       ],
+      "packages": ["mecab-devel"],
       "constraints": [
         {
           "os": "linux",
@@ -91,24 +87,15 @@
       ]
     },
     {
-      "packages": ["libpoppler-devel"],
+      "packages": ["mecab-devel"],
+      "pre_install": [
+        { "command": "dnf install -y dnf-plugins-core" },
+        { "command": "dnf config-manager --set-enabled crb" }
+      ],
       "constraints": [
         {
           "os": "linux",
-          "distribution": "opensuse"
-        },
-        {
-          "os": "linux",
-          "distribution": "sle"
-        }
-      ]
-    },
-    {
-      "packages": ["poppler-dev"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "alpine"
+          "distribution": "rockylinux"
         }
       ]
     }
