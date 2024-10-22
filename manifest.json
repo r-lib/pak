@@ -336,6 +336,24 @@
           "buildtime": "2024-10-22T05:47:08+00:00",
           "size": 8787301,
           "digest": "sha256:88beec75bc7fe01122db255ffcdfaf34f8f36c7b4e5350f9e708546a6f627c28"
+        },
+        {
+          "r.platform": "amd64-portbld-freebsd13.3",
+          "r.version": "4.4",
+          "pak.version": "0.8.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2024-10-22T21:24:52+00:00",
+          "size": 5396163,
+          "digest": "sha256:19b812c9f25ab2ac56bf9144a78e7fe9ad37073f6485d71647b82e670d84fd97"
+        },
+        {
+          "r.platform": "amd64-portbld-freebsd14.1",
+          "r.version": "4.4",
+          "pak.version": "0.8.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2024-10-22T21:01:24+00:00",
+          "size": 5386158,
+          "digest": "sha256:88719fc343bd8c8eac2bd6b3144bf5637f20af18e69b7a4535314f36e411b623"
         }
       ]
     },
