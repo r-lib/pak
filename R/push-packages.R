@@ -104,7 +104,7 @@ push_packages <- local({
 
   canonize_arch <- function(platform) {
     arch <- strsplit(platform, "-", fixed = TRUE)[[1]][1]
-    c("aarch64" = "arm64", "x86_64" = "amd64")[[arch]]
+    c("aarch64" = "arm64", "x86_64" = "amd64", "arm64" = "arm64", "amd64" = "amd64")[[arch]]
   }
 
   canonize_os <- function(platform) {
@@ -641,6 +641,8 @@ create_pak_repo <- local({
   # - darwin17.0/x86_64
   # - darwin20/aarch64
   # - mingw32/x86_64
+  # - freebsd14.1/x86_64
+  # - freebsd13.3/x86_64
 
   # ## New form of the install command will use these repo URL and paths:
   # ```
@@ -658,6 +660,10 @@ create_pak_repo <- local({
   #      mingw32/x86_64
   # win.binary/mingw32/i386 + /bin/windows/contrib/4.1 ->
   #      mingw32/x86_64
+  # source/freebsd14.1/amd64 + /src/contrib ->
+  #      freebsd14.1/x86_64
+  # source/freebsd13.3/amd64 + /src/contrib ->
+  #      freebsd13.3/x86_64
   # ```
   #
   # Unsupported platforms will get a non-existant path, e.g. homebrew R
@@ -705,6 +711,9 @@ create_pak_repo <- local({
     "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux/aarch64",
+
+    "source/freebsd14.1/amd64/src/contrib" = "../../../../../freebsd14.1/x86_64",
+    "source/freebsd13.4/amd64/src/contrib" = "../../../../../freebsd13.3/x86_64",
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
     "win.binary/mingw32/x86_64/src/contrib" = "../../../../../mingw32/x86_64",
