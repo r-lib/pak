@@ -363,6 +363,24 @@
           "buildtime": "2024-10-23T14:30:57+00:00",
           "size": 5396011,
           "digest": "sha256:feee595790c4e8b43bf1de38064b09a8a7c32db72556c8996e56d466f2a6d62b"
+        },
+        {
+          "r.platform": "x86_64-unknown-openbsd7.5",
+          "r.version": "4.2",
+          "pak.version": "0.8.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2024-10-23T14:28:55+00:00",
+          "size": 5386102,
+          "digest": "sha256:4b820c5ecc8deb27cc65367c0da05c259d526790e0d1a4ee527ed054d84d77c2"
+        },
+        {
+          "r.platform": "x86_64-unknown-openbsd7.6",
+          "r.version": "4.4",
+          "pak.version": "0.8.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2024-10-23T14:08:31+00:00",
+          "size": 5393977,
+          "digest": "sha256:bc934035f23d2a83706d3438cd78603f3a27d01aa9d82c33616ab3a64009220c"
         }
       ]
     },
