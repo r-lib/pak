@@ -646,6 +646,7 @@ create_pak_repo <- local({
   # - openbsd7.6/x86_64
   # - openbsd7.5/x86_64
   # - openbsd7.4/x86_64
+  # - netbsd/x86_64
 
   # ## New form of the install command will use these repo URL and paths:
   # ```
@@ -673,6 +674,8 @@ create_pak_repo <- local({
   #      openbsd7.5/x86_64
   # source/openbsd7.4/x86_64 + /src/contrib ->
   #      openbsd7.4/x86_64
+  # source/netbsd/x86_64 + /src/contrib ->
+  #      netbsd/x86_64
   # ```
   #
   # Unsupported platforms will get a non-existant path, e.g. homebrew R
@@ -726,6 +729,7 @@ create_pak_repo <- local({
     "source/openbsd7.6/x86_64/src/contrib" = "../../../../../openbsd7.6/x86_64",
     "source/openbsd7.5/x86_64/src/contrib" = "../../../../../openbsd7.5/x86_64",
     "source/openbsd7.4/x86_64/src/contrib" = "../../../../../openbsd7.4/x86_64",
+    "source/netbsd/x86_64/src/contrib" = "../../../../../netbsd/x86_64",
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
     "win.binary/mingw32/x86_64/src/contrib" = "../../../../../mingw32/x86_64",
