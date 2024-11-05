@@ -1,5 +1,6 @@
 # Deploy all .zip, .tgz, .tar.gz files. Run this in an Alpine Linux
 # container that has R. E.g. an r-hub/r-minimal container.
+SHELL := /bin/bash
 
 all: docker-deploy
 
@@ -18,7 +19,7 @@ deploy:
 	R CMD INSTALL .
 	R -q --no-save -e \
 	  'pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy")'
-	R -q --no-save -e \
+	shopt -s nullglob && R -q --no-save -e \
 	  'pak:::push_packages(normalizePath(commandArgs(TRUE)))' \
 	  --args *.{tar.gz,tgz,zip}
 
