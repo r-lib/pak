@@ -351,7 +351,7 @@ jobs:
     - name: Deploy package
       run: |
         docker run -v `pwd`:/repo --workdir /repo -e PAK_GHCR_TOKEN -e GITHUB_PAT \
-          ghcr.io/r-hub/r-minimal/r-minimal:latest
+          ghcr.io/r-hub/r-minimal/r-minimal:latest \
           R -q --no-save -e 'system("apk add skopeo"); source("https://pak.r-lib.org/install.R"); pak:::push_packages(normalizePath(dir(pattern = "^pak.*[.]tar[.]gz$")))'
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
