@@ -641,6 +641,7 @@ create_pak_repo <- local({
   # - darwin17.0/x86_64
   # - darwin20/aarch64
   # - mingw32/x86_64
+  # - freebsd15.0/x86_64
   # - freebsd14.1/x86_64
   # - freebsd13.3/x86_64
   # - openbsd7.6/x86_64
@@ -665,6 +666,8 @@ create_pak_repo <- local({
   #      mingw32/x86_64
   # win.binary/mingw32/i386 + /bin/windows/contrib/4.1 ->
   #      mingw32/x86_64
+  # source/freebsd15.0/amd64 + /src/contrib ->
+  #      freebsd15.0/x86_64
   # source/freebsd14.1/amd64 + /src/contrib ->
   #      freebsd14.1/x86_64
   # source/freebsd13.3/amd64 + /src/contrib ->
@@ -727,8 +730,23 @@ create_pak_repo <- local({
     "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux/aarch64",
 
+    "source/freebsd15.6/amd64/src/contrib" = "../../../../../freebsd15.6/x86_64",
+    "source/freebsd15.5/amd64/src/contrib" = "../../../../../freebsd15.5/x86_64",
+    "source/freebsd15.4/amd64/src/contrib" = "../../../../../freebsd15.4/x86_64",
+    "source/freebsd15.3/amd64/src/contrib" = "../../../../../freebsd15.3/x86_64",
+    "source/freebsd15.2/amd64/src/contrib" = "../../../../../freebsd15.2/x86_64",
+    "source/freebsd15.1/amd64/src/contrib" = "../../../../../freebsd15.1/x86_64",
+    "source/freebsd15.0/amd64/src/contrib" = "../../../../../freebsd15.0/x86_64",
+    "source/freebsd14.6/amd64/src/contrib" = "../../../../../freebsd14.6/x86_64",
+    "source/freebsd14.5/amd64/src/contrib" = "../../../../../freebsd14.5/x86_64",
+    "source/freebsd14.4/amd64/src/contrib" = "../../../../../freebsd14.4/x86_64",
+    "source/freebsd14.3/amd64/src/contrib" = "../../../../../freebsd14.3/x86_64",
+    "source/freebsd14.2/amd64/src/contrib" = "../../../../../freebsd14.2/x86_64",
     "source/freebsd14.1/amd64/src/contrib" = "../../../../../freebsd14.1/x86_64",
-    "source/freebsd13.4/amd64/src/contrib" = "../../../../../freebsd13.3/x86_64",
+    "source/freebsd13.6/amd64/src/contrib" = "../../../../../freebsd13.6/x86_64",
+    "source/freebsd13.5/amd64/src/contrib" = "../../../../../freebsd13.5/x86_64",
+    "source/freebsd13.4/amd64/src/contrib" = "../../../../../freebsd13.4/x86_64",
+    "source/freebsd13.3/amd64/src/contrib" = "../../../../../freebsd13.3/x86_64",
     "source/openbsd7.6/x86_64/src/contrib" = "../../../../../openbsd7.6/x86_64",
     "source/openbsd7.5/x86_64/src/contrib" = "../../../../../openbsd7.5/x86_64",
     "source/openbsd7.4/x86_64/src/contrib" = "../../../../../openbsd7.4/x86_64",

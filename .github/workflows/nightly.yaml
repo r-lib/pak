@@ -338,6 +338,7 @@ jobs:
       matrix:
         config:
           - { os: 'freebsd', release: '15.0' }
+          - { os: 'freebsd', release: '14.2-pre' }
           - { os: 'freebsd', release: '14.1' }
           - { os: 'freebsd', release: '13.4' }
           - { os: 'openbsd' }
