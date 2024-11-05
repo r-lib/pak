@@ -43,8 +43,8 @@ on:
         - 'yes'
         - 'no'
         default: 'yes'
-      freebsd:
-        description: 'FreeBSD'
+      bsd:
+        description: 'FreeBSD, OpenBSD, NetBSD, DragonFly BSD'
         required: true
         type: choice
         options:
@@ -84,7 +84,7 @@ jobs:
           echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
           echo "macos-arm64: ${{ github.event.inputs.macos-arm64 == 'yes' }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 == 'yes' }}"
-          echo "freebsd: ${{ github.event.inputs.freebsd == 'yes' }}"
+          echo "bsd: ${{ github.event.inputs.bsd == 'yes' }}"
           echo "deploy: ${{ github.event.inputs.deploy == 'yes' }}"
 
   # -----------------------------------------------------------------------
@@ -328,10 +328,19 @@ jobs:
 
   # ------------------------------------------------------------------------
 
-  freebsd:
-    runs-on: ubuntu-24.04
-    if: ${{ github.event.inputs.freebsd == '' || github.event.inputs.freebsd == 'yes' }}
-    name: FreeBSD
+  bsd:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.bsd == '' || github.event.inputs.bsd == 'yes' }}
+    name: BSD
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: 'freebsd' }
+          - { os: 'openbsd' }
+          - { os: 'netbsd' }
+          - { os: 'dragonflybsd' }
 
     steps:
 
@@ -341,6 +350,16 @@ jobs:
         fetch-depth: 10
 
     - uses: r-hub/actions/setup-r-freebsd@v1
+      if: ${{ matrix.config.os == 'freebsd' }}
+
+    - uses: r-hub/actions/setup-r-openbsd@v1
+      if: ${{ matrix.config.os == 'openbsd' }}
+
+    - uses: r-hub/actions/setup-r-netbsd@v1
+      if: ${{ matrix.config.os == 'netbsd' }}
+
+    - uses: r-hub/actions/setup-r-dragonflybsd@v1
+      if: ${{ matrix.config.os == 'dragonflybsd' }}
 
     - name: Build pak binary
       run: |
@@ -348,16 +367,9 @@ jobs:
         install.packages(".", repos = NULL, type = "source", INSTALL_opts = "--build")
       shell: Rscript {0}
 
-    - name: Clean up working directory
+    - name: Deploy pak binary
       run: |
-        git clean -fdx src
-      shell: bash
-
-    - name: Deploy package
-      run: |
-        docker run -v `pwd`:/repo --workdir /repo -e PAK_GHCR_TOKEN -e GITHUB_PAT \
-          ghcr.io/r-hub/r-minimal/r-minimal:latest \
-          R -q --no-save -e 'system("apk add skopeo gcc musl-dev g++ curl-dev linux-headers git"); system("git config --global --add safe.directory /repo"); system("git config --global user.email csardi.gabor@gmail.com"); system("git config --global user.name \"Gabor Csardi\""); install.packages(".", repos = NULL, type = "source"); pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy"); pak:::push_packages(normalizePath(dir(pattern = "^pak.*[.]tar[.]gz$")))'
+        make -f tools/build/docker-deploy/Makefile
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
