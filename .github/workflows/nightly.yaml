@@ -352,7 +352,7 @@ jobs:
       with:
         fetch-depth: 10
 
-    - uses: r-hub/actions/setup-r-freebsd@v1
+    - uses: r-hub/actions/setup-r-freebsd@main
       if: ${{ matrix.config.os == 'freebsd' }}
       with:
         release: ${{ matrix.config.release }}
