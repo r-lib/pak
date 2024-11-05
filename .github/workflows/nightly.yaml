@@ -357,7 +357,7 @@ jobs:
       run: |
         docker run -v `pwd`:/repo --workdir /repo -e PAK_GHCR_TOKEN -e GITHUB_PAT \
           ghcr.io/r-hub/r-minimal/r-minimal:latest \
-          R -q --no-save -e 'system("apk add skopeo gcc musl-dev g++ curl-dev linux-headers"); system("git config --global --add safe.directory /repo"); install.packages(".", repos = NULL, type = "source"); pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy"); pak:::push_packages(normalizePath(dir(pattern = "^pak.*[.]tar[.]gz$")))'
+          R -q --no-save -e 'system("apk add skopeo gcc musl-dev g++ curl-dev linux-headers git"); system("git config --global --add safe.directory /repo"); install.packages(".", repos = NULL, type = "source"); pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy"); pak:::push_packages(normalizePath(dir(pattern = "^pak.*[.]tar[.]gz$")))'
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
