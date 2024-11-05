@@ -43,6 +43,14 @@ on:
         - 'yes'
         - 'no'
         default: 'yes'
+      freebsd:
+        description: 'FreeBSD'
+        required: true
+        type: choice
+        options:
+        - 'yes'
+        - 'no'
+        default: 'yes'
       deploy:
         description: 'Deploy'
         required: true
@@ -76,6 +84,7 @@ jobs:
           echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
           echo "macos-arm64: ${{ github.event.inputs.macos-arm64 == 'yes' }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 == 'yes' }}"
+          echo "freebsd: ${{ github.event.inputs.freebsd == 'yes' }}"
           echo "deploy: ${{ github.event.inputs.deploy == 'yes' }}"
 
   # -----------------------------------------------------------------------
@@ -316,6 +325,37 @@ jobs:
       env:
         RVERSIONS: ${{ matrix.config.r }}
         GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+
+  # ------------------------------------------------------------------------
+
+  freebsd:
+    runs-on: ubuntu-24.04
+    if: ${{ github.event.inputs.freebsd == '' || github.event.inputs.freebsd == 'yes' }}
+    name: FreeBSD
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 10
+
+    - uses: r-hub/actions/setup-r-freebsd@v1
+
+    - name: Build pak binary
+      run: |
+        # this runs on the VM
+        install.packages(".", repos = NULL, type = "source", INSTALL_opts = "--build")
+      shell: Rscript {0}
+
+    - name: Deploy package
+      run: |
+        docker run -v `pwd`:/repo --workdir /repo -e PAK_GHCR_TOKEN -e GITHUB_PAT \
+          ghcr.io/r-hub/r-minimal/r-minimal:latest
+          R -q -e 'system("apk add skopeo"); source("https://pak.r-lib.org/install.R"); pak:::push_packages(normalizePath(dir(pattern = "^pak.*[.]tar[.]gz$")))'
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
   # ------------------------------------------------------------------------
 
