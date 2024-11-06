@@ -1210,6 +1210,15 @@
           "buildtime": "2024-11-06T09:25:18+00:00",
           "size": 5379334,
           "digest": "sha256:9791931d507263132f8268606555305b789b2df6e30535fd2d964af4228bb5b5"
+        },
+        {
+          "r.platform": "x86_64-unknown-openbsd7.4",
+          "r.version": "4.2",
+          "pak.version": "0.8.0",
+          "pak.revision": "TODO",
+          "buildtime": "2024-11-06T09:25:52+00:00",
+          "size": 5391066,
+          "digest": "sha256:e0c65ebb62a005844022dbe18e96ccada873103fb46feaef4f400a4f040057ec"
         }
       ]
     }
