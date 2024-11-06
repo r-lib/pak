@@ -33,7 +33,7 @@ options (as in base::options())."><script defer data-domain="/pak.r-lib.org,all.
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Environment variables and options that modify the default behavior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/cran-0-8-0/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
       <div class="d-none name"><code>pak-config.Rd</code></div>
     </div>
 
@@ -75,94 +75,8 @@ separator, but it always has the <code>pkg.</code> prefix (notice the dot!).</p>
 <h3 id="pak-configuration-entries">pak configuration entries<a class="anchor" aria-label="anchor" href="#pak-configuration-entries"></a></h3>
 
 
-<p></p><ul><li><p>‘cache_dir’: (Env var: <code>PKG_CACHE_DIR</code>, option: <code>pkg.cache_dir</code>.) Directory to download the packages to. Defaults to a temporary
-directory within the R session temporary directory, see
-<code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">base::tempdir()</a></code>.</p></li>
-<li><p>‘cran_mirror’: (Env var: <code>PKG_CRAN_MIRROR</code>, option: <code>pkg.cran_mirror</code>.) CRAN mirror to use. Defaults to the <code>repos</code> option
-(see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), if that's not set then
-<code>https://cran.rstudio.com</code>. See also <code><a href="repo_add.html">pak::repo_add()</a></code> and
-<code><a href="repo_get.html">pak::repo_get()</a></code></p></li>
-<li><p>‘git_submodules’: (Env var: <code>PKG_GIT_SUBMODULES</code>, option: <code>pkg.git_submodules</code>.) Whether or not to update submodules in git repositories. This
-affects <code>git::</code> and <code>gitlab::</code> package sources only.
-If the R package is in a subdirectory then only the submodules
-within that directory are updated. If a submodule appears in
-<code>.Rbuildignore</code>, then it is skipped.</p></li>
-<li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
-of and installation, even if they are needed because the packages
-are installed from binaries. This is sometimes useful, see e.g.
-<a href="https://github.com/r-lib/pak/issues/485" class="external-link">https://github.com/r-lib/pak/issues/485</a> for an example use case.</p></li>
-<li><p>‘library’: (Env var: <code>PKG_LIBRARY</code>, option: <code>pkg.library</code>.) Package library to install packages to. It is also used for
-already installed packages when considering dependencies.</p></li>
-<li><p>‘metadata_cache_dir’: (Env var: <code>PKG_METADATA_CACHE_DIR</code>, option: <code>pkg.metadata_cache_dir</code>.) Location of metadata replica of
-<code><a href="https://r-lib.github.io/pkgcache/reference/cranlike_metadata_cache.html" class="external-link">pkgcache::cranlike_metadata_cache</a></code>. Defaults to a temporary
-directory within the R session temporary directory, see
-<code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">base::tempdir()</a></code>.</p></li>
-<li><p>‘metadata_update_after’: (Env var: <code>PKG_METADATA_UPDATE_AFTER</code>, option: <code>pkg.metadata_update_after</code>.) A time interval as a <a href="https://rdrr.io/r/base/difftime.html" class="external-link">difftime</a> object. pak will update the
-metadata cache if it is older than this. The default is one day.
-The <code>PKG_METADATA_UPDATE_AFTER</code> environment variable may be set
-in seconds (<code>s</code> suffix), minutes (<code>m</code> suffix), hours (<code>h</code> suffix),
-or days (<code>d</code> suffix). E.g: <code>1d</code> means one day.</p></li>
-<li><p>‘package_cache_dir’: (Env var: <code>PKG_PACKAGE_CACHE_DIR</code>, option: <code>pkg.package_cache_dir</code>.) Location of the package cache on the disk. See
-<code><a href="cache.html">pak::cache_summary()</a></code>. Default is selected by pkgcache.</p></li>
-<li><p>‘platforms’: (Env var: <code>PKG_PLATFORMS</code>, option: <code>pkg.platforms</code>.) Character vector of platforms to <em>download</em> or <em>install</em> packages
-for. See <code><a href="https://r-lib.github.io/pkgdepends/reference/default_platforms.html" class="external-link">pkgdepends::default_platforms()</a></code> for possible platform
-names. Defaults to the platform of the current R session, plus
-<code>"source"</code>.</p></li>
-<li><p>‘r_versions’: (Env var: <code>PKG_R_VERSIONS</code>, option: <code>pkg.r_versions</code>.) Character vector, R versions to download or install
-packages for. It defaults to the current R version.</p></li>
-<li><p>‘sysreqs’: (Env var: <code>PKG_SYSREQS</code>, option: <code>pkg.sysreqs</code>.) Whether to automatically look up and install system requirements.
-If <code>TRUE</code>, then pkgdepends will try to install required
-system packages. If <code>FALSE</code>, then system requirements are still
-printed (including OS packages on supported platforms), but they
-are not installed.
-By default it is <code>TRUE</code> on supported platforms,
-if the current user is the root user or password-less <code>sudo</code> is
-configured for the current user.</p></li>
-<li><p>‘sysreqs_db_update’: (Env var: <code>PKG_SYSREQS_DB_UPDATE</code>, option: <code>pkg.sysreqs_db_update</code>.) Whether to try to update the system requirements database from
-GitHub. If the update fails, then the cached or the build-in
-database if used. Defaults to TRUE.</p></li>
-<li><p>‘sysreqs_db_update_timeout’: (Env var: <code>PKG_SYSREQS_DB_UPDATE_TIMEOUT</code>, option: <code>pkg.sysreqs_db_update_timeout</code>.) Timeout for the system requirements database update.
-Defaults to five seconds.</p></li>
-<li><p>‘sysreqs_dry_run’: (Env var: <code>PKG_SYSREQS_DRY_RUN</code>, option: <code>pkg.sysreqs_dry_run</code>.) If <code>TRUE</code>, then pak only prints the system commands to
-install system requirements, but does not execute them.</p></li>
-<li><p>‘sysreqs_platform’: (Env var: <code>PKG_SYSREQS_PLATFORM</code>, option: <code>pkg.sysreqs_platform</code>.) The platform to use for system requirements lookup. On Linux, where
-system requirements are currently supported, it must be a string
-containing the distribution name and release, separated by a dash.
-E.g.: <code>"ubuntu-22.04"</code>, or <code>"rhel-9"</code>.</p></li>
-<li><p>‘sysreqs_rspm_repo_id’: (Env var: <code>PKG_SYSREQS_RSPM_REPO_ID</code>, option: <code>pkg.sysreqs_rspm_repo_id</code>.) Posit Package Manager (formerly RStudio Package Manager) repository
-id to use for CRAN system requirements lookup. Defaults to the
-<code>RSPM_REPO_ID</code> environment variable, if set. If not set, then it
-defaults to <code>1</code>.</p></li>
-<li><p>‘sysreqs_rspm_url’: (Env var: <code>PKG_SYSREQS_RSPM_URL</code>, option: <code>pkg.sysreqs_rspm_url</code>.) Root URL of Posit Package Manager (formerly RStudio Package
-Manager) for system requirements lookup. By default the <code>RSPM_ROOT</code>
-environment variable is used, if set. If not set,
-it defaults to <code>https://packagemanager.posit.co</code>.</p></li>
-<li><p>‘sysreqs_sudo’: (Env var: <code>PKG_SYSREQS_SUDO</code>, option: <code>pkg.sysreqs_sudo</code>.) Whether to use <code>sudo</code> to install system requirements,
-on Unix. By default it is <code>TRUE</code> on Linux if the effective user id
-of the current process is not the <code>root</code> user.</p></li>
-<li><p>‘sysreqs_update’: (Env var: <code>PKG_SYSREQS_UPDATE</code>, option: <code>pkg.sysreqs_update</code>.) Whether to try to update system packages that are already installed.
-It defaults to <code>TRUE</code> on CI systems: if the <code>CI</code> environment
-variable is set to <code>true</code>.</p></li>
-<li><p>‘sysreqs_verbose’: (Env var: <code>PKG_SYSREQS_VERBOSE</code>, option: <code>pkg.sysreqs_verbose</code>.) Whether to echo the output of system requirements installation.
-Defaults to <code>TRUE</code> if the <code>CI</code> environment variable is set.</p></li>
-<li><p>‘use_bioconductor’: (Env var: <code>PKG_USE_BIOCONDUCTOR</code>, option: <code>pkg.use_bioconductor</code>.) Whether to automatically use the Bioconductor repositories.
-Defaults to <code>TRUE</code>.</p></li>
-<li><p>‘windows_archs’: (Env var: <code>PKG_WINDOWS_ARCHS</code>, option: <code>pkg.windows_archs</code>.) Character scalar specifying which architectures
-to download/install for on Windows. Its possible values are:</p><ul><li><p><code>"prefer-x64"</code>: Generally prefer x64 binaries. If the current R
-session is <code>x64</code>, then we download/install x64 packages.
-(These packages might still be multi-architecture binaries!)
-If the current R session is <code>i386</code>, then we download/install
-packages for both architectures. This might mean compiling
-packages from source if the binary packages are for <code>x64</code> only,
-like the CRAN Windows binaries for R 4.2.x currently.
-<code>"prefer-x64"</code> is the default for R 4.2.0 and later.</p></li>
-<li><p><code>"both"</code>: Always download/install packages for both <code>i386</code> and
-<code>x64</code> architectures. This might need compilation from source
-if the available binaries are for <code>x64</code> only, like the CRAN
-Windows binaries for R 4.2.x currently. <code>"both"</code> is the default
-for R 4.2.0 and earlier.</p></li>
-</ul></li>
-</ul></div>
+<p>doc_config()</p>
+</div>
 
 <div class="section">
 <h3 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a></h3>
@@ -187,7 +101,7 @@ configuration change.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
   </div></footer></body></html>

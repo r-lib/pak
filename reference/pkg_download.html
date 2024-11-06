@@ -31,7 +31,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Download a package and its dependencies</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0/R/package.R" class="external-link"><code>R/package.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/cran-0-8-0/R/package.R" class="external-link"><code>R/package.R</code></a></small>
       <div class="d-none name"><code>pkg_download.Rd</code></div>
     </div>
 
@@ -96,73 +96,7 @@ the current R version.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Data frame with information about the downloaded
 packages, invisibly. Columns:
-</p><ul><li><p><code>built</code>: the <code>Built</code> field from the <code>DESCRIPTION</code> file of binary
-packages, for which this information is available.</p></li>
-<li><p><code>cache_status</code>: whether the package file is in the package cache.
-It is <code>NA</code> for <code>installed::</code> package refs.</p></li>
-<li><p><code>dep_types</code>: character vector of dependency types that were
-considered for this package. (This is a list column.)</p></li>
-<li><p><code>deps</code>: dependencies of the package, in a data frame. See
-"Package dependency tables" below.</p></li>
-<li><p><code>direct</code>: whether this package (ref, really) was directly specified,
-or added as a dependency.</p></li>
-<li><p><code>error</code>: this is a list column that contains error objects for the
-refs that pkgdepends failed to resolve.</p></li>
-<li><p><code>filesize</code>: the file size in bytes, or <code>NA</code> if this information is
-not available.</p></li>
-<li><p><code>license</code>: license of the package, or <code>NA</code> if not available.</p></li>
-<li><p><code>md5sum</code>: MD5 checksum of the package file, if available, or <code>NA</code> if
-not.</p></li>
-<li><p><code>metadata</code>: a named character vector. These fields will be (should be)
-added to the installed <code>DESCRIPTION</code> file of the package.</p></li>
-<li><p><code>mirror</code>: URL of the CRAN(-like) mirror site where the metadata was
-obtained from. It is NA for non-CRAN-like sources, e.g. local files,
-installed packages, GitHub, etc.</p></li>
-<li><p><code>needscompilation</code>: whether the package needs compilation.</p></li>
-<li><p><code>package</code>: package name.</p></li>
-<li><p><code>priority</code>: this is <code>"base"</code> for base packages, <code>"recommended"</code> for
-recommended packages, and <code>NA</code> otherwise.</p></li>
-<li><p><code>ref</code>: package reference.</p></li>
-<li><p><code>remote</code>: the parsed <code>remote_ref</code> objects, see <code>parse_pkg_refs()</code>.
-This is a list column.</p></li>
-<li><p><code>repodir</code>: the directory where this package should be in a CRAN-like
-repository.</p></li>
-<li><p><code>sha256</code>: SHA256 hash of the package file, if available, otherwise
-<code>NA</code>.</p></li>
-<li><p><code>sources</code>: URLs where this package can be downloaded from. This is not
-necessarily a URL that you can download with a HTTP client. E.g. for
-<code>local::</code> refs it is a path, and for <code>git::</code> refs it is a URL for git.
-It is a zero length vector for <code>installed::</code> refs.</p></li>
-<li><p><code>status</code>: status of the dependency resolution, <code>"OK"</code> or <code>"FAILED"</code>.</p></li>
-<li><p><code>target</code>: path where this package should be saved in a CRAN-repository.</p></li>
-<li><p><code>type</code>: ref type.</p></li>
-<li><p><code>version</code>: package version.</p></li>
-<li><p><code>fulltarget</code>: absolute path to the downloaded file. At most one of
-<code>fulltarget</code> and <code>fulltarget_tree</code> must exist on the disk.</p></li>
-<li><p><code>fulltarget_tree</code>: absolute path to a package tree directory. At most
-one of <code>fulltarget</code> and <code>fulltarget_tree</code> must exist on the disk.</p></li>
-<li><p><code>download_status</code>: <code>"Had"</code> or <code>"Got"</code>, depending on whether the file
-was obtained from the cache.</p></li>
-<li><p><code>download_error</code>: error object for failed downloads.</p></li>
-<li><p><code>file_size</code>: Size of the file, or <code>NA</code>. For <code>installed::</code> refs, it is
-<code>NA</code>, and it is also <code>NA</code> for refs that created <code>fulltarget_tree</code>
-instead of <code>fulltarget</code>.</p></li>
-</ul><code>fulltarget</code>, if it exists, contains a packaged (via <code>R CMD build</code>)
-source R package. If <code>fulltarget_tree</code> exists, it is a package tree
-directory, that still needs an <code>R CMD build</code> call.Additional columns might be present. They are either used internally or
-they are experimental. They might be removed or changed at any time.All columns are of type character, except for <code>direct</code> (logical),
-<code>needscompilation</code> (logical), <code>filesize</code> (integer), <code>deps</code> (list column, see
-"Package dependency tables" below), <code>sources</code> (list of character vectors),
-<code>remote</code> (list), <code>error</code> (list), <code>metadata</code> (list), <code>dep_types</code> (list).
-<div class="section">
-<h3 id="package-dependency-tables">Package dependency tables<a class="anchor" aria-label="anchor" href="#package-dependency-tables"></a></h3><p>A package dependency tables in the <code>deps</code> list column have five columns
-currently:</p><ul><li><p><code>ref</code>: the package ref of the dependency.</p></li>
-<li><p><code>type</code>: the dependency type, in all lowercase. I.e. <code>imports</code>,
-<code>suggests</code>, etc.</p></li>
-<li><p><code>package</code>: package name of the dependency.</p></li>
-<li><p><code>op</code>: operator for version requirements, e.g. <code>&gt;=</code>.</p></li>
-<li><p><code>version</code>: version number, for version requirements.</p></li>
-</ul></div>
+include_docs("pkgdepends", "docs/download-result.rds")</p>
     </div>
     <div class="section level2">
     <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h2>
@@ -225,7 +159,7 @@ currently:</p><ul><li><p><code>ref</code>: the package ref of the dependency.</p
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
   </div></footer></body></html>
