@@ -17,6 +17,7 @@ deploy:
 	git config --global user.email csardi.gabor@gmail.com
 	git config --global user.name "Gabor Csardi"
 	R CMD INSTALL .
+	R -q -e 'library(pak)'
 	R -q --no-save -e \
 	  'pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy")'
 	shopt -s nullglob && R -q --no-save -e \
