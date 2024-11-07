@@ -1,6 +1,6 @@
 Package: pkgcache
 Title: Cache 'CRAN'-Like Metadata and R Packages
-Version: 2.2.2.9000
+Version: 2.2.3.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd"))
@@ -25,7 +25,7 @@ Language: en-US
 Roxygen: list(markdown = TRUE, r6 = FALSE)
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2024-08-08 09:38:56 UTC; gaborcsardi
+Packaged: 2024-11-07 10:28:04 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
