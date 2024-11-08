@@ -43,9 +43,9 @@ inline_generic <- function(app, x, style) {
 }
 
 inline_collapse <- function(x, style = list()) {
-  sep <- style[["vec-sep"]] %||% style[["vec_sep"]] %||% ", "
-  sep2 <- style[["vec-sep2"]] %||% style[["vec_sep2"]] %||% " and "
   last <- style[["vec-last"]] %||% style[["vec_last"]] %||% ", and "
+  sep <- style[["vec-sep"]] %||% style[["vec_sep"]] %||% ", "
+  sep2 <- style[["vec-sep2"]] %||% style[["vec_sep2"]] %||% sub("^,", "", last)
 
   trunc <- style[["vec-trunc"]] %||% style[["vec_trunc"]] %||% 20L
   col_style <- style[["vec-trunc-style"]] %||% "both-ends"

@@ -97,7 +97,7 @@ rstudio_css <- function(theme) {
 
     ## Three digit colors are not handled by cli...
     if (grepl("^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$", col)) {
-      col <- paste(rep(strsplit(col, "")[[1]], c(1, 2, 2, 2)), collapse = "")
+      col <- paste(rep(strsplit(col, "", fixed = TRUE)[[1]], c(1, 2, 2, 2)), collapse = "")
     }
     ## rgb () form
     if (grepl("^rgb", col)) {

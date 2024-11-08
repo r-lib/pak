@@ -12,7 +12,7 @@ is_border_style <- function(x) {
 }
 
 is_padding_or_margin <- function(x) {
-  is.numeric(x) && length(x) %in% c(1, 4) && all(!is.na(x)) &&
+  is.numeric(x) && length(x) %in% c(1, 4) && !anyNA(x) &&
     all(as.integer(x) == x)
 }
 
