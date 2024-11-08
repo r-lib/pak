@@ -14,7 +14,8 @@ parse_remote_deps <- function(specs, config, ...) {
 resolve_remote_deps <- function(remote, direct, config, cache,
                                      dependencies, ...) {
 
-  if (file.exists(file.path(remote$path, "DESCRIPTION"))) {
+  in_pkg <- tryCatch(find_package_root(remote$path), error = function(x) NULL)
+  if (!is.null(in_pkg)) {
     ret <- resolve_remote_local(remote, direct, config, cache,
                                 dependencies, ...)
   } else {
@@ -67,6 +68,12 @@ resolve_remote_local_autodeps <- function(remote, direct, config, cache,
   dsc <- desc::desc("!new")
   hard <- deps$package[deps$type == "prod"]
   soft <- deps$package[deps$type != "prod"]
+  dsc$set(
+    Package = "localprojectautoscan",
+    Version = "1.0.0",
+    Title = "Local Project",
+    License = "Unknown"
+  )
   for (p in hard) dsc$set_dep(p, type = "Depends")
   for (s in soft) dsc$set_dep(p, type = "Suggests")
   dsc$write(tmpdesc)
