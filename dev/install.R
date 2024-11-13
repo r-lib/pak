@@ -10,10 +10,20 @@
   }
 
   stream <- "stable"
-  if (!is.null(source_arg) && grepl("\\?stream=[a-z]+$", source_arg)) {
-    stream <- sub("^.*\\?stream=", "", source_arg)
+  if (!is.null(source_arg)) {
+    if (grepl("\\?stream=[a-z]+$", source_arg)) {
+      stream <- sub("^.*\\?stream=", "", source_arg)
+    } else if (grepl("\\?dev$", source_arg) || grepl("\\?devel$", source_arg)) {
+      stream <- "devel"
+    } else if (grepl("\\?rc$", source_arg)) {
+      stream <- "rc"
+    }
   }
 
+  if (stream == "dev") {
+    stream <- "devel"
+  }
+  
   message("Installing pak from stream ", stream, ".")
 
   install.packages("pak", repos = sprintf(
