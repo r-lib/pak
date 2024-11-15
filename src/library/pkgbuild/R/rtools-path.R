@@ -14,6 +14,10 @@ scan_path_for_rtools <- function(debug = FALSE) {
 
   # We have a candidate install_path
   install_path <- dirname(dirname(ls_path))
+  # ls is one more directory down on recent rtools
+  if (basename(install_path) == "usr") {
+    install_path <- dirname(install_path)
+  }
 
   gcc_path <- Sys.which("gcc")
   if (debug) {
