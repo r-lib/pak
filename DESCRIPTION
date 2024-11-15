@@ -65,7 +65,7 @@ Config/needs/dependencies:
     curl,
     filelock,
     jsonlite,
-    gaborcsardi/lpSolve,
+    lpSolve,
     pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends,
