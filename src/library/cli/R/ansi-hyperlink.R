@@ -124,7 +124,7 @@ abs_path1 <- function(x) {
 # -- {.fun} ---------------------------------------------------------------
 
 make_link_fun <- function(txt) {
-  tolink <- grepl("::", txt)
+  tolink <- grepl("::", txt, fixed = TRUE)
   linked <- grepl("\007|\033\\\\", txt)
   todo <- tolink & !linked
   if (!any(todo)) return(txt)
@@ -409,7 +409,7 @@ ansi_hyperlink_types <- function() {
       vignette = FALSE
     )
 
-  } else if (rs$hyperlink) {
+  } else if (isTRUE(rs$hyperlink)) {
     list(
       href = TRUE,
       run = structure(run, type = "rstudio"),

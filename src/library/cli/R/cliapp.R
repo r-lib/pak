@@ -257,8 +257,8 @@ clii_alert <- function(app, type, text, id, class, wrap) {
     style <- app$get_current_style()
     before <- call_if_fun(style$before) %||% ""
     after <- call_if_fun(style$after) %||% ""
-    before <- gsub(" ", "\u00a0", before)
-    after <- gsub(" ", "\u00a0", after)
+    before <- gsub(" ", "\u00a0", before, fixed = TRUE)
+    after <- gsub(" ", "\u00a0", after, fixed = TRUE)
     text[1] <- paste0(before, text[1])
     text[length(text)] <- paste0(text[length(text)], after)
     if (is.function(style$fmt)) text <- style$fmt(text)
@@ -277,7 +277,7 @@ clii_bullets <- function(app, text, id, class) {
   length(nms) <- length(text)
   nms[is.na(nms) | nms == ""] <- "empty"
   nms[nms == " "] <- "space"
-  nms <- gsub(" ", "-", nms)
+  nms <- gsub(" ", "-", nms, fixed = TRUE)
   # cls is vectorized here (!)
   cls <- paste0("bullet memo-item bullet-", nms, " memo-item=", nms)
 

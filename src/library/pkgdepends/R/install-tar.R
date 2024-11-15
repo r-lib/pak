@@ -205,6 +205,8 @@ eup_get_args <- function(options) {
   c(
     "-x", "-f", path_norm(options$tarfile),
     "-C", path_norm(options$exdir),
+    # do not restore ownership, this is problematic on some mounts, e.f. sshfs
+    "-o",
     get_untar_decompress_arg(options$tarfile),
     if (! options$restore_times) "-m",
     options$files

@@ -157,6 +157,30 @@ read_packages_file <- function(path, mirror, repodir, platform,
     pkgs$needscompilation[hasbin] <- NA
   }
 
+  # Assume that R-universe Linux binaries are for the current platform.
+  # They seem to have a Built field, so use that for the R version.
+  if (grepl("r-universe.dev/bin/linux", mirror, fixed = TRUE)) {
+    built <- strsplit(pkgs$built, ";")
+    # add $rversion from Built, if not there already
+    miss_r <- pkgs$rversion == "*"
+    built_r <- substr(trimws(vcapply(built[miss_r], "[[", 1)), 3, 1000)
+    pkgs$rversion[miss_r] <- sub(
+      "^([0-9]+[.][0-9]+)[.][0-9]+$",
+      "\\1",
+      built_r,
+      perl = TRUE
+    )
+
+    # add $platform from build, assume current platform if missing
+    miss_plat <- pkgs$platform == "source"
+    built_plat <- trimws(vcapply(built[miss_plat], "[[", 2))
+    current_plat <- current_r_platform()
+    built_plat[built_plat == ""] <- current_plat
+    pkgs$platform[miss_plat][
+      built_plat == current_plat | startsWith(current_plat, built_plat)
+    ] <- current_plat
+  }
+
   # If we only want one Windows platform, then filter here
   if (platform %in% c("i386-w64-mingw32", "x86_64-w64-mingw32")) {
     drop <- pkgs$platform != platform &
@@ -169,6 +193,7 @@ read_packages_file <- function(path, mirror, repodir, platform,
   deps <- packages_parse_deps(pkgs)
   pkgs_deps <- split(
     deps[,-(1:2)], factor(deps$idx, levels = seq_len(nrow(pkgs))))
+  pkgs_deps <- lapply(pkgs_deps, function(x) { rownames(x) <- NULL; x})
   pkgs$deps <- unname(pkgs_deps)
   list(pkgs = pkgs, deps = deps)
 }
@@ -233,6 +258,7 @@ packages_parse_deps <- function(pkgs) {
     )
   }
 
+  parsed <- parsed[order(parsed$idx, parsed$package, parsed$type), ]
   parsed
 }
 

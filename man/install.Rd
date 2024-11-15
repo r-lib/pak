@@ -29,6 +29,10 @@ This is supported for the following systems:\tabular{lll}{
    macOS High Sierra+ \tab x86_64 \tab R 3.4.0 - R-devel \cr
    macOS Big Sur+ \tab aarch64 \tab R 4.1.0 - R-devel \cr
    Windows \tab x86_64 \tab R 3.4.0 - R-devel \cr
+   FreeBSD 13.x or later \tab x86_64 \tab R 4.4.x \cr
+   OpenBSD 7.4, 7.5, 7.6 \tab x86_64 \tab R 4.2.x (7.4, 7.5), R 4.4.x (7.6) \cr
+   NetBSD 10.0 \tab x86_64 \tab R 4.4.x \cr
+   DragonFly BSD 6.4 \tab x86_64 \tab R 4.3.x \cr
 }
 
 \subsection{Notes}{

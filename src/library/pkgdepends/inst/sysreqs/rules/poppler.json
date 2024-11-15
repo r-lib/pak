@@ -1,5 +1,5 @@
 {
-  "patterns": ["\\bpoppler\\b"],
+  "patterns": ["\\bPoppler C\\+\\+"],
   "dependencies": [
     {
       "packages": ["libpoppler-cpp-dev"],
@@ -63,7 +63,9 @@
     {
       "packages": ["poppler-cpp-devel"],
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" }
+        {
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
+        }
       ],
       "constraints": [
         {
@@ -76,7 +78,9 @@
     {
       "packages": ["poppler-cpp-devel"],
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
+        {
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms"
+        }
       ],
       "constraints": [
         {

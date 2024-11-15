@@ -32,7 +32,7 @@ up <- function(urls, timeout = 5) {
         }
       })$
       catch(error = function(err) {
-        e <- if (grepl("timed out", err$message)) "timed out" else "error"
+        e <- if (grepl("timed out", err$message, fixed = TRUE)) "timed out" else "error"
         cli_alert_danger("{.url {url}} ({e})")
       })
   })

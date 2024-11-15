@@ -73,7 +73,7 @@ spark_bar_chars <- function(x, bars = NULL) {
 
   factor <- cut(
     x,
-    breaks = seq(0, 1, length = length(bars) + 1),
+    breaks = seq(0, 1, length.out = length(bars) + 1),
     labels = bars,
     include.lowest = TRUE
   )
@@ -108,7 +108,7 @@ spark_line <- function(x) {
   }
 
   if (is_utf8_output()) {
-    y <- findInterval(x, seq(0, 1, length = 5), all.inside = TRUE)
+    y <- findInterval(x, seq(0, 1, length.out = 5), all.inside = TRUE)
     ind <- matrix(y, ncol = 2, byrow = TRUE)
     ind[, 2] <- ind[, 2] + 4
     chars <- apply(ind, 1, braille)

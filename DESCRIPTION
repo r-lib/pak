@@ -61,7 +61,7 @@ Config/build/extra-sources: configure*
 Config/needs/dependencies:
     callr,
     desc,
-    cli,
+    r-lib/cli,
     curl,
     filelock,
     jsonlite,
