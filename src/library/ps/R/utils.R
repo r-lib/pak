@@ -114,7 +114,11 @@ assert_string <- function(x) {
 }
 
 assert_integer <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
+  x <- tryCatch(
+    suppressWarnings(as.integer(x)),
+    error = function(e) x
+  )
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
   stop(ps__invalid_argument(match.call()$x,
                             " is not a scalar integer"))
 }
@@ -126,9 +130,25 @@ assert_character <- function(x) {
 }
 
 assert_pid <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
+  if (is.numeric(x) && length(x) == 1 && !is.na(x) &&
+      as.integer(x) == x) {
+    return(as.integer(x))
+  }
   stop(ps__invalid_argument(match.call()$x,
                             " is not a process id (integer scalar)"))
+}
+
+assert_grace <- function(x) {
+  if (is.integer(x) && length(x) == 1 && !is.na(x) && x >= 0) return(x)
+  if (is.numeric(x) && length(x) == 1 && !is.na(x) && x >= 0) {
+    xi <- as.integer(x)
+    # if x is non-zero, then return non-zero
+    if (xi == 0 && x > 0) return(1)
+    return(as.integer(x))
+  }
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not a non-negative integer"))
 }
 
 assert_time <- function(x) {
@@ -141,6 +161,24 @@ assert_ps_handle <- function(x) {
   if (inherits(x, "ps_handle")) return()
   stop(ps__invalid_argument(match.call()$x,
                             " must be a process handle (ps_handle)"))
+}
+
+assert_ps_handle_list <- function(x) {
+  if (all(map_lgl(x, inherits, "ps_handle"))) return()
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " must be a process handle (ps_handle) or a list of process handles"
+  ))
+}
+
+assert_ps_handle_or_handle_list <- function(p) {
+  if (!is.list(p)) {
+    assert_ps_handle(p)
+    p <- list(p)
+  } else {
+    assert_ps_handle_list(p)
+  }
+  p
 }
 
 assert_flag <- function(x) {

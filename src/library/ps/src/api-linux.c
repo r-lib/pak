@@ -1,7 +1,8 @@
-
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
+
+#include "ps-internal.h"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -16,10 +17,22 @@
 #include <mntent.h>
 #include <sys/sysinfo.h>
 #include <sched.h>
+#include <sys/vfs.h>
+#include <libgen.h>
+#include <sys/syscall.h>
+#include <sys/epoll.h>
+#include <time.h>
+#include <sys/inotify.h>
+#include <poll.h>
 
 #include <Rinternals.h>
 
 #include "common.h"
+#include "cleancall.h"
+
+#ifndef SYS_pidfd_open
+#define SYS_pidfd_open              434
+#endif
 
 double psll_linux_boot_time = 0;
 double psll_linux_clock_period = 0;
@@ -317,7 +330,10 @@ SEXP psll_handle(SEXP pid, SEXP time) {
   if (!isNull(time))  {
     ctime = REAL(time)[0];
   } else {
-    if (psll_linux_ctime(cpid, &ctime)) ps__throw_error();
+    if (psll_linux_ctime(cpid, &ctime)) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
   }
 
   handle = malloc(sizeof(ps_handle_t));
@@ -653,11 +669,21 @@ SEXP psll_terminal(SEXP p) {
   }
   PS__CHECK_STAT(stat, handle);
 
-  if (stat.tty_nr == 0) {
-    return ScalarInteger(NA_INTEGER);
-  } else {
+  if (stat.tty_nr != 0) {
     return ScalarInteger(stat.tty_nr);
   }
+
+  if (handle->pid != getpid()) {
+    return ScalarInteger(NA_INTEGER);
+  }
+
+  // It is us, try ttyname. This is a workaround for qemu, where
+  // /proc/self/stat is messed up
+  char const *tty = ttyname (STDIN_FILENO);
+  if (! tty) {
+    return ScalarInteger(NA_INTEGER);
+  }
+  return mkString(tty);
 }
 
 SEXP psll_environ(SEXP p) {
@@ -846,43 +872,6 @@ static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
   }
 
   return ps__memmem(buf, ret, marker, strlen(marker)) != NULL;
-}
-
-SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
-
-  pid_t pid = INTEGER(r_pid)[0];
-  int sig = INTEGER(r_sig)[0];
-  int ret;
-  int match;
-
-  match = psl__linux_match_environ(r_marker, r_pid);
-
-  if (match == -1) ps__throw_error();
-
-  if (match) {
-    psl_stat_t stat;
-    char *name;
-    int stret = psll__parse_stat_file(pid, &stat, &name);
-    ret = kill(pid, sig);
-    if (ret == -1) {
-      if (errno == ESRCH) {
-	ps__no_such_process(pid, 0);
-      } else if (errno == EPERM  || errno == EACCES) {
-	ps__access_denied("");
-      } else {
-	ps__set_error_from_errno();
-      }
-      ps__throw_error();
-    }
-
-    if (stret != -1) {
-      return ps__str_to_utf8(name);
-    } else {
-      return mkString("???");
-    }
-  }
-
-  return R_NilValue;
 }
 
 SEXP ps__find_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid) {
@@ -1211,6 +1200,370 @@ error:
   return R_NilValue;
 }
 
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+struct psll__wait_inotify_cleanup_data {
+  int inotfd;
+};
+
+void psll__wait_inotify_cleanup(void *data) {
+  struct psll__wait_inotify_cleanup_data *cdata =
+    (struct psll__wait_inotify_cleanup_data*) data;
+  if (cdata->inotfd != -1) {
+    close(cdata->inotfd);
+  }
+}
+
+SEXP psll_wait_inotify(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_inotify_cleanup_data cdata = { -1 };
+  r_call_on_early_exit(psll__wait_inotify_cleanup, &cdata);
+
+  cdata.inotfd = inotify_init1(IN_NONBLOCK);
+  if (cdata.inotfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  memset(LOGICAL(res), 0, sizeof(int) * num_handles);
+  SEXP rwatches = PROTECT(Rf_allocVector(INTSXP, num_handles));
+  int *watches = INTEGER(rwatches);
+
+  char path[128];
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+    } else {
+      snprintf(path, sizeof(path)-1, "/proc/%d/exe", handle->pid);
+      watches[i] = inotify_add_watch(cdata.inotfd, path, IN_CLOSE_NOWRITE);
+      if (watches[i] == -1) {
+        if (errno == ENOENT) {
+          // just finished
+          LOGICAL(res)[i] = 0;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_inotify_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  struct pollfd pfd = { cdata.inotfd, POLLIN, 0 };
+  int ret;
+
+  do {
+    do {
+      ret = poll(&pfd, 1, ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    if (ret > 0) {
+      struct inotify_event event;
+      ret = read(cdata.inotfd, &event, sizeof(event));
+      if (ret == -1) {
+        ps__set_error_from_errno();
+        ps__throw_error();
+      }
+      // this should not happen
+      if (event.len > 0) {
+        Rf_error("Invalid inotify event in ps_wait.");
+      }
+
+      // now we need to see if the event means that any processes have quit
+      for (i = 0; i < num_handles; i++) {
+        // we know that it finished
+        if (LOGICAL(res)[i]) continue;
+        if (watches[i] == event.wd) {
+          if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+            LOGICAL(res)[i] = 1;
+            topoll--;
+          } else {
+            // Still running, but we got an event. Maybe it called execve()
+            // We need to start watching the new exe, if any. We might be
+            // still watching the old exe, as this might be needed for
+            // other processes.
+            ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+            snprintf(path, sizeof(path)-1, "/proc/%d/exe", handle->pid);
+            watches[i] = inotify_add_watch(cdata.inotfd, path, IN_CLOSE_NOWRITE);
+            if (watches[i] == -1) {
+              if (errno == ENOENT) {
+                // just finished
+                LOGICAL(res)[i] = 1;
+                topoll--;
+              } else {
+                ps__set_error_from_errno();
+                ps__throw_error();
+              }
+            }
+          }
+        }
+      }
+
+      // are we done?
+      if (topoll == 0) {
+        break;
+      }
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  psll__wait_inotify_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  int epfd;
+  R_xlen_t num_handles;
+  int *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+  R_xlen_t i;
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != -1) {
+        close(cdata->pfds[i]);
+      }
+    }
+  }
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  // for testing
+  if (getenv("PS_WAIT_FORCE_INOTIFY")) {
+    return psll_wait_inotify(pps, timeout);
+  }
+
+  // Check if the kernel has pidfd_open() support
+  if (ps_pidfd_open_support == PS_MAYBE) {
+    int testfd = syscall(SYS_pidfd_open, getpid(), /* flags= */ 0);
+    if (testfd == -1) {
+      if (errno == ENOSYS || errno == ENODEV) {
+        ps_pidfd_open_support = PS_NOPE;
+      } else {
+        // this is a real error, e.g. EMFILE or ENFILE, but nevertheless
+        // we have pidfd_open support, so we march on, and error later, if
+        ps_pidfd_open_support = PS_YEAH;
+      }
+    } else {
+      ps_pidfd_open_support = PS_YEAH;
+      close(testfd);
+    }
+  }
+  if (ps_pidfd_open_support == PS_NOPE) {
+    return psll_wait_inotify(pps, timeout);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_cleanup_data cdata = {
+    /* epfd=        */ -1,
+    /* num_handles= */ num_handles,
+    /* pfds= */        NULL
+  };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+  cdata.epfd = epoll_create(num_handles);
+  if (cdata.epfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  SEXP pfds = PROTECT(Rf_allocVector(INTSXP, num_handles));
+  cdata.pfds = INTEGER(pfds);
+
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+      cdata.pfds[i] = -1;
+    } else {
+      cdata.pfds[i] = syscall(SYS_pidfd_open, handle->pid, /* flags= */ 0);
+      if (cdata.pfds[i] == -1) {
+        if (errno == ESRCH) {
+          LOGICAL(res)[i] = 1;
+          cdata.pfds[i] = -1;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+        LOGICAL(res)[i] = 0;
+        struct epoll_event ev;
+        ev.events = EPOLLIN;
+        ev.data.u64 = i;
+        epoll_ctl(cdata.epfd, EPOLL_CTL_ADD, cdata.pfds[i], &ev);
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  int ret;
+  SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct epoll_event) * topoll));
+  struct epoll_event *events = (struct epoll_event*) RAW(revents);
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  do {
+    do {
+      ret = epoll_wait(cdata.epfd, events, topoll, ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    for (i = 0; i < ret; i++) {
+      uint64_t id = events[i].data.u64;
+      LOGICAL(res)[id] = 1;
+      close(cdata.pfds[id]);
+      cdata.pfds[id] = -1;
+      topoll--;
+    }
+
+    // are we done?
+    if (topoll == 0) {
+      break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(3);
+  return res;
+}
+
 SEXP ps__users(void) {
   struct utmp *ut;
   SEXP result;
@@ -1282,6 +1635,151 @@ error:
   /* These are never called, but R CMD check and rchk cannot handle this */
   error("nah");
   return R_NilValue;
+}
+
+// These are from include/linux/statfs.h in Linux
+
+#define ST_RDONLY	0x0001	/* mount read-only */
+#define ST_NOSUID	0x0002	/* ignore suid and sgid bits */
+#define ST_NODEV	0x0004	/* disallow access to device special files */
+#define ST_NOEXEC	0x0008	/* disallow program execution */
+#define ST_SYNCHRONOUS	0x0010	/* writes are synced at once */
+#define ST_VALID	0x0020	/* f_flags support is implemented */
+#define ST_MANDLOCK	0x0040	/* allow mandatory locks on an FS */
+/* 0x0080 used for ST_WRITE in glibc */
+/* 0x0100 used for ST_APPEND in glibc */
+/* 0x0200 used for ST_IMMUTABLE in glibc */
+#define ST_NOATIME	0x0400	/* do not update access times */
+#define ST_NODIRATIME	0x0800	/* do not update directory access times */
+#define ST_RELATIME	0x1000	/* update atime relative to mtime/ctime */
+#define ST_NOSYMFOLLOW	0x2000	/* do not follow symlinks */
+
+SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
+  struct statfs sfs;
+  R_xlen_t i, j, len = Rf_xlength(path);
+  int ret;
+
+  // Need to query all partitions to get the device name and fs type.
+  SEXP partitions = PROTECT(ps__disk_partitions(Rf_ScalarLogical(1)));
+  R_xlen_t num_parts = Rf_xlength(partitions);
+
+  const char *nms[] = {
+    "path",
+    "mountpoint",
+    "name",
+    "type",
+    "block_size",
+    "transfer_block_size",
+    "total_data_blocks",
+    "free_blocks",
+    "free_blocks_non_superuser",
+    "total_nodes",
+    "free_nodes",
+    "id",
+    "owner",
+    "type_code",
+    "subtype_code",
+
+    "MANDLOCK",
+    "NOATIME",
+    "NODEV",
+    "NODIRATIME",
+    "NOEXEC",
+    "NOSUID",
+    "RDONLY",
+    "RELATIME",
+    "SYNCHRONOUS",
+    "NOSYMFOLLOW",
+    ""
+  };
+
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
+    if (ret != 0) {
+      ps__set_error(
+        "statfs %s: %d %s",
+        CHAR(STRING_ELT(abspath, i)), errno, strerror(errno)
+      );
+      ps__throw_error();
+    }
+
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i, NA_STRING);
+    SET_STRING_ELT(VECTOR_ELT(res, 2), i, NA_STRING);
+    SET_STRING_ELT(VECTOR_ELT(res, 3), i, NA_STRING);
+
+    // match the mount point to the partitions
+    const char *mpi = CHAR(STRING_ELT(mps, i));
+    for (j = 0; j < num_parts; j++) {
+      const char *mpp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+      if (0 == strcmp(mpi, mpp)) {
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 1), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 2), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 3), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
+        break;
+      }
+    }
+
+    REAL(VECTOR_ELT(res, 4))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 5))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 6))[i] = sfs.f_blocks;
+    REAL(VECTOR_ELT(res, 7))[i] = sfs.f_bfree;
+    REAL(VECTOR_ELT(res, 8))[i] = sfs.f_bavail;
+    REAL(VECTOR_ELT(res, 9))[i] = sfs.f_files;
+    REAL(VECTOR_ELT(res, 10))[i] = sfs.f_ffree;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, Rf_allocVector(RAWSXP, sizeof(fsid_t)));
+    memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
+    REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
+    REAL(VECTOR_ELT(res, 14))[i] = NA_REAL;
+
+    LOGICAL(VECTOR_ELT(res, 15))[i] = sfs.f_flags & ST_MANDLOCK;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & ST_NOATIME;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & ST_NODEV;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & ST_NODIRATIME;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & ST_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & ST_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & ST_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & ST_RELATIME;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & ST_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & ST_NOSYMFOLLOW;
+  }
+
+  UNPROTECT(2);
+  return res;
 }
 
 SEXP ps__loadavg(SEXP counter_name) {

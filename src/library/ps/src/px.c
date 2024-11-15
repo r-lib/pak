@@ -34,6 +34,10 @@ void usage(void) {
 	  "echo from fd to another fd\n");
   fprintf(stderr, "  getenv <var>               -- "
 	  "environment variable to stdout\n");
+  fprintf(stderr, "  sigterm ignore             -- "
+	  "ignore SIGTERM\n");
+  fprintf(stderr, "  sigterm sleep <seconds>    -- "
+	  "sleep a number of seconds on SIGTERM, then quit\n");
 }
 
 void cat2(int f, const char *s) {
@@ -90,6 +94,35 @@ int echo_from_fd(int fd1, int fd2, int nbytes) {
   fflush(stderr);
   return 0;
 }
+
+#ifdef _WIN32
+void sigterm_ignore(void) { }
+void sigterm_sleep(double fnum) { }
+#else
+#include <signal.h>
+
+double sig_sleep_secs;
+
+void sigterm_ignore(void) {
+  signal(SIGTERM, SIG_IGN);
+}
+
+void sig_handler_sleep(int sig, siginfo_t *info, void *ucontext) {
+  double fnum = sig_sleep_secs;
+  int num = (int) fnum;
+  sleep(num);
+  fnum = fnum - num;
+  if (fnum > 0) usleep((useconds_t)(fnum * 1000.0 * 1000.0));
+}
+
+void sigterm_sleep(double fnum) {
+  sig_sleep_secs = fnum;
+  struct sigaction sig = {{ 0 }};
+  sig.sa_flags = SA_SIGINFO;
+  sig.sa_sigaction = &sig_handler_sleep;
+  sigaction(SIGTERM, &sig, NULL);
+}
+#endif
 
 int main(int argc, const char **argv) {
 
@@ -173,6 +206,30 @@ int main(int argc, const char **argv) {
       printf("%s\n", getenv(argv[++idx]));
       fflush(stdout);
 
+    } else if (!strcmp("sigterm", cmd)) {
+      if (idx + 1 >= argc) {
+        fprintf(stderr, "Missing argument(s) for 'sigterm'\n");
+        return 10;
+      }
+      idx++;
+      if (!strcmp("ignore", argv[idx])) {
+        sigterm_ignore();
+      } else if (!strcmp("sleep", argv[idx])) {
+        if (idx + 2 >= argc) {
+          fprintf(stderr, "Missing argument for 'sigterm sleep'\n");
+          return 11;
+        }
+        idx++;
+        ret = sscanf(argv[idx], "%lf", &fnum);
+        if (ret != 1) {
+          fprintf(stderr, "Invalid seconds for px sigterm sleep: '%s'\n", argv[idx]);
+          return 12;
+        }
+        sigterm_sleep(fnum);
+      } else {
+        fprintf(stderr, "Invalid 'sigterm' subcommand");
+        return 13;
+      }
     } else {
       fprintf(stderr, "Unknown px command: '%s'\n", cmd);
       return 2;

@@ -3,11 +3,13 @@
 #include "windows.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
+#include "cleancall.h"
 
 #include <tlhelp32.h>
 #include <string.h>
 #include <math.h>
 #include <wtsapi32.h>
+#include <time.h>
 
 static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -519,7 +521,7 @@ SEXP psll_terminate(SEXP p) {
   return R_NilValue;
 }
 
-SEXP psll_kill(SEXP p) {
+SEXP psll_kill(SEXP p, SEXP grace) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   SEXP running, ret;
 
@@ -713,62 +715,6 @@ SEXP ps__cpu_count_physical() {
   } else {
     return ScalarInteger(NA_INTEGER);
   }
-}
-
-SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
-  const char *cmarker = CHAR(STRING_ELT(marker, 0));
-  double cafter = REAL(after)[0];
-  DWORD cpid = INTEGER(pid)[0];
-  SEXP env;
-  size_t i, len;
-  double ctime = 0, ctime2 = 0;
-
-  /* Filter on start time */
-  FILETIME ftCreate;
-  int ret = ps__create_time_raw(cpid, &ftCreate);
-  if (ret) ps__throw_error();
-  ctime = ps__filetime_to_unix(ftCreate);
-  if (ctime < cafter - 1) return R_NilValue;
-
-  PROTECT(env = ps__get_environ(cpid));
-  if (isNull(env)) ps__throw_error();
-
-  len = LENGTH(env);
-
-  for (i = 0; i < len; i++) {
-    if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
-      HANDLE hProcess = ps__handle_from_pid(cpid);
-      FILETIME ftCreate;
-      SEXP name, ret2;
-      int ret = ps__create_time_raw(cpid, &ftCreate);
-      if (ret) {
-	CloseHandle(hProcess);
-	ps__throw_error();
-      }
-
-      ctime2 = ps__filetime_to_unix(ftCreate);
-      if (fabs(ctime - ctime2) < 0.01)  {
-	PROTECT(name = ps__name(cpid));
-	ret2 = ps__proc_kill(cpid);
-	CloseHandle(hProcess);
-	if (isNull(ret2)) ps__throw_error();
-	if (isNull(name)) {
-	  UNPROTECT(2);
-	  return mkString("???");
-	} else {
-	  UNPROTECT(2);
-	  return name;
-	}
-      } else  {
-	CloseHandle(hProcess);
-	UNPROTECT(1);
-	return R_NilValue;
-      }
-    }
-  }
-
-  UNPROTECT(1);
-  return R_NilValue;
 }
 
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
@@ -1408,6 +1354,225 @@ error:
   return R_NilValue;
 }
 
+#ifndef FILE_RETURNS_CLEANUP_RESULT_INFO
+#define FILE_RETURNS_CLEANUP_RESULT_INFO 0x00000200
+#endif
+#ifndef FILE_SUPPORTS_POSIX_UNLINK_RENAME
+#define FILE_SUPPORTS_POSIX_UNLINK_RENAME 0x00000400
+#endif
+#ifndef FILE_SUPPORTS_BLOCK_REFCOUNTING
+#define FILE_SUPPORTS_BLOCK_REFCOUNTING 0x08000000
+#endif
+#ifndef FILE_SUPPORTS_SPARSE_VDL
+#define FILE_SUPPORTS_SPARSE_VDL 0x10000000
+#endif
+#ifndef FILE_DAX_VOLUME
+#define FILE_DAX_VOLUME 0x20000000
+#endif
+#ifndef FILE_SUPPORTS_GHOSTING
+#define FILE_SUPPORTS_GHOSTING 0x40000000
+#endif
+
+SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
+  R_xlen_t i, len = Rf_xlength(path);
+
+  const char *nms[] = {
+    "path",                           // 0
+    "mountpoint",                    // 1
+    "name",                           // 2
+    "type",                           // 3
+    "block_size",                     // 4
+    "transfer_block_size",            // 5
+    "total_data_blocks",              // 6
+    "free_blocks",                    // 7
+    "free_blocks_non_superuser",      // 8
+    "total_nodes",                    // 9
+    "free_nodes",                     // 10
+    "id",                             // 11
+    "owner",                          // 12
+    "type_code",                      // 13
+    "subtype_code",                   // 14
+
+    "CASE_SENSITIVE_SEARCH",
+    "CASE_PRESERVED_NAMES",
+    "UNICODE_ON_DISK",
+    "PERSISTENT_ACLS",
+    "FILE_COMPRESSION",
+    "VOLUME_QUOTAS",
+    "SUPPORTS_SPARSE_FILES",
+    "SUPPORTS_REPARSE_POINTS",
+    "SUPPORTS_REMOTE_STORAGE",
+    "RETURNS_CLEANUP_RESULT_INFO",
+    "SUPPORTS_POSIX_UNLINK_RENAME",
+    "VOLUME_IS_COMPRESSED",
+    "SUPPORTS_OBJECT_IDS",
+    "SUPPORTS_ENCRYPTION",
+    "NAMED_STREAMS",
+    "READ_ONLY_VOLUME",
+    "SEQUENTIAL_WRITE_ONCE",
+    "SUPPORTS_TRANSACTIONS",
+    "SUPPORTS_HARD_LINKS",
+    "SUPPORTS_EXTENDED_ATTRIBUTES",
+    "SUPPORTS_OPEN_BY_FILE_ID",
+    "SUPPORTS_USN_JOURNAL",
+    "SUPPORTS_INTEGRITY_STREAMS",
+    "SUPPORTS_BLOCK_REFCOUNTING",
+    "SUPPORTS_SPARSE_VDL",
+    "DAX_VOLUME",
+    "SUPPORTS_GHOSTING",
+    ""
+  };
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 26, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 27, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 28, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 29, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 30, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 34, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 35, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 36, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 37, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 38, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 39, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 40, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 41, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    const char *cpath = CHAR(STRING_ELT(abspath, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(cpath, &wpath);
+    if (iret) {
+      ps__throw_error();
+    }
+
+    // we already have the mount point, convert to UTF-16
+    wchar_t *wmp;
+    iret = ps__utf8_to_utf16(CHAR(STRING_ELT(mps, i)), &wmp);
+    if (iret) {
+      ps__throw_error();
+    }
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i, STRING_ELT(mps, i));
+
+    // name of the volume
+    wchar_t volname[1024];
+    BOOL ok = GetVolumeNameForVolumeMountPointW(
+      wmp,
+      volname,
+      sizeof(volname)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 2), i,
+      ps__utf16_to_charsxp(volname, -1)
+    );
+
+    DWORD sn, mcl, flags;
+    wchar_t type[MAX_PATH + 1];
+    ok = GetVolumeInformationW(
+      wmp, NULL, 0, &sn, &mcl, &flags, type,
+      sizeof(type)/sizeof(wchar_t) - 1);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    // type
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 3), i,
+      ps__utf16_to_charsxp(type, -1)
+    );
+
+    DWORD spc, bps, freec, totalc;
+    ok = GetDiskFreeSpaceW(wmp, &spc, &bps, &freec, &totalc);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 4))[i] = bps;
+    REAL(VECTOR_ELT(res, 5))[i] = bps * spc;
+
+    ULARGE_INTEGER freeuser, total, freeroot;
+    ok = GetDiskFreeSpaceExW(wmp, &freeuser, &total, &freeroot);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 6))[i] = total.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 7))[i] = freeroot.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 8))[i] = freeuser.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 9))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 10))[i] = NA_REAL;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, R_NilValue);
+    REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 13))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 14))[i] = NA_REAL;
+
+    LOGICAL(VECTOR_ELT(res, 15))[i] = flags & FILE_CASE_SENSITIVE_SEARCH;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = flags & FILE_CASE_PRESERVED_NAMES;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = flags & FILE_UNICODE_ON_DISK;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = flags & FILE_PERSISTENT_ACLS;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = flags & FILE_FILE_COMPRESSION;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = flags & FILE_VOLUME_QUOTAS;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = flags & FILE_SUPPORTS_SPARSE_FILES;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = flags & FILE_SUPPORTS_REPARSE_POINTS;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = flags & FILE_SUPPORTS_REMOTE_STORAGE;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = flags & FILE_RETURNS_CLEANUP_RESULT_INFO;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = flags & FILE_SUPPORTS_POSIX_UNLINK_RENAME;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = flags & FILE_VOLUME_IS_COMPRESSED;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = flags & FILE_SUPPORTS_OBJECT_IDS;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = flags & FILE_SUPPORTS_ENCRYPTION;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = flags & FILE_NAMED_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = flags & FILE_READ_ONLY_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = flags & FILE_SEQUENTIAL_WRITE_ONCE;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = flags & FILE_SUPPORTS_TRANSACTIONS;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = flags & FILE_SUPPORTS_HARD_LINKS;
+    LOGICAL(VECTOR_ELT(res, 34))[i] = flags & FILE_SUPPORTS_EXTENDED_ATTRIBUTES;
+    LOGICAL(VECTOR_ELT(res, 35))[i] = flags & FILE_SUPPORTS_OPEN_BY_FILE_ID;
+    LOGICAL(VECTOR_ELT(res, 36))[i] = flags & FILE_SUPPORTS_USN_JOURNAL;
+    LOGICAL(VECTOR_ELT(res, 37))[i] = flags & FILE_SUPPORTS_INTEGRITY_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 38))[i] = flags & FILE_SUPPORTS_BLOCK_REFCOUNTING;
+    LOGICAL(VECTOR_ELT(res, 39))[i] = flags & FILE_SUPPORTS_SPARSE_VDL;
+    LOGICAL(VECTOR_ELT(res, 40))[i] = flags & FILE_DAX_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 41))[i] = flags & FILE_SUPPORTS_GHOSTING;
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
 SEXP ps__system_memory() {
   MEMORYSTATUSEX memInfo;
   memInfo.dwLength = sizeof(MEMORYSTATUSEX);
@@ -1432,6 +1597,116 @@ SEXP ps__system_swap() {
   ps__throw_error();
   return R_NilValue;
 }
+
+SEXP ps__disk_io_counters() {
+    // Based on the implementation from psutil
+    DISK_PERFORMANCE diskPerformance;
+    DWORD dwSize;
+    HANDLE hDevice = NULL;
+    char szDevice[MAX_PATH];
+    char szDeviceDisplay[MAX_PATH];
+    int devNum;
+    int i;
+    DWORD ioctrlSize;
+    BOOL ret;
+
+    SEXP result = PROTECT(allocVector(VECSXP, 7));
+    SEXP device = PROTECT(allocVector(STRSXP, 32));
+    SEXP read_count = PROTECT(allocVector(REALSXP, 32));
+    SEXP read_bytes = PROTECT(allocVector(REALSXP, 32));
+    SEXP read_time = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_count = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_bytes = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_time = PROTECT(allocVector(REALSXP, 32));
+
+    // Apparently there's no way to figure out how many times we have
+    // to iterate in order to find valid drives.
+    // Let's assume 32, which is higher than 26, the number of letters
+    // in the alphabet (from A:\ to Z:\).
+    for (devNum = 0; devNum <= 32; ++devNum) {
+        sprintf_s(szDevice, MAX_PATH, "\\\\.\\PhysicalDrive%d", devNum);
+        hDevice = CreateFile(szDevice, 0, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                             NULL, OPEN_EXISTING, 0, NULL);
+        if (hDevice == INVALID_HANDLE_VALUE)
+            continue;
+
+        // DeviceIoControl() sucks!
+        i = 0;
+        ioctrlSize = sizeof(diskPerformance);
+        while (1) {
+            i += 1;
+            ret = DeviceIoControl(
+                hDevice, IOCTL_DISK_PERFORMANCE, NULL, 0, &diskPerformance,
+                ioctrlSize, &dwSize, NULL);
+            if (ret != 0)
+                break;  // OK!
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+                // Retry with a bigger buffer (+ limit for retries).
+                if (i <= 1024) {
+                    ioctrlSize *= 2;
+                    continue;
+                }
+            }
+            else if (GetLastError() == ERROR_INVALID_FUNCTION) {
+                // This happens on AppVeyor:
+                // https://ci.appveyor.com/project/giampaolo/psutil/build/
+                //      1364/job/ascpdi271b06jle3
+                // Assume it means we're dealing with some exotic disk
+                // and go on.
+                ps__debug("DeviceIoControl -> ERROR_INVALID_FUNCTION; "
+                             "ignore PhysicalDrive%i", devNum);
+                goto next;
+            }
+            else if (GetLastError() == ERROR_NOT_SUPPORTED) {
+                // Again, let's assume we're dealing with some exotic disk.
+                ps__debug("DeviceIoControl -> ERROR_NOT_SUPPORTED; "
+                             "ignore PhysicalDrive%i", devNum);
+                goto next;
+            }
+            // XXX: it seems we should also catch ERROR_INVALID_PARAMETER:
+            // https://sites.ualberta.ca/dept/aict/uts/software/openbsd/
+            //     ports/4.1/i386/openafs/w-openafs-1.4.14-transarc/
+            //     openafs-1.4.14/src/usd/usd_nt.c
+
+            // XXX: we can also bump into ERROR_MORE_DATA in which case
+            // (quoting doc) we're supposed to retry with a bigger buffer
+            // and specify  a new "starting point", whatever it means.
+            ps__set_error_from_windows_error(0);
+            goto error;
+        }
+
+        sprintf_s(szDeviceDisplay, MAX_PATH, "PhysicalDrive%i", devNum);
+        SET_STRING_ELT(device, devNum, mkChar(szDeviceDisplay));
+        REAL(read_count)[devNum] = diskPerformance.ReadCount;
+        REAL(read_bytes)[devNum] =  diskPerformance.BytesRead.QuadPart;
+        REAL(read_time)[devNum] = (unsigned long long) (diskPerformance.ReadTime.QuadPart) / 10000000;
+        REAL(write_count)[devNum] = diskPerformance.WriteCount;
+        REAL(write_bytes)[devNum] = diskPerformance.BytesWritten.QuadPart;
+        REAL(write_time)[devNum] = (unsigned long long) (diskPerformance.WriteTime.QuadPart) / 10000000;
+
+next:
+        CloseHandle(hDevice);
+    }
+
+    SET_VECTOR_ELT(result, 0, device);
+    SET_VECTOR_ELT(result, 1, read_count);
+    SET_VECTOR_ELT(result, 2, read_bytes);
+    SET_VECTOR_ELT(result, 3, read_time);
+    SET_VECTOR_ELT(result, 4, write_count);
+    SET_VECTOR_ELT(result, 5, write_bytes);
+    SET_VECTOR_ELT(result, 6, write_time);
+
+    UNPROTECT(8);
+
+    return result;
+
+error:
+    if (hDevice != NULL)
+        CloseHandle(hDevice);
+    ps__throw_error();
+    return R_NilValue;
+}
+
 
 SEXP psll_get_nice(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -1644,4 +1919,218 @@ SEXP ps__system_cpu_times() {
 
   UNPROTECT(1);
   return ret;
+}
+
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  R_xlen_t num_handles;
+  HANDLE *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  R_xlen_t i;
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != INVALID_HANDLE_VALUE) {
+	CloseHandle(cdata->pfds[i]);
+      }
+    }
+  }
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_cleanup_data cdata = {
+    /* num_handles= */ num_handles,
+    /* pfds= */        NULL
+  };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  SEXP rhandles = PROTECT(Rf_allocVector(RAWSXP, sizeof(HANDLE) * num_handles));
+  cdata.pfds = (HANDLE*) RAW(rhandles);
+
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+      cdata.pfds[i] = INVALID_HANDLE_VALUE;
+    } else {
+      cdata.pfds[i] = OpenProcess(SYNCHRONIZE, FALSE, handle->pid);
+      if (cdata.pfds[i] == NULL) {
+	if (GetLastError() == 87) {
+	  LOGICAL(res)[i] = 1;
+	  cdata.pfds[i] = INVALID_HANDLE_VALUE;
+	} else {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+      } else {
+	cdata.pfds[topoll] = cdata.pfds[i];
+	topoll++;
+	LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  // WaitForMultipleObjects can wait on at most 64 processes. If we have
+  // more than that, we poll the first 64, and then if all of them are
+  // done within the timeout, we poll the next 64, etc.
+  int first = 0;
+  topoll = num_handles;
+  DWORD ret;
+  do {
+    topoll = topoll > 64 ? 64 : topoll;
+    ret = WaitForMultipleObjects(topoll, cdata.pfds + first, TRUE, ts);
+    if (ret == WAIT_FAILED) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+
+    // all of them (or 64) are done
+    if (ret != WAIT_TIMEOUT) {
+      for (i = first; i < first + topoll; i++) {
+	LOGICAL(res)[i] = 1;
+      }
+      first += topoll;
+      topoll = num_handles - first;
+      if (topoll == 0) break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  // we don't know which finished, need to check
+  if (topoll > 0) {
+    for (i = 0; i < num_handles; i++) {
+      if (cdata.pfds[i] != INVALID_HANDLE_VALUE) {
+	ret = WaitForSingleObject(cdata.pfds[i], 0);
+	if (ret == WAIT_FAILED) {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+	if (ret == WAIT_OBJECT_0) {
+	  LOGICAL(res)[i] = 1;
+	}
+      }
+    }
+  }
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
+}
+
+SEXP ps__stat(SEXP paths, SEXP follow) {
+  Rf_error("ps__stat is not implemented on Windows");
+}
+
+SEXP ps__mount_point(SEXP paths) {
+  R_xlen_t i, len = Rf_xlength(paths);
+  SEXP res = PROTECT(Rf_allocVector(STRSXP, len));
+
+  for (i = 0; i < len; i++) {
+    const char *cpath = CHAR(STRING_ELT(paths, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(cpath, &wpath);
+    if (iret) {
+      ps__throw_error();
+    }
+
+    // look up mount point
+    wchar_t volume[MAX_PATH + 1];
+    BOOL ok = GetVolumePathNameW(
+      wpath,
+      volume,
+      sizeof(volume)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(res, i, ps__utf16_to_charsxp(volume, -1));
+  }
+
+  UNPROTECT(1);
+  return res;
 }

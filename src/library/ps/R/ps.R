@@ -59,7 +59,17 @@ ps <- function(user = NULL, after = NULL) {
   pd <- map_int(processes, function(p) fallback(ps_pid(p), NA_integer_))
   pp <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
   nm <- map_chr(processes, function(p) fallback(ps_name(p), NA_character_))
+
+  opt <- options(ps.no_external_ps = TRUE)
+  on.exit(options(opt), add = TRUE)
   st <- map_chr(processes, function(p) fallback(ps_status(p), NA_character_))
+  options(opt)
+  if (ps_os_type()[["MACOS"]] && !isTRUE(getOption("ps.no_external_ps")) &&
+      anyNA(st[pids != 0])) {
+    misspids <- map_int(processes[is.na(st)], ps_pid)
+    st[is.na(st)] <- ps_status_macos_ps(misspids)
+  }
+
   time <- lapply(processes, function(p) fallback(ps_cpu_times(p), NULL))
   cpt <- map_dbl(time, function(x) x[["user"]] %||% NA_real_)
   cps <- map_dbl(time, function(x) x[["system"]] %||% NA_real_)

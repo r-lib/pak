@@ -62,7 +62,7 @@ unset AIX
 # ------------------------------------------------------------------------
 
 MACROS=""
-OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o"
+OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o cleancall.o"
 
 if [ -n "$POSIX" ]; then
     OBJECTS="${OBJECTS} posix.o api-posix.o";
@@ -105,6 +105,8 @@ elif [ -n "$MACOS" ]; then
     MACROS="${MACROS} PS__MACOS"
     PS__MACOS=1
     OBJECTS="${OBJECTS} macos.o api-macos.o arch/macos/process_info.o"
+    OBJECTS="${OBJECTS} arch/macos/disk.o arch/macos/apps.o"
+    FRAMEWORKS="-framework AppKit"
 
 elif [ -n "$FREEBSD" ]; then
     MACROS="${MACROS} PS__FREEBSD"
@@ -158,11 +160,13 @@ fi
 # LIBRARIES -> PKG_LIBS
 
 LIBS=`for l in $LIBRARIES; do echo "-l${l}"; done | tr "\n", " "`
+LIBS="${LIBS} $FRAMEWORKS"
 
 cat src/Makevars.in | \
     sed "s|@OBJECTS@|${OBJECTS}|" | \
     sed "s/@LIBS@/${LIBS}/" | \
-    sed "s/@TARGETS@/${TARGETS}/" > src/Makevars
+    sed "s/@TARGETS@/${TARGETS}/" | \
+    sed "s|@EXTRA@|${EXTRA}|" > src/Makevars
 
 # MACROS will be set as preprocessor macros
 echo "/* Macros created by configure */" > src/config.h
@@ -171,4 +175,3 @@ for m in $MACROS; do
     echo \#undef $m
     eval echo '\#'define $m $ind
 done >> src/config.h
-

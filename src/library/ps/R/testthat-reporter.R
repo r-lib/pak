@@ -10,6 +10,11 @@ globalVariables("private")
 #' Child processes can be reported via a failed expectation, cleaned up
 #' silently, or cleaned up and reported (the default).
 #'
+#' If a `test_that()` block has an error, `CLeanupReporter` does not
+#' emit any expectations at the end of that block. The error will lead to a
+#' test failure anyway. It will still perform the cleanup, if requested,
+#' however.
+#'
 #' The constructor of the `CleanupReporter` class has options:
 #' * `file`: the output file, if any, this is passed to `reporter`.
 #' * `proc_unit`: when to perform the child process check and cleanup.
@@ -110,6 +115,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       },
 
       start_test = function(context, test) {
+        private$has_error <- FALSE
         super$start_test(context, test)
         if (private$file_unit == "test") private$files <- ps_open_files(ps_handle())
         if (private$rconn_unit == "test") private$rconns <- showConnections()
@@ -123,6 +129,13 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         if (private$file_unit == "test") self$do_file_cleanup(test)
         if (private$conn_unit == "test") self$do_conn_cleanup(test)
         super$end_test(context, test)
+      },
+
+      add_result = function(context, test, result) {
+        if (inherits(result, "expectation_error")) {
+          private$has_error <- TRUE
+        }
+        super$add_result(context, test, result)
       },
 
       start_reporter = function() {
@@ -155,11 +168,16 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         if (private$proc_fail) {
           while (length(ret <- ps::ps_find_tree(private$tree_id)) &&
                  Sys.time() < deadline) Sys.sleep(0.05)
+          # maybe gc() will clean up something
+          if (length(ret) > 0) {
+            gc()
+            ret <- ps::ps_find_tree(private$tree_id)
+          }
         }
         if (private$proc_cleanup) {
           ret <- ps::ps_kill_tree(private$tree_id)
         }
-        if (private$proc_fail)  {
+        if (private$proc_fail && !private$has_error)  {
           testthat::with_reporter(self, start_end_reporter = FALSE, {
             self$expect_cleanup(test, ret, quote)
           })
@@ -172,13 +190,20 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         private$rconns <- NULL
         leftover <- ! new[, "description"] %in% old[, "description"]
 
+        # maybe gc() will clean up some
+        if (sum(leftover) > 0) {
+          gc()
+          new <- showConnections()
+          leftover <- ! new[, "description"] %in% old[, "description"]
+        }
+
         if (private$rconn_cleanup) {
           for (no in as.integer(rownames(new)[leftover])) {
             tryCatch(close(getConnection(no)), error = function(e) NULL)
           }
         }
 
-        if (private$rconn_fail) {
+        if (private$rconn_fail && !private$has_error) {
           act <- testthat::quasi_label(rlang::enquo(test), test)
           testthat::expect(
             sum(leftover) == 0,
@@ -200,7 +225,15 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         ## * /dev/urandom might be opened internally by curl, openssl, etc.
         leftover <- leftover & new$path != "/dev/urandom"
 
-        if (private$file_fail) {
+        # maybe gc() will clean up some
+        if (sum(leftover) > 0) {
+          gc()
+          new <- ps_open_files(ps_handle())
+          leftover <- ! new$path %in% old$path
+          leftover <- leftover & new$path != "/dev/urandom"
+        }
+
+        if (private$file_fail && !private$has_error) {
           act <- testthat::quasi_label(rlang::enquo(test), test)
           testthat::expect(
             sum(leftover) == 0,
@@ -220,6 +253,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         ## from the processes connection tables, so we try waiting a bit.
         ## We haven't seen issues with this on other OSes yet.
         deadline <- Sys.time() + as.difftime(0.5, units = "secs")
+        done <- FALSE
         repeat {
           new <- ps_connections(ps_handle())[, 1:6]
           ## This is a connection that is used internally on macOS,
@@ -238,14 +272,21 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
           leftover <- ! apply(new, 1, paste, collapse = "&") %in%
             apply(old, 1, paste, collapse = "&")
 
-          if (!ps_os_type()[["WINDOWS"]] ||
-              sum(leftover) == 0 ||
-              Sys.time() >= deadline) break;
+          # is this the final try, or are we all clean?
+          if (done || sum(leftover) == 0) break
+
+          # if Unix, then try again after gc()
+          # on Windows, gc() after a timeout, then quit
+          if (!ps_os_type()[["WINDOWS"]] || Sys.time() >= deadline) {
+            gc()
+            done <- TRUE
+            next
+          }
 
           Sys.sleep(0.05)
         }
 
-        if (private$conn_fail) {
+        if (private$conn_fail && !private$has_error) {
           left <- new[leftover,]
           act <- testthat::quasi_label(rlang::enquo(test), test)
           testthat::expect(
@@ -290,7 +331,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       conn_fail = NULL,
       conns = NULL,
 
-      tree_id = NULL
+      tree_id = NULL,
+
+      has_error = FALSE
     )
   )
 }

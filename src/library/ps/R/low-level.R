@@ -15,7 +15,7 @@
 #' p
 
 ps_handle <- function(pid = NULL, time = NULL) {
-  if (!is.null(pid)) assert_pid(pid)
+  if (!is.null(pid)) pid <- assert_pid(pid)
   if (!is.null(time)) assert_time(time)
   .Call(psll_handle, pid, time)
 }
@@ -177,13 +177,21 @@ ps_name <- function(p = ps_handle()) {
     ## If it matches the first part of the cmdline we return that
     ## one instead because it's usually more explicative.
     ## Examples are "gnome-keyring-d" vs. "gnome-keyring-daemon".
+
+    ## In addition, under qemu (e.g. in cross-platform Docker), the
+    ## first entry is qemu and the second entry is the file name
     cmdline <- tryCatch(
       ps_cmdline(p),
       error = function(e) NULL
     )
     if (!is.null(cmdline) && length(cmdline) > 0L) {
       exname <- basename(cmdline[1])
-      if (str_starts_with(exname, n)) n <- exname
+      if (str_starts_with(exname, n)) {
+        n <- exname
+      } else if (grepl("qemu", exname) && length(cmdline) >= 2 &&
+                 str_starts_with(exname2 <- basename(cmdline[2]), n)) {
+        n <- exname2
+      }
     }
   }
   n
@@ -241,7 +249,8 @@ ps_cmdline <- function(p = ps_handle()) {
 #' Current process status
 #'
 #' One of the following:
-#' * `"idle"`: Process being created by fork, macOS only.
+#' * `"idle"`: Process being created by fork, or process has been sleeping
+#'     for a long time. macOS only.
 #' * `"running"`: Currently runnable on macOS and Windows. Actually
 #'     running on Linux.
 #' * `"sleeping"` Sleeping on a wait or poll.
@@ -249,6 +258,7 @@ ps_cmdline <- function(p = ps_handle()) {
 #'    (Linux only).
 #' * `"stopped"` Stopped, either by a job control signal or because it
 #'    is being traced.
+#' * `"uninterruptible"` Process is in uninterruptible wait. macOS only.
 #' * `"tracing_stop"` Stopped for tracing (Linux only).
 #' * `"zombie"` Zombie. Finished, but parent has not read out the exit
 #'    status yet.
@@ -256,7 +266,28 @@ ps_cmdline <- function(p = ps_handle()) {
 #' * `"wake_kill"` Received fatal signal (Linux only).
 #' * `"waking"` Paging (Linux only, not valid since the 2.6.xx kernel).
 #'
+#' It might return `NA_character_` on macOS.
+#'
 #' Works for zombie processes.
+#'
+#' @section Note on macOS:
+#' On macOS `ps_status()` often falls back to calling the external `ps`
+#' program, because macOS does not let R access the status of most other
+#' processes. Notably, it is usually able to access the status of other R
+#' processes.
+#'
+#' The external `ps` program always runs as the root user, and
+#' it also has special entitlements, so it can typically access the status
+#' of most processes.
+#'
+#' If this behavior is problematic for you, e.g. because calling an
+#' external program is too slow, set the `ps.no_external_ps` option to
+#' `TRUE`:
+#' ```
+#' options(ps.no_external_ps = TRUE)
+#' ```
+#' Note that setting this option to `TRUE` will cause `ps_status()` to
+#' return `NA_character_` for most processes.
 #'
 #' @param p Process handle.
 #' @return Character scalar.
@@ -270,9 +301,13 @@ ps_cmdline <- function(p = ps_handle()) {
 
 ps_status <- function(p = ps_handle()) {
   assert_ps_handle(p)
-  .Call(psll_status, p)
+  ret <- .Call(psll_status, p)
+  if (is.na(ret) && ps_os_type()[["MACOS"]] &&
+      !isTRUE(getOption("ps.no_external_ps"))) {
+    ret <- ps_status_macos_ps(ps_pid(p))
+  }
+  ret
 }
-
 
 #' Owner of the process
 #'
@@ -376,7 +411,9 @@ ps_gids <- function(p = ps_handle()) {
 ps_terminal <- function(p = ps_handle()) {
   assert_ps_handle(p)
   ttynr <- .Call(psll_terminal, p)
-  if (is.na(ttynr)) {
+  if (is.character(ttynr)) {
+    ttynr
+  } else if (is.na(ttynr)) {
     NA_character_
   } else {
     tmap <- get_terminal_map()
@@ -398,6 +435,28 @@ ps_terminal <- function(p = ps_handle()) {
 #' enough.
 #'
 #' These functions throw a `zombie_process` error for zombie processes.
+#'
+#' @section macOS issues:
+#'
+#' `ps_environ()` usually does not work on macOS nowadays. This is because
+#' macOS does not allow reading the environment variables of another
+#' process. Accoding to the Darwin source code, `ps_environ` will work is
+#' one of these conditions hold:
+#'
+#' * You are running a development or debug kernel, i.e. if you are
+#'   debugging the macOS kernel itself.
+#' * The target process is same as the calling process.
+#' * SIP if off.
+#' * The target process is not restricted, e.g. it is running a binary
+#'   that was not signed.
+#' * The calling process has the
+#'   `com.apple.private.read-environment-variables` entitlement. However
+#'   adding this entitlement to the R binary makes R crash on startup.
+#'
+#' Otherwise `ps_environ` will return an empty set of environment variables
+#' on macOS.
+#'
+#' Issue 121 might have more information about this.
 #'
 #' @param p Process handle.
 #' @return `ps_environ()` returns a named character vector (that has a
@@ -482,7 +541,7 @@ ps_cpu_times <- function(p = ps_handle()) {
 #'
 #' `ps_memory_info()` returns information about memory usage.
 #'
-#' It returns a named list. Portable fields:
+#' It returns a named vector. Portable fields:
 #' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
 #'   process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 #'   Windows this is an alias for `wset` field and it matches "Memory"
@@ -580,6 +639,41 @@ ps_memory_full_info <- function(p = ps_handle()) {
   }
 }
 
+process_signal_result <- function(p, res, err_msg) {
+  ok <- map_lgl(res, function(x) is.character(x) || is.null(x))
+  if (all(ok)) {
+    unlist(res)
+  } else {
+    for (i in which(!ok)) {
+      class(res[[i]]) <- res[[i]][[2]]
+    }
+    pids <- map_int(res[!ok], function(x) x[["pid"]] %||% NA_integer_)
+    nms <- map_chr(p[!ok], function(pp) {
+      tryCatch(ps_name(pp), error = function(e) "???")
+    })
+    pmsg <- paste0(pids, " (", nms, ")", collapse = ", ")
+    # put these classes at the end
+    common <- c("ps_error", "error", "condition")
+    cls <- c(
+      unique(setdiff(unlist(lapply(res[!ok], function(x) class(x))), common)),
+      common
+    )
+    err <- structure(
+      list(
+        message = paste0(
+          err_msg,
+          if (length(p) == 1) ": " else " some processes: ",
+          pmsg
+        ),
+        results = res,
+        pid = pids
+      ),
+      class = cls
+    )
+    stop(err)
+  }
+}
+
 #' Send signal to a process
 #'
 #' Send a signal to the process. Not implemented on Windows. See
@@ -588,7 +682,7 @@ ps_memory_full_info <- function(p = ps_handle()) {
 #' It checks if the process is still running, before sending the signal,
 #' to avoid signalling the wrong process, because of pid reuse.
 #'
-#' @param p Process handle.
+#' @param p Process handle, or a list of process handles.
 #' @param sig Signal number, see [signals()].
 #'
 #' @family process handle functions
@@ -603,9 +697,15 @@ ps_memory_full_info <- function(p = ps_handle()) {
 #' px$get_exit_status()
 
 ps_send_signal <- function(p = ps_handle(), sig) {
-  assert_ps_handle(p)
+  p <- assert_ps_handle_or_handle_list(p)
   assert_signal(sig)
-  .Call(psll_send_signal, p, sig)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_send_signal, pp, sig),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to send signal to")
 }
 
 #' Suspend (stop) the process
@@ -614,7 +714,7 @@ ps_send_signal <- function(p = ps_handle(), sig) {
 #' whether PID has been reused. On Windows this has the effect of
 #' suspending all process threads.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -629,8 +729,14 @@ ps_send_signal <- function(p = ps_handle(), sig) {
 #' ps_kill(p)
 
 ps_suspend <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_suspend, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_suspend, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to suspend")
 }
 
 #' Resume (continue) a stopped process
@@ -639,7 +745,7 @@ ps_suspend <- function(p = ps_handle()) {
 #' whether PID has been reused. On Windows this has the effect of resuming
 #' all process threads.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -654,8 +760,14 @@ ps_suspend <- function(p = ps_handle()) {
 #' ps_kill(p)
 
 ps_resume <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_resume, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_resume, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to resume")
 }
 
 #' Terminate a Unix process
@@ -664,7 +776,7 @@ ps_resume <- function(p = ps_handle()) {
 #'
 #' Checks if the process is still running, to work around pid reuse.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -678,16 +790,34 @@ ps_resume <- function(p = ps_handle()) {
 #' px$get_exit_status()
 
 ps_terminate <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_terminate, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_terminate, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to terminate")
 }
 
-#' Kill a process
+#' Kill one or more processes
 #'
-#' Kill the current process with SIGKILL preemptively checking
-#' whether PID has been reused. On Windows it uses `TerminateProcess()`.
+#' Kill the process with SIGKILL preemptively checking whether PID has
+#' been reused. On Windows it uses `TerminateProcess()`.
 #'
-#' @param p Process handle.
+#' Note that since ps version 1.8, `ps_kill()` does not error if the
+#' `p` process (or some processes if `p` is a list) are already terminated.
+#'
+#' @param p Process handle, or a list of process handles.
+#' @param grace Grace period, in milliseconds, used on Unix. If it is not
+#'   zero, then `ps_kill()` first sends a `SIGTERM` signal to all processes
+#'   in `p`. If some proccesses do not terminate within `grace`
+#'   milliseconds after the `SIGTERM` signal, `ps_kill()` kills them by
+#'   sending `SIGKILL` signals.
+#' @return Character vector, with one element for each process handle in
+#'   `p`. If the process was already dead before `ps_kill()` tried to kill
+#'   it, the corresponding return value is `"dead"`. If `ps_kill()` just
+#'   killed it, it is `"killed"`.
 #'
 #' @family process handle functions
 #' @export
@@ -700,9 +830,27 @@ ps_terminate <- function(p = ps_handle()) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 
-ps_kill <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_kill, p)
+ps_kill <- function(p = ps_handle(), grace = 200) {
+  p <- assert_ps_handle_or_handle_list(p)
+  grace <- assert_grace(grace)
+  if (ps_os_type()[["WINDOWS"]]) {
+    res <- lapply(p, function(pp) {
+      tryCatch({
+        if (ps_is_running(pp)) {
+          .Call(psll_kill, pp, 0L)
+          "killed"
+        } else {
+          "dead"
+        }
+      }, error = function(e) {
+        if (inherits(e, "no_such_process")) "dead" else e
+      })
+    })
+  } else {
+    res <- call_with_cleanup(psll_kill, p, grace)
+  }
+
+  process_signal_result(p, res, "Failed to kill")
 }
 
 #' List of child processes (process objects) of the process. Note that
@@ -964,22 +1112,27 @@ ps_connections <- function(p = ps_handle()) {
 #'
 #' Sends `SIGINT` on POSIX, and 'CTRL+C' or 'CTRL+BREAK' on Windows.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #' @param ctrl_c On Windows, whether to send 'CTRL+C'. If `FALSE`, then
 #'   'CTRL+BREAK' is sent. Ignored on non-Windows platforms.
 #'
 #' @family process handle functions
 #' @export
 
-ps_interrupt  <- function(p = ps_handle(), ctrl_c = TRUE) {
-  assert_ps_handle(p)
+ps_interrupt <- function(p = ps_handle(), ctrl_c = TRUE) {
+  p <- assert_ps_handle_or_handle_list(p)
   assert_flag(ctrl_c)
-  if (ps_os_type()[["WINDOWS"]]) {
-    interrupt <- get_tool("interrupt")
-    .Call(psll_interrupt, p, ctrl_c, interrupt)
-  } else {
-    .Call(psll_interrupt, p, ctrl_c, NULL)
-  }
+  res <- lapply(p, function(pp) {
+    tryCatch({
+      if (ps_os_type()[["WINDOWS"]]) {
+        interrupt <- get_tool("interrupt")
+        .Call(psll_interrupt, pp, ctrl_c, interrupt)
+      } else {
+        .Call(psll_interrupt, pp, ctrl_c, NULL)
+      }
+    }, error = function(e) e)
+  })
+  process_signal_result(p, res, "Failed to interrupt")
 }
 
 #' @return `ps_windows_nice_values()` return a character vector of possible
@@ -1144,4 +1297,41 @@ ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
   stopifnot(is.integer(affinity), all(affinity < cnt))
 
   invisible(.Call(psll_set_cpu_aff, p, affinity))
+}
+
+#' Wait for one or more processes to terminate, with a timeout
+#'
+#' This function supports interruption with SIGINT on Unix, or CTRL+C
+#' or CTRL+BREAK on Windows.
+#'
+#' @param p A process handle, or a list of process handles. The
+#'   process(es) to wait for.
+#' @param timeout Timeout in milliseconds. If -1, `ps_wait()` will wait
+#'   indefinitely (or until it is interrupted). If 0, then it checks which
+#'   processes have already terminated, and returns immediately.
+#' @return Logical vector, with one value of each process in `p`.
+#'   For processes that terminated it contains a `TRUE` value. For
+#'   processes that are still running it contains a `FALSE` value.
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ps::ps_os_type()["POSIX"]
+#' # this example calls `sleep`, so it only works on Unix
+#' p1 <- processx::process$new("sleep", "100")
+#' p2 <- processx::process$new("sleep", "100")
+#'
+#' # returns c(FALSE, FALSE) immediately if p1 and p2 are running
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 0)
+#'
+#' # timeouts at one second
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 1000)
+#'
+#' p1$kill()
+#' p2$kill()
+#' # returns c(TRUE, TRUE) immediately
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 1000)
+
+ps_wait <- function(p, timeout = -1) {
+  p <- assert_ps_handle_or_handle_list(p)
+  timeout <- assert_integer(timeout)
+  call_with_cleanup(psll_wait, p, timeout)
 }
