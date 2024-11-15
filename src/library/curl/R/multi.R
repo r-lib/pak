@@ -4,20 +4,20 @@
 #' Results are only available via callback functions. Advanced use only!
 #' For downloading many files in parallel use [multi_download] instead.
 #'
-#' Requests are created in the usual way using a curl \link{handle} and added
-#' to the scheduler with \link{multi_add}. This function returns immediately
-#' and does not perform the request yet. The user needs to call \link{multi_run}
+#' Requests are created in the usual way using a curl [handle] and added
+#' to the scheduler with [multi_add]. This function returns immediately
+#' and does not perform the request yet. The user needs to call [multi_run]
 #' which performs all scheduled requests concurrently. It returns when all
-#' requests have completed, or case of a \code{timeout} or \code{SIGINT} (e.g.
-#' if the user presses \code{ESC} or \code{CTRL+C} in the console). In case of
-#' the latter, simply call \link{multi_run} again to resume pending requests.
+#' requests have completed, or case of a `timeout` or `SIGINT` (e.g.
+#' if the user presses `ESC` or `CTRL+C` in the console). In case of
+#' the latter, simply call [multi_run] again to resume pending requests.
 #'
-#' When the request succeeded, the \code{done} callback gets triggered with
-#' the response data. The structure if this data is identical to \link{curl_fetch_memory}.
-#' When the request fails, the \code{fail} callback is triggered with an error
+#' When the request succeeded, the `done` callback gets triggered with
+#' the response data. The structure if this data is identical to [curl_fetch_memory].
+#' When the request fails, the `fail` callback is triggered with an error
 #' message. Note that failure here means something went wrong in performing the
 #' request such as a connection failure, it does not check the http status code.
-#' Just like \link{curl_fetch_memory}, the user has to implement application logic.
+#' Just like [curl_fetch_memory], the user has to implement application logic.
 #'
 #' Raising an error within a callback function stops execution of that function
 #' but does not affect other requests.
@@ -28,14 +28,14 @@
 #' It is up to the user to make sure the same handle is not used in concurrent
 #' requests.
 #'
-#' The \link{multi_cancel} function can be used to cancel a pending request.
+#' The [multi_cancel] function can be used to cancel a pending request.
 #' It has no effect if the request was already completed or canceled.
 #'
-#' The \link{multi_fdset} function returns the file descriptors curl is
+#' The [multi_fdset] function returns the file descriptors curl is
 #' polling currently, and also a timeout parameter, the number of
 #' milliseconds an application should wait (at most) before proceeding. It
-#' is equivalent to the \code{curl_multi_fdset} and
-#' \code{curl_multi_timeout} calls. It is handy for applications that is
+#' is equivalent to the `curl_multi_fdset` and
+#' `curl_multi_timeout` calls. It is handy for applications that is
 #' expecting input (or writing output) through both curl, and other file
 #' descriptors.
 #'
@@ -43,18 +43,18 @@
 #' @rdname multi
 #' @seealso Advanced download interface: [multi_download]
 #' @useDynLib curl R_multi_add
-#' @param handle a curl \link{handle} with preconfigured \code{url} option.
+#' @param handle a curl [handle] with preconfigured `url` option.
 #' @param done callback function for completed request. Single argument with
-#' response data in same structure as \link{curl_fetch_memory}.
+#' response data in same structure as [curl_fetch_memory].
 #' @param fail callback function called on failed request. Argument contains
 #' error message.
 #' @param data (advanced) callback function, file path, or connection object for writing
-#' incoming data. This callback should only be used for \emph{streaming} applications,
+#' incoming data. This callback should only be used for *streaming* applications,
 #' where small pieces of incoming data get written before the request has completed. The
-#' signature for the callback function is \code{write(data, final = FALSE)}. If set
-#' to \code{NULL} the entire response gets buffered internally and returned by in
-#' the \code{done} callback (which is usually what you want).
-#' @param pool a multi handle created by \link{new_pool}. Default uses a global pool.
+#' signature for the callback function is `write(data, final = FALSE)`. If set
+#' to `NULL` the entire response gets buffered internally and returned by in
+#' the `done` callback (which is usually what you want).
+#' @param pool a multi handle created by [new_pool]. Default uses a global pool.
 #' @export
 #' @examples
 #' results <- list()
@@ -118,9 +118,9 @@ multi_add <- function(handle, done = NULL, fail = NULL, data = NULL, pool = NULL
   .Call(R_multi_add, handle, done, fail, data, pool)
 }
 
-#' @param timeout max time in seconds to wait for results. Use \code{0} to poll for results without
+#' @param timeout max time in seconds to wait for results. Use `0` to poll for results without
 #' waiting at all.
-#' @param poll If \code{TRUE} then return immediately after any of the requests has completed.
+#' @param poll If `TRUE` then return immediately after any of the requests has completed.
 #' May also be an integer in which case it returns after n requests have completed.
 #' @export
 #' @useDynLib curl R_multi_run
@@ -199,6 +199,7 @@ print.curl_multi <- function(x, ...){
 multi_fdset <- function(pool = NULL){
   if(is.null(pool))
     pool <- multi_default()
-  stopifnot(inherits(pool, "curl_multi"))
+  # line below duplicates checks made by C code, but may need to be reinstated if that ever changes
+  # stopifnot(inherits(pool, c("curl_multi", "curl")))
   .Call(R_multi_fdset, pool)
 }

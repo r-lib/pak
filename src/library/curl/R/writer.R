@@ -3,15 +3,15 @@
 #' Generates a closure that writes binary (raw) data to a file.
 #'
 #' The writer function automatically opens the file on the first write and closes when
-#' it goes out of scope, or explicitly by setting \code{close = TRUE}. This can be used
-#' for the \code{data} callback in \code{multi_add()} or \code{curl_fetch_multi()} such
+#' it goes out of scope, or explicitly by setting `close = TRUE`. This can be used
+#' for the `data` callback in `multi_add()` or `curl_fetch_multi()` such
 #' that we only keep open file handles for active downloads. This prevents running out
 #' of file descriptors when performing thousands of concurrent requests.
 #'
 #' @export
 #' @param path file name or path on disk
 #' @param append open file in append mode
-#' @return Function with signature \code{writer(data = raw(), close = FALSE)}
+#' @return Function with signature `writer(data = raw(), close = FALSE)`
 #' @examples
 #' # Doesn't open yet
 #' tmp <- tempfile()

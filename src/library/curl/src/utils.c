@@ -37,54 +37,37 @@ void reset_errbuf(reference *ref){
   memset(ref->errbuf, 0, CURL_ERROR_SIZE);
 }
 
-void assert(CURLcode res){
-  if(res != CURLE_OK)
-    Rf_error("%s", curl_easy_strerror(res));
-}
-
-static char * parse_host(const char * input){
-  static char buf[8000] = {0};
-  char *url = buf;
-  strncpy(url, input, 7999);
-
-  char *ptr = NULL;
-  if((ptr = strstr(url, "://")))
-    url = ptr + 3;
-  if((ptr = strchr(url, '/')))
-    *ptr = 0;
-  if((ptr = strchr(url, '#')))
-    *ptr = 0;
-  if((ptr = strchr(url, '?')))
-    *ptr = 0;
-  if((ptr = strchr(url, '@')))
-    url = ptr + 1;
-  return url;
+void assert_message(CURLcode res, const char *str){
+  if(res == CURLE_OK)
+    return;
+  if(str == NULL)
+    str = curl_easy_strerror(res);
+  SEXP code = PROTECT(Rf_ScalarInteger(res));
+  SEXP message = PROTECT(make_string(str));
+  SEXP expr = PROTECT(Rf_install("raise_libcurl_error"));
+  SEXP call = PROTECT(Rf_lang3(expr, code, message));
+  Rf_eval(call, R_FindNamespace(Rf_mkString("curl")));
+  UNPROTECT(4);
 }
 
 void assert_status(CURLcode res, reference *ref){
-  // Customize better error message for timeoutsS
-  if(res == CURLE_OPERATION_TIMEDOUT || res == CURLE_SSL_CACERT){
-    const char *url = NULL;
-    if(curl_easy_getinfo(ref->handle, CURLINFO_EFFECTIVE_URL, &url) == CURLE_OK){
-      Rf_error("%s: [%s] %s", curl_easy_strerror(res), parse_host(url), ref->errbuf);
-    }
-  }
-  if(res != CURLE_OK)
-    Rf_error("%s", strlen(ref->errbuf) ? ref->errbuf : curl_easy_strerror(res));
+  if(res == CURLE_OK)
+    return;
+  const char *source_url = NULL;
+  curl_easy_getinfo(ref->handle, CURLINFO_EFFECTIVE_URL, &source_url);
+  SEXP url = PROTECT(make_string(source_url));
+  SEXP code = PROTECT(Rf_ScalarInteger(res));
+  SEXP message = PROTECT(make_string(curl_easy_strerror(res)));
+  SEXP errbuf = PROTECT(make_string(ref->errbuf));
+  SEXP expr = PROTECT(Rf_install("raise_libcurl_error"));
+  SEXP call = PROTECT(Rf_lang5(expr, code, message, errbuf, url));
+  Rf_eval(call, R_FindNamespace(Rf_mkString("curl")));
+  UNPROTECT(6);
 }
 
 void massert(CURLMcode res){
   if(res != CURLM_OK)
     Rf_error("%s", curl_multi_strerror(res));
-}
-
-void stop_for_status(CURL *http_handle){
-  long status = 0;
-  assert(curl_easy_getinfo(http_handle, CURLINFO_RESPONSE_CODE, &status));
-
-  /* check http status code. Not sure what this does for ftp. */
-  if(status >= 300)
-    Rf_error("HTTP error %ld.", status);
 }
 
 /* make sure to call curl_slist_free_all on this object */

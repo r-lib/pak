@@ -1,7 +1,12 @@
 .onAttach <- function(libname, pkgname){
-  ssl <- sub("\\(.*\\)\\W*", "", curl_version()$ssl_version)
-  msg <- paste("Using libcurl", curl_version()$version, "with", ssl)
+  version <- curl_version()
+  ssl <- sub("\\(.*\\)\\W*", "", version$ssl_version)
+  msg <- paste("Using libcurl", version$version, "with", ssl)
   packageStartupMessage(msg)
+  if(grepl("redhat", R.version$platform) && !('smtp' %in% version$protocols)){
+    packageStartupMessage(c("Your system runs libcurl-minimal which does not support all protocols: ",
+                          "See also https://github.com/jeroen/curl/issues/350"))
+  }
 }
 
 .onLoad <- function(libname, pkgname){

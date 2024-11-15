@@ -12,7 +12,7 @@ void switch_to_openssl_on_vista(void){
 #if defined(_WIN32) && defined(HAS_MULTI_SSL)
   /* If a CURL_SSL_BACKEND is set, do not override */
   char *envvar = getenv("CURL_SSL_BACKEND");
-  if(envvar != NULL){
+  if(envvar != NULL && *envvar != 0){
     REprintf("Initiating curl with CURL_SSL_BACKEND: %s\n", envvar);
     return;
   }

@@ -30,22 +30,20 @@ SEXP R_download_curl(SEXP url, SEXP destfile, SEXP quiet, SEXP mode, SEXP ptr, S
   curl_easy_setopt(handle, CURLOPT_NOPROGRESS, Rf_asLogical(quiet));
   curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, push_disk);
   curl_easy_setopt(handle, CURLOPT_WRITEDATA, dest);
+  curl_easy_setopt(handle, CURLOPT_FAILONERROR, 1L);
 
   /* perform blocking request */
   CURLcode status = Rf_asLogical(nonblocking) ?
     curl_perform_with_interrupt(handle) : curl_easy_perform(handle);
 
   /* cleanup */
-  curl_easy_setopt(handle, CURLOPT_URL, NULL);
-  curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 1);
+  curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 1L);
   curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, NULL);
   curl_easy_setopt(handle, CURLOPT_WRITEDATA, NULL);
+  curl_easy_setopt(handle, CURLOPT_FAILONERROR, 0L);
   fclose(dest);
 
   /* raise for curl errors */
   assert_status(status, get_ref(ptr));
-
-  /* check for success */
-  stop_for_status(handle);
   return Rf_ScalarInteger(0);
 }

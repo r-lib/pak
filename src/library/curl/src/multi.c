@@ -6,10 +6,6 @@
  *  - Use Rf_eval() to callback instead of R_tryEval() to propagate interrupt or error back to C
  */
 
-#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 30)
-#define HAS_CURLMOPT_MAX_TOTAL_CONNECTIONS 1
-#endif
-
 multiref *get_multiref(SEXP ptr){
   if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "curl_multi"))
     Rf_error("pool ptr is not a curl_multi handle");
@@ -17,6 +13,23 @@ multiref *get_multiref(SEXP ptr){
   if(!mref)
     Rf_error("multiref pointer is dead");
   return mref;
+}
+
+/* retrieves CURLM from connections as well as pools */
+CURLM *get_curlm(SEXP ptr){
+  CURLM *multi;
+  if(Rf_inherits(ptr, "curl")){
+    ptr = Rf_getAttrib(ptr, Rf_install("conn_id"));
+    if (TYPEOF(ptr) != EXTPTRSXP)
+      Rf_error("pool ptr is not a curl connection");
+    multi = (CURLM*) R_ExternalPtrAddr(ptr);
+    if(!multi)
+      Rf_error("CURLM pointer is dead");
+  } else {
+    multiref *mref = get_multiref(ptr);
+    multi = mref->m;
+  }
+  return multi;
 }
 
 void multi_release(reference *ref){
@@ -148,7 +161,7 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
           if(Rf_isFunction(cb_complete)){
             int arglen = Rf_length(FORMALS(cb_complete));
             SEXP out = PROTECT(make_handle_response(ref));
-            SET_VECTOR_ELT(out, 6, buf);
+            SET_VECTOR_ELT(out, 9, buf);
             SEXP call = PROTECT(Rf_lcons(cb_complete, arglen ? Rf_lcons(out, R_NilValue) : R_NilValue));
             //R_tryEval(call, R_GlobalEnv, &cbfail);
             Rf_eval(call, R_GlobalEnv); //OK to error here
@@ -189,19 +202,13 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
     if(total_pending == 0 && !dirty)
       break;
 
-#ifdef HAS_MULTI_WAIT
-    /* wait for activity, timeout or "nothing" */
     int numfds;
     double waitforit = fmin(time_max - seconds_elapsed, 1); //at most 1 sec to support interrupts
     if(time_max > 0)
       massert(curl_multi_wait(multi, NULL, 0, (int) waitforit * 1000, &numfds));
-#endif
 
     /* poll libcurl for new data - updates total_pending */
-    CURLMcode res = CURLM_CALL_MULTI_PERFORM;
-    while(res == CURLM_CALL_MULTI_PERFORM)
-      res = curl_multi_perform(multi, &(total_pending));
-    if(res != CURLM_OK)
+    if(curl_multi_perform(multi, &(total_pending)) != CURLM_OK)
       break;
   }
 
@@ -244,18 +251,11 @@ SEXP R_multi_new(void){
 }
 
 SEXP R_multi_setopt(SEXP pool_ptr, SEXP total_con, SEXP host_con, SEXP multiplex){
-  #ifdef HAS_CURLMOPT_MAX_TOTAL_CONNECTIONS
     CURLM *multi = get_multiref(pool_ptr)->m;
     massert(curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, (long) Rf_asInteger(total_con)));
     massert(curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, (long) Rf_asInteger(host_con)));
-  #endif
-
-  // NOTE: CURLPIPE_HTTP1 is unsafe for non idempotent requests
-  #ifdef CURLPIPE_MULTIPLEX
     massert(curl_multi_setopt(multi, CURLMOPT_PIPELINING,
                               Rf_asLogical(multiplex) ? CURLPIPE_MULTIPLEX : CURLPIPE_NOTHING));
-  #endif
-
   return pool_ptr;
 }
 
@@ -264,8 +264,7 @@ SEXP R_multi_list(SEXP pool_ptr){
 }
 
 SEXP R_multi_fdset(SEXP pool_ptr){
-  multiref *mref =  get_multiref(pool_ptr);
-  CURLM *multi = mref->m;
+  CURLM *multi = get_curlm(pool_ptr);
   fd_set read_fd_set, write_fd_set, exc_fd_set;
   int max_fd, i, num_read = 0, num_write = 0, num_exc = 0;
   int *pread, *pwrite, *pexc;

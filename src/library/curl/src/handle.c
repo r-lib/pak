@@ -8,25 +8,19 @@ extern int r_curl_is_off_t_option(CURLoption x);
 extern int r_curl_is_string_option(CURLoption x);
 extern int r_curl_is_postfields_option(CURLoption x);
 
-#define make_string(x) x ? Rf_mkString(x) : Rf_ScalarString(NA_STRING)
-
 #ifndef MAX_PATH
 #define MAX_PATH 1024
 #endif
 
-#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 47)
-#define HAS_HTTP_VERSION_2TLS 1
-#endif
-
-#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 32)
+#if AT_LEAST_CURL(7, 32)
 #define HAS_XFERINFOFUNCTION 1
 #endif
 
-#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 36)
+#if AT_LEAST_CURL(7, 36)
 #define HAS_CURLOPT_EXPECT_100_TIMEOUT_MS 1
 #endif
 
-int total_handles = 0;
+static int total_handles = 0;
 
 void clean_handle(reference *ref){
   if(ref->refCount == 0){
@@ -45,7 +39,7 @@ void clean_handle(reference *ref){
   }
 }
 
-void fin_handle(SEXP ptr){
+static void fin_handle(SEXP ptr){
   reference *ref = (reference*) R_ExternalPtrAddr(ptr);
 
   //this kind of strange but the multi finalizer needs the ptr value
@@ -59,7 +53,7 @@ void fin_handle(SEXP ptr){
 }
 
 /* the default readfunc os fread which can cause R to freeze */
-size_t dummy_read(char *buffer, size_t size, size_t nitems, void *instream){
+static size_t dummy_read(char *buffer, size_t size, size_t nitems, void *instream){
   return 0;
 }
 
@@ -100,6 +94,16 @@ static struct curl_slist * default_headers(void){
   }
   return headers;
 }
+
+static void assert_setopt(CURLcode res, const char *optname){
+  if(res != CURLE_OK){
+    char errmsg [256] = {0};
+    snprintf(errmsg, 256, "Invalid or unsupported value when setting curl option '%s'", optname);
+    assert_message(CURLE_BAD_FUNCTION_ARGUMENT, errmsg);
+  }
+}
+
+#define set_user_option(option, value) assert_setopt(curl_easy_setopt(handle, option, value), optname)
 
 static void set_headers(reference *ref, struct curl_slist *newheaders){
   if(ref->headers)
@@ -148,8 +152,11 @@ static void set_handle_defaults(reference *ref){
     curl_easy_setopt(handle, CURLOPT_CAINFO, ca_bundle);
   }
 
-  /* needed to support compressed responses */
-  assert(curl_easy_setopt(handle, CURLOPT_ENCODING, ""));
+  static const curl_version_info_data *version = NULL;
+  if(version == NULL)
+    version = curl_version_info(CURLVERSION_NOW);
+  /* Enable compression. On MacOS libcurl 8.7.1, deflate is broken, so dont ask for it */
+  assert(curl_easy_setopt(handle, CURLOPT_ENCODING, version->version_num == 0x080701 ? "gzip" : ""));
 
   /* follow redirect */
   assert(curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1L));
@@ -157,6 +164,10 @@ static void set_handle_defaults(reference *ref){
 
   /* a sensible timeout (10s) */
   assert(curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 10L));
+
+  /* error if download is stalled for 10 minutes (prevent CI hangs) */
+  assert(curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, 1L));
+  assert(curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, 600L));
 
   /* needed to start the cookie engine */
   assert(curl_easy_setopt(handle, CURLOPT_COOKIEFILE, ""));
@@ -173,12 +184,6 @@ static void set_handle_defaults(reference *ref){
   /* allow all authentication methods */
   assert(curl_easy_setopt(handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY));
   assert(curl_easy_setopt(handle, CURLOPT_PROXYAUTH, CURLAUTH_ANY));
-
-  /* enables HTTP2 on HTTPS (match behavior of curl cmd util) */
-//#if defined(CURL_VERSION_HTTP2) && defined(HAS_HTTP_VERSION_2TLS)
-//  if(curl_version_info(CURLVERSION_NOW)->features & CURL_VERSION_HTTP2)
-//    assert(curl_easy_setopt(handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
-//#endif
 
   /* set an error buffer */
   assert(curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, ref->errbuf));
@@ -209,7 +214,7 @@ SEXP R_new_handle(void){
   ref->handle = curl_easy_init();
   total_handles++;
   set_handle_defaults(ref);
-  SEXP prot = PROTECT(Rf_allocVector(VECSXP, 7)); //for protecting callback functions
+  SEXP prot = PROTECT(Rf_allocVector(VECSXP, 8)); //for protecting callback functions
   SEXP ptr = PROTECT(R_MakeExternalPtr(ref, R_NilValue, prot));
   R_RegisterCFinalizerEx(ptr, fin_handle, TRUE);
   Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("curl_handle"));
@@ -263,62 +268,55 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
     const char* optname = CHAR(STRING_ELT(optnames, i));
     SEXP val = VECTOR_ELT(values, i);
     if(val == R_NilValue){
-      assert(curl_easy_setopt(handle, key, NULL));
+      set_user_option(key, NULL);
 #ifdef HAS_XFERINFOFUNCTION
     } else if (key == CURLOPT_XFERINFOFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
-      assert(curl_easy_setopt(handle, CURLOPT_XFERINFOFUNCTION,
-                              (curl_progress_callback) R_curl_callback_xferinfo));
-      assert(curl_easy_setopt(handle, CURLOPT_XFERINFODATA, val));
-      assert(curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 0));
+      set_user_option(CURLOPT_XFERINFOFUNCTION, (curl_progress_callback) R_curl_callback_xferinfo);
+      set_user_option(CURLOPT_XFERINFODATA, val);
+      set_user_option(CURLOPT_NOPROGRESS, 0);
       SET_VECTOR_ELT(prot, 1, val); //protect gc
 #endif
     } else if (key == CURLOPT_PROGRESSFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
-      assert(curl_easy_setopt(handle, CURLOPT_PROGRESSFUNCTION,
-        (curl_progress_callback) R_curl_callback_progress));
-      assert(curl_easy_setopt(handle, CURLOPT_PROGRESSDATA, val));
-      assert(curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 0));
+      set_user_option(CURLOPT_PROGRESSFUNCTION,(curl_progress_callback) R_curl_callback_progress);
+      set_user_option(CURLOPT_PROGRESSDATA, val);
+      set_user_option(CURLOPT_NOPROGRESS, 0);
       SET_VECTOR_ELT(prot, 2, val); //protect gc
     } else if (key == CURLOPT_READFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
-      assert(curl_easy_setopt(handle, CURLOPT_READFUNCTION,
-        (curl_read_callback) R_curl_callback_read));
-      assert(curl_easy_setopt(handle, CURLOPT_READDATA, val));
+      set_user_option(CURLOPT_READFUNCTION, (curl_read_callback) R_curl_callback_read);
+      set_user_option(CURLOPT_READDATA, val);
       SET_VECTOR_ELT(prot, 3, val); //protect gc
     } else if (key == CURLOPT_DEBUGFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
-
-      assert(curl_easy_setopt(handle, CURLOPT_DEBUGFUNCTION,
-        (curl_debug_callback) R_curl_callback_debug));
-      assert(curl_easy_setopt(handle, CURLOPT_DEBUGDATA, val));
+      set_user_option(CURLOPT_DEBUGFUNCTION, (curl_debug_callback) R_curl_callback_debug);
+      set_user_option(CURLOPT_DEBUGDATA, val);
       SET_VECTOR_ELT(prot, 4, val); //protect gc
     } else if (key == CURLOPT_SSL_CTX_FUNCTION){
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
-      assert(curl_easy_setopt(handle, CURLOPT_SSL_CTX_FUNCTION,
-                              (curl_ssl_ctx_callback) R_curl_callback_ssl_ctx));
-      assert(curl_easy_setopt(handle, CURLOPT_SSL_CTX_DATA, val));
+      set_user_option(CURLOPT_SSL_CTX_FUNCTION, (curl_ssl_ctx_callback) R_curl_callback_ssl_ctx);
+      set_user_option(CURLOPT_SSL_CTX_DATA, val);
       SET_VECTOR_ELT(prot, 5, val); //protect gc
     } else if (key == CURLOPT_SEEKFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
         Rf_error("Value for option %s (%d) must be a function.", optname, key);
-      assert(curl_easy_setopt(handle, CURLOPT_SEEKFUNCTION,
-                              (curl_seek_callback) R_curl_callback_seek));
-      assert(curl_easy_setopt(handle, CURLOPT_SEEKDATA, val));
+      set_user_option(CURLOPT_SEEKFUNCTION, (curl_seek_callback) R_curl_callback_seek);
+      set_user_option(CURLOPT_SEEKDATA, val);
       SET_VECTOR_ELT(prot, 6, val); //protect gc
     } else if (key == CURLOPT_URL) {
       /* always use utf-8 for urls */
       const char * url_utf8 = Rf_translateCharUTF8(STRING_ELT(val, 0));
-      assert(curl_easy_setopt(handle, CURLOPT_URL, url_utf8));
+      set_user_option(CURLOPT_URL, url_utf8);
     } else if(key == CURLOPT_HTTPHEADER){
       if(!Rf_isString(val))
         Rf_error("Value for option %s (%d) must be a string vector", optname, key);
@@ -327,31 +325,30 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
       if(!Rf_isString(val))
         Rf_error("Value for option %s (%d) must be a string vector", optname, key);
       ref->custom = vec_to_slist(val);
-      assert(curl_easy_setopt(handle, key, ref->custom));
+      set_user_option(key, ref->custom);
     } else if(r_curl_is_long_option(key)){
-      if(!Rf_isNumeric(val) || Rf_length(val) != 1) {
+      if(!Rf_isNumeric(val) || Rf_length(val) != 1)
         Rf_error("Value for option %s (%d) must be a number.", optname, key);
-      }
-      assert(curl_easy_setopt(handle, key, (long) Rf_asInteger(val)));
+      set_user_option(key, (long) Rf_asInteger(val));
     } else if(r_curl_is_off_t_option(key)){
-      if(!Rf_isNumeric(val) || Rf_length(val) != 1) {
+      if(!Rf_isNumeric(val) || Rf_length(val) != 1)
         Rf_error("Value for option %s (%d) must be a number.", optname, key);
-      }
-      assert(curl_easy_setopt(handle, key, (curl_off_t) Rf_asReal(val)));
+      set_user_option(key, (curl_off_t) Rf_asReal(val));
     } else if(r_curl_is_postfields_option(key) || r_curl_is_string_option(key)){
-      if(key == CURLOPT_POSTFIELDS){
-        key = CURLOPT_COPYPOSTFIELDS;
+      if(r_curl_is_postfields_option(key)){
+        key = CURLOPT_POSTFIELDS; //avoid bug #313
+        SET_VECTOR_ELT(prot, 7, val);
       }
       switch (TYPEOF(val)) {
       case RAWSXP:
-        if(key == CURLOPT_COPYPOSTFIELDS)
-          assert(curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t) Rf_length(val)));
-        assert(curl_easy_setopt(handle, key, RAW(val)));
+        if(key == CURLOPT_POSTFIELDS)
+          set_user_option(CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t) Rf_xlength(val));
+        set_user_option(key, RAW(val));
         break;
       case STRSXP:
         if (Rf_length(val) != 1)
           Rf_error("Value for option %s (%d) must be length-1 string", optname, key);
-        assert(curl_easy_setopt(handle, key, CHAR(STRING_ELT(val, 0))));
+        set_user_option(key, CHAR(STRING_ELT(val, 0)));
         break;
       default:
         Rf_error("Value for option %s (%d) must be a string or raw vector.", optname, key);
@@ -371,7 +368,7 @@ SEXP R_handle_setform(SEXP ptr, SEXP form){
   return Rf_ScalarLogical(1);
 }
 
-SEXP make_timevec(CURL *handle){
+static SEXP make_timevec(CURL *handle){
   double time_redirect, time_lookup, time_connect, time_pre, time_start, time_total;
   assert(curl_easy_getinfo(handle, CURLINFO_REDIRECT_TIME, &time_redirect));
   assert(curl_easy_getinfo(handle, CURLINFO_NAMELOOKUP_TIME, &time_lookup));
@@ -401,7 +398,7 @@ SEXP make_timevec(CURL *handle){
 }
 
 /* Extract current cookies (state) from handle */
-SEXP make_cookievec(CURL *handle){
+static SEXP make_cookievec(CURL *handle){
   /* linked list of strings */
   struct curl_slist *cookies;
   assert(curl_easy_getinfo(handle, CURLINFO_COOKIELIST, &cookies));
@@ -410,25 +407,37 @@ SEXP make_cookievec(CURL *handle){
   return out;
 }
 
-SEXP make_status(CURL *handle){
+static SEXP make_info_integer(CURL *handle, CURLINFO info){
   long res_status;
-  assert(curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &res_status));
+  assert(curl_easy_getinfo(handle, info, &res_status));
   return Rf_ScalarInteger(res_status);
 }
 
-SEXP make_ctype(CURL *handle){
-  char * ct;
-  assert(curl_easy_getinfo(handle, CURLINFO_CONTENT_TYPE, &ct));
-  return make_string(ct);
+static SEXP make_info_string(CURL *handle, CURLINFO info){
+  char *res_url = NULL;
+  assert(curl_easy_getinfo(handle, info, &res_url));
+  return make_string(res_url);
 }
 
-SEXP make_url(CURL *handle){
-  char *res_url;
-  assert(curl_easy_getinfo(handle, CURLINFO_EFFECTIVE_URL, &res_url));
-  return Rf_ScalarString(Rf_mkCharCE(res_url, CE_UTF8));
+static SEXP make_info_http_version(CURL * handle){
+  long res = 0;
+  assert(curl_easy_getinfo(handle, CURLINFO_HTTP_VERSION, &res));
+  switch (res) {
+  case CURL_HTTP_VERSION_1_0:
+  case CURL_HTTP_VERSION_1_1:
+    return Rf_ScalarInteger(1);
+  case CURL_HTTP_VERSION_2_0:
+    return Rf_ScalarInteger(2);
+#if AT_LEAST_CURL(7, 66)
+  case CURL_HTTP_VERSION_3:
+    return Rf_ScalarInteger(3);
+#endif
+  default:
+    return Rf_ScalarInteger(NA_INTEGER);
+  }
 }
 
-SEXP make_filetime(CURL *handle){
+static SEXP make_filetime(CURL *handle){
   long filetime;
   assert(curl_easy_getinfo(handle, CURLINFO_FILETIME, &filetime));
   if(filetime < 0){
@@ -445,7 +454,7 @@ SEXP make_filetime(CURL *handle){
   return out;
 }
 
-SEXP make_rawvec(unsigned char *ptr, size_t size){
+static SEXP make_rawvec(unsigned char *ptr, size_t size){
   SEXP out = PROTECT(Rf_allocVector(RAWSXP, size));
   if(size > 0)
     memcpy(RAW(out), ptr, size);
@@ -453,15 +462,18 @@ SEXP make_rawvec(unsigned char *ptr, size_t size){
   return out;
 }
 
-SEXP make_namesvec(void){
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, 7));
+static SEXP make_namesvec(void){
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, 10));
   SET_STRING_ELT(names, 0, Rf_mkChar("url"));
   SET_STRING_ELT(names, 1, Rf_mkChar("status_code"));
   SET_STRING_ELT(names, 2, Rf_mkChar("type"));
   SET_STRING_ELT(names, 3, Rf_mkChar("headers"));
   SET_STRING_ELT(names, 4, Rf_mkChar("modified"));
   SET_STRING_ELT(names, 5, Rf_mkChar("times"));
-  SET_STRING_ELT(names, 6, Rf_mkChar("content"));
+  SET_STRING_ELT(names, 6, Rf_mkChar("scheme"));
+  SET_STRING_ELT(names, 7, Rf_mkChar("http_version"));
+  SET_STRING_ELT(names, 8, Rf_mkChar("method"));
+  SET_STRING_ELT(names, 9, Rf_mkChar("content"));
   UNPROTECT(1);
   return names;
 }
@@ -472,14 +484,19 @@ SEXP R_get_handle_cookies(SEXP ptr){
 
 SEXP make_handle_response(reference *ref){
   CURL *handle = ref->handle;
-  SEXP res = PROTECT(Rf_allocVector(VECSXP, 7));
-  SET_VECTOR_ELT(res, 0, make_url(handle));
-  SET_VECTOR_ELT(res, 1, make_status(handle));
-  SET_VECTOR_ELT(res, 2, make_ctype(handle));
+  SEXP res = PROTECT(Rf_allocVector(VECSXP, 10));
+  SET_VECTOR_ELT(res, 0, make_info_string(handle, CURLINFO_EFFECTIVE_URL));
+  SET_VECTOR_ELT(res, 1, make_info_integer(handle, CURLINFO_RESPONSE_CODE));
+  SET_VECTOR_ELT(res, 2, make_info_string(handle, CURLINFO_CONTENT_TYPE));
   SET_VECTOR_ELT(res, 3, make_rawvec(ref->resheaders.buf, ref->resheaders.size));
   SET_VECTOR_ELT(res, 4, make_filetime(handle));
   SET_VECTOR_ELT(res, 5, make_timevec(handle));
-  SET_VECTOR_ELT(res, 6, R_NilValue);
+  SET_VECTOR_ELT(res, 6, make_info_string(handle, CURLINFO_SCHEME));
+  SET_VECTOR_ELT(res, 7, make_info_http_version(handle));
+#ifdef HAS_CURLINFO_EFFECTIVE_METHOD
+  SET_VECTOR_ELT(res, 8, make_info_string(handle, CURLINFO_EFFECTIVE_METHOD));
+#endif
+  SET_VECTOR_ELT(res, 9, R_NilValue);
   Rf_setAttrib(res, R_NamesSymbol, make_namesvec());
   UNPROTECT(1);
   return res;

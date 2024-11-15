@@ -1,16 +1,16 @@
 #' Upload a File
 #'
-#' Upload a file to an \code{http://}, \code{ftp://}, or \code{sftp://} (ssh)
-#' server. Uploading to HTTP means performing an \code{HTTP PUT} on that URL.
+#' Upload a file to an `http://`, `ftp://`, or `sftp://` (ssh)
+#' server. Uploading to HTTP means performing an `HTTP PUT` on that URL.
 #' Be aware that sftp is only available for libcurl clients built with libssh2.
 #'
 #' @export
 #' @param file connection object or path to an existing file on disk
-#' @param url where to upload, should start with e.g. \code{ftp://}
+#' @param url where to upload, should start with e.g. `ftp://`
 #' @param verbose emit some progress output
 #' @param reuse try to keep alive and recycle connections when possible
-#' @param ... other arguments passed to \code{\link{handle_setopt}}, for
-#' example a \code{username} and \code{password}.
+#' @param ... other arguments passed to [handle_setopt()], for
+#' example a `username` and `password`.
 #' @examples \dontrun{# Upload package to winbuilder:
 #' curl_upload('mypkg_1.3.tar.gz', 'ftp://win-builder.r-project.org/R-devel/')
 #' }

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Anticonf (tm) script by Jeroen Ooms (2022)
+# Anticonf (tm) script by Jeroen Ooms (2024)
 # This script will query 'pkg-config' for the required cflags and ldflags.
 # If pkg-config is unavailable or does not find the library, try setting
 # INCLUDE_DIR and LIB_DIR manually via e.g:
@@ -13,7 +13,7 @@ PKG_TEST_HEADER="<curl/curl.h>"
 PKG_LIBS="-lcurl"
 PKG_CFLAGS=""
 
-# export PKG_CONFIG_PATH="/usr/local/opt/curl/lib/pkgconfig"
+#export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig"
 
 # Use pkg-config if available
 pkg-config --version >/dev/null 2>&1
@@ -64,19 +64,22 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Hack for MacOS 11 which has newer headers than the libcurl lib
-# if [ `uname` = "Darwin" ]; then
-#   MACVERSION=`sw_vers -productVersion` || true
-#   case "$MACVERSION" in
-#     "11"*)
-#       PKG_CFLAGS="$PKG_CFLAGS -DDISABLE_CURL_EASY_OPTION";;
-#   esac
-# fi
+# On curl < 7.62 (RHEL-8) enable the fallback
+#TEST_ADA_PARSER=1
+if [ -z "$TEST_ADA_PARSER" ] && pkg-config --atleast-version="7.80" $PKG_CONFIG_NAME; then
+  echo "Found recent recent version of libcurl"
+elif [ "$TEST_ADA_PARSER" ] || ! ${R_HOME}/bin/Rscript --vanilla tools/testversion.R "7.62"; then
+  tar xf tools/ada.tar.gz -C src
+  PKG_CFLAGS="$PKG_CFLAGS -DUSE_ADA_PARSER"
+  echo "CXX_STD=CXX17" >> src/Makevars.in
+elif [ `uname` = "Darwin" ] && ${R_HOME}/bin/Rscript --vanilla tools/testversion.R "7.80"; then
+  PKG_CFLAGS="$PKG_CFLAGS -DENABLE_MACOS_POLYFILL"
+fi
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
 
-# Extract curlopt symbols
+# Legacy option list (remove this when RHEL8 is EOL)
 echo '#include <curl/curl.h>' | ${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E -xc - \
   | grep "^[ \t]*CURLOPT_.*," | sed s/,// > tools/option_table.txt
 

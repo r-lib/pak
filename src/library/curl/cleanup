@@ -1,2 +1,3 @@
 #!/bin/sh
 rm -f src/Makevars configure.log
+rm -f src/ada*

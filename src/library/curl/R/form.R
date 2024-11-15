@@ -1,7 +1,7 @@
 #' POST files or data
 #'
-#' Build multipart form data elements. The \code{form_file} function uploads a
-#' file. The \code{form_data} function allows for posting a string or raw vector
+#' Build multipart form data elements. The `form_file` function uploads a
+#' file. The `form_data` function allows for posting a string or raw vector
 #' with a custom content-type.
 #'
 #' @param path a string with a path to an existing file on disk

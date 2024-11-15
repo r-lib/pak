@@ -1,16 +1,16 @@
 #' Lookup a hostname
 #'
-#' The \code{nslookup} function is similar to \code{nsl} but works on all platforms
+#' The `nslookup` function is similar to `nsl` but works on all platforms
 #' and can resolve ipv6 addresses if supported by the OS. Default behavior raises an
 #' error if lookup fails.
 #'
-#' The \code{has_internet} function tests for internet connectivity by performing a
+#' The `has_internet` function tests for internet connectivity by performing a
 #' dns lookup. If a proxy server is detected, it will also check for connectivity by
 #' connecting via the proxy.
 #'
 #' @export
 #' @param host a string with a hostname
-#' @param error raise an error for failed DNS lookup. Otherwise returns \code{NULL}.
+#' @param error raise an error for failed DNS lookup. Otherwise returns `NULL`.
 #' @param ipv4_only always return ipv4 address. Set to `FALSE` to allow for ipv6 as well.
 #' @param multiple returns multiple ip addresses if possible
 #' @rdname nslookup

@@ -2,15 +2,15 @@
 #'
 #' Handles are the work horses of libcurl. A handle is used to configure a
 #' request with custom options, headers and payload. Once the handle has been
-#' set up, it can be passed to any of the download functions such as \code{\link{curl}}
-#' ,\code{\link{curl_download}} or \code{\link{curl_fetch_memory}}. The handle will maintain
+#' set up, it can be passed to any of the download functions such as [curl()]
+#' ,[curl_download()] or [curl_fetch_memory()]. The handle will maintain
 #' state in between requests, including keep-alive connections, cookies and
 #' settings.
 #'
-#' Use \code{new_handle()} to create a new clean curl handle that can be
-#' configured with custom options and headers. Note that \code{handle_setopt}
-#' appends or overrides options in the handle, whereas \code{handle_setheaders}
-#' replaces the entire set of headers with the new ones. The \code{handle_reset}
+#' Use `new_handle()` to create a new clean curl handle that can be
+#' configured with custom options and headers. Note that `handle_setopt`
+#' appends or overrides options in the handle, whereas `handle_setheaders`
+#' replaces the entire set of headers with the new ones. The `handle_reset`
 #' function resets only options/headers/forms in the handle. It does not affect
 #' active connections, cookies or response data from previous requests. The safest
 #' way to perform multiple independent requests is by using a separate handle for
@@ -18,8 +18,8 @@
 #'
 #' @family handles
 #' @param ... named options / headers to be set in the handle.
-#'   To send a file, see \code{\link{form_file}}. To list all allowed options,
-#'   see \code{\link{curl_options}}
+#'   To send a file, see [form_file()]. To list all allowed options,
+#'   see [curl_options()]
 #' @return A handle object (external pointer to the underlying curl handle).
 #'   All functions modify the handle in place but also return the handle
 #'   so you can create a pipeline of operations.
@@ -50,7 +50,7 @@ new_handle <- function(...){
 #' @useDynLib curl R_handle_setopt
 #' @param handle Handle to modify
 #' @param .list A named list of options. This is useful if you've created
-#'   a list of options elsewhere, avoiding the use of \code{do.call()}.
+#'   a list of options elsewhere, avoiding the use of `do.call()`.
 #' @rdname handle
 handle_setopt <- function(handle, ..., .list = list()){
   stopifnot(inherits(handle, "curl_handle"))
@@ -94,7 +94,6 @@ handle_getheaders <- function(handle){
 }
 
 #' @useDynLib curl R_handle_getcustom
-#' @rdname handle
 handle_getcustom <- function(handle){
   stopifnot(inherits(handle, "curl_handle"))
   .Call(R_handle_getcustom, handle)
@@ -129,8 +128,8 @@ handle_reset <- function(handle){
 
 #' Extract cookies from a handle
 #'
-#' The \code{handle_cookies} function returns a data frame with 7 columns as specified in the
-#' \href{http://www.cookiecentral.com/faq/#3.5}{netscape cookie file format}.
+#' The `handle_cookies` function returns a data frame with 7 columns as specified in the
+#' [netscape cookie file format](http://www.cookiecentral.com/faq/#3.5).
 #'
 #' @useDynLib curl R_get_handle_cookies
 #' @export
