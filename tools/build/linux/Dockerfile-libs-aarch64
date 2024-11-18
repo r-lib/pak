@@ -56,7 +56,7 @@ RUN apk add --arch aarch64 --root $AARCH64_ROOT \
 
 # zlib --------------------------------------------------------------------
 
-RUN wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz
+RUN wget https://zlib.net/zlib-1.3.1.tar.gz
 RUN tar xzf zlib-*.tar.gz && rm zlib-*.tar.gz
 RUN cd zlib-* &&                                                     \
     CFLAGS=-fPIC CC=aarch64-alpine-linux-musl-gcc                    \
@@ -73,7 +73,6 @@ RUN cd zlib-* &&                                                     \
 RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.4.0/openssl-3.4.0.tar.gz
 RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
 RUN cd openssl-* &&                                                  \
-    CFLAGS="-fPIC -static -U__GNUC__"                                \
     ./Configure linux-aarch64 -fPIC no-shared                        \
         --cross-compile-prefix=aarch64-alpine-linux-musl- &&         \
     make &&                                                          \
@@ -92,7 +91,8 @@ RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN cd curl-* && \
     CC=aarch64-alpine-linux-musl-gcc AR=aarch64-alpine-linux-musl-ar \
     ./configure --host=aarch64-alpine-linux-musl                     \
-        --enable-static --disable-shared --enable-debug;             \
+        --enable-static --disable-shared --with-opennssl 	     \
+        --without-libpsl; 		 			     \
     make &&                                                          \
     make install &&                                                  \
     rm -rf /usr/local/bin/curl                                       \
