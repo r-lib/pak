@@ -32,7 +32,7 @@ R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker build --platform linux/amd64 -f Dockerfile --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="${GHCR_TOKEN}" .
+		--build-arg TOKEN="${GHCR_TOKEN}" --progress plain .
 	touch $@
 
 # ------------------------------------------------------------------------
