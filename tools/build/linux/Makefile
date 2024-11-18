@@ -12,7 +12,7 @@
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4
+RVERSIONS ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4 4.5
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 DONE=$(patsubst %,R-%.done,$(RVERSIONS))
 DONE_AARCH64=$(patsubst %,R-%-aarch64.done,$(RVERSIONS))
@@ -31,8 +31,8 @@ R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 
 R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker build -f Dockerfile --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="${GHCR_TOKEN}" .
+	docker build --platform linux/amd64 -f Dockerfile --build-arg R_MAJOR=$* \
+		--build-arg TOKEN="${GHCR_TOKEN}" --progress plain .
 	touch $@
 
 # ------------------------------------------------------------------------
@@ -42,7 +42,7 @@ cross-aarch64:
 		-f Dockerfile-cross-aarch64 .
 
 libs:
-	docker build -t ghcr.io/r-lib/pak-libs:latest \
+	docker build --platform linux/amd64 -t ghcr.io/r-lib/pak-libs:latest \
 		-f Dockerfile-libs .
 
 libs.done:
