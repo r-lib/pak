@@ -32,7 +32,7 @@
 #' @family local package trees
 #' @export
 
-local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
+local_install <- function(root = ".", lib = .libPaths()[1], upgrade = FALSE,
                           ask = interactive(), dependencies = NA) {
 
   start <- Sys.time()
