@@ -42,6 +42,11 @@ jobs:
       - name: Install package
         run: R CMD INSTALL .
 
+      - uses: r-hub/actions/debug-shell@v1
+
+      - run: |
+          git clean -ndx man
+        
       - name: Build site
         run: |
           options(asciicast_timeout = 600)
