@@ -396,7 +396,7 @@ about.
 }}
 
 
-\code{sysreqs_db_match()} manually matches \code{SystemREquirements} fields
+\code{sysreqs_db_match()} manually matches \code{SystemRequirements} fields
 againts these system requirements:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
