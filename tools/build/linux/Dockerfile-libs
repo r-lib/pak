@@ -21,7 +21,7 @@ RUN cd zlib-* &&                                                     \
 
 # openssl -----------------------------------------------------------------
 
-RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.4.0/openssl-3.4.0.tar.gz
+RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
 RUN apk add perl linux-headers
 RUN cd openssl-* &&                                                  \
@@ -33,11 +33,11 @@ RUN cd openssl-* &&                                                  \
 
 # libcurl now -------------------------------------------------------------
 
-RUN wget https://curl.haxx.se/download/curl-8.11.0.tar.gz
+RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN apk add pkgconfig
 RUN cd curl-* && \
-    ./configure --enable-static --disable-shared --with-openssl --without-libpsl;     \
+    ./configure --enable-static --disable-shared;                    \
     make &&                                                          \
     make install &&                                                  \
     rm -rf /usr/local/bin/curl                                       \
