@@ -91,7 +91,7 @@ RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN cd curl-* && \
     CC=aarch64-alpine-linux-musl-gcc AR=aarch64-alpine-linux-musl-ar \
     ./configure --host=aarch64-alpine-linux-musl                     \
-        --enable-static --disable-shared --with-openssl              \
+        --enable-static --disable-shared --with-opennssl 	     \
         --without-libpsl; 		 			     \
     make &&                                                          \
     make install &&                                                  \

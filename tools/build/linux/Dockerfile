@@ -5,8 +5,6 @@ ARG R_MAJOR=4.1
 FROM ghcr.io/r-lib/pak-libs:latest AS libs
 FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
 COPY --from=libs /usr/local /usr/local
-ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig
-
 USER root
 WORKDIR /root
 
