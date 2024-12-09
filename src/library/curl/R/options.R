@@ -1,8 +1,8 @@
 #' List curl version and options.
 #'
-#' `curl_version()` shows the versions of libcurl, libssl and zlib and
-#' supported protocols. `curl_options()` lists all options available in
-#' the current version of libcurl.  The dataset `curl_symbols` lists all
+#' \code{curl_version()} shows the versions of libcurl, libssl and zlib and
+#' supported protocols. \code{curl_options()} lists all options available in
+#' the current version of libcurl.  The dataset \code{curl_symbols} lists all
 #' symbols (including options) provides more information about the symbols,
 #' including when support was added/removed from libcurl.
 #'
@@ -22,23 +22,21 @@ curl_options <- function(filter = ""){
   opts[m]
 }
 
-# Remove this when RHEL-8 is EOL
-option_table_legacy <- if(.Platform$OS.type == "unix" && grepl("^7", libcurlVersion())){
-  (function(){
-    env <- new.env()
-    if(file.exists("tools/option_table.txt")){
-      source("tools/option_table.txt", env)
-    } else if(file.exists("../tools/option_table.txt")){
-      source("../tools/option_table.txt", env)
-    } else {
-      stop("Failed to find 'tools/option_table.txt' from:", getwd())
-    }
+option_table <- (function(){
+  env <- new.env()
+  if(file.exists("tools/option_table.txt")){
+    source("tools/option_table.txt", env)
+  } else if(file.exists("../tools/option_table.txt")){
+    source("../tools/option_table.txt", env)
+  } else {
+    stop("Failed to find 'tools/option_table.txt' from:", getwd())
+  }
 
-    option_table <- unlist(as.list(env))
-    names(option_table) <- sub("^curlopt_", "", tolower(names(option_table)))
-    option_table[order(names(option_table))]
-  })()
-}
+  option_table <- unlist(as.list(env))
+  names(option_table) <- sub("^curlopt_", "", tolower(names(option_table)))
+  option_table[order(names(option_table))]
+})()
+
 
 #' @useDynLib curl R_option_types
 make_option_type_table <- function(){
@@ -59,7 +57,7 @@ curl_options_list <- local({
         structure(option_type_table$value, names = option_type_table$name)
       } else {
         # Fallback method: extracted from headers at build-time
-        option_table_legacy
+        option_table
       }
     }
     return(cache)

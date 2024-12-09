@@ -1,28 +1,3 @@
-6.0.1
- - Fix a build issue with libcurl 8.11.0
- - Support multi_fdset() for connection objects (#355)
-
-6.0.0
- - New curl_parse_url() function to expose curl URL parsing interface.
- - Errors now have classes and more detailed messages
- - Do not use shared connection pool for FTP requests (works around bug in
-   libcurl < 8.8.0)
- - Properly clean handle when open() fails for a curl() connection
- - Parameter 'timeout' renamed to 'multi-timeout' in multi_download()
- - Default behavior is now to error if a download is stalled for 600 seconds
- - The MacOS binary packages now require at least libcurl 7.80 which is included
-   with all current MacOS versions (13+) as well as recent patch releases for
-   legacy MacOS versions (11.7 and 12.7).
- - Windows: update to libcurl 8.10.1
-
-5.2.3
- - Remove some CMD check verbosity per new CRAN rules
- - New maintainer email address
-
-5.2.2
- - Disable a compression test for libcurl 8.7.1 which has a bug for deflate
- - Change a unit test to work around firewall problems on CRANs WinBuilder
-
 5.2.1
  - In handle_setheader(), setting a header to a non-empty whitespace string will
    now send a blank header. Using an empty string will still remove the header

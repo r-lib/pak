@@ -1,29 +1,30 @@
 #' Fetch the contents of a URL
 #'
 #' Low-level bindings to write data from a URL into memory, disk or a callback
-#' function.
+#' function. These are mainly intended for \code{httr}, most users will be better
+#' off using the \code{\link{curl}} or \code{\link{curl_download}} function, or the
+#' http specific wrappers in the \code{httr} package.
 #'
-#' The `curl_fetch_*()` functions automatically raise an error upon protocol problems
-#' (network, disk, TLS, etc.) but do not implement application logic. For example,
-#' you need to check the status code of HTTP requests in the response by yourself,
+#' The curl_fetch functions automatically raise an error upon protocol problems
+#' (network, disk, ssl) but do not implement application logic. For example for
+#' you need to check the status code of http requests yourself in the response,
 #' and deal with it accordingly.
 #'
-#' Both `curl_fetch_memory()` and `curl_fetch_disk` have a blocking and a
+#' Both \code{curl_fetch_memory} and \code{curl_fetch_disk} have a blocking and
 #' non-blocking C implementation. The latter is slightly slower but allows for
 #' interrupting the download prematurely (using e.g. CTRL+C or ESC). Interrupting
 #' is enabled when R runs in interactive mode or when
-#' `getOption("curl_interrupt") == TRUE`.
+#' \code{getOption("curl_interrupt") == TRUE}.
 #'
-#' The `curl_fetch_multi()` function is the asynchronous equivalent of
-#' `curl_fetch_memory()`. It wraps [`multi_add()`][multi_add] to
-#' schedule requests which are executed concurrently when calling
-#' [`multi_run()`][multi_run]\code{}. For each successful request, the
-#' `done` callback is triggered with response data. For failed requests
-#' (when `curl_fetch_memory()` would raise an error), the `fail` function
-#' is triggered with the error message.
+#' The \code{curl_fetch_multi} function is the asynchronous equivalent of
+#' \code{curl_fetch_memory}. It wraps \code{multi_add} to schedule requests which
+#' are executed concurrently when calling \code{multi_run}. For each successful
+#' request the \code{done} callback is triggered with response data. For failed
+#' requests (when \code{curl_fetch_memory} would raise an error), the \code{fail}
+#' function is triggered with the error message.
 #'
 #' @param url A character string naming the URL of a resource to be downloaded.
-#' @param handle A curl handle object.
+#' @param handle a curl handle object
 #' @export
 #' @rdname curl_fetch
 #' @useDynLib curl R_curl_fetch_memory

@@ -1,18 +1,16 @@
 #' Download file to disk
 #'
-#' Libcurl implementation of `C_download` (the "internal" download method)
+#' Libcurl implementation of \code{C_download} (the "internal" download method)
 #' with added support for https, ftps, gzip, etc. Default behavior is identical
-#' to [download.file()], but request can be fully configured by passing
-#' a custom [handle()].
+#' to \code{\link{download.file}}, but request can be fully configured by passing
+#' a custom \code{\link{handle}}.
 #'
-#' The main difference between `curl_download` and `curl_fetch_disk`
-#' is that `curl_download` checks the http status code before starting the
+#' The main difference between \code{curl_download} and \code{curl_fetch_disk}
+#' is that \code{curl_download} checks the http status code before starting the
 #' download, and raises an error when status is non-successful. The behavior of
-#' `curl_fetch_disk` on the other hand is to proceed as normal and write
+#' \code{curl_fetch_disk} on the other hand is to proceed as normal and write
 #' the error page to disk in case of a non success response.
 #'
-#' The `curl_download` function does support resuming and removes the temporary
-#' file if the download did not complete successfully.
 #' For a more advanced download interface which supports concurrent requests and
 #' resuming large files, have a look at the [multi_download] function.
 #'
@@ -21,11 +19,11 @@
 #' @param url A character string naming the URL of a resource to be downloaded.
 #' @param destfile A character string with the name where the downloaded file
 #'   is saved. Tilde-expansion is performed.
-#' @param quiet If `TRUE`, suppress status messages (if any), and the
+#' @param quiet If \code{TRUE}, suppress status messages (if any), and the
 #'   progress bar.
 #' @param mode A character string specifying the mode with which to write the file.
-#'   Useful values are `"w"`, `"wb"` (binary), `"a"` (append)
-#'   and `"ab"`.
+#'   Useful values are \code{"w"}, \code{"wb"} (binary), \code{"a"} (append)
+#'   and \code{"ab"}.
 #' @param handle a curl handle object
 #' @return Path of downloaded file (invisibly).
 #' @export

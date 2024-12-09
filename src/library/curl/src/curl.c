@@ -98,7 +98,7 @@ static size_t pop(void *target, size_t max, request *req){
   return copy_size;
 }
 
-static void check_handles(CURLM *manager, reference *ref) {
+void check_manager(CURLM *manager, reference *ref) {
   for(int msg = 1; msg > 0;){
     CURLMsg *out = curl_multi_info_read(manager, &msg);
     if(out)
@@ -106,16 +106,31 @@ static void check_handles(CURLM *manager, reference *ref) {
   }
 }
 
-static void fetchdata(request *req) {
+//NOTE: renamed because the name 'fetch' caused crash/conflict on Solaris.
+void fetchdata(request *req) {
   R_CheckUserInterrupt();
-  massert(curl_multi_perform(req->manager, &(req->has_more)));
-  check_handles(req->manager, req->ref);
+  long timeout = 10*1000;
+  massert(curl_multi_timeout(req->manager, &timeout));
+  /* massert(curl_multi_perform(req->manager, &(req->has_more))); */
+
+  /* On libcurl < 7.20 we need to check for CURLM_CALL_MULTI_PERFORM, see docs */
+  CURLMcode res = CURLM_CALL_MULTI_PERFORM;
+  while(res == CURLM_CALL_MULTI_PERFORM){
+    res = curl_multi_perform(req->manager, &(req->has_more));
+  }
+  massert(res);
+  /* End */
+  check_manager(req->manager, req->ref);
 }
 
+/* Support for readBin() */
 static size_t rcurl_read(void *target, size_t sz, size_t ni, Rconnection con) {
   request *req = (request*) con->private;
   size_t req_size = sz * ni;
+
+  /* append data to the target buffer */
   size_t total_size = pop(target, req_size, req);
+
   if (total_size > 0 && (!con->blocking || req->partial)) {
       // If we can return data without waiting, and the connection is
       // non-blocking (or using curl_fetch_stream()), do so.
@@ -126,9 +141,12 @@ static size_t rcurl_read(void *target, size_t sz, size_t ni, Rconnection con) {
   }
 
   while((req_size > total_size) && req->has_more) {
+    /* wait for activity, timeout or "nothing" */
+#ifdef HAS_MULTI_WAIT
     int numfds;
     if(con->blocking)
       massert(curl_multi_wait(req->manager, NULL, 0, 1000, &numfds));
+#endif
     fetchdata(req);
     total_size += pop((char*)target + total_size, (req_size-total_size), req);
 
@@ -140,6 +158,7 @@ static size_t rcurl_read(void *target, size_t sz, size_t ni, Rconnection con) {
   return total_size;
 }
 
+/* naive implementation of readLines */
 static int rcurl_fgetc(Rconnection con) {
   int x = 0;
 #ifdef WORDS_BIGENDIAN
@@ -149,15 +168,13 @@ static int rcurl_fgetc(Rconnection con) {
 #endif
 }
 
-static void cleanup(Rconnection con) {
+void cleanup(Rconnection con) {
+  //Rprintf("Destroying connection.\n");
   request *req = (request*) con->private;
   reference *ref = req->ref;
 
   /* free thee handle connection */
   curl_multi_remove_handle(req->manager, req->handle);
-  curl_easy_setopt(req->handle, CURLOPT_WRITEFUNCTION, NULL);
-  curl_easy_setopt(req->handle, CURLOPT_WRITEDATA, NULL);
-  curl_easy_setopt(req->handle, CURLOPT_FAILONERROR, 0L);
   ref->locked = 0;
 
   /* delayed finalizer cleanup */
@@ -172,12 +189,10 @@ static void cleanup(Rconnection con) {
 }
 
 /* reset to pre-opened state */
-static void reset(Rconnection con) {
+void reset(Rconnection con) {
+  //Rprintf("Resetting connection object.\n");
   request *req = (request*) con->private;
   curl_multi_remove_handle(req->manager, req->handle);
-  curl_easy_setopt(req->handle, CURLOPT_WRITEFUNCTION, NULL);
-  curl_easy_setopt(req->handle, CURLOPT_WRITEDATA, NULL);
-  curl_easy_setopt(req->handle, CURLOPT_FAILONERROR, 0L);
   req->ref->locked = 0;
   con->isopen = FALSE;
   con->text = TRUE;
@@ -216,29 +231,22 @@ static Rboolean rcurl_open(Rconnection con) {
   /* fully non-blocking has 's' in open mode */
   int block_open = strchr(con->mode, 's') == NULL;
   int force_open = strchr(con->mode, 'f') != NULL;
-  if(block_open && !force_open)
-    curl_easy_setopt(handle, CURLOPT_FAILONERROR, 1L);
 
  /* Wait for first data to arrive. Monitoring a change in status code does not
    suffice in case of http redirects */
   while(block_open && req->has_more && !req->has_data) {
+#ifdef HAS_MULTI_WAIT
     int numfds;
     massert(curl_multi_wait(req->manager, NULL, 0, 1000, &numfds));
-    massert(curl_multi_perform(req->manager, &(req->has_more)));
-    for(int msg = 1; msg > 0;){
-      CURLMsg *out = curl_multi_info_read(req->manager, &msg);
-      if(out && out->data.result != CURLE_OK){
-        const char *errmsg = strlen(req->ref->errbuf) ? req->ref->errbuf : curl_easy_strerror(out->data.result);
-        Rf_warningcall(R_NilValue, "Failed to open '%s': %s", req->url, errmsg);
-        reset(con);
-        return FALSE;
-      }
-    }
+#endif
+    fetchdata(req);
   }
 
   /* check http status code */
   /* Stream connections should be checked via handle_data() */
   /* Non-blocking open connections get checked during read */
+  if(block_open && !force_open)
+    stop_for_status(handle);
 
   /* set mode in case open() changed it */
   con->text = strchr(con->mode, 'b') ? FALSE : TRUE;
@@ -289,9 +297,6 @@ SEXP R_curl_connection(SEXP url, SEXP ptr, SEXP partial) {
 
   /* protect the handle */
   (req->ref->refCount)++;
-
-  /* store the CURLM address in con->ex_ptr which is the 'conn_id' attribute */
-  R_SetExternalPtrAddr((SEXP) con->ex_ptr, req->manager);
 
   UNPROTECT(1);
   return rc;

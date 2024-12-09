@@ -8,31 +8,18 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define make_string(x) x ? Rf_mkString(x) : Rf_ScalarString(NA_STRING)
-#define get_string(x) CHAR(STRING_ELT(x, 0))
-#define assert(x) assert_message(x, NULL)
+#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 28)
+#define HAS_MULTI_WAIT 1
+#endif
 
-//TODO: switch to CURL_AT_LEAST_VERSION
-#define AT_LEAST_CURL(x,y) (LIBCURL_VERSION_MAJOR > x || (LIBCURL_VERSION_MAJOR == x && LIBCURL_VERSION_MINOR >= y))
-
-#if AT_LEAST_CURL(7, 55)
+#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 55)
 #define USE_CURL_OFF_T 1
 #endif
 
-#if AT_LEAST_CURL(7, 62)
-#define HAS_CURL_PARSER 1
-#endif
-
-#if AT_LEAST_CURL(7, 72)
-#define HAS_CURLINFO_EFFECTIVE_METHOD 1
-#endif
-
-#if AT_LEAST_CURL(7, 73)
+#ifndef DISABLE_CURL_EASY_OPTION
+#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR >= 73)
 #define HAS_CURL_EASY_OPTION 1
 #endif
-
-#if AT_LEAST_CURL(7, 80)
-#define HAS_CURL_PARSER_STRERROR 1
 #endif
 
 typedef struct {
@@ -71,8 +58,9 @@ typedef struct {
 CURL* get_handle(SEXP ptr);
 reference* get_ref(SEXP ptr);
 void assert_status(CURLcode res, reference *ref);
-void assert_message(CURLcode res, const char *str);
+void assert(CURLcode res);
 void massert(CURLMcode res);
+void stop_for_status(CURL *http_handle);
 SEXP slist_to_vec(struct curl_slist *slist);
 struct curl_slist* vec_to_slist(SEXP vec);
 struct curl_httppost* make_form(SEXP form);
@@ -91,8 +79,3 @@ SEXP make_handle_response(reference *ref);
 SEXP reflist_init(void);
 SEXP reflist_add(SEXP x, SEXP target);
 SEXP reflist_remove(SEXP x, SEXP target);
-
-/* Workaround for CRAN using outdated MacOS11 SDK */
-#if defined(__APPLE__) && !defined(HAS_CURL_EASY_OPTION) && defined(ENABLE_MACOS_POLYFILL)
-#include "macos-polyfill.h"
-#endif

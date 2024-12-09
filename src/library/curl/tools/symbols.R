@@ -2,20 +2,21 @@
 # Therefore you should only update the symbol table using the latest version of libcurl.
 # On Mac: 'brew install curl' will install to /usr/local/opt/curl
 
+blacklist <- c("CURL_DID_MEMORY_FUNC_TYPEDEFS", "CURL_STRICTER", "CURL_WIN32", "CURLOPT")
+
 # Function to read a symbol
 library(inline)
 getsymbol <- function(name){
-  tryCatch({
-    fun = cfunction(
-      cppargs="-I/opt/homebrew/opt/curl/include",
-      includes = '#include <curl/curl.h>',
-      body = paste("return ScalarInteger((int)", name, ");")
-    )
-    val = fun()
-    rm(fun); gc();
-    cat("Found:", name, "=", val, "\n")
-    return(val)
-  }, error = function(e){NA_integer_})
+  if(name %in% blacklist) return(NA_integer_)
+  fun = cfunction(
+    cppargs="-I/usr/local/opt/curl/include",
+    includes = '#include <curl/curl.h>',
+    body = paste("return ScalarInteger((int)", name, ");")
+  )
+  val = fun()
+  rm(fun); gc();
+  cat("Found:", name, "=", val, "\n")
+  return(val)
 }
 
 # The symbols-in-versions file is included with libcurl

@@ -38,7 +38,6 @@ extern SEXP R_multi_setopt(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_new_file_writer(SEXP);
 extern SEXP R_new_handle(void);
 extern SEXP R_nslookup(SEXP, SEXP);
-extern SEXP R_parse_url(SEXP, SEXP);
 extern SEXP R_proxy_info(void);
 extern SEXP R_split_string(SEXP, SEXP);
 extern SEXP R_total_handles(void);
@@ -78,7 +77,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"R_new_file_writer",     (DL_FUNC) &R_new_file_writer,     1},
     {"R_new_handle",          (DL_FUNC) &R_new_handle,          0},
     {"R_nslookup",            (DL_FUNC) &R_nslookup,            2},
-    {"R_parse_url",           (DL_FUNC) &R_parse_url,           2},
     {"R_proxy_info",          (DL_FUNC) &R_proxy_info,          0},
     {"R_split_string",        (DL_FUNC) &R_split_string,        2},
     {"R_total_handles",       (DL_FUNC) &R_total_handles,       0},
@@ -89,17 +87,17 @@ static const R_CallMethodDef CallEntries[] = {
 };
 
 void switch_to_openssl_on_vista(void);
-CURLM *shared_multi_handle = NULL;
+CURLM *multi_handle = NULL;
 
 attribute_visible void R_init_curl(DllInfo *info) {
   switch_to_openssl_on_vista();
   curl_global_init(CURL_GLOBAL_DEFAULT);
-  shared_multi_handle = curl_multi_init();
+  multi_handle = curl_multi_init();
   R_registerRoutines(info, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(info, FALSE);
 }
 
 attribute_visible void R_unload_curl(DllInfo *info) {
-  curl_multi_cleanup(shared_multi_handle);
+  curl_multi_cleanup(multi_handle);
   //curl_global_cleanup();
 }

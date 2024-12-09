@@ -16,5 +16,6 @@ clean:
 
 winlibs: clean
 	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+	echo '#include <curl/curl.h>' | $(CC) $(PKG_CPPFLAGS) -std=gnu99 -E -xc - | grep "^[ \t]*CURLOPT_.*," | sed s/,// > ../tools/option_table.txt
 
 .PHONY: all winlibs clean
