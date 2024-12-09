@@ -1,7 +1,7 @@
 # ghcr.io/r-lib/pak-cross-aarch64:latest
 
 # Build a cross-compiler from x86_64 (or whatever platform this
-# Dockerfile) is built on, to aarch64. This uses the Alpine Linux
+# Dockerfile is built on), to aarch64. This uses the Alpine Linux
 # cross compiler toolchain, which is not for general use, but works
 # pretty well. We build a coupele of APK packages, for binutils, gcc,
 # g++, gnat, and also some packages for aarch64 that match these compilers:

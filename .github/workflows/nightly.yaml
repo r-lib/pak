@@ -89,12 +89,12 @@ jobs:
 
   # -----------------------------------------------------------------------
   macos:
-    runs-on: macos-12
+    runs-on: macos-latest
     if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
     name: macOS x86_64
     env:
-#      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64"
-      RVERSION_DEFAULT: "4.3-x86_64"
+      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64"
+      RVERSION_DEFAULT: "4.4-x86_64"
     steps:
 
     - name: Checkout
@@ -109,14 +109,14 @@ jobs:
 
     - name: Install R
       run: |
-        sudo rig add 3.5
-        sudo rig add 3.6
-        sudo rig add 4.0
-        sudo rig add 4.1
-        sudo rig add 4.2
-        sudo rig add 4.3
-        sudo rig add release
-        sudo rig add devel
+        sudo rig add 3.5 --arch x86_64
+        sudo rig add 3.6 --arch x86_64
+        sudo rig add 4.0 --arch x86_64
+        sudo rig add 4.1 --arch x86_64
+        sudo rig add 4.2 --arch x86_64
+        sudo rig add 4.3 --arch x86_64
+        sudo rig add release --arch x86_64
+        sudo rig add devel --arch x86_64
         rig default release
 
     - name: Install skopeo
