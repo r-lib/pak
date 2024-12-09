@@ -4,35 +4,35 @@
 #include "curl-common.h"
 
 SEXP R_download_curl(SEXP url, SEXP destfile, SEXP quiet, SEXP mode, SEXP ptr, SEXP nonblocking) {
-  if(!Rf_isString(url))
-    Rf_error("Argument 'url' must be string.");
+  if(!isString(url))
+    error("Argument 'url' must be string.");
 
-  if(!Rf_isString(destfile))
-    Rf_error("Argument 'destfile' must be string.");
+  if(!isString(destfile))
+    error("Argument 'destfile' must be string.");
 
-  if(!Rf_isLogical(quiet))
-    Rf_error("Argument 'quiet' must be TRUE/FALSE.");
+  if(!isLogical(quiet))
+    error("Argument 'quiet' must be TRUE/FALSE.");
 
-  if(!Rf_isString(mode))
-    Rf_error("Argument 'mode' must be string.");
+  if(!isString(mode))
+    error("Argument 'mode' must be string.");
 
   /* get the handle */
   CURL *handle = get_handle(ptr);
   reset_errbuf(get_ref(ptr));
 
   /* open file */
-  FILE *dest = fopen(CHAR(Rf_asChar(destfile)), CHAR(Rf_asChar(mode)));
+  FILE *dest = fopen(CHAR(asChar(destfile)), CHAR(asChar(mode)));
   if(!dest)
-    Rf_error("Failed to open file %s.", CHAR(Rf_asChar(destfile)));
+    error("Failed to open file %s.", CHAR(asChar(destfile)));
 
   /* set options */
-  curl_easy_setopt(handle, CURLOPT_URL, Rf_translateCharUTF8(Rf_asChar(url)));
-  curl_easy_setopt(handle, CURLOPT_NOPROGRESS, Rf_asLogical(quiet));
+  curl_easy_setopt(handle, CURLOPT_URL, translateCharUTF8(asChar(url)));
+  curl_easy_setopt(handle, CURLOPT_NOPROGRESS, asLogical(quiet));
   curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, push_disk);
   curl_easy_setopt(handle, CURLOPT_WRITEDATA, dest);
 
   /* perform blocking request */
-  CURLcode status = Rf_asLogical(nonblocking) ?
+  CURLcode status = asLogical(nonblocking) ?
     curl_perform_with_interrupt(handle) : curl_easy_perform(handle);
 
   /* cleanup */
@@ -47,5 +47,5 @@ SEXP R_download_curl(SEXP url, SEXP destfile, SEXP quiet, SEXP mode, SEXP ptr, S
 
   /* check for success */
   stop_for_status(handle);
-  return Rf_ScalarInteger(0);
+  return ScalarInteger(0);
 }

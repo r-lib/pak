@@ -8,9 +8,9 @@ SEXP R_split_string(SEXP string, SEXP split){
   char * out = strstr(str, cut);
   if(!out)
     return string;
-  SEXP res = PROTECT(Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(res, 0, Rf_mkCharLenCE(str, out - str, enc));
-  SET_STRING_ELT(res, 1, Rf_mkCharCE(out + strlen(cut), enc));
+  SEXP res = PROTECT(allocVector(STRSXP, 2));
+  SET_STRING_ELT(res, 0, mkCharLenCE(str, out - str, enc));
+  SET_STRING_ELT(res, 1, mkCharCE(out + strlen(cut), enc));
   UNPROTECT(1);
   return res;
 }

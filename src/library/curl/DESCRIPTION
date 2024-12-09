@@ -1,7 +1,7 @@
 Package: curl
 Type: Package
 Title: A Modern and Flexible Web Client for R
-Version: 5.2.1
+Version: 5.2.0
 Authors@R: c(
     person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
       comment = c(ORCID = "0000-0002-4035-0289")),
@@ -23,17 +23,17 @@ SystemRequirements: libcurl: libcurl-devel (rpm) or
 URL: https://jeroen.r-universe.dev/curl https://curl.se/libcurl/
 BugReports: https://github.com/jeroen/curl/issues
 Suggests: spelling, testthat (>= 1.0.0), knitr, jsonlite, later,
-        rmarkdown, httpuv (>= 1.4.4), webutils
+        rmarkdown, magrittr, httpuv (>= 1.4.4), webutils
 VignetteBuilder: knitr
 Depends: R (>= 3.0.0)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Language: en-US
 NeedsCompilation: yes
-Packaged: 2024-02-26 21:12:31 UTC; jeroen
+Packaged: 2023-12-07 23:07:08 UTC; jeroen
 Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),
   Hadley Wickham [ctb],
   RStudio [cph]
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2024-03-01 23:22:46 UTC
+Date/Publication: 2023-12-08 07:30:02 UTC
