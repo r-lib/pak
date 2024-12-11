@@ -160,7 +160,8 @@ meta_summary_internal <- function() {
   cmc <- pkgcache::cranlike_metadata_cache$new(
     platforms = pkgdepends::current_config()$get("platforms"),
     cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+    r_version = pkgdepends::current_config()$get("r_versions"),
+    bioc = pkgdepends::current_config()$get("use_bioconductor")
   )
   ret <- cmc$summary()
   list(
@@ -207,7 +208,8 @@ meta_list_internal <- function(pkg) {
   cmc <- pkgcache::cranlike_metadata_cache$new(
     platforms = pkgdepends::current_config()$get("platforms"),
     cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+    r_version = pkgdepends::current_config()$get("r_versions"),
+    bioc = pkgdepends::current_config()$get("use_bioconductor")
   )
   cmc$list(packages = pkg)
 }
@@ -241,7 +243,8 @@ meta_update_internal <- function() {
   cmc <- pkgcache::cranlike_metadata_cache$new(
     platforms = pkgdepends::current_config()$get("platforms"),
     cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+    r_version = pkgdepends::current_config()$get("r_versions"),
+    bioc = pkgdepends::current_config()$get("use_bioconductor")
   )
   cmc$update()
   invisible()
@@ -284,7 +287,8 @@ meta_clean_internal <- function() {
   cmc <- pkgcache::cranlike_metadata_cache$new(
     platforms = pkgdepends::current_config()$get("platforms"),
     cran_mirror = pkgdepends::current_config()$get("cran_mirror"),
-    r_version = pkgdepends::current_config()$get("r_versions")
+    r_version = pkgdepends::current_config()$get("r_versions"),
+    bioc = pkgdepends::current_config()$get("use_bioconductor")
   )
   cmc$cleanup(force = TRUE)
 }
