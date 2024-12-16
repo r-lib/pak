@@ -244,8 +244,8 @@ pkgdepends_config <- sort_by_name(list(
     default = TRUE,
     docs =
       "Whether to try to update the system requirements database from
-       GitHub. If the update fails, then the cached or the build-in
-       database if used. Defaults to TRUE."
+       GitHub. If the update fails, then the cached or the built-in
+       database is used. Defaults to `TRUE`."
   ),
 
   # -----------------------------------------------------------------------
