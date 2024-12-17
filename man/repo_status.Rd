@@ -8,29 +8,31 @@
 repo_status(
   platforms = NULL,
   r_version = getRversion(),
-  bioc = TRUE,
+  bioc = NULL,
   cran_mirror = NULL
 )
 
 repo_ping(
   platforms = NULL,
   r_version = getRversion(),
-  bioc = TRUE,
+  bioc = NULL,
   cran_mirror = NULL
 )
 }
 \arguments{
 \item{platforms}{Platforms to use, default is the current platform,
-plus source packages.}
+plus source packages, via the \code{\link[=pak-config]{pkg.platforms}} option.}
 
 \item{r_version}{R version(s) to use, the default is the current
 R version, via \code{\link[=getRversion]{getRversion()}}.}
 
 \item{bioc}{Whether to add the Bioconductor repositories. If you
 already configured them via \code{options(repos)}, then you can
-set this to \code{FALSE}.}
+set this to \code{FALSE}. Defaults to the \code{\link[=pak-config]{pkg.use_bioconductor}}
+option.}
 
-\item{cran_mirror}{The CRAN mirror to use.}
+\item{cran_mirror}{The CRAN mirror to use. Defaults to the
+\code{\link[=pak-config]{pkg.cran_mirror}} option.}
 }
 \value{
 A data frame that has a row for every repository, on every

@@ -7,13 +7,15 @@
 #' summary of the data, and it returns its result invisibly.
 #'
 #' @param platforms Platforms to use, default is the current platform,
-#'   plus source packages.
+#'   plus source packages, via the [`pkg.platforms`][pak-config] option.
 #' @param r_version R version(s) to use, the default is the current
 #'   R version, via [getRversion()].
 #' @param bioc Whether to add the Bioconductor repositories. If you
 #'   already configured them via `options(repos)`, then you can
-#'   set this to `FALSE`.
-#' @param cran_mirror The CRAN mirror to use.
+#'   set this to `FALSE`. Defaults to the [`pkg.use_bioconductor`][pak-config]
+#'   option.
+#' @param cran_mirror The CRAN mirror to use. Defaults to the
+#'   [`pkg.cran_mirror`][pak-config] option.
 #' @return A data frame that has a row for every repository, on every
 #' queried platform and R version. It has these columns:
 #' * `name`: the name of the repository. This comes from the names
@@ -55,7 +57,7 @@
 #' ```
 
 repo_status <- function(platforms = NULL, r_version = getRversion(),
-                        bioc = TRUE, cran_mirror = NULL) {
+                        bioc = NULL, cran_mirror = NULL) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_status_internal(...),
@@ -64,10 +66,12 @@ repo_status <- function(platforms = NULL, r_version = getRversion(),
 }
 
 repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
-                                 bioc = TRUE, cran_mirror = NULL) {
+                                 bioc = NULL, cran_mirror = NULL) {
 
-  platforms <- platforms %||% pkgcache::default_platforms()
-  cran_mirror <- cran_mirror %||% pkgcache::default_cran_mirror()
+  config <- pkgdepends::current_config()
+  platforms <- platforms %||% config$get("platforms")
+  cran_mirror <- cran_mirror %||% config$get("cran_mirror")
+  bioc <- bioc %||% config$get("use_bioconductor")
 
   tab <- pkgcache::repo_status(
     platforms = platforms,
@@ -84,7 +88,8 @@ repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
 #' @rdname repo_status
 
 repo_ping <- function(platforms = NULL, r_version = getRversion(),
-                      bioc = TRUE, cran_mirror = NULL) {
+                      bioc = NULL, cran_mirror = NULL) {
+
   ret <- remote(
     function(...) asNamespace("pak")$repo_ping_internal(...),
     list(platforms, r_version, bioc, cran_mirror)
@@ -95,10 +100,12 @@ repo_ping <- function(platforms = NULL, r_version = getRversion(),
 }
 
 repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
-                               bioc = TRUE, cran_mirror = NULL) {
+                               bioc = NULL, cran_mirror = NULL) {
 
-  platforms <- platforms %||% pkgcache::default_platforms()
-  cran_mirror <- cran_mirror %||% pkgcache::default_cran_mirror()
+  config <- pkgdepends::current_config()
+  platforms <- platforms %||% config$get("platforms")
+  cran_mirror <- cran_mirror %||% config$get("cran_mirror")
+  bioc <- bioc %||% config$get("use_bioconductor")
 
   tab <- pkgcache::repo_status(
     platforms = platforms,
@@ -135,7 +142,7 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #' ```
 
 repo_get <- function(r_version = getRversion(),
-                     bioc = TRUE, cran_mirror = NULL) {
+                     bioc = NULL, cran_mirror = NULL) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_get_internal(...),
@@ -143,9 +150,11 @@ repo_get <- function(r_version = getRversion(),
   )
 }
 
-repo_get_internal <- function(r_version = getRversion(), bioc = TRUE,
+repo_get_internal <- function(r_version = getRversion(), bioc = NULL,
                               cran_mirror = NULL) {
-  cran_mirror = cran_mirror %||% pkgcache::default_cran_mirror()
+  config <- pkgdepends::current_config()
+  cran_mirror <- cran_mirror %||% config$get("cran_mirror")
+  bioc <- bioc %||% config$get("use_bioconductor")
   pkgcache::repo_get(r_version, bioc, cran_mirror)
 }
 

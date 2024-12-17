@@ -4,7 +4,7 @@
 \alias{repo_get}
 \title{Query the currently configured CRAN-like repositories}
 \usage{
-repo_get(r_version = getRversion(), bioc = TRUE, cran_mirror = NULL)
+repo_get(r_version = getRversion(), bioc = NULL, cran_mirror = NULL)
 }
 \arguments{
 \item{r_version}{R version to use to determine the correct Bioconductor

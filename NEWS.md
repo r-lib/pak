@@ -1,6 +1,7 @@
 # pak (development version)
 
-* Use `use_bioconductor` configuration option when creating cache in `R/cache.R` (https://github.com/r-lib/pak/issues/295, @meztez). 
+* pak now uses the `use_bioconductor` configuration option in `meta_*()` and
+  `repo_*()` functions (#295, #726, @meztez).
 
 # pak 0.8.0
 
