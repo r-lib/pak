@@ -1,13 +1,3 @@
-5.2.1
- - In handle_setheader(), setting a header to a non-empty whitespace string will
-   now send a blank header. Using an empty string will still remove the header
-   altogether (this has not changed).
- - Internally simplify handle_setheader() as a wrapper for handle_setopt(httpheader)
- - Fix an issue where curl_fetch_stream() might not return all bytes received
-   by the C layer if the server closed the connection mid-response.
- - No longer enable CURLOPT_UNRESTRICTED_AUTH by default
- - Fix code to build with -DR_NO_REMAP (add all the Rf_ prefixes)
-
 5.2.0
  - The CURL_CA_BUNDLE envvar is now also used on non-Windows.
  - curl_echo() now uses a random available port to run httpuv

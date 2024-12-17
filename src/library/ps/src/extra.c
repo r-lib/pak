@@ -20,16 +20,13 @@ SEXP ps__last_error;
 
 /* TODO: these should throw real error objects */
 
-void *ps__set_error_impl(const char *class, int system_errno,
-			 long pid, const char *msg, ...) {
-  va_list args;
+void *ps__vset_error_impl(const char *class, int system_errno,
+			 long pid, const char *msg, va_list args) {
   const char *ps_error = "ps_error", *error = "error", *condition = "condition";
   SEXP rclass;
 
-  va_start(args, msg);
   vsnprintf(ps__last_error_string,
 	    sizeof(ps__last_error_string) - 1, msg, args);
-  va_end(args);
 
   SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
   if (class) {
@@ -44,11 +41,21 @@ void *ps__set_error_impl(const char *class, int system_errno,
   return NULL;
 }
 
+void *ps__set_error_impl(const char *class, int system_errno,
+			 long pid, const char *msg, ...) {
+  va_list args;
+
+  va_start(args, msg);
+  void *ret = ps__vset_error_impl(class, system_errno, pid, msg, args);
+  va_end(args);
+  return ret;
+}
+
 void *ps__set_error(const char *msg, ...) {
   va_list args;
 
   va_start(args, msg);
-  ps__set_error_impl(0, 0, NA_INTEGER, msg, args);
+  ps__vset_error_impl(0, 0, NA_INTEGER, msg, args);
   va_end(args);
 
   return NULL;
@@ -63,6 +70,11 @@ void *ps__no_such_process(long pid, const char *name) {
 
 void *ps__access_denied(const char *msg) {
   return ps__set_error_impl("access_denied", 0, NA_INTEGER,
+			    msg && strlen(msg) ? msg : "Permission denied");
+}
+
+void *ps__access_denied_pid(long pid, const char *msg) {
+  return ps__set_error_impl("access_denied", 0, pid,
 			    msg && strlen(msg) ? msg : "Permission denied");
 }
 

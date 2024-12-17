@@ -110,11 +110,11 @@ test_that("platform_match", {
 
 test_that("check_platform", {
   # load_all() is fine without data
-  mockery::stub(check_platform, "file.exists", FALSE)
+  fake(check_platform, "file.exists", function(...) FALSE)
   expect_silent(check_platform(".", "."))
 
   # during installation?
-  mockery::stub(check_platform, "file.exists", TRUE)
+  fake(check_platform, "file.exists", function(...) TRUE)
   withr::with_envvar(
     c(R_PACKAGE_DIR = "foobar"),
     expect_silent(check_platform(".", "."))

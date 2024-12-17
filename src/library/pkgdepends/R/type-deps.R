@@ -14,8 +14,14 @@ parse_remote_deps <- function(specs, config, ...) {
 resolve_remote_deps <- function(remote, direct, config, cache,
                                      dependencies, ...) {
 
-  ret <- resolve_remote_local(remote, direct, config, cache,
-                              dependencies, ...)
+  in_pkg <- tryCatch(find_package_root(remote$path), error = function(x) NULL)
+  if (!is.null(in_pkg)) {
+    ret <- resolve_remote_local(remote, direct, config, cache,
+                                dependencies, ...)
+  } else {
+    ret <- resolve_remote_local_autodeps(remote, direct, config, cache,
+                                         dependencies, ...)
+  }
 
   # We need to do some extra work for the case when a dependency
   # depends on the ref itself. E.g. when in pak::local_install_dev_deps()
@@ -52,6 +58,34 @@ resolve_remote_deps <- function(remote, direct, config, cache,
   attr(ret2, "unknown_deps") <- unknown
 
   ret2
+}
+
+resolve_remote_local_autodeps <- function(remote, direct, config, cache,
+                                          dependencies, ...) {
+  deps <- scan_deps(remote$path)
+  tmpdesc <- tempfile()
+  on.exit(unlink(tmpdesc), add = TRUE)
+  dsc <- desc::desc("!new")
+  hard <- deps$package[deps$type == "prod"]
+  soft <- deps$package[deps$type != "prod"]
+  dsc$set(
+    Package = "localprojectautoscan",
+    Version = "1.0.0",
+    Title = "Local Project",
+    License = "Unknown"
+  )
+  for (p in hard) dsc$set_dep(p, type = "Depends")
+  for (s in soft) dsc$set_dep(p, type = "Suggests")
+  dsc$write(tmpdesc)
+  resolve_from_description(
+    tmpdesc,
+    paste0("file://", normalizePath(tmpdesc)),
+    remote,
+    direct,
+    config,
+    cache,
+    dependencies[[2 - direct]]
+  )
 }
 
 download_remote_deps <- function(resolution, target, target_tree, config,

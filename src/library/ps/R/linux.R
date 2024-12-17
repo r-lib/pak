@@ -191,3 +191,110 @@ ps__system_cpu_times_linux <- function() {
   names(tms) <- nms[1:length(tms)]
   tms
 }
+
+ps__disk_io_counters_linux <- function() {
+  # Internal disk IO counters for Linux, reads lines from diskstats if it exists
+  # or /sys/block as a backup
+  if (file.exists("/proc/diskstats")) {
+    ps__read_procfs()
+  } else if (dir.exists("/sys/block")) {
+    ps__read_sysfs()
+  } else {
+    stop("Can't read disk IO, neither /proc/diskstats or /sys/block on this system")
+  }
+}
+
+ps__is_storage_device <- function(name, including_virtual = TRUE) {
+  # Whether a named drive (e.g. 'sda') is a real storage device, or a virtual one
+  name <- gsub("/", "!", name, fixed=TRUE)
+  if (including_virtual) {
+    path <- file.path("/sys/block", name)
+  } else {
+    path <- file.path("/sys/block", name, "device")
+  }
+
+  return(dir.exists(path))
+}
+
+ps__read_procfs <- function() {
+  # Read total disk IO stats from /proc/diskstats
+  file <- readLines("/proc/diskstats")
+  # Get info as list of vectors (could be different lengths)
+  lines <- strsplit(trimws(file), "\\s+")
+  # Pre-allocate matrix of info as NAs
+  mat <- matrix(data = NA_character_, nrow = length(lines), ncol = 10)
+  for (i in seq_along(lines)) {
+    # For each line, check length and insert into matrix as appropriate
+    line <- lines[[i]]
+    flen <- length(line)
+    if (flen == 15) {
+      # Linux 2.4
+      mat[i, 1] <- line[[4]] # name
+      mat[i, 2] <- line[[3]] # reads
+      mat[i, 3:9] <- line[5:11] # reads_merged, rbytes, rtime, writes, writes_merged, wbytes, wtime
+      mat[i, 10] <- line[[14]] # busy_time
+    } else if (flen == 14 || flen >= 18) {
+      # Linux 2.6+, line referring to a disk
+      mat[i, 1] <- line[[3]] # name
+      mat[i, 2:9] <- line[5:12] # reads, reads_merged, rbytes, rtime, writes, writes_merged, wbytes, wtime
+      mat[i, 10] <- line[[14]] # busy_time
+    } else if (flen == 7) {
+      # Linux 2.6+, line referring to a partition
+      mat[i, 1] <- line[[2]] # name
+      mat[i, 2] <- line[[4]] # reads
+      mat[i, 4:5] <- line[5:6] # rbytes, writes
+      mat[i, 8] <- line[7] # wbytes
+    } else {
+      stop("Cannot read diskstats file")
+    }
+  }
+
+  # Add names and convert types as appropriate
+  return(data.frame(
+    name = mat[, 1],
+    read_count = as.numeric(mat[, 2]),
+    read_merged_count = as.numeric(mat[, 3]),
+    read_bytes = as.numeric(mat[, 4]) * 512, # Multiple by disk sector size to get bytes
+    read_time = as.numeric(mat[, 5]),
+    write_count = as.numeric(mat[, 6]),
+    write_merged_count = as.numeric(mat[, 7]),
+    write_bytes = as.numeric(mat[, 8]) * 512, # Multiple by disk sector size to get bytes
+    write_time = as.numeric(mat[, 9]),
+    busy_time = as.numeric(mat[, 10])
+  ))
+}
+
+ps__read_sysfs <- function() {
+  # Read disk IO from each device folder in /sys/block
+
+  # Get stat files for each block
+  blocks <- list.dirs("/sys/block/", recursive = FALSE)
+  all_files <- list.files(blocks, full.names = TRUE)
+  stats <- all_files[grepl("(stat)$", all_files)]
+
+  # Pre-allocate list for dfs
+  disk_info <- vector(mode = "list", length = length(stats))
+  for (i in seq_along(stats)) {
+    # Read in each file, get the field
+    stat <- stats[[i]]
+    fields <- readLines(stat)
+    fields <- unlist(strsplit(trimws(fields), "\\s+"))
+
+    # Save all info as a dataframe
+    block_info <- data.frame(
+      name = strsplit(stat, "/", fixed=TRUE)[[1]][[5]], # Extract name from stat filepath
+      read_count = as.numeric(fields[[1]]),
+      read_merged_count = as.numeric(fields[[2]]),
+      read_bytes = as.numeric(fields[[3]]) * 512, # Multiple by disk sector size to get bytes
+      read_time = as.numeric(fields[[4]]),
+      write_count = as.numeric(fields[[5]]),
+      write_merged_count = as.numeric(fields[[6]]),
+      write_bytes = as.numeric(fields[[7]]) * 512, # Multiple by disk sector size to get bytes
+      write_time = as.numeric(fields[[8]]),
+      busy_time = as.numeric(fields[[10]])
+    )
+
+    disk_info[[i]] <- block_info
+  }
+  return(do.call(rbind, disk_info))
+}

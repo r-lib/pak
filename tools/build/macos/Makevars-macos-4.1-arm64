@@ -3,3 +3,4 @@
 # `-arch arm64`, so clang will create a fat binary, which is
 # not what we want.
 CC= clang -arch arm64 -mmacosx-version-min=11.0
+OBJC = clang -arch arm64 -mmacosx-version-min=11.0

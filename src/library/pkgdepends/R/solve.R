@@ -222,6 +222,7 @@ pkgplan_i_create_lp_problem <- function(pkgs, config, policy) {
   lp <- pkgplan_i_lp_latest_direct(lp)
   lp <- pkgplan_i_lp_latest_within_repo(lp)
   lp <- pkgplan_i_lp_prefer_installed(lp)
+  lp <- pkgplan_i_lp_deduplicate(lp, config)
   lp <- pkgplan_i_lp_prefer_binaries(lp)
   lp <- pkgplan_i_lp_prefer_new_binaries(lp)
   lp <- pkgplan_i_lp_dependencies(lp, config)
@@ -547,6 +548,53 @@ pkgplan_i_lp_prefer_installed <- function(lp) {
   }
 
   lp
+}
+
+# We only do this for source packages, because we already prefer new
+# binaries, via `pkgplan_i_lp_prefer_new_binaries()`.
+#
+# We do this before we prefer binaries, because that rule will rule out
+# any source package version that has a binary, and we want to compare all
+# source versions here.
+
+pkgplan_i_lp_deduplicate <- function(lp, config) {
+  pkgs <- lp$pkgs
+  whpp <- pkgs$status == "OK" & !is.na(pkgs$version)
+  pn <- unique(pkgs$package[whpp])
+  ruled_out <- integer()
+  for (p in pn) {
+    whp <-  which(
+      whpp & pkgs$package == p &
+        pkgs$platform == "source" &
+        pkgs$type %in% c("cran", "bioc", "standard")
+    )
+    whp <- setdiff(whp, lp$ruled_out)
+    if (length(whp) <= 1) next
+    v <- package_version(pkgs$version[whp])
+    mv <- max(v)
+    best <- which(v == mv)[1]
+    for (i in whp[-best]) {
+      if (same_deps(pkgs$deps[[i]], pkgs$deps[[whp[best]]])) {
+        ruled_out <- c(ruled_out, i)
+      }
+    }
+  }
+
+  for (r in ruled_out) {
+    lp <- pkgplan_i_lp_add_cond(lp, r, op = "==", rhs = 0,
+      type = "choose-latest")
+  }
+
+  lp$ruled_out <- unique(c(lp$ruled_out, ruled_out))
+  lp
+}
+
+same_deps <- function(d1, d2) {
+  d1 <- d1[order(d1$package, d1$type), ]
+  rownames(d1) <- NULL
+  d2 <- d2[order(d2$package, d2$type), ]
+  rownames(d2) <- NULL
+  identical(d1, d2)
 }
 
 pkgplan_i_lp_prefer_binaries <- function(lp) {

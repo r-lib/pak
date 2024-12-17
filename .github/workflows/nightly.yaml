@@ -43,6 +43,14 @@ on:
         - 'yes'
         - 'no'
         default: 'yes'
+      bsd:
+        description: '*BSD'
+        required: true
+        type: choice
+        options:
+        - 'yes'
+        - 'no'
+        default: 'yes'
       deploy:
         description: 'Deploy'
         required: true
@@ -76,16 +84,17 @@ jobs:
           echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
           echo "macos-arm64: ${{ github.event.inputs.macos-arm64 == 'yes' }}"
           echo "linux-arm64: ${{ github.event.inputs.linux-arm64 == 'yes' }}"
+          echo "bsd: ${{ github.event.inputs.bsd == 'yes' }}"
           echo "deploy: ${{ github.event.inputs.deploy == 'yes' }}"
 
   # -----------------------------------------------------------------------
   macos:
-    runs-on: macos-12
+    runs-on: macos-latest
     if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
     name: macOS x86_64
     env:
-#      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64"
-      RVERSION_DEFAULT: "4.3-x86_64"
+      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64"
+      RVERSION_DEFAULT: "4.4-x86_64"
     steps:
 
     - name: Checkout
@@ -100,14 +109,14 @@ jobs:
 
     - name: Install R
       run: |
-        sudo rig add 3.5
-        sudo rig add 3.6
-        sudo rig add 4.0
-        sudo rig add 4.1
-        sudo rig add 4.2
-        sudo rig add 4.3
-        sudo rig add release
-        sudo rig add devel
+        sudo rig add 3.5 --arch x86_64
+        sudo rig add 3.6 --arch x86_64
+        sudo rig add 4.0 --arch x86_64
+        sudo rig add 4.1 --arch x86_64
+        sudo rig add 4.2 --arch x86_64
+        sudo rig add 4.3 --arch x86_64
+        sudo rig add release --arch x86_64
+        sudo rig add devel --arch x86_64
         rig default release
 
     - name: Install skopeo
@@ -130,12 +139,12 @@ jobs:
   # -----------------------------------------------------------------------
 
   macos-arm64:
-    runs-on: macos-12
+    runs-on: macos-latest
     if: ${{ github.event.inputs.macos-arm64 == '' || github.event.inputs.macos-arm64 == 'yes' }}
     name: macos arm64
     env:
-      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.5-arm64"
-      RVERSION_DEFAULT: "4.3-x86_64"
+      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64 4.5-arm64"
+      RVERSION_DEFAULT: "4.4-arm64"
 
     steps:
 
@@ -316,6 +325,64 @@ jobs:
       env:
         RVERSIONS: ${{ matrix.config.r }}
         GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+
+  # ------------------------------------------------------------------------
+
+  bsd:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.bsd == '' || github.event.inputs.bsd == 'yes' }}
+    name: BSD
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: 'freebsd', release: '15.0' }
+          - { os: 'freebsd', release: '14.2-pre' }
+          - { os: 'freebsd', release: '14.1' }
+          - { os: 'freebsd', release: '13.4' }
+          - { os: 'openbsd', release: '7.6' }
+          - { os: 'openbsd', release: '7.5' }
+          - { os: 'openbsd', release: '7.4' }
+          - { os: 'netbsd' }
+          - { os: 'dragonflybsd' }
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 10
+
+    - uses: r-hub/actions/setup-r-freebsd@main
+      if: ${{ matrix.config.os == 'freebsd' }}
+      with:
+        release: ${{ matrix.config.release }}
+
+    - uses: r-hub/actions/setup-r-openbsd@v1
+      if: ${{ matrix.config.os == 'openbsd' }}
+      with:
+        release: ${{ matrix.config.release }}
+
+    - uses: r-hub/actions/setup-r-netbsd@v1
+      if: ${{ matrix.config.os == 'netbsd' }}
+
+    - uses: r-hub/actions/setup-r-dragonflybsd@v1
+      if: ${{ matrix.config.os == 'dragonflybsd' }}
+
+    - name: Build pak binary
+      run: |
+        # this runs on the VM
+        install.packages(".", repos = NULL, type = "source", INSTALL_opts = "--build")
+      shell: Rscript {0}
+
+    - name: Deploy pak binary
+      run: |
+        make -f tools/build/docker-deploy/Makefile
+      env:
+        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      shell: bash
 
   # ------------------------------------------------------------------------
 

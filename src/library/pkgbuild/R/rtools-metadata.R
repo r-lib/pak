@@ -75,6 +75,11 @@ version_info <- list(
   ),
   "4.3" = list(
     version_min = "4.3.0",
+    version_max = "4.3.99",
+    path = "usr/bin"
+  ),
+  "4.4" = list(
+    version_min = "4.4.0",
     version_max = "99.99.99",
     path = "usr/bin"
   ),

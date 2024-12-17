@@ -53,7 +53,7 @@ test_that("Old URL", {
     for (i in seq_len(nrow(tsts))) {
       cu <- get_curl(repo, tsts$pkg_type[i], tsts$rver[i])
       av <- available.packages(cu, filters = list(), ignore_repo_cache = TRUE)
-      mockery::stub(rver_flt, "getRversion", package_version(tsts$rver[i]))
+      fake(rver_flt, "getRversion", package_version(tsts$rver[i]))
       res <- rver_flt(av)
 
       expect_equal(nrow(res), 1L)
@@ -113,7 +113,7 @@ test_that("New URL", {
 
       cu <- get_curl(repo, tsts$pkg_type[i], tsts$rver[i])
       av <- available.packages(cu, filters = list(), ignore_repo_cache = TRUE)
-      mockery::stub(rver_flt, "getRversion", package_version(tsts$rver[i]))
+      fake(rver_flt, "getRversion", package_version(tsts$rver[i]))
       res <- rver_flt(av)
 
       expect_equal(nrow(res), 1L)

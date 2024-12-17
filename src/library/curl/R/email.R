@@ -19,13 +19,6 @@
 #' By default, the port will be 25, unless \code{smtps://} is specified--then
 #' the default will be 465 instead.
 #'
-#' For internet SMTP servers you probably need to pass a
-#' \href{https://curl.se/libcurl/c/CURLOPT_USERNAME.html}{username} and
-#' \href{https://curl.se/libcurl/c/CURLOPT_PASSWORD.html}{passwords} option.
-#' For some servers you also need to pass a string with
-#' \href{https://curl.se/libcurl/c/CURLOPT_LOGIN_OPTIONS.html}{login_options}
-#' for example \code{login_options="AUTH=NTLM"}.
-#'
 #' @section Encrypting connections via SMTPS or STARTTLS:
 #'
 #' There are two different ways in which SMTP can be encrypted: SMTPS servers
@@ -58,8 +51,8 @@
 #' for details. Default will try to SSL, proceed as normal otherwise.
 #' @param verbose print output
 #' @param ... other options passed to \code{\link{handle_setopt}}. In most cases
-#' you will need to set a \code{username} and \code{password} or \code{login_options}
-#' to authenticate with the SMTP server, see details.
+#' you will need to set a \code{username} and \code{password} to authenticate
+#' with the SMTP server.
 #' @examples \dontrun{# Set sender and recipients (email addresses only)
 #' recipients <- readline("Enter your email address to receive test: ")
 #' sender <- 'test@noreply.com'

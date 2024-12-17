@@ -375,7 +375,7 @@ pak::sysreqs_db_list()
 
 </div>
 
-`sysreqs_db_match()` manually matches `SystemREquirements` fields
+`sysreqs_db_match()` manually matches `SystemRequirements` fields
 againts these system requirements:
 
 ``` r

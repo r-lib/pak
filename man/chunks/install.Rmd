@@ -18,13 +18,17 @@ install.packages("pak", repos = sprintf(
 
 This is supported for the following systems:
 
-| OS                  | CPU       | R version         |
-|---------------------|-----------|-------------------|
-| Linux               | x86_64    | R 3.4.0 - R-devel |
-| Linux               | aarch64   | R 3.4.0 - R-devel |
-| macOS High Sierra+  | x86_64    | R 3.4.0 - R-devel |
-| macOS Big Sur+      | aarch64   | R 4.1.0 - R-devel |
-| Windows             | x86_64    | R 3.4.0 - R-devel |
+| OS                    | CPU       | R version                         |
+|-----------------------|-----------|-----------------------------------|
+| Linux                 | x86_64    | R 3.4.0 - R-devel                 |
+| Linux                 | aarch64   | R 3.4.0 - R-devel                 |
+| macOS High Sierra+    | x86_64    | R 3.4.0 - R-devel                 |
+| macOS Big Sur+        | aarch64   | R 4.1.0 - R-devel                 |
+| Windows               | x86_64    | R 3.4.0 - R-devel                 |
+| FreeBSD 13.x or later | x86_64    | R 4.4.x                           |
+| OpenBSD 7.4, 7.5, 7.6 | x86_64    | R 4.2.x (7.4, 7.5), R 4.4.x (7.6) |
+| NetBSD 10.0           | x86_64    | R 4.4.x                           |
+| DragonFly BSD 6.4     | x86_64    | R 4.3.x                           |
 
 ### Notes
 

@@ -69,21 +69,20 @@ handle_setopt <- function(handle, ..., .list = list()){
 }
 
 #' @export
+#' @useDynLib curl R_handle_setheaders
 #' @rdname handle
 handle_setheaders <- function(handle, ..., .list = list()){
-  x <- c(list(...), .list)
-  if(!all(vapply(x, is.character, logical(1)))){
+  stopifnot(inherits(handle, "curl_handle"))
+  opts <- c(list(...), .list)
+  if(!all(vapply(opts, is.character, logical(1)))){
     stop("All headers must be strings.")
   }
-  handle_setopt(handle, httpheader = format_request_headers(x))
-}
-
-format_request_headers <- function(x){
-  x$Expect = ""
-  names <- names(x)
-  values <- as.character(unlist(x))
-  postfix <- ifelse(grepl("^\\s+$", values), ";", paste(":", values))
-  paste0(names, postfix)
+  opts$Expect = ""
+  names <- names(opts)
+  values <- as.character(unlist(opts))
+  vec <- paste0(names, ": ", values)
+  .Call(R_handle_setheaders, handle, vec)
+  invisible(handle)
 }
 
 #' @useDynLib curl R_handle_getheaders

@@ -261,7 +261,7 @@ encode_string <- function(x) {
 }
 
 quote_weird_name0 <- function(x) {
-  x <- gsub(" ", "\u00a0", x)
+  x <- gsub(" ", "\u00a0", x, fixed = TRUE)
   x2 <- ansi_strip(x)
 
   fc <- first_character(x2)

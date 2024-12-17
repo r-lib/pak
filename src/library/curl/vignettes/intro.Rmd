@@ -392,13 +392,12 @@ The `form_data` function is similar but simply posts a string or raw value with 
 
 All of the `handle_xxx` functions return the handle object so that function calls can be chained using the popular pipe operators:
 
-```{r eval=getRversion() > "4.1"}
-# Perform request
-res <- new_handle() |>
-  handle_setopt(copypostfields = "moo=moomooo") |>
-  handle_setheaders("Content-Type"="text/moo", "Cache-Control"="no-cache", "User-Agent"="A cow") |>
-  curl_fetch_memory(url = "https://hb.cran.dev/post")
+```{r}
+library(magrittr)
 
-# Parse response
-res$content |> rawToChar() |> jsonlite::prettify()
+new_handle() %>%
+  handle_setopt(copypostfields = "moo=moomooo") %>%
+  handle_setheaders("Content-Type"="text/moo", "Cache-Control"="no-cache", "User-Agent"="A cow") %>%
+  curl_fetch_memory(url = "https://hb.cran.dev/post") %$% content %>% 
+  rawToChar %>% jsonlite::prettify()
 ```

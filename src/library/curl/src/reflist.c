@@ -8,7 +8,7 @@ SEXP reflist_init(void){
 SEXP reflist_add(SEXP x, SEXP target){
   if(!Rf_isPairList(x))
     Rf_error("Not a LISTSXP");
-  return(Rf_cons(target, x));
+  return(CONS(target, x));
 }
 
 SEXP reflist_has(SEXP x, SEXP target){
@@ -16,10 +16,10 @@ SEXP reflist_has(SEXP x, SEXP target){
     Rf_error("Not a LISTSXP");
   while(x != R_NilValue){
     if(CAR(x) == target)
-      return(Rf_ScalarLogical(1));
+      return(ScalarLogical(1));
     x = CDR(x);
   }
-  return(Rf_ScalarLogical(0));
+  return(ScalarLogical(0));
 }
 
 SEXP reflist_remove(SEXP x, SEXP target){
@@ -52,5 +52,5 @@ SEXP reflist_length(SEXP x) {
     i++;
     x = CDR(x);
   }
-  return Rf_ScalarInteger(i);
+  return ScalarInteger(i);
 }

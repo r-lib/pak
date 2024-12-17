@@ -1,3 +1,42 @@
+# ps 1.8.1
+
+* ps can now be installed again on unsupported platforms.
+
+# ps 1.8.0
+
+* New `ps_apps()` function to list all running applications on macOS.
+
+* New function `ps_disk_io_counters()` to query disk I/O counters
+  (#145, @michaelwalshe).
+
+* New `ps_fs_info()` to query information about the file system of one
+  or more files or directories.
+
+* New `ps_wait()` to start an interruptible wait on multiple processes,
+  with a timeout (#166).
+
+* `ps_handle()` now allows a numeric (double) scalar as the pid, as long
+  as its value is integer.
+
+* `ps_send_signal()`, `ps_suspend()`, `ps_resume()`, `ps_terminate()`,
+  `ps_kill()`, and `ps_interrupt()` can now operate on multiple processes,
+  if passed a list of process handles.
+
+* `ps_kill()` and `ps_kill_tree()` have a new `grace` argument.
+  On Unix, if this argument is not zero, then `ps_kill()` first sends a
+  `TERM` signal, and waits for the processes to quit gracefully, via
+  `ps_wait()`. The processes that are still alive after the grace period
+  are then killed with `SIGKILL`.
+
+* `ps_status()` (and thus `ps()`) is now better at getting the correct
+  status of processes on macOS. This usually requires calling the external
+  `ps` tool. See `?ps_status()` on how to opt out from the new
+  behavior (#31).
+
+# ps 1.7.7
+
+* `ps_cpu_times()` values are now correct on newer arm64 macOS.
+
 # ps 1.7.6
 
 * `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).

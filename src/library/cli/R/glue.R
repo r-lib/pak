@@ -79,7 +79,8 @@ drop_null <- function(x) {
 #' to collapse.
 #' @param sep Separator. A character string.
 #' @param sep2 Separator for the special case that `x` contains only two
-#' elements. A character string.
+#' elements. A character string. Defaults to the value of `last` without the
+#' serial comma.
 #' @param last Last separator, if there is no truncation. E.g. use
 #' `", and "` for the [serial
 #' comma](https://en.wikipedia.org/wiki/Serial_comma). A character string.
@@ -112,7 +113,7 @@ drop_null <- function(x) {
 #' # head style
 #' ansi_collapse(letters, trunc = 5, style = "head")
 
-ansi_collapse <- function(x, sep = ", ", sep2 = " and ", last = ", and ",
+ansi_collapse <- function(x, sep = ", ", sep2 = sub("^,", "", last), last = ", and ",
                           trunc = Inf, width = Inf, ellipsis = symbol$ellipsis,
                           style = c("both-ends", "head")) {
 
@@ -158,7 +159,7 @@ collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
   # special cases that do not need trimming
   if (lnx == 0L) {
     return("")
-  } else if (any(is.na(x))) {
+  } else if (anyNA(x)) {
     return(NA_character_)
   }
 
@@ -187,7 +188,9 @@ collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
     nlast <- if (lnx > 2L) 1L else 0L
     wtot  <- sum(wx) + nsep * wsep + nsep2 * wsep2 + nlast * wlast
     if (wtot <= width) {
-      if (lnx == 2L) {
+      if (lnx == 1L) {
+        return(x)
+      } else if (lnx == 2L) {
         return(paste0(x, collapse = sep2))
       } else {
         return(paste0(
