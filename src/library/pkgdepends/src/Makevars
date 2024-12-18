@@ -1,6 +1,7 @@
-PKG_CFLAGS = \
+PKG_CPPFLAGS = \
         -I./tree-sitter/lib/include \
-        -I./tree-sitter/lib/src
+        -I./tree-sitter/lib/src \
+        -I./yaml
 
 tree-sitter-files = \
         tree-sitter/lib/src/lib.o \
@@ -9,12 +10,24 @@ tree-sitter-files = \
 	tree-sitter/markdown/parser.o \
 	tree-sitter/markdown/scanner.o \
 	tree-sitter/markdown-inline/parser.o \
-	tree-sitter/markdown-inline/scanner.o
+	tree-sitter/markdown-inline/scanner.o \
+        tree-sitter/yaml/parser.o \
+        tree-sitter/yaml/scanner.o
+
+yaml-files = \
+        yaml/api.o \
+        yaml/dumper.o \
+        yaml/emitter.o \
+        yaml/loader.o \
+        yaml/parser.o \
+        yaml/reader.o \
+        yaml/scanner.o \
+        yaml/writer.o
 
 lib-files = \
-        init.o cleancall.o tree-sitter.o
+        init.o cleancall.o tree-sitter.o yaml.o
 
-OBJECTS = $(tree-sitter-files) $(lib-files)
+OBJECTS = $(tree-sitter-files) $(yaml-files) $(lib-files)
 
 all: $(SHLIB)
 

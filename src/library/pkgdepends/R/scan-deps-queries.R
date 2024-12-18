@@ -156,7 +156,9 @@ q_deps_rmd <- function() {
       (#match? @header "^[{]")
     )',
     inline =
-      '(inline) @inline'
+      '(inline) @inline',
+    header =
+      '(minus_metadata) @metadata'
   )
 }
 
@@ -165,4 +167,55 @@ q_deps_rmd_inline <- function() {
     (code_span_delimiter) @csd1
     (code_span_delimiter) @csd2
   ) @code'
+}
+
+q_deps_yaml_header <- function() {
+  c(shiny =
+      '(document (block_node (block_mapping (block_mapping_pair
+         key: _ @key
+         value: (_ [
+           (plain_scalar)
+           (block_scalar)
+           (single_quote_scalar)
+           (double_quote_scalar)
+         ]) @value
+         ) @code ))
+       (#any-of? @key "server" "\'server\'" "\\"server\\""))',
+    shiny =
+      '(document (block_node (block_mapping (block_mapping_pair
+         key: _ @key
+         value: (block_node (block_mapping (block_mapping_pair
+           key: _ @key2
+           value: (_ [
+             (plain_scalar)
+             (block_scalar)
+             (single_quote_scalar)
+             (double_quote_scalar)
+           ]) @value
+         )))
+         ) @code ))
+         (#any-of? @key "server" "\'server\'" "\\"server\\"")
+         (#any-of? @key2 "type" "\'type\'" "\\"type\\""))',
+    pkgstring =
+      '((string_scalar) @code
+       (#match? @code "^[a-zA-Z][.a-zA-Z0-9]+[ ]*::"))',
+    bslib =
+      '(document (block_node (block_mapping (block_mapping_pair
+        key: _ @key
+        value: (block_node (block_mapping (block_mapping_pair
+         key: _ @key2
+         value: (block_node (block_mapping (block_mapping_pair
+          key: _ @key3
+          value: _ @value
+         )))
+        )))
+        ) @code ))
+        (#any-of? @key "output" "\'output\'" "\\"output\\"")
+        (#any-of? @key2 "html_document" "\'html_document\'" "\\"html_document\\"")
+        (#any-of? @key3 "theme" "\'theme\'" "\\"theme\\""))',
+      tag =
+        '((tag) @tag . _ @code
+          (#any-of? @tag "!r" "\'!r\'" "\\"!r\\""))',
+      NULL
+  )
 }

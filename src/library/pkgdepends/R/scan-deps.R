@@ -83,21 +83,78 @@
 
 scan_deps <- function(path = ".") {
   path <- tryCatch(find_project_root(path), error = function(...) path)
-  paths <- dir(path, pattern = "[.](R|r|Rmd|rmd)$", recursive = TRUE)
+  paths <- c(
+    dir(path, pattern = scan_deps_pattern(), recursive = TRUE),
+    dir(path, pattern = scan_deps_pattern_root(), recursive = FALSE)
+  )
   full_paths <- normalizePath(file.path(path, paths))
   deps_list <- lapply(full_paths, scan_path_deps)
-  deps <- do.call("rbind", c(list(scan_path_deps_empty()), deps_list))
+  deps <- do.call("rbind", c(list(scan_deps_df()), deps_list))
   # write back the relative paths
   deps$path <- paths[match(deps$path, full_paths)]
-  deps$type <- get_dep_type_from_path(deps$path)
+  deps$type <- get_dep_type_from_path(deps$path, deps$type)
+  class(deps) <- c("pkg_scan_deps", class(deps))
   deps
+}
+
+scan_deps_pattern <- function() {
+  ptrns <- c(
+    "[.]R$",
+    "[.]r$",
+    "[.]Rmd$",
+    "[.]rmd$",
+    "[.]rmarkdown",
+    "[.]Rmarkdown",
+    "[.]qmd$",
+    "[.]Rproj$",
+    "^_bookdown[.]yml$",
+    "^_quarto[.]yml$",
+    NULL
+  )
+  paste0("(", paste0(collapse = "|", ptrns), ")")
+}
+
+scan_deps_pattern_root <- function() {
+  ptrns <- c(
+    "^DESCRIPTION$",
+    "^NAMESPACE$",
+    "^_pkgdown.yml$",
+    "^renv[.]lock$",
+    "^rsconnect$",
+    NULL
+  )
+  paste0("(", paste0(collapse = "|", ptrns), ")")
+}
+
+scan_deps_file_type_use_basename <- function() {
+  # for these we don't use the extension but the basename
+  # to decide which parser to use
+  c(
+    "DESCRIPTION",
+    "NAMESPACE",
+    "_bookdown.yml",
+    "_pkgdown.yml",
+    "_quarto.yml",
+    "renv.lock",
+    NULL
+  )
+}
+
+scan_deps_file_type <- function(paths) {
+  ext <- tolower(file_ext(paths))
+  bsn <- basename(paths)
+  ifelse(
+    bsn %in% scan_deps_file_type_use_basename() | is.na(ext),
+    bsn,
+    ext
+  )
 }
 
 # -------------------------------------------------------------------------
 
 # needs to increase as the deps discovry code changes, otherwise we don't
 # apply the new discovery code
-deps_cache_version <- 1L
+deps_cache_version <- 2L
 
 get_deps_cache_path <- function(hash = NULL) {
   root <- file.path(get_user_cache_dir()$root, "deps", deps_cache_version)
@@ -136,55 +193,100 @@ re_r_dep <- function() {
 }
 
 scan_path_deps <- function(path) {
-  code <- readBin(path, "raw", file.size(path))
+  code <- if (file.info(path)$isdir) {
+    NULL
+  } else {
+    readBin(path, "raw", file.size(path))
+  }
 
   # check if already known, set path
-  hash <- cli::hash_raw_xxhash(code)
-  cache <- get_deps_cache_path(hash)
-  if (file.exists(cache)) {
-    deps <- readRDS(cache)
-    if (!is.null(deps) && nrow(deps) > 0) {
-      deps$path <- path
-      deps$type <- get_dep_type_from_path(path)
+  should_cache <- scan_path_should_cache(path)
+  if (should_cache) {
+    hash <- cli::hash_raw_xxhash(code)
+    cache <- get_deps_cache_path(hash)
+    if (file.exists(cache)) {
+      deps <- readRDS(cache)
+      if (!is.null(deps) && nrow(deps) > 0) {
+        deps$path <- path
+        deps$type <- get_dep_type_from_path(deps$path, deps$type)
+      }
+      return(deps)
     }
-    return(deps)
   }
 
   # scan it if it is worth it, based on a quick check
-  has_deps <- length(grepRaw(re_r_dep(), code)) > 0
-  deps <- if (has_deps) scan_path_deps_do(code, path)
+  maybe_has_deps <- scan_deps_file_type(path) != "r" ||
+    length(grepRaw(re_r_dep(), code)) > 0
+  deps <- if (maybe_has_deps) {
+    scan_path_deps_do(code, path)
+  }
 
   # save it to the cache, but anonimize it first. If no deps, save NULL
-  deps_no_path <- deps
-  if (!is.null(deps_no_path) && nrow(deps_no_path) > 0) {
-    deps_no_path$path <- ""
-    deps_no_path$type <- NA_character_
+  if (should_cache) {
+    deps_no_path <- deps
+    if (!is.null(deps_no_path) && nrow(deps_no_path) > 0) {
+      deps_no_path$path <- ""
+    }
+    dir.create(dirname(cache), showWarnings = FALSE, recursive = TRUE)
+    saveRDS(deps_no_path, cache)
   }
-  dir.create(dirname(cache), showWarnings = FALSE, recursive = TRUE)
-  saveRDS(deps_no_path, cache)
 
   deps
 }
 
-scan_path_deps_empty <- function() {
+scan_deps_df <- function(
+  path = character(),
+  ref = package,
+  package = character(),
+  version = "*",
+  type = get_dep_type_from_path(path),
+  code = character(),
+  start_row = 1L,
+  start_column = 1L,
+  start_byte = 1L
+) {
   data_frame(
-    path = character(),
-    package = character(),
-    type = character(),
-    code = character(),
-    start_row = integer(),
-    start_column = integer(),
-    start_byte = integer()
+    path = path,
+    ref = ref,
+    package = package,
+    version = version,
+    type = type,
+    code = code,
+    start_row = start_row,
+    start_column = start_column,
+    start_byte = start_byte
+  )
+}
+
+scan_path_should_cache <- function(paths) {
+  # we don't want to cache the ones that depend on the file
+  # name, because caching is content-based.
+  ! basename(paths) %in% c(
+    "_bookdown.yml",
+    "_pkgdown.yml",
+    "_quarto.yml",
+    "renv.lock",
+    "rsconnect",
+    NULL
   )
 }
 
 scan_path_deps_do <- function(code, path) {
-  ext <- tolower(file_ext(path))
+  ext <- scan_deps_file_type(path)
   switch(
     ext,
     ".r" = scan_path_deps_do_r(code, path),
     ".qmd" = ,
+    ".rmarkdown" = ,
     ".rmd" = scan_path_deps_do_rmd(code, path),
+    "DESCRIPTION" = scan_path_deps_do_dsc(code, path),
+    "NAMESPACE" = scan_path_deps_do_namespace(code, path),
+    "_bookdown.yml" = scan_path_deps_do_bookdown(code, path),
+    "_pkgdown.yml" = scan_path_deps_do_pkgdown(code, path),
+    "_quarto.yml" = scan_path_deps_do_quarto(code, path),
+    "renv.lock" = scan_path_deps_do_renv_lock(code, path),
+    "rsconnect" = scan_path_deps_do_rsconnect(code, path),
+    ".rproj" = scan_path_deps_do_rproj(code, path),
     stop("Cannot parse ", ext, " file for dependencies, internal error")
   )
 }
@@ -231,10 +333,10 @@ scan_path_deps_do_r <- function(code, path, ranges = NULL) {
 }
 
 scan_path_deps_do_pkg_hits <- function(hits, path) {
-  data_frame(
+  pkg <- hits$code[hits$name == "pkg-name"]
+  scan_deps_df(
     path = path,
-    package = hits$code[hits$name == "pkg-name"],
-    type = get_dep_type_from_path(path),
+    package = pkg,
     code = hits$code[hits$name == "dep-code"],
     start_row = hits$start_row[hits$name == "dep-code"],
     start_column = hits$start_column[hits$name == "dep-code"],
@@ -245,10 +347,9 @@ scan_path_deps_do_pkg_hits <- function(hits, path) {
 scan_path_deps_do_fn_hits <- function(hits, path) {
   fn_pkg_map <- c(setClass = "methods", setGeneric = "methods")
   fn_names <- hits$code[hits$name == "fn-name"]
-  data_frame(
+  scan_deps_df(
     path = path,
     package = fn_pkg_map[fn_names],
-    type = get_dep_type_from_path(path),
     code = hits$code[hits$name == "dep-code"],
     start_row = hits$start_row[hits$name == "dep-code"],
     start_column = hits$start_column[hits$name == "dep-code"],
@@ -270,10 +371,9 @@ scan_path_deps_do_gen_hits <- function(hits, path) {
     safe_parse_pkg_from_call(ns[i], fn[i], code[i])
   })
   pkgs_count <- lengths(pkgs)
-  data_frame(
+  scan_deps_df(
     path = path,
     package = unlist(pkgs),
-    type = get_dep_type_from_path(path),
     code = rep(code, pkgs_count),
     start_row = rep(hits$start_row[hits$name == "dep-code"], pkgs_count),
     start_column = rep(hits$start_column[hits$name == "dep-code"], pkgs_count),
@@ -283,10 +383,9 @@ scan_path_deps_do_gen_hits <- function(hits, path) {
 
 scan_path_deps_do_jr_hits <- function(hits, path) {
   code <- hits$code[hits$name == "dep-code"]
-  data_frame(
+  scan_deps_df(
     path = path,
     package = "xml2",
-    type = get_dep_type_from_path(path),
     code = code,
     start_row = hits$start_row[hits$name == "dep-code"],
     start_column = hits$start_column[hits$name == "dep-code"],
@@ -301,10 +400,9 @@ scan_pat_deps_do_ragg_hits <- function(hits, path) {
     matched <- match.call(function(...) { }, expr, expand.dots=FALSE)
     args <- matched[["..."]]
     if ("dev" %in% names(args) && args[["dev"]] == "ragg_png") {
-      return(data_frame(
+      return(scan_deps_df(
         path = path,
         package = "ragg",
-        type = get_dep_type_from_path(path),
         code = hits$code[wc],
         start_row = hits$start_row[wc],
         start_column = hits$start_column[wc],
@@ -320,10 +418,9 @@ scan_pat_deps_do_db_hits <- function(hits, path) {
   fns <- unlist(lapply(db, names))
   map <- unlist(unname(db), recursive = FALSE)
   pkgs <- unlist(map[hits$code])
-  data_frame(
+  scan_deps_df(
     path = path,
     package = pkgs,
-    type = get_dep_type_from_path(path),
     code = hits$code,
     start_row = hits$start_row,
     start_column = hits$start_column,
@@ -331,6 +428,7 @@ scan_pat_deps_do_db_hits <- function(hits, path) {
   )
 }
 
+# nocov start
 prot_xfun_pkg_attach <- function(..., install, message) { }
 prot_xfun_pkg_attach2 <- function(...) { }
 prot_pacman_p_load <- function(
@@ -366,6 +464,7 @@ prot_testthat_test_dir <- function(
   path, filter = NULL, reporter = NULL, ...) {
 }
 prot_testthat_test_file <- function(path, reporter = NULL, ...) { }
+# nocov end
 
 safe_parse_pkg_from_call <- function(ns, fn, code) {
   tryCatch(
@@ -374,7 +473,7 @@ safe_parse_pkg_from_call <- function(ns, fn, code) {
   )
 }
 
-parse_pkg_from_call <- function(ns, fn, code) {
+parse_pkg_from_call_match <- function(fn, code) {
   expr <- parse(text = code, keep.source = FALSE)
   fun <- switch(fn,
     "library" = base::library,
@@ -399,13 +498,17 @@ parse_pkg_from_call <- function(ns, fn, code) {
     "test_dir" = prot_testthat_test_dir,
     "test_file" = prot_testthat_test_file
   )
-  matched <- match.call(fun, expr, expand.dots = FALSE)
+  match.call(fun, expr, expand.dots = FALSE)
+}
+
+parse_pkg_from_call <- function(ns, fn, code) {
+  matched <- parse_pkg_from_call_match(fn, code)
   switch(fn,
     "library" = , "require" =
-      parse_pkg_from_call_library(ns, fs, matched),
+      parse_pkg_from_call_library(ns, fn, matched),
     "loadNamespace" = , "requireNamespace" =
-      parse_pkg_from_call_loadNamespace(ns, fn, matched),
-    "pkg_attache" = , "pkg_attach2" =
+      parse_pkg_from_call_loadnamespace(ns, fn, matched),
+    "pkg_attach" = , "pkg_attach2" =
       parse_pkg_from_call_xfun(ns, fn, matched),
     "p_load" =
       parse_pkg_from_call_pacman(ns, fn, matched),
@@ -445,7 +548,7 @@ parse_pkg_from_call_library <- function(ns, fn, matched) {
   NULL
 }
 
-parse_pkg_from_call_loadNamespace <- function(ns, fn, matched) {
+parse_pkg_from_call_loadnamespace <- function(ns, fn, matched) {
   if (!is.na(ns) && ns != "base") return(NULL)
   pkg <- matched[["package"]]
   if (is.character(pkg) && length(pkg) == 1) {
@@ -471,7 +574,7 @@ parse_pkg_from_call_pacman <- function(ns, fn, matched) {
 
   # character vector or scalar
   char <- matched[["char"]]
-  if (char[[1]] == quote(c)) {
+  if (length(char) > 0 && char[[1]] == quote(c)) {
     pkgs <- c(pkgs, as.list(char[-1]))
   } else if (is.character(char)) {
     pkgs <- c(pkgs, as.list(char))
@@ -669,11 +772,15 @@ scan_path_deps_do_rmd <- function(code, path) {
   inl_pat <- hits$patterns$id[hits$patterns$name == "inline"]
   inl_hits <- hits$matched_captures[
     hits$matched_captures$pattern %in% inl_pat, ]
+  hdr_pat <- hits$patterns$id[hits$patterns$name == "header"]
+  hdr_hits <- hits$matched_captures[
+    hits$matched_captures$pattern %in% hdr_pat, ]
   blk_hits <- hits$matched_captures[
-    ! hits$matched_captures$pattern %in% inl_pat, ]
+    ! hits$matched_captures$pattern %in% c(inl_pat, hdr_pat), ]
   rbind(
     if (nrow(inl_hits)) scan_path_deps_do_inline_hits(code, inl_hits, path),
-    if (nrow(blk_hits)) scan_path_deps_do_block_hits(code, blk_hits, path)
+    if (nrow(blk_hits)) scan_path_deps_do_block_hits(code, blk_hits, path),
+    if (nrow(hdr_hits)) scan_path_deps_do_header_hits(code, hdr_hits, path)
   )
 }
 
@@ -722,4 +829,229 @@ scan_path_deps_do_block_hits <- function(code, blk_hits, path) {
 
   r_ranges <- blk_hits[wcnd, range_cols]
   scan_path_deps_do_r(code, path = path, ranges = r_ranges)
+}
+
+# Crossref: https://github.com/r-lib/pkgdepends/issues/399
+# This is pretty difficult, unfortunately, but could not come up with a
+# simpler solution.
+# * We use tree-sitter to parse and search the YAML, so that we can have
+#   coordinates, and also the search is much simpler than when using a YAML
+#   parser.
+# * The tree-sitter parser cannot scan the actual values of the scalars, so
+#   we use a YAML parser for that (libyaml). (No, it is not better to scan
+#   them manually, they are quite involved.)
+# * Scanning the scalars is a transformation, not just a subsetting, so
+#   we lose the correct coordinates for the things (e.g. R code) _within_
+#   the values. We still have the coordinates for the values, though.
+# * We don't handle references correctly, because the tree-sitter parser
+#   does not help with that. For that we'd need to parse the whole YAML
+#   with libyaml. Maybe we'll do that in the future.
+
+scan_path_deps_do_header_hits <- function(code, hdr_hits, path) {
+  hits <- code_query(
+    code,
+    language = "yaml",
+    query = q_deps_yaml_header(),
+    ranges = hdr_hits[, range_cols]
+  )
+
+  shiny_pat <- hits$patterns$id[hits$patterns$name == "shiny"]
+  shiny_hits <- hits$matched_captures[
+    hits$matched_captures$pattern %in% shiny_pat, ]
+  pkgstr_pat <- hits$patterns$id[hits$patterns$name == "pkgstring"]
+  pkgstr_hits <- hits$matched_captures[
+    hits$matched_captures$pattern %in% pkgstr_pat, ]
+  bslib_pat <- hits$patterns$id[hits$patterns$name == "bslib"]
+  bslib_hits <- hits$matched_captures[
+    hits$matched_captures$pattern %in% bslib_pat, ]
+  tag_pat <- hits$patterns$id[hits$patterns$name == "tag"]
+  tag_hits <- hits$matched_captures[
+    hits$matched_captures$pattern %in% tag_pat, ]
+
+  rbind(
+    if (nrow(shiny_hits)) {
+      scan_path_deps_do_header_shiny_hits(code, shiny_hits, path)
+    },
+    if (nrow(pkgstr_hits)) {
+      scan_path_deps_do_header_pkgstr_hits(code, pkgstr_hits, path)
+    },
+    if (nrow(bslib_hits)) {
+      scan_path_deps_do_header_bslib_hits(code, bslib_hits, path)
+    },
+    if (nrow(tag_hits)) {
+      scan_path_deps_do_header_tag_hits(code, tag_hits, path)
+    }
+  )
+}
+
+scan_path_deps_do_header_shiny_hits <- function(code, hits, path) {
+  hits <- hits[hits$name == "value", ]
+  vals <- yaml_parse_scalar(hits$code)
+  shiny <- vals == "shiny"
+  scan_deps_df(
+    path = path,
+    package = "shiny",
+    code = hits$code[shiny],
+    start_row = hits$start_row[shiny],
+    start_column = hits$start_column[shiny],
+    start_byte = hits$start_byte[shiny]
+  )
+}
+
+scan_path_deps_do_header_pkgstr_hits <- function(code, hits, path) {
+  vals <- yaml_parse_scalar(hits$code)
+  pkg <- vapply(vals, FUN.VALUE = character(1), function(x) {
+    tryCatch({
+      expr <- parse(text = x, keep.source = FALSE)[[1]]
+      if (length(expr) == 3 && is.call(expr) &&
+          (identical(expr[[1]], quote(`::`)) ||
+           identical(expr[[1]], quote(`:::`)))) {
+        as.character(expr[[2]])
+      } else {
+        NA_character_
+      }
+    }, error = function(...) NA_character_)
+  })
+  if (all(is.na(pkg))) return(NULL)
+  hits <- hits[!is.na(pkg), ]
+  pkg <- na.omit(pkg)
+  scan_deps_df(
+    path = path,
+    package = pkg,
+    code = hits$code,
+    start_row = hits$start_row,
+    start_column = hits$start_column,
+    start_byte = hits$start_byte
+  )
+}
+
+scan_path_deps_do_header_bslib_hits <- function(code, hits, path) {
+  scan_deps_df(
+    path = path,
+    package = "bslib",
+    code = hits$code[hits$name == "code"],
+    start_row = hits$start_row[hits$name == "code"],
+    start_column = hits$start_column[hits$name == "code"],
+    start_byte = hits$start_byte[hits$name == "code"]
+  )
+}
+
+scan_path_deps_do_header_tag_hits <- function(code, hits, path) {
+  hits <- hits[hits[["name"]] == "code", ]
+  vals <- yaml_parse_scalar(hits$code)
+  res <- lapply(seq_along(vals), function(vi) {
+    r1 <- scan_path_deps_do_r(vals[vi], path = path)
+    # need to replace the positions with the ones from the YAML file
+    # we cannot use ranges here, because the R code is a a transformation
+    # of the text in the YAML file, not merely a subset. So we just mark
+    # the beginning of the R code in the YAML, instead of the real position
+    # of the `library()` etc. calls.
+    r1[["start_row"]][] <- hits[vi, "start_row"]
+    r1[["start_column"]][] <- hits[vi, "start_column"]
+    r1[["start_byte"]][] <- hits[vi, "start_byte"]
+    r1
+  })
+  do.call(rbind, res)
+}
+
+yaml_parse_scalar <- function(x) {
+  vcapply(x, function(x) .Call(c_yaml_parse_scalar, x), USE.NAMES = FALSE)
+}
+
+# -------------------------------------------------------------------------
+
+scan_path_deps_do_dsc <- function(code, path) {
+  code <- if (is.raw(code)) rawToChar(code)
+  dsc <- desc::desc(text = code)
+  deps <- resolve_ref_deps(
+    dsc$get_deps(),
+    dsc$get("Remotes")[[1]],
+    dsc$get(extra_config_fields(dsc$fields()))
+  )
+  deps <- deps[deps$package != "R", ]
+  version <- ifelse(deps$op == "", "*", paste0(deps$op, deps$version))
+  scan_deps_df(
+    path = path,
+    ref = deps$ref,
+    package = deps$package,
+    version = version,
+    type = get_dep_type_from_description_field(deps$type),
+    code = deps$ref
+  )
+}
+
+# -------------------------------------------------------------------------
+
+scan_path_deps_do_namespace <- function(code, path) {
+  tmp <- tempfile()
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  mkdirp(file.path(tmp, "pkg"))
+  if (is.raw(code)) {
+    writeBin(code, file.path(tmp, "pkg", "NAMESPACE"))
+  } else {
+    writeLines(code, file.path(tmp, "pkg", "NAMESPACE"))
+  }
+  info <- parseNamespaceFile(package = "pkg", package.lib = tmp)
+  pkg <- unique(vcapply(info$imports, "[[", 1))
+  scan_deps_df(
+    path = path,
+    package = pkg,
+    type = "prod",
+    code = pkg
+  )
+}
+
+# -------------------------------------------------------------------------
+
+scan_path_deps_do_bookdown <- function(code, path) {
+  scan_deps_df(
+    path = path,
+    package = "bookdown",
+    code = NA_character_
+  )
+}
+
+scan_path_deps_do_pkgdown <- function(code, path) {
+  scan_deps_df(
+    path = path,
+    package = "pkgdown",
+    code = NA_character_
+  )
+}
+
+scan_path_deps_do_quarto <- function(code, path) {
+  # renv does not include anything for quarto
+  # Do we want a 'dev' dependency for the quarto package?
+  # Maybe that's too opinionated?
+}
+
+scan_path_deps_do_renv_lock <- function(code, path) {
+  scan_deps_df(
+    path = path,
+    package = "renv",
+    code = NA_character_
+  )
+}
+
+scan_path_deps_do_rsconnect <- function(code, path) {
+  scan_deps_df(
+    path = path,
+    package = "rsconnect",
+    code = NA_character_
+  )
+}
+
+# -------------------------------------------------------------------------
+
+scan_path_deps_do_rproj <- function(code, path) {
+  con <- if (is.raw(code)) rawConnection(code) else textConnection(code)
+  on.exit(close(con), add = TRUE)
+  if ("yes" %in% tolower(read.dcf(con, fields = "PackageUseDevtools"))) {
+    scan_deps_df(
+      path = path,
+      package = c("devtools", "roxygen2"),
+      type = "dev",
+      code = "PackageUseDevtools: Yes"
+    )
+  }
 }

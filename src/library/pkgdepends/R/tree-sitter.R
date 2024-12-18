@@ -1,6 +1,6 @@
-ts_languages <- c(r = 0L, markdown = 1L, "markdown-inline" = 2L)
+ts_languages <- c(r = 0L, markdown = 1L, "markdown-inline" = 2L, yaml = 3L)
 
-s_expr <- function(code, language = c("r", "markdown", "markdown-inline"),
+s_expr <- function(code, language = c("r", "markdown", "markdown-inline", "yaml"),
                    ranges = NULL) {
   language <- tolower(language)
   language <- ts_languages[match.arg(language)]
@@ -9,7 +9,7 @@ s_expr <- function(code, language = c("r", "markdown", "markdown-inline"),
 }
 
 code_query <- function(code = NULL, query, file = NULL,
-                       language = c("r", "markdown", "markdown-inline"),
+                       language = c("r", "markdown", "markdown-inline", "yaml"),
                        ranges = NULL) {
   language <- tolower(language)
   language <- ts_languages[match.arg(language)]
