@@ -4,11 +4,11 @@ int R_curl_callback_progress(SEXP fun,
                              double dltotal, double dlnow,
                              double ultotal, double ulnow) {
 
-  SEXP down = PROTECT(allocVector(REALSXP, 2));
+  SEXP down = PROTECT(Rf_allocVector(REALSXP, 2));
   REAL(down)[0] = dltotal;
   REAL(down)[1] = dlnow;
 
-  SEXP up = PROTECT(allocVector(REALSXP, 2));
+  SEXP up = PROTECT(Rf_allocVector(REALSXP, 2));
   REAL(up)[0] = ultotal;
   REAL(up)[1] = ulnow;
 
@@ -21,19 +21,19 @@ int R_curl_callback_progress(SEXP fun,
     return CURL_READFUNC_ABORT;
   }
 
-  if (TYPEOF(res) != LGLSXP || length(res) != 1) {
+  if (TYPEOF(res) != LGLSXP || Rf_length(res) != 1) {
     UNPROTECT(4);
     Rf_warning("progress callback must return boolean");
     return 0;
   }
 
-  int out = asLogical(res);
+  int out = Rf_asLogical(res);
   UNPROTECT(4);
   return !out;
 }
 
 size_t R_curl_callback_read(char *buffer, size_t size, size_t nitems, SEXP fun) {
-  SEXP nbytes = PROTECT(ScalarInteger(size * nitems));
+  SEXP nbytes = PROTECT(Rf_ScalarInteger(size * nitems));
   SEXP call = PROTECT(Rf_lang2(fun, nbytes));
 
   int ok;
@@ -50,7 +50,7 @@ size_t R_curl_callback_read(char *buffer, size_t size, size_t nitems, SEXP fun) 
     return CURL_READFUNC_ABORT;
   }
 
-  size_t bytes_read = length(res);
+  size_t bytes_read = Rf_length(res);
   memcpy(buffer, RAW(res), bytes_read);
 
   UNPROTECT(3);
@@ -59,7 +59,7 @@ size_t R_curl_callback_read(char *buffer, size_t size, size_t nitems, SEXP fun) 
 
 /* origin is always SEEK_SET in libcurl, not really useful to pass on */
 int R_curl_callback_seek(SEXP fun, curl_off_t offset, int origin){
-  SEXP soffset = PROTECT(ScalarReal(offset));
+  SEXP soffset = PROTECT(Rf_ScalarReal(offset));
   SEXP call = PROTECT(Rf_lang2(fun, soffset));
   int ok;
   R_tryEval(call, R_GlobalEnv, &ok);
@@ -71,8 +71,8 @@ int R_curl_callback_debug(CURL *handle, curl_infotype type_, char *data,
                           size_t size, SEXP fun) {
 
   /* wrap type and msg into R types */
-  SEXP type = PROTECT(ScalarInteger(type_));
-  SEXP msg = PROTECT(allocVector(RAWSXP, size));
+  SEXP type = PROTECT(Rf_ScalarInteger(type_));
+  SEXP msg = PROTECT(Rf_allocVector(RAWSXP, size));
   memcpy(RAW(msg), data, size);
 
   /* call the R function */

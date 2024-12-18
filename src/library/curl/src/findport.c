@@ -76,7 +76,7 @@ SEXP R_findport(SEXP candidates){
   for(int i = 0; i < Rf_length(candidates); i++){
     int port = INTEGER(candidates)[i];
     if(port_is_available(port)){
-      return ScalarInteger(port);
+      return Rf_ScalarInteger(port);
     }
   }
   return R_NilValue;

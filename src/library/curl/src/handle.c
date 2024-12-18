@@ -8,7 +8,7 @@ extern int r_curl_is_off_t_option(CURLoption x);
 extern int r_curl_is_string_option(CURLoption x);
 extern int r_curl_is_postfields_option(CURLoption x);
 
-#define make_string(x) x ? Rf_mkString(x) : ScalarString(NA_STRING)
+#define make_string(x) x ? Rf_mkString(x) : Rf_ScalarString(NA_STRING)
 
 #ifndef MAX_PATH
 #define MAX_PATH 1024
@@ -148,8 +148,11 @@ static void set_handle_defaults(reference *ref){
     curl_easy_setopt(handle, CURLOPT_CAINFO, ca_bundle);
   }
 
-  /* needed to support compressed responses */
-  assert(curl_easy_setopt(handle, CURLOPT_ENCODING, ""));
+  static const curl_version_info_data *version = NULL;
+  if(version == NULL)
+    version = curl_version_info(CURLVERSION_NOW);
+  /* Enable compression. On MacOS libcurl 8.7.1, deflate is broken, so dont ask for it */
+  assert(curl_easy_setopt(handle, CURLOPT_ENCODING, version->version_num == 0x080701 ? "gzip" : ""));
 
   /* follow redirect */
   assert(curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1L));
@@ -163,8 +166,8 @@ static void set_handle_defaults(reference *ref){
   assert(curl_easy_setopt(handle, CURLOPT_FILETIME, 1L));
 
   /* set the default user agent */
-  SEXP agent = GetOption1(install("HTTPUserAgent"));
-  if(isString(agent) && Rf_length(agent)){
+  SEXP agent = Rf_GetOption1(Rf_install("HTTPUserAgent"));
+  if(Rf_isString(agent) && Rf_length(agent)){
     assert(curl_easy_setopt(handle, CURLOPT_USERAGENT, CHAR(STRING_ELT(agent, 0))));
   } else {
     assert(curl_easy_setopt(handle, CURLOPT_USERAGENT, "r/curl/jeroen"));
@@ -172,7 +175,6 @@ static void set_handle_defaults(reference *ref){
 
   /* allow all authentication methods */
   assert(curl_easy_setopt(handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY));
-  assert(curl_easy_setopt(handle, CURLOPT_UNRESTRICTED_AUTH, 1L));
   assert(curl_easy_setopt(handle, CURLOPT_PROXYAUTH, CURLAUTH_ANY));
 
   /* enables HTTP2 on HTTPS (match behavior of curl cmd util) */
@@ -210,10 +212,10 @@ SEXP R_new_handle(void){
   ref->handle = curl_easy_init();
   total_handles++;
   set_handle_defaults(ref);
-  SEXP prot = PROTECT(allocVector(VECSXP, 7)); //for protecting callback functions
+  SEXP prot = PROTECT(Rf_allocVector(VECSXP, 7)); //for protecting callback functions
   SEXP ptr = PROTECT(R_MakeExternalPtr(ref, R_NilValue, prot));
   R_RegisterCFinalizerEx(ptr, fin_handle, TRUE);
-  setAttrib(ptr, R_ClassSymbol, mkString("curl_handle"));
+  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("curl_handle"));
   UNPROTECT(2);
   ref->handleptr = ptr;
   return ptr;
@@ -234,14 +236,7 @@ SEXP R_handle_reset(SEXP ptr){
 
   //restore default settings
   set_handle_defaults(ref);
-  return ScalarLogical(1);
-}
-
-SEXP R_handle_setheaders(SEXP ptr, SEXP vec){
-  if(!isString(vec))
-    error("header vector must be a string.");
-  set_headers(get_ref(ptr), vec_to_slist(vec));
-  return ScalarLogical(1);
+  return Rf_ScalarLogical(1);
 }
 
 SEXP R_handle_getheaders(SEXP ptr){
@@ -258,15 +253,15 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
   reference *ref = get_ref(ptr);
   CURL *handle = get_handle(ptr);
   SEXP prot = R_ExternalPtrProtected(ptr);
-  SEXP optnames = PROTECT(getAttrib(values, R_NamesSymbol));
+  SEXP optnames = PROTECT(Rf_getAttrib(values, R_NamesSymbol));
 
-  if(!isInteger(keys))
-    error("keys` must be an integer");
+  if(!Rf_isInteger(keys))
+    Rf_error("keys` must be an integer");
 
-  if(!isVector(values))
-    error("`values` must be a list");
+  if(!Rf_isVector(values))
+    Rf_error("`values` must be a list");
 
-  for(int i = 0; i < length(keys); i++){
+  for(int i = 0; i < Rf_length(keys); i++){
     int key = INTEGER(keys)[i];
     const char* optname = CHAR(STRING_ELT(optnames, i));
     SEXP val = VECTOR_ELT(values, i);
@@ -275,7 +270,7 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
 #ifdef HAS_XFERINFOFUNCTION
     } else if (key == CURLOPT_XFERINFOFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
       assert(curl_easy_setopt(handle, CURLOPT_XFERINFOFUNCTION,
                               (curl_progress_callback) R_curl_callback_xferinfo));
@@ -285,7 +280,7 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
 #endif
     } else if (key == CURLOPT_PROGRESSFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
       assert(curl_easy_setopt(handle, CURLOPT_PROGRESSFUNCTION,
         (curl_progress_callback) R_curl_callback_progress));
@@ -294,7 +289,7 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
       SET_VECTOR_ELT(prot, 2, val); //protect gc
     } else if (key == CURLOPT_READFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
       assert(curl_easy_setopt(handle, CURLOPT_READFUNCTION,
         (curl_read_callback) R_curl_callback_read));
@@ -302,7 +297,7 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
       SET_VECTOR_ELT(prot, 3, val); //protect gc
     } else if (key == CURLOPT_DEBUGFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
       assert(curl_easy_setopt(handle, CURLOPT_DEBUGFUNCTION,
         (curl_debug_callback) R_curl_callback_debug));
@@ -310,7 +305,7 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
       SET_VECTOR_ELT(prot, 4, val); //protect gc
     } else if (key == CURLOPT_SSL_CTX_FUNCTION){
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
 
       assert(curl_easy_setopt(handle, CURLOPT_SSL_CTX_FUNCTION,
                               (curl_ssl_ctx_callback) R_curl_callback_ssl_ctx));
@@ -318,32 +313,34 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
       SET_VECTOR_ELT(prot, 5, val); //protect gc
     } else if (key == CURLOPT_SEEKFUNCTION) {
       if (TYPEOF(val) != CLOSXP)
-        error("Value for option %s (%d) must be a function.", optname, key);
+        Rf_error("Value for option %s (%d) must be a function.", optname, key);
       assert(curl_easy_setopt(handle, CURLOPT_SEEKFUNCTION,
                               (curl_seek_callback) R_curl_callback_seek));
       assert(curl_easy_setopt(handle, CURLOPT_SEEKDATA, val));
       SET_VECTOR_ELT(prot, 6, val); //protect gc
     } else if (key == CURLOPT_URL) {
       /* always use utf-8 for urls */
-      const char * url_utf8 = translateCharUTF8(STRING_ELT(val, 0));
+      const char * url_utf8 = Rf_translateCharUTF8(STRING_ELT(val, 0));
       assert(curl_easy_setopt(handle, CURLOPT_URL, url_utf8));
     } else if(key == CURLOPT_HTTPHEADER){
-      R_handle_setheaders(ptr, val);
+      if(!Rf_isString(val))
+        Rf_error("Value for option %s (%d) must be a string vector", optname, key);
+      set_headers(get_ref(ptr), vec_to_slist(val));
     } else if (r_curl_is_slist_option(key)) {
-      if(!isString(val))
-        error("Value for option %s (%d) must be a string vector", optname, key);
+      if(!Rf_isString(val))
+        Rf_error("Value for option %s (%d) must be a string vector", optname, key);
       ref->custom = vec_to_slist(val);
       assert(curl_easy_setopt(handle, key, ref->custom));
     } else if(r_curl_is_long_option(key)){
-      if(!isNumeric(val) || length(val) != 1) {
-        error("Value for option %s (%d) must be a number.", optname, key);
+      if(!Rf_isNumeric(val) || Rf_length(val) != 1) {
+        Rf_error("Value for option %s (%d) must be a number.", optname, key);
       }
-      assert(curl_easy_setopt(handle, key, (long) asInteger(val)));
+      assert(curl_easy_setopt(handle, key, (long) Rf_asInteger(val)));
     } else if(r_curl_is_off_t_option(key)){
-      if(!isNumeric(val) || length(val) != 1) {
-        error("Value for option %s (%d) must be a number.", optname, key);
+      if(!Rf_isNumeric(val) || Rf_length(val) != 1) {
+        Rf_error("Value for option %s (%d) must be a number.", optname, key);
       }
-      assert(curl_easy_setopt(handle, key, (curl_off_t) asReal(val)));
+      assert(curl_easy_setopt(handle, key, (curl_off_t) Rf_asReal(val)));
     } else if(r_curl_is_postfields_option(key) || r_curl_is_string_option(key)){
       if(key == CURLOPT_POSTFIELDS){
         key = CURLOPT_COPYPOSTFIELDS;
@@ -355,26 +352,26 @@ SEXP R_handle_setopt(SEXP ptr, SEXP keys, SEXP values){
         assert(curl_easy_setopt(handle, key, RAW(val)));
         break;
       case STRSXP:
-        if (length(val) != 1)
-          error("Value for option %s (%d) must be length-1 string", optname, key);
+        if (Rf_length(val) != 1)
+          Rf_error("Value for option %s (%d) must be length-1 string", optname, key);
         assert(curl_easy_setopt(handle, key, CHAR(STRING_ELT(val, 0))));
         break;
       default:
-        error("Value for option %s (%d) must be a string or raw vector.", optname, key);
+        Rf_error("Value for option %s (%d) must be a string or raw vector.", optname, key);
       }
     } else {
-      error("Option %s (%d) has unknown or unsupported type.", optname, key);
+      Rf_error("Option %s (%d) has unknown or unsupported type.", optname, key);
     }
   }
   UNPROTECT(1);
-  return ScalarLogical(1);
+  return Rf_ScalarLogical(1);
 }
 
 SEXP R_handle_setform(SEXP ptr, SEXP form){
-  if(!isVector(form))
-    error("Form must be a list.");
+  if(!Rf_isVector(form))
+    Rf_error("Form must be a list.");
   set_form(get_ref(ptr), make_form(form));
-  return ScalarLogical(1);
+  return Rf_ScalarLogical(1);
 }
 
 SEXP make_timevec(CURL *handle){
@@ -386,7 +383,7 @@ SEXP make_timevec(CURL *handle){
   assert(curl_easy_getinfo(handle, CURLINFO_STARTTRANSFER_TIME, &time_start));
   assert(curl_easy_getinfo(handle, CURLINFO_TOTAL_TIME, &time_total));
 
-  SEXP result = PROTECT(allocVector(REALSXP, 6));
+  SEXP result = PROTECT(Rf_allocVector(REALSXP, 6));
   REAL(result)[0] = time_redirect;
   REAL(result)[1] = time_lookup;
   REAL(result)[2] = time_connect;
@@ -394,14 +391,14 @@ SEXP make_timevec(CURL *handle){
   REAL(result)[4] = time_start;
   REAL(result)[5] = time_total;
 
-  SEXP names = PROTECT(allocVector(STRSXP, 6));
-  SET_STRING_ELT(names, 0, mkChar("redirect"));
-  SET_STRING_ELT(names, 1, mkChar("namelookup"));
-  SET_STRING_ELT(names, 2, mkChar("connect"));
-  SET_STRING_ELT(names, 3, mkChar("pretransfer"));
-  SET_STRING_ELT(names, 4, mkChar("starttransfer"));
-  SET_STRING_ELT(names, 5, mkChar("total"));
-  setAttrib(result, R_NamesSymbol, names);
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, 6));
+  SET_STRING_ELT(names, 0, Rf_mkChar("redirect"));
+  SET_STRING_ELT(names, 1, Rf_mkChar("namelookup"));
+  SET_STRING_ELT(names, 2, Rf_mkChar("connect"));
+  SET_STRING_ELT(names, 3, Rf_mkChar("pretransfer"));
+  SET_STRING_ELT(names, 4, Rf_mkChar("starttransfer"));
+  SET_STRING_ELT(names, 5, Rf_mkChar("total"));
+  Rf_setAttrib(result, R_NamesSymbol, names);
   UNPROTECT(2);
   return result;
 }
@@ -419,7 +416,7 @@ SEXP make_cookievec(CURL *handle){
 SEXP make_status(CURL *handle){
   long res_status;
   assert(curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &res_status));
-  return ScalarInteger(res_status);
+  return Rf_ScalarInteger(res_status);
 }
 
 SEXP make_ctype(CURL *handle){
@@ -431,7 +428,7 @@ SEXP make_ctype(CURL *handle){
 SEXP make_url(CURL *handle){
   char *res_url;
   assert(curl_easy_getinfo(handle, CURLINFO_EFFECTIVE_URL, &res_url));
-  return ScalarString(mkCharCE(res_url, CE_UTF8));
+  return Rf_ScalarString(Rf_mkCharCE(res_url, CE_UTF8));
 }
 
 SEXP make_filetime(CURL *handle){
@@ -441,18 +438,18 @@ SEXP make_filetime(CURL *handle){
     filetime = NA_INTEGER;
   }
 
-  SEXP classes = PROTECT(allocVector(STRSXP, 2));
-  SET_STRING_ELT(classes, 0, mkChar("POSIXct"));
-  SET_STRING_ELT(classes, 1, mkChar("POSIXt"));
+  SEXP classes = PROTECT(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(classes, 0, Rf_mkChar("POSIXct"));
+  SET_STRING_ELT(classes, 1, Rf_mkChar("POSIXt"));
 
-  SEXP out = PROTECT(ScalarInteger(filetime));
-  setAttrib(out, R_ClassSymbol, classes);
+  SEXP out = PROTECT(Rf_ScalarInteger(filetime));
+  Rf_setAttrib(out, R_ClassSymbol, classes);
   UNPROTECT(2);
   return out;
 }
 
 SEXP make_rawvec(unsigned char *ptr, size_t size){
-  SEXP out = PROTECT(allocVector(RAWSXP, size));
+  SEXP out = PROTECT(Rf_allocVector(RAWSXP, size));
   if(size > 0)
     memcpy(RAW(out), ptr, size);
   UNPROTECT(1);
@@ -460,14 +457,14 @@ SEXP make_rawvec(unsigned char *ptr, size_t size){
 }
 
 SEXP make_namesvec(void){
-  SEXP names = PROTECT(allocVector(STRSXP, 7));
-  SET_STRING_ELT(names, 0, mkChar("url"));
-  SET_STRING_ELT(names, 1, mkChar("status_code"));
-  SET_STRING_ELT(names, 2, mkChar("type"));
-  SET_STRING_ELT(names, 3, mkChar("headers"));
-  SET_STRING_ELT(names, 4, mkChar("modified"));
-  SET_STRING_ELT(names, 5, mkChar("times"));
-  SET_STRING_ELT(names, 6, mkChar("content"));
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, 7));
+  SET_STRING_ELT(names, 0, Rf_mkChar("url"));
+  SET_STRING_ELT(names, 1, Rf_mkChar("status_code"));
+  SET_STRING_ELT(names, 2, Rf_mkChar("type"));
+  SET_STRING_ELT(names, 3, Rf_mkChar("headers"));
+  SET_STRING_ELT(names, 4, Rf_mkChar("modified"));
+  SET_STRING_ELT(names, 5, Rf_mkChar("times"));
+  SET_STRING_ELT(names, 6, Rf_mkChar("content"));
   UNPROTECT(1);
   return names;
 }
@@ -478,7 +475,7 @@ SEXP R_get_handle_cookies(SEXP ptr){
 
 SEXP make_handle_response(reference *ref){
   CURL *handle = ref->handle;
-  SEXP res = PROTECT(allocVector(VECSXP, 7));
+  SEXP res = PROTECT(Rf_allocVector(VECSXP, 7));
   SET_VECTOR_ELT(res, 0, make_url(handle));
   SET_VECTOR_ELT(res, 1, make_status(handle));
   SET_VECTOR_ELT(res, 2, make_ctype(handle));
@@ -486,7 +483,7 @@ SEXP make_handle_response(reference *ref){
   SET_VECTOR_ELT(res, 4, make_filetime(handle));
   SET_VECTOR_ELT(res, 5, make_timevec(handle));
   SET_VECTOR_ELT(res, 6, R_NilValue);
-  setAttrib(res, R_NamesSymbol, make_namesvec());
+  Rf_setAttrib(res, R_NamesSymbol, make_namesvec());
   UNPROTECT(1);
   return res;
 }
@@ -545,5 +542,5 @@ SEXP R_get_handle_mtime(SEXP ptr){
 }
 
 SEXP R_total_handles(void){
-  return(ScalarInteger(total_handles));
+  return(Rf_ScalarInteger(total_handles));
 }
