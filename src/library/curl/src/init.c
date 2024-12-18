@@ -65,7 +65,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"R_handle_getheaders",   (DL_FUNC) &R_handle_getheaders,   1},
     {"R_handle_reset",        (DL_FUNC) &R_handle_reset,        1},
     {"R_handle_setform",      (DL_FUNC) &R_handle_setform,      2},
-    {"R_handle_setheaders",   (DL_FUNC) &R_handle_setheaders,   2},
     {"R_handle_setopt",       (DL_FUNC) &R_handle_setopt,       3},
     {"R_option_types",        (DL_FUNC) &R_option_types,        0},
     {"R_multi_add",           (DL_FUNC) &R_multi_add,           5},

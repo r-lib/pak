@@ -7,7 +7,7 @@ PKG_LIBS = \
 	-lwinhttp -lcurl -lnghttp2 -lssh2 -lz -lssl -lcrypto -pthread -lgdi32 -lws2_32 -lcrypt32 -lbcrypt -lwldap32
 
 PKG_CPPFLAGS= \
-	-I$(RWINLIB)/include -DCURL_STATICLIB -DSTRICT_R_HEADERS
+	-I$(RWINLIB)/include -DCURL_STATICLIB -DSTRICT_R_HEADERS -DR_NO_REMAP
 
 all: clean winlibs
 

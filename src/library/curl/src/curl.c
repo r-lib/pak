@@ -77,7 +77,7 @@ static size_t push(void *contents, size_t sz, size_t nmemb, void *ctx) {
     //Rprintf("Resizing buffer to %d.\n", newlimit);
     void *newbuf = realloc(req->buf, newlimit);
     if(!newbuf)
-      error("Failure in realloc. Out of memory?");
+      Rf_error("Failure in realloc. Out of memory?");
     req->buf = newbuf;
     req->limit = newlimit;
   }
@@ -130,6 +130,16 @@ static size_t rcurl_read(void *target, size_t sz, size_t ni, Rconnection con) {
 
   /* append data to the target buffer */
   size_t total_size = pop(target, req_size, req);
+
+  if (total_size > 0 && (!con->blocking || req->partial)) {
+      // If we can return data without waiting, and the connection is
+      // non-blocking (or using curl_fetch_stream()), do so.
+      // This ensures that bytes we already received get flushed
+      // to the target buffer before a connection error.
+      con->incomplete = req->has_more || req->size;
+      return total_size;
+  }
+
   while((req_size > total_size) && req->has_more) {
     /* wait for activity, timeout or "nothing" */
 #ifdef HAS_MULTI_WAIT
@@ -246,14 +256,14 @@ static Rboolean rcurl_open(Rconnection con) {
 }
 
 SEXP R_curl_connection(SEXP url, SEXP ptr, SEXP partial) {
-  if(!isString(url))
-    error("Argument 'url' must be string.");
+  if(!Rf_isString(url))
+    Rf_error("Argument 'url' must be string.");
 
   /* create the R connection object, mimicking base::url() */
   Rconnection con;
 
   /* R wants description in native encoding, but we use UTF-8 URL below */
-  SEXP rc = PROTECT(R_new_custom_connection(translateChar(STRING_ELT(url, 0)), "r", "curl", &con));
+  SEXP rc = PROTECT(R_new_custom_connection(Rf_translateChar(STRING_ELT(url, 0)), "r", "curl", &con));
 
   /* setup curl. These are the parts that are recycable. */
   request *req = malloc(sizeof(request));
@@ -262,12 +272,12 @@ SEXP R_curl_connection(SEXP url, SEXP ptr, SEXP partial) {
   req->limit = CURL_MAX_WRITE_SIZE;
   req->buf = malloc(req->limit);
   req->manager = curl_multi_init();
-  req->partial = asLogical(partial); //only for curl_fetch_stream()
+  req->partial = Rf_asLogical(partial); //only for curl_fetch_stream()
   req->used = 0;
 
   /* allocate url string */
-  req->url = malloc(strlen(translateCharUTF8(asChar(url))) + 1);
-  strcpy(req->url, translateCharUTF8(asChar(url)));
+  req->url = malloc(strlen(Rf_translateCharUTF8(Rf_asChar(url))) + 1);
+  strcpy(req->url, Rf_translateCharUTF8(Rf_asChar(url)));
 
   /* set connection properties */
   con->incomplete = FALSE;

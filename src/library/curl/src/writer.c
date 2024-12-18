@@ -36,17 +36,17 @@ SEXP R_write_file_writer(SEXP ptr, SEXP buf, SEXP close){
   } else if(Rf_length(buf)) {
     fflush(fp);
   }
-  return ScalarInteger(len);
+  return Rf_ScalarInteger(len);
 }
 
 SEXP R_new_file_writer(SEXP opts){
   SEXP ptr = PROTECT(R_MakeExternalPtr(NULL, opts, R_NilValue));
   R_RegisterCFinalizerEx(ptr, fin_file_writer, TRUE);
-  setAttrib(ptr, R_ClassSymbol, mkString("file_writer"));
+  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("file_writer"));
   UNPROTECT(1);
   return ptr;
 }
 
 SEXP R_total_writers(void){
-  return(ScalarInteger(total_open_writers));
+  return(Rf_ScalarInteger(total_open_writers));
 }

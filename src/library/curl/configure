@@ -64,14 +64,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Hack for MacOS 11 which has newer headers than the libcurl lib
-# if [ `uname` = "Darwin" ]; then
-#   MACVERSION=`sw_vers -productVersion` || true
-#   case "$MACVERSION" in
-#     "11"*)
-#       PKG_CFLAGS="$PKG_CFLAGS -DDISABLE_CURL_EASY_OPTION";;
-#   esac
-# fi
+# Disable purling on oldrel due to https://github.com/yihui/knitr/issues/2338
+if [ `uname` = "Darwin" ] && [ "${R_VERSION}" = "4.3.3" ]; then
+  for file in vignettes/*.Rmd; do
+    sed -i '' '/```/,$d' $file || true
+    touch inst/doc/*  || true
+  done
+fi
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
