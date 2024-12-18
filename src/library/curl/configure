@@ -77,7 +77,8 @@ sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/
 
 # Extract curlopt symbols
 echo '#include <curl/curl.h>' | ${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E -xc - \
-  | grep "^[ \t]*CURLOPT_.*," | sed s/,// > tools/option_table.txt
+  | grep "^[ \t]*CURLOPT_.*," | sed s/,// | sed 's/__attribute__[(][(].*[)][)] =/=/' \
+  > tools/option_table.txt
 
 # Success
 exit 0
