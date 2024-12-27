@@ -364,7 +364,7 @@ jobs:
       with:
         release: ${{ matrix.config.release }}
 
-    - uses: r-hub/actions/setup-r-netbsd@v1
+    - uses: r-hub/actions/setup-r-netbsd@main
       if: ${{ matrix.config.os == 'netbsd' }}
 
     - uses: r-hub/actions/setup-r-dragonflybsd@v1
