@@ -60,7 +60,15 @@ libs-aarch64.done:
 	touch $@
 
 pak_$(PAKVERSION).tar.gz:
-	R CMD build ../../..
+	@if command -v RR >/dev/null; then \
+	  echo "Building R package using `command -v R`."; \
+	  R CMD build ../../..; \
+	else \
+	  CTR="ghcr.io/r-hub/r-minimal/r-minimal:latest"; \
+	  echo "Building R package using Docker ($${CTR})."; \
+	  docker run -v "`pwd -P`/../../..":"`pwd`/../../.." -w "`pwd`" \
+	    "$${CTR}" R CMD build ../../..; \
+	fi
 
 # ------------------------------------------------------------------------
 
