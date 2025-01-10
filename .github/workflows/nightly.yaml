@@ -388,7 +388,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && always() }}
-    needs: [ macos, windows, linux, macos-arm64, linux-arm64 ]
+    needs: [ macos, windows, linux, macos-arm64, linux-arm64, bsd ]
 
     steps:
 
