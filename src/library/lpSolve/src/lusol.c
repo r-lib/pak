@@ -55,7 +55,7 @@
 
 /* LUSOL Object creation and destruction */
 
-void *clean_realloc(void *oldptr, int width, int newsize, int oldsize)
+void *clean_realloc(void *oldptr, int width, size_t newsize, int oldsize)
 {
   newsize *= width;
   oldsize *= width;

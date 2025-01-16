@@ -1,8 +1,10 @@
 Package: lpSolve
-Version: 5.6.20.9000
+Version: 5.6.23.9000
 Title: Interface to 'Lp_solve' v. 5.5 to Solve Linear/Integer Programs
-Author: Michel Berkelaar and others
-Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Authors@R: c(
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = "cre"),
+    person("Michel", "Berkelaar", role = "aut")
+  )
 Description: Lp_solve is freely available (under LGPL 2) software for
         solving linear, integer and mixed integer programs. In this
         implementation we supply a "wrapper" function in C and some R
@@ -14,4 +16,7 @@ URL: https://github.com/gaborcsardi/lpSolve
 BugReports: https://github.com/gaborcsardi/lpSolve/issues
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-09-05 07:46:18 UTC; gaborcsardi
+Packaged: 2025-01-16 18:44:19 UTC; gaborcsardi
+Author: Gábor Csárdi [cre],
+  Michel Berkelaar [aut]
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
