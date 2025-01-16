@@ -9156,7 +9156,7 @@ STATIC void initialize_solution(lprec *lp, MYBOOL shiftbounds)
   }
 
   /* Do final pass to get the maximum value */
-  i = idamaxlpsolve(lp->rows+1, lp->rhs, 1);
+  i = idamaxlpsolve(lp->rows, lp->rhs, 1);
   lp->rhsmax = fabs(lp->rhs[i]);
 
   if(shiftbounds == INITSOL_SHIFTZERO)

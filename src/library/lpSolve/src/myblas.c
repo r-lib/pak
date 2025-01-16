@@ -30,7 +30,6 @@ BLAS_daxpy_func  *BLAS_daxpy;
 BLAS_dswap_func  *BLAS_dswap;
 BLAS_ddot_func   *BLAS_ddot;
 BLAS_idamax_func *BLAS_idamax;
-BLAS_idamin_func *BLAS_idamin;
 BLAS_dload_func  *BLAS_dload;
 BLAS_dnormi_func *BLAS_dnormi;
 
@@ -75,7 +74,6 @@ MYBOOL load_BLAS(char *libname)
     BLAS_dswap = my_dswap;
     BLAS_ddot  = my_ddot;
     BLAS_idamax = my_idamax;
-    BLAS_idamin = my_idamin;
     BLAS_dload = my_dload;
     BLAS_dnormi = my_dnormi;
     if(mustinitBLAS)
@@ -103,11 +101,10 @@ MYBOOL load_BLAS(char *libname)
       BLAS_dswap  = (BLAS_dswap_func *)  my_GetProcAddress(hBLAS, BLAS_prec "swap");
       BLAS_ddot   = (BLAS_ddot_func *)   my_GetProcAddress(hBLAS, BLAS_prec "dot");
       BLAS_idamax = (BLAS_idamax_func *) my_GetProcAddress(hBLAS, "i" BLAS_prec "amax");
-      BLAS_idamin = (BLAS_idamin_func *) my_GetProcAddress(hBLAS, "i" BLAS_prec "amin");
-#if 0      
+#if 0
       BLAS_dload  = (BLAS_dload_func *)  my_GetProcAddress(hBLAS, BLAS_prec "load");
       BLAS_dnormi = (BLAS_dnormi_func *) my_GetProcAddress(hBLAS, BLAS_prec "normi");
-#endif      
+#endif
     }
 #endif
     /* Do validation */
@@ -118,7 +115,6 @@ MYBOOL load_BLAS(char *libname)
         (BLAS_dswap  == NULL) ||
         (BLAS_ddot   == NULL) ||
         (BLAS_idamax == NULL) ||
-        (BLAS_idamin == NULL) ||
         (BLAS_dload  == NULL) ||
         (BLAS_dnormi == NULL))
       ) {
@@ -151,7 +147,7 @@ void BLAS_CALLMODEL my_daxpy( int *_n, REAL *_da, REAL *dx, int *_incx, REAL *dy
    jack dongarra, linpack, 3/11/78.
    modified 12/3/93, array[1] declarations changed to array[*] */
 
-  int      i, ix, iy; 
+  int      i, ix, iy;
 #ifndef DOFASTMATH
   int      m, mp1;
 #endif
@@ -209,7 +205,7 @@ x40:
     dy[i + 2]+= rda*dx[i + 2];
     dy[i + 3]+= rda*dx[i + 3];
   }
-#endif  
+#endif
 }
 
 
@@ -235,7 +231,7 @@ void BLAS_CALLMODEL my_dcopy (int *_n, REAL *dx, int *_incx, REAL *dy, int *_inc
 #endif
   int      n = *_n, incx = *_incx, incy = *_incy;
 
-  if(n<=0) 
+  if(n<=0)
     return;
 
   dx--;
@@ -258,7 +254,7 @@ void BLAS_CALLMODEL my_dcopy (int *_n, REAL *dx, int *_incx, REAL *dy, int *_inc
   }
 #else
 
-  if(incx==1 && incy==1) 
+  if(incx==1 && incy==1)
     goto x20;
 
 /* code for unequal increments or equal increments not equal to 1 */
@@ -331,8 +327,8 @@ void BLAS_CALLMODEL my_dscal (int *_n, REAL *_da, REAL *dx, int *_incx)
 
   if (n <= 0)
     return;
-  rda = da;  
-  
+  rda = da;
+
   dx--;
 
 /* Optionally do fast pointer arithmetic */
@@ -635,12 +631,6 @@ int idamaxlpsolve( int n, REAL *x, int is )
   return ( BLAS_idamax( &n, x, &is ) );
 }
 
-int idaminlpsolve( int n, REAL *x, int is )
-{
-  x++;
-  return ( BLAS_idamin( &n, x, &is ) );
-}
-
 int BLAS_CALLMODEL my_idamax( int *_n, REAL *x, int *_is )
 {
   register REAL xmax, xtest;
@@ -676,47 +666,8 @@ int BLAS_CALLMODEL my_idamax( int *_n, REAL *x, int *_is )
       imax = i;
     }
   }
-#endif  
-  return(imax);
-}
-
-int BLAS_CALLMODEL my_idamin( int *_n, REAL *x, int *_is )
-{
-  register REAL xmin, xtest;
-  int    i, imin = 0;
-#if !defined DOFASTMATH
-  int    ii;
 #endif
-  int    n = *_n, is = *_is;
-
-  if((n < 1) || (is <= 0))
-    return(imin);
-  imin = 1;
-  if(n == 1)
-    return(imin);
-
-#if defined DOFASTMATH
-  xmin = fabs(*x);
-  for (i = 2, x += is; i <= n; i++, x += is) {
-    xtest = fabs(*x);
-    if(xtest < xmin) {
-      xmin = xtest;
-      imin = i;
-    }
-  }
-#else
-  x--;
-  ii = 1;
-  xmin = fabs(x[ii]);
-  for(i = 2, ii+ = is; i <= n; i++, ii+ = is) {
-    xtest = fabs(x[ii]);
-    if(xtest < xmin) {
-      xmin = xtest;
-      imin = i;
-    }
-  }
-#endif  
-  return(imin);
+  return(imax);
 }
 
 /* ************************************************************************ */
@@ -846,4 +797,3 @@ void ddrand( int n, REAL *x, int incx, int *seeds )
    }
 
 }
-
