@@ -77,7 +77,7 @@ Notes:
 \item The \verb{RSPM@} prefix is still supported and treated the same way as
 \verb{PPM@}.
 \item The MRAN service is now retired, see
-\url{https://techcommunity.microsoft.com/t5/azure-sql-blog/microsoft-r-application-network-retirement/ba-p/3707161}
+\verb{https://techcommunity.microsoft.com/blog/azuresqlblog/microsoft-r-application-network-retirement/3707161}
 for details.
 \item \code{MRAN@...} repository specifications now resolve to PPM, but note that
 PPM snapshots are only available from 2017-10-10. See more about this
