@@ -37,7 +37,8 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         }
       ]
     },
@@ -47,6 +48,11 @@
         {
           "os": "linux",
           "distribution": "fedora"
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8"]
         }
       ]
     },
@@ -83,19 +89,6 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
-        }
-      ]
-    },
-    {
-      "packages": ["mecab-devel"],
-      "pre_install": [
-        { "command": "dnf install -y dnf-plugins-core" },
-        { "command": "dnf config-manager --set-enabled crb" }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "rockylinux"
         }
       ]
     }

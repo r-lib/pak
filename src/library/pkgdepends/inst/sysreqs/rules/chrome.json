@@ -50,7 +50,24 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        { "command": "dnf install -y dnf-plugins-core" },
+        { "command": "dnf config-manager --set-enabled powertools" },
+        { "command": "dnf install -y epel-release" }
+      ],
+      "packages": ["chromium"],
+      "post_install": [],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8"]
         }
       ]
     },

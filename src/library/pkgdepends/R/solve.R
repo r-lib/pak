@@ -1493,6 +1493,13 @@ describe_solution_error <- function(pkgs, solution) {
 
 #' @export
 
+print.pkg_solution_failures <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
+}
+
+#' @export
+
 format.pkg_solution_failures <- function(x, ...) {
   fails <- x
   if (!nrow(fails)) return()

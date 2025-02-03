@@ -514,3 +514,24 @@ file_ext <- function(x) {
 omit_pre_post <- function(x, pre = 0, post = 0) {
   substr(x, 1L + pre, nchar(x) - post)
 }
+
+thruthy_strings <- c("true", "t", "1", "on", "yes", "on")
+
+is_truthy <- function(x) {
+  (is.logical(x) && length(x) >= 1 && !is.na(x[[1]]) && x[[1]]) ||
+    (is.character(x) && length(x) >= 1 && tolower(x) %in% truthy_strings)
+}
+
+# check that all `path` are inside `root`
+check_inside_dir <- function(root, path) {
+  # we can assume that `root` and all `path` do exist
+  # normalizePath removes trailing '/'
+  nroot <- normalizePath(root, winslash = "/")
+  npath <- normalizePath(path, winslash = "/")
+  if (any(bad <- nroot != npath & !startsWith(paste0(npath, "/"), nroot))) {
+    throw(pkg_error(
+      "{.path {path[bad]}} {?is/are} outside of project
+       root {.path {root}}."
+    ))
+  }
+}

@@ -29,6 +29,11 @@
         {
           "os": "linux",
           "distribution": "fedora"
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8"]
         }
       ]
     },
@@ -41,7 +46,8 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         }
       ]
     },

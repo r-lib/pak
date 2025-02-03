@@ -60,7 +60,23 @@
 #' * Test dependencies: `"test"`.
 #' * Development dependencies: `"dev"`.
 #'
-#' @param path Path to the directory of the project.
+#' @param path Files and/or directories to scan. Defaults to the current
+#'   project, detected by finding the first parent directory of the current
+#'   working directory, that contains a file or directory called
+#'   `r cli::format_inline("{.or {pkgdepends:::project_root_anchors}}")`.
+#'   (Note that this is different from `renv::dependencies()`, which only
+#'   scans the current working directory by default!)
+#'
+#'   If `path` is not `NULL`, then only the specified files and directories
+#'   are scanned, the directories recursively. In this case the `root`
+#'   argument is used as the project root, to find `.gitignore` and
+#'   `.renvignore` files. All entries of `path` must be within the `root`,
+#'   the project root.
+#' @param root The root directory of the project. It is used to find the
+#'   `.gitignore` and `.renvignore` files. By default the same algorithm
+#'   is used to detect this as for `path`. If `path` is specified and it is
+#'   not within the detected or specified `root`, `scan_path()` throws an
+#'   error.
 #' @return Data frame with columns:
 #'   * `path`: Path to the file in which the dependencies was found.
 #'   * `package`: Detected package dependency. Typically a package name,
@@ -81,13 +97,31 @@
 #'
 #' @export
 
-scan_deps <- function(path = ".") {
-  path <- tryCatch(find_project_root(path), error = function(...) path)
+scan_deps <- function(path = NULL, root = NULL) {
+  if (is.null(path)) {
+    path <- find_project_root()
+    root <- root %||% path
+  } else {
+    root <- root %||% find_project_root()
+  }
+  assert_that(
+    is_string(root),
+    is_character(path)
+  )
+  if (!file.exists(root)) {
+    throw(pkg_error("Project root {.path {root}} does not exist."))
+  }
+  if (any(bad <- !file.exists(path))) {
+    throw(pkg_error("Path{?s} do{?es/} not exist: {.path {path[bad]}}."))
+  }
+  check_inside_dir(root, path)
   paths <- c(
     dir(path, pattern = scan_deps_pattern(), recursive = TRUE),
-    dir(path, pattern = scan_deps_pattern_root(), recursive = FALSE)
+    if (root %in% path) {
+      dir(root, pattern = scan_deps_pattern_root(), recursive = FALSE)
+    }
   )
-  full_paths <- normalizePath(file.path(path, paths))
+  full_paths <- normalizePath(file.path(path, paths), winslash = "/")
   deps_list <- lapply(full_paths, scan_path_deps)
   deps <- do.call("rbind", c(list(scan_deps_df()), deps_list))
   # write back the relative paths
@@ -105,6 +139,7 @@ scan_deps_pattern <- function() {
     "[.]rmd$",
     "[.]rmarkdown",
     "[.]Rmarkdown",
+    "[.][Rr]nw",
     "[.]qmd$",
     "[.]Rproj$",
     "^_bookdown[.]yml$",
@@ -279,6 +314,8 @@ scan_path_deps_do <- function(code, path) {
     ".qmd" = ,
     ".rmarkdown" = ,
     ".rmd" = scan_path_deps_do_rmd(code, path),
+    ".rnw" = scan_path_deps_do_rnw(code, path),
+    ".ipynb" = scan_path_deps_do_ipynb(code, path),
     "DESCRIPTION" = scan_path_deps_do_dsc(code, path),
     "NAMESPACE" = scan_path_deps_do_namespace(code, path),
     "_bookdown.yml" = scan_path_deps_do_bookdown(code, path),
@@ -780,7 +817,8 @@ scan_path_deps_do_rmd <- function(code, path) {
   rbind(
     if (nrow(inl_hits)) scan_path_deps_do_inline_hits(code, inl_hits, path),
     if (nrow(blk_hits)) scan_path_deps_do_block_hits(code, blk_hits, path),
-    if (nrow(hdr_hits)) scan_path_deps_do_header_hits(code, hdr_hits, path)
+    if (nrow(hdr_hits)) scan_path_deps_do_header_hits(code, hdr_hits, path),
+    if (nrow(blk_hits)) scan_path_deps_do_rmarkdown(code, blk_hits, path)
   )
 }
 
@@ -829,6 +867,23 @@ scan_path_deps_do_block_hits <- function(code, blk_hits, path) {
 
   r_ranges <- blk_hits[wcnd, range_cols]
   scan_path_deps_do_r(code, path = path, ranges = r_ranges)
+}
+
+scan_path_deps_do_rmarkdown <- function(code, blk_hits, path) {
+  blk_hits <- blk_hits[blk_hits$name == "language", ]
+  rchk <- tolower(blk_hits$code) %in% c("r", "rscript")
+  if (any(rchk)) {
+    # only add the first chunk, adding all R chunks seems too much
+    rchk <- which(rchk)[1]
+    scan_deps_df(
+      path = path,
+      package = "rmarkdown",
+      code = blk_hits$code[rchk],
+      start_row = blk_hits$start_row[rchk],
+      start_column = blk_hits$start_column[rchk],
+      start_byte = blk_hits$start_byte[rchk]
+    )
+  }
 }
 
 # Crossref: https://github.com/r-lib/pkgdepends/issues/399
@@ -1054,4 +1109,205 @@ scan_path_deps_do_rproj <- function(code, path) {
       code = "PackageUseDevtools: Yes"
     )
   }
+}
+
+# -------------------------------------------------------------------------
+
+# knitr::all_patterns$rnw
+re_rnw <- list(
+  chunk.begin = "^\\s*<<(.*)>>=.*$",
+  chunk.end = "^\\s*@\\s*(%+.*|)$",
+  inline.code = "\\\\Sexpr\\{([^}]+)\\}",
+  inline.comment = "^\\s*%.*",
+  ref.chunk = "^\\s*<<(.+)>>\\s*$",
+  header.begin = "(^|\n)\\s*\\\\documentclass[^}]+\\}",
+  document.begin = "\\s*\\\\begin\\{document\\}"
+)
+
+scan_path_deps_do_rnw <- function(code, path) {
+  if (is.raw(code)) {
+    code <- rawToChar(code)
+    Encoding(code) <- "UTF-8"
+  }
+  code <- unlist(strsplit(code, "\n", fixed = TRUE))
+  chunks <- scan_path_deps_do_rnw_chunks(code)
+
+  do.call(
+    "rbind",
+    lapply(chunks, function(c) scan_path_deps_do_r(c$code, path))
+  )
+}
+
+# along renv_dependencies_discover_chunks_ignore
+scan_path_deps_rnw_chunk_is_ignored <- function(chunk) {
+  # renv.ignore = TRUE
+  if (is_truthy(chunk$params[["renv.ignore"]])) {
+    return(TRUE)
+  }
+
+  # engine is not R / Rscript
+  engine <- chunk$params[["engine"]] %||% "R"
+  if (!is.character(engine) || ! tolower(engine) %in% c("r", "rscript")) {
+    return(TRUE)
+  }
+
+  # eval = FALSE
+  eval <- chunk$params[["eval"]]
+  if (!is.null(eval) && !is_truthy(eval)) {
+    return(TRUE)
+  }
+
+  # skip learnr exercises
+  if (is_truthy(chunk$params[["exercise"]])) {
+    return(TRUE)
+  }
+
+  # skip chunks whose labels end in '-display'
+  if (endsWith(chunk$params[["label"]] %||% "", "-display")) {
+    return(TRUE)
+  }
+
+  FALSE
+}
+
+scan_path_deps_do_rnw_del_placeholders <- function(chunk) {
+  mch <- gregexpr("<<[^>]+>>", chunk$code)
+  repl <- lapply(
+    mch,
+    function(x) strrep(" ", pmax(0, attr(x, "match.length")))
+  )
+  regmatches(chunk$code, mch) <- repl
+  chunk
+}
+
+scan_path_deps_do_rnw_chunks <- function(code) {
+  ranges <- scan_path_deps_do_rnw_ranges(code)
+  from <- viapply(ranges, "[[", 1L)
+  to <- viapply(ranges, "[[", 2L)
+  chunks <- .mapply(function(from, to) {
+    cheader <- code[from]
+    ccode <- code[(from+1):to]
+    if (ccode[[length(ccode)]] == "@") {
+      ccode <- ccode[-length(ccode)]
+    }
+    scan_path_deps_do_rnw_parse_chunk(cheader, ccode)
+  }, list(from, to), NULL)
+
+  # some chunks are ignored
+  ignored <- vlapply(chunks, scan_path_deps_rnw_chunk_is_ignored)
+  chunks <- chunks[!ignored]
+
+  # remove reused chunk placeholders
+  chunks <- lapply(chunks, scan_path_deps_do_rnw_del_placeholders)
+
+  chunks
+}
+
+# along xfun::csv_options
+scan_path_deps_do_rnw_parse_chunk_header <- function(header) {
+  opts <- sub(re_rnw$chunk.begin, "\\1", header)
+  # Note: this is not a "real" eval, because we are in an 'alist'
+  tryCatch(
+    res <- eval(parse(
+      text = paste("alist(", xfun_quote_label(opts), ")"),
+      keep.source = FALSE
+    )),
+    error = function(e) {
+      stop("Invalid syntax for chunk options: ", opts, "\n", conditionMessage(e))
+    }
+  )
+
+  idx <- which(names(res) == "")
+  j <- NULL
+  for (i in idx) if (identical(res[[i]], alist(, )[[1]])) {
+    j <- c(j, i)
+  }
+  if (length(j)) {
+    res[j] <- NULL
+  }
+  idx <- if (is.null(names(res)) && length(res) == 1L) {
+    1L
+  } else {
+    which(names(res) == "")
+  }
+  if ((n <- length(idx)) > 1L || (length(res) > 1L && is.null(names(res)))) {
+    stop(
+      "Invalid chunk options: ", x,
+      "\n\nAll options must be of the form 'tag=value' except for the chunk label."
+    )
+  }
+  if (is.null(res$label)) {
+    if (n == 0L) {
+      res$label <- ""
+    } else {
+      names(res)[idx] <- "label"
+    }
+  }
+  if (!is.character(res$label)) {
+    res$label <- gsub(" ", "", as.character(as.expression(res$label)))
+  }
+  if (res$label == "") {
+    res$label <- NULL
+  }
+  res
+}
+
+xfun_quote_label <- function(x) {
+  x <- gsub("^\\s*,?", "", x)
+  if (grepl("^\\s*[^'\"](,|\\s*$)", x)) {
+    x <- gsub("^\\s*([^'\"])(,|\\s*$)", "'\\1'\\2", x)
+  } else if (grepl("^\\s*[^'\"](,|[^=]*(,|\\s*$))", x)) {
+    x <- gsub("^\\s*([^'\"][^=]*)(,|\\s*$)", "'\\1'\\2", x)
+  }
+  x
+}
+
+scan_path_deps_do_rnw_parse_chunk <- function(header, code) {
+  params <- tryCatch(
+    scan_path_deps_do_rnw_parse_chunk_header(header),
+    error = function(...) list(a=1)[0]
+  )
+  list(params = params, code = code)
+}
+
+scan_path_deps_do_rnw_ranges <- function(code) {
+  beg <- grep(re_rnw$chunk.begin, code)
+  end <- c(grep(re_rnw$chunk.end, code), length(code) + 1L)
+  lapply(seq_along(beg), function(bx) {
+    # for every start we find its end. The end is the next end marker,
+    # except when there is another begin marker before
+    bmx <- beg[bx]
+    emx <- end[end > bmx][1]
+    if (bx < length(beg) && beg[bx + 1L] < emx) {
+      emx <- beg[bx + 1L] - 1L
+    }
+    c(bmx, emx)
+  })
+}
+
+# -------------------------------------------------------------------------
+
+scan_path_deps_do_ipynb <- function(code, path) {
+  ipynb <- jsonlite::fromJSON(code, simplifyVector = FALSE)
+  if (!identical(ipynb$metadata$kernelspec$language, "R")) {
+    return(NULL)
+  }
+  ir <- if (identical(ipynb$metadata$kernelspec$name, "ir")) {
+    scan_deps_df(
+      path = path,
+      package = "IRkernel",
+      code = NA_character_
+    )
+  }
+
+  deps <- lapply(ipynb$cells, function(cell) {
+    if (identical(cell$cell_type, "code")) {
+      c1 <- paste(unlist(cell$source), collapse = "")
+      scan_path_deps_do_r(c1, path)
+    }
+  })
+
+  adeps <- drop_nulls(c(list(ir), deps))
+
+  do.call("rbind", adeps)
 }

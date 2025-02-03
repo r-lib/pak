@@ -76,12 +76,22 @@
       ]
     },
     {
+      "packages": ["atkmm2.36-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine",
+          "versions": [ "edge" ]
+        }
+      ]
+    },
+    {
       "packages": ["atkmm-dev"],
       "constraints": [
         {
           "os": "linux",
           "distribution": "alpine",
-          "versions": [ "3.17", "3.18", "3.19", "3.20", "edge" ]
+          "versions": [ "3.17", "3.18", "3.19", "3.20" ]
         }
       ]
     }

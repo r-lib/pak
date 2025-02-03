@@ -40,6 +40,11 @@
           "os": "linux",
           "distribution": "centos",
           "versions": ["8"]
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8"]
         }
       ]
     },
@@ -48,7 +53,8 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         },
         {
           "os": "linux",

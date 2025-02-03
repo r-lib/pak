@@ -29,19 +29,11 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["7", "8"]
-        }
-      ]
-    },
-    {
-      "packages": ["gsl-devel"],
-      "pre_install": [
-        { "command": "dnf install -y dnf-plugins-core" },
-        { "command": "dnf config-manager --set-enabled crb" }
-      ],
-      "constraints": [
+        },
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["8","9"]
         }
       ]
     },

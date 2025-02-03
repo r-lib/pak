@@ -187,6 +187,13 @@ pnc_crandb_process <- function(response) {
 
 #' @export
 
+print.pkg_name_check_basics <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
+}
+
+#' @export
+
 format.pkg_name_check_basics <- function(x, ...) {
 
   cw <- cli::console_width()
@@ -291,6 +298,13 @@ wikipedia_get_process <- function(
 
 #' @export
 
+print.pkg_name_check_wikipedia <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
+}
+
+#' @export
+
 format.pkg_name_check_wikipedia <- function(x, limit = 6, ...) {
   x <- x[1,, drop = FALSE]
 
@@ -357,6 +371,13 @@ wiktionary_get_process <- function(terms, resp) {
   )[, c("term", "text", "url")]
 
   add_class(res, "pkg_name_check_wiktionary")
+}
+
+#' @export
+
+print.pkg_name_check_wiktionary <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
 }
 
 #' @export
@@ -498,6 +519,13 @@ sentiment_string <- function(x) {
 
 #' @export
 
+print.pkg_name_check_sentiment <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
+}
+
+#' @export
+
 format.pkg_name_check_sentiment <- function(x, ...) {
   if (is.na(x)) x <- 0
   str <- sentiment_string(x)
@@ -540,6 +568,13 @@ urban_get_process <- function(term, resp) {
     thumbs_down = viapply(obj, "[[", "thumbs_down")
   )
   add_class(tbl, "pkg_name_check_urban")
+}
+
+#' @export
+
+print.pkg_name_check_urban <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
 }
 
 #' @export

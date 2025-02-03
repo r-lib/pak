@@ -58,17 +58,7 @@
           "os": "linux",
           "distribution": "centos",
           "versions": ["8"]
-        }
-      ]
-    },
-    {
-      "packages": ["glpk-devel"],
-      "pre_install": [
-        { "command": "dnf install -y dnf-plugins-core" },
-        { "command": "dnf config-manager --set-enabled crb" },
-        { "command": "dnf install -y epel-release" }
-      ],
-      "constraints": [
+        },
         {
           "os": "linux",
           "distribution": "rockylinux"
