@@ -31,7 +31,9 @@
 
 //#include "extern_c_begin.h"
 
-#include "modp_stdint.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 /** \brief convert an signed integer to char buffer
  *

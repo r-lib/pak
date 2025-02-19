@@ -1,5 +1,5 @@
 Package: jsonlite
-Version: 1.8.9
+Version: 1.9.0
 Title: A Simple and Robust JSON Parser and Generator for R
 License: MIT + file LICENSE
 Depends: methods
@@ -24,10 +24,9 @@ Description: A reasonably fast JSON parser and generator, optimized for statisti
 Suggests: httr, vctrs, testthat, knitr, rmarkdown, R.rsp, sf
 RoxygenNote: 7.2.3
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 NeedsCompilation: yes
-Packaged: 2024-09-19 15:41:06 UTC; jeroen
+Packaged: 2025-02-19 11:55:21 UTC; gaborcsardi
 Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),
   Duncan Temple Lang [ctb],
   Lloyd Hilaiel [cph] (author of bundled libyajl)
-Repository: CRAN
-Date/Publication: 2024-09-20 08:40:14 UTC
