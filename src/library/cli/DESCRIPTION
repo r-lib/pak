@@ -1,8 +1,8 @@
 Package: cli
 Title: Helpers for Developing Command Line Interfaces
-Version: 3.6.3.9000
+Version: 3.6.4
 Authors@R: c(
-    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("Gábor", "Csárdi", , "gabor@posit.co", role = c("aut", "cre")),
     person("Hadley", "Wickham", role = "ctb"),
     person("Kirill", "Müller", role = "ctb"),
     person("Salim", "Brüggemann", , "salim-b@pm.me", role = "ctb",
@@ -31,10 +31,12 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2024-11-08 08:17:43 UTC; gaborcsardi
+Packaged: 2025-02-11 21:14:07 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Hadley Wickham [ctb],
   Kirill Müller [ctb],
   Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),
   Posit Software, PBC [cph, fnd]
-Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Maintainer: Gábor Csárdi <gabor@posit.co>
+Repository: CRAN
+Date/Publication: 2025-02-13 05:20:02 UTC

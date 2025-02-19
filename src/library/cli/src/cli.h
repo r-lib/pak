@@ -8,6 +8,10 @@
 #include <Rinternals.h>
 #include <Rversion.h>
 
+#if R_VERSION < R_Version(3, 5, 0)
+#  define STRING_PTR_RO(x) STRING_PTR(x)
+#endif
+
 SEXP clic_diff_chr(SEXP a, SEXP b, SEXP max);
 
 SEXP clic_getppid(void);
