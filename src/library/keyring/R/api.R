@@ -27,6 +27,10 @@
 #' `key_list` lists all keys of a keyring, or the keys for a certain
 #' service (if `service` is not `NULL`).
 #'
+#' `key_list_raw()` is like `key_list()` but also returns the keys as raw
+#' values. This is useful if your keys have bytes that cannot appear
+#' in R strings, e.g. a zero byte.
+#'
 #' ## Encodings
 #'
 #' On Windows, if required, an encoding can be specified using either
@@ -56,7 +60,16 @@
 #'   confidential information that was stored in the key.
 #'
 #'   `key_list` returns a list of keys, i.e. service names and usernames,
-#'   in a data frame.
+#'   in a data frame with column names `service` and `username`. If a
+#'   service or user name contains a zero byte, which is not allowed in an
+#'   R string, that entry is shown as `NA` and a warning (of class
+#'   `keyring_warn_zero_byte_keys`) is thrown.  You can use the
+#'   `key_list_raw()` function to query these keys.
+#'
+#'   `key_list_raw` is similar to `key_list` but returns service and
+#'   usernames as raw vectors. This is useful if some service or user
+#'   names) contain zero bytes. All column names: `service`, `username`,
+#'   `service_raw`, `username_raw`.
 #'
 #' @export
 #' @examples
@@ -161,6 +174,14 @@ key_delete <- function(service, username = NULL, keyring = NULL) {
 key_list <- function(service = NULL, keyring = NULL) {
   assert_that(is_non_empty_string_or_null(service))
   default_backend()$list(service, keyring = keyring)
+}
+
+#' @export
+#' @rdname key_get
+
+key_list_raw <- function(service = NULL, keyring = NULL) {
+  assert_that(is_non_empty_string_or_null(service))
+  default_backend()$list_raw(service, keyring = keyring)
 }
 
 #' Operations on keyrings

@@ -50,6 +50,8 @@ backend_macos <- R6Class(
       b_macos_delete(self, private, service, username, keyring),
     list = function(service = NULL, keyring = NULL)
       b_macos_list(self, private, service, keyring),
+    list_raw = function(service = NULL, keyring = NULL)
+      b_macos_list_raw(self, private, service, keyring),
 
     keyring_create = function(keyring, password = NULL)
       b_macos_keyring_create(self, private, keyring, password),
@@ -143,11 +145,41 @@ b_macos_delete <- function(self, private, service, username, keyring) {
 b_macos_list <- function(self, private, service, keyring) {
   keyring <- private$keyring_file(keyring %||% private$keyring)
   res <- .Call(keyring_macos_list, utf8(keyring), utf8(service))
-  data.frame(
+  df <- data.frame(
     service = res[[1]],
     username = res[[2]],
     stringsAsFactors = FALSE
   )
+  srv_na <- anyNA(df[["service"]])
+  usr_na <- anyNA(df[["username"]])
+  if (srv_na | usr_na) {
+    cnd <- structure(
+      list(message = paste0(
+        "Some ",
+        if (srv_na) "service names ",
+        if (srv_na && usr_na) "and some ",
+        if (usr_na) "user names ",
+        "contain zero bytes. These are shown as NA. ",
+        "Use `key_list_raw()` to see them."
+      )),
+      class = "keyring_warn_zero_byte_keys"
+    )
+    warning(cnd)
+  }
+  df
+}
+
+b_macos_list_raw <- function(self, private, service, keyring) {
+  keyring <- private$keyring_file(keyring %||% private$keyring)
+  res <- .Call(keyring_macos_list, utf8(keyring), utf8(service))
+  df <- data.frame(
+    service = res[[1]],
+    username = res[[2]],
+    stringsAsFactors = FALSE
+  )
+  df[["service_raw"]] <- res[[3]]
+  df[["username_raw"]] <- res[[4]]
+  df
 }
 
 b_macos_keyring_create <- function(self, private, keyring, password) {

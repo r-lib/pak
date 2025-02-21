@@ -26,12 +26,12 @@
 #' the termination of and R session. Specifically, you can define a key
 #' once, and then read the key value in completely independent R sessions.
 #'
-#' - Setting a secret interactively: [key_set()]
+#' - Setting a secret interactively: [key_set()].
 #' - Setting a secret from a script, i.e. non-interactively:
-#'   [key_set_with_value()]
-#' - Reading a secret: [key_get()]
-#' - Listing secrets: [key_list()]
-#' - Deleting a secret: [key_delete()]
+#'   [key_set_with_value()].
+#' - Reading a secret: [key_get()], [key_get_raw()].
+#' - Listing secrets: [key_list()], [key_list_raw()].
+#' - Deleting a secret: [key_delete()].
 #'
 #' @section Managing keyrings:
 #'

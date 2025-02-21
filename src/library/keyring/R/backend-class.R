@@ -24,6 +24,7 @@ abstract_method <- function() {
 #'                keyring = NULL)
 #' delete(service, username = NULL, keyring = NULL)
 #' list(service = NULL, keyring = NULL)
+#' list_raw(service = NULL, keyring = NULL)
 #' ```
 #'
 #' What these functions do:
@@ -39,6 +40,7 @@ abstract_method <- function() {
 #'   byte sequence of a raw vector.
 #' * `delete()` remotes a keyring item.
 #' * `list()` lists keyring items.
+#' * `list_raw()` lists keyring items, also as raw vectors.
 #'
 #' The arguments:
 #' * `service` String, the name of a service. This is used to find the
@@ -83,6 +85,12 @@ backend <- R6Class(
       abstract_method(),
     list = function(service = NULL, keyring = NULL)
       stop("Backend does not implement 'list'"),
+    list_raw = function(service = NULL, keyring = NULL) {
+      keys <- self$list(service, keyring)
+      keys$service_raw <- lapply(keys$service, charToRaw)
+      keys$username_raw <- lapply(keys$username, charToRaw)
+      keys
+    },
 
     print = function(...) {
       d <- self$docs()
@@ -116,6 +124,7 @@ backend <- R6Class(
         set_with_value = "set a key in the keyring",
         delete = "delete a key",
         list = "list keys in a keyring",
+        list_raw = "list keys in a keyring as raw vectors",
         has_keyring_support = "TRUE if multiple keyrings are supported"
       )
     }

@@ -211,10 +211,33 @@ static void keyring_macos_list_item(SecKeychainItemRef item, SEXP result,
 					       /* outData = */ NULL);
 # pragma GCC diagnostic pop
   keyring_macos_handle_status("cannot list passwords", status);
-  SET_STRING_ELT(VECTOR_ELT(result, 0), idx,
-		 mkCharLen(attrs[0].data, attrs[0].length));
-  SET_STRING_ELT(VECTOR_ELT(result, 1), idx,
-		 mkCharLen(attrs[1].data, attrs[1].length));
+  SET_VECTOR_ELT(VECTOR_ELT(result, 2), idx,
+     Rf_allocVector(RAWSXP, attrs[0].length));
+  memcpy(
+    RAW(VECTOR_ELT(VECTOR_ELT(result, 2), idx)),
+    attrs[0].data,
+    attrs[0].length
+  );
+  if (memchr(attrs[0].data, '\0', attrs[0].length) == NULL) {
+    SET_STRING_ELT(VECTOR_ELT(result, 0), idx,
+      mkCharLen(attrs[0].data, attrs[0].length));
+  } else {
+    SET_STRING_ELT(VECTOR_ELT(result, 0), idx, NA_STRING);
+  }
+
+  SET_VECTOR_ELT(VECTOR_ELT(result, 3), idx,
+     Rf_allocVector(RAWSXP, attrs[1].length));
+  memcpy(
+    RAW(VECTOR_ELT(VECTOR_ELT(result, 3), idx)),
+    attrs[1].data,
+    attrs[1].length
+  );
+  if (memchr(attrs[0].data, '\0', attrs[0].length) == NULL) {
+    SET_STRING_ELT(VECTOR_ELT(result, 1), idx,
+      mkCharLen(attrs[1].data, attrs[1].length));
+  } else {
+    SET_STRING_ELT(VECTOR_ELT(result, 1), idx, NA_STRING);
+  }
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   SecKeychainItemFreeContent(&attrList, NULL);
@@ -287,9 +310,11 @@ SEXP keyring_macos_list(SEXP keyring, SEXP service) {
   CFArrayRef resArray = keyring_macos_list_get(ckeyring, cservice);
   CFIndex i, num = CFArrayGetCount(resArray);
   SEXP result;
-  PROTECT(result = allocVector(VECSXP, 2));
+  PROTECT(result = allocVector(VECSXP, 4));
   SET_VECTOR_ELT(result, 0, allocVector(STRSXP, num));
   SET_VECTOR_ELT(result, 1, allocVector(STRSXP, num));
+  SET_VECTOR_ELT(result, 2, allocVector(VECSXP, num));
+  SET_VECTOR_ELT(result, 3, allocVector(VECSXP, num));
   for (i = 0; i < num; i++) {
     SecKeychainItemRef item =
       (SecKeychainItemRef) CFArrayGetValueAtIndex(resArray, i);
