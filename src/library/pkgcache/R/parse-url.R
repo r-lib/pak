@@ -3,7 +3,7 @@ parse_url <- function(url) {
   re_url <- paste0(
     "^(?<protocol>[a-zA-Z0-9]+)://",
     "(?:(?<username>[^@/:]+)(?::(?<password>[^@/]+))?@)?",
-    "(?<host>[^/]+)",
+    "(?<host>[^/]*)",
     "(?<path>.*)$"            # don't worry about query params here...
   )
 
@@ -48,4 +48,3 @@ re_match <- function(text, pattern, perl = TRUE, ...) {
   names(res) <- c(attr(match, "capture.names"), ".text", ".match")
   res
 }
-

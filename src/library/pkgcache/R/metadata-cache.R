@@ -737,22 +737,31 @@ cmc__update_replica_pkgs <- function(self, private) {
 
   meta <- !is.na(pkgs$meta_url)
   bin <- !is.na(pkgs$bin_url)
-  dls <- data.frame(
-    stringsAsFactors = FALSE,
+  dls <- data_frame(
     url = c(pkgs$url, pkgs$meta_url[meta], pkgs$bin_url[bin], bsq_url),
     fallback_url = c(pkgs$fallback_url, rep(NA_character_, sum(meta) + sum(bin)), NA_character_),
     path = c(pkgs$path, pkgs$meta_path[meta], pkgs$bin_path[bin], bsq_path),
     etag = c(pkgs$etag, pkgs$meta_etag[meta], pkgs$bin_etag[bin], bsq_etag),
+    headers = c(
+      lapply(pkgs$url, function(x) repo_auth_headers(x)$headers),
+      vector("list", length = sum(meta)),
+      lapply(pkgs$bin_url[bin], function(x) repo_auth_headers(x)$headers),
+      vector("list", length = 1)
+    ),
     timeout = c(rep(c(200, 100), c(nrow(pkgs), sum(meta) + sum(bin))), 5),
     mayfail = TRUE
   )
 
-  download_files(dls)$
+  key <- random_key()
+  async_constant()$
+    then(function() start_auth_cache(key))$
+    then(function() download_files(dls))$
     then(function(result) {
       missing_pkgs_note(pkgs, result)
       load_bioc_sysreqs()
       result
-    })
+    })$
+    finally(function() clear_auth_cache(key))
 }
 
 # E.g. "R 4.1 macos packages are missing from CRAN and Bioconductor"

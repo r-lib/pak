@@ -170,6 +170,8 @@ pkgenv$ppm_r_versions_cached <- c("3.6", "4.0", "4.1", "4.2", "4.3")
 
 pkgenv$package_versions <- new.env(parent = emptyenv())
 
+pkgenv$credentials <- new.env(parent = emptyenv())
+
 onload_pkgcache <- function(libname, pkgname) {
   if (Sys.getenv("PKGCACHE_NO_PILLAR") == "") {
     requireNamespace("pillar", quietly = TRUE)

@@ -250,12 +250,32 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
 
 cran_app <- function(packages = NULL,
                      log = interactive(),
+                     basic_auth = NULL,
                      options = list()) {
 
   app <- webfakes::new_app()
 
   # Log requests by default
   if (log) app$use("logger" = webfakes::mw_log())
+
+  if (!is.null(basic_auth)) {
+    app$use("basic auth" = function(req, res) {
+      exp <- paste(
+        "Basic",
+        base64_encode(
+          paste0(basic_auth[["username"]], ":", basic_auth[["password"]])
+        )
+      )
+      hdr <- req$get_header("Authorization") %||% ""
+      if (exp != hdr) {
+        res$
+          set_header("WWW-Authenticate", "Basic realm=\"CRAN with auth\"")$
+          send_status(401L)
+      } else {
+        "next"
+      }
+    })
+  }
 
   # Parse all kinds of bodies
   app$use("json body parser" = webfakes::mw_json())

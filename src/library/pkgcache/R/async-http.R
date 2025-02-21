@@ -35,6 +35,10 @@ update_async_timeouts <- function(options) {
   )
 }
 
+add_auth_header <- function(url, headers) {
+  c(headers, repo_auth_headers(url)$headers)
+}
+
 #' Download a file, asynchronously
 #'
 #' This is the asynchronous version of [utils::download.file()].
@@ -100,7 +104,7 @@ update_async_timeouts <- function(options) {
 download_file <- function(url, destfile, etag_file = NULL,
                           tmp_destfile = paste0(destfile, ".tmp"),
                           error_on_status = TRUE,
-                          options = list(), ...) {
+                          options = list(), headers = character(), ...) {
   "!DEBUG downloading `url`"
   assert_that(
     is_string(url),
@@ -116,7 +120,9 @@ download_file <- function(url, destfile, etag_file = NULL,
   tmp_destfile <- normalizePath(tmp_destfile, mustWork = FALSE)
   mkdirp(dirname(tmp_destfile))
 
-  http_get(url, file = tmp_destfile, options = options, ...)$
+  headers <- add_auth_header(url, headers)
+
+  http_get(url, file = tmp_destfile, options = options, headers = headers, ...)$
     then(http_stop_for_status)$
     then(function(resp) {
       "!DEBUG downloaded `url`"
@@ -229,6 +235,7 @@ download_if_newer <- function(url, destfile, etag_file = NULL,
   options <- update_async_timeouts(options)
   etag_old <- get_etag_header_from_file(destfile, etag_file)
   headers <- c(headers, etag_old)
+  headers <- add_auth_header(url, headers)
 
   destfile <- normalizePath(destfile, mustWork = FALSE)
   tmp_destfile <- normalizePath(tmp_destfile, mustWork = FALSE)
@@ -342,7 +349,9 @@ download_one_of <- function(urls, destfile, etag_file = NULL,
   options <- update_async_timeouts(options)
   tmps <- paste0(destfile, ".tmp.", seq_along(urls))
   dls <- mapply(
-    download_if_newer, url = urls, tmp_destfile = tmps,
+    download_if_newer,
+    url = urls,
+    tmp_destfile = tmps,
     MoreArgs = list(destfile = destfile, etag_file = etag_file,
                     headers = headers, options = options, ...),
     SIMPLIFY = FALSE)
@@ -356,7 +365,7 @@ download_one_of <- function(urls, destfile, etag_file = NULL,
 }
 
 download_files <- function(data, error_on_status = TRUE,
-                           options = list(), ...) {
+                           options = list(), headers = NULL, ...) {
 
   if (any(dup <- duplicated(data$path))) {
     stop("Duplicate target paths in download_files: ",
@@ -371,6 +380,7 @@ download_files <- function(data, error_on_status = TRUE,
     row <- data[idx, ]
     dx <- download_if_newer(
       row$url, row$path, row$etag,
+      headers = c(headers, row$headers[[1L]]),
       on_progress = prog_cb,
       error_on_status = error_on_status,
       options = options, ...
@@ -380,6 +390,7 @@ download_files <- function(data, error_on_status = TRUE,
       dx <- dx$catch(error = function(err) {
         download_if_newer(
           row$fallback_url, row$path, row$etag,
+          headers = c(headers, row$headers[[1L]]),
           error_on_status = error_on_status,
           options = options, ...
         )

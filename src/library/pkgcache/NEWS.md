@@ -1,5 +1,8 @@
 # pkgcache (development version)
 
+* `parse_packages()` now parses files ending with an extra newline
+  correctly (#122).
+
 # pkgcache 2.2.3
 
 * The metadata cache now does not use source URLs for packages in `Archive`
