@@ -58,6 +58,8 @@ Suggests:
     rstudioapi,
     testthat (>= 3.2.0),
     withr
+Remotes:
+    r-lib/pkgcache
 ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
