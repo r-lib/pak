@@ -57,6 +57,7 @@ Suggests:
     ps (>= 1.6.0),
     rstudioapi,
     testthat (>= 3.2.0),
+    webfakes,
     withr
 Remotes:
     r-lib/pkgcache
