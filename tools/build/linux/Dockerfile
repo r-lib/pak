@@ -24,6 +24,9 @@ RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf \
 
 # Build binary package ----------------------------------------------------
 
+# needed for C23, which is the default on R-devel
+RUN sed -i 's/basename[(][)]/basename(char*)/' /usr/include/string.h
+
 COPY pak_*.tar.gz /root/
 RUN PROCESSX_UNLINK_R=true R CMD INSTALL pak_*.tar.gz
 

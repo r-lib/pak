@@ -25,6 +25,9 @@ COPY pak_*.tar.gz /root/
 # we need pkgconf for curl, otherwise it does not link to openssl, etc.
 RUN apk add bash coreutils findutils pkgconf \
     gcc linux-headers musl-dev curl-dev g++
+# needed for C23, which is the default on R-devel
+RUN sed -i 's/basename[(][)]/basename(char*)/' /usr/include/string.h
+
 RUN R CMD INSTALL pak_*.tar.gz
 
 # We do this, to make sure that we have the (host) dependencies installed
@@ -63,6 +66,10 @@ RUN apk add --arch aarch64 --root $AARCH64_ROOT \
     ./packages/main/aarch64/musl-dev-*.apk \
     ./packages/main/aarch64/libgcc-*.apk \
     ./packages/main/aarch64/libstdc++-*.apk
+
+# needed for C23, which is the default on R-devel
+RUN sed -i 's/basename[(][)]/basename(char*)/' \
+    $AARCH64_ROOT/usr/include/string.h
 
 # =========================================================================
 
