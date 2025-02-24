@@ -68,6 +68,9 @@ remote <- function(func, args = list()) {
   pkg_options <- opts[grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts]
   envs <- Sys.getenv()
   extraenvs <- c("R_BIOC_VERSION", "PATH")
+  if (any(grepl("@", subst_args[["__repos__"]]))) {
+    extraenvs <- c(extraenvs, envs[grep("^https?://", names(envs))])
+  }
   pkg_envs <- envs[grepl("^PKG_", names(envs)) | names(envs) %in% extraenvs]
   rs$run(function(new_opts, new_envs) {
     opts <- options()
