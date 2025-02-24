@@ -64,7 +64,7 @@ RUN apk add skopeo
 # This also serves as a minimal test suite that we can download and
 # install real packages, with the new build.
 
-RUN R -q -e 'pak::pkg_install(c("glue@1.6.2", "gitcreds", "processx", "digest", \
+RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
     "desc", "jsonlite"))'
 
 RUN apk add git
