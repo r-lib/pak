@@ -322,6 +322,28 @@ dcf <- function(txt) {
   as.data.frame(read.dcf(textConnection(txt)), stringsAsFactors = FALSE)
 }
 
+cran_app_pkgs <- dcf("
+  Package: pkg1
+  Version: 1.0.0
+
+  Package: pkg1
+  Version: 0.9.0
+
+  Package: pkg1
+  Version: 0.8.0
+
+  Package: pkg2
+  Version: 1.0.0
+  Depends: pkg1
+
+  Package: pkg3
+  Version: 1.0.0
+  Depends: pkg2
+
+  Package: pkg3
+  Version: 0.9.9
+")
+
 fix_port <- function(x) {
   gsub("http://127[.]0[.]0[.]1:[0-9]+", "http://127.0.0.1:<port>", x)
 }
@@ -422,6 +444,25 @@ make_bioc_repo <- function(repo, packages, options) {
   }
 
   invisible()
+}
+
+auth_proxy_app <- function(repo_url = NULL, username = "username",
+                           password = "token") {
+  repo_url <- repo_url %||% "https://cloud.r-project.org"
+  webfakes::new_app()$get(
+    webfakes::new_regexp(""), function(req, res) {
+      exp <- paste("Basic", base64_encode(paste0(username, ":", password)))
+      hdr <- req$get_header("Authorization") %||% ""
+      if (exp != hdr) {
+        res$
+          set_header("WWW-Authenticate", "Basic realm=\"CRAN with auth\"")$
+          send_status(401L)
+      } else {
+        res$
+          redirect(sprintf("%s/%s", repo_url, req$path))
+      }
+    }
+  )
 }
 
 # nocov end

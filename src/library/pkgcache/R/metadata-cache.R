@@ -277,7 +277,7 @@ cmc_init <- function(self, private, primary_path, replica_path, platforms,
   private$platforms <- platforms
   private$r_version <- get_minor_r_version(r_version)
   private$bioc <- bioc
-  private$repos <- cmc__get_repos(repos, bioc, cran_mirror, r_version)
+  private$repos <- cmc__get_repos(repos, bioc, cran_mirror, r_version, auth = FALSE)
   private$update_after <- update_after
   private$dirs <- get_all_package_dirs(platforms, r_version)
   invisible(self)
@@ -742,12 +742,6 @@ cmc__update_replica_pkgs <- function(self, private) {
     fallback_url = c(pkgs$fallback_url, rep(NA_character_, sum(meta) + sum(bin)), NA_character_),
     path = c(pkgs$path, pkgs$meta_path[meta], pkgs$bin_path[bin], bsq_path),
     etag = c(pkgs$etag, pkgs$meta_etag[meta], pkgs$bin_etag[bin], bsq_etag),
-    headers = c(
-      lapply(pkgs$url, function(x) repo_auth_headers(x)$headers),
-      vector("list", length = sum(meta)),
-      lapply(pkgs$bin_url[bin], function(x) repo_auth_headers(x)$headers),
-      vector("list", length = 1)
-    ),
     timeout = c(rep(c(200, 100), c(nrow(pkgs), sum(meta) + sum(bin))), 5),
     mayfail = TRUE
   )
@@ -966,7 +960,7 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
   res
 }
 
-cmc__get_repos <- function(repos, bioc, cran_mirror, r_version) {
+cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {
   repos[["CRAN"]] <- cran_mirror
   repos <- unlist(repos)
   bioc_names <- bioconductor$get_repos()
@@ -999,6 +993,9 @@ cmc__get_repos <- function(repos, bioc, cran_mirror, r_version) {
   }
 
   res <- res[!duplicated(res$url), ]
+  if (auth) {
+    res <- add_auth_status(res)
+  }
 
   res
 }

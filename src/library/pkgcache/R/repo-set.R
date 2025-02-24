@@ -30,6 +30,10 @@
 #'   the package metadata.
 #' * `bioc_version`: Bioconductor version. Only set for Bioconductor
 #'   repositories, and it is `NA` for others.
+#' * `username`: user name, for authenticated repositories.
+#' * `has_password`: whether `repo_get()` could find the password for
+#'   this repository. Call [repo_auth()] for more information if the
+#'   credential lookup failed.
 #'
 #' @export
 #' @family repository functions
@@ -43,13 +47,16 @@ repo_get <- function(r_version = getRversion(), bioc = TRUE,
     getOption("repos"),
     bioc = bioc,
     cran_mirror = cran_mirror,
-    as.character(r_version)
+    as.character(r_version),
+    auth = TRUE
   )
 }
 
 #' @rdname repo_get
 #' @param spec A single repository specification, a possibly named
 #'   character scalar. See details below.
+#' @param username User name to set, for authenticated repositories, see
+#'   [repo_auth()].
 #' @details
 #'   `repo_resolve()` resolves a single repository specification to a
 #'   repository URL.
@@ -63,14 +70,16 @@ repo_get <- function(r_version = getRversion(), bioc = TRUE,
 #' #' repo_resolve("PPM@dplyr-1.0.0")
 #' #' repo_resolve("PPM@R-4.0.0")
 
-repo_resolve <- function(spec) {
-  repo_sugar(spec, names(spec))
+repo_resolve <- function(spec, username = NULL) {
+  repo_sugar(spec, names(spec), username)
 }
 
 #' @rdname repo_get
 #' @param ...  Repository specifications. See details below.
 #' @param .list List or character vector of repository specifications,
 #'   see details below.
+#' @param username User name to set, for authenticated repositories, see
+#'   [repo_auth()].
 #' @details
 #'   `repo_add()` adds a new repository to the `repos` option. (To remove
 #'   a repository, call `option()` directly, with the subset that you want
@@ -79,12 +88,12 @@ repo_resolve <- function(spec) {
 #'   `repo_add()` returns the same data frame as `repo_get()`, invisibly.
 #' @export
 
-repo_add <- function(..., .list = NULL) {
-  repo_add_internal(..., .list = .list)
+repo_add <- function(..., .list = NULL, username = NULL) {
+  repo_add_internal(..., .list = .list, username = username)
   invisible(repo_get())
 }
 
-repo_add_internal <- function(..., .list = NULL) {
+repo_add_internal <- function(..., .list = NULL, username = NULL) {
   new <- c(list(...), .list)
 
   if (length(new) == 0) return(invisible(repo_get()))
@@ -93,6 +102,7 @@ repo_add_internal <- function(..., .list = NULL) {
     repo_sugar,
     new,
     names(new) %||% rep("", length(new)),
+    MoreArgs = list(username = username),
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
   ))
@@ -153,11 +163,11 @@ with_repo <- function(repos, expr) {
 #
 # /Users/gaborcsardi/CRAN
 
-repo_sugar <- function(x, nm) {
+repo_sugar <- function(x, nm, username = NULL) {
   psd <- parse_url(x)
 
   # URL
-  if (!is.na(psd$protocol)) {
+  url <- if (!is.na(psd$protocol)) {
     repo_sugar_url(x, nm)
 
   } else if (grepl("^MRAN@", x)) {
@@ -169,6 +179,12 @@ repo_sugar <- function(x, nm) {
   } else {
     repo_sugar_path(x, nm)
   }
+
+  if (!is.null(username)) {
+    url <- sub("://", paste0("://", username, "@"), url)
+  }
+
+  url
 }
 
 repo_sugar_url <- function(x, nm) {
