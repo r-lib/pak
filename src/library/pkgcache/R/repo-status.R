@@ -26,6 +26,13 @@
 #' * `url`: base URL of the repository.
 #' * `bioc_version`: Bioconductor version, or `NA` for
 #'   non-Bioconductor repositories.
+#' * `username`: Included if at least one repository is authenticated.
+#'   `NA_character_` for repositories without authentication. See
+#'   [repo_auth()].
+#' * `has_password`: `TRUE` is the function could retrieve the password
+#'   for the authenticated repository. It is `NA` for repositories without
+#'   authentication. This column is included only if at least one
+#'   repository has authentication. See [repo_auth()].
 #' * `platform`: platform, see [default_platforms()] for possible values.
 #' * `path`: the path to the packages within the base URL, for a
 #'   given platform and R version.

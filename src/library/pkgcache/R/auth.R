@@ -86,8 +86,6 @@ repo_auth <- function(r_version = getRversion(), bioc = TRUE,
 #'
 #' @param url Repo URL or download URL. For authentication it should include
 #'   a username.
-#' @param allow_prompt Whether to allow keyring backends that potentially
-#'   require an interactive session.
 #' @param use_cache Whether to allow retrieving the credenticals from the
 #'   credential cache.
 #' @param set_cache Whether to save the retrieved credentials in the
@@ -117,7 +115,6 @@ repo_auth <- function(r_version = getRversion(), bioc = TRUE,
 
 repo_auth_headers <- function(
   url,
-  allow_prompt = interactive(),
   use_cache = TRUE,
   set_cache = TRUE,
   warn = TRUE) {
@@ -186,15 +183,8 @@ repo_auth_headers <- function(
     return(res)
   }
 
-  # In non-interactive contexts, force the use of the environment variable
-  # backend so that we never hang but can still support CI setups.
   if (is.null(pwd)) {
-    kb <- if (allow_prompt) {
-      keyring::default_backend()
-    } else {
-      keyring::backend_env$new()
-    }
-
+    kb <- keyring::default_backend()
     for (u in urls) {
       pwd <- try_catch_null(kb$get(u, parsed_url$username)) %||%
         try_catch_null(kb$get(u))
