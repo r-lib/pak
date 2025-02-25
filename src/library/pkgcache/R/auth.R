@@ -8,8 +8,9 @@
 #' ```
 #'
 #' pkgcache will look up password for this url and username from the
-#' system credential store using the keyring package. For the URL above
-#' it tries the following keyring keys, in this order:
+#' the user's `.netrc` file and from the system credential store using
+#' the keyring package. For the URL above it tries the following keyring
+#' keys, in this order:
 #' ```
 #' https://<username>@repo-host/<repo-path>
 #' https://repo-host/<repo-path>
@@ -167,7 +168,13 @@ repo_auth_headers <- function(
     error = NULL
   )
 
-  if (!requireNamespace("keyring", quietly = TRUE)) {
+  pwd <- repo_auth_netrc(parsed_url$host, parsed_url$username)
+  if (!is.null(pwd)) {
+    res$auth_domain <- parsed_url$host
+    res$source <- paste0(".netrc")
+  }
+
+  if (is.null(pwd) && !requireNamespace("keyring", quietly = TRUE)) {
     res$found <- FALSE
     res$error <- "keyring not installed"
     if (warn) {
@@ -181,24 +188,27 @@ repo_auth_headers <- function(
 
   # In non-interactive contexts, force the use of the environment variable
   # backend so that we never hang but can still support CI setups.
-  kb <- if (allow_prompt) {
-    keyring::default_backend()
-  } else {
-    keyring::backend_env$new()
-  }
+  if (is.null(pwd)) {
+    kb <- if (allow_prompt) {
+      keyring::default_backend()
+    } else {
+      keyring::backend_env$new()
+    }
 
-  for (u in urls) {
-    auth_domain <- u
-    pwd <- try_catch_null(kb$get(u, parsed_url$username)) %||%
-      try_catch_null(kb$get(u))
-    if (!is.null(pwd)) break
+    for (u in urls) {
+      pwd <- try_catch_null(kb$get(u, parsed_url$username)) %||%
+        try_catch_null(kb$get(u))
+      if (!is.null(pwd)) {
+        res$auth_domain <- u
+        res$source <- paste0("keyring:", kb$name)
+        break
+      }
+    }
   }
 
   if (!is.null(pwd)) {
-    auth <- paste(parsed_url$username, pwd, sep = ":")
     res$found <- TRUE
-    res$auth_domain <- auth_domain
-    res$source <- paste0("keyring:", kb$name)
+    auth <- paste(parsed_url$username, pwd, sep = ":")
     res$headers <- c("Authorization" = paste("Basic", base64_encode(auth)))
   } else {
     if (warn) {
@@ -211,7 +221,9 @@ repo_auth_headers <- function(
   }
 
   if (set_cache) {
-    pkgenv$credentials[[auth_domain]] <- res
+    # we also cache negative results, to avoid many lookups and warnings
+    key <- if (res$found) res$auth_domain else urls[1]
+    pkgenv$credentials[[key]] <- res
   }
 
   res
@@ -254,6 +266,7 @@ parse_url_basic_auth <- function(url) {
   # Lop off any /__linux__/ subdirectories, too.
   repo <- sub("^(.*)/__linux__/[^/]+(/.*)$", "\\1\\2", repo, perl = TRUE)
   list(
+    host = psd$host,
     hosturl = paste0(psd$protocol, "://", psd$host),
     hostuserurl = paste0(psd$protocol, "://", userat, psd$host),
     repourl = repo[1],
@@ -282,4 +295,121 @@ add_auth_status <- function(repos) {
   }
 
   repos
+}
+
+repo_auth_netrc <- function(host, username) {
+  netrc_path <- Sys.getenv("PKG_NETRC_PATH")
+  if (netrc_path == "") {
+    netrc_path <- path.expand("~/.netrc")
+    if (!file.exists(netrc_path) && .Platform[["OS.type"]] == "windows") {
+      netrc_path <- path.expand("~/_netrc")
+    }
+  }
+  if (!file.exists(netrc_path)) return(NULL)
+
+  lines <- readLines(netrc_path, warn = FALSE)
+  # mark potential end of macros with NA
+  lines[lines == ""] <- NA_character_
+  tokens <- scan(text = lines, what = "" , quiet = TRUE)
+
+  idx <- 1L
+  err <- FALSE
+  machine <- login <- NA_character_
+  skip_na <- function() {
+    while (idx <= length(tokens) && is.na(tokens[[idx]])) {
+      idx <<- idx + 1L
+    }
+  }
+
+  skip_na()
+  while (!err && idx <= length(tokens)) {
+    switch(
+      tokens[idx],
+      "machine" = {
+        # next token is a host name
+        idx <- idx + 1L
+        skip_na()
+        if (idx <= length(tokens)) {
+          machine <- tokens[idx]
+          idx <- idx + 1L
+          skip_na()
+        } else {
+          cli::cli_alert_warning(
+            "Invalid netrc file at {.path {netrc_path}}: ended while
+             parsing a {.code machine} token."
+          )
+        }
+      },
+      "default" = {
+        machine <- host
+        idx <- idx + 1L
+        skip_na()
+      },
+      "login" = {
+        # next token is username
+        idx <- idx + 1L
+        skip_na()
+        if (idx <= length(tokens)) {
+          if (is.na(machine)) {
+            cli::cli_alert_warning(
+              "Invalid netrc file at {.path {netrc_path}}: found a
+               {.code login} token without a {.code machine} token."
+            )
+            break
+          }
+          login <- tokens[idx]
+          idx <- idx + 1L
+          skip_na()
+        } else {
+          cli::cli_alert_warning(
+            "Invalid netrc file at {.path {netrc_path}}: ended while
+             parsing {.code login} token."
+          )
+        }
+      },
+      "password" = {
+        # next item is password
+        idx <- idx + 1L
+        skip_na()
+        if (idx <= length(tokens)) {
+          if (is.na(machine) || is.na(login)) {
+            cli::cli_alert_warning(
+              "Invalid netrc file at {.path {netrc_path}}: {.code password}
+               token must come after {.code machine} (or {.code default})
+               and {.code login}."
+            )
+            break
+          }
+          if (machine == host && login == username) {
+            # bingo
+            return(tokens[idx])
+          }
+          idx <- idx + 1L
+          skip_na()
+        } else {
+          cli::cli_alert_warning(
+            "Invalid netrc file at {.path {netrc_path}}: ended while
+             parsing {.code password} token."
+          )
+        }
+      },
+      "macdef" = {
+        # macro, we don't use this, skip until it is over
+        idx <- idx + 1L
+        while (idx <= length(tokens) && !is.na(tokens[idx])) {
+          idx <- idx + 1L
+        }
+        skip_na()
+      },
+      {
+        cli::cli_alert_warning(
+          "Invalid netrc file at {.path {netrc_path}}: unknown token:
+          {.code {tokens[idx]}}."
+        )
+        break
+      }
+    )
+  }
+
+  NULL
 }
