@@ -28,11 +28,18 @@ remote <- function(func, args = list()) {
   if (state != "idle") stop("Subprocess is busy or cannot start")
 
   func2 <- func
+  width <- pkg_data$ns$cli$console_width()
   subst_args <- list(
     "__body__" = body(func),
     "__verbosity__" = is_verbose(),
-    "__repos__" = getOption("repos"),
-    "__width__" = pkg_data$ns$cli$console_width()
+    "__options__" = list(
+      repos = getOption("repos"),
+      keyring_backend = getOption("keyring_backend"),
+      keyring_username = getOption("keyring_username"),
+      width = width,
+      cli.width = width,
+      pkg.show_progress = is_verbose()
+    )
   )
   body(func2) <- substitute(
     {
@@ -49,12 +56,7 @@ remote <- function(func, args = list()) {
           invokeRestart("cli_message_handled")
         },
         {
-          options(
-            pkg.show_progress = `__verbosity__`,
-            repos = `__repos__`,
-            cli.width = `__width__`,
-            width = `__width__`
-          )
+          options(`__options__`)
           asNamespace("pak")
           `__body__`
         }

@@ -16,6 +16,26 @@ to the result.}
 \item{cran_mirror}{CRAN mirror to use. Leave it at \code{NULL} to use the
 mirror in \code{getOption("repos")} or an automatically selected one.}
 }
+\value{
+\code{repo_get()} returns a data frame with columns:
+\itemize{
+\item \code{name}: repository name. Names are informational only.
+\item \code{url}: repository URL.
+\item \code{type}: repository type. This is also informational, currently it
+can be \code{cran} for CRAN, \code{bioc} for a Bioconductor repository, and
+\code{cranlike}: for other repositories.
+\item \code{r_version}: R version that is supposed to be used with this
+repository. This is only set for Bioconductor repositories. It is \code{*}
+for others. This is also informational, and not used when retrieving
+the package metadata.
+\item \code{bioc_version}: Bioconductor version. Only set for Bioconductor
+repositories, and it is \code{NA} for others.
+\item \code{username}: user name, for authenticated repositories.
+\item \code{has_password}: whether \code{repo_get()} could find the password for
+this repository. Call \code{\link[=repo_auth]{repo_auth()}} for more information if the
+credential lookup failed.
+}
+}
 \description{
 pak uses the \code{repos} option, see \code{\link[=options]{options()}}. It also automatically
 adds a CRAN mirror if none is set up, and the correct version of the
@@ -30,15 +50,15 @@ Bioconductor repositories. See the \code{cran_mirror} and \code{bioc} arguments.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_get()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                   
-#>   name          url                                type  r_ver…¹ bioc_…²
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
+#> <span style="color: #999999;"># A data frame: 6 × 5</span>                                                   
+#>   name          url                         type  r_version bioc_version
+#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>       
+#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>          
+#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">6</span> BioCbooks     https://bioconductor.org/p… bioc  4.4.2     3.20        
 </pre></div>
 }}
 }

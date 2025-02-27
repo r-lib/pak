@@ -35,6 +35,7 @@ reference:
   - "The dependency solver"
   - "Package dependency types"
   - "System requirements"
+  - "Authenticated repositories"
   - "pak configuration"
 
 - title: Packages
@@ -91,6 +92,9 @@ reference:
   - ppm_repo_url
   - ppm_snapshots
   - repo_add
+  - repo_auth
+  - repo_auth_key_get
+  - repo_auth_key_set
   - repo_get
   - repo_status
 
