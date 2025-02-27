@@ -58,6 +58,11 @@ repo_status <- function(platforms = default_platforms(),
                         r_version = getRversion(),
                         bioc = TRUE,
                         cran_mirror = default_cran_mirror()) {
+
+  key <- random_key()
+  on.exit(clear_auth_cache(key), add = TRUE)
+  start_auth_cache(key)
+
   synchronise(async_repo_status(
     platforms,
     r_version,
@@ -105,7 +110,10 @@ async_repo_status <- function(platforms = default_platforms(),
   fns <- paste0("PACKAGES", c(".rds", ".gz", ""))
   urls <- mapx(sts$url, "/", sts$path, "/", list(fns), paste0)
 
-  ping <- function(u) http_head(u)$then(http_stop_for_status)
+  ping <- function(u) {
+    headers <- add_auth_header(u, character())
+    http_head(u, headers = headers)$then(http_stop_for_status)
+  }
   ping_any <- function(us) {
     when_any(.list = lapply(us, ping))$
       catch(error = function(err) err)$
