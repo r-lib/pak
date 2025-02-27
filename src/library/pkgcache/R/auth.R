@@ -233,13 +233,13 @@ repo_auth_headers <- function(
     if (res$found) {
       cli::cli_alert_success(
         wrap = TRUE,
-        "Logged in to repo {.url {parsed_url$repouserurl}}
+        "Found credential for repo {.url {parsed_url$repouserurl}}
          ({res$source})."
       )
     } else {
       cli::cli_alert_danger(
         wrap = TRUE,
-        "Failed to log in to repo {.url {parsed_url$repouserurl}},
+        "Did not find credentials for repo {.url {parsed_url$repouserurl}},
          {res$error}."
       )
     }
