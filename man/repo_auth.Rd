@@ -52,7 +52,16 @@ in the repo URL:
 \details{
 pak will look up password for this url and username from the
 the user's \code{.netrc} file and from the system credential store using
-the keyring package. For the URL above it tries the following keyring
+the keyring package. pak currently supports the following keyring
+backends:
+\itemize{
+\item Windows credential store,
+\item macOS Keychain,
+\item Linux Secret Service via libsecret, if built with libsecret support,
+\item environment variables.
+}
+
+For the URL above it tries the following keyring
 keys, in this order:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{https://<username>@repo-host/<repo-path>

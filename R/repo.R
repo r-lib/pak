@@ -311,7 +311,15 @@ repo_resolve <- function(spec, username = NULL) {
 #'
 #' pak will look up password for this url and username from the
 #' the user's `.netrc` file and from the system credential store using
-#' the keyring package. For the URL above it tries the following keyring
+#' the keyring package. pak currently supports the following keyring
+#' backends:
+#'
+#' * Windows credential store,
+#' * macOS Keychain,
+#' * Linux Secret Service via libsecret, if built with libsecret support,
+#' * environment variables.
+#'
+#' For the URL above it tries the following keyring
 #' keys, in this order:
 #' ```
 #' https://<username>@repo-host/<repo-path>
