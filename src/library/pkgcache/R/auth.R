@@ -30,12 +30,12 @@
 #'   available for authenticated repositories.
 #' @return Data frame with columns:
 #'   - all columns from the output of [repo_get()],
-#'   - `auth_domains`: authentication domains. pkgcache tries to find a
-#'     credential for these domains, until the search is successful or all
+#'   - `auth_domains`: authentication domains. pkgcache tries to find the
+#'     credentials for these domains, until the search is successful or all
 #'     domains fail.
 #'   - `auth_domain`: if the credential lookup is successful, then this is
-#'     the authentication domain that was used to get the credential.
-#'   - `auth_source`: where the credential was found. E.g.
+#'     the authentication domain that was used to get the credentials.
+#'   - `auth_source`: where the credentials were found. E.g.
 #'     `keyring:<backend>` means it was in the default macos keyring.
 #'   - `auth_error`: for failed credential searches this is the description
 #'     of why the search failed. E.g. maybe the keyring package is not
@@ -233,7 +233,7 @@ repo_auth_headers <- function(
     if (res$found) {
       cli::cli_alert_success(
         wrap = TRUE,
-        "Found credential for repo {.url {parsed_url$repouserurl}}
+        "Found credentials for repo {.url {parsed_url$repouserurl}}
          ({res$source})."
       )
     } else {
