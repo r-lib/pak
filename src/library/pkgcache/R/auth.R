@@ -55,6 +55,10 @@ repo_auth <- function(r_version = getRversion(), bioc = TRUE,
     auth = FALSE
   )
 
+  key <- random_key()
+  on.exit(clear_auth_cache(key), add = TRUE)
+  start_auth_cache(key)
+
   res$username <- rep(NA_character_, nrow(res))
   res$has_password <- rep(NA, nrow(res))
   res$auth_domains <- I(replicate(nrow(res), NULL))
@@ -63,16 +67,28 @@ repo_auth <- function(r_version = getRversion(), bioc = TRUE,
   res$auth_error <- rep(NA_character_, nrow(res))
   for (w in seq_len(nrow(res))) {
     url <- res$url[w]
-    cred <- repo_auth_headers(url, warn = FALSE)
-    if (is.null(cred)) next
-    res$username[w] <- cred$username
-    res$has_password[w] <- cred$found
-    res$auth_domains[w] <- list(cred$auth_domains)
-    if (cred$found) {
-      res$auth_source[w] <- cred$source
-      res$auth_domain[w] <- cred$auth_domain
+    if (check_credentials) {
+      cred <- repo_auth_headers(url, warn = FALSE)
+      if (is.null(cred)) next
+      res$username[w] <- cred$username
+      res$has_password[w] <- cred$found
+      res$auth_domains[w] <- list(cred$auth_domains)
+      if (cred$found) {
+        res$auth_source[w] <- cred$source
+        res$auth_domain[w] <- cred$auth_domain
+      } else {
+        res$auth_error[w] <- cred$error
+      }
     } else {
-      res$auth_error[w] <- cred$error
+      parsed_url <- parse_url_basic_auth(url)
+      if (length(parsed_url$username) == 0 ||
+          nchar(parsed_url$username) == 0) {
+        next
+      }
+      res$username[w] <- parsed_url$username
+      res$auth_domains[w] <- list(unique(unlist(
+        parsed_url[c("repouserurl", "repourl", "hostuserurl", "hosturl")]
+      )))
     }
   }
 
@@ -214,6 +230,19 @@ repo_auth_headers <- function(
     # we also cache negative results, to avoid many lookups and warnings
     key <- if (res$found) res$auth_domain else urls[1]
     pkgenv$credentials[[key]] <- res
+    if (res$found) {
+      cli::cli_alert_success(
+        wrap = TRUE,
+        "Logged in to repo {.url {parsed_url$repouserurl}}
+         ({res$source})."
+      )
+    } else {
+      cli::cli_alert_danger(
+        wrap = TRUE,
+        "Failed to log in to repo {.url {parsed_url$repouserurl}},
+         {res$error}."
+      )
+    }
   }
 
   res
