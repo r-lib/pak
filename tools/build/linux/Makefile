@@ -25,38 +25,34 @@ build: $(DONE)
 
 R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker build --platform linux/amd64 -f Dockerfile-aarch64 --build-arg R_MAJOR=$* \
+	docker build --platform linux/arm64 --build-arg R_MAJOR=$* \
 		--build-arg TOKEN="${GHCR_TOKEN}" .
 	touch $@
 
 R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker build --platform linux/amd64 -f Dockerfile --build-arg R_MAJOR=$* \
+	docker build --platform linux/amd64 --build-arg R_MAJOR=$* \
 		--build-arg TOKEN="${GHCR_TOKEN}" .
 	touch $@
 
 # ------------------------------------------------------------------------
 
-cross-aarch64:
-	docker build -t ghcr.io/r-lib/pak-cross-aarch64:latest \
-		-f Dockerfile-cross-aarch64 .
-
 libs:
-	docker build -t ghcr.io/r-lib/pak-libs:latest \
-		-f Dockerfile-libs .
+	docker build -t ghcr.io/r-lib/pak-libs-amd64:latest \
+		--platform linux/amd64 -f Dockerfile-libs .
 
 libs.done:
 	rm -f $@
-	docker pull ghcr.io/r-lib/pak-libs:latest
+	docker pull ghcr.io/r-lib/pak-libs-amd64:latest
 	touch $@
 
 libs-aarch64:
-	docker build -t ghcr.io/r-lib/pak-libs-aarch64:latest \
-		-f Dockerfile-libs-aarch64 .
+	docker build -t ghcr.io/r-lib/pak-libs-arm64:latest \
+		--platform linux/arm64 -f Dockerfile-libs .
 
 libs-aarch64.done:
 	rm -f $@
-	docker pull ghcr.io/r-lib/pak-libs-aarch64:latest
+	docker pull ghcr.io/r-lib/pak-libs-arm64:latest
 	touch $@
 
 pak_$(PAKVERSION).tar.gz:
