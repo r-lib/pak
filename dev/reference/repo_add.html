@@ -44,9 +44,9 @@ look for packages.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">repo_add</span><span class="op">(</span><span class="va">...</span>, .list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">repo_add</span><span class="op">(</span><span class="va">...</span>, .list <span class="op">=</span> <span class="cn">NULL</span>, username <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">repo_resolve</span><span class="op">(</span><span class="va">spec</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">repo_resolve</span><span class="op">(</span><span class="va">spec</span>, username <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +62,11 @@ See details below.</p></dd>
 <dd><p>List or character vector of repository specifications.
 This argument is easier to use programmatically than <code>...</code>. See
 details below.</p></dd>
+
+
+<dt id="arg-username">username<a class="anchor" aria-label="anchor" href="#arg-username"></a></dt>
+<dd><p>User name to set, for authenticated repositories, see
+<code><a href="repo_auth.html">repo_auth()</a></code>.</p></dd>
 
 
 <dt id="arg-spec">spec<a class="anchor" aria-label="anchor" href="#arg-spec"></a></dt>
@@ -136,29 +141,29 @@ will trigger an error.</p></li>
 #&gt; <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>
 #&gt; <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>
 #&gt; <span style="color: #c2c2c2;">2</span> PPMdplyr100   https://packagemanager.pos… cran… *         <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.3.1     3.17
-#&gt; <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.3.1     3.17
-#&gt; <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.3.1     3.17
-#&gt; <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.3.1     3.17
-#&gt; <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.3.1     3.17
+#&gt; <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.4.2     3.20
 </pre></div></div>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@2020-01-21"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                       CRAN
-#&gt; "https://packagemanager.posit.co/cran/245"
+#&gt;                                              CRAN
+#&gt; "https://packagemanager.posit.co/cran/2020-01-21"
 </pre></div></div>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@dplyr-1.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                       CRAN
-#&gt; "https://packagemanager.posit.co/cran/289"
+#&gt;                                              CRAN
+#&gt; "https://packagemanager.posit.co/cran/2020-05-30"
 </pre></div></div>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_resolve</a></span><span class="op">(</span><span class="st">"PPM@R-4.0.0"</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt;                                       CRAN
-#&gt; "https://packagemanager.posit.co/cran/276"
+#&gt;                                              CRAN
+#&gt; "https://packagemanager.posit.co/cran/2020-04-25"
 </pre></div></div>
     </div>
     <div class="section level2">
