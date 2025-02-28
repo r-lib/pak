@@ -14,17 +14,22 @@ repo$url()
 #&amp;gt; [1] &quot;http://127.0.0.1:59571/&quot;
 
 (This needs the webfakes and callr packages.)
-Next, we onfigure the proxy as the main CRAN repository. The default user
-name of the proxy is &quot;username&quot; and the default password is &quot;token&quot;.
-We want to replace the default CRAN repository with the proxy, so we name
-it CRAN:
+Next, we onfigure the proxy as the main CRAN repository. The default username
+of the proxy is &quot;username&quot; and the default password is &quot;token&quot;. We want to
+replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring lookup failed (macos backend).
-#&amp;gt; # A data frame: 1 x 7
-#&amp;gt;   name  url                              type  r_version bioc_version username has_password
-#&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
-#&amp;gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 6 x 7
+#&amp;gt;   name          url           type  r_version bioc_version username has_password
+#&amp;gt; * &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
+#&amp;gt; 1 CRAN          http://usern~ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
 
 Note that the output includes a username and a has_password column.
 These are only present if at least one configured repository needs
@@ -120,11 +125,17 @@ repo_get() now does not show a warning message, and also sets the
 has_password column to TRUE, because pak could find the credentials
 for our CRAN proxy:
 repo_get()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; # A data frame: 1 x 7
-#&amp;gt;   name  url                              type  r_version bioc_version username has_password
-#&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
-#&amp;gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &amp;lt;NA&amp;gt;         username TRUE
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 6 x 7
+#&amp;gt;   name          url           type  r_version bioc_version username has_password
+#&amp;gt; * &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
+#&amp;gt; 1 CRAN          http://usern~ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
 
 
 
@@ -155,12 +166,24 @@ Testing
 
 To test that authentication works, use the repo_status() function:
 repo_status()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; # A data frame: 2 x 12
-#&amp;gt;   name  url     type  bioc_version username has_password platform path  r_version ok     ping error
-#&amp;gt;   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;lgl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;list&amp;gt;
-#&amp;gt; 1 CRAN  http:/~ cran  &amp;lt;NA&amp;gt;         username TRUE         source   src/~ 4.4       TRUE  0.135 &amp;lt;NULL&amp;gt;
-#&amp;gt; 2 CRAN  http:/~ cran  &amp;lt;NA&amp;gt;         username TRUE         aarch64~ bin/~ 4.4       TRUE  0.135 &amp;lt;NULL&amp;gt;
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 12 x 12
+#&amp;gt;    name  url   type  bioc_version username has_password platform path  r_version
+#&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;
+#&amp;gt;  1 CRAN  http~ cran  &amp;lt;NA&amp;gt;         username FALSE        source   src/~ 4.4
+#&amp;gt;  2 CRAN  http~ cran  &amp;lt;NA&amp;gt;         username FALSE        aarch64~ bin/~ 4.4
+#&amp;gt;  3 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  4 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  5 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  6 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  7 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  8 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  9 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt; 10 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt; 11 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt; 12 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt; # i 3 more variables: ok &amp;lt;lgl&amp;gt;, ping &amp;lt;dbl&amp;gt;, error &amp;lt;list&amp;gt;
 
 The output of repo_status() has extra columns, compared to repo_get(),
 and it also has a separate row for each platform. If everything works,
@@ -213,33 +236,52 @@ reassuring messages for successful authentications, and warning messages
 for failed ones. Function calls that do not perform any HTTP reqquests,
 e.g. because they list cached data, do not display such messages.
 meta_update()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; Checking for 5 new metadata files
-#&amp;gt; ✔ Updated metadata database: 6.87 MB in 4 files.
+#&amp;gt; Checking for 15 new metadata files
+#&amp;gt; ! Cannot find credentials for URL &amp;lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&amp;gt;, credential lookup
+#&amp;gt; failed. Keyring backend: &quot;macos&quot;.
+#&amp;gt; Checking for 15 new metadata files
+✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; Checking for 15 new metadata files
+⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
+#&amp;gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
+#&amp;gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
+#&amp;gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
+#&amp;gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
+#&amp;gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
+#&amp;gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
+#&amp;gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
+#&amp;gt; ✔ Updated metadata database: 2.92 MB in 5 files.
 #&amp;gt;
+#&amp;gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
 #&amp;gt; ℹ Updating metadata database
 #&amp;gt; ✔ Updating metadata database ... done
 
 meta_list()
-#&amp;gt; # A data frame: 44,889 x 33
-#&amp;gt;    package      version depends suggests license md5sum sha256sum needscompilation imports linkingto
-#&amp;gt;    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;
-#&amp;gt;  1 A3           1.0.0   R (&amp;gt;= ~ randomF~ GPL (&amp;gt;~ 929a4~ &quot;\n     ~ no               &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
-#&amp;gt;  2 AATtools     0.0.3   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   de2ec~ &quot;\n     ~ no               magrit~ &amp;lt;NA&amp;gt;
-#&amp;gt;  3 ABACUS       1.0.0   R (&amp;gt;= ~ rmarkdo~ GPL-3   28795~ &quot;\n     ~ no               ggplot~ &amp;lt;NA&amp;gt;
-#&amp;gt;  4 ABC.RAP      0.9.0   R (&amp;gt;= ~ knitr, ~ GPL-3   0158e~ &quot;\n     ~ no               graphi~ &amp;lt;NA&amp;gt;
-#&amp;gt;  5 ABCanalysis  1.2.1   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   4cbe1~ &quot;\n     ~ no               plotrix &amp;lt;NA&amp;gt;
-#&amp;gt;  6 ABCoptim     0.15.0  &amp;lt;NA&amp;gt;    testtha~ MIT + ~ a294d~ &quot;\n     ~ yes              Rcpp, ~ Rcpp
-#&amp;gt;  7 ABCp2        1.2     MASS    &amp;lt;NA&amp;gt;     GPL-2   d049b~  &amp;lt;NA&amp;gt;     no               &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
-#&amp;gt;  8 ABHgenotypeR 1.0.1   &amp;lt;NA&amp;gt;    knitr, ~ GPL-3   fce25~ &quot;\n     ~ no               ggplot~ &amp;lt;NA&amp;gt;
-#&amp;gt;  9 ABM          0.4.3   &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     GPL (&amp;gt;~ 7aaae~ &quot;\n     ~ yes              R6, Rc~ Rcpp
-#&amp;gt; 10 ABPS         0.3     &amp;lt;NA&amp;gt;    testthat GPL (&amp;gt;~ d3f00~ &quot;\n     ~ no               kernlab &amp;lt;NA&amp;gt;
-#&amp;gt; # i 44,879 more rows
-#&amp;gt; # i 23 more variables: archs &amp;lt;chr&amp;gt;, enhances &amp;lt;chr&amp;gt;, license_restricts_use &amp;lt;chr&amp;gt;, priority &amp;lt;chr&amp;gt;,
-#&amp;gt; #   os_type &amp;lt;chr&amp;gt;, license_is_foss &amp;lt;chr&amp;gt;, repodir &amp;lt;chr&amp;gt;, rversion &amp;lt;chr&amp;gt;, platform &amp;lt;chr&amp;gt;, ref &amp;lt;chr&amp;gt;,
-#&amp;gt; #   type &amp;lt;chr&amp;gt;, direct &amp;lt;lgl&amp;gt;, status &amp;lt;chr&amp;gt;, target &amp;lt;chr&amp;gt;, mirror &amp;lt;chr&amp;gt;, sources &amp;lt;list&amp;gt;,
-#&amp;gt; #   filesize &amp;lt;int&amp;gt;, sha256 &amp;lt;chr&amp;gt;, sysreqs &amp;lt;chr&amp;gt;, built &amp;lt;chr&amp;gt;, published &amp;lt;dttm&amp;gt;, deps &amp;lt;list&amp;gt;,
-#&amp;gt; #   path &amp;lt;chr&amp;gt;
+#&amp;gt; # A data frame: 50,701 x 33
+#&amp;gt;    package    version depends suggests license md5sum sha256sum needscompilation
+#&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;
+#&amp;gt;  1 A3         1.0.0   R (&amp;gt;= ~ randomF~ GPL (&amp;gt;~ 929a4~ &quot;\n     ~ no
+#&amp;gt;  2 AATtools   0.0.3   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   de2ec~ &quot;\n     ~ no
+#&amp;gt;  3 ABACUS     1.0.0   R (&amp;gt;= ~ rmarkdo~ GPL-3   28795~ &quot;\n     ~ no
+#&amp;gt;  4 ABC.RAP    0.9.0   R (&amp;gt;= ~ knitr, ~ GPL-3   0158e~ &quot;\n     ~ no
+#&amp;gt;  5 ABCanalys~ 1.2.1   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   4cbe1~ &quot;\n     ~ no
+#&amp;gt;  6 ABCoptim   0.15.0  &amp;lt;NA&amp;gt;    testtha~ MIT + ~ a294d~ &quot;\n     ~ yes
+#&amp;gt;  7 ABCp2      1.2     MASS    &amp;lt;NA&amp;gt;     GPL-2   d049b~  &amp;lt;NA&amp;gt;     no
+#&amp;gt;  8 ABHgenoty~ 1.0.1   &amp;lt;NA&amp;gt;    knitr, ~ GPL-3   fce25~ &quot;\n     ~ no
+#&amp;gt;  9 ABM        0.4.3   &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     GPL (&amp;gt;~ 7aaae~ &quot;\n     ~ yes
+#&amp;gt; 10 ABPS       0.3     &amp;lt;NA&amp;gt;    testthat GPL (&amp;gt;~ d3f00~ &quot;\n     ~ no
+#&amp;gt; # i 50,691 more rows
+#&amp;gt; # i 25 more variables: imports &amp;lt;chr&amp;gt;, linkingto &amp;lt;chr&amp;gt;, archs &amp;lt;chr&amp;gt;,
+#&amp;gt; #   enhances &amp;lt;chr&amp;gt;, license_restricts_use &amp;lt;chr&amp;gt;, priority &amp;lt;chr&amp;gt;, os_type &amp;lt;chr&amp;gt;,
+#&amp;gt; #   license_is_foss &amp;lt;chr&amp;gt;, repodir &amp;lt;chr&amp;gt;, rversion &amp;lt;chr&amp;gt;, platform &amp;lt;chr&amp;gt;,
+#&amp;gt; #   ref &amp;lt;chr&amp;gt;, type &amp;lt;chr&amp;gt;, direct &amp;lt;lgl&amp;gt;, status &amp;lt;chr&amp;gt;, target &amp;lt;chr&amp;gt;,
+#&amp;gt; #   mirror &amp;lt;chr&amp;gt;, sources &amp;lt;list&amp;gt;, filesize &amp;lt;int&amp;gt;, sha256 &amp;lt;chr&amp;gt;, sysreqs &amp;lt;chr&amp;gt;,
+#&amp;gt; #   built &amp;lt;chr&amp;gt;, published &amp;lt;dttm&amp;gt;, deps &amp;lt;list&amp;gt;, path &amp;lt;chr&amp;gt;
 
 E.g. here meta_update() outputs an authentication message, but
 meta_list() does not.
@@ -259,17 +301,22 @@ repo$url()
 #&amp;gt; [1] &quot;http://127.0.0.1:59571/&quot;
 
 (This needs the webfakes and callr packages.)
-Next, we onfigure the proxy as the main CRAN repository. The default user
-name of the proxy is &quot;username&quot; and the default password is &quot;token&quot;.
-We want to replace the default CRAN repository with the proxy, so we name
-it CRAN:
+Next, we onfigure the proxy as the main CRAN repository. The default username
+of the proxy is &quot;username&quot; and the default password is &quot;token&quot;. We want to
+replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring lookup failed (macos backend).
-#&amp;gt; # A data frame: 1 x 7
-#&amp;gt;   name  url                              type  r_version bioc_version username has_password
-#&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
-#&amp;gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 6 x 7
+#&amp;gt;   name          url           type  r_version bioc_version username has_password
+#&amp;gt; * &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
+#&amp;gt; 1 CRAN          http://usern~ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
 
 Note that the output includes a username and a has_password column.
 These are only present if at least one configured repository needs
@@ -365,11 +412,17 @@ repo_get() now does not show a warning message, and also sets the
 has_password column to TRUE, because pak could find the credentials
 for our CRAN proxy:
 repo_get()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; # A data frame: 1 x 7
-#&amp;gt;   name  url                              type  r_version bioc_version username has_password
-#&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
-#&amp;gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &amp;lt;NA&amp;gt;         username TRUE
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 6 x 7
+#&amp;gt;   name          url           type  r_version bioc_version username has_password
+#&amp;gt; * &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;
+#&amp;gt; 1 CRAN          http://usern~ cran  *         &amp;lt;NA&amp;gt;         username FALSE
+#&amp;gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
+#&amp;gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &amp;lt;NA&amp;gt;     NA
 
 
 
@@ -400,12 +453,24 @@ Testing
 
 To test that authentication works, use the repo_status() function:
 repo_status()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; # A data frame: 2 x 12
-#&amp;gt;   name  url     type  bioc_version username has_password platform path  r_version ok     ping error
-#&amp;gt;   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;lgl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;list&amp;gt;
-#&amp;gt; 1 CRAN  http:/~ cran  &amp;lt;NA&amp;gt;         username TRUE         source   src/~ 4.4       TRUE  0.135 &amp;lt;NULL&amp;gt;
-#&amp;gt; 2 CRAN  http:/~ cran  &amp;lt;NA&amp;gt;         username TRUE         aarch64~ bin/~ 4.4       TRUE  0.135 &amp;lt;NULL&amp;gt;
+#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; # A data frame: 12 x 12
+#&amp;gt;    name  url   type  bioc_version username has_password platform path  r_version
+#&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;
+#&amp;gt;  1 CRAN  http~ cran  &amp;lt;NA&amp;gt;         username FALSE        source   src/~ 4.4
+#&amp;gt;  2 CRAN  http~ cran  &amp;lt;NA&amp;gt;         username FALSE        aarch64~ bin/~ 4.4
+#&amp;gt;  3 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  4 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  5 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  6 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  7 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt;  8 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt;  9 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt; 10 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt; 11 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           source   src/~ 4.4
+#&amp;gt; 12 BioC~ http~ bioc  3.20         &amp;lt;NA&amp;gt;     NA           aarch64~ bin/~ 4.4
+#&amp;gt; # i 3 more variables: ok &amp;lt;lgl&amp;gt;, ping &amp;lt;dbl&amp;gt;, error &amp;lt;list&amp;gt;
 
 The output of repo_status() has extra columns, compared to repo_get(),
 and it also has a separate row for each platform. If everything works,
@@ -458,33 +523,52 @@ reassuring messages for successful authentications, and warning messages
 for failed ones. Function calls that do not perform any HTTP reqquests,
 e.g. because they list cached data, do not display such messages.
 meta_update()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
-#&amp;gt; Checking for 5 new metadata files
-#&amp;gt; ✔ Updated metadata database: 6.87 MB in 4 files.
+#&amp;gt; Checking for 15 new metadata files
+#&amp;gt; ! Cannot find credentials for URL &amp;lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&amp;gt;, credential lookup
+#&amp;gt; failed. Keyring backend: &quot;macos&quot;.
+#&amp;gt; Checking for 15 new metadata files
+✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; lookup failed (macos backend).
+#&amp;gt; Checking for 15 new metadata files
+⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
+#&amp;gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
+#&amp;gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
+#&amp;gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
+#&amp;gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
+#&amp;gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
+#&amp;gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
+#&amp;gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
+#&amp;gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
+#&amp;gt; ✔ Updated metadata database: 2.92 MB in 5 files.
 #&amp;gt;
+#&amp;gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
 #&amp;gt; ℹ Updating metadata database
 #&amp;gt; ✔ Updating metadata database ... done
 
 meta_list()
-#&amp;gt; # A data frame: 44,889 x 33
-#&amp;gt;    package      version depends suggests license md5sum sha256sum needscompilation imports linkingto
-#&amp;gt;    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;
-#&amp;gt;  1 A3           1.0.0   R (&amp;gt;= ~ randomF~ GPL (&amp;gt;~ 929a4~ &quot;\n     ~ no               &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
-#&amp;gt;  2 AATtools     0.0.3   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   de2ec~ &quot;\n     ~ no               magrit~ &amp;lt;NA&amp;gt;
-#&amp;gt;  3 ABACUS       1.0.0   R (&amp;gt;= ~ rmarkdo~ GPL-3   28795~ &quot;\n     ~ no               ggplot~ &amp;lt;NA&amp;gt;
-#&amp;gt;  4 ABC.RAP      0.9.0   R (&amp;gt;= ~ knitr, ~ GPL-3   0158e~ &quot;\n     ~ no               graphi~ &amp;lt;NA&amp;gt;
-#&amp;gt;  5 ABCanalysis  1.2.1   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   4cbe1~ &quot;\n     ~ no               plotrix &amp;lt;NA&amp;gt;
-#&amp;gt;  6 ABCoptim     0.15.0  &amp;lt;NA&amp;gt;    testtha~ MIT + ~ a294d~ &quot;\n     ~ yes              Rcpp, ~ Rcpp
-#&amp;gt;  7 ABCp2        1.2     MASS    &amp;lt;NA&amp;gt;     GPL-2   d049b~  &amp;lt;NA&amp;gt;     no               &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
-#&amp;gt;  8 ABHgenotypeR 1.0.1   &amp;lt;NA&amp;gt;    knitr, ~ GPL-3   fce25~ &quot;\n     ~ no               ggplot~ &amp;lt;NA&amp;gt;
-#&amp;gt;  9 ABM          0.4.3   &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     GPL (&amp;gt;~ 7aaae~ &quot;\n     ~ yes              R6, Rc~ Rcpp
-#&amp;gt; 10 ABPS         0.3     &amp;lt;NA&amp;gt;    testthat GPL (&amp;gt;~ d3f00~ &quot;\n     ~ no               kernlab &amp;lt;NA&amp;gt;
-#&amp;gt; # i 44,879 more rows
-#&amp;gt; # i 23 more variables: archs &amp;lt;chr&amp;gt;, enhances &amp;lt;chr&amp;gt;, license_restricts_use &amp;lt;chr&amp;gt;, priority &amp;lt;chr&amp;gt;,
-#&amp;gt; #   os_type &amp;lt;chr&amp;gt;, license_is_foss &amp;lt;chr&amp;gt;, repodir &amp;lt;chr&amp;gt;, rversion &amp;lt;chr&amp;gt;, platform &amp;lt;chr&amp;gt;, ref &amp;lt;chr&amp;gt;,
-#&amp;gt; #   type &amp;lt;chr&amp;gt;, direct &amp;lt;lgl&amp;gt;, status &amp;lt;chr&amp;gt;, target &amp;lt;chr&amp;gt;, mirror &amp;lt;chr&amp;gt;, sources &amp;lt;list&amp;gt;,
-#&amp;gt; #   filesize &amp;lt;int&amp;gt;, sha256 &amp;lt;chr&amp;gt;, sysreqs &amp;lt;chr&amp;gt;, built &amp;lt;chr&amp;gt;, published &amp;lt;dttm&amp;gt;, deps &amp;lt;list&amp;gt;,
-#&amp;gt; #   path &amp;lt;chr&amp;gt;
+#&amp;gt; # A data frame: 50,701 x 33
+#&amp;gt;    package    version depends suggests license md5sum sha256sum needscompilation
+#&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;
+#&amp;gt;  1 A3         1.0.0   R (&amp;gt;= ~ randomF~ GPL (&amp;gt;~ 929a4~ &quot;\n     ~ no
+#&amp;gt;  2 AATtools   0.0.3   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   de2ec~ &quot;\n     ~ no
+#&amp;gt;  3 ABACUS     1.0.0   R (&amp;gt;= ~ rmarkdo~ GPL-3   28795~ &quot;\n     ~ no
+#&amp;gt;  4 ABC.RAP    0.9.0   R (&amp;gt;= ~ knitr, ~ GPL-3   0158e~ &quot;\n     ~ no
+#&amp;gt;  5 ABCanalys~ 1.2.1   R (&amp;gt;= ~ &amp;lt;NA&amp;gt;     GPL-3   4cbe1~ &quot;\n     ~ no
+#&amp;gt;  6 ABCoptim   0.15.0  &amp;lt;NA&amp;gt;    testtha~ MIT + ~ a294d~ &quot;\n     ~ yes
+#&amp;gt;  7 ABCp2      1.2     MASS    &amp;lt;NA&amp;gt;     GPL-2   d049b~  &amp;lt;NA&amp;gt;     no
+#&amp;gt;  8 ABHgenoty~ 1.0.1   &amp;lt;NA&amp;gt;    knitr, ~ GPL-3   fce25~ &quot;\n     ~ no
+#&amp;gt;  9 ABM        0.4.3   &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     GPL (&amp;gt;~ 7aaae~ &quot;\n     ~ yes
+#&amp;gt; 10 ABPS       0.3     &amp;lt;NA&amp;gt;    testthat GPL (&amp;gt;~ d3f00~ &quot;\n     ~ no
+#&amp;gt; # i 50,691 more rows
+#&amp;gt; # i 25 more variables: imports &amp;lt;chr&amp;gt;, linkingto &amp;lt;chr&amp;gt;, archs &amp;lt;chr&amp;gt;,
+#&amp;gt; #   enhances &amp;lt;chr&amp;gt;, license_restricts_use &amp;lt;chr&amp;gt;, priority &amp;lt;chr&amp;gt;, os_type &amp;lt;chr&amp;gt;,
+#&amp;gt; #   license_is_foss &amp;lt;chr&amp;gt;, repodir &amp;lt;chr&amp;gt;, rversion &amp;lt;chr&amp;gt;, platform &amp;lt;chr&amp;gt;,
+#&amp;gt; #   ref &amp;lt;chr&amp;gt;, type &amp;lt;chr&amp;gt;, direct &amp;lt;lgl&amp;gt;, status &amp;lt;chr&amp;gt;, target &amp;lt;chr&amp;gt;,
+#&amp;gt; #   mirror &amp;lt;chr&amp;gt;, sources &amp;lt;list&amp;gt;, filesize &amp;lt;int&amp;gt;, sha256 &amp;lt;chr&amp;gt;, sysreqs &amp;lt;chr&amp;gt;,
+#&amp;gt; #   built &amp;lt;chr&amp;gt;, published &amp;lt;dttm&amp;gt;, deps &amp;lt;list&amp;gt;, path &amp;lt;chr&amp;gt;
 
 E.g. here meta_update() outputs an authentication message, but
 meta_list() does not.
@@ -540,17 +624,22 @@ proxy to CRAN. This is how to run the proxy in a subprocess:</p>
 <span><span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "http://127.0.0.1:59571/"</span></span></code></pre><p></p></div>
 <p>(This needs the webfakes and callr packages.)</p>
-<p>Next, we onfigure the proxy as the main CRAN repository. The default user
-name of the proxy is <code>"username"</code> and the default password is <code>"token"</code>.
-We want to replace the default CRAN repository with the proxy, so we name
-it <code>CRAN</code>:</p>
+<p>Next, we onfigure the proxy as the main CRAN repository. The default username
+of the proxy is <code>"username"</code> and the default password is <code>"token"</code>. We want to
+replace the default CRAN repository with the proxy, so we name it <code>CRAN</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>CRAN <span class="op">=</span> <span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span>, username <span class="op">=</span> <span class="st">"username"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring lookup failed (macos backend).</span></span>
-<span><span class="co">#&gt; # A data frame: 1 x 7</span></span>
-<span><span class="co">#&gt;   name  url                              type  r_version bioc_version username has_password</span></span>
-<span><span class="co">#&gt; * &lt;chr&gt; &lt;chr&gt;                            &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &lt;NA&gt;         username FALSE</span></span></code></pre><p></p></div>
+<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; lookup failed (macos backend).</span></span>
+<span><span class="co">#&gt; # A data frame: 6 x 7</span></span>
+<span><span class="co">#&gt;   name          url           type  r_version bioc_version username has_password</span></span>
+<span><span class="co">#&gt; * &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;</span></span>
+<span><span class="co">#&gt; 1 CRAN          http://usern~ cran  *         &lt;NA&gt;         username FALSE</span></span>
+<span><span class="co">#&gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span></code></pre><p></p></div>
 <p>Note that the output includes a <code>username</code> and a <code>has_password</code> column.
 These are only present if at least one configured repository needs
 authentication. <code>has_password</code> is <code>FALSE</code> here, because pak did not find
@@ -638,11 +727,17 @@ ephemetal store that is destroyed when the R process terminates.</p>
 <code>has_password</code> column to <code>TRUE</code>, because pak could find the credentials
 for our CRAN proxy:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
-<span><span class="co">#&gt; # A data frame: 1 x 7</span></span>
-<span><span class="co">#&gt;   name  url                              type  r_version bioc_version username has_password</span></span>
-<span><span class="co">#&gt; * &lt;chr&gt; &lt;chr&gt;                            &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 CRAN  http://username@127.0.0.1:59571/ cran  *         &lt;NA&gt;         username TRUE</span></span></code></pre><p></p></div>
+<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; lookup failed (macos backend).</span></span>
+<span><span class="co">#&gt; # A data frame: 6 x 7</span></span>
+<span><span class="co">#&gt;   name          url           type  r_version bioc_version username has_password</span></span>
+<span><span class="co">#&gt; * &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;</span></span>
+<span><span class="co">#&gt; 1 CRAN          http://usern~ cran  *         &lt;NA&gt;         username FALSE</span></span>
+<span><span class="co">#&gt; 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 3 BioCann       https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span>
+<span><span class="co">#&gt; 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         &lt;NA&gt;     NA</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
@@ -670,12 +765,24 @@ contain host credentials.</p>
 
 <p>To test that authentication works, use the <code><a href="repo_status.html">repo_status()</a></code> function:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_status.html">repo_status</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
-<span><span class="co">#&gt; # A data frame: 2 x 12</span></span>
-<span><span class="co">#&gt;   name  url     type  bioc_version username has_password platform path  r_version ok     ping error</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;        &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;     &lt;lgl&gt; &lt;dbl&gt; &lt;list&gt;</span></span>
-<span><span class="co">#&gt; 1 CRAN  http:/~ cran  &lt;NA&gt;         username TRUE         source   src/~ 4.4       TRUE  0.135 &lt;NULL&gt;</span></span>
-<span><span class="co">#&gt; 2 CRAN  http:/~ cran  &lt;NA&gt;         username TRUE         aarch64~ bin/~ 4.4       TRUE  0.135 &lt;NULL&gt;</span></span></code></pre><p></p></div>
+<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; lookup failed (macos backend).</span></span>
+<span><span class="co">#&gt; # A data frame: 12 x 12</span></span>
+<span><span class="co">#&gt;    name  url   type  bioc_version username has_password platform path  r_version</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;        &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 CRAN  http~ cran  &lt;NA&gt;         username FALSE        source   src/~ 4.4</span></span>
+<span><span class="co">#&gt;  2 CRAN  http~ cran  &lt;NA&gt;         username FALSE        aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt;  3 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           source   src/~ 4.4</span></span>
+<span><span class="co">#&gt;  4 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt;  5 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           source   src/~ 4.4</span></span>
+<span><span class="co">#&gt;  6 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt;  7 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           source   src/~ 4.4</span></span>
+<span><span class="co">#&gt;  8 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt;  9 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           source   src/~ 4.4</span></span>
+<span><span class="co">#&gt; 10 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt; 11 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           source   src/~ 4.4</span></span>
+<span><span class="co">#&gt; 12 BioC~ http~ bioc  3.20         &lt;NA&gt;     NA           aarch64~ bin/~ 4.4</span></span>
+<span><span class="co">#&gt; # i 3 more variables: ok &lt;lgl&gt;, ping &lt;dbl&gt;, error &lt;list&gt;</span></span></code></pre><p></p></div>
 <p>The output of <code><a href="repo_status.html">repo_status()</a></code> has extra columns, compared to <code><a href="repo_get.html">repo_get()</a></code>,
 and it also has a separate row for each platform. If everything works,
 then the <code>has_password</code> column is <code>TRUE</code> for authenticated repositories,
@@ -721,33 +828,53 @@ other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
 for failed ones. Function calls that do not perform any HTTP reqquests,
 e.g. because they list cached data, do not display such messages.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/metadata.html">meta_update</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
-<span><span class="co">#&gt; Checking for 5 new metadata files</span></span>
-<span><span class="co">#&gt; ✔ Updated metadata database: 6.87 MB in 4 files.</span></span>
-<span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt; ℹ Updating metadata database</span></span>
-<span><span class="co">#&gt; ✔ Updating metadata database ... done</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode r"><pre><code>meta_update()
+#&gt; Checking for 15 new metadata files
+#&gt; ! Cannot find credentials for URL &lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&gt;, credential lookup
+#&gt; failed. Keyring backend: "macos".
+#&gt; Checking for 15 new metadata files
+✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring
+#&gt; lookup failed (macos backend).
+#&gt; Checking for 15 new metadata files
+⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
+#&gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
+#&gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
+#&gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
+#&gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
+#&gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
+#&gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
+#&gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
+#&gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
+#&gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
+#&gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
+#&gt; ✔ Updated metadata database: 2.92 MB in 5 files.
+#&gt;
+#&gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&gt; ℹ Updating metadata database
+#&gt; ✔ Updating metadata database ... done
+</code></pre><p></p></div>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/metadata.html">meta_list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A data frame: 44,889 x 33</span></span>
-<span><span class="co">#&gt;    package      version depends suggests license md5sum sha256sum needscompilation imports linkingto</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt;   &lt;chr&gt;</span></span>
-<span><span class="co">#&gt;  1 A3           1.0.0   R (&gt;= ~ randomF~ GPL (&gt;~ 929a4~ "\n     ~ no               &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  2 AATtools     0.0.3   R (&gt;= ~ &lt;NA&gt;     GPL-3   de2ec~ "\n     ~ no               magrit~ &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  3 ABACUS       1.0.0   R (&gt;= ~ rmarkdo~ GPL-3   28795~ "\n     ~ no               ggplot~ &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  4 ABC.RAP      0.9.0   R (&gt;= ~ knitr, ~ GPL-3   0158e~ "\n     ~ no               graphi~ &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  5 ABCanalysis  1.2.1   R (&gt;= ~ &lt;NA&gt;     GPL-3   4cbe1~ "\n     ~ no               plotrix &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  6 ABCoptim     0.15.0  &lt;NA&gt;    testtha~ MIT + ~ a294d~ "\n     ~ yes              Rcpp, ~ Rcpp</span></span>
-<span><span class="co">#&gt;  7 ABCp2        1.2     MASS    &lt;NA&gt;     GPL-2   d049b~  &lt;NA&gt;     no               &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  8 ABHgenotypeR 1.0.1   &lt;NA&gt;    knitr, ~ GPL-3   fce25~ "\n     ~ no               ggplot~ &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  9 ABM          0.4.3   &lt;NA&gt;    &lt;NA&gt;     GPL (&gt;~ 7aaae~ "\n     ~ yes              R6, Rc~ Rcpp</span></span>
-<span><span class="co">#&gt; 10 ABPS         0.3     &lt;NA&gt;    testthat GPL (&gt;~ d3f00~ "\n     ~ no               kernlab &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; # i 44,879 more rows</span></span>
-<span><span class="co">#&gt; # i 23 more variables: archs &lt;chr&gt;, enhances &lt;chr&gt;, license_restricts_use &lt;chr&gt;, priority &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   os_type &lt;chr&gt;, license_is_foss &lt;chr&gt;, repodir &lt;chr&gt;, rversion &lt;chr&gt;, platform &lt;chr&gt;, ref &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   type &lt;chr&gt;, direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;, mirror &lt;chr&gt;, sources &lt;list&gt;,</span></span>
-<span><span class="co">#&gt; #   filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;, built &lt;chr&gt;, published &lt;dttm&gt;, deps &lt;list&gt;,</span></span>
-<span><span class="co">#&gt; #   path &lt;chr&gt;</span></span></code></pre><p></p></div>
+<span><span class="co">#&gt; # A data frame: 50,701 x 33</span></span>
+<span><span class="co">#&gt;    package    version depends suggests license md5sum sha256sum needscompilation</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 A3         1.0.0   R (&gt;= ~ randomF~ GPL (&gt;~ 929a4~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  2 AATtools   0.0.3   R (&gt;= ~ &lt;NA&gt;     GPL-3   de2ec~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  3 ABACUS     1.0.0   R (&gt;= ~ rmarkdo~ GPL-3   28795~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  4 ABC.RAP    0.9.0   R (&gt;= ~ knitr, ~ GPL-3   0158e~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  5 ABCanalys~ 1.2.1   R (&gt;= ~ &lt;NA&gt;     GPL-3   4cbe1~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  6 ABCoptim   0.15.0  &lt;NA&gt;    testtha~ MIT + ~ a294d~ "\n     ~ yes</span></span>
+<span><span class="co">#&gt;  7 ABCp2      1.2     MASS    &lt;NA&gt;     GPL-2   d049b~  &lt;NA&gt;     no</span></span>
+<span><span class="co">#&gt;  8 ABHgenoty~ 1.0.1   &lt;NA&gt;    knitr, ~ GPL-3   fce25~ "\n     ~ no</span></span>
+<span><span class="co">#&gt;  9 ABM        0.4.3   &lt;NA&gt;    &lt;NA&gt;     GPL (&gt;~ 7aaae~ "\n     ~ yes</span></span>
+<span><span class="co">#&gt; 10 ABPS       0.3     &lt;NA&gt;    testthat GPL (&gt;~ d3f00~ "\n     ~ no</span></span>
+<span><span class="co">#&gt; # i 50,691 more rows</span></span>
+<span><span class="co">#&gt; # i 25 more variables: imports &lt;chr&gt;, linkingto &lt;chr&gt;, archs &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   enhances &lt;chr&gt;, license_restricts_use &lt;chr&gt;, priority &lt;chr&gt;, os_type &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   license_is_foss &lt;chr&gt;, repodir &lt;chr&gt;, rversion &lt;chr&gt;, platform &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   ref &lt;chr&gt;, type &lt;chr&gt;, direct &lt;lgl&gt;, status &lt;chr&gt;, target &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   mirror &lt;chr&gt;, sources &lt;list&gt;, filesize &lt;int&gt;, sha256 &lt;chr&gt;, sysreqs &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   built &lt;chr&gt;, published &lt;dttm&gt;, deps &lt;list&gt;, path &lt;chr&gt;</span></span></code></pre><p></p></div>
 <p>E.g. here <code><a href="metadata.html">meta_update()</a></code> outputs an authentication message, but
 <code><a href="metadata.html">meta_list()</a></code> does not.</p>
 </div>
