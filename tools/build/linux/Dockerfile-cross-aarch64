@@ -1,0 +1,69 @@
+# ghcr.io/r-lib/pak-cross-aarch64:latest
+
+# Build a cross-compiler from x86_64 (or whatever platform this
+# Dockerfile is built on), to aarch64. This uses the Alpine Linux
+# cross compiler toolchain, which is not for general use, but works
+# pretty well. We build a coupele of APK packages, for binutils, gcc,
+# g++, gnat, and also some packages for aarch64 that match these compilers:
+# musl, musl-dev, libstdc++, libgcc, etc.
+#
+# All packages are in /root/packages on the final container. Packages in
+# /root/packages/*/x86_64 go on the host, packages in
+# /root/packages/*/aarch64 gp on the cross, which is in
+# /home/csardi/sysroot-aarch64. (Yes, not a great directory, but whatever.)
+#
+# TODO: make the arch a build arg, so it is easy to create cross compilers
+# for other architectures.
+
+# We use Alpine 3.19, because that's what r-minimal uses currently.
+# When we update r-minimal, this image needs an update as well.
+# (We could probably use some r-minimal image as the base image, that's
+# slightly larger, but then we don't need to manually match versions.)
+FROM alpine:3.19 AS build
+
+RUN apk add alpine-sdk sudo git
+
+# abuild does not like to run as root, so let's create a regular user
+RUN adduser -D csardi
+RUN addgroup csardi abuild
+RUN addgroup csardi wheel
+RUN echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER csardi
+WORKDIR /home/csardi
+
+# The default sysroot of the compiler will be set to
+# /home/csardi/sysroot-aarch64 but gcc commands have command line
+# options to change that.
+RUN abuild-keygen -a -i -n
+RUN git clone -b 3.19-stable https://github.com/alpinelinux/aports --depth 1
+
+# We don't want to build the whole small Alpine system that is the default
+# in `bootstreap.sh`, so we bail out before. We just need a fully
+# fucntional gcc & g++ cross-compiler (although g++ is not used currently).
+COPY aports.patch .
+RUN cd aports && patch -p1 < ../aports.patch
+
+ENV BARCH=aarch64
+RUN CBUILDROOT=~/sysroot-$BARCH ~/aports/scripts/bootstrap.sh $BARCH
+
+# We only keep the packages we built and the key we used to sign them.
+# We'll recreate a new sysroot-aarch64 in dependent containers.
+# (We could keep that as well, but we'll need to install packages on the
+# host system, anyway, as ultimately we'll use r-minimal as base, not
+# this image. So we might as well do that for the cross packages as well.)
+
+FROM alpine:3.19
+USER root
+WORKDIR /root
+COPY --from=build /home/csardi/packages /root/packages
+COPY --from=build /etc/apk/keys/* /etc/apk/keys/
+
+# Some of this info is shown on the GH packages pages
+
+LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
+LABEL org.opencontainers.image.description="We use this image to \
+    cross-compile libcurl and pak on x86_64 for other archs (aarch64\
+    currently), to create Linux binary packages. See \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-cross-aarch64 \
+    for details."
+LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"

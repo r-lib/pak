@@ -1,0 +1,117 @@
+# ghcr.io/r-lib/pak-libs-aarch64:latest
+
+# Cross-compile a static libcurl (and its dependencies) and install it
+# into /usr/local/. Dockerfiles can then build on this container by
+# copying over /usr/local/.
+
+# TODO: this should be merged into Dockerfile-libs, so they a single
+# Dockerfile can create a multi-arch image. That would make it much
+# easier to arch new arches as well.
+
+# -------------------------------------------------------------------------
+# Init system for cross compiling (see Dockerfile-cross-aarch64)
+
+FROM ghcr.io/r-lib/pak-cross-aarch64:latest AS cross
+
+FROM alpine:3.19 AS build
+USER root
+WORKDIR /root
+
+COPY --from=cross /root/packages /root/packages
+COPY --from=cross /etc/apk/keys/* /etc/apk/keys/
+
+ENV AARCH64_ROOT=/home/csardi/sysroot-aarch64
+RUN mkdir -p $AARCH64_ROOT
+RUN apk add --initdb --arch aarch64 --root $AARCH64_ROOT
+RUN mkdir -p $AARCH64_ROOT/etc/apk/keys
+RUN cp -a /etc/apk/keys/* $AARCH64_ROOT/etc/apk/keys/
+RUN cp -a /usr/share/apk/keys/* $AARCH64_ROOT/etc/apk/keys/
+RUN cp /etc/apk/repositories $AARCH64_ROOT/etc/apk/
+
+RUN apk add \
+    ./packages/main/x86_64/binutils-aarch64-*apk \
+    ./packages/main/x86_64/gcc-aarch64-*.apk \
+    ./packages/main/x86_64/libstdc++-dev-aarch64-*.apk \
+    ./packages/main/x86_64/g++-aarch64-*.apk
+
+RUN apk add --arch aarch64 --root $AARCH64_ROOT \
+    ./packages/main/aarch64/musl-*.apk \
+    ./packages/main/aarch64/musl-dev-*.apk \
+    ./packages/main/aarch64/libgcc-*.apk \
+    ./packages/main/aarch64/libstdc++-*.apk
+
+# =========================================================================
+
+# Dependencies ------------------------------------------------------------
+
+# Host dependencies, compilers are already installed above.
+
+RUN apk add bash make perl pkgconfig
+
+# Cross dependencies, other libraries are already installed above.
+# TODO: is this really needed? For What?
+
+RUN apk add --arch aarch64 --root $AARCH64_ROOT \
+    linux-headers
+
+# zlib --------------------------------------------------------------------
+
+RUN wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz
+RUN tar xzf zlib-*.tar.gz && rm zlib-*.tar.gz
+RUN cd zlib-* &&                                                     \
+    CFLAGS=-fPIC CC=aarch64-alpine-linux-musl-gcc                    \
+        AR=aarch64-alpine-linux-musl-ar ./configure --static &&      \
+    make &&                                                          \
+    make install
+
+# openssl -----------------------------------------------------------------
+
+# The `-U__GNUC__` might not be needed any more. When compiling
+# aarch64 libs in qemu on x86_64, the built libs were buggy on real
+# aarch64 hardware later without it.
+
+RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
+RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
+RUN cd openssl-* &&                                                  \
+    CFLAGS="-fPIC -static -U__GNUC__"                                \
+    ./Configure linux-aarch64 -fPIC no-shared                        \
+        --cross-compile-prefix=aarch64-alpine-linux-musl- &&         \
+    make &&                                                          \
+    make install_sw &&                                               \
+    rm -rf /usr/local/bin/openssl                                    \
+       /usr/local/share/{man/doc}
+
+# libcurl -----------------------------------------------------------------
+
+# The `--enbale-debug might not be needed any more. When compiling
+# aarch64 libs in qemu on x86_64, the built libs were buggy on real
+# aarch64 hardware later without it.
+
+RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
+RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
+RUN cd curl-* && \
+    CC=aarch64-alpine-linux-musl-gcc AR=aarch64-alpine-linux-musl-ar \
+    ./configure --host=aarch64-alpine-linux-musl                     \
+        --enable-static --disable-shared --enable-debug;             \
+    make &&                                                          \
+    make install &&                                                  \
+    rm -rf /usr/local/bin/curl                                       \
+       /usr/local/share/{man/doc}
+
+# =========================================================================
+# We don't need to keep the compilation artifacts, so copy the results
+# to a clean image
+
+# TODO: create a multi-arch pak-libs image
+
+FROM --platform=linux/arm64 alpine:3.19
+COPY --from=build /usr/local /usr/local/
+
+# Some of this info is shown on the GH packages pages
+
+LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
+LABEL org.opencontainers.image.description="This image builds and contains \
+    static aarch64 libraries for libcurl and its dependencies. See \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs-aarch64 \
+    for details."
+LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"
