@@ -31,7 +31,7 @@ Collate: 'aaa-import-standalone-rstudio-detect.R' 'aaassertthat.R'
         'backend-wincred.R' 'default_backend.R' 'keyring-package.R'
         'mocks.R' 'package.R' 'pass.R' 'standalone-errors.R' 'utils.R'
 NeedsCompilation: yes
-Packaged: 2025-02-27 18:08:51 UTC; gaborcsardi
+Packaged: 2025-02-28 13:22:33 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Alec Wong [ctb],
   Posit Software, PBC [cph, fnd]

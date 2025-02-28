@@ -85,7 +85,7 @@ default_backend_auto <- function() {
              backend_secret_service$new()$is_available()) {
     backend_secret_service
     
-  } else if ("file" %in% names(known_backends)) {
+  } else if ("file" %in% names(known_backends) && file_backend_works()) {
     backend_file
 
   } else {
@@ -95,6 +95,21 @@ default_backend_auto <- function() {
     }
     backend_env
   }
+}
+
+file_backend_works <- function() {
+  opt <- options(rlib_interactive = FALSE)
+  on.exit(options(opt), add = TRUE)
+  tryCatch({
+    kb <- backend_file$new()
+    krs <- kb$keyring_list()
+    def <- kb$keyring_default()
+    if (!def %in% krs$keyring) {
+      return(FALSE)
+    }
+    kb$list()
+    TRUE
+  }, error = function(err) FALSE)
 }
 
 backend_factory <- function(name) {
