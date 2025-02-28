@@ -22,18 +22,23 @@ repo$url()
 
 (This needs the webfakes and callr packages.)
 
-Next, we onfigure the proxy as the main CRAN repository. The default user
-name of the proxy is \code{"username"} and the default password is \code{"token"}.
-We want to replace the default CRAN repository with the proxy, so we name
-it \code{CRAN}:
+Next, we onfigure the proxy as the main CRAN repository. The default username
+of the proxy is \code{"username"} and the default password is \code{"token"}. We want to
+replace the default CRAN repository with the proxy, so we name it \code{CRAN}:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(CRAN = repo$url(), username = "username")
 repo_get()
-#> ✖ Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring lookup failed (macos backend).
-#> # A data frame: 1 x 7
-#>   name  url                              type  r_version bioc_version username has_password
-#> * <chr> <chr>                            <chr> <chr>     <chr>        <chr>    <lgl>
-#> 1 CRAN  http://username@127.0.0.1:59571/ cran  *         <NA>         username FALSE
+#> ✖ Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+#> lookup failed (macos backend).
+#> # A data frame: 6 x 7
+#>   name          url           type  r_version bioc_version username has_password
+#> * <chr>         <chr>         <chr> <chr>     <chr>        <chr>    <lgl>       
+#> 1 CRAN          http://usern~ cran  *         <NA>         username FALSE       
+#> 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 3 BioCann       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         <NA>     NA
 }\if{html}{\out{</div>}}
 
 Note that the output includes a \code{username} and a \code{has_password} column.
@@ -135,11 +140,17 @@ Use \code{repo_auth_key_get()} to check that the key is properly set:
 for our CRAN proxy:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_get()
-#> ✔ Found credentials for repo <http://username@127.0.0.1:59571/> (keyring:env).
-#> # A data frame: 1 x 7
-#>   name  url                              type  r_version bioc_version username has_password
-#> * <chr> <chr>                            <chr> <chr>     <chr>        <chr>    <lgl>
-#> 1 CRAN  http://username@127.0.0.1:59571/ cran  *         <NA>         username TRUE
+#> ✖ Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+#> lookup failed (macos backend).
+#> # A data frame: 6 x 7
+#>   name          url           type  r_version bioc_version username has_password
+#> * <chr>         <chr>         <chr> <chr>     <chr>        <chr>    <lgl>       
+#> 1 CRAN          http://usern~ cran  *         <NA>         username FALSE       
+#> 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 3 BioCann       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
+#> 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         <NA>     NA
 }\if{html}{\out{</div>}}
 }
 
@@ -171,12 +182,24 @@ contain host credentials.
 To test that authentication works, use the \code{repo_status()} function:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_status()
-#> ✔ Found credentials for repo <http://username@127.0.0.1:59571/> (keyring:env).
-#> # A data frame: 2 x 12
-#>   name  url     type  bioc_version username has_password platform path  r_version ok     ping error
-#>   <chr> <chr>   <chr> <chr>        <chr>    <lgl>        <chr>    <chr> <chr>     <lgl> <dbl> <list>
-#> 1 CRAN  http:/~ cran  <NA>         username TRUE         source   src/~ 4.4       TRUE  0.135 <NULL>
-#> 2 CRAN  http:/~ cran  <NA>         username TRUE         aarch64~ bin/~ 4.4       TRUE  0.135 <NULL>
+#> ✖ Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+#> lookup failed (macos backend).
+#> # A data frame: 12 x 12
+#>    name  url   type  bioc_version username has_password platform path  r_version
+#>    <chr> <chr> <chr> <chr>        <chr>    <lgl>        <chr>    <chr> <chr>    
+#>  1 CRAN  http~ cran  <NA>         username FALSE        source   src/~ 4.4      
+#>  2 CRAN  http~ cran  <NA>         username FALSE        aarch64~ bin/~ 4.4      
+#>  3 BioC~ http~ bioc  3.20         <NA>     NA           source   src/~ 4.4      
+#>  4 BioC~ http~ bioc  3.20         <NA>     NA           aarch64~ bin/~ 4.4      
+#>  5 BioC~ http~ bioc  3.20         <NA>     NA           source   src/~ 4.4      
+#>  6 BioC~ http~ bioc  3.20         <NA>     NA           aarch64~ bin/~ 4.4      
+#>  7 BioC~ http~ bioc  3.20         <NA>     NA           source   src/~ 4.4      
+#>  8 BioC~ http~ bioc  3.20         <NA>     NA           aarch64~ bin/~ 4.4      
+#>  9 BioC~ http~ bioc  3.20         <NA>     NA           source   src/~ 4.4      
+#> 10 BioC~ http~ bioc  3.20         <NA>     NA           aarch64~ bin/~ 4.4      
+#> 11 BioC~ http~ bioc  3.20         <NA>     NA           source   src/~ 4.4      
+#> 12 BioC~ http~ bioc  3.20         <NA>     NA           aarch64~ bin/~ 4.4      
+#> # i 3 more variables: ok <lgl>, ping <dbl>, error <list>
 }\if{html}{\out{</div>}}
 
 The output of \code{repo_status()} has extra columns, compared to \code{repo_get()},
@@ -193,7 +216,7 @@ If you need even more information about repo authentication, e.g. because
 #> ✔ Found credentials for repo <http://username@127.0.0.1:59571/> (keyring:env).
 #> # A data frame: 1 x 11
 #>   name  url              type  r_version bioc_version username has_password auth_domains auth_domain
-#> * <chr> <chr>            <chr> <chr>     <chr>        <chr>    <lgl>        <I<list>>    <chr>
+#> * <chr> <chr>            <chr> <chr>     <chr>        <chr>    <lgl>        <I<list>>    <chr>      
 #> 1 CRAN  http://username~ cran  *         <NA>         username TRUE         <chr [4]>    http://127~
 #> # i 2 more variables: auth_source <chr>, auth_error <chr>
 }\if{html}{\out{</div>}}
@@ -207,7 +230,7 @@ these URLs:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_auth()$auth_domains
 #> ✔ Found credentials for repo <http://username@127.0.0.1:59571/> (keyring:env).
 #> [[1]]
-#> [1] "http://username@127.0.0.1:59571/" "http://127.0.0.1:59571/"
+#> [1] "http://username@127.0.0.1:59571/" "http://127.0.0.1:59571/"         
 #> [3] "http://username@127.0.0.1:59571"  "http://127.0.0.1:59571"
 }\if{html}{\out{</div>}}
 \item \code{auth_domain}: one of \code{auth_domains}, the URL for which pak found
@@ -233,34 +256,53 @@ for failed ones. Function calls that do not perform any HTTP reqquests,
 e.g. because they list cached data, do not display such messages.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_update()
-#> ✔ Found credentials for repo <http://username@127.0.0.1:59571/> (keyring:env).
-#> Checking for 5 new metadata files
-#> ✔ Updated metadata database: 6.87 MB in 4 files.
-#>
+#> Checking for 15 new metadata files
+#> ! Cannot find credentials for URL <http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz>, credential lookup
+#> failed. Keyring backend: "macos".
+#> Checking for 15 new metadata files
+✖ Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+#> lookup failed (macos backend).
+#> Checking for 15 new metadata files
+⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
+#> ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
+#> ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
+#> ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
+#> ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
+#> ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
+#> ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
+#> ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
+#> ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
+#> ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
+#> ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
+#> ✔ Updated metadata database: 2.92 MB in 5 files.
+#> 
+#> ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#> ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
 #> ℹ Updating metadata database
 #> ✔ Updating metadata database ... done
 }\if{html}{\out{</div>}}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_list()
-#> # A data frame: 44,889 x 33
-#>    package      version depends suggests license md5sum sha256sum needscompilation imports linkingto
-#>    <chr>        <chr>   <chr>   <chr>    <chr>   <chr>  <chr>     <chr>            <chr>   <chr>
-#>  1 A3           1.0.0   R (>= ~ randomF~ GPL (>~ 929a4~ "\\n     ~ no               <NA>    <NA>
-#>  2 AATtools     0.0.3   R (>= ~ <NA>     GPL-3   de2ec~ "\\n     ~ no               magrit~ <NA>
-#>  3 ABACUS       1.0.0   R (>= ~ rmarkdo~ GPL-3   28795~ "\\n     ~ no               ggplot~ <NA>
-#>  4 ABC.RAP      0.9.0   R (>= ~ knitr, ~ GPL-3   0158e~ "\\n     ~ no               graphi~ <NA>
-#>  5 ABCanalysis  1.2.1   R (>= ~ <NA>     GPL-3   4cbe1~ "\\n     ~ no               plotrix <NA>
-#>  6 ABCoptim     0.15.0  <NA>    testtha~ MIT + ~ a294d~ "\\n     ~ yes              Rcpp, ~ Rcpp
-#>  7 ABCp2        1.2     MASS    <NA>     GPL-2   d049b~  <NA>     no               <NA>    <NA>
-#>  8 ABHgenotypeR 1.0.1   <NA>    knitr, ~ GPL-3   fce25~ "\\n     ~ no               ggplot~ <NA>
-#>  9 ABM          0.4.3   <NA>    <NA>     GPL (>~ 7aaae~ "\\n     ~ yes              R6, Rc~ Rcpp
-#> 10 ABPS         0.3     <NA>    testthat GPL (>~ d3f00~ "\\n     ~ no               kernlab <NA>
-#> # i 44,879 more rows
-#> # i 23 more variables: archs <chr>, enhances <chr>, license_restricts_use <chr>, priority <chr>,
-#> #   os_type <chr>, license_is_foss <chr>, repodir <chr>, rversion <chr>, platform <chr>, ref <chr>,
-#> #   type <chr>, direct <lgl>, status <chr>, target <chr>, mirror <chr>, sources <list>,
-#> #   filesize <int>, sha256 <chr>, sysreqs <chr>, built <chr>, published <dttm>, deps <list>,
-#> #   path <chr>
+#> # A data frame: 50,701 x 33
+#>    package    version depends suggests license md5sum sha256sum needscompilation
+#>    <chr>      <chr>   <chr>   <chr>    <chr>   <chr>  <chr>     <chr>           
+#>  1 A3         1.0.0   R (>= ~ randomF~ GPL (>~ 929a4~ "\\n     ~ no              
+#>  2 AATtools   0.0.3   R (>= ~ <NA>     GPL-3   de2ec~ "\\n     ~ no              
+#>  3 ABACUS     1.0.0   R (>= ~ rmarkdo~ GPL-3   28795~ "\\n     ~ no              
+#>  4 ABC.RAP    0.9.0   R (>= ~ knitr, ~ GPL-3   0158e~ "\\n     ~ no              
+#>  5 ABCanalys~ 1.2.1   R (>= ~ <NA>     GPL-3   4cbe1~ "\\n     ~ no              
+#>  6 ABCoptim   0.15.0  <NA>    testtha~ MIT + ~ a294d~ "\\n     ~ yes             
+#>  7 ABCp2      1.2     MASS    <NA>     GPL-2   d049b~  <NA>     no              
+#>  8 ABHgenoty~ 1.0.1   <NA>    knitr, ~ GPL-3   fce25~ "\\n     ~ no              
+#>  9 ABM        0.4.3   <NA>    <NA>     GPL (>~ 7aaae~ "\\n     ~ yes             
+#> 10 ABPS       0.3     <NA>    testthat GPL (>~ d3f00~ "\\n     ~ no              
+#> # i 50,691 more rows
+#> # i 25 more variables: imports <chr>, linkingto <chr>, archs <chr>,
+#> #   enhances <chr>, license_restricts_use <chr>, priority <chr>, os_type <chr>,
+#> #   license_is_foss <chr>, repodir <chr>, rversion <chr>, platform <chr>,
+#> #   ref <chr>, type <chr>, direct <lgl>, status <chr>, target <chr>,
+#> #   mirror <chr>, sources <list>, filesize <int>, sha256 <chr>, sysreqs <chr>,
+#> #   built <chr>, published <dttm>, deps <list>, path <chr>
 }\if{html}{\out{</div>}}
 
 E.g. here \code{meta_update()} outputs an authentication message, but
