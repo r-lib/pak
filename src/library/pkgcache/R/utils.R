@@ -226,3 +226,7 @@ is_rcmd_check <- function() {
     Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
   }
 }
+
+random_key <- function() {
+  basename(tempfile())
+}

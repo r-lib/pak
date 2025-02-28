@@ -277,7 +277,7 @@ cmc_init <- function(self, private, primary_path, replica_path, platforms,
   private$platforms <- platforms
   private$r_version <- get_minor_r_version(r_version)
   private$bioc <- bioc
-  private$repos <- cmc__get_repos(repos, bioc, cran_mirror, r_version)
+  private$repos <- cmc__get_repos(repos, bioc, cran_mirror, r_version, auth = FALSE)
   private$update_after <- update_after
   private$dirs <- get_all_package_dirs(platforms, r_version)
   invisible(self)
@@ -737,8 +737,7 @@ cmc__update_replica_pkgs <- function(self, private) {
 
   meta <- !is.na(pkgs$meta_url)
   bin <- !is.na(pkgs$bin_url)
-  dls <- data.frame(
-    stringsAsFactors = FALSE,
+  dls <- data_frame(
     url = c(pkgs$url, pkgs$meta_url[meta], pkgs$bin_url[bin], bsq_url),
     fallback_url = c(pkgs$fallback_url, rep(NA_character_, sum(meta) + sum(bin)), NA_character_),
     path = c(pkgs$path, pkgs$meta_path[meta], pkgs$bin_path[bin], bsq_path),
@@ -747,12 +746,16 @@ cmc__update_replica_pkgs <- function(self, private) {
     mayfail = TRUE
   )
 
-  download_files(dls)$
+  key <- random_key()
+  async_constant()$
+    then(function() start_auth_cache(key))$
+    then(function() download_files(dls))$
     then(function(result) {
       missing_pkgs_note(pkgs, result)
       load_bioc_sysreqs()
       result
-    })
+    })$
+    finally(function() clear_auth_cache(key))
 }
 
 # E.g. "R 4.1 macos packages are missing from CRAN and Bioconductor"
@@ -957,7 +960,7 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
   res
 }
 
-cmc__get_repos <- function(repos, bioc, cran_mirror, r_version) {
+cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {
   repos[["CRAN"]] <- cran_mirror
   repos <- unlist(repos)
   bioc_names <- bioconductor$get_repos()
@@ -990,6 +993,9 @@ cmc__get_repos <- function(repos, bioc, cran_mirror, r_version) {
   }
 
   res <- res[!duplicated(res$url), ]
+  if (auth) {
+    res <- add_auth_status(res)
+  }
 
   res
 }

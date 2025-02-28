@@ -90,7 +90,10 @@ install_order <- function() {
     "pkgsearch",
     # callr, cli, curl, desc, filelock, jsonlite, lpSolve, pkgbuild,
     # pkgcache, processx, ps, R6, zip
-    "pkgdepends"
+    "pkgdepends",
+    # filelock, R6
+    "keyring",
+    NULL
   )
 
   pkgs

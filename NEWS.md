@@ -3,6 +3,9 @@
 * pak now uses the `use_bioconductor` configuration option in `meta_*()` and
   `repo_*()` functions (#295, #726, @meztez).
 
+* pak now supports HTTP basic authentication for CRAN-like repositories.
+  See 'Authenticated repositories' in the reference manual.
+
 # pak 0.8.0
 
 * `pkg_deps()` now accepts a vector of package names.

@@ -2886,7 +2886,6 @@ http_post <- mark_as_async(http_post)
 http_delete <- function(url, headers = character(), file = NULL,
                         options = list()) {
   url; headers; options;
-  options <- get_default_curl_options(options)
 
   make_deferred_http(
     function() {
@@ -4477,14 +4476,14 @@ worker_pool <- R6Class(
     list_workers = function()
       wp_list_workers(self, private),
     list_tasks = function(event_loop = NULL, status = NULL)
-      wp_list_tasks(self, private, event_loop, status),
-    finalize = function() self$kill_workers()
+      wp_list_tasks(self, private, event_loop, status)
   ),
 
   private = list(
     workers = list(),
     tasks = list(),
 
+    finalize = function() self$kill_workers(),
     try_start = function()
       wp__try_start(self, private),
     interrupt_worker = function(pid)

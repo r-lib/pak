@@ -26,6 +26,13 @@
 #' * `url`: base URL of the repository.
 #' * `bioc_version`: Bioconductor version, or `NA` for
 #'   non-Bioconductor repositories.
+#' * `username`: Included if at least one repository is authenticated.
+#'   `NA_character_` for repositories without authentication. See
+#'   [repo_auth()].
+#' * `has_password`: `TRUE` is the function could retrieve the password
+#'   for the authenticated repository. It is `NA` for repositories without
+#'   authentication. This column is included only if at least one
+#'   repository has authentication. See [repo_auth()].
 #' * `platform`: platform, possible values are `source`, `macos` and
 #'   `windows` currently.
 #' * `path`: the path to the packages within the base URL, for a
@@ -133,6 +140,23 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #' to the result.
 #' @param cran_mirror CRAN mirror to use. Leave it at `NULL` to use the
 #' mirror in `getOption("repos")` or an automatically selected one.
+#' @return
+#' `repo_get()` returns a data frame with columns:
+#' * `name`: repository name. Names are informational only.
+#' * `url`: repository URL.
+#' * `type`: repository type. This is also informational, currently it
+#'   can be `cran` for CRAN, `bioc` for a Bioconductor repository, and
+#'   `cranlike`: for other repositories.
+#' * `r_version`: R version that is supposed to be used with this
+#'   repository. This is only set for Bioconductor repositories. It is `*`
+#'   for others. This is also informational, and not used when retrieving
+#'   the package metadata.
+#' * `bioc_version`: Bioconductor version. Only set for Bioconductor
+#'   repositories, and it is `NA` for others.
+#' * `username`: user name, for authenticated repositories.
+#' * `has_password`: whether `repo_get()` could find the password for
+#'   this repository. Call [repo_auth()] for more information if the
+#'   credential lookup failed.
 #'
 #' @family repository functions
 #' @export
@@ -177,6 +201,8 @@ repo_get_internal <- function(r_version = getRversion(), bioc = NULL,
 #' @param .list List or character vector of repository specifications.
 #' This argument is easier to use programmatically than `...`. See
 #' details below.
+#' @param username User name to set, for authenticated repositories, see
+#'   [repo_auth()].
 #'
 #' @details
 #' # Repository specifications
@@ -244,28 +270,106 @@ repo_get_internal <- function(r_version = getRversion(), bioc = NULL,
 #' repo_resolve("PPM@R-4.0.0")
 #' ```
 
-repo_add <- function(..., .list = NULL) {
+repo_add <- function(..., .list = NULL, username = NULL) {
   new <- c(list(...), .list)
-  ret <- remote(
+  ret <- suppressMessages(remote(
     function(...) asNamespace("pak")$repo_add_internal(...),
-    list(.list = new)
-  )
+    list(.list = new, username = username)
+  ))
   options(repos = ret$option)
   invisible(ret$tab)
 }
 
-repo_add_internal <- function(.list) {
-  tab <- pkgcache::repo_add(.list = .list)
+repo_add_internal <- function(.list, username) {
+  tab <- pkgcache::repo_add(.list = .list, username = username)
   list(option = getOption("repos"), tab = tab)
 }
 
 #' @param spec Repository specification, a possibly named character
 #' scalar.
+#' @param username User name to set, for authenticated repositories, see
+#'   [repo_auth()].
 #' @return `repo_resolve()` returns a named character scalar, the URL
 #' of the repository.
 #' @rdname repo_add
 #' @export
 
-repo_resolve <- function(spec) {
-  remote(function(spec) pkgcache::repo_resolve(spec), list(spec))
+repo_resolve <- function(spec, username = NULL) {
+  remote(
+    function(spec, username) pkgcache::repo_resolve(spec, username),
+    list(spec, username))
+}
+
+#' Authenticated repositories
+#'
+#' pak supports HTTP basic authentication when interacting with
+#' CRAN-like repositories. To use authentication, include a username
+#' in the repo URL:
+#' ```
+#' https://<username>@<repo-host>/<repo-path>
+#' ```
+#'
+#' pak will look up password for this url and username from the
+#' the user's `.netrc` file and from the system credential store using
+#' the keyring package. pak currently supports the following keyring
+#' backends:
+#'
+#' * Windows credential store,
+#' * macOS Keychain,
+#' * Linux Secret Service via libsecret, if built with libsecret support,
+#' * environment variables.
+#'
+#' For the URL above it tries the following keyring
+#' keys, in this order:
+#' ```
+#' https://<username>@repo-host/<repo-path>
+#' https://repo-host/<repo-path>
+#' https://<username>@repo-host
+#' https://repo-host
+#' ```
+#'
+#' To add an authenticated repository use [repo_add()] with the `username`
+#' argument. Alternatively, you can set the `repos` option directly using
+#' [base::options()] and including the username in the repository URL.
+#'
+#' `repo_auth()` lists authentication information for all configured
+#' repositories.
+#'
+#' @inheritParams repo_get
+#' @param check_credentials Whether to check that credentials are
+#'   available for authenticated repositories.
+#' @return Data frame with columns:
+#'   - all columns from the output of [repo_get()],
+#'   - `auth_domains`: authentication domains. pak tries to find the
+#'     credentials for these domains, until the search is successful or all
+#'     domains fail.
+#'   - `auth_domain`: if the credential lookup is successful, then this is
+#'     the authentication domain that was used to get the credentials.
+#'   - `auth_source`: where the credentials were found. E.g.
+#'     `keyring:<backend>` means it was in the default macos keyring.
+#'   - `auth_error`: for failed credential searches this is the description
+#'     of why the search failed. E.g. maybe the keyring package is not
+#'     installed, or pak found no credentials for any of the
+#'     authentication domains.
+#'
+#' @seealso [Authenticated repositories].
+#' @export
+
+repo_auth <- function(r_version = getRversion(), bioc = NULL,
+                      cran_mirror = NULL,
+                      check_credentials = TRUE) {
+
+  remote(
+    function(...) asNamespace("pak")$repo_auth_internal(...),
+    list(r_version, bioc, cran_mirror, check_credentials)
+  )
+}
+
+repo_auth_internal <- function(r_version = getRversion(), bioc = NULL,
+                               cran_mirror = NULL,
+                               check_credentials = TRUE) {
+  config <- pkgdepends::current_config()
+  cran_mirror <- cran_mirror %||% config$get("cran_mirror")
+  bioc <- bioc %||% config$get("use_bioconductor")
+  pkgcache::repo_auth(r_version, bioc, cran_mirror, check_credentials)
 }

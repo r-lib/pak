@@ -48,3 +48,14 @@ skip_if_offline <- function() {
   skip_on_cran()
   if (is_offline()) skip("Offline")
 }
+
+set_user_in_url <- function(url, username = "username", password = NULL) {
+  psd <- parse_url(url)
+  paste0(psd$protocol, "://",
+    username,
+    if (!is.null(password)) paste0(":", password),
+    "@",
+    psd$host,
+    psd$path
+  )
+}

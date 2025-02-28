@@ -202,8 +202,14 @@ async_get_ppm_status <- function(forget = FALSE, distribution = NULL,
       })
   }
 
-  def$
-    finally(function() unlink(tmp2))$
+  key <- random_key()
+  async_constant()$
+    then(function() start_auth_cache(key))$
+    then(function() def)$
+    finally(function() {
+      clear_auth_cache(key)
+      unlink(tmp2)
+    })$
     then(function() {
       list(
         distros = pkgenv$ppm_distros,

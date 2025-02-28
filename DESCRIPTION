@@ -12,6 +12,7 @@ Authors@R: c(
     person("Maëlle", "Salmon", role = "ctb", comment = "desc, pkgsearch"),
     person("Duncan", "Temple Lang", role = "ctb", comment = "jsonlite"),
     person("Lloyd", "Hilaiel", role = "cph", comment = "jsonlite"),
+    person("Alec", "Wong", role = "ctb", comment = "keyring"),
     person("Michel Berkelaar and lpSolve authors", role = "ctb", comment = "lpSolve"),
     person("R Consortium", role = "fnd", comment = "pkgsearch"),
     person("Jay", "Loden", role = "ctb", comment = "ps"),
@@ -45,6 +46,7 @@ Suggests:
     gitcreds,
     glue (>= 1.6.2),
     jsonlite (>= 1.8.0),
+    keyring,
     pingr,
     pkgbuild (>= 1.4.2),
     pkgcache (>= 2.0.4),
@@ -55,7 +57,10 @@ Suggests:
     ps (>= 1.6.0),
     rstudioapi,
     testthat (>= 3.2.0),
+    webfakes,
     withr
+Remotes:
+    r-lib/pkgcache
 ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
@@ -65,6 +70,7 @@ Config/needs/dependencies:
     curl,
     filelock,
     gaborcsardi/jsonlite,
+    r-lib/keyring,
     lpSolve,
     pkgbuild,
     r-lib/pkgcache,

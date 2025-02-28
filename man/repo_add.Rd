@@ -5,9 +5,9 @@
 \alias{repo_resolve}
 \title{Add a new CRAN-like repository}
 \usage{
-repo_add(..., .list = NULL)
+repo_add(..., .list = NULL, username = NULL)
 
-repo_resolve(spec)
+repo_resolve(spec, username = NULL)
 }
 \arguments{
 \item{...}{Repository specifications, possibly named character vectors.
@@ -16,6 +16,9 @@ See details below.}
 \item{.list}{List or character vector of repository specifications.
 This argument is easier to use programmatically than \code{...}. See
 details below.}
+
+\item{username}{User name to set, for authenticated repositories, see
+\code{\link[=repo_auth]{repo_auth()}}.}
 
 \item{spec}{Repository specification, a possibly named character
 scalar.}
@@ -103,11 +106,11 @@ repo_get()
 #> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>       
 #> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>          
 #> <span style="color: #c2c2c2;">2</span> PPMdplyr100   https://packagemanager.pos… cran… *         <span style="color: #DC322F;">NA</span>          
-#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.3.1     3.17        
-#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.3.1     3.17        
-#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.3.1     3.17        
-#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.3.1     3.17        
-#> <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.3.1     3.17        
+#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.4.2     3.20        
+#> <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.4.2     3.20        
 </pre></div>
 }}
 
@@ -115,8 +118,8 @@ repo_get()
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@2020-01-21")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/245"                              
+#>                                              CRAN                       
+#> "https://packagemanager.posit.co/cran/2020-01-21"                       
 </pre></div>
 }}
 
@@ -124,8 +127,8 @@ repo_get()
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@dplyr-1.0.0")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/289"                              
+#>                                              CRAN                       
+#> "https://packagemanager.posit.co/cran/2020-05-30"                       
 </pre></div>
 }}
 
@@ -133,8 +136,8 @@ repo_get()
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@R-4.0.0")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                       CRAN                              
-#> "https://packagemanager.posit.co/cran/276"                              
+#>                                              CRAN                       
+#> "https://packagemanager.posit.co/cran/2020-04-25"                       
 </pre></div>
 }}
 }
