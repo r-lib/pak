@@ -107,6 +107,8 @@ jobs:
         brew tap r-lib/rig
         brew install r-lib/rig/rig
 
+    - uses: r-hub/actions/setup-r-sysreqs@v1
+
     - name: Install R
       run: |
         sudo rig add 3.5 --arch x86_64
@@ -157,6 +159,8 @@ jobs:
       run: |
         brew tap r-lib/rig
         brew install r-lib/rig/rig
+
+    - uses: r-hub/actions/setup-r-sysreqs@v1
 
     - name: Install R
       run: |
