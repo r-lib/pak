@@ -93,7 +93,7 @@ jobs:
     if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
     name: macOS x86_64
     env:
-      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64"
+      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64 4.6-x86_64"
       RVERSION_DEFAULT: "4.4-x86_64"
     steps:
 
@@ -116,6 +116,7 @@ jobs:
         sudo rig add 4.2 --arch x86_64
         sudo rig add 4.3 --arch x86_64
         sudo rig add release --arch x86_64
+        sudo rig add next --arch x86_64
         sudo rig add devel --arch x86_64
         rig default release
 
@@ -143,8 +144,8 @@ jobs:
     if: ${{ github.event.inputs.macos-arm64 == '' || github.event.inputs.macos-arm64 == 'yes' }}
     name: macos arm64
     env:
-      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.5-arm64"
-      RVERSION_DEFAULT: "4.3-x86_64"
+      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64 4.5-arm64 4.6-arm64"
+      RVERSION_DEFAULT: "4.4-arm64"
 
     steps:
 
@@ -164,6 +165,7 @@ jobs:
         sudo rig add 4.2
         sudo rig add 4.3
         sudo rig add release
+        sudo rig add next
         sudo rig add devel
         rig default release
 
@@ -201,6 +203,7 @@ jobs:
           - { r: '4.1' }
           - { r: '4.2' }
           - { r: '4.3' }
+          - { r: '4.4' }
           - { r: next  }
           - { r: devel }
 
@@ -264,6 +267,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.6' }
           - { r: '4.5' }
           - { r: '4.4' }
           - { r: '4.3' }
@@ -298,6 +302,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.6' }
           - { r: '4.5' }
           - { r: '4.4' }
           - { r: '4.3' }
