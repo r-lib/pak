@@ -1,3 +1,14 @@
+# processx 3.8.6
+
+* `processx::process` objects are cloneable again, temporarily,
+  to avoid warning-like messages from R6 2.6.0 and later.
+
+* processx now does not change the state of the RNG (#390).
+
+# processx 3.8.5
+
+* No changes.
+
 # processx 3.8.4
 
 * No changes.

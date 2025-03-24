@@ -91,11 +91,12 @@ static int processx__create_output_handle(HANDLE *handle_ptr, const char *file,
 }
 
 static void processx__unique_pipe_name(char* ptr, char* name, size_t size) {
-  int r;
-  GetRNGstate();
-  r = (int)(unif_rand() * 65000);
-  snprintf(name, size, "\\\\?\\pipe\\px\\%p-%lu", ptr + r, GetCurrentProcessId());
-  PutRNGstate();
+  // we'll retry with a larger number if it already exists
+  static int cntr = 0;
+  snprintf(
+    name, size, "\\\\?\\pipe\\px\\%p-%lu", ptr + cntr++,
+    GetCurrentProcessId()
+  );
 }
 
 int processx__create_pipe(void *id, HANDLE* parent_pipe_ptr,

@@ -1,6 +1,6 @@
 Package: processx
 Title: Execute and Control System Processes
-Version: 3.8.4
+Version: 3.8.6
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-7098-9676")),
@@ -28,11 +28,11 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.3.1.9000
 NeedsCompilation: yes
-Packaged: 2024-03-16 14:10:21 UTC; gaborcsardi
+Packaged: 2025-02-19 21:20:47 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre, cph] (<https://orcid.org/0000-0001-7098-9676>),
   Winston Chang [aut],
   Posit Software, PBC [cph, fnd],
   Ascent Digital Services [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-03-16 14:50:02 UTC
+Date/Publication: 2025-02-21 17:00:01 UTC

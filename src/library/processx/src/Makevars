@@ -6,9 +6,16 @@ OBJECTS = init.o poll.o errors.o processx-connection.o   \
           unix/processx.o unix/sigchld.o unix/utils.o    \
 	  unix/named_pipe.o cleancall.o
 
-.PHONY: all clean
+all: tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT) $(SHLIB) strip
 
-all: tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT) $(SHLIB)
+strip: $(SHLIB) tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT)
+	@if which strip >/dev/null && which uname >/dev/null && test "`uname`" = "Linux" && test "$$_R_SHLIB_STRIP_" = "true" && test -n "$$R_STRIP_SHARED_LIB"; then \
+		echo stripping $(SHLIB) tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT); \
+		echo $$R_STRIP_SHARED_LIB $(SHLIB) tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT); \
+		$$R_STRIP_SHARED_LIB $(SHLIB) tools/px tools/sock supervisor/supervisor client$(SHLIB_EXT); \
+	fi
+
+.PHONY: all clean strip
 
 tools/px: tools/px.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -Wall tools/px.c -o tools/px
@@ -25,7 +32,7 @@ CLIENT_OBJECTS = base64.o client.o errors.o
 client$(SHLIB_EXT): $(CLIENT_OBJECTS)
 	$(SHLIB_LINK) -o client$(SHLIB_EXT) $(CLIENT_OBJECTS) $(PKG_LIBS) \
 		$(SHLIB_LIBADD) $(LIBR)
-	if [ -n "${PROCESSX_UNLINK_R}" ]; then \
+	@if [ -n "${PROCESSX_UNLINK_R}" ]; then \
 	    echo Removing libR.so dependency from client.so; \
 	    patchelf --remove-needed libR.so client$(SHLIB_EXT); \
 	fi
