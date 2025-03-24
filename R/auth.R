@@ -19,7 +19,7 @@ NULL
 #' errors if it cannot find the credentials for `url`.
 #'
 #' `repo_auth_key_set()` adds or updates a password in the system
-#' crednetial store.
+#' credential store.
 #'
 #' @param url Repository URL. It may contain a username, in which case
 #'   `username` may be `NULL`.
