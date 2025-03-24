@@ -240,10 +240,18 @@ jobs:
       run: |
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
         rig add ${{ matrix.config.r }} --without-p3m
-        rig add rtools
+        # temporary workaround
+        if ('${{ matrix.config.r }}' -eq 'next' -or '${{ matrix.config.r }}' -eq 'devel') {
+          $URL = 'https://github.com/r-hub/rtools45/releases/download/latest/rtools45.exe'
+          Invoke-WebRequest $URL -OutFile Rtools.exe
+          Start-Process ".\Rtools.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
+        } else {
+          rig add rtools
+        }
         # For make and zip
         echo "C:\rtools43\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\rtools44\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "C:\rtools45\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
     - name: Build pak binaries
       run: |
