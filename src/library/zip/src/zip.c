@@ -88,7 +88,7 @@ int zip_set_permissions(mz_zip_archive *zip_archive, mz_uint file_index,
   version_by |= 23;
 
   external_attr &= 0x0000FFFF;
-  external_attr |= st.st_mode << 16;
+  external_attr |= (st.st_mode & 0777) << 16;
 
   if (! mz_zip_set_version_made_by(zip_archive, file_index, version_by) ||
       ! mz_zip_set_external_attr(zip_archive, file_index, external_attr)) {

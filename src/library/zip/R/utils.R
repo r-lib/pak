@@ -24,8 +24,7 @@ get_zip_data_path <- function(files, recurse) {
 
   } else {
     files <- ignore_dirs_with_warning(files)
-    data.frame(
-      stringsAsFactors = FALSE,
+    data_frame(
       key = files,
       files = files,
       dir = rep(FALSE, length(files))
@@ -72,8 +71,7 @@ get_zip_data_nopath <- function(files, recurse) {
 
   } else {
     files <- ignore_dirs_with_warning(files)
-    data.frame(
-      stringsAsFactors = FALSE,
+    data_frame(
       key = basename(files),
       file = files,
       dir = rep(FALSE, length(files))
@@ -95,15 +93,13 @@ get_zip_data_path_recursive <- function(x) {
     files <- c(x, dir(x, recursive = TRUE, full.names = TRUE,
                       all.files = TRUE, include.dirs = TRUE, no.. = TRUE))
     dir <- file.info(files)$isdir
-    data.frame(
-      stringsAsFactors = FALSE,
+    data_frame(
       key = ifelse(dir, paste0(files, "/"), files),
       file = normalizePath(files),
       dir = dir
     )
   } else {
-    data.frame(
-      stringsAsFactors = FALSE,
+    data_frame(
       key = x,
       file = normalizePath(x),
       dir = FALSE
@@ -134,8 +130,7 @@ get_zip_data_nopath_recursive <- function(x) {
   dir <- file.info(files)$isdir
   key <- ifelse(dir, paste0(key, "/"), key)
 
-  data.frame(
-    stringsAsFactors = FALSE,
+  data_frame(
     key = key,
     file = normalizePath(files),
     dir = dir
