@@ -251,10 +251,11 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_db_update_timeout = list(
     type = "difftime",
-    default = as.difftime(5, units = "secs"),
+    default = function() as.difftime(if (Sys.getenv("CI") == "") 5 else 60, units = "secs"),
     docs =
       "Timeout for the system requirements database update.
-       Defaults to five seconds."
+       Defaults to five seconds, except if the `CI` environment variable
+       is set, then it is one minute."
   ),
 
   # -----------------------------------------------------------------------
