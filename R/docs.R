@@ -181,7 +181,7 @@ NULL
 #'
 #' From version 0.4.0 pak copies the `PKG_*` environment variables and
 #' the `pkg.*` options to the pak subprocess, where they are actually
-#' used, so you don't need to restart R or reaload pak after a
+#' used, so you don't need to restart R or reload pak after a
 #' configuration change.
 NULL
 
