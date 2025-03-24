@@ -194,8 +194,7 @@ get_tool <- function(prog) {
 
 get_id <- function() {
   paste0(
-    "PS",
-    paste(sample(c(LETTERS, 0:9), 10, replace = TRUE), collapse = ""),
+    basename(tempfile("PS")),
     "_", as.integer(asNamespace("base")$.Internal(Sys.time()))
   )
 }
