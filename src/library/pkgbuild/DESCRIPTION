@@ -1,6 +1,6 @@
 Package: pkgbuild
 Title: Find Tools Needed to Build R Packages
-Version: 1.4.5
+Version: 1.4.6.9000
 Authors@R: c(
     person("Hadley", "Wickham", role = "aut"),
     person("Jim", "Hester", role = "aut"),
@@ -20,13 +20,12 @@ Suggests: covr, cpp11, knitr, Rcpp, rmarkdown, testthat (>= 3.2.0),
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2024-10-28 13:41:37 UTC; gaborcsardi
+Packaged: 2025-03-24 12:09:56 UTC; gaborcsardi
 Author: Hadley Wickham [aut],
   Jim Hester [aut],
   Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
-Repository: CRAN
-Date/Publication: 2024-10-28 16:20:02 UTC

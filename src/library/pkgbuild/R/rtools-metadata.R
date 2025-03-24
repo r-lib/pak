@@ -80,12 +80,23 @@ version_info <- list(
   ),
   "4.4" = list(
     version_min = "4.4.0",
-    version_max = "99.99.99",
+    version_max = "4.4.99",
     path = "usr/bin"
+  ),
+  "4.5" = list(
+    version_min = "4.5.0",
+    version_max = "99.99.99",
+    path = character()
   ),
   "custom" = list(
     version_min = "2.10.0",
     version_max = "99.99.99",
-    path = if (getRversion() >= "4.0.0") "usr/bin" else "bin"
+    path = if (getRversion() >= "4.4.0") {
+      character()
+    } else if (getRversion() >= "4.0.0") {
+      "usr/bin"
+    } else {
+      "bin"
+    }
   )
 )

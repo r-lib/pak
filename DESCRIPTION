@@ -72,7 +72,7 @@ Config/needs/dependencies:
     gaborcsardi/jsonlite,
     r-lib/keyring,
     lpSolve,
-    pkgbuild,
+    r-lib/pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends,
     r-hub/pkgsearch,

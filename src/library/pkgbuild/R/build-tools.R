@@ -26,8 +26,10 @@
 #' check_build_tools()
 has_build_tools <- function(debug = FALSE) {
   check <- getOption("buildtools.check", NULL)
-  has <- if (is_windows() && is_R4() && has_rtools(debug = debug)) {
-    TRUE
+  # we do this from R 4.3.0, because some people might still use
+  # Rtools40 for R 4.2.x, and we don't want to break their config
+  has <- if (is_windows() && getRversion() >= "4.3.0") {
+    has_compiler(debug = debug)
   } else if (is_windows()) {
     has_rtools(debug = debug)
   } else {
@@ -35,10 +37,19 @@ has_build_tools <- function(debug = FALSE) {
   }
 
   if (!has && !is.null(check)) {
-    check("Building R package from source")
-  } else {
-    has
+    return(check("Building R package from source"))
   }
+
+  if (!has && is_windows() && getRversion() >= "4.3.0") {
+    message(
+      "WARNING: Rtools is required to build R packages, but is not ",
+      "currently installed.\n\n",
+      "Please download and install the appropriate version of Rtools for ",
+      getRversion(), " from\n", rtools_url(), "."
+    )
+  }
+
+  has
 }
 
 #' @export
