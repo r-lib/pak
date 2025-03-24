@@ -40,7 +40,6 @@ has_rtools <- function(debug = FALSE) {
       rtools_path_set(rtools(rtools44_aarch64_home, "4.4"))
       return(TRUE)
     }
-    return(FALSE)
   }
 
   # R 4.4.0 or later
@@ -53,11 +52,11 @@ has_rtools <- function(debug = FALSE) {
       rtools_path_set(rtools(rtools44_home, "4.4"))
       return(TRUE)
     }
-    return(FALSE)
   }
 
   # R 4.3.0 or later on ARM64
-  if (getRversion() >= "4.3.0" && grepl("aarch", R.version$platform)) {
+  if (getRversion() >= "4.3.0" && getRversion() < "4.4.0" &&
+      grepl("aarch", R.version$platform)) {
     rtools43_aarch64_home <- Sys.getenv("RTOOLS43_AARCH64_HOME", "C:\rtools43-aarch64")
     if (file.exists(file.path(rtools43_aarch64_home, "usr", "bin"))) {
       if (debug) {
@@ -66,11 +65,10 @@ has_rtools <- function(debug = FALSE) {
       rtools_path_set(rtools(rtools43_aarch64_home, "4.3"))
       return(TRUE)
     }
-    return(FALSE)
   }
 
   # R 4.3.0 or later
-  if (getRversion() >= "4.3.0") {
+  if (getRversion() >= "4.3.0" && getRversion() < "4.4.0") {
     rtools43_home <- Sys.getenv("RTOOLS43_HOME", "C:\\rtools43")
     if (file.exists(file.path(rtools43_home, "usr", "bin"))) {
       if (debug) {
@@ -79,25 +77,26 @@ has_rtools <- function(debug = FALSE) {
       rtools_path_set(rtools(rtools43_home, "4.3"))
       return(TRUE)
     }
-    return(FALSE)
   }
 
   # R 4.2.x or later and ucrt?
   ucrt <- is_ucrt()
-  if (ucrt) {
-    rtools42_home <- Sys.getenv("RTOOLS42_HOME", "C:\\rtools42")
-    if (file.exists(file.path(rtools42_home, "usr", "bin"))) {
-      if (debug) {
-        cat("Found in Rtools 4.2 installation folder\n")
+  if (getRversion() >= "4.2.0" && getRversion() < "4.3.0") {
+    if (ucrt) {
+      rtools42_home <- Sys.getenv("RTOOLS42_HOME", "C:\\rtools42")
+      if (file.exists(file.path(rtools42_home, "usr", "bin"))) {
+        if (debug) {
+          cat("Found in Rtools 4.2 installation folder\n")
+        }
+        rtools_path_set(rtools(rtools42_home, "4.2"))
+        return(TRUE)
       }
-      rtools_path_set(rtools(rtools42_home, "4.2"))
-      return(TRUE)
     }
   }
 
   # In R 4.0 we can use RTOOLS40_HOME, recent versions of Rtools40 work fine
   # with ucrt as well, currently.
-  if (is_R4()) {
+  if (getRversion() >= "4.0.0" && getRversion() < "4.3.0") {
     rtools40_home <- Sys.getenv("RTOOLS40_HOME", "C:\\rtools40")
     fld <- if (ucrt) "ucrt64" else "usr"
     if (file.exists(file.path(rtools40_home, fld, "bin"))) {
@@ -212,6 +211,12 @@ has_rtools <- function(debug = FALSE) {
   }
 
   # Otherwise it must be ok :)
+
+  # Recently Rtools is versioned properly
+  from_registry$version <- sub(
+    "^([0-9]+[.][0-9]+)[.].*$", "\\1",
+    from_registry$version
+  )
   rtools_path_set(from_registry)
   TRUE
 }
@@ -283,7 +288,9 @@ is_compatible <- function(rtools) {
   }
 
   stopifnot(is.rtools(rtools))
-  info <- version_info[[rtools$version]]
+  version <- rtools$version
+  version <- sub("^([0-9]+[.][0-9]+)[.].*$", "\\1", version)
+  info <- version_info[[version]]
   if (is.null(info)) {
     return(FALSE)
   }
