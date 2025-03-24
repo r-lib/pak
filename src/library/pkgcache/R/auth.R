@@ -1,7 +1,7 @@
 #' Authenticated repositories
 #'
 #' pkgcache supports HTTP basic authentication when interacting with
-#' CRAN-like repositories. To user authentication, include a username
+#' CRAN-like repositories. To use authentication, include a username
 #' in the repo URL:
 #' ```
 #' https://<username>@<repo-host>/<repo-path>
