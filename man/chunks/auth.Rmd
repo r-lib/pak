@@ -196,7 +196,7 @@ Once you set up your authenticated repositories, and stored the required
 passwords in the system credential store, you can use them like any
 other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
-for failed ones. Function calls that do not perform any HTTP reqquests,
+for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.
 
 ```{r meta-update}
