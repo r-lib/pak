@@ -122,7 +122,8 @@ configured for the current user.</p></li>
 GitHub. If the update fails, then the cached or the build-in
 database if used. Defaults to TRUE.</p></li>
 <li><p>‘sysreqs_db_update_timeout’: (Env var: <code>PKG_SYSREQS_DB_UPDATE_TIMEOUT</code>, option: <code>pkg.sysreqs_db_update_timeout</code>.) Timeout for the system requirements database update.
-Defaults to five seconds.</p></li>
+Defaults to five seconds, except if the <code>CI</code> environment variable
+is set, then it is one minute.</p></li>
 <li><p>‘sysreqs_dry_run’: (Env var: <code>PKG_SYSREQS_DRY_RUN</code>, option: <code>pkg.sysreqs_dry_run</code>.) If <code>TRUE</code>, then pak only prints the system commands to
 install system requirements, but does not execute them.</p></li>
 <li><p>‘sysreqs_platform’: (Env var: <code>PKG_SYSREQS_PLATFORM</code>, option: <code>pkg.sysreqs_platform</code>.) The platform to use for system requirements lookup. On Linux, where
