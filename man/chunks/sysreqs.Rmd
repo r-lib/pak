@@ -159,7 +159,7 @@ pak::sysreqs_db_list()
 ```
 
 `sysreqs_db_match()` manually matches `SystemRequirements` fields
-againts these system requirements:
+against these system requirements:
 ```{asciicast db-match}
 sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
 sq
@@ -241,7 +241,7 @@ For packages sources that require pak to obtain a package `DESCRIPTION` file
 from the `DESCRIPTION` file.
 
 Once having the `SystemRequirements` fields, pak matches them to the database,
-to obtain the cacnonized list of system requirements.
+to obtain the canonized list of system requirements.
 
 Then pak queries the local platform, to see the exact system packages
 needed.
@@ -314,7 +314,7 @@ macOS is similar to Windows, in that most repositories will serve
 statically linked macOS binary packages that do not need system software.
 
 If you do need to compile packages from source, then you possibly need
-to install some sytem libraries, either via Homebrew, or by downloading
+to install some system libraries, either via Homebrew, or by downloading
 CRAN's static library builds from https://mac.r-project.org/bin/
 
 We are planning on adding better macOS system software support to pak in

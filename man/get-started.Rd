@@ -16,7 +16,7 @@ This manual page collects the most common pak use cases.
 \if{html}{\figure{tldr-cran.svg}}
 
 pak automatically sets a CRAN repository and the Bioconductor repositories
-that correspons to the current R version.
+that corresponds to the current R version.
 }
 
 \subsection{Install a package from GitHub}{
