@@ -159,7 +159,7 @@ pak::sysreqs_db_list()
 ```
 
 `sysreqs_db_match()` manually matches `SystemRequirements` fields
-againts these system requirements:
+against these system requirements:
 ```{asciicast db-match}
 sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
 sq
