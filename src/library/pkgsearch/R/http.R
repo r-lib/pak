@@ -5,7 +5,7 @@ get_default_curl_options <- function(options) {
     if (!is.null(v <- getOption(anm))) return(v)
     if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return (v)
   }
-  modifyList(
+  utils::modifyList(
     options,
     drop_nulls(list(
       timeout = as.integer(getopt("timeout") %||% 0),
