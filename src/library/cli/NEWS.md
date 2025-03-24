@@ -1,3 +1,40 @@
+# cli 3.6.4
+
+* Pluralization now handles edge cases (`NA`, `NaN`, `Inf` and `-Inf`)
+  better (@rundel, #716).
+
+* The URI generated for `.file`, `.run`, `.help` and `.vignette` hyperlinks
+  can now be configured via options and env vars (@jennybc, #739, #744).
+
+* `cli_progress_bar()` now accepts `total` = Inf or -Inf which mimics the
+  behavior of when `total` is NA (@LouisMPenrod, #630).
+
+* `num_ansi_colors()` now does not warn in Emacs if the `INSIDE_EMACS`
+  environment variable is not a proper version number (@rundel, #689).
+
+* `ansi_collapse()` and inline collapsing now uses `last` as the separator
+  (without the serial comma) for two-element vectors if `sep2` is not
+  given (@rundel, #681).
+
+* `ansi_collapse()` is now correct for length-1 vectors with style "head"
+  if width is specified (@rundel, #590).
+
+* New `hash_xxhash()` etc. functions to calculate the xxHash of strings,
+  raw vectors, objects, files.
+
+# cli 3.6.3
+
+* cli now builds on ARM Windows.
+
+* "Solarized Dark" is now the default syntax highlighting theme in
+  terminals.
+
+* The `{.obj_type_friendly}` inline style now only shows the first class
+  name (#669 @olivroy).
+
+* Syntax highlighting now does not fail in RStudio if the rstudioapi
+  package is not installed (#697).
+
 # cli 3.6.2
 
 * `ansi_collapse(x, trunc = 1, style = "head")` now indeed shows one

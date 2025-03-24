@@ -194,7 +194,7 @@ is_iterm_dark <- function() {
             stdout = TRUE,
             stderr = TRUE
           ))
-          nums <- scan(text = gsub(",", "", out), quiet = TRUE)
+          nums <- scan(text = gsub(",", "", out, fixed = TRUE), quiet = TRUE)
           mean(nums) < 20000
         })
   }

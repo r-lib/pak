@@ -8,7 +8,7 @@ clii__xtext <- function(app, text, .list, indent, padding, ln = TRUE, wrap = TRU
   text <- app$inline(text, .list = .list)
   exdent <- style$`text-exdent` %||% 0L
 
-  esc <- function(x) gsub(" ", "\u00a0", x)
+  esc <- function(x) gsub(" ", "\u00a0", x, fixed = TRUE)
 
   bef <- call_if_fun(style$before)
   if (!is.null(bef)) text[1] <- paste0(esc(bef), text[1])

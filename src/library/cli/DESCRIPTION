@@ -1,8 +1,8 @@
 Package: cli
 Title: Helpers for Developing Command Line Interfaces
-Version: 3.6.2
+Version: 3.6.4
 Authors@R: c(
-    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("Gábor", "Csárdi", , "gabor@posit.co", role = c("aut", "cre")),
     person("Hadley", "Wickham", role = "ctb"),
     person("Kirill", "Müller", role = "ctb"),
     person("Salim", "Brüggemann", , "salim-b@pm.me", role = "ctb",
@@ -21,22 +21,22 @@ BugReports: https://github.com/r-lib/cli/issues
 Depends: R (>= 3.4)
 Imports: utils
 Suggests: callr, covr, crayon, digest, glue (>= 1.6.0), grDevices,
-        htmltools, htmlwidgets, knitr, methods, mockery, processx, ps
-        (>= 1.3.4.9000), rlang (>= 1.0.2.9003), rmarkdown, rprojroot,
-        rstudioapi, testthat, tibble, whoami, withr
+        htmltools, htmlwidgets, knitr, methods, processx, ps (>=
+        1.3.4.9000), rlang (>= 1.0.2.9003), rmarkdown, rprojroot,
+        rstudioapi, testthat (>= 3.2.0), tibble, whoami, withr
 Config/Needs/website: r-lib/asciicast, bench, brio, cpp11, decor, desc,
         fansi, prettyunits, sessioninfo, tidyverse/tidytemplate,
         usethis, vctrs
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2023-12-10 22:38:10 UTC; gaborcsardi
+Packaged: 2025-02-11 21:14:07 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Hadley Wickham [ctb],
   Kirill Müller [ctb],
   Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),
   Posit Software, PBC [cph, fnd]
-Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Maintainer: Gábor Csárdi <gabor@posit.co>
 Repository: CRAN
-Date/Publication: 2023-12-11 07:40:13 UTC
+Date/Publication: 2025-02-13 05:20:02 UTC

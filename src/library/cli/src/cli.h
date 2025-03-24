@@ -8,6 +8,10 @@
 #include <Rinternals.h>
 #include <Rversion.h>
 
+#if R_VERSION < R_Version(3, 5, 0)
+#  define STRING_PTR_RO(x) STRING_PTR(x)
+#endif
+
 SEXP clic_diff_chr(SEXP a, SEXP b, SEXP max);
 
 SEXP clic_getppid(void);
@@ -20,6 +24,12 @@ SEXP clic_sha256_file(SEXP paths);
 SEXP clic_sha1(SEXP strs);
 SEXP clic_sha1_raw(SEXP r);
 SEXP clic_sha1_file(SEXP paths);
+SEXP clic_xxhash(SEXP strs);
+SEXP clic_xxhash_raw(SEXP r);
+SEXP clic_xxhash_file(SEXP paths);
+SEXP clic_xxhash64(SEXP strs);
+SEXP clic_xxhash64_raw(SEXP r);
+SEXP clic_xxhash64_file(SEXP paths);
 SEXP clic_tty_size(void);
 SEXP clic_ansi_simplify(SEXP x, SEXP keep_csi);
 SEXP clic_ansi_substr(SEXP x, SEXP start, SEXP stop);

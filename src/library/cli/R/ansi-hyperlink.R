@@ -74,39 +74,99 @@ make_link_file <- function(txt) {
   linked <- grepl("\007|\033\\\\", txt)
   ret[!linked] <- vcapply(which(!linked), function(i) {
     params <- parse_file_link_params(txt[i])
+    link <- construct_file_link(params)
     style_hyperlink(
       txt[i],
-      paste0(abs_path(params$path), params$suffix),
-      params = params$params
+      link$url,
+      params = link$params
     )
   })
   ret
 }
 
 parse_file_link_params <- function(txt) {
-  if (grepl(":[0-9]+:[0-9]+$", txt)) {
-    # path:line:col
-    path <- sub("^(.*):[0-9]+:[0-9]+$", "\\1", txt)
-    num <- strsplit(sub("^.*:([0-9]+:[0-9]+)$", "\\1", txt), ":", fixed = TRUE)[[1]]
-    if (Sys.getenv("R_CLI_HYPERLINK_STYLE") == "iterm") {
-      list(path = path, params = NULL, suffix = paste0("#", num[1], ":", num[2]))
-    } else {
-      list(path = path, params = c(line = num[1], col = num[2]))
-    }
+  pattern <- "^(?<path>.*?)(?::(?<line>\\d*))?(?::(?<column>\\d*))?$"
+  matches <- re_match(txt, pattern)
+  ret <- as.list(matches)
+  ret[!nzchar(ret)] <- list(NULL)
+  if (is.null(ret[["path"]])) ret[["path"]] <- ""
+  ret
+}
 
-  } else if (grepl(":[0-9]+$", txt)) {
-    # path:line
-    path <- sub("^(.*):[0-9]+$", "\\1", txt)
-    num <- sub("^.*:([0-9]+$)", "\\1", txt)
-    if (Sys.getenv("R_CLI_HYPERLINK_STYLE") == "iterm") {
-      list(path = path, params = NULL, suffix = paste0("#", num))
-    } else {
-      list(path = path, params = c(line = num, col = "1"))
-    }
+construct_file_link <- function(params) {
+  fmt <- get_config_chr("hyperlink_file_url_format")
 
-  } else {
-    list(path = txt, params = NULL)
+  if (is.null(fmt)) {
+    return(construct_file_link_OG(params))
   }
+
+  params$path <- sub("^file://", "", params$path)
+  params$path <- path.expand(params$path)
+
+  looks_absolute <- function(path) {
+    grepl("^/", params$path) || (is_windows() && grepl("^[a-zA-Z]:", params$path))
+  }
+  if (!looks_absolute(params$path)) {
+    params$path <- file.path(getwd(), params$path)
+  }
+  if (!grepl("^/", params$path)) {
+    params$path <- paste0("/", params$path)
+  }
+
+  res <- interpolate_parts(fmt, params)
+  list(url = res)
+}
+
+# the order of operations is very intentional and important:
+# column, then line, then path
+# relates to how interpolate_part() works
+interpolate_parts <- function(fmt, params) {
+  res <- interpolate_part(fmt, "column", params$column)
+  res <- interpolate_part(res, "line", params$line)
+  interpolate_part(res, "path", params$path)
+}
+
+# interpolate a part, if possible
+# if no placeholder for part, this is a no-op
+# if placeholder exists, but no value to fill, remove placeholder (and everything after it!)
+interpolate_part <- function(fmt, part = c("column", "line", "path"), value = NULL) {
+  part <- match.arg(part)
+  re <- glue(
+    "^(?<before>.*)(?<part>\\{<<<part>>>\\})(?<after>.*?)$",
+    .open = "<<<", .close = ">>>"
+  )
+  m <- re_match(fmt, re)
+
+  if (is.na(m$part) || !nzchar(m$part)) {
+    return(fmt)
+  }
+
+  if (is.null(value) || !nzchar(value)) {
+    return(sub("}[^}]*$", "}", m$before))
+  }
+
+  paste0(m$before, value, m$after)
+}
+
+# handle the iterm and RStudio cases, which predated the notion of configuring
+# the file hyperlink format
+construct_file_link_OG <- function(params) {
+  params$path <- abs_path(params$path)
+
+  if (Sys.getenv("R_CLI_HYPERLINK_STYLE") == "iterm") {
+    fmt <- "{path}#{line}:{column}"
+    res <- interpolate_parts(fmt, params)
+    return(list(url = res))
+  }
+
+  # RStudio takes line and col via params
+  loc <- if (is.null(params$line)) {
+    NULL
+  } else {
+    list(line = params$line, col = params$column %||% 1)
+  }
+
+  list(url = params$path, params = loc)
 }
 
 abs_path <- function(x) {
@@ -124,24 +184,22 @@ abs_path1 <- function(x) {
 # -- {.fun} ---------------------------------------------------------------
 
 make_link_fun <- function(txt) {
-  tolink <- grepl("::", txt)
+  tolink <- grepl("::", txt, fixed = TRUE)
   linked <- grepl("\007|\033\\\\", txt)
   todo <- tolink & !linked
   if (!any(todo)) return(txt)
 
   sprt <- ansi_hyperlink_types()$help
-  if (sprt) {
-    scheme <- if (identical(attr(sprt, "type"), "rstudio")) {
-      "ide:help"
-    } else {
-      "x-r-help"
-    }
-
-    txt[todo] <- style_hyperlink(
-      text = txt[todo],
-      url = paste0(scheme, ":", txt[todo])
-    )
+  if (!sprt) {
+    return(txt)
   }
+
+  fmt <- get_hyperlink_format("help")
+  # the format has a placeholder for 'topic'
+  topic <- txt[todo]
+  done <- style_hyperlink(text = topic, url = glue(fmt))
+
+  txt[todo] <- done
 
   txt
 }
@@ -151,21 +209,16 @@ make_link_fun <- function(txt) {
 make_link_help <- function(txt) {
   mch <- re_match(txt, "^\\[(?<text>.*)\\]\\((?<url>.*)\\)$")
   text <- ifelse(is.na(mch$text), txt, mch$text)
-  url <- ifelse(is.na(mch$url), txt, mch$url)
+  topic <- ifelse(is.na(mch$url), txt, mch$url)
 
   sprt <- ansi_hyperlink_types()$help
-  if (sprt) {
-    scheme <- if (identical(attr(sprt, "type"), "rstudio")) {
-      "ide:help"
-    } else {
-      "x-r-help"
-    }
-    style_hyperlink(text = text, url = paste0(scheme, ":", url))
-
-  } else {
-    url2 <- vcapply(url, function(url1) format_inline("{.fun ?{url1}}"))
-    ifelse(text == url, url2, paste0(text, " (", url2, ")"))
+  if (!sprt) {
+    topic2 <- vcapply(topic, function(x) format_inline("{.fun ?{x}}"))
+    return(ifelse(text == topic, topic2, paste0(text, " (", topic2, ")")))
   }
+
+  fmt <- get_hyperlink_format("help")
+  style_hyperlink(text = text, url = glue(fmt))
 }
 
 # -- {.href} --------------------------------------------------------------
@@ -193,20 +246,15 @@ make_link_href <- function(txt) {
 make_link_run <- function(txt) {
   mch <- re_match(txt, "^\\[(?<text>.*)\\]\\((?<url>.*)\\)$")
   text <- ifelse(is.na(mch$text), txt, mch$text)
-  url <- ifelse(is.na(mch$url), txt, mch$url)
+  code <- ifelse(is.na(mch$url), txt, mch$url)
 
   sprt <- ansi_hyperlink_types()$run
-  if (sprt) {
-    scheme <- if (identical(attr(sprt, "type"), "rstudio")) {
-      "ide:run"
-    } else {
-      "x-r-run"
-    }
-    style_hyperlink(text = text, url = paste0(scheme, ":", url))
-
-  } else {
-    vcapply(text, function(url1) format_inline("{.code {url1}}"))
+  if (!sprt) {
+    return(vcapply(text, function(code1) format_inline("{.code {code1}}")))
   }
+
+  fmt <- get_hyperlink_format("run")
+  style_hyperlink(text = text, url = glue(fmt))
 }
 
 # -- {.topic} -------------------------------------------------------------
@@ -214,21 +262,16 @@ make_link_run <- function(txt) {
 make_link_topic <- function(txt) {
   mch <- re_match(txt, "^\\[(?<text>.*)\\]\\((?<url>.*)\\)$")
   text <- ifelse(is.na(mch$text), txt, mch$text)
-  url <- ifelse(is.na(mch$url), txt, mch$url)
+  topic <- ifelse(is.na(mch$url), txt, mch$url)
 
   sprt <- ansi_hyperlink_types()$help
-  if (sprt) {
-    scheme <- if (identical(attr(sprt, "type"), "rstudio")) {
-      "ide:help"
-    } else {
-      "x-r-help"
-    }
-    style_hyperlink(text = text, url = paste0(scheme, ":", url))
-
-  } else {
-    url2 <- vcapply(url, function(url1) format_inline("{.code ?{url1}}"))
-    ifelse(text == url, url2, paste0(text, " (", url2, ")"))
+  if (!sprt) {
+    topic2 <- vcapply(topic, function(x) format_inline("{.code ?{x}}"))
+    return(ifelse(text == topic, topic2, paste0(text, " (", topic2, ")")))
   }
+
+  fmt <- get_hyperlink_format("help")
+  style_hyperlink(text = text, url = glue(fmt))
 }
 
 # -- {.url} ---------------------------------------------------------------
@@ -245,21 +288,16 @@ make_link_url <- function(txt) {
 make_link_vignette <- function(txt) {
   mch <- re_match(txt, "^\\[(?<text>.*)\\]\\((?<url>.*)\\)$")
   text <- ifelse(is.na(mch$text), txt, mch$text)
-  url <- ifelse(is.na(mch$url), txt, mch$url)
+  vignette <- ifelse(is.na(mch$url), txt, mch$url)
 
   sprt <- ansi_hyperlink_types()$vignette
-  if (sprt) {
-    scheme <- if (identical(attr(sprt, "type"), "rstudio")) {
-      "ide:vignette"
-    } else {
-      "x-r-vignette"
-    }
-    style_hyperlink(text = text, url = paste0(scheme, ":", url))
-
-  } else {
-    url2 <- vcapply(url, function(url1) format_inline("{.code vignette({url1})}"))
-    ifelse(text == url, url2, paste0(text, " (", url2, ")"))
+  if (!sprt) {
+    vignette2 <- vcapply(vignette, function(x) format_inline("{.code vignette({x})}"))
+    return(ifelse(text == vignette, vignette2, paste0(text, " (", vignette2, ")")))
   }
+
+  fmt <- get_hyperlink_format("vignette")
+  style_hyperlink(text = text, url = glue(fmt))
 }
 
 #' Terminal Hyperlinks
@@ -409,7 +447,7 @@ ansi_hyperlink_types <- function() {
       vignette = FALSE
     )
 
-  } else if (rs$hyperlink) {
+  } else if (isTRUE(rs$hyperlink)) {
     list(
       href = TRUE,
       run = structure(run, type = "rstudio"),
@@ -425,4 +463,44 @@ ansi_hyperlink_types <- function() {
       vignette = structure(vgn, type = "standard")
     )
   }
+}
+
+get_hyperlink_format <- function(type = c("run", "help", "vignette")) {
+  type <- match.arg(type)
+
+  key <- glue("hyperlink_{type}_url_format")
+  sprt <- ansi_hyperlink_types()[[type]]
+
+  custom_fmt <- get_config_chr(key)
+  if (is.null(custom_fmt)) {
+    if (identical(attr(sprt, "type"), "rstudio")) {
+      fmt_type <- "rstudio"
+    } else {
+      fmt_type <- "standard"
+    }
+  } else {
+    fmt_type <- "custom"
+  }
+
+  variable <- c(run = "code", help = "topic", vignette = "vignette")
+  fmt <- switch(
+    fmt_type,
+    custom = custom_fmt,
+    rstudio = glue("ide:{type}:{{{variable[type]}}}"),
+    standard = glue("x-r-{type}:{{{variable[type]}}}")
+  )
+  fmt
+}
+
+get_config_chr <- function(x, default = NULL) {
+  opt <- getOption(paste0("cli.", tolower(x)))
+  if (!is.null(opt)) {
+    stopifnot(is_string(opt))
+    return(opt)
+  }
+
+  env <- Sys.getenv(paste0("R_CLI_", toupper(x)), NA_character_)
+  if (!is.na(env)) return(env)
+
+  default
 }

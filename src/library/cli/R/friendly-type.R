@@ -23,7 +23,7 @@ friendly_type <- function(x, value = TRUE, length = FALSE) {
       } else {
         "a"
       }
-      return(paste0(prop, " {.cls {class(x)}} object"))
+      return(paste0(prop, " {.cls {class(x)[1]}} object"))
     }
   }
 

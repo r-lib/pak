@@ -325,6 +325,11 @@ cli_progress_bar <- function(name = NULL,
     stop("Need to specify format if `type == \"custom\"")
   }
 
+  ## If `total` is infinite, use behavior seen when `total` is NA
+  if (is.infinite(total)) {
+    total <- NA
+  }
+
   ## If changes, synchronize with C API in progress.c
   bar <- new.env(parent = emptyenv())
   bar$id <- id

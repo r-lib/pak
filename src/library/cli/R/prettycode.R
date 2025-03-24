@@ -240,12 +240,14 @@ code_theme_default <- function() {
   if (rs$type %in% c("rstudio_console", "rstudio_console_starting")) {
     opt <- code_theme_opt("cli.code_theme_rstudio")
     if (!is.null(opt)) return(opt)
-    code_theme_default_rstudio()
-  } else {
-    opt <- code_theme_opt("cli.code_theme_terminal")
-    if (!is.null(opt)) return(opt)
-    code_theme_default_term()
+    if (requireNamespace("rstudioapi", quietly = TRUE)) {
+      return(code_theme_default_rstudio())
+    }
   }
+
+  opt <- code_theme_opt("cli.code_theme_terminal")
+  if (!is.null(opt)) return(opt)
+  code_theme_default_term()
 }
 
 code_theme_opt <- function(option) {
@@ -259,7 +261,7 @@ code_theme_make <- function(theme) {
   if (is.list(theme)) return(theme)
   if (is_string(theme)) {
     if (theme %in% names(rstudio_themes)) return(rstudio_themes[[theme]])
-    lcs <- gsub(" ", "_", tolower(names(rstudio_themes)))
+    lcs <- gsub(" ", "_", tolower(names(rstudio_themes)), fixed = TRUE)
     if (theme %in% lcs) return(rstudio_themes[[ match(theme, lcs)[1] ]])
     warning("Unknown cli code theme: `", theme, "`.")
     return(NULL)
@@ -284,16 +286,7 @@ code_theme_default_rstudio <- function() {
 }
 
 code_theme_default_term <- function() {
-  list(
-    reserved = "red",
-    number   = "blue",
-    null     = c("blue", "bold"),
-    operator = "green",
-    call     = "cyan",
-    string   = "yellow",
-    comment  = c("#a9a9a9", "italic"),
-    bracket  = list("yellow", "blue", "cyan")
-  )
+  "Solarized Dark"
 }
 
 #' Syntax highlighting themes
@@ -419,13 +412,13 @@ find_function_symbol <- function(name, envir = .GlobalEnv) {
   while (!identical(envir, empty)) {
     if (exists(name, envir = envir, inherits = FALSE, mode = "function")) {
       env_name <- environmentName(envir)
-      if (grepl("package:", env_name)) {
+      if (grepl("package:", env_name, fixed = TRUE)) {
         env_name <- sub("^package:", "", env_name)
       }
-      if (grepl("imports:", env_name)) {
+      if (grepl("imports:", env_name, fixed = TRUE)) {
         env_name <- environmentName(environment(get(name, envir)))
       }
-      if (grepl("package:", env_name)) {
+      if (grepl("package:", env_name, fixed = TRUE)) {
         env_name <- sub("^package:", "", env_name)
       }
       if (env_name %in% c("", "R_GlobalEnv")) {

@@ -301,7 +301,7 @@ hash_emoji1 <- function(x, size = 3) {
 
 hash_emoji1_transform <- function(md5, size) {
   md513 <- substr(md5, 1, 13)
-  mdint <- as.integer(as.hexmode(strsplit(md513, "")[[1]]))
+  mdint <- as.integer(as.hexmode(strsplit(md513, "", fixed = TRUE)[[1]]))
   hash <- sum(mdint * 16^(0:12))
 
   base <- nrow(emojis)
@@ -444,7 +444,7 @@ hash_animal1 <- function(x, n_adj = 2) {
 
 hash_animal1_transform <- function(md5, n_adj) {
   md513 <- substr(md5, 1, 13)
-  mdint <- as.integer(as.hexmode(strsplit(md513, "")[[1]]))
+  mdint <- as.integer(as.hexmode(strsplit(md513, "", fixed = TRUE)[[1]]))
   hash <- sum(mdint * 16^(0:12))
 
   len_ani <- length(gfycat_animals)
@@ -497,4 +497,115 @@ hash_raw_animal <- function(x, n_adj = 2) {
 hash_obj_animal <- function(x, n_adj = 2, serialize_version = 2) {
   sr <- serialize(x, NULL, version = serialize_version)[-(1:14)]
   hash_raw_animal(sr, n_adj = n_adj)
+}
+
+#' xxHash
+#'
+#' Extremely fast hash algorithm.
+#'
+#' @param x Character vector. If not a character vector, then
+#' [as.character()] is used to try to coerce it into one. `NA` entries
+#' will have an `NA` hash.
+#' @return `hash_xxhash()` returns a character vector of hexadecimal
+#' xxHash hashes.
+#'
+#' @family hash functions
+#'
+#' @export
+#' @examples
+#' hash_xxhash(c("foo", NA, "bar", ""))
+
+hash_xxhash <- function(x) {
+  if (!is.character(x)) x <- as.character(x)
+  na <- is.na(x)
+  x[na] <- NA_character_
+  x[!na] <- .Call(clic_xxhash, x[!na])
+  x
+}
+
+#' @export
+#' @rdname hash_xxhash
+#' @details `hash_raw_xxhash()` calculates the xxHash hash of the bytes
+#' of a raw vector.
+#' @return `hash_raw_xxhash()` returns a character scalar.
+
+hash_raw_xxhash <- function(x) {
+  stopifnot(is.raw(x))
+  .Call(clic_xxhash_raw, x)
+}
+
+#' @export
+#' @rdname hash_xxhash
+#' @param serialize_version Workspace format version to use, see
+#' [base::serialize()].
+#' @details `hash_obj_xxhash()` calculates the xxHash hash of an R
+#' object. The object is serialized into a binary vector first.
+#' @return `hash_obj_xxhash()` returns a character scalar.
+
+hash_obj_xxhash <- function(x, serialize_version = 2) {
+  sr <- serialize(x, NULL, version = serialize_version)[-(1:14)]
+  hash_raw_xxhash(sr)
+}
+
+#' @export
+#' @rdname hash_xxhash
+#' @param paths Character vector of file names.
+#' @details `hash_file_xxhash()` calculates the xxHash hash of one or
+#' more files.
+#'
+#' @return `hash_file_xxhash()` returns a character vector of xxHash
+#' hashes.
+
+hash_file_xxhash <- function(paths) {
+  if (!is.character(paths)) paths <- as.character(paths)
+  paths <- normalizePath(paths, mustWork = FALSE)
+  if (is_windows()) {
+    paths <- enc2utf8(paths)
+  } else {
+    paths <- enc2native(paths)
+  }
+  .Call(clic_xxhash_file, paths)
+}
+
+#' @export
+#' @rdname hash_xxhash
+#' @details The `64` functions caculate the 64 bit variant
+#' of xxHash. Otherwise they work the same.
+
+hash_xxhash64 <- function(x) {
+  if (!is.character(x)) x <- as.character(x)
+  na <- is.na(x)
+  x[na] <- NA_character_
+  x[!na] <- .Call(clic_xxhash64, x[!na])
+  x
+}
+
+#' @export
+#' @rdname hash_xxhash
+
+hash_raw_xxhash64 <- function(x) {
+  stopifnot(is.raw(x))
+  .Call(clic_xxhash64_raw, x)
+}
+
+#' @export
+#' @rdname hash_xxhash
+
+hash_obj_xxhash64 <- function(x, serialize_version = 2) {
+  sr <- serialize(x, NULL, version = serialize_version)[-(1:14)]
+  hash_raw_xxhash64(sr)
+}
+
+#' @export
+#' @rdname hash_xxhash
+
+hash_file_xxhash64 <- function(paths) {
+  if (!is.character(paths)) paths <- as.character(paths)
+  paths <- normalizePath(paths, mustWork = FALSE)
+  if (is_windows()) {
+    paths <- enc2utf8(paths)
+  } else {
+    paths <- enc2native(paths)
+  }
+  .Call(clic_xxhash64_file, paths)
 }

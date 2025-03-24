@@ -63,8 +63,8 @@ static int _diff(const void *a, int aoff, int n,
                  int *buf, int bufsize);
 
 struct _chr_data {
-  SEXP* aptr;
-  SEXP* bptr;
+  const SEXP* aptr;
+  const SEXP* bptr;
 };
 
 static int _cmp_chr(int a, int b, void *context) {
@@ -85,8 +85,8 @@ SEXP clic_diff_chr(SEXP old, SEXP new, SEXP max) {
   int sn;
 
   struct _chr_data data;
-  data.aptr = STRING_PTR(old);
-  data.bptr = STRING_PTR(new);
+  data.aptr = STRING_PTR_RO(old);
+  data.bptr = STRING_PTR_RO(new);
 
   int out = _diff(old, 0, l_old, new, 0, l_new, _cmp_chr, &data,
                   dmax, ses, &sn, buf, bufsize);

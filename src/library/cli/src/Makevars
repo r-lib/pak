@@ -1,1 +1,2 @@
 PKG_CFLAGS = $(C_VISIBILITY) -I../inst/include
+PKG_LIBS = -lpthread

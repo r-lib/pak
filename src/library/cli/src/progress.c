@@ -68,11 +68,15 @@ static int cli_clock_gettime(int clk_id, struct timespec *t) {
 
 static R_INLINE SEXP new_env(void) {
   SEXP env;
+#if R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(R_EmptyEnv, 1, 29));
+#else
   PROTECT(env = allocSExp(ENVSXP));
   SET_FRAME(env, R_NilValue);
   SET_ENCLOS(env, R_EmptyEnv);
   SET_HASHTAB(env, R_NilValue);
   SET_ATTRIB(env, R_NilValue);
+#endif
   UNPROTECT(1);
   return env;
 }
@@ -93,7 +97,7 @@ SEXP clic_get_time(void) {
 }
 
 SEXP clic__find_var(SEXP rho, SEXP symbol) {
-  SEXP ret = Rf_findVarInFrame3(rho, symbol, TRUE);
+  SEXP ret = Rf_findVarInFrame(rho, symbol);
   if (ret == R_UnboundValue) {
     error("Cannot find variable `%s`.", CHAR(PRINTNAME(symbol)));
 

@@ -32,8 +32,13 @@ rstudio <- local({
       args = commandArgs(),
       search = search()
     )
-    d$ver <- if (d$api) asNamespace("rstudioapi")$getVersion()
-    d$desktop <- if (d$api) asNamespace("rstudioapi")$versionInfo()$mode
+
+    if (d$api) {
+      ns <- asNamespace("rstudioapi")
+      d$ver <- if (d$api) ns$getVersion()
+      new_api <- package_version(getNamespaceVersion(ns)) >= "0.17.0"
+      d$desktop <- if (new_api) ns$getMode() else ns$versionInfo()$mode
+    }
 
     d
   }
@@ -164,7 +169,7 @@ rstudio <- local({
       "rstudio_build_pane"
 
     } else if (new$envs[["RSTUDIOAPI_IPC_REQUESTS_FILE"]] != "" &&
-               grepl("rstudio", new$envs[["XPC_SERVICE_NAME"]])) {
+               grepl("rstudio", new$envs[["XPC_SERVICE_NAME"]], fixed = TRUE)) {
       # RStudio job, XPC_SERVICE_NAME=0 in the subprocess of a job
       # process. Hopefully this is reliable.
       "rstudio_job"
