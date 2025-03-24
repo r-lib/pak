@@ -30,5 +30,5 @@ repository password in the system credential store.
 errors if it cannot find the credentials for \code{url}.
 
 \code{repo_auth_key_set()} adds or updates a password in the system
-crednetial store.
+credential store.
 }

@@ -9,7 +9,7 @@ if you want the release candidate or development version.
 \subsection{Pre-built binaries}{
 
 Our pre-built binaries have the advantage that they are completely
-self-containted and dependency free.
+self-contained and dependency free.
 No additional R packages, system libraries or tools (e.g. compilers) are
 needed for them.
 Install a pre-built binary build of pak from our repository on GitHub:

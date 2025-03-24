@@ -414,7 +414,7 @@ sq[[1]]$packages
 
 </div>
 
-You can also use it to query system requirements for other platfosm:
+You can also use it to query system requirements for other platforms:
 
 ``` r
 sqrhel9 <- pak::sysreqs_db_match("Needs libcurl and also Java.", "redhat-9")

@@ -22,7 +22,7 @@ repo$url()
 
 (This needs the webfakes and callr packages.)
 
-Next, we onfigure the proxy as the main CRAN repository. The default username
+Next, we configure the proxy as the main CRAN repository. The default username
 of the proxy is \code{"username"} and the default password is \code{"token"}. We want to
 replace the default CRAN repository with the proxy, so we name it \code{CRAN}:
 
@@ -121,7 +121,7 @@ To store a repository password in the system credential store use the
 \code{repo_auth_key_set()} function. If you want to use a non-default keyring
 backend, set the \code{keyring_backend} option. In this manual we will use
 the backend that stores secrets in environment variables. This is an
-ephemetal store that is destroyed when the R process terminates.
+ephemeral store that is destroyed when the R process terminates.
 
 To continue our example from above:
 
@@ -252,7 +252,7 @@ Once you set up your authenticated repositories, and stored the required
 passwords in the system credential store, you can use them like any
 other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
-for failed ones. Function calls that do not perform any HTTP reqquests,
+for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_update()
