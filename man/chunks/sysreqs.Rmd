@@ -241,7 +241,7 @@ For packages sources that require pak to obtain a package `DESCRIPTION` file
 from the `DESCRIPTION` file.
 
 Once having the `SystemRequirements` fields, pak matches them to the database,
-to obtain the cacnonized list of system requirements.
+to obtain the canonized list of system requirements.
 
 Then pak queries the local platform, to see the exact system packages
 needed.
