@@ -339,11 +339,17 @@ get_worker_id <- (function() {
 
 get_rtools_path <- function() {
   if (!is.null(pkgd_data$rtools_path)) return(pkgd_data$rtools_path)
-  pkgd_data$rtools_path <- pkgbuild::without_cache({
-    if (suppressMessages(pkgbuild::has_rtools())) {
-      gsub("/", "\\", pkgbuild::rtools_path(), fixed = TRUE)
-    }
-  })
+  # no need to mess with Rtools on R >= 4.3.0, R puts Rtools on the PATH
+  # the error message for missing Rtools will be worse, though :(
+  if (getRversion() >= "4.3.0") {
+    pkgd_data$rtools_path <- character()
+  } else {
+    pkgd_data$rtools_path <- pkgbuild::without_cache({
+      if (suppressMessages(pkgbuild::has_rtools())) {
+        gsub("/", "\\", pkgbuild::rtools_path(), fixed = TRUE)
+      }
+    })
+  }
   pkgd_data$rtools_path
 }
 

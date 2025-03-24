@@ -167,6 +167,7 @@ get_remote_types <- function(refs) {
   types[types == "" & grepl(github_url_rx(), refs, perl = TRUE)] <- "github"
   types[types == "" & grepl(local_rx(), refs, perl = TRUE)] <- "local"
   types[types == "" & grepl(param_rx(), refs, perl = TRUE)] <- "param"
+  types[is.na(types)] <- ""
 
   if (any(bad <- types == "")) {
     throw(pkg_error(

@@ -81,7 +81,7 @@
         {
           "os": "linux",
           "distribution": "alpine",
-          "versions": [ "edge" ]
+          "versions": [ "3.21", "edge" ]
         }
       ]
     },

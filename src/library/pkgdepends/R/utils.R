@@ -515,7 +515,7 @@ omit_pre_post <- function(x, pre = 0, post = 0) {
   substr(x, 1L + pre, nchar(x) - post)
 }
 
-thruthy_strings <- c("true", "t", "1", "on", "yes", "on")
+truthy_strings <- c("true", "t", "1", "on", "yes")
 
 is_truthy <- function(x) {
   (is.logical(x) && length(x) >= 1 && !is.na(x[[1]]) && x[[1]]) ||

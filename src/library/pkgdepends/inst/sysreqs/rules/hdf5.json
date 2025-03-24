@@ -41,9 +41,9 @@
     {
       "packages": ["hdf5-devel"],
       "pre_install": [
-        {
-          "command": "dnf install -y epel-release"
-        }
+        { "command": "dnf install -y dnf-plugins-core" },
+        { "command": "dnf config-manager --set-enabled powertools" },
+        { "command": "dnf install -y epel-release" }
       ],
       "constraints": [
         {
@@ -53,7 +53,21 @@
         },
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["8"]
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        { "command": "dnf install -y epel-release" }
+      ],
+      "packages": ["hdf5-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["9"]
         }
       ]
     },
@@ -90,9 +104,8 @@
     {
       "packages": ["hdf5-devel"],
       "pre_install": [
-        {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
-        }
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" },
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm" }
       ],
       "constraints": [
         {
