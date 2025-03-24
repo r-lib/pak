@@ -478,3 +478,13 @@ SEXP ps__mount_point(SEXP paths) {
   UNPROTECT(1);
   return res;
 }
+
+SEXP psll_memory_maxrss(SEXP p) {
+  struct rusage rusage;
+  getrusage(RUSAGE_SELF, &rusage);
+#if defined(__APPLE__)
+  return Rf_ScalarReal(rusage.ru_maxrss);
+#else
+  return Rf_ScalarReal(rusage.ru_maxrss * 1024.0);
+#endif
+}

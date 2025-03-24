@@ -1029,6 +1029,12 @@ SEXP psll_memory_uss(SEXP p) {
   return Rf_ScalarInteger(wsCounters.NumberOfPrivatePages * sysinfo.dwPageSize);
 }
 
+SEXP psll_memory_maxrss(SEXP p) {
+  PROCESS_MEMORY_COUNTERS info;
+  GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+  return Rf_ScalarReal(info.PeakWorkingSetSize);
+}
+
 SEXP ps__users() {
   HANDLE hServer = WTS_CURRENT_SERVER_HANDLE;
   WCHAR *buffer_user = NULL;

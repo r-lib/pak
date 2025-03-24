@@ -1,6 +1,6 @@
 Package: ps
 Title: List, Query, Manipulate System Processes
-Version: 1.8.1
+Version: 1.9.0
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
@@ -23,7 +23,7 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2024-10-28 21:43:41 UTC; gaborcsardi
+Packaged: 2025-02-18 15:40:48 UTC; gaborcsardi
 Author: Jay Loden [aut],
   Dave Daeschler [aut],
   Giampaolo Rodola' [aut],
@@ -31,4 +31,4 @@ Author: Jay Loden [aut],
   Posit Software, PBC [cph, fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-10-28 22:10:02 UTC
+Date/Publication: 2025-02-18 23:10:02 UTC

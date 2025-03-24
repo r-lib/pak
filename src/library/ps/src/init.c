@@ -60,6 +60,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_cpu_times",    (DL_FUNC) psll_cpu_times,    1 },
   { "psll_memory_info",  (DL_FUNC) psll_memory_info , 1 },
   { "psll_memory_uss",   (DL_FUNC) psll_memory_uss,   1 },
+  { "psll_memory_maxrss",(DL_FUNC) psll_memory_maxrss,1 },
   { "psll_send_signal",  (DL_FUNC) psll_send_signal , 2 },
   { "psll_suspend",      (DL_FUNC) psll_suspend,      1 },
   { "psll_resume",       (DL_FUNC) psll_resume,       1 },

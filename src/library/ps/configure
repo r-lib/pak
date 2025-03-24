@@ -97,7 +97,7 @@ if [ -n "$WINDOWS" ]; then
     OBJECTS="${OBJECTS} arch/windows/wmi.o"
 
     LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"
-    LIBRARIES="${LIBRARIES} ws2_32 PowrProf Pdh"
+    LIBRARIES="${LIBRARIES} ws2_32 PowrProf Pdh pthread"
 
     TARGETS=interrupt
 

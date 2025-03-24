@@ -574,6 +574,8 @@ ps_cpu_times <- function(p = ps_handle()) {
 #' might not have access to some processes that `ps_memory_info()` can
 #' query:
 #'
+#' * `maxrss` maximum resident set size over the process's lifetime. This
+#'   only works for the calling process, otherwise it is `NA_real_`.
 #' * `uss`: Unique Set Size, this is the memory which is unique to a
 #'   process and which would be freed if the process was terminated right
 #'   now.
@@ -608,6 +610,13 @@ ps_memory_info <- function(p = ps_handle()) {
 
 ps_memory_full_info <- function(p = ps_handle()) {
   assert_ps_handle(p)
+  info <- ps_memory_info(p)
+  info[["maxrss"]] <- if (Sys.getpid() == ps_pid(p)) {
+    .Call(psll_memory_maxrss, p)
+  } else {
+    NA_real_
+  }
+
   type <- ps_os_type()
   if (type[["LINUX"]]) {
     match <- function(re) {
@@ -620,23 +629,18 @@ ps_memory_full_info <- function(p = ps_handle()) {
       sum(as.integer(st), na.rm = TRUE) * 1024
     }
 
-    info <- ps_memory_info(p)
     smaps <- .Call(ps__memory_maps, p)
     info[["uss"]] <- match("\nPrivate.*:\\s+(\\d+)")
     info[["pss"]] <- match("\nPss:\\s+(\\d+)")
     info[["swap"]] <- match("\nSwap:\\s+(\\d+)")
-    info
 
   } else if (type[["MACOS"]]) {
-    info <- ps_memory_info(p)
     info[["uss"]] <- .Call(psll_memory_uss, p)
-    info
 
-  } else if (type[["WINDOWS"]]) {
-    info <- ps_memory_info(p)
+    } else if (type[["WINDOWS"]]) {
     info[["uss"]] <- .Call(psll_memory_uss, p)
-    info
   }
+  info
 }
 
 process_signal_result <- function(p, res, err_msg) {
