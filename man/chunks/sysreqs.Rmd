@@ -314,7 +314,7 @@ macOS is similar to Windows, in that most repositories will serve
 statically linked macOS binary packages that do not need system software.
 
 If you do need to compile packages from source, then you possibly need
-to install some sytem libraries, either via Homebrew, or by downloading
+to install some system libraries, either via Homebrew, or by downloading
 CRAN's static library builds from https://mac.r-project.org/bin/
 
 We are planning on adding better macOS system software support to pak in
