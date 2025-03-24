@@ -14,7 +14,7 @@ repo$url()
 #&amp;gt; [1] &quot;http://127.0.0.1:59571/&quot;
 
 (This needs the webfakes and callr packages.)
-Next, we onfigure the proxy as the main CRAN repository. The default username
+Next, we configure the proxy as the main CRAN repository. The default username
 of the proxy is &quot;username&quot; and the default password is &quot;token&quot;. We want to
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
@@ -112,7 +112,7 @@ To store a repository password in the system credential store use the
 repo_auth_key_set() function. If you want to use a non-default keyring
 backend, set the keyring_backend option. In this manual we will use
 the backend that stores secrets in environment variables. This is an
-ephemetal store that is destroyed when the R process terminates.
+ephemeral store that is destroyed when the R process terminates.
 To continue our example from above:
 options(keyring_backend = &quot;env&quot;)
 repo_auth_key_set(repo$url(), username = &quot;username&quot;, password = &quot;token&quot;)
@@ -233,7 +233,7 @@ Once you set up your authenticated repositories, and stored the required
 passwords in the system credential store, you can use them like any
 other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
-for failed ones. Function calls that do not perform any HTTP reqquests,
+for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.
 meta_update()
 #&amp;gt; Checking for 15 new metadata files
@@ -301,7 +301,7 @@ repo$url()
 #&amp;gt; [1] &quot;http://127.0.0.1:59571/&quot;
 
 (This needs the webfakes and callr packages.)
-Next, we onfigure the proxy as the main CRAN repository. The default username
+Next, we configure the proxy as the main CRAN repository. The default username
 of the proxy is &quot;username&quot; and the default password is &quot;token&quot;. We want to
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
@@ -399,7 +399,7 @@ To store a repository password in the system credential store use the
 repo_auth_key_set() function. If you want to use a non-default keyring
 backend, set the keyring_backend option. In this manual we will use
 the backend that stores secrets in environment variables. This is an
-ephemetal store that is destroyed when the R process terminates.
+ephemeral store that is destroyed when the R process terminates.
 To continue our example from above:
 options(keyring_backend = &quot;env&quot;)
 repo_auth_key_set(repo$url(), username = &quot;username&quot;, password = &quot;token&quot;)
@@ -520,7 +520,7 @@ Once you set up your authenticated repositories, and stored the required
 passwords in the system credential store, you can use them like any
 other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
-for failed ones. Function calls that do not perform any HTTP reqquests,
+for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.
 meta_update()
 #&amp;gt; Checking for 15 new metadata files
@@ -624,7 +624,7 @@ proxy to CRAN. This is how to run the proxy in a subprocess:</p>
 <span><span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "http://127.0.0.1:59571/"</span></span></code></pre><p></p></div>
 <p>(This needs the webfakes and callr packages.)</p>
-<p>Next, we onfigure the proxy as the main CRAN repository. The default username
+<p>Next, we configure the proxy as the main CRAN repository. The default username
 of the proxy is <code>"username"</code> and the default password is <code>"token"</code>. We want to
 replace the default CRAN repository with the proxy, so we name it <code>CRAN</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>CRAN <span class="op">=</span> <span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span>, username <span class="op">=</span> <span class="st">"username"</span><span class="op">)</span></span>
@@ -716,7 +716,7 @@ need to install it separately.</p>
 <code><a href="repo_auth_key_get.html">repo_auth_key_set()</a></code> function. If you want to use a non-default keyring
 backend, set the <code>keyring_backend</code> option. In this manual we will use
 the backend that stores secrets in environment variables. This is an
-ephemetal store that is destroyed when the R process terminates.</p>
+ephemeral store that is destroyed when the R process terminates.</p>
 <p>To continue our example from above:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>keyring_backend <span class="op">=</span> <span class="st">"env"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/repo_auth_key_get.html">repo_auth_key_set</a></span><span class="op">(</span><span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span>, username <span class="op">=</span> <span class="st">"username"</span>, password <span class="op">=</span> <span class="st">"token"</span><span class="op">)</span></span></code></pre><p></p></div>
@@ -826,7 +826,7 @@ credentials are not in the credential store.</p></li>
 passwords in the system credential store, you can use them like any
 other repository. Operations that need authentication will always include
 reassuring messages for successful authentications, and warning messages
-for failed ones. Function calls that do not perform any HTTP reqquests,
+for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.</p>
 <p></p><div class="sourceCode r"><pre><code>meta_update()
 #&gt; Checking for 15 new metadata files
