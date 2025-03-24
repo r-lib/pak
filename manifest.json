@@ -462,6 +462,15 @@
           "buildtime": "2025-03-24T05:43:37+00:00",
           "size": 6280108,
           "digest": "sha256:027aee934d09bb0f086151dc1c2bcb4a22dd2a26ea9c422b6a9f2079d9a08f01"
+        },
+        {
+          "r.platform": "x86_64-w64-mingw32",
+          "r.version": "4.6",
+          "pak.version": "0.8.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2025-03-24T12:59:39+00:00",
+          "size": 9819306,
+          "digest": "sha256:4e4540a561dc00d1daece86bef1b7f1c270ca76c9216281f6d3fd9db4e420542"
         }
       ]
     },
