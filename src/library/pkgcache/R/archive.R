@@ -372,7 +372,10 @@ cac__update_replica <- function(self, private) {
   # download_if_newer(). If the response is 304, then we'll ignore the file.
   file.create(tmp)
 
-  download_if_newer(url, tmp, etag_file, error_on_status = FALSE)$
+  key <- random_key()
+  async_constant()$
+    then(function() start_auth_cache(key))$
+    then(function() download_if_newer(url, tmp, etag_file, error_on_status = FALSE))$
     then(function(dl) {
       if (dl$response$status_code >= 300 && dl$response$status_code != 304) {
         stop("Failed to update package archive metadata")
@@ -385,7 +388,10 @@ cac__update_replica <- function(self, private) {
       }
       dl
     })$
-    finally(function() unlink(tmp))
+    finally(function() {
+      unlink(tmp)
+      clear_auth_cache(key)
+    })
 }
 
 cac__convert_archive_file <- function(self, private, raw, out) {

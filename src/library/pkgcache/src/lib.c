@@ -361,7 +361,7 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   while (*p != '\0') {
     switch (state) {
 
-    /* -- at the begining of a package --------------------------------- */
+    /* -- at the beginning of a package -------------------------------- */
     case S_BG:
       if (*p == '\r') {
         p++;
@@ -479,6 +479,9 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   p = (char*) RAW(raw);
   p[len - 1] = tail;
   if (state == S_VL && tail != '\n') vlsize++;
+  /* if the tail is a \n, we don't need that. We also drop \r, which
+     is possibly not correct, but in practice better */
+  if (state == S_NL && (tail == '\n' || tail == '\r')) vlsize--;
 
   if (state == S_KW) {
     R_THROW_ERROR("PACKAGES file ended while parsing a key");

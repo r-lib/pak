@@ -1,5 +1,13 @@
 # pkgcache (development version)
 
+* `parse_packages()` now parses files ending with an extra newline
+  correctly (#122).
+
+* pkgcache now supports authenticated repositories, see `repo_auth()`
+  for details.
+
+# pkgcache 2.2.3
+
 * The metadata cache now does not use source URLs for packages in `Archive`
   on Posit Package Manager repositories. This URLs may serve a different
   package, even a source package when the main URL for the same package
