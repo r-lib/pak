@@ -1,3 +1,13 @@
+1.9.1
+  - Fix a unit test in R 4.5 due to the new 'penguins_raw' dataset
+
+1.9.0
+  - Remove legacy modp_stdint.h which breaks in C23 on Windows (R-4.5)
+
+1.8.9
+  - Fix memory leak in base64 decoder
+  - Update maintainer email address
+
 1.8.8
   - Apply libyajl patches for CVE-2022-24795, CVE-2022-24795, CVE-2023-33460
   - Fix printf warnings for cran

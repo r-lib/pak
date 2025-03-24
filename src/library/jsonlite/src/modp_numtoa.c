@@ -5,8 +5,9 @@
 
 #include <stdio.h>
 #include <math.h>
-
-#include "modp_stdint.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 /*
  * other interesting references on num to string convesion

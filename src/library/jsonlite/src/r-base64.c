@@ -13,6 +13,7 @@ SEXP R_base64_encode(SEXP buf){
     Rf_error("Error in base64 encode");
   SEXP res = PROTECT(allocVector(STRSXP, 1));
   SET_STRING_ELT(res, 0, mkCharLen((char*) out, outlen));
+  free(out);
   UNPROTECT(1);
   return res;
 }

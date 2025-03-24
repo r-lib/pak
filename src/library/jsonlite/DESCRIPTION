@@ -1,17 +1,17 @@
 Package: jsonlite
-Version: 1.8.8
+Version: 1.9.1
 Title: A Simple and Robust JSON Parser and Generator for R
 License: MIT + file LICENSE
 Depends: methods
 Authors@R: c(
-    person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
+    person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroenooms@gmail.com",
       comment = c(ORCID = "0000-0002-4035-0289")),
     person("Duncan", "Temple Lang", role = "ctb"),
     person("Lloyd", "Hilaiel", role = "cph", comment="author of bundled libyajl"))
 URL: https://jeroen.r-universe.dev/jsonlite
         https://arxiv.org/abs/1403.2805
 BugReports: https://github.com/jeroen/jsonlite/issues
-Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
+Maintainer: Jeroen Ooms <jeroenooms@gmail.com>
 VignetteBuilder: knitr, R.rsp
 Description: A reasonably fast JSON parser and generator, optimized for statistical 
     data and the web. Offers simple, flexible tools for working with JSON in R, and
@@ -25,9 +25,9 @@ Suggests: httr, vctrs, testthat, knitr, rmarkdown, R.rsp, sf
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2023-12-04 12:57:12 UTC; jeroen
+Packaged: 2025-03-03 14:17:56 UTC; jeroen
 Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),
   Duncan Temple Lang [ctb],
   Lloyd Hilaiel [cph] (author of bundled libyajl)
 Repository: CRAN
-Date/Publication: 2023-12-04 15:20:02 UTC
+Date/Publication: 2025-03-03 22:10:02 UTC
