@@ -218,8 +218,10 @@ zip_internal <- function(zipfile, files, recurse, compression_level,
 zip_list <- function(zipfile) {
   zipfile <- enc2c(normalizePath(zipfile))
   res <- .Call(c_R_zip_list, zipfile)
-  df <- data.frame(
-    stringsAsFactors = FALSE,
+  if (Sys.getenv("PKGCACHE_NO_PILLAR") == "") {
+    requireNamespace("pillar", quietly = TRUE)
+  }
+  df <- data_frame(
     filename = res[[1]],
     compressed_size = res[[2]],
     uncompressed_size = res[[3]],

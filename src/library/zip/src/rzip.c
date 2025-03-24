@@ -289,7 +289,7 @@ SEXP R_inflate(SEXP buffer, SEXP pos, SEXP size) {
       error("Input stream is bogus");
     } else if (status == MZ_DATA_ERROR) {
       mz_deflateEnd(&stream);
-      error("Input data is ivalid");
+      error("Input data is invalid");
     }
 
     if ((status == MZ_OK || status == MZ_BUF_ERROR) &&
@@ -371,7 +371,7 @@ SEXP R_deflate(SEXP buffer, SEXP level, SEXP pos, SEXP size) {
       error("Input stream is bogus");
     } else if (status == MZ_DATA_ERROR) {
       mz_deflateEnd(&stream);
-      error("Input data is ivalid");
+      error("Input data is invalid");
     }
 
     if ((status == MZ_OK || status == MZ_BUF_ERROR) &&
