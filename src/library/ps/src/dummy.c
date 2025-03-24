@@ -21,6 +21,7 @@ SEXP ps__dummy(const char *what) {
 #ifndef PS__WINDOWS
 SEXP ps__pids(void)          { return ps__dummy("ps_pids"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 #endif
 #endif
 #endif
@@ -61,6 +62,13 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 #endif
 #endif
 
+/* Only implemented on macOS */
+#ifndef PS__MACOS
+#if defined(PS__WINDOWS) || defined(PS__LINUX)
+SEXP ps__list_apps(void) { return ps__dummy("ps__list_apps"); }
+#endif
+#endif
+
 /* All C functions called from R */
 #ifndef PS__MACOS
 #ifndef PS__LINUX
@@ -73,10 +81,14 @@ SEXP ps__users(void) { return ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
 SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
+SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
+SEXP ps__fs_info(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_fs_info"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }
 SEXP ps__system_swap(void) { return ps__dummy("ps_system_swap"); }
+SEXP ps__stat(SEXP x, SEXP f) { return ps__dummy("ps_fs_stat"); }
+SEXP ps__mount_point(SEXP x) { return ps__dummy("ps_fs_mount_point"); }
 
 SEXP psll_handle(SEXP x, SEXP y) { return ps__dummy("ps_handle"); }
 SEXP psll_format(SEXP x) { return ps__dummy("ps_format"); }
@@ -100,7 +112,7 @@ SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
 SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
 SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
 SEXP psll_terminate(SEXP x) { return ps__dummy("ps_terminate"); }
-SEXP psll_kill(SEXP x) { return ps__dummy("ps_kill"); }
+SEXP psll_kill(SEXP x, SEXP grace) { return ps__dummy("ps_kill"); }
 SEXP psll_num_fds(SEXP x) { return ps__dummy("ps_num_fds"); }
 SEXP psll_open_files(SEXP x) { return ps__dummy("ps_open_files"); }
 SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); }
@@ -108,11 +120,12 @@ SEXP psll_connections(SEXP x) { return ps__dummy("ps_connections"); }
 SEXP psll_get_nice(SEXP x) { return ps__dummy("ps_get_nice"); }
 SEXP psll_set_nice(SEXP x, SEXP y) { return ps__dummy("ps_set_nice"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP psll_memory_maxrss(SEXP p) { return ps__dummy("psll_memory_maxrss"); }
 SEXP psll_get_cpu_aff(SEXP p) { return ps__dummy("psll_get_cpu_aff"); }
 SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
+SEXP psll_wait(SEXP pps, SEXP timeout) { return ps__dummy("psll_wait"); }
 
 SEXP ps__init(SEXP x, SEXP y) { return R_NilValue; /* this needs to run to load package */ }
-SEXP ps__kill_if_env(SEXP x, SEXP y, SEXP z, SEXP a) { return ps__dummy("ps__kill_if_env"); }
 SEXP ps__find_if_env(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps__find_if_env"); }
 SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 
@@ -125,6 +138,7 @@ SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
 SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 
 SEXP ps__inet_ntop(SEXP x, SEXP y) { return ps__dummy("ps__inet_ntop"); }
+SEXP ps__list_apps(void) { return ps__dummy("ps__list_apps"); }
 #endif
 #endif
 #endif

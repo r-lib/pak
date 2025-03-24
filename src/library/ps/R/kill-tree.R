@@ -132,27 +132,34 @@ ps_find_tree <- function(marker) {
 #' use to find the marked processes.
 #' @param sig The signal to send to the marked processes on Unix. On
 #' Windows this argument is ignored currently.
+#' @param grace Grace period, in milliseconds, used on Unix, if `sig` is
+#'   `SIGKILL`.  If it is not zero, then `ps_kill_tree()` first sends a
+#'   `SIGTERM` signal to all processes. If some proccesses do not
+#'   terminate within `grace` milliseconds after the `SIGTERM` signal,
+#'   `ps_kill_tree()` kills them by sending `SIGKILL` signals.
 #'
 #' @rdname ps_kill_tree
 #' @export
 
-ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
+ps_kill_tree <- function(marker, sig = signals()$SIGKILL, grace = 200) {
 
-  assert_string(marker)
   # NULL on Windows
-  if (.Platform$OS.type != "windows") assert_integer(sig)
+  if (!ps_os_type()[["WINDOWS"]]) {
+    sig <- assert_integer(sig)
+  }
 
-  after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
+  procs <- ps_find_tree(marker)
+  pids <- map_int(procs, ps_pid)
+  nms <- map_chr(
+    procs,
+    function(p) tryCatch(ps_name(p), error = function(e) "???")
+  )
 
-  pids <- setdiff(ps_pids(), Sys.getpid())
+  if (!ps_os_type()[["WINDOWS"]] && sig == signals()$SIGKILL) {
+    ps_send_signal(procs, sig)
+  } else {
+    ps_kill(procs, grace = grace)
+  }
 
-  ret <- lapply(pids, function(p) {
-    tryCatch(
-      .Call(ps__kill_if_env, marker, after, p, sig),
-      error = function(e) e
-    )
-  })
-
-  gone <- map_lgl(ret, function(x) is.character(x))
-  structure(pids[gone], names = unlist(ret[gone]))
+  structure(pids, names = nms)
 }
