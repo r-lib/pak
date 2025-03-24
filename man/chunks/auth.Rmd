@@ -107,7 +107,7 @@ To store a repository password in the system credential store use the
 `repo_auth_key_set()` function. If you want to use a non-default keyring
 backend, set the `keyring_backend` option. In this manual we will use
 the backend that stores secrets in environment variables. This is an
-ephemetal store that is destroyed when the R process terminates.
+ephemeral store that is destroyed when the R process terminates.
 
 To continue our example from above:
 
