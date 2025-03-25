@@ -3,16 +3,17 @@
 ## indicated in comments below
 
 output_dir: output
-staging_deploy_root: biocadmin@staging.bioconductor.org:/loc/www/bioconductor-test.fhcrc.org
+staging_deploy_root: biocadmin@staging.bioconductor.org:/loc/www/bioconductor-test-new
 production_deploy_root: webadmin@master.bioconductor.org:/extra/www/bioc
+staging_dir: /loc/www/bioconductor-test-new
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-release_version: "3.16"
-r_version_associated_with_release: "4.2.0"
-r_version_associated_with_devel: "4.3.0"
+release_version: "3.20"
+r_version_associated_with_release: "4.4.0"
+r_version_associated_with_devel: "4.5.0"
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-devel_version: "3.17"
+devel_version: "3.21"
 
 ## CHANGE THIS WHEN WE ADD A VERSION:
 ## This is the list of all versions for which we want to generate "new" 
@@ -23,8 +24,8 @@ devel_version: "3.17"
 ## let the no-longer-release version build one last time so package
 ## landing pages won't say "release version"):
 versions:
-- "3.16"
-- "3.17"
+- "3.20"
+- "3.21"
 
 ## CHANGE THIS (i.e., uncomment) as various parts of the new devel version 
 ## become available. set to "[]" if none are available.
@@ -36,20 +37,20 @@ devel_repos:
 
 ## CHANGE this when the build machines change:
 ## also, don't include machines that are not building yet (comment them out)
-active_devel_builders:
-  linux: "nebbiolo1"
-  windows: "palomino3"
-  mac_mojave: "merida1"
 active_release_builders:
   linux: "nebbiolo2"
-  windows: "palomino4"
+  windows: "palomino8"
   mac_monterey: "lconway"
+active_devel_builders:
+  linux: "nebbiolo1"
+  windows: "palomino7"
+#  mac_monterey: "merida1"
 
 ## CHANGE this when the single package builder builds
 ## on a newer version of bioc
 single_package_builder:
-  bioc_version: "3.17"
-  r_version: "4.3"
+  bioc_version: "3.21"
+  r_version: "4.5"
 
 rss_hub_url: "https://pubsubhubbub.appspot.com/"
 ## CHANGE these as AMI IDS change
@@ -107,7 +108,7 @@ data_sources:
   encoding: utf-8
   config:
     cache_file: tmp/pubmed_cache_file.yaml
-    retmax: 20
+    retmax: 10
     ttl: 24
     baseurl: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
 #   queried database, e.g. "pubmed" or "pmc"; can be a vector
@@ -158,6 +159,10 @@ r_ver_for_bioc_ver:
   "3.15": "4.2"
   "3.16": "4.2"
   "3.17": "4.3"
+  "3.18": "4.3"
+  "3.19": "4.4"
+  "3.20": "4.4"
+  "3.21": "4.5"
 # UPDATE THIS when we release a version
 release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milestones
   "1.0": "1/5/2001"
@@ -202,6 +207,46 @@ release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milesto
   "3.14": "10/27/2021"
   "3.15": "04/27/2022"
   "3.16": "11/02/2022"
+  "3.17": "04/26/2023"
+  "3.18": "10/25/2023"
+  "3.19": "05/01/2024"
+  "3.20": "10/30/2024"
+release_last_built_dates:
+  '2.0': 09/12/2007
+  '2.1': 04/09/2008
+  '2.2': 10/16/2008
+  '2.3': 04/18/2009
+  '2.4': 10/20/2009
+  '2.5': 04/03/2010
+  '2.6': 10/05/2010
+  '2.7': 04/07/2011
+  '2.8': 10/21/2011
+  '2.9': 03/24/2012
+  '2.10': 09/24/2012
+  '2.11': 03/25/2013
+  '2.12': 10/09/2013
+  '2.13': 04/05/2014
+  '2.14': 10/08/2014
+  '3.0': 04/10/2015
+  '3.1': 10/09/2015
+  '3.2': 04/23/2016
+  '3.3': 10/13/2016
+  '3.4': 04/15/2017
+  '3.5': 10/18/2017
+  '3.6': 04/12/2018
+  '3.7': 10/17/2018
+  '3.8': 04/16/2019
+  '3.9': 10/16/2019
+  '3.10': 04/15/2020
+  '3.11': 10/17/2020
+  '3.12': 05/06/2021
+  '3.13': 10/15/2021
+  '3.14': 04/13/2022
+  '3.15': 10/19/2022
+  '3.16': 04/12/2023
+  '3.17': 10/16/2023
+  '3.18': 04/17/2024
+  '3.19': 10/18/2024
 mirrors:
  - 0-Bioconductor:
    - institution: Bioconductor, automatic redirection to servers worldwide
@@ -213,22 +258,13 @@ mirrors:
      https_mirror_url: https://bioconductor.org/
      rsync: secure_mirror_from_master
      country_code: us
- - Germany:
-   - institution: Department of Statistics, TU Dortmund
-     institution_url: https://www.statistik.tu-dortmund.de/
-     contact: Uwe Ligges
-     contact_email: ligges@statistik.tu-dortmund.de
-     mirror_url: http://bioconductor.statistik.tu-dortmund.de/
-     https_mirror_url: https://bioconductor.statistik.tu-dortmund.de/
-     rsync: 
-     city: Dortmund
-     country_code: de
-   - institution: GWDG
-     institution_url: https://ftp.gwdg.de/
-     contact: Tim Ehlers and Steffen Klemer
-     contact_email: ftpmaster@gwdg.de
-     mirror_url: http://ftp.gwdg.de/pub/misc/bioconductor/
-     https_mirror_url: https://ftp.gwdg.de/pub/misc/bioconductor/
+ - USA:
+   - institution: Posit Software, PBC
+     institution_url: https://posit.co/
+     contact: Joshua Spiewak
+     contact_email: bioconductor@posit.co
+     city: Boston
+     mirror_url: http://bioconductor.posit.co/
+     https_mirror_url: https://bioconductor.posit.co/
      rsync: secure_mirror_from_master
-     city: Gottingen
-     country_code: de
+     country_code: us
