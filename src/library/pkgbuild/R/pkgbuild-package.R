@@ -6,6 +6,10 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
+  set_pkg_config_path()
+}
+
+set_pkg_config_path <- function() {
   if (Sys.getenv("PKG_BUILD_IGNORE_PKG_CONFIG_PATH") != "true" &&
       .Platform$OS.type == "windows" &&
       Sys.which("pkg-config") != "" &&
