@@ -409,7 +409,7 @@ format.pkg_name_check_wiktionary <- function(x, limit = 6, ...) {
 }
 
 clean_wiktionary_text <- function(x) {
-  langs <- strsplit(x, "\n== ", x)[[1]][-1]
+  langs <- strsplit(x, "\n== ", fixed = TRUE)[[1]][-1]
   eng <- grep("^English", langs, value = TRUE)
   if (length(eng) == 0) return("No English definition found")
   eng2 <- sub("^English ==", "", eng)

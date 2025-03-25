@@ -48,7 +48,7 @@ new_pkg_installation_proposal <- function(refs, config = list(), ...) {
 #'   ['Package references'][pkg_refs] for the syntax.
 #'
 #' @export
-#' @examplesIf pkgdepends:::is_online()
+#' @examples
 #' \dontrun{
 #' pdi <- new_pkg_installation_proposal(
 #'   "pak",
@@ -153,7 +153,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' @return
     #' The `pkg_installation_proposal` object, invisibly.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "pak",
@@ -186,7 +186,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' A [pkg_resolution_result] object, which is also a data frame. See
     #' ['Dependency resolution'][pkg_resolution] for its columns.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "r-lib/pkgdepends",
@@ -252,7 +252,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' @return
     #' The `pkg_installation_proposal` object itself, invisibly.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "r-lib/pkgdepends",
@@ -275,7 +275,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' A [pkg_solution_result] object, which is a list. See
     #' [pkg_solution_result] for details.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "r-lib/pkgdepends",
@@ -297,7 +297,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' A [pkg_solution_result] object, which is a list. See
     #' [pkg_solution_result] for details.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "r-lib/pkgdepends",
@@ -325,7 +325,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' Error if the dependency solver failed to find a consistent set of
     #' packages that can be installed together.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' # This is an error, because the packages conflict:
     #' pdi <- new_pkg_installation_proposal(
@@ -379,7 +379,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' @return
     #' A `tree` object from the cli package, see [cli::tree()].
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "pak",
@@ -400,7 +400,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' @return
     #' The `pkg_installation_proposal` object itself, invisibly.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   c("r-lib/pak", "cran::pak"),
@@ -430,7 +430,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' A [pkg_download_result] object, which is a list. See
     #' [pkg_download_result] for details.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   c("r-lib/pak", "cran::pak"),
@@ -490,7 +490,7 @@ pkg_installation_proposal <- R6::R6Class(
     #' An installation plan, see ['Installation plans'][install_plans] for
     #' the format.
     #'
-    #' @examplesIf pkgdepends:::is_online()
+    #' @examples
     #' \dontrun{
     #' pdi <- new_pkg_installation_proposal(
     #'   "pak",

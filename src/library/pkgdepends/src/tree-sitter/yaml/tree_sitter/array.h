@@ -14,10 +14,10 @@ extern "C" {
 #include <string.h>
 
 #ifdef _MSC_VER
-#pragma warning(disable : 4101)
+# pragma warning(disable : 4101)
 #elif defined(__GNUC__) || defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 #define Array(T)       \
@@ -278,9 +278,9 @@ static inline void _array__splice(Array *self, size_t element_size,
 #define _compare_int(a, b) ((int)*(a) - (int)(b))
 
 #ifdef _MSC_VER
-#pragma warning(default : 4101)
+# pragma warning(default : 4101)
 #elif defined(__GNUC__) || defined(__clang__)
-#pragma GCC diagnostic pop
+# pragma GCC diagnostic pop
 #endif
 
 #ifdef __cplusplus

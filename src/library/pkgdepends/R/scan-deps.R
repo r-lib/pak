@@ -1016,7 +1016,7 @@ yaml_parse_scalar <- function(x) {
 # -------------------------------------------------------------------------
 
 scan_path_deps_do_dsc <- function(code, path) {
-  code <- if (is.raw(code)) rawToChar(code)
+  if (is.raw(code)) code <- rawToChar(code)
   dsc <- desc::desc(text = code)
   deps <- resolve_ref_deps(
     dsc$get_deps(),
@@ -1232,7 +1232,7 @@ scan_path_deps_do_rnw_parse_chunk_header <- function(header) {
   }
   if ((n <- length(idx)) > 1L || (length(res) > 1L && is.null(names(res)))) {
     stop(
-      "Invalid chunk options: ", x,
+      "Invalid chunk options: ", res,
       "\n\nAll options must be of the form 'tag=value' except for the chunk label."
     )
   }
