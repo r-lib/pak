@@ -7,7 +7,9 @@ install_extracted_binary <- function(filename, lib_cache, pkg_cache, lib,
   pkg_name <- pkg$name
 
   lockfile <- lock_cache(lib_cache, pkg_name, getOption("install.lock"))
-  on.exit(filelock::unlock(lockfile), add = TRUE)
+  if (!is.null(lockfile)) {
+    on.exit(filelock::unlock(lockfile), add = TRUE)
+  }
 
   installed_path <- file.path(lib, pkg_name)
   if (file.exists(installed_path)) {
