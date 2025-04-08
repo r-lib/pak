@@ -52,12 +52,14 @@ own copy of the keyring package, you don't need to install it
 separately.
 
 
-We suggest that you use the system credential store whenever you can.
 netrc files
 
 
-pak looks for the netrc file at ~/.netrc. On Windows it also looks
-for ~/_netrc if the file starting with a dot does not exist.
+If the NETRC environment variable is set, pak uses its value to
+determine the location of the netrc file.
+Otherwise pak looks for the netrc file in current user's home
+directory, at ~/.netrc. On Windows it also looks for ~/_netrc if the
+file starting with a dot does not exist.
 If you create a netrc file, make sure that is only readable by you.
 E.g. on Unix run
 chmod 600 ~/.netrc
@@ -339,12 +341,14 @@ own copy of the keyring package, you don't need to install it
 separately.
 
 
-We suggest that you use the system credential store whenever you can.
 netrc files
 
 
-pak looks for the netrc file at ~/.netrc. On Windows it also looks
-for ~/_netrc if the file starting with a dot does not exist.
+If the NETRC environment variable is set, pak uses its value to
+determine the location of the netrc file.
+Otherwise pak looks for the netrc file in current user's home
+directory, at ~/.netrc. On Windows it also looks for ~/_netrc if the
+file starting with a dot does not exist.
 If you create a netrc file, make sure that is only readable by you.
 E.g. on Unix run
 chmod 600 ~/.netrc
@@ -658,12 +662,15 @@ them.</p>
 <li><p>The system credential store via the keyring package. pak comes with its
 own copy of the keyring package, you don't need to install it
 separately.</p></li>
-</ol><p>We suggest that you use the system credential store whenever you can.</p><div class="section">
+</ol><div class="section">
 <h4 id="netrc-files"><code>netrc</code> files<a class="anchor" aria-label="anchor" href="#netrc-files"></a></h4>
 
 
-<p>pak looks for the <code>netrc</code> file at <code>~/.netrc</code>. On Windows it also looks
-for <code>~/_netrc</code> if the file starting with a dot does not exist.</p>
+<p>If the <code>NETRC</code> environment variable is set, pak uses its value to
+determine the location of the <code>netrc</code> file.</p>
+<p>Otherwise pak looks for the <code>netrc</code> file in current user's home
+directory, at <code>~/.netrc</code>. On Windows it also looks for <code>~/_netrc</code> if the
+file starting with a dot does not exist.</p>
 <p>If you create a <code>netrc</code> file, make sure that is only readable by you.
 E.g. on Unix run</p>
 <p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">chmod</span> 600 ~/.netrc</span></code></pre><p></p></div>
