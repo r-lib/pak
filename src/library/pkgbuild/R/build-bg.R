@@ -57,10 +57,6 @@ pkgbuild_process <- R6Class(
         register_routines, quiet
       )
     },
-    finalize = function() {
-      unlink(private$makevars_file)
-      super$kill()
-    },
     is_incomplete_error = function() FALSE,
     read_all_error = function() "",
     read_all_error_lines = function() character(),
@@ -90,6 +86,10 @@ pkgbuild_process <- R6Class(
     }
   ),
   private = list(
+    finalize = function() {
+      unlink(private$makevars_file)
+      super$kill()
+    },
     path = NULL,
     dest_path = NULL,
     out_dir = NULL,
