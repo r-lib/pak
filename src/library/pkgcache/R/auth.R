@@ -1,5 +1,8 @@
 #' Authenticated repositories
 #'
+#' `repo_auth()` lists authentication information for all configured
+#' repositories.
+#'
 #' pkgcache supports HTTP basic authentication when interacting with
 #' CRAN-like repositories. To use authentication, include a username
 #' in the repo URL:
@@ -7,10 +10,21 @@
 #' https://<username>@<repo-host>/<repo-path>
 #' ```
 #'
-#' pkgcache will look up password for this url and username from the
-#' the user's `.netrc` file and from the system credential store using
-#' the keyring package. For the URL above it tries the following keyring
-#' keys, in this order:
+#' pkgcache tries to obtain the passwords for the authenticated CRAN-like
+#' repos from two sources, in this order:
+#'
+#' 1. A "netrc" file. If the `NETRC` environment variable is set, it
+#'    should point to a file in "netrc" format. Otherwise pkgcache uses
+#'    the `~/.netrc` file in the current user's home directory, if it
+#'    exists. On Windows it also tries the `~/_netrc` file.
+#' 2. The system's credential store, via the keyring package.
+#'
+#' See the [documentation of libcurl](
+#'   https://curl.se/libcurl/c/CURLOPT_NETRC.html) for details about the
+#' format of the netrc file.
+#'
+#' When looking for the password in the system credential store, pkgcache
+#' looks at the following keys, in this order:
 #' ```
 #' https://<username>@repo-host/<repo-path>
 #' https://repo-host/<repo-path>
@@ -22,21 +36,18 @@
 #' argument. Alternatively, you can set the `repos` option directly using
 #' [base::options()] and including the username in the repository URL.
 #'
-#' `repo_auth()` lists authentication information for all configured
-#' repositories.
-#'
 #' @inheritParams repo_get
 #' @param check_credentials Whether to check that credentials are
-#'   available for authenticated repositories.
+#'   available for the authenticated repositories.
 #' @return Data frame with columns:
 #'   - all columns from the output of [repo_get()],
 #'   - `auth_domains`: authentication domains. pkgcache tries to find the
 #'     credentials for these domains, until the search is successful or all
-#'     domains fail.
+#'     domains fail. This column is a list column of character vectors.
 #'   - `auth_domain`: if the credential lookup is successful, then this is
 #'     the authentication domain that was used to get the credentials.
 #'   - `auth_source`: where the credentials were found. E.g.
-#'     `keyring:<backend>` means it was in the default macos keyring.
+#'     `keyring:macos` means it was in the default macos keyring.
 #'   - `auth_error`: for failed credential searches this is the description
 #'     of why the search failed. E.g. maybe the keyring package is not
 #'     installed, or pkgcache found no credentials for any of the
@@ -317,7 +328,7 @@ add_auth_status <- function(repos) {
 }
 
 repo_auth_netrc <- function(host, username) {
-  netrc_path <- Sys.getenv("PKG_NETRC_PATH")
+  netrc_path <- Sys.getenv("PKG_NETRC_PATH", Sys.getenv("NETRC"))
   if (netrc_path == "") {
     netrc_path <- path.expand("~/.netrc")
     if (!file.exists(netrc_path) && .Platform[["OS.type"]] == "windows") {
