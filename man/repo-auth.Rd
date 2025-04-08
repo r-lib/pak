@@ -62,12 +62,14 @@ pak can look up credentials from two sources:
 own copy of the keyring package, you don't need to install it
 separately.
 }
-
-We suggest that you use the system credential store whenever you can.
 \subsection{\code{netrc} files}{
 
-pak looks for the \code{netrc} file at \verb{~/.netrc}. On Windows it also looks
-for \verb{~/_netrc} if the file starting with a dot does not exist.
+If the \code{NETRC} environment variable is set, pak uses its value to
+determine the location of the \code{netrc} file.
+
+Otherwise pak looks for the \code{netrc} file in current user's home
+directory, at \verb{~/.netrc}. On Windows it also looks for \verb{~/_netrc} if the
+file starting with a dot does not exist.
 
 If you create a \code{netrc} file, make sure that is only readable by you.
 E.g. on Unix run
