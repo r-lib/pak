@@ -337,6 +337,9 @@ repo_auth_netrc <- function(host, username) {
   }
   if (!file.exists(netrc_path)) return(NULL)
 
+  # netrc files do not allow port numbers
+  host <- sub(":[0-9]+$", "", host)
+
   lines <- readLines(netrc_path, warn = FALSE)
   # mark potential end of macros with NA
   lines[lines == ""] <- NA_character_
