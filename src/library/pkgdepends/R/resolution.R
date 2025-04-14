@@ -393,10 +393,11 @@ res__set_result_df <- function(self, private, row_idx, value) {
 res__set_result_list <- function(self, private, row_idx, value) {
   # already done?
   if (all(value$ref %in% self$result$ref)) return()
-  # direct version already on the TODO list?
-  if (value$ref %in% private$state$ref &&
-      !value$direct &&
-      private$state$direct[match(value$ref, private$state$ref)]) return()
+  if (is.data.frame(value)) {
+    # if a data frame, then some might be done
+    done <- value$ref %in% private$state$ref
+    value <- value[!done, drop = FALSE]
+  }
   self$result <- res_add_df_entries(self$result, value)
 }
 
