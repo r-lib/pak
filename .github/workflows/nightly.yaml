@@ -221,7 +221,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.6.1pre/rig-windows-0.6.1pre.exe -OutFile rig-install.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.7.1/rig-windows-0.7.1.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install skopeo
@@ -240,14 +240,7 @@ jobs:
       run: |
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
         rig add ${{ matrix.config.r }} --without-p3m
-        # temporary workaround
-        if ('${{ matrix.config.r }}' -eq 'next' -or '${{ matrix.config.r }}' -eq 'devel') {
-          $URL = 'https://github.com/r-hub/rtools45/releases/download/latest/rtools45.exe'
-          Invoke-WebRequest $URL -OutFile Rtools.exe
-          Start-Process ".\Rtools.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
-        } else {
-          rig add rtools
-        }
+        rig add rtools
         # For make and zip
         echo "C:\rtools43\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
         echo "C:\rtools44\usr\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
