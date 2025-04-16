@@ -170,9 +170,10 @@ read_packages_file <- function(path, mirror, repodir, platform,
       built_r,
       perl = TRUE
     )
+    pkgs$rversion[is.na(pkgs$rversion)] <- "*"
 
     # add $platform from build, assume current platform if missing
-    miss_plat <- pkgs$platform == "source"
+    miss_plat <- pkgs$platform == "source" & !is.na(pkgs$built)
     built_plat <- trimws(vcapply(built[miss_plat], "[[", 2))
     current_plat <- current_r_platform()
     built_plat[built_plat == ""] <- current_plat
