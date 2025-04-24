@@ -1061,11 +1061,11 @@
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.8.0",
+          "pak.version": "0.8.0.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-08-09T09:55:40+00:00",
-          "size": 8828902,
-          "digest": "sha256:05eee76db420c884959fec2ce0eefbefd668f97fd80586da061652ffcde08571"
+          "buildtime": "2025-04-24T08:40:36+00:00",
+          "size": 8986203,
+          "digest": "sha256:705c108db3d9ddec6e4e133c27ce05bed4954a5096a7c354582623cb3fe5db37"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
