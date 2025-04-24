@@ -813,11 +813,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.5",
-          "pak.version": "0.8.0",
+          "pak.version": "0.8.0.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-08-09T10:05:25+00:00",
-          "size": 8774260,
-          "digest": "sha256:aa8e08eb1b16e98f01a536e7786f3ed03bf77681edf619a447b6788f852caed1"
+          "buildtime": "2025-04-24T08:47:28+00:00",
+          "size": 8949418,
+          "digest": "sha256:221697e21db7897baf19603417bd61f90bf4bbb13d04a0777cba9009a9c51c1d"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.1",
