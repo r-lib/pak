@@ -140,7 +140,7 @@ jobs:
   # -----------------------------------------------------------------------
 
   macos-arm64:
-    runs-on: macos-12
+    runs-on: macos-latest
     if: ${{ github.event.inputs.macos-arm64 == '' || github.event.inputs.macos-arm64 == 'yes' }}
     name: macos arm64
     env:
