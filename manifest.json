@@ -1088,11 +1088,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.0",
-          "pak.version": "0.8.0",
+          "pak.version": "0.8.0.2",
           "pak.revision": "TODO",
-          "buildtime": "2024-08-09T09:56:24+00:00",
-          "size": 8854900,
-          "digest": "sha256:c5ec85a5cf3ea5e694bfffa058498740457ea6009629d477b12f296896bb832f"
+          "buildtime": "2025-04-24T08:41:26+00:00",
+          "size": 9011951,
+          "digest": "sha256:55a62b3a7e5f5ef48f4f493fc489160b426db4376da974c5cf936eb0f9a37c4c"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
