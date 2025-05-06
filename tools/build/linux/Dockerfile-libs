@@ -50,6 +50,23 @@ RUN cd curl-* && \
 FROM alpine:3.19
 COPY --from=build /usr/local /usr/local/
 
+# Packages for static libsecret
+
+RUN apk add --no-cache libsecret-static glib-static libgcrypt-static \
+    libgpg-error-static util-linux-static libffi-dev pcre2-dev
+RUN cp /usr/lib/libglib-2.0.a /usr/local/lib/ && \
+    cp /usr/lib/libintl.a /usr/local/lib/ && \
+    cp /usr/lib/libblkid.a /usr/local/lib && \
+    cp /usr/lib/libffi.a /usr/local/lib && \
+    cp /usr/lib/libgmodule-2.0.a /usr/local/lib && \
+    cp /usr/lib/libmount.a /usr/local/lib && \
+    cp /usr/lib/libgcrypt.a /usr/local/lib && \
+    cp /usr/lib/libgobject-2.0.a /usr/local/lib && \
+    cp /usr/lib/libpcre2-8.a /usr/local/lib && \
+    cp /usr/lib/libgio-2.0.a /usr/local/lib && \
+    cp /usr/lib/libgpg-error.a /usr/local/lib && \
+    cp /usr/lib/libsecret-1.a /usr/local/lib    
+
 # Some of this info is shown on the GH packages pages
 
 LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
