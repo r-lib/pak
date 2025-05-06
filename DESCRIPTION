@@ -78,9 +78,9 @@ ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
     callr,
-    desc,
-    r-lib/cli,
+    cli,
     curl,
+    desc,
     filelock,
     gaborcsardi/jsonlite,
     r-lib/keyring,
