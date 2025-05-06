@@ -1,3 +1,3 @@
-stop <- function(..., call. = FALSE){
+stop <- function(..., call. = FALSE) {
   base::stop(..., call. = FALSE)
 }

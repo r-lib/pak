@@ -26,20 +26,20 @@
 #' colnames(data2)
 #' }
 #'
-flatten <- function(x, recursive = TRUE){
+flatten <- function(x, recursive = TRUE) {
   stopifnot(is.data.frame(x))
   nr <- nrow(x)
   dfcolumns <- vapply(x, is.data.frame, logical(1))
-  if(!any(dfcolumns)){
+  if (!any(dfcolumns)) {
     return(x)
   }
-  x <- if(recursive){
+  x <- if (recursive) {
     c(x[!dfcolumns], do.call(c, lapply(x[dfcolumns], flatten)))
   } else {
     c(x[!dfcolumns], do.call(c, x[dfcolumns]))
   }
   class(x) <- "data.frame"
-  row.names(x) <- if(!nr) character(0) else 1:nr;
+  row.names(x) <- if (!nr) character(0) else 1:nr
   x
 }
 

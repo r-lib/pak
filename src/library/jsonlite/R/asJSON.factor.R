@@ -9,7 +9,7 @@ setMethod("asJSON", "factor", function(x, factor = c("string", "integer"), keep_
   } else {
     # encode as strings
     xc <- as.character(x)
-    if(isTRUE(keep_vec_names)){
+    if (isTRUE(keep_vec_names)) {
       names(xc) <- names(x)
     }
     asJSON(xc, keep_vec_names = keep_vec_names, ...)

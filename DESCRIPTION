@@ -82,7 +82,7 @@ Config/needs/dependencies:
     curl,
     desc,
     filelock,
-    gaborcsardi/jsonlite,
+    jsonlite,
     r-lib/keyring,
     lpSolve,
     pkgbuild,

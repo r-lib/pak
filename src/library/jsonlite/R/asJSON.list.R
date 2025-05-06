@@ -1,9 +1,7 @@
-setMethod("asJSON", "list", function(x, collapse = TRUE, na = NULL, oldna = NULL,
-  is_df = FALSE, auto_unbox = FALSE, indent = NA_integer_, no_dots = FALSE, ...) {
-
+setMethod("asJSON", "list", function(x, collapse = TRUE, na = NULL, oldna = NULL, is_df = FALSE, auto_unbox = FALSE, indent = NA_integer_, no_dots = FALSE, ...) {
   # reset na arg when called from data frame
-  if(identical(na, "NA")){
-    na <- oldna;
+  if (identical(na, "NA")) {
+    na <- oldna
   }
 
   # coerse pairlist if needed
@@ -27,16 +25,24 @@ setMethod("asJSON", "list", function(x, collapse = TRUE, na = NULL, oldna = NULL
   # }
 
   # note we are NOT passing on the container argument.
-  tmp <- if(is_df && auto_unbox){
-    vapply(x, function(y, ...) {
-      asJSON(y, auto_unbox = is.list(y), ...)
-    }, character(1), na = na, indent = indent + 2L, no_dots = no_dots, ...)
+  tmp <- if (is_df && auto_unbox) {
+    vapply(
+      x,
+      function(y, ...) {
+        asJSON(y, auto_unbox = is.list(y), ...)
+      },
+      character(1),
+      na = na,
+      indent = indent_increment(indent),
+      no_dots = no_dots,
+      ...
+    )
   } else {
-    vapply(x, asJSON, character(1), na = na, auto_unbox = auto_unbox, indent = indent + 2L, no_dots = no_dots, ...)
+    vapply(x, asJSON, character(1), na = na, auto_unbox = auto_unbox, indent = indent_increment(indent), no_dots = no_dots, ...)
   }
 
   if (!is.null(names(x))) {
-    if(!collapse){
+    if (!collapse) {
       #this should never happen
       warning("collapse=FALSE called for named list.")
     }
@@ -45,7 +51,7 @@ setMethod("asJSON", "list", function(x, collapse = TRUE, na = NULL, oldna = NULL
     collapse_object(objnames, tmp, indent)
   } else {
     #in case of unnamed list:
-    if(collapse){
+    if (collapse) {
       collapse(tmp, inner = FALSE, indent)
     } else {
       tmp

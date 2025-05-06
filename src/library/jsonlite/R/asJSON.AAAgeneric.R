@@ -2,7 +2,7 @@ setGeneric("asJSON", function(x, ...) {
   standardGeneric("asJSON")
 })
 
-if(getRversion() < "4"){
+if (getRversion() < "4") {
   setOldClass("AsIs")
   setOldClass("integer64")
   setOldClass(c("hms", "difftime"))

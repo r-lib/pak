@@ -34,14 +34,19 @@
 #' nrow(organizations)
 #' colnames(organizations)
 #' }
-rbind_pages <- function(pages){
+rbind_pages <- function(pages) {
   loadpkg("vctrs")
 
   #validate input
   stopifnot(is.list(pages))
 
   # All elements must be data frames or NULL.
-  pages <- Filter(function(x) {!is.null(x)}, pages);
+  pages <- Filter(
+    function(x) {
+      !is.null(x)
+    },
+    pages
+  )
   stopifnot(all(vapply(pages, is.data.frame, logical(1))))
 
   do.call(vctrs::vec_rbind, pages)

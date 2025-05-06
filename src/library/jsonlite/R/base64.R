@@ -17,7 +17,7 @@
 #' out <- unserialize(base64_dec(str))
 #' stopifnot(identical(out, iris))
 base64_dec <- function(input) {
-  if(is.character(input)){
+  if (is.character(input)) {
     input <- charToRaw(paste(input, collapse = "\n"))
   }
   stopifnot(is.raw(input))
@@ -28,9 +28,8 @@ base64_dec <- function(input) {
 #' @rdname base64
 #' @useDynLib jsonlite R_base64_encode
 base64_enc <- function(input) {
-  if(is.null(input))
-    return(NA_character_)
-  if(is.character(input)){
+  if (is.null(input)) return(NA_character_)
+  if (is.character(input)) {
     input <- charToRaw(paste(input, collapse = "\n"))
   }
   stopifnot(is.raw(input))
@@ -39,23 +38,23 @@ base64_enc <- function(input) {
 
 #' @export
 #' @rdname base64
-base64url_enc <- function(input){
+base64url_enc <- function(input) {
   text <- base64_enc(input)
   sub("=+$", "", chartr('+/', '-_', text))
 }
 
 #' @export
 #' @rdname base64
-base64url_dec <- function(input){
+base64url_dec <- function(input) {
   text <- fix_padding(chartr('-_', '+/', input))
   base64_dec(text)
 }
 
 # Ensures base64 length is a multiple of 4
-fix_padding <- function(text){
+fix_padding <- function(text) {
   text <- gsub("[\r\n]", "", text)[[1]]
-  mod <- nchar(text) %% 4;
-  if(mod > 0){
+  mod <- nchar(text) %% 4
+  if (mod > 0) {
     padding <- paste(rep("=", (4 - mod)), collapse = "")
     text <- paste0(text, padding)
   }

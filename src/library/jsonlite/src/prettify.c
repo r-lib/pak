@@ -99,6 +99,7 @@ SEXP R_reformat(SEXP x, SEXP pretty, SEXP indent_string) {
 
     /* init parser */
     hand = yajl_alloc(&callbacks, NULL, (void *) g);
+    yajl_config(hand, yajl_allow_comments, 1);
 
     /* get data from R */
     const char* json = translateCharUTF8(asChar(x));

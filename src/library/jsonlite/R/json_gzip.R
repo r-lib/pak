@@ -18,14 +18,14 @@
 #' @examples str <- as_gzjson_b64(iris[1:5,])
 #' cat(str)
 #' parse_gzjson_b64(str)
-as_gzjson_raw <- function(x, ...){
+as_gzjson_raw <- function(x, ...) {
   json <- toJSON(x = x, ...)
   memCompress(json, 'gzip')
 }
 
 #' @export
 #' @rdname gzjson
-as_gzjson_b64 <- function(x, ...){
+as_gzjson_b64 <- function(x, ...) {
   buf <- as_gzjson_raw(x = x, ...)
   base64_enc(buf)
 }
@@ -33,7 +33,7 @@ as_gzjson_b64 <- function(x, ...){
 #' @export
 #' @rdname gzjson
 #' @param buf  raw vector with gzip compressed data
-parse_gzjson_raw <- function(buf, ...){
+parse_gzjson_raw <- function(buf, ...) {
   json <- rawToChar(memDecompress(buf, 'gzip'))
   fromJSON(json, ...)
 }
@@ -41,6 +41,6 @@ parse_gzjson_raw <- function(buf, ...){
 #' @export
 #' @rdname gzjson
 #' @param b64 base64 encoded string containing gzipped json data
-parse_gzjson_b64 <- function(b64, ...){
+parse_gzjson_b64 <- function(b64, ...) {
   parse_gzjson_raw(base64_dec(b64), ...)
 }

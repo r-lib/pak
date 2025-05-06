@@ -1,5 +1,5 @@
 parseJSON <- function(txt, bigint_as_char = FALSE) {
-  if(inherits(txt, "connection")){
+  if (inherits(txt, "connection")) {
     parse_con(txt, bigint_as_char)
   } else {
     parse_string(txt, bigint_as_char)
@@ -7,7 +7,7 @@ parseJSON <- function(txt, bigint_as_char = FALSE) {
 }
 
 #' @useDynLib jsonlite R_parse
-parse_string <- function(txt, bigint_as_char){
+parse_string <- function(txt, bigint_as_char) {
   if (length(txt) > 1) {
     txt <- paste(txt, collapse = "\n")
   }

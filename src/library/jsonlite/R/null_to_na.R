@@ -4,6 +4,6 @@ null_to_na <- function(x) {
 }
 
 #' @useDynLib jsonlite C_is_datelist
-is_datelist <- function(x){
+is_datelist <- function(x) {
   .Call(C_is_datelist, x)
 }

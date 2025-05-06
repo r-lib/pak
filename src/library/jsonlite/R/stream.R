@@ -49,7 +49,7 @@
 #' @name stream_in, stream_out
 #' @export stream_in stream_out
 #' @rdname stream_in
-#' @references MongoDB export format: <https://docs.mongodb.com/manual/reference/program/mongoexport/>
+#' @references MongoDB export format: <https://www.mongodb.com/docs/database-tools/mongoexport/>
 #' @references Documentation for the JSON Lines text file format: <https://jsonlines.org/>
 #' @seealso [fromJSON()], [read_json()]
 #' @return The `stream_out` function always returns `NULL`.
@@ -120,40 +120,36 @@
 #' companies <- stream_in(unz(tmp, "companies.json"))
 #' }
 stream_in <- function(con, handler = NULL, pagesize = 500, verbose = TRUE, ...) {
-
   # Maybe also handle URLs here in future.
-  if(!is(con, "connection")){
+  if (!is(con, "connection")) {
     stop("Argument 'con' must be a connection.")
   }
 
   # Same as mongolite
   count <- 0
-  cb <- if(is.null(handler)){
+  cb <- if (is.null(handler)) {
     out <- new.env()
-    function(x){
-      if(length(x)){
+    function(x) {
+      if (length(x)) {
         count <<- count + length(x)
         out[[as.character(count)]] <<- x
       }
     }
   } else {
-    if(verbose)
-      message("using a custom handler function.")
-    function(x){
+    if (verbose) message("using a custom handler function.")
+    function(x) {
       handler(post_process(x, ...))
       count <<- count + length(x)
     }
   }
 
-  if(!isOpen(con, "r")){
-    if(verbose)
-      message("opening ", is(con) ," input connection.")
+  if (!isOpen(con, "r")) {
+    if (verbose) message("opening ", is(con), " input connection.")
 
     # binary connection prevents recoding of utf8 to latin1 on windows
     open(con, "rb")
     on.exit({
-      if(verbose)
-        message("closing ", is(con) ," input connection.")
+      if (verbose) message("closing ", is(con), " input connection.")
       close(con)
     })
   }
@@ -161,19 +157,17 @@ stream_in <- function(con, handler = NULL, pagesize = 500, verbose = TRUE, ...) 
   # Read data page by page
   repeat {
     page <- readLines(con, n = pagesize, encoding = "UTF-8")
-    if(length(page)){
+    if (length(page)) {
       cleanpage <- Filter(nchar, page)
       cb(lapply(cleanpage, parseJSON))
-      if(verbose)
-        cat("\r Found", count, "records...")
+      if (verbose) cat("\r Found", count, "records...")
     }
-    if(length(page) < pagesize)
-      break
+    if (length(page) < pagesize) break
   }
 
   # Either return a big data frame, or nothing.
-  if(is.null(handler)){
-    if(verbose) cat("\r Imported", count, "records. Simplifying...\n")
+  if (is.null(handler)) {
+    if (verbose) cat("\r Imported", count, "records. Simplifying...\n")
     out <- as.list(out, sorted = FALSE)
     post_process(unlist(out[order(as.numeric(names(out)))], FALSE, FALSE), ...)
   } else {
@@ -181,13 +175,11 @@ stream_in <- function(con, handler = NULL, pagesize = 500, verbose = TRUE, ...) 
   }
 }
 
-post_process <- function(x, simplifyVector = TRUE, simplifyDataFrame = simplifyVector,
-                         simplifyMatrix = simplifyVector, flatten = FALSE){
-  out <- simplify(x, simplifyVector = simplifyVector, simplifyDataFrame = simplifyDataFrame,
-    simplifyMatrix = simplifyMatrix, flatten = flatten)
+post_process <- function(x, simplifyVector = TRUE, simplifyDataFrame = simplifyVector, simplifyMatrix = simplifyVector, flatten = FALSE) {
+  out <- simplify(x, simplifyVector = simplifyVector, simplifyDataFrame = simplifyDataFrame, simplifyMatrix = simplifyMatrix, flatten = flatten)
 
   # We assume ndjson with objects
-  if(isTRUE(simplifyDataFrame)){
+  if (isTRUE(simplifyDataFrame)) {
     return(as.data.frame(out))
   } else {
     out
@@ -197,29 +189,27 @@ post_process <- function(x, simplifyVector = TRUE, simplifyDataFrame = simplifyV
 #' @rdname stream_in
 #' @param prefix string to write before each line (use `"\u001e"` to write rfc7464 text sequences)
 stream_out <- function(x, con = stdout(), pagesize = 500, verbose = TRUE, prefix = "", ...) {
-
-  if(!is(con, "connection")){
+  if (!is(con, "connection")) {
     # Maybe handle URLs here in future.
     stop("Argument 'con' must be a connection.")
   }
 
-  if(!isOpen(con, "w")){
-    if(verbose) message("opening ", is(con) ," output connection.")
+  if (!isOpen(con, "w")) {
+    if (verbose) message("opening ", is(con), " output connection.")
     open(con, "wb")
     on.exit({
-      if(verbose) message("closing ", is(con) ," output connection.")
+      if (verbose) message("closing ", is(con), " output connection.")
       close(con)
     })
   }
 
-  invisible(apply_by_pages(x, stream_out_page, pagesize = pagesize, con = con, verbose = verbose, prefix = prefix, ...));
+  invisible(apply_by_pages(x, stream_out_page, pagesize = pagesize, con = con, verbose = verbose, prefix = prefix, ...))
 }
 
-stream_out_page <- function(page, con, prefix, ...){
+stream_out_page <- function(page, con, prefix, ...) {
   # useBytes can sometimes prevent recoding of utf8 to latin1 on windows.
   # on windows there is a bug when useBytes is used with a (non binary) text connection.
   str <- enc2utf8(asJSON(page, collapse = FALSE, ...))
-  if(is.character(prefix) && length(prefix) && nchar(prefix))
-    str <- paste0(prefix[1], str)
+  if (is.character(prefix) && length(prefix) && nchar(prefix)) str <- paste0(prefix[1], str)
   writeLines(str, con = con, useBytes = TRUE)
 }

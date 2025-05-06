@@ -93,6 +93,11 @@ yajl_gen_config(yajl_gen g, yajl_gen_option opt, ...)
 }
 
 
+static void yajl_buf_print(void * ctx, const char * str, size_t len)
+{
+  yajl_buf_append(ctx, str, len);
+}
+
 
 yajl_gen
 yajl_gen_alloc(const yajl_alloc_funcs * afs)
@@ -118,7 +123,7 @@ yajl_gen_alloc(const yajl_alloc_funcs * afs)
     /* copy in pointers to allocation routines */
     memcpy((void *) &(g->alloc), (void *) afs, sizeof(yajl_alloc_funcs));
 
-    g->print = (yajl_print_t)&yajl_buf_append;
+    g->print = &yajl_buf_print;
     g->ctx = yajl_buf_alloc(&(g->alloc));
     g->indentString = "    ";
 
@@ -136,7 +141,7 @@ yajl_gen_reset(yajl_gen g, const char * sep)
 void
 yajl_gen_free(yajl_gen g)
 {
-    if (g->print == (yajl_print_t)&yajl_buf_append) yajl_buf_free((yajl_buf)g->ctx);
+    if (g->print == &yajl_buf_print) yajl_buf_free((yajl_buf)g->ctx);
     YA_FREE(&(g->alloc), g);
 }
 
@@ -349,7 +354,7 @@ yajl_gen_status
 yajl_gen_get_buf(yajl_gen g, const unsigned char ** buf,
                  size_t * len)
 {
-    if (g->print != (yajl_print_t)&yajl_buf_append) return yajl_gen_no_buf;
+    if (g->print != &yajl_buf_print) return yajl_gen_no_buf;
     *buf = yajl_buf_data((yajl_buf)g->ctx);
     *len = yajl_buf_len((yajl_buf)g->ctx);
     return yajl_gen_status_ok;
@@ -358,5 +363,5 @@ yajl_gen_get_buf(yajl_gen g, const unsigned char ** buf,
 void
 yajl_gen_clear(yajl_gen g)
 {
-    if (g->print == (yajl_print_t)&yajl_buf_append) yajl_buf_clear((yajl_buf)g->ctx);
+    if (g->print == &yajl_buf_print) yajl_buf_clear((yajl_buf)g->ctx);
 }

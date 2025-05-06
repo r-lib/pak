@@ -1,7 +1,4 @@
-setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), collapse = TRUE,
-  dataframe = c("rows", "columns", "values"), complex = "string", oldna = NULL, rownames = NULL,
-  keep_vec_names = FALSE, indent = NA_integer_, no_dots = FALSE, ...) {
-
+setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), collapse = TRUE, dataframe = c("rows", "columns", "values"), complex = "string", oldna = NULL, rownames = NULL, keep_vec_names = FALSE, indent = NA_integer_, no_dots = FALSE, ...) {
   # Coerse pairlist if needed
   if (is.pairlist(x)) {
     x <- as.vector(x, mode = "list")
@@ -12,10 +9,10 @@ setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), co
   has_names <- identical(length(names(x)), ncol(x))
 
   # Default to adding row names only if they are strings and not just stringified numbers
-  if(isTRUE(rownames) || (is.null(rownames) && is.character(attr(x, "row.names")) && !all(grepl("^\\d+$", row.names(x))))){
+  if (isTRUE(rownames) || (is.null(rownames) && is.character(attr(x, "row.names")) && !all(grepl("^\\d+$", row.names(x))))) {
     # we don't use row.names() because this converts numbers to strings,
     # which will break sorting
-    if(has_names){
+    if (has_names) {
       x[["_row"]] <- attr(x, "row.names")
     }
   }
@@ -34,25 +31,24 @@ setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), co
 
   # Column based is same as list. Do not pass collapse arg because it is a named list.
   if (dataframe == "columns") {
-    return(asJSON(as.list(x), is_df = TRUE, na = na, dataframe = dataframe,
-      complex = complex, rownames = rownames, indent = indent, no_dots = no_dots, ...))
+    return(asJSON(as.list(x), is_df = TRUE, na = na, dataframe = dataframe, complex = complex, rownames = rownames, indent = indent, no_dots = no_dots, ...))
   }
 
   # Determine "oldna". This is needed when the data frame contains a list column
-  if(missing(na) || !length(na) || identical(na, "NA")){
+  if (missing(na) || !length(na) || identical(na, "NA")) {
     oldna <- NULL
   } else {
-    oldna <- na;
+    oldna <- na
   }
 
   # Set default for row based, don't do it earlier because it will affect 'oldna' or dataframe="columns"
-  if(dataframe == "rows" && has_names){
+  if (dataframe == "rows" && has_names) {
     na <- match.arg(na)
   }
 
   # no records
   if (!nrow(x)) {
-    return(asJSON(list(), collapse=collapse, indent=indent))
+    return(asJSON(list(), collapse = collapse, indent = indent))
   }
 
   # Convert raw vectors
@@ -62,18 +58,16 @@ setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), co
   }
 
   # Turn complex vectors into data frames
-  if(complex == "list"){
+  if (complex == "list") {
     complxvars <- which(vapply(x, is.complex, logical(1)))
     for (i in complxvars) {
-      x[[i]] <- data.frame(real=Re(x[[i]]), imaginary=Im(x[[i]]))
+      x[[i]] <- data.frame(real = Re(x[[i]]), imaginary = Im(x[[i]]))
     }
   }
 
   #create a matrix of json elements
   dfnames <- deparse_vector(cleannames(names(x), no_dots = no_dots))
-  out <- vapply(x, asJSON, character(nrow(x)), collapse=FALSE, complex = complex, na = na,
-    oldna = oldna, rownames = rownames, dataframe = dataframe, indent = indent + 2L,
-    no_dots = no_dots, ..., USE.NAMES = FALSE)
+  out <- vapply(x, asJSON, character(nrow(x)), collapse = FALSE, complex = complex, na = na, oldna = oldna, rownames = rownames, dataframe = dataframe, indent = indent_increment(indent), no_dots = no_dots, ..., USE.NAMES = FALSE)
 
   # This would be another way of doing the missing values
   # This does not require the individual classes to support na="NA"
@@ -83,15 +77,15 @@ setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), co
   #}
 
   #this is a workaround for vapply simplifying into a vector for n=1 (not for n=0 surprisingly)
-  if(!is.matrix(out)){
+  if (!is.matrix(out)) {
     out <- t(out)
   }
 
   # turn the matrix into json records
   # note: special row_collapse functions because apply is slow!
-  tmp <- if(dataframe == "rows" && (length(dfnames) == ncol(out))) {
+  tmp <- if (dataframe == "rows" && (length(dfnames) == ncol(out))) {
     #apply(out, 1, collapse_object, x = dfnames, indent = indent + 2L);
-    row_collapse_object(dfnames, out, indent = indent + 2L)
+    row_collapse_object(dfnames, out, indent = indent_increment(indent))
   } else {
     # for dataframe = "values"
     #apply(out, 1, collapse, indent = indent);
@@ -99,13 +93,13 @@ setMethod("asJSON", "data.frame", function(x, na = c("NA", "null", "string"), co
   }
 
   #collapse
-  if(isTRUE(collapse)){
+  if (isTRUE(collapse)) {
     collapse(tmp, inner = FALSE, indent = indent)
   } else {
     tmp
   }
 })
 
-is.namedlistnotdf <- function(x){
+is.namedlistnotdf <- function(x) {
   isTRUE(is.list(x) && !is.data.frame(x) && !is.null(names(x)))
 }

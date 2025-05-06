@@ -9,7 +9,7 @@ SEXP C_collapse_object_pretty(SEXP x, SEXP y, SEXP indent);
 
 SEXP C_row_collapse_object(SEXP names, SEXP m, SEXP indent){
   //get matrix dimensions
-  int *dims = INTEGER(getAttrib(m, install("dim")));
+  int *dims = INTEGER(getAttrib(m, R_DimSymbol));
   int x = dims[0];
   int y = dims[1];
 
@@ -33,7 +33,7 @@ SEXP C_row_collapse_object(SEXP names, SEXP m, SEXP indent){
 
 SEXP C_row_collapse_array(SEXP m, SEXP indent){
   //get matrix dimensions
-  int *dims = INTEGER(getAttrib(m, install("dim")));
+  int *dims = INTEGER(getAttrib(m, R_DimSymbol));
   int x = dims[0];
   int y = dims[1];
 

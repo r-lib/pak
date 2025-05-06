@@ -8,13 +8,14 @@ PKG_CFLAGS = $(C_VISIBILITY) \
 LIBYAJL = yajl/yajl.o yajl/yajl_alloc.o yajl/yajl_buf.o yajl/yajl_encode.o \
 	yajl/yajl_gen.o yajl/yajl_lex.o yajl/yajl_parser.o yajl/yajl_tree.o
 
-#all: clean
 STATLIB = yajl/libstatyajl.a
+
+all: $(SHLIB) cleanup
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB): $(LIBYAJL)
 	$(AR) rcs $(STATLIB) $(LIBYAJL)
 
-clean:
-	rm -f $(LIBYAJL) $(SHLIB) $(OBJECTS) $(STATLIB)
+cleanup: $(SHLIB)
+	@rm -f $(LIBYAJL) $(STATLIB)

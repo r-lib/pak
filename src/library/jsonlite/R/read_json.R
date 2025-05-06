@@ -17,14 +17,14 @@
 #'
 #' # A data frame
 #' read_json(tmp, simplifyVector = TRUE)
-read_json <- function(path, simplifyVector = FALSE, ...){
+read_json <- function(path, simplifyVector = FALSE, ...) {
   parse_json(file(path), simplifyVector = simplifyVector, ...)
 }
 
 #' @export
 #' @rdname read_json
 #' @param json string with literal json or connection object to read from
-parse_json <- function(json, simplifyVector = FALSE, ...){
+parse_json <- function(json, simplifyVector = FALSE, ...) {
   parse_and_simplify(json, simplifyVector = simplifyVector, ...)
 }
 

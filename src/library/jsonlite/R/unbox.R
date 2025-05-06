@@ -30,24 +30,24 @@
 #' x <- iris[1,]
 #' toJSON(list(rec=x))
 #' toJSON(list(rec=unbox(x)))
-unbox <- function(x){
-  if(is.null(x)){
+unbox <- function(x) {
+  if (is.null(x)) {
     return(x)
   }
-  if(is.data.frame(x)){
-    if(nrow(x) == 1){
+  if (is.data.frame(x)) {
+    if (nrow(x) == 1) {
       return(as.scalar(x))
     } else {
       stop("Tried to unbox dataframe with ", nrow(x), " rows.")
     }
   }
-  if (length(x) == 1L && inherits(x,"POSIXt")) {
-    return (as.scalar(x))
+  if (length(x) == 1L && inherits(x, "POSIXt")) {
+    return(as.scalar(x))
   }
-  if(is.null(x) || !is.atomic(x) || length(dim(x)) > 1){
+  if (is.null(x) || !is.atomic(x) || length(dim(x)) > 1) {
     stop("Only atomic vectors of length 1 or data frames with 1 row can be unboxed.")
   }
-  if(identical(length(x), 1L)){
+  if (identical(length(x), 1L)) {
     return(as.scalar(x))
   } else {
     stop("Tried to unbox a vector of length ", length(x))

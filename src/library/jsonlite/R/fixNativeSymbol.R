@@ -12,8 +12,7 @@ fixNativeSymbol <- function(symbol) {
       pkgDLL <- getLoadedDLLs()[[name]]
 
       # reconstruct the native symbol address
-      newsymbol <- getNativeSymbolInfo(name = symbol$name, PACKAGE = pkgDLL,
-        withRegistrationInfo = TRUE)
+      newsymbol <- getNativeSymbolInfo(name = symbol$name, PACKAGE = pkgDLL, withRegistrationInfo = TRUE)
       symbol$address <- newsymbol$address
       return(symbol)
     } else if (rVersion >= "2.14") {
