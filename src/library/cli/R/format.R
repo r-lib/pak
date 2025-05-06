@@ -114,8 +114,9 @@ cli_format.numeric <- function(x, style = NULL, ...) {
 #'
 #' @param x Vector that will be collapsed by cli.
 #' @param style Style to apply to the vector. It is used as a theme on
-#' a `span` element that is created for the vector. You can set `vec-sep`
-#' and `vec-last` to modify the separator and the last separator.
+#' a `span` element that is created for the vector. You can set `vec-sep`,
+#' `vec-sep2`, and `vec-last` to modify the general separator,
+#' the 2-item separator, and the last separator.
 #'
 #' @export
 #' @seealso [cli_format()]

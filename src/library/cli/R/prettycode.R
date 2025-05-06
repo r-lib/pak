@@ -55,7 +55,7 @@ code_highlight <- function(code, code_theme = NULL, envir = NULL) {
   }
 
   theme <- code_theme_make(code_theme)
-  data <- getParseData(parsed, includeText = NA)
+  data <- get_parse_data(parsed)
 
   hitext <- data$text
 
@@ -123,6 +123,46 @@ code_highlight <- function(code, code_theme = NULL, envir = NULL) {
   }
 
   do_subst(code, data, hitext)
+}
+
+get_parse_data <- function(x) {
+  # getParseData(x, includeText = NA) would trim long strings and symbols
+  data <- getParseData(x, includeText = FALSE)
+  data$text <- character(nrow(data))
+
+  substr_with_tabs <- function (x, start, stop, tabsize = 8) {
+    widths <- rep_len(1, nchar(x))
+    tabs <- which(strsplit(x, "")[[1]] == "\t")
+    for (i in tabs) {
+      cols <- cumsum(widths)
+      widths[i] <- tabsize - (cols[i] - 1) %% tabsize
+    }
+    cols <- cumsum(widths)
+    start <- which(cols >= start)
+    if (!length(start)) {
+      return("")
+    }
+    start <- start[1]
+    stop <- which(cols <= stop)
+    if (length(stop)) {
+      stop <- stop[length(stop)]
+      substr(x, start, stop)
+    } else {
+      ""
+    }
+  }
+
+  srcfile <- attr(data, "srcfile")
+  terminal <- which(data$terminal)
+  for (i in terminal) {
+    lines <- getSrcLines(srcfile, data$line1[i], data$line2[i])
+    n <- length(lines)
+    lines[n] <- substr_with_tabs(lines[n], 1, data$col2[i])
+    lines[1] <- substr_with_tabs(lines[1], data$col1[i], Inf)
+    data$text[i] <- paste(lines, collapse = "\n")
+  }
+
+  data
 }
 
 do_subst <- function(code, pdata, hitext) {
