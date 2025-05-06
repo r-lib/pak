@@ -1,4 +1,3 @@
-
 #' Environment variable keyring backend
 #'
 #' This is a simple keyring backend, that stores/uses secrets in
@@ -40,22 +39,30 @@ backend_env <- R6Class(
     name = "env",
     get = function(service, username = NULL, keyring = NULL)
       b_env_get(self, private, service, username, keyring),
-    set = function(service, username = NULL, keyring = NULL,
-                   prompt = "Password: ")
-      b_env_set(self, private, service, username, keyring, prompt),
-    set_with_value = function(service, username = NULL, password = NULL,
-                              keyring = NULL)
-      b_env_set_with_value(self, private, service, username, password,
-                           keyring),
+    set = function(
+      service,
+      username = NULL,
+      keyring = NULL,
+      prompt = "Password: "
+    ) b_env_set(self, private, service, username, keyring, prompt),
+    set_with_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    ) b_env_set_with_value(self, private, service, username, password, keyring),
     delete = function(service, username = NULL, keyring = NULL)
       b_env_delete(self, private, service, username, keyring),
     list = function(service = NULL, keyring = NULL)
       b_env_list(self, private, service, keyring),
 
     docs = function() {
-      modifyList(super$docs(), list(
-        . = "Store secrets in environment variables."
-      ))
+      modifyList(
+        super$docs(),
+        list(
+          . = "Store secrets in environment variables."
+        )
+      )
     }
   ),
   private = list(
@@ -67,8 +74,10 @@ backend_env <- R6Class(
 
 warn_for_keyring <- function(keyring) {
   if (!is.null(keyring)) {
-    warning("The 'env' backend does not support multiple keyrings, ",
-            "the 'keyring' argument is ignored")
+    warning(
+      "The 'env' backend does not support multiple keyrings, ",
+      "the 'keyring' argument is ignored"
+    )
   }
 }
 
@@ -86,13 +95,25 @@ b_env_set <- function(self, private, service, username, keyring, prompt) {
   password <- get_pass(prompt)
   if (is.null(password)) stop("Aborted setting keyring key")
   username <- username %||% getOption("keyring_username")
-  b_env_set_with_value(self, private, service, username, password,
-                       keyring = NULL)
+  b_env_set_with_value(
+    self,
+    private,
+    service,
+    username,
+    password,
+    keyring = NULL
+  )
   invisible(self)
 }
 
-b_env_set_with_value <- function(self, private, service, username,
-                                 password, keyring) {
+b_env_set_with_value <- function(
+  self,
+  private,
+  service,
+  username,
+  password,
+  keyring
+) {
   warn_for_keyring(keyring)
   username <- username %||% getOption("keyring_username")
   var <- private$env_to_var(service, username)
@@ -117,8 +138,7 @@ b_env_to_var <- function(self, private, service, username, keyring) {
 }
 
 b_env_list <- function(self, private, service, keyring) {
-  if (is.null(service))
-    stop("'service' is required for 'env' backend.")
+  if (is.null(service)) stop("'service' is required for 'env' backend.")
 
   keys <- gsub(
     paste(service, ":", sep = ""),

@@ -1,8 +1,9 @@
-
 abstract_method <- function() {
-  stop("An abstract keyring method is called. This is an internal error. ",
-       "It most likely happends because of a broken keyring backend that ",
-       "does not implement all keyring functions.")
+  stop(
+    "An abstract keyring method is called. This is an internal error. ",
+    "It most likely happends because of a broken keyring backend that ",
+    "does not implement all keyring functions."
+  )
 }
 
 #' Abstract class of a minimal keyring backend
@@ -69,18 +70,27 @@ backend <- R6Class(
 
     has_keyring_support = function() FALSE,
 
-    get = function(service, username = NULL, keyring = NULL)
-      abstract_method(),
+    get = function(service, username = NULL, keyring = NULL) abstract_method(),
     get_raw = function(service, username = NULL, keyring = NULL)
       charToRaw(self$get(service, username, keyring)),
-    set = function(service, username = NULL, keyring = NULL,
-                   prompt = "Password: ")
-      abstract_method(),
-    set_with_value = function(service, username = NULL, password = NULL,
-      keyring = NULL) abstract_method(),
-    set_with_raw_value = function(service, username = NULL, password = NULL,
-      keyring = NULL) self$set_with_value(service, username,
-        rawToChar(password), keyring),
+    set = function(
+      service,
+      username = NULL,
+      keyring = NULL,
+      prompt = "Password: "
+    ) abstract_method(),
+    set_with_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    ) abstract_method(),
+    set_with_raw_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    ) self$set_with_value(service, username, rawToChar(password), keyring),
     delete = function(service, username = NULL, keyring = NULL)
       abstract_method(),
     list = function(service = NULL, keyring = NULL)
@@ -103,12 +113,17 @@ backend <- R6Class(
     ## This should be 'protected', really, but not possible in R6
     confirm_delete_keyring = function(keyring) {
       if (is.null(keyring)) {
-        stop("Cannot delete the default keyring. ",
-             "You need to specify the name of the keyring explicitly.")
+        stop(
+          "Cannot delete the default keyring. ",
+          "You need to specify the name of the keyring explicitly."
+        )
       }
       list <- self$keyring_list()
-      if (keyring %in% list$keyring &&
-          list$num_secrets[match(keyring, list$keyring)] > 0) {
+      if (
+        keyring %in%
+          list$keyring &&
+          list$num_secrets[match(keyring, list$keyring)] > 0
+      ) {
         confirmation(
           "The keyring is not empty, type 'yes' to delete it",
           "yes"
@@ -182,17 +197,16 @@ backend_keyrings <- R6Class(
   public = list(
     has_keyring_support = function() TRUE,
 
-    get = function(service, username = NULL, keyring = NULL)
-      abstract_method(),
-    set = function(service, username = NULL, keyring = NULL)
-      abstract_method(),
-    set_with_value = function(service, username = NULL, password = NULL,
-      keyring = NULL)
-      abstract_method(),
-    delete = function(service, username = NULL)
-      abstract_method(),
-    list = function(service = NULL, keyring = NULL)
-      abstract_method(),
+    get = function(service, username = NULL, keyring = NULL) abstract_method(),
+    set = function(service, username = NULL, keyring = NULL) abstract_method(),
+    set_with_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    ) abstract_method(),
+    delete = function(service, username = NULL) abstract_method(),
+    list = function(service = NULL, keyring = NULL) abstract_method(),
 
     keyring_create = function(keyring, password) abstract_method(),
     keyring_list = function() abstract_method(),
@@ -205,17 +219,20 @@ backend_keyrings <- R6Class(
     keyring_set_default = function(keyring = NULL) abstract_method(),
 
     docs = function() {
-      modifyList(super$docs(), list(
-        . = "Inherit from this class for a new backend with multiple keyrings.",
-        keyring_create = "create new keyring",
-        keyring_list = "list all keyrings",
-        keyring_delete = "delete a keyring",
-        keyring_lock = "lock a keyring",
-        keyring_unlock = "unlock a keyring",
-        keyring_is_locked = "check if a keyring is locked",
-        keyring_default = "query the default keyring",
-        keyring_set_default = "set the default keyring"
-      ))
+      modifyList(
+        super$docs(),
+        list(
+          . = "Inherit from this class for a new backend with multiple keyrings.",
+          keyring_create = "create new keyring",
+          keyring_list = "list all keyrings",
+          keyring_delete = "delete a keyring",
+          keyring_lock = "lock a keyring",
+          keyring_unlock = "unlock a keyring",
+          keyring_is_locked = "check if a keyring is locked",
+          keyring_default = "query the default keyring",
+          keyring_set_default = "set the default keyring"
+        )
+      )
     }
   )
 )

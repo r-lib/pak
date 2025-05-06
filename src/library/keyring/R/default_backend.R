@@ -1,4 +1,3 @@
-
 #' Select the default backend and default keyring
 #'
 #' The default backend is selected
@@ -24,8 +23,8 @@
 #' 1. the `keyring_keyring` option.
 #'     - You can change this by using `options(keyring_keyring = "NEWVALUE")`
 #' 1. If this is not set, the `R_KEYRING_KEYRING` environment variable.
-#'     - Change this value with `Sys.setenv(R_KEYRING_KEYRING = "NEWVALUE")`, 
-#'     either in your script or in your `.Renviron` file. 
+#'     - Change this value with `Sys.setenv(R_KEYRING_KEYRING = "NEWVALUE")`,
+#'     either in your script or in your `.Renviron` file.
 #'     See [base::Startup] for information about using `.Renviron`
 #' 1. Finally, if neither of these are set, the OS default keyring is used.
 #'     - Usually the keyring is automatically unlocked when the user logs in.
@@ -33,8 +32,8 @@
 #' @param keyring Character string, the name of the keyring to use,
 #'   or `NULL` for the default keyring.
 #' @return The backend object itself.
-#' 
-#' 
+#'
+#'
 #' @seealso [backend_env], [backend_file], [backend_macos],
 #'          [backend_secret_service], [backend_wincred]
 #'
@@ -59,7 +58,7 @@ default_backend <- function(keyring = NULL) {
     )
   }
 
-  if (! is.null(keyring) && nzchar(keyring)) {
+  if (!is.null(keyring) && nzchar(keyring)) {
     backend$new(keyring = keyring)
   } else {
     backend$new()
@@ -77,21 +76,24 @@ default_backend_auto <- function() {
 
   if (sysname == "windows" && "wincred" %in% names(known_backends)) {
     backend_wincred
-
   } else if (sysname == "darwin" && "macos" %in% names(known_backends)) {
     backend_macos
-
-  } else if (sysname == "linux" && "secret_service" %in% names(known_backends) &&
-             backend_secret_service$new()$is_available()) {
+  } else if (
+    sysname == "linux" &&
+      "secret_service" %in% names(known_backends) &&
+      backend_secret_service$new()$is_available()
+  ) {
     backend_secret_service
-    
   } else if ("file" %in% names(known_backends) && file_backend_works()) {
     backend_file
-
   } else {
     if (getOption("keyring_warn_for_env_fallback", TRUE)) {
-      warning("Selecting ", sQuote("env"), " backend. ",
-              "Secrets are stored in environment variables")
+      warning(
+        "Selecting ",
+        sQuote("env"),
+        " backend. ",
+        "Secrets are stored in environment variables"
+      )
     }
     backend_env
   }
@@ -100,16 +102,19 @@ default_backend_auto <- function() {
 file_backend_works <- function() {
   opt <- options(rlib_interactive = FALSE)
   on.exit(options(opt), add = TRUE)
-  tryCatch({
-    kb <- backend_file$new()
-    krs <- kb$keyring_list()
-    def <- kb$keyring_default()
-    if (!def %in% krs$keyring) {
-      return(FALSE)
-    }
-    kb$list()
-    TRUE
-  }, error = function(err) FALSE)
+  tryCatch(
+    {
+      kb <- backend_file$new()
+      krs <- kb$keyring_list()
+      def <- kb$keyring_default()
+      if (!def %in% krs$keyring) {
+        return(FALSE)
+      }
+      kb$list()
+      TRUE
+    },
+    error = function(err) FALSE
+  )
 }
 
 backend_factory <- function(name) {

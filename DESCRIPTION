@@ -7,7 +7,7 @@ Authors@R: c(
     person("Posit Software, PBC", role = c("cph", "fnd")),
     person("Winston", "Chang", role = "ctb", comment = "R6, callr, processx"),
     person("Ascent Digital Services", role = c("cph", "fnd"), comment = "callr, processx"),
-    person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild"),
+    person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild, yaml"),
     person("Jeroen", "Ooms", role = "ctb", comment = "curl, jsonlite"),
     person("Maëlle", "Salmon", role = "ctb", comment = "desc, pkgsearch"),
     person("Duncan", "Temple Lang", role = "ctb", comment = "jsonlite"),
@@ -18,6 +18,18 @@ Authors@R: c(
     person("Jay", "Loden", role = "ctb", comment = "ps"),
     person("Dave", "Daeschler", role = "ctb", comment = "ps"),
     person("Giampaolo", "Rodola", role = "ctb", comment = "ps"),
+    person("Shawn", "Garbett", role = "ctb", comment = "yaml"),
+    person("Jeremy", "Stephens", role = "ctb", comment = "yaml"),
+    person("Kirill", "Simonov", role = "ctb", comment = "yaml"),
+    person("Yihui", "Xie", role = "ctb", comment = "yaml"),
+    person("Zhuoer", "Dong", role = "ctb", comment = "yaml"),
+    person("Jeffrey", "Horner", role = "ctb", comment = "yaml"),
+    person("Will", "Beasley", role = "ctb", comment = "yaml"),
+    person("Brendan", "O'Connor", role = "ctb", comment = "yaml"),
+    person("Gregory", "Warnes", role = "ctb", comment = "yaml"),
+    person("Michael", "Quinn", role = "ctb", comment = "yaml"),
+    person("Zhian", "Kamvar", role = "ctb", comment = "yaml"),
+    person("Charlie", "Gao", role = "ctb", comment = "yaml"),
     person("Kuba", "Podgórski", role = "ctb", comment = "zip"),
     person("Rich", "Geldreich", role = "ctb", comment = "zip")
   )
@@ -58,7 +70,8 @@ Suggests:
     rstudioapi,
     testthat (>= 3.2.0),
     webfakes,
-    withr
+    withr,
+    yaml
 Remotes:
     r-lib/pkgcache
 ByteCompile: true
@@ -78,6 +91,7 @@ Config/needs/dependencies:
     pkgsearch,
     processx,
     ps,
+    yaml
 Config/Needs/website:
     r-lib/asciicast,
     rmarkdown,

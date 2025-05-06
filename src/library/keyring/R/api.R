@@ -1,4 +1,3 @@
-
 #' Operations on keys
 #'
 #' These functions manipulate keys in a keyring. You can think of a keyring
@@ -130,8 +129,12 @@ key_get_raw <- function(service, username = NULL, keyring = NULL) {
 #' @export
 #' @rdname key_get
 
-key_set <- function(service, username = NULL, keyring = NULL,
-                    prompt = "Password: ") {
+key_set <- function(
+  service,
+  username = NULL,
+  keyring = NULL,
+  prompt = "Password: "
+) {
   assert_that(is_non_empty_string(service))
   assert_that(is_string_or_null(username))
   default_backend()$set(service, username, keyring = keyring, prompt = prompt)
@@ -140,23 +143,39 @@ key_set <- function(service, username = NULL, keyring = NULL,
 #' @export
 #' @rdname key_get
 
-key_set_with_value <- function(service, username = NULL, password = NULL,
-                               keyring = NULL) {
+key_set_with_value <- function(
+  service,
+  username = NULL,
+  password = NULL,
+  keyring = NULL
+) {
   assert_that(is_non_empty_string(service))
   assert_that(is_string(password))
-  default_backend()$set_with_value(service, username, password,
-                                         keyring = keyring)
+  default_backend()$set_with_value(
+    service,
+    username,
+    password,
+    keyring = keyring
+  )
 }
 
 #' @export
 #' @rdname key_get
 
-key_set_with_raw_value <- function(service, username = NULL,
-                                   password = NULL, keyring = NULL) {
+key_set_with_raw_value <- function(
+  service,
+  username = NULL,
+  password = NULL,
+  keyring = NULL
+) {
   assert_that(is_non_empty_string(service))
   assert_that(is.raw(password))
-  default_backend()$set_with_raw_value(service, username, password,
-                                       keyring = keyring)
+  default_backend()$set_with_raw_value(
+    service,
+    username,
+    password,
+    keyring = keyring
+  )
 }
 
 #' @export

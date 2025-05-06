@@ -1,4 +1,3 @@
-
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
@@ -54,7 +53,9 @@ is_list_with_names <- function(x, names) {
 on_failure(is_list_with_names) <- function(call, env) {
   paste0(
     deparse(call$x),
-    " must be a named list of length ", length(call$names), " with entries ",
+    " must be a named list of length ",
+    length(call$names),
+    " with entries ",
     paste(vapply(call$names, sQuote, character(1L)), collapse = ", ")
   )
 }

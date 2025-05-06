@@ -1,4 +1,3 @@
-
 #' macOS Keychain keyring backend
 #'
 #' This backend is the default on macOS. It uses the macOS native Keychain
@@ -28,24 +27,46 @@ backend_macos <- R6Class(
   inherit = backend_keyrings,
   public = list(
     name = "macos",
-    initialize = function(keyring = NULL)
-      b_macos_init(self, private, keyring),
+    initialize = function(keyring = NULL) b_macos_init(self, private, keyring),
 
     get = function(service, username = NULL, keyring = NULL)
       b_macos_get(self, private, service, username, keyring),
     get_raw = function(service, username = NULL, keyring = NULL)
       b_macos_get_raw(self, private, service, username, keyring),
-    set = function(service, username = NULL, keyring = NULL,
-                   prompt = "Password: ")
-      b_macos_set(self, private, service, username, keyring, prompt),
-    set_with_value = function(service, username = NULL, password = NULL,
-      keyring = NULL)
-      b_macos_set_with_value(self, private, service, username, password,
-                             keyring),
-    set_with_raw_value = function(service, username = NULL, password = NULL,
-      keyring = NULL)
-      b_macos_set_with_raw_value(self, private, service, username, password,
-                                 keyring),
+    set = function(
+      service,
+      username = NULL,
+      keyring = NULL,
+      prompt = "Password: "
+    ) b_macos_set(self, private, service, username, keyring, prompt),
+    set_with_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    )
+      b_macos_set_with_value(
+        self,
+        private,
+        service,
+        username,
+        password,
+        keyring
+      ),
+    set_with_raw_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    )
+      b_macos_set_with_raw_value(
+        self,
+        private,
+        service,
+        username,
+        password,
+        keyring
+      ),
     delete = function(service, username = NULL, keyring = NULL)
       b_macos_delete(self, private, service, username, keyring),
     list = function(service = NULL, keyring = NULL)
@@ -55,8 +76,7 @@ backend_macos <- R6Class(
 
     keyring_create = function(keyring, password = NULL)
       b_macos_keyring_create(self, private, keyring, password),
-    keyring_list = function()
-      b_macos_keyring_list(self, private),
+    keyring_list = function() b_macos_keyring_list(self, private),
     keyring_delete = function(keyring = NULL)
       b_macos_keyring_delete(self, private, keyring),
     keyring_lock = function(keyring = NULL)
@@ -65,22 +85,23 @@ backend_macos <- R6Class(
       b_macos_keyring_unlock(self, private, keyring, password),
     keyring_is_locked = function(keyring = NULL)
       b_macos_keyring_is_locked(self, private, keyring),
-    keyring_default = function()
-      b_macos_keyring_default(self, private),
+    keyring_default = function() b_macos_keyring_default(self, private),
     keyring_set_default = function(keyring = NULL)
       b_macos_keyring_set_default(self, private, keyring),
 
     docs = function() {
-      modifyList(super$docs(), list(
-        . = "Store secrets in the macOS Keychain."
-      ))
+      modifyList(
+        super$docs(),
+        list(
+          . = "Store secrets in the macOS Keychain."
+        )
+      )
     }
   ),
 
   private = list(
     keyring = NULL,
-    keyring_file = function(name)
-      b_macos_keyring_file(self, private, name),
+    keyring_file = function(name) b_macos_keyring_file(self, private, name),
     keyring_create_direct = function(keyring, password)
       b_macos_keyring_create_direct(self, private, keyring, password)
   )
@@ -94,8 +115,7 @@ b_macos_init <- function(self, private, keyring) {
 b_macos_get <- function(self, private, service, username, keyring) {
   username <- username %||% getOption("keyring_username")
   keyring <- private$keyring_file(keyring %||% private$keyring)
-  res <- .Call(keyring_macos_get, utf8(keyring), utf8(service),
-               utf8(username))
+  res <- .Call(keyring_macos_get, utf8(keyring), utf8(service), utf8(username))
   if (any(res == 0)) {
     stop("Key contains embedded null bytes, use get_raw()")
   }
@@ -116,29 +136,50 @@ b_macos_set <- function(self, private, service, username, keyring, prompt) {
   invisible(self)
 }
 
-b_macos_set_with_value <- function(self, private, service, username,
-                                   password, keyring) {
+b_macos_set_with_value <- function(
+  self,
+  private,
+  service,
+  username,
+  password,
+  keyring
+) {
   username <- username %||% getOption("keyring_username")
   keyring <- private$keyring_file(keyring %||% private$keyring)
-  .Call(keyring_macos_set, utf8(keyring), utf8(service),
-        utf8(username), charToRaw(password))
+  .Call(
+    keyring_macos_set,
+    utf8(keyring),
+    utf8(service),
+    utf8(username),
+    charToRaw(password)
+  )
   invisible(self)
 }
 
-b_macos_set_with_raw_value <- function(self, private, service, username,
-                                       password, keyring) {
+b_macos_set_with_raw_value <- function(
+  self,
+  private,
+  service,
+  username,
+  password,
+  keyring
+) {
   username <- username %||% getOption("keyring_username")
   keyring <- private$keyring_file(keyring %||% private$keyring)
-  .Call(keyring_macos_set, utf8(keyring), utf8(service),
-        utf8(username), password)
+  .Call(
+    keyring_macos_set,
+    utf8(keyring),
+    utf8(service),
+    utf8(username),
+    password
+  )
   invisible(self)
 }
 
 b_macos_delete <- function(self, private, service, username, keyring) {
   username <- username %||% getOption("keyring_username")
   keyring <- private$keyring_file(keyring %||% private$keyring)
-  .Call(keyring_macos_delete, utf8(keyring), utf8(service),
-        utf8(username))
+  .Call(keyring_macos_delete, utf8(keyring), utf8(service), utf8(username))
   invisible(self)
 }
 
@@ -154,14 +195,16 @@ b_macos_list <- function(self, private, service, keyring) {
   usr_na <- anyNA(df[["username"]])
   if (srv_na | usr_na) {
     cnd <- structure(
-      list(message = paste0(
-        "Some ",
-        if (srv_na) "service names ",
-        if (srv_na && usr_na) "and some ",
-        if (usr_na) "user names ",
-        "contain zero bytes. These are shown as NA. ",
-        "Use `key_list_raw()` to see them."
-      )),
+      list(
+        message = paste0(
+          "Some ",
+          if (srv_na) "service names ",
+          if (srv_na && usr_na) "and some ",
+          if (usr_na) "user names ",
+          "contain zero bytes. These are shown as NA. ",
+          "Use `key_list_raw()` to see them."
+        )
+      ),
       class = "keyring_warn_zero_byte_keys"
     )
     warning(cnd)
@@ -240,10 +283,8 @@ b_macos_keyring_set_default <- function(self, private, keyring) {
 b_macos_keyring_file <- function(self, private, name) {
   if (is.null(name)) {
     name
-
   } else if (substr(name, 1, 1) == "/" || substr(name, 1, 2) == "./") {
     normalizePath(name, mustWork = FALSE)
-
   } else {
     files <- normalizePath(
       paste0("~/Library/Keychains/", name, c(".keychain", ".keychain-db")),

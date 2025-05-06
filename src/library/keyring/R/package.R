@@ -1,4 +1,3 @@
-
 #' About the keyring package
 #'
 #' Platform independent API to many system credential store

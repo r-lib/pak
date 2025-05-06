@@ -1,4 +1,3 @@
-
 #' Linux Secret Service keyring backend
 #'
 #' This backend is the default on Linux. It uses the libsecret library,
@@ -39,24 +38,38 @@ backend_secret_service <- R6Class(
   inherit = backend_keyrings,
   public = list(
     name = "secret service",
-    initialize = function(keyring = NULL)
-      b_ss_init(self, private, keyring),
+    initialize = function(keyring = NULL) b_ss_init(self, private, keyring),
 
     get = function(service, username = NULL, keyring = NULL)
       b_ss_get(self, private, service, username, keyring),
     get_raw = function(service, username = NULL, keyring = NULL)
       b_ss_get_raw(self, private, service, username, keyring),
-    set = function(service, username = NULL, keyring = NULL,
-                   prompt = "Password: ")
-      b_ss_set(self, private, service, username, keyring, prompt),
-    set_with_value = function(service, username = NULL, password = NULL,
-      keyring = NULL)
-      b_ss_set_with_value(self, private, service, username, password,
-                          keyring),
-    set_with_raw_value = function(service, username = NULL, password = NULL,
-      keyring = NULL)
-      b_ss_set_with_raw_value(self, private, service, username, password,
-                              keyring),
+    set = function(
+      service,
+      username = NULL,
+      keyring = NULL,
+      prompt = "Password: "
+    ) b_ss_set(self, private, service, username, keyring, prompt),
+    set_with_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    ) b_ss_set_with_value(self, private, service, username, password, keyring),
+    set_with_raw_value = function(
+      service,
+      username = NULL,
+      password = NULL,
+      keyring = NULL
+    )
+      b_ss_set_with_raw_value(
+        self,
+        private,
+        service,
+        username,
+        password,
+        keyring
+      ),
     delete = function(service, username = NULL, keyring = NULL)
       b_ss_delete(self, private, service, username, keyring),
     list = function(service = NULL, keyring = NULL)
@@ -64,8 +77,7 @@ backend_secret_service <- R6Class(
 
     keyring_create = function(keyring, password = NULL)
       b_ss_keyring_create(self, private, keyring, password),
-    keyring_list = function()
-      b_ss_keyring_list(self, private),
+    keyring_list = function() b_ss_keyring_list(self, private),
     keyring_delete = function(keyring = NULL)
       b_ss_keyring_delete(self, private, keyring),
     keyring_lock = function(keyring = NULL)
@@ -74,18 +86,20 @@ backend_secret_service <- R6Class(
       b_ss_keyring_unlock(self, private, keyring, password),
     keyring_is_locked = function(keyring = NULL)
       b_ss_keyring_is_locked(self, private, keyring),
-    keyring_default = function()
-      b_ss_keyring_default(self, private),
+    keyring_default = function() b_ss_keyring_default(self, private),
     keyring_set_default = function(keyring = NULL)
       b_ss_keyring_set_default(self, private, keyring),
     is_available = function(report_error = FALSE)
       b_ss_is_available(self, private, report_error),
 
     docs = function() {
-      modifyList(super$docs(), list(
-        . = "Store secrets using the Secret Service library and daemon.",
-        is_available = "check is Secret Service is available"
-      ))
+      modifyList(
+        super$docs(),
+        list(
+          . = "Store secrets using the Secret Service library and daemon.",
+          is_available = "check is Secret Service is available"
+        )
+      )
     }
   ),
 
@@ -124,21 +138,37 @@ b_ss_set <- function(self, private, service, username, keyring, prompt) {
   invisible(self)
 }
 
-b_ss_set_with_value <- function(self, private, service, username, password,
-                                keyring) {
+b_ss_set_with_value <- function(
+  self,
+  private,
+  service,
+  username,
+  password,
+  keyring
+) {
   username <- username %||% getOption("keyring_username")
   keyring <- keyring %||% private$keyring
-  .Call(keyring_secret_service_set, keyring, service, username,
-        charToRaw(password))
+  .Call(
+    keyring_secret_service_set,
+    keyring,
+    service,
+    username,
+    charToRaw(password)
+  )
   invisible(self)
 }
 
-b_ss_set_with_raw_value <- function(self, private, service, username, password,
-                                    keyring) {
+b_ss_set_with_raw_value <- function(
+  self,
+  private,
+  service,
+  username,
+  password,
+  keyring
+) {
   username <- username %||% getOption("keyring_username")
   keyring <- keyring %||% private$keyring
-  .Call(keyring_secret_service_set, keyring, service, username,
-        password)
+  .Call(keyring_secret_service_set, keyring, service, username, password)
   invisible(self)
 }
 
@@ -191,7 +221,8 @@ b_ss_keyring_lock <- function(self, private, keyring) {
 
 b_ss_keyring_unlock <- function(self, private, keyring, password) {
   keyring <- keyring %||% private$keyring
-  if (! is.null(password)) warning("password ignored, will be read interactively")
+  if (!is.null(password))
+    warning("password ignored, will be read interactively")
   .Call(keyring_secret_service_unlock_keyring, keyring, password)
   invisible()
 }

@@ -88,10 +88,11 @@ install_order <- function() {
     "pkgcache",
     # curl, jsonlite
     "pkgsearch",
+    "yaml",
     # callr, cli, curl, desc, filelock, jsonlite, lpSolve, pkgbuild,
     # pkgcache, processx, ps, R6, zip
     "pkgdepends",
-    # filelock, R6
+    # filelock, R6, yaml
     "keyring",
     NULL
   )

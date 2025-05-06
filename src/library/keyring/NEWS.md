@@ -1,5 +1,10 @@
 # keyring (development version)
 
+* keyring now does not depend on the assertthat, openssl, rappdirs and
+  sodium packages.
+
+* New `key_list_raw()` method to return keys as raw vectors (#159).
+
 # keyring 1.3.2
 
 * keyring uses safer `*printf()` format strings (Secret Service backend).

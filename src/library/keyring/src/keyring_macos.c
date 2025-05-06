@@ -335,12 +335,12 @@ SEXP keyring_macos_create(SEXP keyring, SEXP password) {
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   OSStatus status = SecKeychainCreate(
-# pragma GCC diagnostic pop
     ckeyring,
     /* passwordLength = */ (UInt32) strlen(cpassword),
     (const void*) cpassword,
     /* promptUser = */ 0, /* initialAccess = */ NULL,
     &result);
+# pragma GCC diagnostic pop
 
   keyring_macos_handle_status("cannot create keychain", status);
 

@@ -1,0 +1,20 @@
+Package: yaml
+Type: Package
+Title: Methods to Convert R Data to YAML and Back
+Date: 2024-07-22
+Version: 2.3.10
+Suggests: RUnit
+Author: Shawn P Garbett [aut], Jeremy Stephens [aut, cre], Kirill Simonov [aut], Yihui Xie [ctb],
+  Zhuoer Dong [ctb], Hadley Wickham [ctb], Jeffrey Horner [ctb], reikoch [ctb],
+  Will Beasley [ctb], Brendan O'Connor [ctb], Gregory R. Warnes [ctb],
+  Michael Quinn [ctb], Zhian N. Kamvar [ctb], Charlie Gao [ctb]
+Maintainer: Shawn Garbett <shawn.garbett@vumc.org>
+License: BSD_3_clause + file LICENSE
+Description: Implements the 'libyaml' 'YAML' 1.1 parser and emitter
+  (<https://pyyaml.org/wiki/LibYAML>) for R.
+URL: https://github.com/vubiostat/r-yaml/
+BugReports: https://github.com/vubiostat/r-yaml/issues
+NeedsCompilation: yes
+Packaged: 2024-07-22 15:44:18 UTC; garbetsp
+Repository: CRAN
+Date/Publication: 2024-07-26 15:10:02 UTC
