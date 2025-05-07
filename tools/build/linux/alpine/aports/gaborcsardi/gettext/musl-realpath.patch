@@ -1,0 +1,11 @@
+--- a/gettext-tools/gnulib-tests/test-canonicalize.c
++++ b/gettext-tools/gnulib-tests/test-canonicalize.c
+@@ -394,7 +394,7 @@
+     ASSERT (stat ("/", &st1) == 0);
+     ASSERT (stat ("//", &st2) == 0);
+     bool same = psame_inode (&st1, &st2);
+-#if defined __MVS__ || defined MUSL_LIBC
++#if defined __MVS__
+     /* On IBM z/OS and musl libc, "/" and "//" both canonicalize to
+        themselves, yet they both have st_dev == st_ino == 1.  */
+     same = false;

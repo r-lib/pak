@@ -1,0 +1,9 @@
+services:
+  build:
+    image: pak-alpine-packages
+    command: /home/gaborcsardi/build.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./packages:/home/gaborcsardi/packages

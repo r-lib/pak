@@ -1,0 +1,95 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=gettext
+pkgver=0.22.3
+pkgrel=0
+pkgdesc="GNU locale utilities"
+url="https://www.gnu.org/software/gettext/gettext.html"
+arch="all"
+license="GPL-3.0-or-later AND LGPL-2.1-or-later AND MIT"
+# do _not_ add the optional dependencies on libcroco or glib
+# they depend on gettext and would introduce cyclic dependencies
+# xz for autopoint autoreconf
+depends_dev="!musl-libintl xz"
+makedepends="perl ncurses-dev libxml2-dev libunistring-dev"
+checkdepends="coreutils"
+subpackages="
+	$pkgname-dbg
+	$pkgname-doc
+	$pkgname-static
+	$pkgname-dev
+	$pkgname-lang
+	$pkgname-envsubst:_envsubst
+	libintl
+	$pkgname-asprintf
+	$pkgname-libs
+	"
+source="https://ftp.gnu.org/gnu/gettext/gettext-$pkgver.tar.xz
+	cwd.patch
+	musl-realpath.patch
+	skip-tests-musl.patch
+	"
+
+# secfixes:
+#   0.20.1-r0:
+#     - CVE-2018-18751
+
+build() {
+	# force using system posix complaint printf
+	# the test is broken and fails with ash
+	gt_cv_func_printf_posix=yes \
+        CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC" \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-threads=posix \
+		--disable-java \
+		--enable-static
+	make
+}
+
+check() {
+	# test-verify fails if run in parallel
+	make -j1 check
+}
+
+package() {
+	depends="$pkgname-envsubst=$pkgver-r$pkgrel"
+	make -j1 DESTDIR="$pkgdir" install
+
+	# nothing in here is particularly useful, mostly just hello world examples in
+	# every single programming language for using gettext
+	rm -r "$pkgdir"/usr/share/doc
+}
+
+libintl() {
+	pkgdesc="GNU gettext runtime library"
+	license="LGPL-2.1-or-later"
+
+	amove usr/lib/libintl.so.*
+	chmod +x "$subpkgdir"/usr/lib/libintl.so.*
+}
+
+asprintf() {
+	pkgdesc="GNU gettext asprintf library"
+	license="LGPL-2.1-or-later"
+
+	amove usr/lib/libasprintf.so.*
+}
+
+_envsubst() {
+	pkgdesc="GNU gettext envsubst binary"
+	provides="envsubst"
+	provider_priority=100 # highest (other provider of cmd:envsubst is testing/envsubst)
+
+	amove usr/bin/envsubst
+}
+
+sha512sums="
+ccfd17d664f02da58b91623845fde23b9763442cb988be979d814aff66d774db87ed7d8b27dcce84bf8f118d85d34f4782ce451c5d3cb5a9484161ba2c3f4209  gettext-0.22.3.tar.xz
+31796534e40c1569b08cf48e25375ca1d0f439df8aa0d24283769d52a290e28522760128f11f5bd04217605974ae1fdee9557ec189ed32b11b2a45b4af3b0f4a  cwd.patch
+c423b7f5610f03af63ed5327801be47fecc1d3de66cb018b32d05179a62889156cefb6d302686e9ecd81421951a5aa5e4c5a7d911823fc41d4c52ad2387e0719  musl-realpath.patch
+a16963f804ce4abe8480da211228f7b24a0715d6ef3ff7d5e5c58a1387d6c4260ee237864081b05b164f082ef199a592494ce691dd0c96c61978e4c451707c7a  skip-tests-musl.patch
+"

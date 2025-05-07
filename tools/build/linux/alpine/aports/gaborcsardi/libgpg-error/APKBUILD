@@ -1,0 +1,56 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+# Contributor: Arto Kitula <arto.kitula@gmail.com>
+pkgname=libgpg-error
+pkgver=1.47
+pkgrel=2
+pkgdesc="Support library for libgcrypt"
+url="https://www.gnupg.org/"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc $pkgname-lisp:lisp:noarch"
+source="https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-$pkgver.tar.bz2"
+
+build() {
+	CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC" \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-install-gpg-error-config \
+		--enable-static \
+		--disable-nls
+	make
+}
+
+check() {
+	make -C "$builddir" check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+
+	amove usr/bin/yat2m
+}
+
+lisp() {
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/share "$subpkgdir"/usr/share/
+}
+
+static() {
+	pkgdesc="$pkgname static libraries"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib/
+}
+
+sha512sums="
+bbb4b15dae75856ee5b1253568674b56ad155524ae29a075cb5b0a7e74c4af685131775c3ea2226fff2f84ef80855e77aa661645d002b490a795c7ae57b66a30  libgpg-error-1.47.tar.bz2
+"

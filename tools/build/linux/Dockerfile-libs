@@ -53,7 +53,14 @@ COPY --from=build /usr/local /usr/local/
 # Packages for static libsecret
 
 RUN apk add --no-cache libsecret-static glib-static libgcrypt-static \
-    libgpg-error-static util-linux-static libffi-dev pcre2-dev
+    libgpg-error-static util-linux-static libffi-dev pcre2-dev \
+    libsecret-dev
+COPY alpine/dot-abuild/gaborcsardi-673e2275.rsa.pub /etc/apk/keys/
+RUN echo '@static https://github.com/r-hub/alpine-static/releases/download/v3.19' \
+    >> /etc/apk/repositories
+RUN apk add --no-cache \
+    gettext-static@static libgpg-error-static@static libffi-dev@static \
+    libgcrypt-static@static
 RUN cp /usr/lib/libglib-2.0.a /usr/local/lib/ && \
     cp /usr/lib/libintl.a /usr/local/lib/ && \
     cp /usr/lib/libblkid.a /usr/local/lib && \
