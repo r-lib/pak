@@ -191,17 +191,6 @@ specified date.
 Name this repository `CRAN`, otherwise pak will also add a default CRAN
 repository.
 
-## Time travel using MRAN
-
-```{asciicast tldr-repo-mran}
-pak::repo_add(CRAN = "MRAN@2022-06-30")
-pak::repo_get()
-```
-
-Sets a repository that is equivalent to CRAN's state at the specified date.
-Name this repository `CRAN`, otherwise pak will also add a default CRAN
-repository.
-
 # Caches
 
 By default pak caches both metadata and downloaded packages.

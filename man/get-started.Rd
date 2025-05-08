@@ -637,30 +637,6 @@ specified date.
 Name this repository \code{CRAN}, otherwise pak will also add a default CRAN
 repository.
 }
-
-\subsection{Time travel using MRAN}{
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pak::repo_add(CRAN = "MRAN@2022-06-30")
-pak::repo_get()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 5 × 5</span>                                                   
-#>   name          url                                type  r_ver…¹ bioc_…²
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
-#> <span style="color: #c2c2c2;">1</span> CRAN          https://cran.microsoft.com/snapsh… cran  *       <span style="color: #DC322F;">NA</span>     
-#> <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16   
-#> <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>         
-</pre></div>
-}}
-
-
-Sets a repository that is equivalent to CRAN's state at the specified date.
-Name this repository \code{CRAN}, otherwise pak will also add a default CRAN
-repository.
-}
 }
 
 \section{Caches}{
