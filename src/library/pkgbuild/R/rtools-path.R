@@ -50,7 +50,6 @@ scan_path_for_rtools <- function(debug = FALSE) {
 }
 
 find_arch_exe <- function(path, debug = FALSE) {
-
   # Convert unix path to Windows
   if (grepl("^/", path)) {
     path <- convert_unix_path(path)

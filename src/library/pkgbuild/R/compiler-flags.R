@@ -50,8 +50,12 @@ compiler_flags <- function(debug = FALSE) {
 
   if (cli::num_ansi_colors() > 1 && has_compiler_colored_diagnostics()) {
     flags <- c(
-      "CFLAGS", "CXXFLAGS", "CXX11FLAGS",
-      "CXX14FLAGS", "CXX17FLAGS", "CXX20FLAGS"
+      "CFLAGS",
+      "CXXFLAGS",
+      "CXX11FLAGS",
+      "CXX14FLAGS",
+      "CXX17FLAGS",
+      "CXX20FLAGS"
     )
     res[flags] <- paste(res[flags], "-fdiagnostics-color=always")
   }
@@ -78,7 +82,10 @@ has_compiler_colored_diagnostics <- function() {
     on.exit(cache_remove("has_compiler"))
   }
 
-  res <- withr_with_makevars(c(CFLAGS = "-fdiagnostics-color=always"), has_compiler())
+  res <- withr_with_makevars(
+    c(CFLAGS = "-fdiagnostics-color=always"),
+    has_compiler()
+  )
 
   cache_set("has_compiler_colored_diagnostics", res)
   res

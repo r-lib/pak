@@ -45,6 +45,13 @@
 #'   `Rscript bootstrap.R` in the source directory prior to running subsequent
 #'   build steps.
 #'
+#' * `Config/build/never-clean` can be set to `TRUE` to never add `--preclean`
+#'   to `R CMD INSTALL`, e.g., when header files have changed.
+#'   This helps avoiding rebuilds that can take long for very large C/C++ codebases
+#'   and can lead to build failures if object files are out of sync with header files.
+#'   Control the dependencies between object files and header files
+#'   by adding `include file.d` to `Makevars` for each `file.c` or `file.cpp` source file.
+#'
 #' ### Options
 #'
 #' * `pkg.build_copy_method`: use this option to avoid copying large
@@ -102,18 +109,37 @@
 #' @export
 #' @return a string giving the location (including file name) of the built
 #'  package
-build <- function(path = ".", dest_path = NULL, binary = FALSE, vignettes = TRUE,
-                  manual = FALSE, clean_doc = NULL, args = NULL, quiet = FALSE,
-                  needs_compilation = pkg_has_src(path), compile_attributes = FALSE,
-                  register_routines = FALSE) {
+build <- function(
+  path = ".",
+  dest_path = NULL,
+  binary = FALSE,
+  vignettes = TRUE,
+  manual = FALSE,
+  clean_doc = NULL,
+  args = NULL,
+  quiet = FALSE,
+  needs_compilation = pkg_has_src(path),
+  compile_attributes = FALSE,
+  register_routines = FALSE
+) {
   options <- build_setup(
-    path, dest_path, binary, vignettes, manual, clean_doc, args,
-    needs_compilation, compile_attributes, register_routines, quiet
+    path,
+    dest_path,
+    binary,
+    vignettes,
+    manual,
+    clean_doc,
+    args,
+    needs_compilation,
+    compile_attributes,
+    register_routines,
+    quiet
   )
   on.exit(unlink(options$out_dir, recursive = TRUE), add = TRUE)
 
   withr_with_makevars(
-    compiler_flags(debug = FALSE), {
+    compiler_flags(debug = FALSE),
+    {
       output <- withr_with_temp_libpaths(
         rcmd_build_tools(
           options$cmd,
@@ -125,10 +151,13 @@ build <- function(path = ".", dest_path = NULL, binary = FALSE, vignettes = TRUE
         )
       )
 
-      if (should_stop_for_warnings() &&
-          grepl("\n\\s*warning:", output$stdout, ignore.case = TRUE)) {
+      if (
+        should_stop_for_warnings() &&
+          grepl("\n\\s*warning:", output$stdout, ignore.case = TRUE)
+      ) {
         cli::cli_alert_warning(
-               "Stopping as requested for a warning during {.code R CMD build}.")
+          "Stopping as requested for a warning during {.code R CMD build}."
+        )
         if (quiet) {
           cli::cli_alert_warning("The full output is printed below.")
           cli::cli_verbatim(output$stdout)
@@ -138,7 +167,8 @@ build <- function(path = ".", dest_path = NULL, binary = FALSE, vignettes = TRUE
 
       out_file <- dir(options$out_dir)
       file.copy(
-        file.path(options$out_dir, out_file), options$dest_path,
+        file.path(options$out_dir, out_file),
+        options$dest_path,
         overwrite = TRUE
       )
 
@@ -151,15 +181,29 @@ build <- function(path = ".", dest_path = NULL, binary = FALSE, vignettes = TRUE
   )
 }
 
-build_setup <- function(path, dest_path, binary, vignettes, manual, clean_doc, args,
-                        needs_compilation, compile_attributes, register_routines, quiet) {
+build_setup <- function(
+  path,
+  dest_path,
+  binary,
+  vignettes,
+  manual,
+  clean_doc,
+  args,
+  needs_compilation,
+  compile_attributes,
+  register_routines,
+  quiet
+) {
   if (!file.exists(path)) {
     stop("`path` must exist", call. = FALSE)
   }
   if (!is_dir(path)) {
     if (!binary) stop("`binary` must be TRUE for package files", call. = FALSE)
     if (compile_attributes) {
-      stop("`compile_attributes` must be FALSE for package files", call. = FALSE)
+      stop(
+        "`compile_attributes` must be FALSE for package files",
+        call. = FALSE
+      )
     }
     if (register_routines) {
       stop("`register_routines` must be FALSE for package files", call. = FALSE)
@@ -172,29 +216,20 @@ build_setup <- function(path, dest_path, binary, vignettes, manual, clean_doc, a
     dest_path <- dirname(path)
   }
 
-  bootstrap_file <- file.path(path, "bootstrap.R")
-  run_boostrap <- isTRUE(get_desc_config_flag(path, "bootstrap"))
-  if (file.exists(bootstrap_file) && run_boostrap) {
-    if (!quiet) message("Running bootstrap.R...")
-
-    callr::rscript(
-      bootstrap_file,
-      wd = path,
-      stderr = "2>&1",
-      show = !quiet
-    )
-  }
-
-  if (needs_compilation) {
-    update_registration(path, compile_attributes, register_routines, quiet)
-  }
-
   if (binary) {
     build_setup_binary(path, dest_path, args, needs_compilation)
   } else {
     build_setup_source(
-      path, dest_path, vignettes, manual, clean_doc, args,
-      needs_compilation
+      path,
+      dest_path,
+      vignettes,
+      manual,
+      clean_doc,
+      args,
+      needs_compilation,
+      compile_attributes,
+      register_routines,
+      quiet
     )
   }
 }
@@ -217,8 +252,35 @@ build_setup_binary <- function(path, dest_path, args, needs_compilation) {
   )
 }
 
-build_setup_source <- function(path, dest_path, vignettes, manual, clean_doc,
-                               args, needs_compilation) {
+build_setup_source <- function(
+  path,
+  dest_path,
+  vignettes,
+  manual,
+  clean_doc,
+  args,
+  needs_compilation,
+  compile_attributes,
+  register_routines,
+  quiet
+) {
+  bootstrap_file <- file.path(path, "bootstrap.R")
+  run_bootstrap <- isTRUE(get_desc_config_flag(path, "bootstrap"))
+  if (file.exists(bootstrap_file) && run_bootstrap) {
+    if (!quiet) message("Running bootstrap.R...")
+
+    callr::rscript(
+      bootstrap_file,
+      wd = path,
+      stderr = "2>&1",
+      show = !quiet
+    )
+  }
+
+  if (needs_compilation) {
+    update_registration(path, compile_attributes, register_routines, quiet)
+  }
+
   if (!("--resave-data" %in% args)) {
     args <- c(args, "--no-resave-data")
   }
@@ -249,7 +311,11 @@ build_setup_source <- function(path, dest_path, vignettes, manual, clean_doc,
     doc_dir <- file.path(path, "inst", "doc")
     if (dir.exists(doc_dir)) {
       if (is.null(clean_doc) && interactive()) {
-        message("Building the package will delete...\n  '", doc_dir, "'\nAre you sure?")
+        message(
+          "Building the package will delete...\n  '",
+          doc_dir,
+          "'\nAre you sure?"
+        )
         res <- utils::menu(c("Yes", "No"))
         if (res == 2) {
           return()

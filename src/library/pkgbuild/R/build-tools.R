@@ -45,7 +45,10 @@ has_build_tools <- function(debug = FALSE) {
       "WARNING: Rtools is required to build R packages, but is not ",
       "currently installed.\n\n",
       "Please download and install the appropriate version of Rtools for ",
-      getRversion(), " from\n", rtools_url(), "."
+      getRversion(),
+      " from\n",
+      rtools_url(),
+      "."
     )
   }
 
@@ -90,7 +93,11 @@ with_build_tools <- function(code, debug = FALSE, required = TRUE) {
 #' @rdname has_build_tools
 #' @param .local_envir The environment to use for scoping.
 #' @export
-local_build_tools <- function(debug = FALSE, required = TRUE, .local_envir = parent.frame()) {
+local_build_tools <- function(
+  debug = FALSE,
+  required = TRUE,
+  .local_envir = parent.frame()
+) {
   if (required) {
     check_build_tools(debug = debug, quiet = TRUE)
   }

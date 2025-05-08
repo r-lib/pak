@@ -32,7 +32,10 @@ has_rtools <- function(debug = FALSE) {
 
   # R 4.5.0 or later on ARM64
   if (getRversion() >= "4.5.0" && grepl("aarch", R.version$platform)) {
-    rtools45_aarch64_home <- Sys.getenv("RTOOLS45_AARCH64_HOME", "C:\rtools45-aarch64")
+    rtools45_aarch64_home <- Sys.getenv(
+      "RTOOLS45_AARCH64_HOME",
+      "C:\\rtools45-aarch64"
+    )
     if (file.exists(file.path(rtools45_aarch64_home, "usr", "bin"))) {
       if (debug) {
         cat("Found in Rtools 4.5 (aarch64) installation folder\n")
@@ -55,9 +58,15 @@ has_rtools <- function(debug = FALSE) {
   }
 
   # R 4.4.0 or later on ARM64
-  if (getRversion() >= "4.4.0" && getRversion() < "4.5.0" &&
-      grepl("aarch", R.version$platform)) {
-    rtools44_aarch64_home <- Sys.getenv("RTOOLS44_AARCH64_HOME", "C:\rtools44-aarch64")
+  if (
+    getRversion() >= "4.4.0" &&
+      getRversion() < "4.5.0" &&
+      grepl("aarch", R.version$platform)
+  ) {
+    rtools44_aarch64_home <- Sys.getenv(
+      "RTOOLS44_AARCH64_HOME",
+      "C:\\rtools44-aarch64"
+    )
     if (file.exists(file.path(rtools44_aarch64_home, "usr", "bin"))) {
       if (debug) {
         cat("Found in Rtools 4.4 (aarch64) installation folder\n")
@@ -68,8 +77,11 @@ has_rtools <- function(debug = FALSE) {
   }
 
   # R 4.4.0 or later
-  if (getRversion() >= "4.4.0" && getRversion() < "4.5.0" &&
-      !grepl("aarch", R.version$platform)) {
+  if (
+    getRversion() >= "4.4.0" &&
+      getRversion() < "4.5.0" &&
+      !grepl("aarch", R.version$platform)
+  ) {
     rtools44_home <- Sys.getenv("RTOOLS44_HOME", "C:\\rtools44")
     if (file.exists(file.path(rtools44_home, "usr", "bin"))) {
       if (debug) {
@@ -81,9 +93,15 @@ has_rtools <- function(debug = FALSE) {
   }
 
   # R 4.3.0 or later on ARM64
-  if (getRversion() >= "4.3.0" && getRversion() < "4.4.0" &&
-      grepl("aarch", R.version$platform)) {
-    rtools43_aarch64_home <- Sys.getenv("RTOOLS43_AARCH64_HOME", "C:\rtools43-aarch64")
+  if (
+    getRversion() >= "4.3.0" &&
+      getRversion() < "4.4.0" &&
+      grepl("aarch", R.version$platform)
+  ) {
+    rtools43_aarch64_home <- Sys.getenv(
+      "RTOOLS43_AARCH64_HOME",
+      "C:\\rtools43-aarch64"
+    )
     if (file.exists(file.path(rtools43_aarch64_home, "usr", "bin"))) {
       if (debug) {
         cat("Found in Rtools 4.3 (aarch64) installation folder\n")
@@ -94,8 +112,11 @@ has_rtools <- function(debug = FALSE) {
   }
 
   # R 4.3.0 or later
-  if (getRversion() >= "4.3.0" && getRversion() < "4.4.0" &&
-      !grepl("aarch", R.version$platform)) {
+  if (
+    getRversion() >= "4.3.0" &&
+      getRversion() < "4.4.0" &&
+      !grepl("aarch", R.version$platform)
+  ) {
     rtools43_home <- Sys.getenv("RTOOLS43_HOME", "C:\\rtools43")
     if (file.exists(file.path(rtools43_home, "usr", "bin"))) {
       if (debug) {
@@ -168,9 +189,18 @@ has_rtools <- function(debug = FALSE) {
       # Installed, but not compatible
       needed <- rtools_needed()
       message(
-        "WARNING: Rtools ", from_path$version, " found on the path",
-        " at ", from_path$path, " is not compatible with R ", getRversion(), ".\n\n",
-        "Please download and install ", needed, " from ", rtools_url(needed),
+        "WARNING: Rtools ",
+        from_path$version,
+        " found on the path",
+        " at ",
+        from_path$path,
+        " is not compatible with R ",
+        getRversion(),
+        ".\n\n",
+        "Please download and install ",
+        needed,
+        " from ",
+        rtools_url(needed),
         ", remove the incompatible version from your PATH."
       )
       return(invisible(FALSE))
@@ -186,7 +216,11 @@ has_rtools <- function(debug = FALSE) {
     message(
       "WARNING: Rtools is required to build R packages, but is not ",
       "currently installed.\n\n",
-      "Please download and install ", needed, " from ", rtools_url(needed), "."
+      "Please download and install ",
+      needed,
+      " from ",
+      rtools_url(needed),
+      "."
     )
     return(invisible(FALSE))
   }
@@ -198,10 +232,17 @@ has_rtools <- function(debug = FALSE) {
     needed <- rtools_needed()
     message(
       "WARNING: Rtools is required to build R packages, but no version ",
-      "of Rtools compatible with R ", getRversion(), " was found. ",
+      "of Rtools compatible with R ",
+      getRversion(),
+      " was found. ",
       "(Only the following incompatible version(s) of Rtools were found: ",
-      paste(versions, collapse = ", "), ")\n\n",
-      "Please download and install ", needed, " from ", rtools_url(needed), "."
+      paste(versions, collapse = ", "),
+      ")\n\n",
+      "Please download and install ",
+      needed,
+      " from ",
+      rtools_url(needed),
+      "."
     )
     return(invisible(FALSE))
   }
@@ -215,9 +256,14 @@ has_rtools <- function(debug = FALSE) {
       needed <- rtools_needed()
       message(
         "WARNING: Rtools is required to build R packages, but the ",
-        "version of Rtools previously installed in ", from_registry$path,
+        "version of Rtools previously installed in ",
+        from_registry$path,
         " has been deleted.\n\n",
-        "Please download and install ", needed, " from ", rtools_url(needed), "."
+        "Please download and install ",
+        needed,
+        " from ",
+        rtools_url(needed),
+        "."
       )
       return(invisible(FALSE))
     }
@@ -227,11 +273,21 @@ has_rtools <- function(debug = FALSE) {
       needed <- rtools_needed()
       message(
         "WARNING: Rtools is required to build R packages, but no version ",
-        "of Rtools compatible with R ", getRversion(), " was found. ",
-        "Rtools ", from_registry$version, " was previously installed in ",
-        from_registry$path, " but now that directory contains Rtools ",
-        installed_ver, ".\n\n",
-        "Please download and install ", needed, " from ", rtools_url(needed), "."
+        "of Rtools compatible with R ",
+        getRversion(),
+        " was found. ",
+        "Rtools ",
+        from_registry$version,
+        " was previously installed in ",
+        from_registry$path,
+        " but now that directory contains Rtools ",
+        installed_ver,
+        ".\n\n",
+        "Please download and install ",
+        needed,
+        " from ",
+        rtools_url(needed),
+        "."
       )
       return(invisible(FALSE))
     }
@@ -241,7 +297,8 @@ has_rtools <- function(debug = FALSE) {
 
   # Recently Rtools is versioned properly
   from_registry$version <- sub(
-    "^([0-9]+[.][0-9]+)[.].*$", "\\1",
+    "^([0-9]+[.][0-9]+)[.].*$",
+    "\\1",
     from_registry$version
   )
   rtools_path_set(from_registry)

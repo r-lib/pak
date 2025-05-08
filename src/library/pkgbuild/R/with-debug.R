@@ -15,12 +15,20 @@
 #' install("mypkg")
 #' with_debug(install("mypkg"))
 #' }
-with_debug <- function(code, CFLAGS = NULL, CXXFLAGS = NULL,
-                       FFLAGS = NULL, FCFLAGS = NULL, debug = TRUE) {
+with_debug <- function(
+  code,
+  CFLAGS = NULL,
+  CXXFLAGS = NULL,
+  FFLAGS = NULL,
+  FCFLAGS = NULL,
+  debug = TRUE
+) {
   defaults <- compiler_flags(debug = debug)
   flags <- c(
-    CFLAGS = CFLAGS, CXXFLAGS = CXXFLAGS,
-    FFLAGS = FFLAGS, FCFLAGS = FCFLAGS
+    CFLAGS = CFLAGS,
+    CXXFLAGS = CXXFLAGS,
+    FFLAGS = FFLAGS,
+    FCFLAGS = FCFLAGS
   )
 
   flags <- unlist(utils::modifyList(as.list(defaults), as.list(flags)))

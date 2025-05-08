@@ -46,15 +46,34 @@ pkgbuild_process <- R6Class(
   "pkgbuild_process",
   inherit = callr::rcmd_process,
   public = list(
-    initialize = function(path = ".", dest_path = NULL, binary = FALSE,
-                          vignettes = TRUE, manual = FALSE, clean_doc = NULL,
-                          args = NULL, needs_compilation = pkg_has_src(path),
-                          compile_attributes = FALSE,
-                          register_routines = FALSE, quiet = FALSE) {
+    initialize = function(
+      path = ".",
+      dest_path = NULL,
+      binary = FALSE,
+      vignettes = TRUE,
+      manual = FALSE,
+      clean_doc = NULL,
+      args = NULL,
+      needs_compilation = pkg_has_src(path),
+      compile_attributes = FALSE,
+      register_routines = FALSE,
+      quiet = FALSE
+    ) {
       rcb_init(
-        self, private, super, path, dest_path, binary, vignettes,
-        manual, clean_doc, args, needs_compilation, compile_attributes,
-        register_routines, quiet
+        self,
+        private,
+        super,
+        path,
+        dest_path,
+        binary,
+        vignettes,
+        manual,
+        clean_doc,
+        args,
+        needs_compilation,
+        compile_attributes,
+        register_routines,
+        quiet
       )
     },
     is_incomplete_error = function() FALSE,
@@ -98,13 +117,34 @@ pkgbuild_process <- R6Class(
   )
 )
 
-rcb_init <- function(self, private, super, path, dest_path, binary,
-                     vignettes, manual, clean_doc, args, needs_compilation,
-                     compile_attributes, register_routines, quiet) {
+rcb_init <- function(
+  self,
+  private,
+  super,
+  path,
+  dest_path,
+  binary,
+  vignettes,
+  manual,
+  clean_doc,
+  args,
+  needs_compilation,
+  compile_attributes,
+  register_routines,
+  quiet
+) {
   options <- build_setup(
-    path, dest_path, binary, vignettes, manual, clean_doc,
-    args, needs_compilation, compile_attributes,
-    register_routines, quiet
+    path,
+    dest_path,
+    binary,
+    vignettes,
+    manual,
+    clean_doc,
+    args,
+    needs_compilation,
+    compile_attributes,
+    register_routines,
+    quiet
   )
 
   private$path <- options$path
@@ -114,9 +154,13 @@ rcb_init <- function(self, private, super, path, dest_path, binary,
 
   ## Build tools already checked in setup
 
-  withr_set_makevars(compiler_flags(debug = FALSE), new_path = private$makevars_file)
+  withr_set_makevars(
+    compiler_flags(debug = FALSE),
+    new_path = private$makevars_file
+  )
   withr_with_envvar(
-    c("R_MAKEVARS_USER" = private$makevars_file), {
+    c("R_MAKEVARS_USER" = private$makevars_file),
+    {
       options <- callr::rcmd_process_options(
         cmd = options$cmd,
         cmdargs = c(options$path, options$args),

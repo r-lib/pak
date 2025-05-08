@@ -1,9 +1,8 @@
-
 copy_package_tree <- function(
   path = ".",
   dest,
-  pkgname = desc::desc_get("Package", path)) {
-
+  pkgname = desc::desc_get("Package", path)
+) {
   if (!file.exists(dest)) mkdirp(dest)
 
   pkgdir <- file.path(dest, pkgname)
@@ -77,8 +76,8 @@ get_copy_method <- function(path = ".") {
 
 build_files <- function(
   path = ".",
-  pkgname = desc::desc_get("Package", path)) {
-
+  pkgname = desc::desc_get("Package", path)
+) {
   path <- normalizePath(path)
 
   # patterns in .Rbuildignore
@@ -96,7 +95,7 @@ build_files <- function(
   ptrn_dir <- re_exclude_dir(pkgname)
 
   # filter at the top level first, so we don't need to enumerate these
-  top <- dir(path, include.dirs = TRUE, all.files=TRUE, no.. = TRUE)
+  top <- dir(path, include.dirs = TRUE, all.files = TRUE, no.. = TRUE)
 
   # now filter top
   realtop <- file.path(path, top)
@@ -113,8 +112,12 @@ build_files <- function(
   sub <- unlist(lapply(
     topfls$path[topfls$isdir & !topfls$exclude],
     function(t) {
-      tf <- dir(file.path(path, t), include.dirs = TRUE, all.files = TRUE,
-                recursive = TRUE)
+      tf <- dir(
+        file.path(path, t),
+        include.dirs = TRUE,
+        all.files = TRUE,
+        recursive = TRUE
+      )
       tf <- file.path(t, tf)
     }
   ))
@@ -143,27 +146,33 @@ build_files <- function(
 re_exclude <- function(pkg) {
   c(
     paste0(
-      "(?i)",                               # these are case insensitive
+      "(?i)", # these are case insensitive
       c(
-        "(^|/)\\.DS_Store$",                # by macOS finder
-        "^\\.RData$",                       # .RData at /
-        "~$", "\\.bak$", "\\.swp$",         # backup files
-        "(^|/)\\.#[^/]*$", "(^|/)#[^/]*#$", # more backup files (Emacs)
+        "(^|/)\\.DS_Store$", # by macOS finder
+        "^\\.RData$", # .RData at /
+        "~$",
+        "\\.bak$",
+        "\\.swp$", # backup files
+        "(^|/)\\.#[^/]*$",
+        "(^|/)#[^/]*#$", # more backup files (Emacs)
 
-        "^config\\.(cache|log|status)$",    # leftover by autoconf
+        "^config\\.(cache|log|status)$", # leftover by autoconf
         "(^|/)autom4te\\.cache$",
 
-        "^src/.*\\.d$", "^src/Makedeps$",   # INSTALL leftover on Windows
+        "^src/.*\\.d$",
+        "^src/Makedeps$", # INSTALL leftover on Windows
 
-        "^inst/doc/Rplots\\.(ps|pdf)$"      # Sweave leftover
+        "^inst/doc/Rplots\\.(ps|pdf)$" # Sweave leftover
       )
     ),
 
-    "(^|/)\\._[^/]*$",                      # macOS resource forks
+    "(^|/)\\._[^/]*$", # macOS resource forks
 
-    paste0(                                 # hidden files
+    paste0(
+      # hidden files
       "(^|/)\\.",
-      c("Renviron",
+      c(
+        "Renviron",
         "Rprofile",
         "Rproj.user",
         "Rhistory",
@@ -208,10 +217,12 @@ re_exclude <- function(pkg) {
 
 re_exclude_dir <- function(pkg) {
   c(
-    "^revdep$",                             # revdepcheck
-    paste0(                                 # VC
+    "^revdep$", # revdepcheck
+    paste0(
+      # VC
       "(^|/)",
-      c("CVS",
+      c(
+        "CVS",
         ".svn",
         ".arch-ids",
         ".bzr",
@@ -298,11 +309,11 @@ cp <- local({
           i = "Failed to copy {.path {src}} to {.path {tgt}}."
         )))
       }
-
     } else {
       if (is.null(cpargs)) cpargs <<- detect_cp_args()
       ret <- processx::run(
-        "cp", c(cpargs, src, tgt),
+        "cp",
+        c(cpargs, src, tgt),
         stderr = "2>&1",
         error_on_status = FALSE
       )
@@ -323,7 +334,13 @@ detect_cp_args <- function() {
   # `--preserve=timestamps`
   dir.create(tmp <- tempfile())
   old <- getwd()
-  on.exit({ setwd(old); unlink(tmp, recursive = TRUE) }, add = TRUE)
+  on.exit(
+    {
+      setwd(old)
+      unlink(tmp, recursive = TRUE)
+    },
+    add = TRUE
+  )
   setwd(tmp)
   f1 <- basename(tempfile())
   f2 <- basename(tempfile())

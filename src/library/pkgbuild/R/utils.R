@@ -43,7 +43,10 @@ makevars_user <- function() {
       if (file.exists(f)) {
         m <- f
       }
-    } else if ((Sys.getenv("R_ARCH") == "/x64") && file.exists(f <- path.expand("~/.R/Makevars.win64"))) {
+    } else if (
+      (Sys.getenv("R_ARCH") == "/x64") &&
+        file.exists(f <- path.expand("~/.R/Makevars.win64"))
+    ) {
       m <- f
     } else if (file.exists(f <- path.expand("~/.R/Makevars.win"))) {
       m <- f
@@ -55,10 +58,14 @@ makevars_user <- function() {
       if (file.exists(f)) {
         m <- f
       }
-    } else if (file.exists(f <- path.expand(paste0(
-      "~/.R/Makevars-",
-      Sys.getenv("R_PLATFORM")
-    )))) {
+    } else if (
+      file.exists(
+        f <- path.expand(paste0(
+          "~/.R/Makevars-",
+          Sys.getenv("R_PLATFORM")
+        ))
+      )
+    ) {
       m <- f
     } else if (file.exists(f <- path.expand("~/.R/Makevars"))) {
       m <- f

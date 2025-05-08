@@ -27,7 +27,8 @@ pkg_has_src <- function(path = ".") {
       },
       error = function(e) {
         e$message <- paste(
-          path, "is not a valid package archive file,",
+          path,
+          "is not a valid package archive file,",
           e$message
         )
         stop(e)

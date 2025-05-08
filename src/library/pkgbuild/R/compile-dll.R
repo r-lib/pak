@@ -47,12 +47,14 @@
 #'   `~/.R/Makevars`) then this argument is ignored.
 #' @seealso [clean_dll()] to delete the compiled files.
 #' @export
-compile_dll <- function(path = ".",
-                        force = FALSE,
-                        compile_attributes = pkg_links_to_cpp11(path) || pkg_links_to_rcpp(path),
-                        register_routines = FALSE,
-                        quiet = FALSE,
-                        debug = TRUE) {
+compile_dll <- function(
+  path = ".",
+  force = FALSE,
+  compile_attributes = pkg_links_to_cpp11(path) || pkg_links_to_rcpp(path),
+  register_routines = FALSE,
+  quiet = FALSE,
+  debug = TRUE
+) {
   path <- pkg_path(path)
 
   if (!needs_compile(path) && !isTRUE(force)) {
@@ -209,6 +211,11 @@ needs_compile <- function(path = ".") {
 # Does the package need a clean compile?
 # (i.e. is there a header or Makevars newer than the dll)
 needs_clean <- function(path = ".") {
+  never_clean <- get_desc_config_flag(path, "never-clean")
+  if (isTRUE(never_clean)) {
+    return(FALSE)
+  }
+
   headers <- mtime(headers(path))
   # no headers, so never needs clean compile
   if (is.null(headers)) {
@@ -224,7 +231,13 @@ needs_clean <- function(path = ".") {
   headers > dll
 }
 
-install_min <- function(path = ".", dest, components = NULL, args = NULL, quiet = FALSE) {
+install_min <- function(
+  path = ".",
+  dest,
+  components = NULL,
+  args = NULL,
+  quiet = FALSE
+) {
   stopifnot(is.character(dest), length(dest) == 1, file.exists(dest))
 
   poss <- c("R", "data", "help", "demo", "inst", "docs", "exec", "libs")

@@ -4,11 +4,11 @@ style <- function(..., sep = "") {
   st <- names(args)
 
   styles <- list(
-    "ok"     = cli::col_green,
-    "note"   = cli::make_ansi_style("orange"),
-    "warn"   = function(x) cli::style_bold(cli::make_ansi_style("orange")(x)),
-    "err"    = cli::col_red,
-    "pale"   = cli::make_ansi_style("darkgrey"),
+    "ok" = cli::col_green,
+    "note" = cli::make_ansi_style("orange"),
+    "warn" = function(x) cli::style_bold(cli::make_ansi_style("orange")(x)),
+    "err" = cli::col_red,
+    "pale" = cli::make_ansi_style("darkgrey"),
     "timing" = cli::make_ansi_style("cyan")
   )
 

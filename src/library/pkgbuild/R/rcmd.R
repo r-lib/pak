@@ -18,7 +18,12 @@
 #'   rcmd_build_tools("CONFIG", "CC")$stdout
 #'   rcmd_build_tools("CC", "--version")$stdout
 #' }
-rcmd_build_tools <- function(..., env = character(), required = TRUE, quiet = FALSE) {
+rcmd_build_tools <- function(
+  ...,
+  env = character(),
+  required = TRUE,
+  quiet = FALSE
+) {
   env <- c(callr::rcmd_safe_env(), env)
 
   if (!quiet) {
@@ -36,9 +41,14 @@ rcmd_build_tools <- function(..., env = character(), required = TRUE, quiet = FA
   res <- with_build_tools(
     {
       withCallingHandlers(
-        callr::rcmd_safe(...,
-          env = env, spinner = FALSE, show = FALSE,
-          echo = FALSE, block_callback = callback, stderr = "2>&1"
+        callr::rcmd_safe(
+          ...,
+          env = env,
+          spinner = FALSE,
+          show = FALSE,
+          echo = FALSE,
+          block_callback = callback,
+          stderr = "2>&1"
         ),
         error = function(e) {
           if (!quiet) e$echo <- TRUE
@@ -55,8 +65,10 @@ rcmd_build_tools <- function(..., env = character(), required = TRUE, quiet = FA
 }
 
 msg_for_long_paths <- function(output) {
-  if (is_windows() &&
-    any(grepl("over-long path length", output$stdout))) {
+  if (
+    is_windows() &&
+      any(grepl("over-long path length", output$stdout))
+  ) {
     message(
       "\nIt seems that this package contains files with very long paths.\n",
       "This is not supported on most Windows versions. Please contact the\n",
@@ -67,13 +79,14 @@ msg_for_long_paths <- function(output) {
 }
 
 warn_for_potential_errors <- function() {
-  if (is_windows() && grepl(" ", R.home()) &&
-    getRversion() <= "3.4.2") {
+  if (is_windows() && grepl(" ", R.home()) && getRversion() <= "3.4.2") {
     warning(
       immediate. = TRUE,
       "\n!!! Building will probably fail!\n",
       "This version of R has trouble with building packages if\n",
-      "the R HOME directory (currently '", R.home(), "')\n",
+      "the R HOME directory (currently '",
+      R.home(),
+      "')\n",
       "has space characters. Possible workarounds include:\n",
       "- installing R to the C: drive,\n",
       "- installing it into a path without a space, or\n",

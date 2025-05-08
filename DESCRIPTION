@@ -85,7 +85,7 @@ Config/needs/dependencies:
     jsonlite,
     r-lib/keyring,
     lpSolve,
-    pkgbuild,
+    r-lib/pkgbuild,
     r-lib/pkgcache,
     r-lib/pkgdepends,
     pkgsearch,

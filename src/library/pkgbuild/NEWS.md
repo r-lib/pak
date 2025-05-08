@@ -1,3 +1,8 @@
+# pkgbuild (development version)
+
+* New `Config/build/never-clean` `DESCRIPTION` option to avoid adding
+  `--preclean` to `R CMD INSTALL` (e.g., when header files have changed) (@krlmlr, #204).
+
 # pkgbuild 1.4.7
 
 * pkgbuild now supports R 4.5.x and Rtools45.
