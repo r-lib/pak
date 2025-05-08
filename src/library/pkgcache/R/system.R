@@ -1,4 +1,3 @@
-
 #' Query UUID identifying the version of the R API
 #'
 #' Packages need to be recompiled if this id changes.

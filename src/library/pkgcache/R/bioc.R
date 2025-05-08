@@ -68,6 +68,13 @@
 #'              R version is not in the builtin mapping.
 #' * 2020-11-21 Update internal map for 3.12.
 #' * 2023-05-08 Add 'books' repo.
+#' * 2023-06-07 Add 3.18
+#' * 2023-10-31 Better version matching, do not include versions that
+#'              eventually change their mapping in the cache.
+#' * 2023-12-10 Avoid `package_version(list())`, it fails on newer R.
+#' * 2024-06-20 Need to import `utils::download.file()`.
+#' * 2024-11-07 Update version mapping for R 4.4 -> Bioc 3.20.
+#' * 2025-04-30 Reformat code with air.
 #'
 #' @name bioconductor
 #' @keywords internal
@@ -77,7 +84,6 @@ NULL
 #' @importFrom utils download.file
 
 bioconductor <- local({
-
   # -------------------------------------------------------------------
   # Configuration that does not change often
 
@@ -89,35 +95,36 @@ bioconductor <- local({
   }
 
   builtin_map <- list(
-    "2.1"  = package_version("1.6"),
-    "2.2"  = package_version("1.7"),
-    "2.3"  = package_version("1.8"),
-    "2.4"  = package_version("1.9"),
-    "2.5"  = package_version("2.0"),
-    "2.6"  = package_version("2.1"),
-    "2.7"  = package_version("2.2"),
-    "2.8"  = package_version("2.3"),
-    "2.9"  = package_version("2.4"),
+    "2.1" = package_version("1.6"),
+    "2.2" = package_version("1.7"),
+    "2.3" = package_version("1.8"),
+    "2.4" = package_version("1.9"),
+    "2.5" = package_version("2.0"),
+    "2.6" = package_version("2.1"),
+    "2.7" = package_version("2.2"),
+    "2.8" = package_version("2.3"),
+    "2.9" = package_version("2.4"),
     "2.10" = package_version("2.5"),
     "2.11" = package_version("2.6"),
     "2.12" = package_version("2.7"),
     "2.13" = package_version("2.8"),
     "2.14" = package_version("2.9"),
     "2.15" = package_version("2.11"),
-    "3.0"  = package_version("2.13"),
-    "3.1"  = package_version("3.0"),
-    "3.2"  = package_version("3.2"),
-    "3.3"  = package_version("3.4"),
-    "3.4"  = package_version("3.6"),
-    "3.5"  = package_version("3.8"),
-    "3.6"  = package_version("3.10"),
-    "4.0"  = package_version("3.12"),
-    "4.1"  = package_version("3.14"),
-    "4.2"  = package_version("3.16"),
-    "4.3"  = package_version("3.18"),
-    "4.4"  = package_version("3.20")
-    # Do not include R 4.4 <-> Bioc 3.19, because R 4.4 will use
-    # Bioc 3.20 eventually.
+    "3.0" = package_version("2.13"),
+    "3.1" = package_version("3.0"),
+    "3.2" = package_version("3.2"),
+    "3.3" = package_version("3.4"),
+    "3.4" = package_version("3.6"),
+    "3.5" = package_version("3.8"),
+    "3.6" = package_version("3.10"),
+    "4.0" = package_version("3.12"),
+    "4.1" = package_version("3.14"),
+    "4.2" = package_version("3.16"),
+    "4.3" = package_version("3.18"),
+    "4.4" = package_version("3.20"),
+    NULL
+    # Do not include R 4.5 <-> Bioc 3.21, because R 4.5 will use
+    # Bioc 3.22 eventually.
   )
 
   # -------------------------------------------------------------------
@@ -162,7 +169,7 @@ bioconductor <- local({
       yaml <- get_yaml_config(forget)
       pattern <- "^release_version: \"(.*)\""
       release_version <<- package_version(
-        sub(pattern, "\\1", grep(pattern, yaml, value=TRUE))
+        sub(pattern, "\\1", grep(pattern, yaml, value = TRUE))
       )
     }
     release_version
@@ -173,7 +180,7 @@ bioconductor <- local({
       yaml <- get_yaml_config(forget)
       pattern <- "^devel_version: \"(.*)\""
       devel_version <<- package_version(
-        sub(pattern, "\\1", grep(pattern, yaml, value=TRUE))
+        sub(pattern, "\\1", grep(pattern, yaml, value = TRUE))
       )
     }
     devel_version
@@ -197,7 +204,8 @@ bioconductor <- local({
 
       # append final version for 'devel' R
       bioc <- c(
-        bioc, max(bioc)
+        bioc,
+        max(bioc)
       )
       r <- c(r, package_version(paste(unlist(max(r)) + 0:1, collapse = ".")))
       status <- c(status, "future")
@@ -205,7 +213,8 @@ bioconductor <- local({
       version_map <<- rbind(
         .VERSION_MAP_SENTINEL,
         data.frame(
-          bioc_version = bioc, r_version = r,
+          bioc_version = bioc,
+          r_version = r,
           bioc_status = factor(
             status,
             levels = c("out-of-date", "release", "devel", "future")
@@ -216,9 +225,10 @@ bioconductor <- local({
     version_map
   }
 
-  get_matching_bioc_version <- function(r_version = getRversion(),
-                                        forget = FALSE) {
-
+  get_matching_bioc_version <- function(
+    r_version = getRversion(),
+    forget = FALSE
+  ) {
     minor <- as.character(get_minor_r_version(r_version))
     if (minor %in% names(builtin_map)) return(builtin_map[[minor]])
 
@@ -252,8 +262,7 @@ bioconductor <- local({
     get_devel_version()
   }
 
-  get_bioc_version <- function(r_version = getRversion(),
-                               forget = FALSE) {
+  get_bioc_version <- function(r_version = getRversion(), forget = FALSE) {
     if (nzchar(v <- Sys.getenv("R_BIOC_VERSION", ""))) {
       return(package_version(v))
     }
@@ -269,23 +278,25 @@ bioconductor <- local({
     mirror <- Sys.getenv("R_BIOC_MIRROR", "https://bioconductor.org")
     mirror <- getOption("BioC_mirror", mirror)
     repos <- c(
-      BioCsoft      = "{mirror}/packages/{bv}/bioc",
-      BioCann       = "{mirror}/packages/{bv}/data/annotation",
-      BioCexp       = "{mirror}/packages/{bv}/data/experiment",
-      BioCworkflows =
-        if (bioc_version >= "3.7") "{mirror}/packages/{bv}/workflows",
-      BioCextra     =
-        if (bioc_version <= "3.5") "{mirror}/packages/{bv}/extra",
-      BioCbooks     =
-        if (bioc_version >= "3.12") "{mirror}/packages/{bv}/books"
+      BioCsoft = "{mirror}/packages/{bv}/bioc",
+      BioCann = "{mirror}/packages/{bv}/data/annotation",
+      BioCexp = "{mirror}/packages/{bv}/data/experiment",
+      BioCworkflows = if (bioc_version >= "3.7")
+        "{mirror}/packages/{bv}/workflows",
+      BioCextra = if (bioc_version <= "3.5") "{mirror}/packages/{bv}/extra",
+      BioCbooks = if (bioc_version >= "3.12") "{mirror}/packages/{bv}/books"
     )
 
     ## It seems that if a repo is not available yet for bioc-devel,
     ## they redirect to the bioc-release version, so we do not need to
     ## parse devel_repos from the config.yaml file
 
-    sub("{mirror}", mirror, fixed = TRUE,
-        sub("{bv}", bioc_version, repos, fixed = TRUE))
+    sub(
+      "{mirror}",
+      mirror,
+      fixed = TRUE,
+      sub("{bv}", bioc_version, repos, fixed = TRUE)
+    )
   }
 
   # -------------------------------------------------------------------
@@ -316,8 +327,8 @@ bioconductor <- local({
     )
   )
 
-  get_minor_r_version <- function (x) {
-    package_version(x)[,1:2]
+  get_minor_r_version <- function(x) {
+    package_version(x)[, 1:2]
   }
 
   # -------------------------------------------------------------------
@@ -334,5 +345,6 @@ bioconductor <- local({
       get_bioc_version = get_bioc_version,
       get_repos = get_repos
     ),
-    class = c("standalone_bioc", "standalone"))
+    class = c("standalone_bioc", "standalone")
+  )
 })

@@ -55,9 +55,12 @@
 #'
 #' @export
 
-repo_auth <- function(r_version = getRversion(), bioc = TRUE,
-                      cran_mirror = default_cran_mirror(),
-                      check_credentials = TRUE) {
+repo_auth <- function(
+  r_version = getRversion(),
+  bioc = TRUE,
+  cran_mirror = default_cran_mirror(),
+  check_credentials = TRUE
+) {
   res <- cmc__get_repos(
     getOption("repos"),
     bioc = bioc,
@@ -92,8 +95,10 @@ repo_auth <- function(r_version = getRversion(), bioc = TRUE,
       }
     } else {
       parsed_url <- parse_url_basic_auth(url)
-      if (length(parsed_url$username) == 0 ||
-          nchar(parsed_url$username) == 0) {
+      if (
+        length(parsed_url$username) == 0 ||
+          nchar(parsed_url$username) == 0
+      ) {
         next
       }
       res$username[w] <- parsed_url$username
@@ -144,8 +149,8 @@ repo_auth_headers <- function(
   url,
   use_cache = TRUE,
   set_cache = TRUE,
-  warn = TRUE) {
-
+  warn = TRUE
+) {
   # shortcut to speed up the common case of no credentials
   if (!grepl("@", url)) {
     return(NULL)
@@ -260,8 +265,10 @@ repo_auth_headers <- function(
 }
 
 clear_auth_cache <- function(key = NULL) {
-  if (is.null(key) ||
-    identical(pkgenv$credentials[[".exit_handler"]], key)) {
+  if (
+    is.null(key) ||
+      identical(pkgenv$credentials[[".exit_handler"]], key)
+  ) {
     rm(
       list = ls(pkgenv$credentials, all.names = TRUE),
       envir = pkgenv$credentials
@@ -270,7 +277,7 @@ clear_auth_cache <- function(key = NULL) {
 }
 
 start_auth_cache <- function(key) {
-  if (! ".exit_handler" %in% names(pkgenv$credentials)) {
+  if (!".exit_handler" %in% names(pkgenv$credentials)) {
     assign(".exit_handler", key, envir = pkgenv$credentials)
   }
 }
@@ -343,7 +350,7 @@ repo_auth_netrc <- function(host, username) {
   lines <- readLines(netrc_path, warn = FALSE)
   # mark potential end of macros with NA
   lines[lines == ""] <- NA_character_
-  tokens <- scan(text = lines, what = "" , quiet = TRUE)
+  tokens <- scan(text = lines, what = "", quiet = TRUE)
 
   idx <- 1L
   err <- FALSE

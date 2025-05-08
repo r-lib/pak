@@ -1,4 +1,3 @@
-
 #' Functions to query and manipulate the package cache
 #'
 #' `pkg_cache_summary()` returns a short summary of the state of the cache,
@@ -82,8 +81,12 @@ pkg_cache_delete_files <- function(cachepath = NULL, ...) {
 #' @rdname pkg_cache_api
 #' @export
 
-pkg_cache_add_file <- function(cachepath = NULL, file,
-                           relpath = dirname(file), ...) {
+pkg_cache_add_file <- function(
+  cachepath = NULL,
+  file,
+  relpath = dirname(file),
+  ...
+) {
   cachepath <- cachepath %||% get_user_cache_dir()$pkg
   package_cache$new(cachepath)$add(file = file, path = relpath, ...)
 }

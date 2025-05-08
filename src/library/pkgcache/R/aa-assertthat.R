@@ -1,4 +1,3 @@
-
 assert_that <- function(..., env = parent.frame(), msg = NULL) {
   res <- see_if(..., env = env, msg = msg)
   if (res) return(TRUE)
@@ -6,7 +5,7 @@ assert_that <- function(..., env = parent.frame(), msg = NULL) {
   throw(new_assert_error(attr(res, "msg")))
 }
 
-new_assert_error <- function (message, call = NULL) {
+new_assert_error <- function(message, call = NULL) {
   cond <- new_error(message, call. = call)
   class(cond) <- c("assert_error", class(cond))
   cond
@@ -16,17 +15,19 @@ see_if <- function(..., env = parent.frame(), msg = NULL) {
   asserts <- eval(substitute(alist(...)))
 
   for (assertion in asserts) {
-    res <- tryCatch({
-      eval(assertion, env)
-    }, error = function(e) {
-      structure(FALSE, msg = e$message)
-    })
+    res <- tryCatch(
+      {
+        eval(assertion, env)
+      },
+      error = function(e) {
+        structure(FALSE, msg = e$message)
+      }
+    )
     check_result(res)
 
     # Failed, so figure out message to produce
     if (!res) {
-      if (is.null(msg))
-        msg <- get_message(res, assertion, env)
+      if (is.null(msg)) msg <- get_message(res, assertion, env)
       return(structure(FALSE, msg = msg))
     }
   }
@@ -36,7 +37,9 @@ see_if <- function(..., env = parent.frame(), msg = NULL) {
 
 check_result <- function(x) {
   if (!is.logical(x))
-    throw(new_assert_error("assert_that: assertion must return a logical value"))
+    throw(new_assert_error(
+      "assert_that: assertion must return a logical value"
+    ))
   if (any(is.na(x)))
     throw(new_assert_error("assert_that: missing values present in assertion"))
   if (length(x) != 1) {
@@ -68,7 +71,7 @@ get_message <- function(res, call, env = parent.frame()) {
 fail_default <- function(call, env) {
   call_string <- deparse(call, width.cutoff = 60L)
   if (length(call_string) > 1L) {
-      call_string <- paste0(call_string[1L], "...")
+    call_string <- paste0(call_string[1L], "...")
   }
 
   paste0(call_string, " is not TRUE")

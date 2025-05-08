@@ -1,4 +1,3 @@
-
 cmc__data <- new.env(parent = emptyenv())
 
 #' Metadata cache for a CRAN-like repository
@@ -171,15 +170,28 @@ cranlike_metadata_cache <- R6Class(
   "cranlike_metadata_cache",
 
   public = list(
-    initialize = function(primary_path = NULL,
-                          replica_path = tempfile(),
-                          platforms = default_platforms(),
-                          r_version = getRversion(), bioc = TRUE,
-                          cran_mirror = default_cran_mirror(),
-                          repos = getOption("repos"),
-                          update_after = as.difftime(7, units = "days"))
-      cmc_init(self, private,  primary_path, replica_path, platforms,
-               r_version, bioc, cran_mirror, repos, update_after),
+    initialize = function(
+      primary_path = NULL,
+      replica_path = tempfile(),
+      platforms = default_platforms(),
+      r_version = getRversion(),
+      bioc = TRUE,
+      cran_mirror = default_cran_mirror(),
+      repos = getOption("repos"),
+      update_after = as.difftime(7, units = "days")
+    )
+      cmc_init(
+        self,
+        private,
+        primary_path,
+        replica_path,
+        platforms,
+        r_version,
+        bioc,
+        cran_mirror,
+        repos,
+        update_after
+      ),
 
     deps = function(packages, dependencies = NA, recursive = TRUE)
       synchronise(self$async_deps(packages, dependencies, recursive)),
@@ -191,26 +203,19 @@ cranlike_metadata_cache <- R6Class(
     async_revdeps = function(packages, dependencies = NA, recursive = TRUE)
       cmc_async_revdeps(self, private, packages, dependencies, recursive),
 
-    list = function(packages = NULL)
-      synchronise(self$async_list(packages)),
+    list = function(packages = NULL) synchronise(self$async_list(packages)),
     async_list = function(packages = NULL)
       cmc_async_list(self, private, packages),
 
-    update = function()
-      synchronise(self$async_update()),
-    async_update = function()
-      cmc_async_update(self, private),
+    update = function() synchronise(self$async_update()),
+    async_update = function() cmc_async_update(self, private),
 
-    check_update = function()
-      synchronise(self$async_check_update()),
-    async_check_update = function()
-      cmc_async_check_update(self, private),
+    check_update = function() synchronise(self$async_check_update()),
+    async_check_update = function() cmc_async_check_update(self, private),
 
-    summary = function()
-      cmc_summary(self, private),
+    summary = function() cmc_summary(self, private),
 
-    cleanup = function(force = FALSE)
-      cmc_cleanup(self, private, force)
+    cleanup = function(force = FALSE) cmc_cleanup(self, private, force)
   ),
 
   private = list(
@@ -231,14 +236,12 @@ cranlike_metadata_cache <- R6Class(
     load_primary_pkgs = function(max_age)
       cmc__load_primary_pkgs(self, private, max_age),
 
-    update_replica_pkgs = function()
-      cmc__update_replica_pkgs(self, private),
+    update_replica_pkgs = function() cmc__update_replica_pkgs(self, private),
     update_replica_rds = function(alert = TRUE)
       cmc__update_replica_rds(self, private, alert),
     update_primary = function(rds = TRUE, packages = TRUE, lock = TRUE)
       cmc__update_primary(self, private, rds, packages, lock),
-    update_memory_cache = function()
-      cmc__update_memory_cache(self, private),
+    update_memory_cache = function() cmc__update_memory_cache(self, private),
 
     copy_to_replica = function(rds = TRUE, pkgs = FALSE, etags = FALSE)
       cmc__copy_to_replica(self, private, rds, pkgs, etags),
@@ -267,9 +270,18 @@ cranlike_metadata_cache <- R6Class(
   )
 )
 
-cmc_init <- function(self, private, primary_path, replica_path, platforms,
-                     r_version, bioc, cran_mirror, repos, update_after) {
-
+cmc_init <- function(
+  self,
+  private,
+  primary_path,
+  replica_path,
+  platforms,
+  r_version,
+  bioc,
+  cran_mirror,
+  repos,
+  update_after
+) {
   "!!DEBUG Init metadata cache in '`replica_path`'"
   r_version <- as.character(r_version)
   private$primary_path <- primary_path %||% get_user_cache_dir()$root
@@ -277,66 +289,80 @@ cmc_init <- function(self, private, primary_path, replica_path, platforms,
   private$platforms <- platforms
   private$r_version <- get_minor_r_version(r_version)
   private$bioc <- bioc
-  private$repos <- cmc__get_repos(repos, bioc, cran_mirror, r_version, auth = FALSE)
+  private$repos <- cmc__get_repos(
+    repos,
+    bioc,
+    cran_mirror,
+    r_version,
+    auth = FALSE
+  )
   private$update_after <- update_after
   private$dirs <- get_all_package_dirs(platforms, r_version)
   invisible(self)
 }
 
-cmc_async_deps <- function(self, private, packages, dependencies,
-                           recursive) {
+cmc_async_deps <- function(self, private, packages, dependencies, recursive) {
   assert_that(
     is_character(packages),
     is_dependencies(dependencies),
-    is_flag(recursive))
+    is_flag(recursive)
+  )
 
   "!!DEBUG Getting deps"
-  private$async_ensure_cache()$
-    then(function(.) extract_deps(., packages, dependencies, recursive))
+  private$async_ensure_cache()$then(
+    function(.) extract_deps(., packages, dependencies, recursive)
+  )
 }
 
-cmc_async_revdeps <- function(self, private, packages, dependencies,
-                              recursive) {
+cmc_async_revdeps <- function(
+  self,
+  private,
+  packages,
+  dependencies,
+  recursive
+) {
   assert_that(
     is_character(packages),
     is_dependencies(dependencies),
-    is_flag(recursive))
+    is_flag(recursive)
+  )
 
   "!!DEBUG Getting revdeps"
-  private$async_ensure_cache()$
-    then(function(.) extract_revdeps(., packages, dependencies, recursive))
+  private$async_ensure_cache()$then(
+    function(.) extract_revdeps(., packages, dependencies, recursive)
+  )
 }
 
 cmc_async_list <- function(self, private, packages) {
   assert_that(is.null(packages) || is_character(packages))
 
   "!!DEBUG Listing packages"
-  private$async_ensure_cache()$
-    then(function(x) {
-      if (is.null(packages)) x$pkgs else x$pkgs[x$pkgs$package %in% packages,]
-    })
+  private$async_ensure_cache()$then(function(x) {
+    if (is.null(packages)) x$pkgs else x$pkgs[x$pkgs$package %in% packages, ]
+  })
 }
 
 cmc_async_update <- function(self, private) {
-  self; private
+  self
+  private
   if (!is.null(private$update_deferred)) return(private$update_deferred)
 
-  private$update_deferred <- async(private$update_replica_pkgs)()$
-    then(function() private$update_replica_rds())$
-    then(function() private$update_primary())$
-    then(function() private$data)$
-    finally(function() private$update_deferred <- NULL)$
-    share()
+  private$update_deferred <- async(private$update_replica_pkgs)()$then(
+    function() private$update_replica_rds()
+  )$then(function() private$update_primary())$then(
+    function() private$data
+  )$finally(function() private$update_deferred <- NULL)$share()
 }
 
 cmc_async_check_update <- function(self, private) {
-  self; private
+  self
+  private
 
   if (!is.null(private$update_deferred)) return(private$update_deferred)
   if (!is.null(private$chk_update_deferred)) return(private$chk_update_deferred)
 
-  private$chk_update_deferred <- async(private$update_replica_pkgs)()$
-    then(function(ret) {
+  private$chk_update_deferred <- async(private$update_replica_pkgs)()$then(
+    function(ret) {
       ## Some might be NULL, if failure was allowed and indeed it happened.
       ## For these we just pretend that they did not change, so they do
       ## not trigger an update. The metadata RDS builder is robust for
@@ -344,25 +370,29 @@ cmc_async_check_update <- function(self, private) {
       stat <- viapply(ret, function(x) x$response$status_code %||% 304L)
       rep_files <- private$get_cache_files("replica")
       pkg_times <- file_get_time(rep_files$pkgs$path)
-      if (! file.exists(rep_files$rds) ||
+      if (
+        !file.exists(rep_files$rds) ||
           any(file_get_time(rep_files$rds) < pkg_times) ||
-          any(stat < 300)) {
+          any(stat < 300)
+      ) {
         private$update_replica_rds(alert = FALSE)
         private$update_primary()
         private$data
-
       } else {
         private$async_ensure_cache()
       }
-    })$
-    finally(function() private$chk_update_deferred <- NULL)$
-    share()
+    }
+  )$finally(function() private$chk_update_deferred <- NULL)$share()
 }
 
 cmc_summary <- function(self, private) {
   dirs <- private$get_cache_files("primary")
-  pgz <- dir(dirs$meta, recursive = TRUE, pattern = "^PACKAGES\\.gz$",
-             full.names = TRUE)
+  pgz <- dir(
+    dirs$meta,
+    recursive = TRUE,
+    pattern = "^PACKAGES\\.gz$",
+    full.names = TRUE
+  )
   all <- dir(dirs$meta, recursive = TRUE, full.names = TRUE)
   list(
     cachepath = dirs$meta,
@@ -385,7 +415,7 @@ cmc_cleanup <- function(self, private, force) {
       cache_dir
     )
     ans <- readline(msg)
-    if (! ans %in% c("y", "Y")) stop("Aborted")
+    if (!ans %in% c("y", "Y")) stop("Aborted")
   }
 
   local_cache_dir <- private$get_cache_files("replica")
@@ -404,24 +434,30 @@ hash_obj_md5 <- function(x, ...) {
 
 repo_encode <- function(repos) {
   paste0(
-    vcapply(repos$name, URLencode, reserved = TRUE), "-",
+    vcapply(repos$name, URLencode, reserved = TRUE),
+    "-",
     substr(vcapply(repos$url, "hash_obj_md5"), 1, 10)
   )
 }
 
 cran_metadata_url <- function() {
-  getOption("pkg.cran_metadata_url",
-     Sys.getenv(
-       "R_PKG_CRAN_METADATA_URL",
-       "https://cran.r-pkg.org/metadata/")
-     )
+  getOption(
+    "pkg.cran_metadata_url",
+    Sys.getenv(
+      "R_PKG_CRAN_METADATA_URL",
+      "https://cran.r-pkg.org/metadata/"
+    )
+  )
 }
 
 cmc__get_cache_files <- function(self, private, which) {
   root <- private[[paste0(which, "_path")]]
 
-  repo_hash <- hash_obj_md5(list(repos = private$repos, dirs = private$dirs,
-                                 version = private$cache_version))
+  repo_hash <- hash_obj_md5(list(
+    repos = private$repos,
+    dirs = private$dirs,
+    version = private$cache_version
+  ))
 
   str_platforms <- paste(private$platforms, collapse = "+")
   rds_file <- paste0("pkgs-", substr(repo_hash, 1, 10), ".rds")
@@ -440,13 +476,18 @@ cmc__get_cache_files <- function(self, private, which) {
   meta_path <- ifelse(
     type == "cran" | name == "rspm" | name == "ppm" | name == "p3m",
     file.path(root, "_metadata", repo_enc, pkgs_dirs, "METADATA2.gz"),
-    NA_character_)
+    NA_character_
+  )
   meta_etag <- ifelse(
-    !is.na(meta_path), paste0(meta_path, ".etag"), NA_character_)
+    !is.na(meta_path),
+    paste0(meta_path, ".etag"),
+    NA_character_
+  )
   meta_url <- ifelse(
     !is.na(meta_path),
     paste0(cran_metadata_url(), pkgs_dirs, "/METADATA2.gz"),
-    NA_character_)
+    NA_character_
+  )
 
   bin_url <- ppm_binary_url(mirror, private$r_version)
   bin_path <- ifelse(
@@ -464,10 +505,15 @@ cmc__get_cache_files <- function(self, private, which) {
     root = root,
     meta = file.path(root, "_metadata"),
     lock = file.path(root, "_metadata.lock"),
-    rds  = file.path(root, "_metadata", rds_file),
+    rds = file.path(root, "_metadata", rds_file),
     pkgs = data_frame(
       path = pkg_path,
-      etag = file.path(root, "_metadata", repo_enc, paste0(pkgs_files, ".etag")),
+      etag = file.path(
+        root,
+        "_metadata",
+        repo_enc,
+        paste0(pkgs_files, ".etag")
+      ),
       basedir = pkgs_dirs,
       base = pkgs_files,
       mirror = mirror,
@@ -504,10 +550,16 @@ ppm_binary_url <- function(urls, r_version) {
 
   res[mch] <- paste0(
     has_binary$base[mch],
-    has_binary$repo[mch], "/",
-    has_binary$version[mch], "/bin/linux/",
-    r_version, "-", has_binary$distro[mch],
-    "/contrib/", r_version, "/",
+    has_binary$repo[mch],
+    "/",
+    has_binary$version[mch],
+    "/bin/linux/",
+    r_version,
+    "-",
+    has_binary$distro[mch],
+    "/contrib/",
+    r_version,
+    "/",
     "PACKAGES.gz"
   )
 
@@ -564,19 +616,21 @@ cmc__async_ensure_cache <- function(self, private, max_age) {
 cmc__get_current_data <- function(self, private, max_age) {
   "!!DEBUG Get current data?"
   if (is.null(private$data)) stop("No data loaded")
-  if (is.null(private$data_time) ||
-      Sys.time() - private$data_time > max_age) {
+  if (
+    is.null(private$data_time) ||
+      Sys.time() - private$data_time > max_age
+  ) {
     stop("Loaded data outdated")
   }
 
   "!!DEBUG Got current data!"
-  if (! isTRUE(private$data_messaged)) {
+  if (!isTRUE(private$data_messaged)) {
     private$data_messaged <- TRUE
   }
   private$data
 }
 
-cmc__get_memory_cache  <- function(self, private, max_age) {
+cmc__get_memory_cache <- function(self, private, max_age) {
   "!!DEBUG Get from memory cache?"
   rds <- private$get_cache_files("primary")$rds
   hit <- cmc__data[[rds]]
@@ -726,7 +780,8 @@ cmc__update_replica_pkgs <- function(self, private) {
   "!!DEBUG Update replica PACKAGES"
   tryCatch(
     private$copy_to_replica(rds = TRUE, pkgs = TRUE, etags = TRUE),
-    error = function(e) e)
+    error = function(e) e
+  )
 
   rep_files <- private$get_cache_files("replica")
   pkgs <- rep_files$pkgs
@@ -739,7 +794,11 @@ cmc__update_replica_pkgs <- function(self, private) {
   bin <- !is.na(pkgs$bin_url)
   dls <- data_frame(
     url = c(pkgs$url, pkgs$meta_url[meta], pkgs$bin_url[bin], bsq_url),
-    fallback_url = c(pkgs$fallback_url, rep(NA_character_, sum(meta) + sum(bin)), NA_character_),
+    fallback_url = c(
+      pkgs$fallback_url,
+      rep(NA_character_, sum(meta) + sum(bin)),
+      NA_character_
+    ),
     path = c(pkgs$path, pkgs$meta_path[meta], pkgs$bin_path[bin], bsq_path),
     etag = c(pkgs$etag, pkgs$meta_etag[meta], pkgs$bin_etag[bin], bsq_etag),
     timeout = c(rep(c(200, 100), c(nrow(pkgs), sum(meta) + sum(bin))), 5),
@@ -747,15 +806,13 @@ cmc__update_replica_pkgs <- function(self, private) {
   )
 
   key <- random_key()
-  async_constant()$
-    then(function() start_auth_cache(key))$
-    then(function() download_files(dls))$
-    then(function(result) {
-      missing_pkgs_note(pkgs, result)
-      load_bioc_sysreqs()
-      result
-    })$
-    finally(function() clear_auth_cache(key))
+  async_constant()$then(function() start_auth_cache(key))$then(
+    function() download_files(dls)
+  )$then(function(result) {
+    missing_pkgs_note(pkgs, result)
+    load_bioc_sysreqs()
+    result
+  })$finally(function() clear_auth_cache(key))
 }
 
 # E.g. "R 4.1 macos packages are missing from CRAN and Bioconductor"
@@ -807,11 +864,17 @@ cmc__update_replica_rds <- function(self, private, alert) {
     rep_files$pkgs,
     function(r) {
       rversion <- if (r$platform == "source") "*" else private$r_version
-      read_packages_file(r$path, mirror = r$mirror,
-                         repodir = r$basedir, platform = r$platform,
-                         rversion = rversion, type = r$type,
-                         meta_path = r$meta_path, bin_path = r$bin_path,
-                         orig_r_version = private$r_version)
+      read_packages_file(
+        r$path,
+        mirror = r$mirror,
+        repodir = r$basedir,
+        platform = r$platform,
+        rversion = rversion,
+        type = r$type,
+        meta_path = r$meta_path,
+        bin_path = r$bin_path,
+        orig_r_version = private$r_version
+      )
     }
   )
 
@@ -841,7 +904,6 @@ cmc__update_replica_rds <- function(self, private, alert) {
 #' @keywords internal
 
 cmc__update_primary <- function(self, private, rds, packages, lock) {
-
   "!!DEBUG Updata primary cache"
   if (!rds && !packages) return()
 
@@ -861,14 +923,22 @@ cmc__update_primary <- function(self, private, rds, packages, lock) {
   if (packages) {
     file_copy_with_time(rep_files$pkgs$path, pri_files$pkgs$path)
     file_copy_with_time(rep_files$pkgs$etag, pri_files$pkgs$etag)
-    file_copy_with_time(na_omit(rep_files$pkgs$meta_path),
-                        na_omit(pri_files$pkgs$meta_path))
-    file_copy_with_time(na_omit(rep_files$pkgs$meta_etag),
-                        na_omit(pri_files$pkgs$meta_etag))
-    file_copy_with_time(na_omit(rep_files$pkgs$bin_path),
-                        na_omit(pri_files$pkgs$bin_path))
-    file_copy_with_time(na_omit(rep_files$pkgs$bin_etag),
-                        na_omit(pri_files$pkgs$bin_etag))
+    file_copy_with_time(
+      na_omit(rep_files$pkgs$meta_path),
+      na_omit(pri_files$pkgs$meta_path)
+    )
+    file_copy_with_time(
+      na_omit(rep_files$pkgs$meta_etag),
+      na_omit(pri_files$pkgs$meta_etag)
+    )
+    file_copy_with_time(
+      na_omit(rep_files$pkgs$bin_path),
+      na_omit(pri_files$pkgs$bin_path)
+    )
+    file_copy_with_time(
+      na_omit(rep_files$pkgs$bin_etag),
+      na_omit(pri_files$pkgs$bin_etag)
+    )
   }
   invisible()
 }
@@ -893,31 +963,38 @@ cmc__copy_to_replica <- function(self, private, rds, pkgs, etags) {
 
   if (pkgs) {
     file_copy_with_time(pri_files$pkgs$path, rep_files$pkgs$path)
-    file_copy_with_time(na_omit(pri_files$pkgs$meta_path),
-                        na_omit(rep_files$pkgs$meta_path))
-    file_copy_with_time(na_omit(pri_files$pkgs$bin_path),
-                        na_omit(rep_files$pkgs$bin_path))
+    file_copy_with_time(
+      na_omit(pri_files$pkgs$meta_path),
+      na_omit(rep_files$pkgs$meta_path)
+    )
+    file_copy_with_time(
+      na_omit(pri_files$pkgs$bin_path),
+      na_omit(rep_files$pkgs$bin_path)
+    )
   }
   if (etags) {
     file_copy_with_time(pri_files$pkgs$etag, rep_files$pkgs$etag)
-    file_copy_with_time(na_omit(pri_files$pkgs$meta_etag),
-                        na_omit(rep_files$pkgs$meta_etag))
-    file_copy_with_time(na_omit(pri_files$pkgs$bin_etag),
-                        na_omit(rep_files$pkgs$bin_etag))
+    file_copy_with_time(
+      na_omit(pri_files$pkgs$meta_etag),
+      na_omit(rep_files$pkgs$meta_etag)
+    )
+    file_copy_with_time(
+      na_omit(pri_files$pkgs$bin_etag),
+      na_omit(rep_files$pkgs$bin_etag)
+    )
   }
 }
 
 extract_deps <- function(pkgs, packages, dependencies, recursive) {
-
   realdep <- interpret_dependencies(dependencies)
   dep <- tolower(realdep$direct)
 
   new <- packages
   repeat {
     new <- setdiff(
-      pkgs$deps$package[pkgs$deps$upstream %in% new &
-                        pkgs$deps$type %in% dep],
-      packages)
+      pkgs$deps$package[pkgs$deps$upstream %in% new & pkgs$deps$type %in% dep],
+      packages
+    )
     if (!length(new)) break
     packages <- c(packages, new)
     if (!recursive) break
@@ -935,7 +1012,6 @@ extract_deps <- function(pkgs, packages, dependencies, recursive) {
 }
 
 extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
-
   realdep <- interpret_dependencies(dependencies)
   dep <- tolower(realdep$direct)
 
@@ -943,7 +1019,8 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
   repeat {
     new <- setdiff(
       pkgs$deps$upstream[pkgs$deps$ref %in% new & pkgs$deps$type %in% dep],
-      packages)
+      packages
+    )
     if (!length(new)) break
     packages <- c(packages, new)
     if (!recursive) break
@@ -1034,16 +1111,14 @@ cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {
 #' meta_cache_deps("pkgdown", recursive = FALSE)
 #' meta_cache_revdeps("pkgdown", recursive = FALSE)
 
-meta_cache_deps <- function(packages, dependencies = NA,
-                            recursive = TRUE) {
+meta_cache_deps <- function(packages, dependencies = NA, recursive = TRUE) {
   get_cranlike_metadata_cache()$deps(packages, dependencies, recursive)
 }
 
 #' @export
 #' @rdname meta_cache_deps
 
-meta_cache_revdeps <- function(packages, dependencies = NA,
-                               recursive = TRUE) {
+meta_cache_revdeps <- function(packages, dependencies = NA, recursive = TRUE) {
   get_cranlike_metadata_cache()$revdeps(packages, dependencies, recursive)
 }
 

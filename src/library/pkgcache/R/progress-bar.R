@@ -1,4 +1,3 @@
-
 create_progress_bar <- function(data) {
   bar <- new.env(parent = emptyenv())
 
@@ -17,10 +16,11 @@ create_progress_bar <- function(data) {
   bar$data <- data
   bar$data$uptodate <- NA
   bar$data$size <- NA_integer_
-  bar$data$current  <- NA_integer_
+  bar$data$current <- NA_integer_
 
-  bar$timer <- async_timer$new(1/10, function() show_progress_bar(bar))
-  bar$timer$listen_on("error", function(...) { })
+  bar$timer <- async_timer$new(1 / 10, function() show_progress_bar(bar))
+  bar$timer$listen_on("error", function(...) {
+  })
 
   bar
 }
@@ -43,7 +43,7 @@ update_progress_bar_uptodate <- function(bar, url) {
   bar$data$size[[wh]] <- NA_integer_
 }
 
-update_progress_bar_done  <- function(bar, url) {
+update_progress_bar_done <- function(bar, url) {
   wh <- match(url, bar$data$url)
   bar$data$uptodate[[wh]] <- FALSE
   bar$data$current[[wh]] <- bar$data$size[[wh]] <-
@@ -51,8 +51,10 @@ update_progress_bar_done  <- function(bar, url) {
 }
 
 show_progress_bar <- function(bar) {
-  if (is.null(bar$status) ||
-    !isTRUE(getOption("pkg.show_progress", FALSE))) {
+  if (
+    is.null(bar$status) ||
+      !isTRUE(getOption("pkg.show_progress", FALSE))
+  ) {
     return()
   }
 
@@ -62,8 +64,11 @@ show_progress_bar <- function(bar) {
   current <- sum(data$current, na.rm = TRUE)
   total <- sum(data$size, na.rm = TRUE)
   downloads <- paste0(
-    "[", format_bytes$pretty_bytes(current), " / ",
-    format_bytes$pretty_bytes(total), "]"
+    "[",
+    format_bytes$pretty_bytes(current),
+    " / ",
+    format_bytes$pretty_bytes(total),
+    "]"
   )
 
   spinner <- bar$spinner$frames[bar$spinner_state]
@@ -74,8 +79,10 @@ show_progress_bar <- function(bar) {
 
   cli::cli_status_update(
     bar$status,
-    c("{spinner} Updating metadata database [{uptodate}/{numfiles}] | ",
-      "Downloading {downloads}")
+    c(
+      "{spinner} Updating metadata database [{uptodate}/{numfiles}] | ",
+      "Downloading {downloads}"
+    )
   )
 }
 
@@ -86,7 +93,6 @@ finish_progress_bar <- function(ok, bar) {
       result = "failed",
       msg_failed = "{.alert-danger Metadata update failed}"
     )
-
   } else if (FALSE %in% bar$data$uptodate) {
     dl <- vlapply(bar$data$uptodate, identical, FALSE)
     files <- sum(dl)
@@ -96,7 +102,6 @@ finish_progress_bar <- function(ok, bar) {
       result = "done",
       msg_done = "{.alert-success Updated metadata database: {bytes} in {files} file{?s}.}"
     )
-
   } else {
     cli::cli_status_clear(bar$status)
   }

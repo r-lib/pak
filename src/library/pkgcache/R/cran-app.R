@@ -1,4 +1,3 @@
-
 # nocov start
 
 fake_env <- new.env(parent = emptyenv())
@@ -30,13 +29,16 @@ dummy_so <- function() {
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
   withr::local_dir(tmp)
 
-  writeLines(c(
-    "#include <Rinternals.h>",
-    "",
-    "SEXP minus1(SEXP i) {",
-    "  return Rf_ScalarInteger(REAL(i)[0] - 1.0);",
-    "}"
-  ), "init.c")
+  writeLines(
+    c(
+      "#include <Rinternals.h>",
+      "",
+      "SEXP minus1(SEXP i) {",
+      "  return Rf_ScalarInteger(REAL(i)[0] - 1.0);",
+      "}"
+    ),
+    "init.c"
+  )
   callr::rcmd("SHLIB", c("-o", "foo.so", "init.c"))
   so <- readBin("foo.so", "raw", file.size("foo.so"))
 
@@ -44,8 +46,12 @@ dummy_so <- function() {
   so
 }
 
-make_dummy_binary <- function(data, path, platform = get_platform(),
-                              r_version = getRversion()) {
+make_dummy_binary <- function(
+  data,
+  path,
+  platform = get_platform(),
+  r_version = getRversion()
+) {
   # Need these files:
   # NAMESPACE  -- nded to add useDynLib() and import() as needed
   # DESCRIPTION -- need `Built` field
@@ -71,7 +77,10 @@ make_dummy_binary <- function(data, path, platform = get_platform(),
 
   if (paste0("", data$NeedsCompilation) %in% c("yes", "true")) {
     # TODO: multi-arch on Windows
-    writeLines(paste0("useDynLib(", package, ")"), file.path(package, "NAMESPACE"))
+    writeLines(
+      paste0("useDynLib(", package, ")"),
+      file.path(package, "NAMESPACE")
+    )
     sofile <- paste0(package, .Platform$dynlib.ext)
     sopath <- if (nzchar(.Platform$r_arch)) {
       file.path(package, "libs", .Platform$r_arch, sofile)
@@ -88,7 +97,6 @@ make_dummy_binary <- function(data, path, platform = get_platform(),
   if (platform == "windows") {
     pkgfile <- paste0(package, "_", data$Version, ".zip")
     zip::zip(pkgfile, package)
-
   } else if (platform == "macos") {
     pkgfile <- paste0(package, "_", data$Version, ".tgz")
     utils::tar(pkgfile, package)
@@ -103,10 +111,11 @@ make_dummy_binary <- function(data, path, platform = get_platform(),
 }
 
 standardize_dummy_packages <- function(packages) {
-  packages <- packages %||% data.frame(
-    stringsAsFactors = FALSE,
-    Package = character()
-  )
+  packages <- packages %||%
+    data.frame(
+      stringsAsFactors = FALSE,
+      Package = character()
+    )
 
   if (!"Package" %in% names(packages)) {
     packages$Package <- paste0("pkg", seq_len(nrow(packages)))
@@ -163,12 +172,18 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
   extra$archive <- latest[extra$Package] != extra$Version
 
   for (i in seq_len(nrow(packages))) {
-    if (options[["platform"]] == "source" &&
-        packages$Package[i] %in% options[["no_sources"]]) next
-    if (options[["platform"]] != "source" &&
-        packages$Package[i] %in% options[["no_binaries"]]) next
+    if (
+      options[["platform"]] == "source" &&
+        packages$Package[i] %in% options[["no_sources"]]
+    )
+      next
+    if (
+      options[["platform"]] != "source" &&
+        packages$Package[i] %in% options[["no_binaries"]]
+    )
+      next
     if (extra$archive[i]) {
-      if (isTRUE(options$no_archive)) next;
+      if (isTRUE(options$no_archive)) next
       pkg_dir <- file.path(pkgs_dir, "Archive", packages$Package[i])
     } else {
       pkg_dir <- pkgs_dir
@@ -203,7 +218,6 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
     file.remove(file.path(pkgs_dir, "PACKAGES.gz"))
   } else if (file.exists(file.path(pkgs_dir, "PACKAGES.gz"))) {
     # if empty
-
   }
 
   if (isTRUE(options$no_packages_rds)) {
@@ -211,7 +225,7 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
   }
 
   if (!isTRUE(options$no_metadata)) {
-    current <- extra[!extra$archive,, drop = FALSE]
+    current <- extra[!extra$archive, , drop = FALSE]
     meta <- data.frame(
       stringsAsFactors = FALSE,
       file = current$file,
@@ -227,7 +241,7 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
   }
 
   if (!isTRUE(options$no_archive)) {
-    archive <- extra[extra$archive,, drop = FALSE]
+    archive <- extra[extra$archive, , drop = FALSE]
     adf <- list()
     adir <- file.path(pkgs_dir, "Archive")
     if (file.exists(adir)) {
@@ -248,11 +262,12 @@ make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
   invisible()
 }
 
-cran_app <- function(packages = NULL,
-                     log = interactive(),
-                     basic_auth = NULL,
-                     options = list()) {
-
+cran_app <- function(
+  packages = NULL,
+  log = interactive(),
+  basic_auth = NULL,
+  options = list()
+) {
   app <- webfakes::new_app()
 
   # Log requests by default
@@ -268,9 +283,10 @@ cran_app <- function(packages = NULL,
       )
       hdr <- req$get_header("Authorization") %||% ""
       if (exp != hdr) {
-        res$
-          set_header("WWW-Authenticate", "Basic realm=\"CRAN with auth\"")$
-          send_status(401L)
+        res$set_header(
+          "WWW-Authenticate",
+          "Basic realm=\"CRAN with auth\""
+        )$send_status(401L)
       } else {
         "next"
       }
@@ -279,7 +295,11 @@ cran_app <- function(packages = NULL,
 
   # Parse all kinds of bodies
   app$use("json body parser" = webfakes::mw_json())
-  app$use("text body parser" = webfakes::mw_text(type = c("text/plain", "application/json")))
+  app$use(
+    "text body parser" = webfakes::mw_text(
+      type = c("text/plain", "application/json")
+    )
+  )
   app$use("multipart body parser" = webfakes::mw_multipart())
   app$use("URL encoded body parser" = webfakes::mw_urlencoded())
 
@@ -322,7 +342,8 @@ dcf <- function(txt) {
   as.data.frame(read.dcf(textConnection(txt)), stringsAsFactors = FALSE)
 }
 
-cran_app_pkgs <- dcf("
+cran_app_pkgs <- dcf(
+  "
   Package: pkg1
   Version: 1.0.0
 
@@ -342,16 +363,14 @@ cran_app_pkgs <- dcf("
 
   Package: pkg3
   Version: 0.9.9
-")
+"
+)
 
 fix_port <- function(x) {
   gsub("http://127[.]0[.]0[.]1:[0-9]+", "http://127.0.0.1:<port>", x)
 }
 
-bioc_app <- function(packages = NULL,
-                     log = interactive(),
-                     options = list()) {
-
+bioc_app <- function(packages = NULL, log = interactive(), options = list()) {
   app <- webfakes::new_app()
 
   # Log requests by default
@@ -359,7 +378,11 @@ bioc_app <- function(packages = NULL,
 
   # Parse all kinds of bodies
   app$use("json body parser" = webfakes::mw_json())
-  app$use("text body parser" = webfakes::mw_text(type = c("text/plain", "application/json")))
+  app$use(
+    "text body parser" = webfakes::mw_text(
+      type = c("text/plain", "application/json")
+    )
+  )
   app$use("multipart body parser" = webfakes::mw_multipart())
   app$use("URL encoded body parser" = webfakes::mw_urlencoded())
 
@@ -398,7 +421,6 @@ bioc_app <- function(packages = NULL,
 }
 
 make_bioc_repo <- function(repo, packages, options) {
-
   packages <- standardize_dummy_packages(packages)
 
   bioc_version <- options$bioc_version %||% bioconductor$get_bioc_version()
@@ -413,27 +435,27 @@ make_bioc_repo <- function(repo, packages, options) {
 
   # BioCsoft
   options$repo_prefix <- sprintf("packages/%s/bioc", bioc_version)
-  pkg_soft <- packages[bioc_repo == "soft",, drop = FALSE]
+  pkg_soft <- packages[bioc_repo == "soft", , drop = FALSE]
   make_dummy_repo(repo, pkg_soft, options)
 
   # BioCann
   options$repo_prefix <- sprintf("packages/%s/data/annotation", bioc_version)
-  pkg_ann <- packages[bioc_repo == "ann",, drop = FALSE]
+  pkg_ann <- packages[bioc_repo == "ann", , drop = FALSE]
   make_dummy_repo(repo, pkg_ann, options)
 
   # BioCexp
   options$repo_prefix <- sprintf("packages/%s/data/experiment", bioc_version)
-  pkg_exp <- packages[bioc_repo == "exp",, drop = FALSE]
+  pkg_exp <- packages[bioc_repo == "exp", , drop = FALSE]
   make_dummy_repo(repo, pkg_ann, options)
 
   # BioCworkflows
   options$repo_prefix <- sprintf("packages/%s/workflows", bioc_version)
-  pkg_workflows <- packages[bioc_repo == "workflows",, drop = FALSE]
+  pkg_workflows <- packages[bioc_repo == "workflows", , drop = FALSE]
   make_dummy_repo(repo, pkg_workflows, options)
 
   # BioCbooks
   options$repo_prefix <- sprintf("packages/%s/books", bioc_version)
-  pkg_books <- packages[bioc_repo == "books",, drop = FALSE]
+  pkg_books <- packages[bioc_repo == "books", , drop = FALSE]
   make_dummy_repo(repo, pkg_books, options)
 
   config <- system.file("fixtures", "bioc-config.yaml", package = "pkgcache")
@@ -446,20 +468,24 @@ make_bioc_repo <- function(repo, packages, options) {
   invisible()
 }
 
-auth_proxy_app <- function(repo_url = NULL, username = "username",
-                           password = "token") {
+auth_proxy_app <- function(
+  repo_url = NULL,
+  username = "username",
+  password = "token"
+) {
   repo_url <- repo_url %||% "https://cloud.r-project.org"
   webfakes::new_app()$get(
-    webfakes::new_regexp(""), function(req, res) {
+    webfakes::new_regexp(""),
+    function(req, res) {
       exp <- paste("Basic", base64_encode(paste0(username, ":", password)))
       hdr <- req$get_header("Authorization") %||% ""
       if (exp != hdr) {
-        res$
-          set_header("WWW-Authenticate", "Basic realm=\"CRAN with auth\"")$
-          send_status(401L)
+        res$set_header(
+          "WWW-Authenticate",
+          "Basic realm=\"CRAN with auth\""
+        )$send_status(401L)
       } else {
-        res$
-          redirect(sprintf("%s/%s", repo_url, req$path))
+        res$redirect(sprintf("%s/%s", repo_url, req$path))
       }
     }
   )

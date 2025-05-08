@@ -1,4 +1,3 @@
-
 #' Create an async function
 #'
 #' Create an async function, that returns a deferred value, from a
@@ -30,8 +29,8 @@ async <- function(fun) {
     mget(ls(environment(), all.names = TRUE), environment())
     fun2 <- function() {
       evalq(
-      .(body(fun)),
-      envir = parent.env(environment())
+        .(body(fun)),
+        envir = parent.env(environment())
       )
     }
 
@@ -180,10 +179,16 @@ on_failure(is_flag) <- function(call, env) {
 #' tryCatch(synchronise(afun()), error = function(e) e)
 #' }
 
-async_backoff <- function(task, ..., .args = list(), times = Inf,
-                          time_limit = Inf, custom_backoff = NULL,
-                          on_progress = NULL, progress_data = NULL) {
-
+async_backoff <- function(
+  task,
+  ...,
+  .args = list(),
+  times = Inf,
+  time_limit = Inf,
+  custom_backoff = NULL,
+  on_progress = NULL,
+  progress_data = NULL
+) {
   task <- async(task)
   args <- c(list(...), .args)
   times <- times
@@ -197,7 +202,8 @@ async_backoff <- function(task, ..., .args = list(), times = Inf,
   limit <- NULL
 
   self <- deferred$new(
-    type = "backoff", call = sys.call(),
+    type = "backoff",
+    call = sys.call(),
     action = function(resolve) {
       started <<- Sys.time()
       limit <<- started + time_limit
@@ -209,26 +215,30 @@ async_backoff <- function(task, ..., .args = list(), times = Inf,
       if (did < times && now < limit) {
         wait <- custom_backoff(did)
         if (!is.null(on_progress)) {
-          on_progress(list(
-            event = "retry",
-            tries = did,
-            spent = now - started,
-            error = value,
-            retry_in = wait
-          ), progress_data)
+          on_progress(
+            list(
+              event = "retry",
+              tries = did,
+              spent = now - started,
+              error = value,
+              retry_in = wait
+            ),
+            progress_data
+          )
         }
-        delay(wait)$
-          then(function() do.call(task, args))$
-          then(self)
+        delay(wait)$then(function() do.call(task, args))$then(self)
       } else {
         if (!is.null(on_progress)) {
-          on_progress(list(
-            event = "givenup",
-            tries = did,
-            spent = now - started,
-            error = value,
-            retry_in = NA_real_
-          ), progress_data)
+          on_progress(
+            list(
+              event = "givenup",
+              tries = did,
+              spent = now - started,
+              error = value,
+              retry_in = NA_real_
+            ),
+            progress_data
+          )
         }
         stop(value)
       }
@@ -255,18 +265,21 @@ default_backoff <- function(i) {
 #' @noRd
 
 call_function <- function(func, args = list()) {
-  func; args
+  func
+  args
 
   id <- NULL
 
   deferred$new(
-    type = "pool-task", call = sys.call(),
+    type = "pool-task",
+    call = sys.call(),
     action = function(resolve) {
       resolve
       reject <- environment(resolve)$private$reject
       id <<- get_default_event_loop()$add_pool_task(
         function(err, res) if (is.null(err)) resolve(res) else reject(err),
-        list(func = func, args = args))
+        list(func = func, args = args)
+      )
     },
     on_cancel = function(reason) {
       if (!is.null(id)) {
@@ -300,8 +313,10 @@ call_function <- mark_as_async(call_function)
 async_constant <- function(value = NULL) {
   force(value)
   deferred$new(
-    type = "constant", call = sys.call(),
-    function(resolve) resolve(value))
+    type = "constant",
+    call = sys.call(),
+    function(resolve) resolve(value)
+  )
 }
 
 async_constant <- mark_as_async(async_constant)
@@ -440,7 +455,7 @@ async_next <- function(el = NULL) {
   el <- el %||% find_sync_frame()$new_el
   if (is.null(el)) stop("No async context")
   ## TODO: some visual indication that something has happened?
-  if (! el$run("once")) message("[ASYNC] async phase complete")
+  if (!el$run("once")) message("[ASYNC] async phase complete")
 }
 
 # nocov start
@@ -455,7 +470,7 @@ async_step <- function() {
   ## TODO: some visual indication that something has happened?
   old <- options(async_debug_steps = TRUE)
   on.exit(options(old))
-  if (! el$run("once")) {
+  if (!el$run("once")) {
     message("[ASYNC] async phase complete")
   }
 }
@@ -560,8 +575,11 @@ async_wait_for <- function(id) {
 #' @aliases .aw
 #' @rdname async_debug
 
-async_where <- function(calls = sys.calls(), parents = sys.parents(),
-                        frm = get_async_frames()) {
+async_where <- function(
+  calls = sys.calls(),
+  parents = sys.parents(),
+  frm = get_async_frames()
+) {
   afrm <- viapply(frm, "[[", "frame")
   num <- seq_along(calls)
 
@@ -607,29 +625,49 @@ print.async_where <- function(x, ...) {
 #' @noRd
 
 format.async_where <- function(x, ...) {
-  paste0(paste(
-    formatC(seq_len(nrow(x)), width = 3),
-    vcapply(x$call, expr_name),
-    paste0(" ", x$filename, ":", x$position),
-    ifelse (! x$async, "",
-            paste0("\n    ", x$def_id, " ", x$def_cb_type, " ",
-                   x$def_call, " ", x$def_filename, ":", x$def_position)),
-    collapse = "\n"
-  ), "\n")
+  paste0(
+    paste(
+      formatC(seq_len(nrow(x)), width = 3),
+      vcapply(x$call, expr_name),
+      paste0(" ", x$filename, ":", x$position),
+      ifelse(
+        !x$async,
+        "",
+        paste0(
+          "\n    ",
+          x$def_id,
+          " ",
+          x$def_cb_type,
+          " ",
+          x$def_call,
+          " ",
+          x$def_filename,
+          ":",
+          x$def_position
+        )
+      ),
+      collapse = "\n"
+    ),
+    "\n"
+  )
 }
 
 get_async_frames <- function() {
   drop_nulls(lapply(seq_along(sys.frames()), function(i) {
-    if (! is.null(data <- sys.frame(i)$`__async_data__`)) {
-      list(frame = i + data$skip %||% 1L, deferred = data[[1]], type = data[[2]],
-           call = get_private(data[[3]])$mycall)
+    if (!is.null(data <- sys.frame(i)$`__async_data__`)) {
+      list(
+        frame = i + data$skip %||% 1L,
+        deferred = data[[1]],
+        type = data[[2]],
+        call = get_private(data[[3]])$mycall
+      )
     }
   }))
 }
 
 find_sync_frame <- function() {
   for (i in seq_along(sys.frames())) {
-    cand  <- sys.frame(-i)
+    cand <- sys.frame(-i)
     if (isTRUE(cand$`__async_synchronise_frame__`)) return(cand)
   }
 }
@@ -637,7 +675,7 @@ find_sync_frame <- function() {
 find_async_data_frame <- function() {
   frames <- sys.frames()
   for (i in seq_along(frames)) {
-    cand  <- sys.frame(-i)
+    cand <- sys.frame(-i)
     if (!is.null(data <- cand$`__async_data__`)) {
       return(list(frame = length(frames) - i + 1L, data = data))
     }
@@ -683,9 +721,9 @@ async_debug_shortcuts <- function() {
 
 async_debug_remove_shortcuts <- function() {
   tryCatch(
-    rm(list = c(".an", ".as", ".asb", ".al", ".at", ".aw"),
-       envir = .GlobalEnv),
-    error = function(x) x)
+    rm(list = c(".an", ".as", ".asb", ".al", ".at", ".aw"), envir = .GlobalEnv),
+    error = function(x) x
+  )
 }
 
 # nocov end
@@ -1084,22 +1122,38 @@ NULL
 deferred <- R6Class(
   "deferred",
   public = list(
-    initialize = function(action = NULL, on_progress = NULL, on_cancel = NULL,
-                          parents = NULL, parent_resolve = NULL,
-                          parent_reject = NULL, type = NULL,
-                          call = sys.call(-1), event_emitter = NULL)
-      async_def_init(self, private, action, on_progress, on_cancel,
-                     parents, parent_resolve, parent_reject, type, call,
-                    event_emitter),
-    then = function(on_fulfilled)
-      def_then(self, private, on_fulfilled),
-    catch = function(...)
-      def_catch(self, private, ...),
-    finally = function(on_finally)
-      def_finally(self, private, on_finally),
-    cancel = function(reason = "Cancelled")
-      def_cancel(self, private, reason),
-    share = function() { private$shared <<- TRUE; invisible(self) },
+    initialize = function(
+      action = NULL,
+      on_progress = NULL,
+      on_cancel = NULL,
+      parents = NULL,
+      parent_resolve = NULL,
+      parent_reject = NULL,
+      type = NULL,
+      call = sys.call(-1),
+      event_emitter = NULL
+    )
+      async_def_init(
+        self,
+        private,
+        action,
+        on_progress,
+        on_cancel,
+        parents,
+        parent_resolve,
+        parent_reject,
+        type,
+        call,
+        event_emitter
+      ),
+    then = function(on_fulfilled) def_then(self, private, on_fulfilled),
+    catch = function(...) def_catch(self, private, ...),
+    finally = function(on_finally) def_finally(self, private, on_finally),
+    cancel = function(reason = "Cancelled") def_cancel(self, private, reason),
+    share = function() {
+      private$shared <<- TRUE
+      invisible(self)
+    },
 
     event_emitter = NULL
   ),
@@ -1123,38 +1177,40 @@ deferred <- R6Class(
     shared = FALSE,
     mycall = NULL,
 
-    run_action = function()
-      def__run_action(self, private),
+    run_action = function() def__run_action(self, private),
 
-    null = function()
-      def__null(self, private),
+    null = function() def__null(self, private),
 
-    resolve = function(value)
-      def__resolve(self, private, value),
-    reject = function(reason)
-      def__reject(self, private, reason),
-    progress = function(data)
-      def__progress(self, private, data),
+    resolve = function(value) def__resolve(self, private, value),
+    reject = function(reason) def__reject(self, private, reason),
+    progress = function(data) def__progress(self, private, data),
 
     make_error_object = function(err)
       def__make_error_object(self, private, err),
 
     maybe_cancel_parents = function(reason)
       def__maybe_cancel_parents(self, private, reason),
-    add_as_parent = function(child)
-      def__add_as_parent(self, private, child),
+    add_as_parent = function(child) def__add_as_parent(self, private, child),
     update_parent = function(old, new)
       def__update_parent(self, private, old, new),
 
-    get_info = function()
-      def__get_info(self, private)
+    get_info = function() def__get_info(self, private)
   )
 )
 
-async_def_init <- function(self, private, action, on_progress,
-                           on_cancel, parents, parent_resolve,
-                           parent_reject, type, call, event_emitter) {
-
+async_def_init <- function(
+  self,
+  private,
+  action,
+  on_progress,
+  on_cancel,
+  parents,
+  parent_resolve,
+  parent_reject,
+  type,
+  call,
+  event_emitter
+) {
   private$type <- type
   private$id <- get_id()
   private$event_loop <- get_default_event_loop()
@@ -1207,8 +1263,10 @@ def__run_action <- function(self, private) {
       function() {
         if (isTRUE(getOption("async_debug_steps", FALSE))) debug1(action)
         `__async_data__` <- list(private$id, "action", self, skip = 2L)
-        do.call(action, args) },
-      function(err, res) if (!is.null(err)) private$reject(err))
+        do.call(action, args)
+      },
+      function(err, res) if (!is.null(err)) private$reject(err)
+    )
   }
 
   ## If some parents are done, we want them to notify us.
@@ -1217,22 +1275,25 @@ def__run_action <- function(self, private) {
     prt_priv <- get_private(prt)
     if (prt_priv$state != "pending") {
       def__call_then(
-        if (prt_priv$state == "fulfilled") "parent_resolve" else "parent_reject",
-        self, prt_priv$value)
+        if (prt_priv$state == "fulfilled") "parent_resolve" else
+          "parent_reject",
+        self,
+        prt_priv$value
+      )
     }
     prt_priv$run_action()
   }
 }
 
-def_then <- function(self, private, on_fulfilled = NULL,
-                     on_rejected = NULL) {
+def_then <- function(self, private, on_fulfilled = NULL, on_rejected = NULL) {
   force(self)
   force(private)
 
-  if (! identical(private$event_loop, get_default_event_loop())) {
+  if (!identical(private$event_loop, get_default_event_loop())) {
     err <- make_error(
       "Cannot create deferred chain across synchronization barrier",
-      class = "async_synchronization_barrier_error")
+      class = "async_synchronization_barrier_error"
+    )
     stop(err)
   }
 
@@ -1240,12 +1301,13 @@ def_then <- function(self, private, on_fulfilled = NULL,
     parent_resolve <- def__make_parent_resolve(on_fulfilled)
     parent_reject <- def__make_parent_reject(on_rejected)
 
-    deferred$new(parents = list(self),
-                 type = paste0("then-", private$id),
-                 parent_resolve = parent_resolve,
-                 parent_reject = parent_reject,
-                 call = sys.call(-1))
-
+    deferred$new(
+      parents = list(self),
+      type = paste0("then-", private$id),
+      parent_resolve = parent_resolve,
+      parent_reject = parent_reject,
+      call = sys.call(-1)
+    )
   } else {
     private$add_as_parent(on_fulfilled)
     child_private <- get_private(on_fulfilled)
@@ -1309,13 +1371,11 @@ def__resolve <- function(self, private, value) {
     }
 
     val_pvt$run_action()
-
   } else {
-    if (!private$dead_end && !length(private$children) &&
-        !private$shared) {
+    if (!private$dead_end && !length(private$children) && !private$shared) {
       ## This cannot happen currently
-      "!DEBUG ??? DEAD END `private$id`"   # nocov
-      warning("Computation going nowhere...")   # nocov
+      "!DEBUG ??? DEAD END `private$id`" # nocov
+      warning("Computation going nowhere...") # nocov
     }
 
     "!DEBUG +++ RESOLVE `private$id`"
@@ -1355,8 +1415,7 @@ def__make_parent_resolve <- function(fun) {
     function(value, resolve) resolve(fun())
   } else if (num_args(fun) == 1) {
     function(value, resolve) resolve(fun(value))
-  } else if (identical(names(formals(fun)),
-                       c("value", "resolve"))) {
+  } else if (identical(names(formals(fun)), c("value", "resolve"))) {
     fun
   } else {
     stop("Invalid parent_resolve callback")
@@ -1375,8 +1434,7 @@ def__make_parent_reject <- function(fun) {
     function(value, resolve) resolve(fun())
   } else if (num_args(fun) == 1) {
     function(value, resolve) resolve(fun(value))
-  } else if (identical(names(formals(fun)),
-                       c("value", "resolve"))) {
+  } else if (identical(names(formals(fun)), c("value", "resolve"))) {
     fun
   } else {
     stop("Invalid parent_reject callback")
@@ -1387,12 +1445,15 @@ def__make_parent_reject_catch <- function(handlers) {
   handlers <- lapply(handlers, as.function)
   function(value, resolve) {
     ok <- FALSE
-    ret <- tryCatch({
-      quo <- as.call(c(list(quote(tryCatch), quote(stop(value))), handlers))
-      ret <- eval(quo)
-      ok <- TRUE
-      ret
-    }, error = function(x) x)
+    ret <- tryCatch(
+      {
+        quo <- as.call(c(list(quote(tryCatch), quote(stop(value))), handlers))
+        ret <- eval(quo)
+        ok <- TRUE
+        ret
+      },
+      error = function(x) x
+    )
 
     if (ok) resolve(ret) else stop(ret)
   }
@@ -1431,8 +1492,8 @@ def__maybe_cancel_parents <- function(self, private, reason) {
   }
 }
 
-def__call_then <- function(which, x, value)  {
-  force(value);
+def__call_then <- function(which, x, value) {
+  force(value)
   private <- get_private(x)
   if (!private$running) return()
   if (private$state != "pending") return()
@@ -1441,21 +1502,23 @@ def__call_then <- function(which, x, value)  {
   private$event_loop$add_next_tick(
     function() {
       if (isTRUE(getOption("async_debug_steps", FALSE))) {
-        debug1(private[[which]])        # nocov
+        debug1(private[[which]]) # nocov
       }
       `__async_data__` <- list(private$id, "parent", x)
       private[[which]](value, private$resolve)
     },
-    function(err, res) if (!is.null(err)) private$reject(err))
+    function(err, res) if (!is.null(err)) private$reject(err)
+  )
 }
 
 def__add_as_parent <- function(self, private, child) {
   "!DEBUG EDGE [`private$id` -> `get_private(child)$id`]"
 
-  if (! identical(private$event_loop, get_private(child)$event_loop)) {
+  if (!identical(private$event_loop, get_private(child)$event_loop)) {
     err <- make_error(
       "Cannot create deferred chain across synchronization barrier",
-      class = "async_synchronization_barrier_error")
+      class = "async_synchronization_barrier_error"
+    )
     stop(err)
   }
   if (length(private$children) && !private$shared) {
@@ -1467,10 +1530,8 @@ def__add_as_parent <- function(self, private, child) {
   if (get_private(child)$running) private$run_action()
   if (private$state == "pending") {
     ## Nothing to do
-
   } else if (private$state == "fulfilled") {
     def__call_then("parent_resolve", child, private$value)
-
   } else {
     def__call_then("parent_reject", child, private$value)
   }
@@ -1500,8 +1561,11 @@ def__get_info <- function(self, private) {
     parents = I(list(viapply(private$parents, function(x) get_private(x)$id))),
     label = as.character(private$id),
     call = I(list(private$mycall)),
-    children = I(list(viapply(private$children, function(x) get_private(x)$id))),
-    type = private$type %||%  "unknown",
+    children = I(list(viapply(
+      private$children,
+      function(x) get_private(x)$id
+    ))),
+    type = private$type %||% "unknown",
     running = private$running,
     state = private$state,
     cancelled = private$cancelled,
@@ -1511,11 +1575,16 @@ def__get_info <- function(self, private) {
   res$filename <- src$filename
   res$position <- src$position
   res$label <- paste0(
-    res$id, " ",
+    res$id,
+    " ",
     if (private$state == "fulfilled") paste0(cli::symbol$tick, " "),
-    if (private$state == "rejected")  paste0(cli::symbol$cross, "  "),
-    deparse(private$mycall)[1], " @ ",
-    res$filename, ":", res$position)
+    if (private$state == "rejected") paste0(cli::symbol$cross, "  "),
+    deparse(private$mycall)[1],
+    " @ ",
+    res$filename,
+    ":",
+    res$position
+  )
 
   res
 }
@@ -1567,7 +1636,8 @@ delay <- function(delay) {
   force(delay)
   id <- NULL
   deferred$new(
-    type = "delay", call = sys.call(),
+    type = "delay",
+    call = sys.call(),
     action = function(resolve) {
       assert_that(is_time_interval(delay))
       force(resolve)
@@ -1624,7 +1694,8 @@ async_detect_nolimit <- function(.x, .p, ...) {
   done <- FALSE
 
   self <- deferred$new(
-    type = "async_detect", call = sys.call(),
+    type = "async_detect",
+    call = sys.call(),
     action = function(resolve) {
       lapply(seq_along(defs), function(idx) {
         defs[[idx]]$then(function(val) if (isTRUE(val)) idx)$then(self)
@@ -1654,7 +1725,8 @@ async_detect_limit <- function(.x, .p, ..., .limit = .limit) {
   firsts <- lapply(.x[seq_len(.limit)], .p, ...)
 
   self <- deferred$new(
-    type = "async_detect (limit)", call = sys.call(),
+    type = "async_detect (limit)",
+    call = sys.call(),
     action = function(resolve) {
       lapply(seq_along(firsts), function(idx) {
         firsts[[idx]]$then(function(val) if (isTRUE(val)) idx)$then(self)
@@ -1687,12 +1759,15 @@ async_detect_limit <- function(.x, .p, ..., .limit = .limit) {
 event_loop <- R6Class(
   "event_loop",
   public = list(
-    initialize = function()
-      el_init(self, private),
+    initialize = function() el_init(self, private),
 
-    add_http = function(handle, callback, file = NULL, progress = NULL,
-                        data = NULL)
-      el_add_http(self, private, handle, callback, file, progress, data),
+    add_http = function(
+      handle,
+      callback,
+      file = NULL,
+      progress = NULL,
+      data = NULL
+    ) el_add_http(self, private, handle, callback, file, progress, data),
     http_setopt = function(total_con = NULL, host_con = NULL, multiplex = NULL)
       el_http_setopt(self, private, total_con, host_con, multiplex),
 
@@ -1707,39 +1782,27 @@ event_loop <- R6Class(
     add_next_tick = function(func, callback, data = NULL)
       el_add_next_tick(self, private, func, callback, data),
 
-    cancel = function(id)
-      el_cancel(self, private, id),
-    cancel_all = function()
-      el_cancel_all(self, private),
+    cancel = function(id) el_cancel(self, private, id),
+    cancel_all = function() el_cancel_all(self, private),
 
     run = function(mode = c("default", "nowait", "once"))
       el_run(self, private, mode = match.arg(mode)),
 
-    suspend = function()
-      el_suspend(self, private),
-    wakeup = function()
-      el_wakeup(self, private)
+    suspend = function() el_suspend(self, private),
+    wakeup = function() el_wakeup(self, private)
   ),
 
   private = list(
-    create_task = function(callback, ..., id =  NULL, type = "foobar")
+    create_task = function(callback, ..., id = NULL, type = "foobar")
       el__create_task(self, private, callback, ..., id = id, type = type),
-    ensure_pool = function()
-      el__ensure_pool(self, private),
-    get_poll_timeout = function()
-      el__get_poll_timeout(self, private),
-    run_pending = function()
-      el__run_pending(self, private),
-    run_timers = function()
-      el__run_timers(self, private),
-    is_alive = function()
-      el__is_alive(self, private),
-    update_time = function()
-      el__update_time(self, private),
-    io_poll = function(timeout)
-      el__io_poll(self, private, timeout),
-    update_curl_data = function()
-      el__update_curl_data(self, private),
+    ensure_pool = function() el__ensure_pool(self, private),
+    get_poll_timeout = function() el__get_poll_timeout(self, private),
+    run_pending = function() el__run_pending(self, private),
+    run_timers = function() el__run_timers(self, private),
+    is_alive = function() el__is_alive(self, private),
+    update_time = function() el__update_time(self, private),
+    io_poll = function(timeout) el__io_poll(self, private, timeout),
+    update_curl_data = function() el__update_curl_data(self, private),
 
     id = NULL,
     time = Sys.time(),
@@ -1747,9 +1810,9 @@ event_loop <- R6Class(
     tasks = list(),
     timers = Sys.time()[numeric()],
     pool = NULL,
-    curl_fdset = NULL,                 # return value of multi_fdset()
-    curl_poll = TRUE,                  # should we poll for curl sockets?
-    curl_timer = NULL,                 # call multi_run() before this
+    curl_fdset = NULL, # return value of multi_fdset()
+    curl_poll = TRUE, # should we poll for curl sockets?
+    curl_timer = NULL, # call multi_run() before this
     next_ticks = character(),
     worker_pool = NULL,
     http_opts = NULL
@@ -1761,12 +1824,20 @@ el_init <- function(self, private) {
   invisible(self)
 }
 
-el_add_http <- function(self, private, handle, callback, progress, file,
-                        data) {
-  self; private; handle; callback; progress; outfile <- file; data
+el_add_http <- function(self, private, handle, callback, progress, file, data) {
+  self
+  private
+  handle
+  callback
+  progress
+  outfile <- file
+  data
 
-  id  <- private$create_task(callback, list(handle = handle, data = data),
-                             type = "http")
+  id <- private$create_task(
+    callback,
+    list(handle = handle, data = data),
+    type = "http"
+  )
   private$ensure_pool()
   if (!is.null(outfile)) cat("", file = outfile)
 
@@ -1794,7 +1865,10 @@ el_add_http <- function(self, private, handle, callback, progress, file,
         ## so limited in their numbers.
         con <- tryCatch(
           file(outfile, open = "ab"),
-          error = function(e) { gc(); file(outfile, open = "ab") } # nocov
+          error = function(e) {
+            gc()
+            file(outfile, open = "ab")
+          } # nocov
         )
         writeBin(bytes, con)
         close(con)
@@ -1806,8 +1880,11 @@ el_add_http <- function(self, private, handle, callback, progress, file,
       task <- private$tasks[[id]]
       private$tasks[[id]] <- NULL
       error <- make_error(message = error)
-      class(error) <- unique(c("async_rejected", "async_http_error",
-                               class(error)))
+      class(error) <- unique(c(
+        "async_rejected",
+        "async_http_error",
+        class(error)
+      ))
       task$callback(error, NULL)
     }
   )
@@ -1815,19 +1892,30 @@ el_add_http <- function(self, private, handle, callback, progress, file,
 }
 
 el_add_process <- function(self, private, conns, callback, data) {
-  self; private; conns; callback; data
+  self
+  private
+  conns
+  callback
+  data
   data$conns <- conns
   private$create_task(callback, data, type = "process")
 }
 
 el_add_r_process <- function(self, private, conns, callback, data) {
-  self; private; conns; callback; data
+  self
+  private
+  conns
+  callback
+  data
   data$conns <- conns
   private$create_task(callback, data, type = "r-process")
 }
 
 el_add_pool_task <- function(self, private, callback, data) {
-  self; private; callback; data
+  self
+  private
+  callback
+  data
   id <- private$create_task(callback, data, type = "pool-task")
   if (is.null(async_env$worker_pool)) {
     async_env$worker_pool <- worker_pool$new()
@@ -1837,7 +1925,11 @@ el_add_pool_task <- function(self, private, callback, data) {
 }
 
 el_add_delayed <- function(self, private, delay, func, callback, rep) {
-  force(self); force(private); force(delay); force(func); force(callback)
+  force(self)
+  force(private)
+  force(delay)
+  force(func)
+  force(callback)
   force(rep)
   id <- private$create_task(
     callback,
@@ -1851,7 +1943,10 @@ el_add_delayed <- function(self, private, delay, func, callback, rep) {
 }
 
 el_add_next_tick <- function(self, private, func, callback, data) {
-  force(self) ; force(private) ; force(callback); force(data)
+  force(self)
+  force(private)
+  force(callback)
+  force(data)
   data$func <- func
   id <- private$create_task(callback, data = data, type = "nexttick")
   private$next_ticks <- c(private$next_ticks, id)
@@ -1859,14 +1954,18 @@ el_add_next_tick <- function(self, private, func, callback, data) {
 
 el_cancel <- function(self, private, id) {
   private$next_ticks <- setdiff(private$next_ticks, id)
-  private$timers  <- private$timers[setdiff(names(private$timers), id)]
+  private$timers <- private$timers[setdiff(names(private$timers), id)]
   if (id %in% names(private$tasks) && private$tasks[[id]]$type == "http") {
     curl::multi_cancel(private$tasks[[id]]$data$handle)
-  } else if (id %in% names(private$tasks) &&
-             private$tasks[[id]]$type %in% c("process", "r-process")) {
+  } else if (
+    id %in%
+      names(private$tasks) &&
+      private$tasks[[id]]$type %in% c("process", "r-process")
+  ) {
     private$tasks[[id]]$data$process$kill()
-  } else if (id %in% names(private$tasks) &&
-             private$tasks[[id]]$type == "pool-task") {
+  } else if (
+    id %in% names(private$tasks) && private$tasks[[id]]$type == "pool-task"
+  ) {
     async_env$worker_pool$cancel_task(id)
   }
   private$tasks[[id]] <- NULL
@@ -1886,17 +1985,16 @@ el_cancel_all <- function(self, private) {
     self$cancel(id)
   }
 
-  private$tasks <-  list()
+  private$tasks <- list()
   invisible(self)
 }
 
 el_run <- function(self, private, mode) {
-
   ## This is closely modeled after the libuv event loop, on purpose,
   ## because some time we might switch to that.
 
   alive <- private$is_alive()
-  if (! alive) private$update_time()
+  if (!alive) private$update_time()
 
   while (alive && !private$stop_flag) {
     private$update_time()
@@ -1946,8 +2044,11 @@ el__run_pending <- function(self, private) {
   for (id in next_ticks) {
     task <- private$tasks[[id]]
     private$tasks[[id]] <- NULL
-    call_with_callback(task$data$func, task$callback,
-                       info = task$data$error_info)
+    call_with_callback(
+      task$data$func,
+      task$callback,
+      info = task$data$error_info
+    )
   }
 
   ## Check for workers from the pool finished before, while another
@@ -1971,7 +2072,6 @@ el__run_pending <- function(self, private) {
 }
 
 el__io_poll <- function(self, private, timeout) {
-
   types <- vcapply(private$tasks, "[[", "type")
 
   ## The things we need to poll, and their types
@@ -1991,22 +2091,28 @@ el__io_poll <- function(self, private, timeout) {
       id = "curl",
       pollable = I(list(processx::curl_fds(private$curl_fdset))),
       type = "curl",
-      ready = "silent")
+      ready = "silent"
+    )
     pollables <- rbind(pollables, curl_pollables)
   }
 
   ## Processes
   proc <- types %in% c("process", "r-process")
   if (sum(proc)) {
-    conns <- unlist(lapply(
-      private$tasks[proc], function(t) t$data$conns),
-      recursive = FALSE)
+    conns <- unlist(
+      lapply(
+        private$tasks[proc],
+        function(t) t$data$conns
+      ),
+      recursive = FALSE
+    )
     proc_pollables <- data.frame(
       stringsAsFactors = FALSE,
       id = names(private$tasks)[proc],
       pollable = I(conns),
       type = types[proc],
-      ready = rep("silent", sum(proc)))
+      ready = rep("silent", sum(proc))
+    )
     pollables <- rbind(pollables, proc_pollables)
   }
 
@@ -2020,7 +2126,8 @@ el__io_poll <- function(self, private, timeout) {
       id = names(px_pool),
       pollable = I(px_pool),
       type = rep("pool", length(px_pool)),
-      ready = rep("silent", length(px_pool)))
+      ready = rep("silent", length(px_pool))
+    )
     pollables <- rbind(pollables, pool_pollables)
   }
 
@@ -2030,18 +2137,20 @@ el__io_poll <- function(self, private, timeout) {
   }
 
   if (nrow(pollables)) {
-
     ## OK, ready to poll
     pollables$ready <- unlist(processx::poll(pollables$pollable, timeout))
 
     ## Any HTTP?
-    if (private$curl_poll &&
-        pollables$ready[match("curl", pollables$type)] == "event") {
+    if (
+      private$curl_poll &&
+        pollables$ready[match("curl", pollables$type)] == "event"
+    ) {
       curl::multi_run(timeout = 0L, poll = TRUE, pool = private$pool)
     }
 
     ## Any processes
-    proc_ready <- pollables$type %in% c("process", "r-process") &
+    proc_ready <- pollables$type %in%
+      c("process", "r-process") &
       pollables$ready == "ready"
     for (id in pollables$id[proc_ready]) {
       p <- private$tasks[[id]]
@@ -2058,9 +2167,15 @@ el__io_poll <- function(self, private, timeout) {
 
       error <- FALSE
       if (p$type == "r-process") {
-        res$result <- tryCatch({
-          p$data$process$get_result()
-        }, error = function(e) { error <<- TRUE; e })
+        res$result <- tryCatch(
+          {
+            p$data$process$get_result()
+          },
+          error = function(e) {
+            error <<- TRUE
+            e
+          }
+        )
       }
 
       unlink(c(p$data$stdout, p$data$stderr))
@@ -2079,8 +2194,10 @@ el__io_poll <- function(self, private, timeout) {
     pool_ready <- pollables$type == "pool" & pollables$ready == "ready"
     if (sum(pool_ready)) {
       pool <- async_env$worker_pool
-      done <- pool$notify_event(as.integer(pollables$id[pool_ready]),
-                                event_loop = private$id)
+      done <- pool$notify_event(
+        as.integer(pollables$id[pool_ready]),
+        event_loop = private$id
+      )
       mine <- intersect(done, names(private$tasks))
       for (tid in mine) {
         task <- private$tasks[[tid]]
@@ -2091,7 +2208,6 @@ el__io_poll <- function(self, private, timeout) {
         task$callback(err, res)
       }
     }
-
   } else if (length(private$timers) || !is.null(private$curl_timer)) {
     Sys.sleep(timeout / 1000)
   }
@@ -2120,12 +2236,12 @@ el__ensure_pool <- function(self, private) {
   if (is.null(private$pool)) {
     private$http_opts <- list(
       total_con = getopt("total_con") %||% 100,
-      host_con = getopt("host_con") %||%  6,
-      multiplex  = getopt("multiplex") %||% TRUE
+      host_con = getopt("host_con") %||% 6,
+      multiplex = getopt("multiplex") %||% TRUE
     )
     private$pool <- curl::new_pool(
       total_con = private$http_opts$total_con,
-      host_con =  private$http_opts$host_con,
+      host_con = private$http_opts$host_con,
       multiplex = private$http_opts$multiplex
     )
   }
@@ -2134,7 +2250,7 @@ el__ensure_pool <- function(self, private) {
 el_http_setopt <- function(self, private, total_con, host_con, multiplex) {
   private$ensure_pool()
   if (!is.null(total_con)) private$http_opts$total_con <- total_con
-  if (!is.null(host_con))  private$http_opts$host_con  <- host_con
+  if (!is.null(host_con)) private$http_opts$host_con <- host_con
   if (!is.null(multiplex)) private$http_opts$multiplex <- multiplex
   curl::multi_set(
     pool = private$pool,
@@ -2162,7 +2278,6 @@ el__get_poll_timeout <- function(self, private) {
 }
 
 el__run_timers <- function(self, private) {
-
   expired <- names(private$timers)[private$timers <= private$time]
   expired <- expired[order(private$timers[expired])]
   for (id in expired) {
@@ -2284,8 +2399,7 @@ el__update_curl_data <- function(self, private) {
 event_emitter <- R6Class(
   "event_emitter",
   public = list(
-    initialize = function(async = TRUE)
-      ee_init(self, private, async),
+    initialize = function(async = TRUE) ee_init(self, private, async),
 
     listen_on = function(event, callback)
       ee_listen_on(self, private, event, callback),
@@ -2296,11 +2410,9 @@ event_emitter <- R6Class(
     listen_once = function(event, callback)
       ee_listen_once(self, private, event, callback),
 
-    emit = function(event, ...)
-      ee_emit(self, private, event, ...),
+    emit = function(event, ...) ee_emit(self, private, event, ...),
 
-    get_event_names = function()
-      ee_get_event_names(self, private),
+    get_event_names = function() ee_get_event_names(self, private),
 
     get_listener_count = function(event)
       ee_get_listener_count(self, private, event),
@@ -2313,8 +2425,7 @@ event_emitter <- R6Class(
     lsts = NULL,
     async = NULL,
 
-    cleanup_events = function()
-      ee__cleanup_events(self, private),
+    cleanup_events = function() ee__cleanup_events(self, private),
     error_callback = function(err, res)
       ee__error_callback(self, private, err, res)
   )
@@ -2367,13 +2478,14 @@ ee_emit <- function(self, private, event, ...) {
       get_default_event_loop()$add_next_tick(
         function() lst$cb(...),
         private$error_callback,
-        data = list(error_info = list(event = event)))
-
+        data = list(error_info = list(event = event))
+      )
     } else {
       call_with_callback(
         function() lst$cb(...),
         private$error_callback,
-        info = list(event = event))
+        info = list(event = event)
+      )
     }
   })
 
@@ -2440,7 +2552,8 @@ async_every <- function(.x, .p, ...) {
   done <- FALSE
 
   deferred$new(
-    type = "async_every", call = sys.call(),
+    type = "async_every",
+    call = sys.call(),
     parents = defs,
     action = function(resolve) if (nx == 0) resolve(TRUE),
     parent_resolve = function(value, resolve) {
@@ -2483,8 +2596,9 @@ async_every <- mark_as_async(async_every)
 #' }
 
 async_filter <- function(.x, .p, ...) {
-  when_all(.list = lapply(.x, async(.p), ...))$
-    then(function(res) .x[vlapply(res, isTRUE)])
+  when_all(.list = lapply(.x, async(.p), ...))$then(
+    function(res) .x[vlapply(res, isTRUE)]
+  )
 }
 
 async_filter <- mark_as_async(async_filter)
@@ -2493,8 +2607,9 @@ async_filter <- mark_as_async(async_filter)
 #' @noRd
 
 async_reject <- function(.x, .p, ...) {
-  when_all(.list = lapply(.x, async(.p), ...))$
-    then(function(res) .x[! vlapply(res, isTRUE)])
+  when_all(.list = lapply(.x, async(.p), ...))$then(
+    function(res) .x[!vlapply(res, isTRUE)]
+  )
 }
 
 async_reject <- mark_as_async(async_reject)
@@ -2628,12 +2743,13 @@ sseapp <- function() {
         pause = pause
       )
 
-      res$
-        set_header("cache-control", "no-cache")$
-        set_header("content-type", "text/event-stream")$
-        set_header("access-control-allow-origin", "*")$
-        set_header("connection", "keep-alive")$
-        set_status(200)
+      res$set_header("cache-control", "no-cache")$set_header(
+        "content-type",
+        "text/event-stream"
+      )$set_header("access-control-allow-origin", "*")$set_header(
+        "connection",
+        "keep-alive"
+      )$set_status(200)
 
       if (delay > 0) {
         return(res$delay(delay))
@@ -2641,7 +2757,9 @@ sseapp <- function() {
     }
 
     msg <- paste0(
-      "event: ", res$locals$sse$sent + 1L, "\n",
+      "event: ",
+      res$locals$sse$sent + 1L,
+      "\n",
       "message: live long and prosper\n\n"
     )
     res$locals$sse$sent <- res$locals$sse$sent + 1L
@@ -2726,10 +2844,18 @@ sseapp <- function() {
 #' synchronise(afun())
 #' }
 
-http_get <- function(url, headers = character(), file = NULL,
-                     options = list(), on_progress = NULL) {
-
-  url; headers; file; options; on_progress
+http_get <- function(
+  url,
+  headers = character(),
+  file = NULL,
+  options = list(),
+  on_progress = NULL
+) {
+  url
+  headers
+  file
+  options
+  on_progress
   options <- get_default_curl_options(options)
 
   make_deferred_http(
@@ -2791,10 +2917,18 @@ http_get <- mark_as_async(http_get)
 #' synchronise(afun(urls))
 #' }
 
-http_head <- function(url, headers = character(), file = NULL,
-                      options = list(), on_progress = NULL) {
-
-  url; headers; file; options; on_progress
+http_head <- function(
+  url,
+  headers = character(),
+  file = NULL,
+  options = list(),
+  on_progress = NULL
+) {
+  url
+  headers
+  file
+  options
+  on_progress
   options <- get_default_curl_options(options)
 
   make_deferred_http(
@@ -2802,8 +2936,12 @@ http_head <- function(url, headers = character(), file = NULL,
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
-      curl::handle_setopt(handle, customrequest = "HEAD", nobody = TRUE,
-                    .list = options)
+      curl::handle_setopt(
+        handle,
+        customrequest = "HEAD",
+        nobody = TRUE,
+        .list = options
+      )
       list(handle = handle, options = options)
     },
     file
@@ -2847,11 +2985,24 @@ http_head <- mark_as_async(http_head)
 #'
 #' synchronise(do())
 
-http_post <- function(url, data = NULL, data_file = NULL,
-                      data_form = NULL, headers = character(), file = NULL,
-                      options = list(), on_progress = NULL) {
-
-  url; data; data_file; data_form; headers; file; options; on_progress
+http_post <- function(
+  url,
+  data = NULL,
+  data_file = NULL,
+  data_form = NULL,
+  headers = character(),
+  file = NULL,
+  options = list(),
+  on_progress = NULL
+) {
+  url
+  data
+  data_file
+  data_form
+  headers
+  file
+  options
+  on_progress
   if ((!is.null(data) + !is.null(data_file) + !is.null(data_form)) > 1) {
     stop(
       "At most one of `data`, `data_file` and `data_form` ",
@@ -2869,9 +3020,13 @@ http_post <- function(url, data = NULL, data_file = NULL,
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
-      curl::handle_setopt(handle, customrequest = "POST",
-                    postfieldsize = length(data), postfields = data,
-                    .list = options)
+      curl::handle_setopt(
+        handle,
+        customrequest = "POST",
+        postfieldsize = length(data),
+        postfields = data,
+        .list = options
+      )
       if (!is.null(data_form)) {
         curl::handle_setform(handle, .list = data_form)
       }
@@ -2883,9 +3038,15 @@ http_post <- function(url, data = NULL, data_file = NULL,
 
 http_post <- mark_as_async(http_post)
 
-http_delete <- function(url, headers = character(), file = NULL,
-                        options = list()) {
-  url; headers; options;
+http_delete <- function(
+  url,
+  headers = character(),
+  file = NULL,
+  options = list()
+) {
+  url
+  headers
+  options
 
   make_deferred_http(
     function() {
@@ -2908,7 +3069,7 @@ get_default_curl_options <- function(options) {
     if (!is.null(v <- options[[nm]])) return(v)
     anm <- paste0("async_http_", nm)
     if (!is.null(v <- getOption(anm))) return(v)
-    if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return (v)
+    if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return(v)
   }
   modifyList(
     options,
@@ -2943,13 +3104,16 @@ http_events <- R6Class(
 )
 
 make_deferred_http <- function(cb, file) {
-  cb; file
+  cb
+  file
   id <- NULL
   ee <- http_events$new()
   deferred$new(
-    type = "http", call = sys.call(),
+    type = "http",
+    call = sys.call(),
     action = function(resolve, progress) {
-      resolve; progress
+      resolve
+      progress
       ## This is a temporary hack until we have proper pollables
       ## Then the deferred will have a "work" callback, which will
       ## be able to throw.
@@ -3002,12 +3166,18 @@ http_error <- function(resp, call = sys.call(-1)) {
   reason <- http_status(status)$reason
   message <- sprintf("%s (HTTP %d).", reason, status)
   status_type <- (status %/% 100) * 100
-  if (length(resp[["content"]]) == 0 && !is.null(resp$file) &&
-              file.exists(resp$file)) {
-    tryCatch({
-      n <- file.info(resp$file, extra_cols = FALSE)$size
-      resp$content <- readBin(resp$file, what = raw(), n = n)
-    }, error = identity)
+  if (
+    length(resp[["content"]]) == 0 &&
+      !is.null(resp$file) &&
+      file.exists(resp$file)
+  ) {
+    tryCatch(
+      {
+        n <- file.info(resp$file, extra_cols = FALSE)$size
+        resp$content <- readBin(resp$file, what = raw(), n = n)
+      },
+      error = identity
+    )
   }
   http_class <- paste0("async_http_", unique(c(status, status_type, "error")))
   structure(
@@ -3022,8 +3192,13 @@ http_status <- function(status) {
     stop("Unknown http status code: ", status, call. = FALSE)
   }
 
-  status_types <- c("Information", "Success", "Redirection", "Client error",
-    "Server error")
+  status_types <- c(
+    "Information",
+    "Success",
+    "Redirection",
+    "Client error",
+    "Server error"
+  )
   status_type <- status_types[[status %/% 100]]
 
   # create the final information message
@@ -3148,7 +3323,7 @@ http_setopt <- function(total_con = NULL, host_con = NULL, multiplex = NULL) {
 #' ))
 
 async_map <- function(.x, .f, ..., .args = list(), .limit = Inf) {
-  if (.limit < length(.x))  {
+  if (.limit < length(.x)) {
     async_map_limit(.x, .f, ..., .args = .args, .limit = .limit)
   } else {
     defs <- do.call(lapply, c(list(.x, async(.f), ...), .args))
@@ -3173,18 +3348,25 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
   )
 
   self <- deferred$new(
-    type = "async_map (limit)", call = sys.call(),
+    type = "async_map (limit)",
+    call = sys.call(),
     action = function(resolve) {
-      self; nx; firsts
+      self
+      nx
+      firsts
       lapply(seq_along(firsts), function(idx) {
         firsts[[idx]]$then(function(val) list(idx, val))$then(self)
       })
       if (nx == 0) resolve(result)
     },
     parent_resolve = function(value, resolve) {
-      self; nx; nextone; result; .f
+      self
+      nx
+      nextone
+      result
+      .f
       nx <<- nx - 1L
-      result[ value[[1]] ] <<- value[2]
+      result[value[[1]]] <<- value[2]
       if (nx == 0) {
         resolve(result)
       } else if (nextone <= len) {
@@ -3202,8 +3384,10 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 ## nocov start
 
 .onLoad <- function(libname, pkgname) {
-  if (Sys.getenv("DEBUGME") != "" &&
-    requireNamespace("debugme", quietly = TRUE)) {
+  if (
+    Sys.getenv("DEBUGME") != "" &&
+      requireNamespace("debugme", quietly = TRUE)
+  ) {
     debugme::debugme()
   }
 }
@@ -3231,33 +3415,62 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 #' synchronise(afun())
 #' }
 
-run_process <- function(command = NULL, args = character(),
-  error_on_status = TRUE, wd = NULL, env = NULL,
-  windows_verbatim_args = FALSE, windows_hide_window = FALSE,
-  encoding = "", ...) {
-
-  command; args; error_on_status; wd; env; windows_verbatim_args;
-  windows_hide_window; encoding; list(...)
+run_process <- function(
+  command = NULL,
+  args = character(),
+  error_on_status = TRUE,
+  wd = NULL,
+  env = NULL,
+  windows_verbatim_args = FALSE,
+  windows_hide_window = FALSE,
+  encoding = "",
+  ...
+) {
+  command
+  args
+  error_on_status
+  wd
+  env
+  windows_verbatim_args
+  windows_hide_window
+  encoding
+  list(...)
 
   id <- NULL
 
   deferred$new(
-    type = "process", call = sys.call(),
+    type = "process",
+    call = sys.call(),
     action = function(resolve) {
       resolve
       reject <- environment(resolve)$private$reject
       stdout <- tempfile()
       stderr <- tempfile()
-      px <- processx::process$new(command, args = args,
-        stdout = stdout, stderr = stderr, poll_connection = TRUE,
-        env = env, cleanup = TRUE, cleanup_tree = TRUE, wd = wd,
-        encoding = encoding, ...)
+      px <- processx::process$new(
+        command,
+        args = args,
+        stdout = stdout,
+        stderr = stderr,
+        poll_connection = TRUE,
+        env = env,
+        cleanup = TRUE,
+        cleanup_tree = TRUE,
+        wd = wd,
+        encoding = encoding,
+        ...
+      )
       pipe <- px$get_poll_connection()
       id <<- get_default_event_loop()$add_process(
         list(pipe),
         function(err, res) if (is.null(err)) resolve(res) else reject(err),
-        list(process = px, stdout = stdout, stderr = stderr,
-             error_on_status = error_on_status, encoding = encoding))
+        list(
+          process = px,
+          stdout = stdout,
+          stderr = stderr,
+          error_on_status = error_on_status,
+          encoding = encoding
+        )
+      )
     },
     on_cancel = function(reason) {
       if (!is.null(id)) get_default_event_loop()$cancel(id)
@@ -3283,35 +3496,62 @@ run_process <- mark_as_async(run_process)
 #' synchronise(afun())
 #' }
 
-run_r_process <- function(func, args = list(), libpath = .libPaths(),
+run_r_process <- function(
+  func,
+  args = list(),
+  libpath = .libPaths(),
   repos = c(getOption("repos"), c(CRAN = "https://cloud.r-project.org")),
   cmdargs = c("--no-site-file", "--slave", "--no-save", "--no-restore"),
-  system_profile = FALSE, user_profile = FALSE, env = callr::rcmd_safe_env()) {
-
-  func; args; libpath; repos; cmdargs; system_profile; user_profile; env
+  system_profile = FALSE,
+  user_profile = FALSE,
+  env = callr::rcmd_safe_env()
+) {
+  func
+  args
+  libpath
+  repos
+  cmdargs
+  system_profile
+  user_profile
+  env
 
   id <- NULL
 
   deferred$new(
-    type = "r-process", call = sys.calls(),
+    type = "r-process",
+    call = sys.calls(),
     action = function(resolve) {
       resolve
       reject <- environment(resolve)$private$reject
       stdout <- tempfile()
       stderr <- tempfile()
       opts <- callr::r_process_options(
-        func = func, args = args, libpath = libpath, repos = repos,
-        cmdargs = cmdargs, system_profile = system_profile,
-        user_profile = user_profile, env = env, stdout = stdout,
-        stderr = stderr, extra = list(cleanup_tree = TRUE))
+        func = func,
+        args = args,
+        libpath = libpath,
+        repos = repos,
+        cmdargs = cmdargs,
+        system_profile = system_profile,
+        user_profile = user_profile,
+        env = env,
+        stdout = stdout,
+        stderr = stderr,
+        extra = list(cleanup_tree = TRUE)
+      )
 
       rx <- callr::r_process$new(opts)
       pipe <- rx$get_poll_connection()
       id <<- get_default_event_loop()$add_r_process(
         list(pipe),
         function(err, res) if (is.null(err)) resolve(res) else reject(err),
-        list(process = rx, stdout = stdout, stderr = stderr,
-             error_on_status = TRUE, encoding = ""))
+        list(
+          process = rx,
+          stdout = stdout,
+          stderr = stderr,
+          error_on_status = TRUE,
+          encoding = ""
+        )
+      )
     },
     on_cancel = function(reason) {
       if (!is.null(id)) get_default_event_loop()$cancel(id)
@@ -3352,8 +3592,9 @@ async_race_some <- mark_as_async(async_race_some)
 #' @rdname async_race_some
 
 async_race <- function(..., .list = list()) {
-  when_some_internal(1L, ..., .list = .list, .race = TRUE)$
-    then(function(x) x[[1]])
+  when_some_internal(1L, ..., .list = .list, .race = TRUE)$then(
+    function(x) x[[1]]
+  )
 }
 
 async_race <- mark_as_async(async_race)
@@ -3380,9 +3621,9 @@ async_race <- mark_as_async(async_race)
 async_reflect <- function(task) {
   task <- async(task)
   function(...) {
-    task(...)$
-      then(function(value)  list(error = NULL, result = value))$
-      catch(error = function(reason) list(error = reason, result = NULL))
+    task(...)$then(function(value) list(error = NULL, result = value))$catch(
+      error = function(reason) list(error = reason, result = NULL)
+    )
   }
 }
 
@@ -3411,10 +3652,12 @@ async_reflect <- mark_as_async(async_reflect)
 #' synchronise(do())
 #' }
 
-async_replicate <- function(n, task, ...,  .limit = Inf) {
+async_replicate <- function(n, task, ..., .limit = Inf) {
   assert_that(
     is_count(n),
-    .limit == Inf || is_count(.limit), .limit >= 1L)
+    .limit == Inf || is_count(.limit),
+    .limit >= 1L
+  )
 
   force(list(...))
   task <- async(task)
@@ -3433,13 +3676,15 @@ async_replicate_nolimit <- function(n, task, ...) {
   when_all(.list = defs)
 }
 
-async_replicate_limit  <- function(n, task, ..., .limit = .limit) {
-  n; .limit
+async_replicate_limit <- function(n, task, ..., .limit = .limit) {
+  n
+  .limit
 
   defs <- nextone <- result <- NULL
 
   self <- deferred$new(
-    type = "async_replicate", call = sys.call(),
+    type = "async_replicate",
+    call = sys.call(),
     action = function(resolve) {
       defs <<- lapply(seq_len(n), function(i) task(...))
       result <<- vector(n, mode = "list")
@@ -3449,7 +3694,7 @@ async_replicate_limit  <- function(n, task, ..., .limit = .limit) {
       nextone <<- .limit + 1L
     },
     parent_resolve = function(value, resolve) {
-      result[ value[[1]] ] <<- value[2]
+      result[value[[1]]] <<- value[2]
       if (nextone > n) {
         resolve(result)
       } else {
@@ -3494,7 +3739,8 @@ async_retry <- function(task, times, ...) {
   force(list(...))
 
   self <- deferred$new(
-    type = "retry", call = sys.call(),
+    type = "retry",
+    call = sys.call(),
     parents = list(task(...)),
     parent_reject = function(value, resolve) {
       times <<- times - 1L
@@ -3579,7 +3825,8 @@ async_some <- function(.x, .p, ...) {
   done <- FALSE
 
   deferred$new(
-    type = "async_some", call = sys.call(),
+    type = "async_some",
+    call = sys.call(),
     parents = defs,
     action = function(resolve) if (nx == 0) resolve(FALSE),
     parent_resolve = function(value, resolve) {
@@ -3625,7 +3872,13 @@ async_some <- mark_as_async(async_some)
 
 synchronise <- function(expr) {
   new_el <- push_event_loop()
-  on.exit({ new_el$cancel_all(); pop_event_loop() }, add = TRUE)
+  on.exit(
+    {
+      new_el$cancel_all()
+      pop_event_loop()
+    },
+    add = TRUE
+  )
 
   ## Mark this frame as a synchronization point, for debugging
   `__async_synchronise_frame__` <- TRUE
@@ -3645,10 +3898,11 @@ synchronise <- function(expr) {
   res <- res$then(function(x) x)
 
   priv <- get_private(res)
-  if (! identical(priv$event_loop, new_el)) {
+  if (!identical(priv$event_loop, new_el)) {
     err <- make_error(
       "Cannot create deferred chain across synchronization barrier",
-      class = "async_synchronization_barrier_error")
+      class = "async_synchronization_barrier_error"
+    )
     stop(err)
   }
 
@@ -3667,7 +3921,9 @@ start_browser <- function() {
   cat("This is a standard `browser()` call, but you can also use the\n")
   cat("following extra commands:\n")
   cat("- .an / async_next(): next event loop iteration.\n")
-  cat("- .as / async_step(): next event loop, debug next action or parent callback.\n")
+  cat(
+    "- .as / async_step(): next event loop, debug next action or parent callback.\n"
+  )
   cat("- .asb / async_step_back(): stop debugging of callbacks.\n")
   cat("- .al / async_list(): deferred values in the current async phase.\n")
   cat("- .at / async_tree(): DAG of the deferred values.\n")
@@ -3710,7 +3966,13 @@ start_browser <- function() {
 
 run_event_loop <- function(expr) {
   new_el <- push_event_loop()
-  on.exit({ new_el$cancel_all(); pop_event_loop() }, add = TRUE)
+  on.exit(
+    {
+      new_el$cancel_all()
+      pop_event_loop()
+    },
+    add = TRUE
+  )
 
   ## Mark this frame as a synchronization point, for debugging
   `__async_synchronise_frame__` <- TRUE
@@ -3748,10 +4010,18 @@ format.async_rejected <- function(x, ...) {
   x <- distill_error(x)
   src <- get_source_position(x$aframe$call)
   paste0(
-    "<async error: ", x$message, "\n",
-    " in *", x$aframe$type, "* callback of `",
+    "<async error: ",
+    x$message,
+    "\n",
+    " in *",
+    x$aframe$type,
+    "* callback of `",
     expr_name(x$aframe$call %||% ""),
-    "` at ", src$filename, ":", src$position, ">"
+    "` at ",
+    src$filename,
+    ":",
+    src$position,
+    ">"
   )
 }
 
@@ -3760,12 +4030,16 @@ format.async_rejected <- function(x, ...) {
 summary.async_rejected <- function(object, ...) {
   x <- distill_error(object)
   fmt_out <- format(object, ...)
-  stack <- async_where(calls = x$calls, parents = x$parents,
-                       frm = list(x$aframe))
+  stack <- async_where(
+    calls = x$calls,
+    parents = x$parents,
+    frm = list(x$aframe)
+  )
   stack_out <- format(stack)
   structure(
     paste0(fmt_out, "\n\n", stack_out),
-    class = "async_rejected_summary")
+    class = "async_rejected_summary"
+  )
 }
 
 # nocov start
@@ -3816,7 +4090,8 @@ async_timeout <- function(task, timeout, ...) {
   done <- FALSE
 
   self <- deferred$new(
-    type = "timeout", call = sys.call(),
+    type = "timeout",
+    call = sys.call(),
     action = function(resolve) {
       task(...)$then(function(x) list("ok", x))$then(self)
       delay(timeout)$then(function() list("timeout"))$then(self)
@@ -3941,8 +4216,7 @@ async_timer <- R6Class(
   public = list(
     initialize = function(delay, callback)
       async_timer_init(self, private, super, delay, callback),
-    cancel = function()
-      async_timer_cancel(self, private)
+    cancel = function() async_timer_cancel(self, private)
   ),
 
   private = list(
@@ -3953,7 +4227,8 @@ async_timer <- R6Class(
 async_timer_init <- function(self, private, super, delay, callback) {
   assert_that(
     is_time_interval(delay),
-    is.function(callback) && length(formals(callback)) == 0)
+    is.function(callback) && length(formals(callback)) == 0
+  )
 
   ## event emitter
   super$initialize()
@@ -3962,17 +4237,19 @@ async_timer_init <- function(self, private, super, delay, callback) {
     delay,
     function() self$emit("timeout"),
     function(err, res) {
-      if (!is.null(err)) self$emit("error", err)              # nocov
+      if (!is.null(err)) self$emit("error", err) # nocov
     },
-    rep = TRUE)
+    rep = TRUE
+  )
 
   self$listen_on("timeout", callback)
 
   invisible(self)
 }
 
-async_timer_cancel  <- function(self, private) {
-  self; private
+async_timer_cancel <- function(self, private) {
+  self
+  private
   self$remove_all_listeners("timeout")
   get_default_event_loop()$cancel(private$id)
   invisible(self)
@@ -4009,7 +4286,8 @@ async_try_each <- function(..., .list = list()) {
   errors <- list()
 
   self <- deferred$new(
-    type = "async_try_each", call = sys.call(),
+    type = "async_try_each",
+    call = sys.call(),
     action = function(resolve) {
       nx <<- length(defs)
       if (nx == 0) resolve(NULL)
@@ -4024,7 +4302,8 @@ async_try_each <- function(..., .list = list()) {
       if (wh == nx) {
         err <- structure(
           list(errors = errors, message = "async_try_each failed"),
-          class = c("async_rejected", "error", "condition"))
+          class = c("async_rejected", "error", "condition")
+        )
         stop(err)
       } else {
         wh <<- wh + 1
@@ -4065,7 +4344,8 @@ async_until <- function(test, task, ...) {
   task <- async(task)
 
   self <- deferred$new(
-    type = "async_until", call = sys.call(),
+    type = "async_until",
+    call = sys.call(),
     parents = list(task(...)),
     parent_resolve = function(value, resolve) {
       if (test()) {
@@ -4176,10 +4456,13 @@ get_source_position <- function(call) {
   list(
     filename = file.path(
       c(getSrcDirectory(call), "?")[1],
-      c(getSrcFilename(call), "?")[1]),
+      c(getSrcFilename(call), "?")[1]
+    ),
     position = paste0(
-      getSrcLocation(call, "line", TRUE) %||% "?", ":",
-      getSrcLocation(call, "column", TRUE) %||% "?")
+      getSrcLocation(call, "line", TRUE) %||% "?",
+      ":",
+      getSrcLocation(call, "column", TRUE) %||% "?"
+    )
   )
 }
 
@@ -4195,7 +4478,7 @@ read_all <- function(filename, encoding) {
   s
 }
 
-crash <- function () {
+crash <- function() {
   get("attach")(structure(list(), class = "UserDefinedDatabase"))
 }
 
@@ -4264,7 +4547,6 @@ get_uuid <- function() {
 #' }
 
 when_all <- function(..., .list = list()) {
-
   defs <- c(list(...), .list)
   nx <- 0L
 
@@ -4272,7 +4554,9 @@ when_all <- function(..., .list = list()) {
     type = "when_all",
     call = sys.call(),
     action = function(resolve) {
-      self; nx; defs
+      self
+      nx
+      defs
       lapply(seq_along(defs), function(idx) {
         idx
         if (is_deferred(defs[[idx]])) {
@@ -4283,7 +4567,7 @@ when_all <- function(..., .list = list()) {
       if (nx == 0) resolve(defs)
     },
     parent_resolve = function(value, resolve) {
-      defs[ value[[1]] ] <<- value[2]
+      defs[value[[1]]] <<- value[2]
       nx <<- nx - 1L
       if (nx == 0L) resolve(defs)
     }
@@ -4348,7 +4632,8 @@ when_some_internal <- function(count, ..., .list, .race) {
   cancel_all <- function() lapply(defs[ifdef], function(x) x$cancel())
 
   deferred$new(
-    type = "when_some", call = sys.call(),
+    type = "when_some",
+    call = sys.call(),
     parents = defs[ifdef],
     action = function(resolve) {
       if (num_defs < count) {
@@ -4372,7 +4657,8 @@ when_some_internal <- function(count, ..., .list, .race) {
       if (num_failed + count == num_defs + 1L) {
         err <- structure(
           list(errors = errors, message = "when_some / when_any failed"),
-          class = c("async_rejected", "error", "condition"))
+          class = c("async_rejected", "error", "condition")
+        )
         stop(err)
       }
     }
@@ -4415,8 +4701,9 @@ async_whilst <- function(test, task, ...) {
   task <- async(task)
 
   self <- deferred$new(
-    type = "async_whilst", call = sys.call(),
-    action = function(resolve)  {
+    type = "async_whilst",
+    call = sys.call(),
+    action = function(resolve) {
       if (!test()) {
         resolve(NULL)
       } else {
@@ -4424,7 +4711,7 @@ async_whilst <- function(test, task, ...) {
       }
     },
     parent_resolve = function(value, resolve) {
-      if  (!test()) {
+      if (!test()) {
         resolve(value)
       } else {
         task(...)$then(self)
@@ -4451,30 +4738,20 @@ NULL
 
 worker_pool <- R6Class(
   public = list(
-    initialize = function()
-      wp_init(self, private),
+    initialize = function() wp_init(self, private),
     add_task = function(func, args, id, event_loop)
       wp_add_task(self, private, func, args, id, event_loop),
-    get_fds = function()
-      wp_get_fds(self, private),
-    get_pids = function()
-      wp_get_pids(self, private),
-    get_poll_connections = function()
-      wp_get_poll_connections(self, private),
+    get_fds = function() wp_get_fds(self, private),
+    get_pids = function() wp_get_pids(self, private),
+    get_poll_connections = function() wp_get_poll_connections(self, private),
     notify_event = function(pids, event_loop)
       wp_notify_event(self, private, pids, event_loop),
-    start_workers = function()
-      wp_start_workers(self, private),
-    kill_workers = function()
-      wp_kill_workers(self, private),
-    cancel_task = function(id)
-      wp_cancel_task(self, private, id),
-    cancel_all_tasks = function()
-      wp_cancel_all_tasks(self, private),
-    get_result = function(id)
-      wp_get_result(self, private, id),
-    list_workers = function()
-      wp_list_workers(self, private),
+    start_workers = function() wp_start_workers(self, private),
+    kill_workers = function() wp_kill_workers(self, private),
+    cancel_task = function(id) wp_cancel_task(self, private, id),
+    cancel_all_tasks = function() wp_cancel_all_tasks(self, private),
+    get_result = function(id) wp_get_result(self, private, id),
+    list_workers = function() wp_list_workers(self, private),
     list_tasks = function(event_loop = NULL, status = NULL)
       wp_list_tasks(self, private, event_loop, status)
   ),
@@ -4484,10 +4761,8 @@ worker_pool <- R6Class(
     tasks = list(),
 
     finalize = function() self$kill_workers(),
-    try_start = function()
-      wp__try_start(self, private),
-    interrupt_worker = function(pid)
-      wp__interrupt_worker(self, private, pid)
+    try_start = function() wp__try_start(self, private),
+    interrupt_worker = function(pid) wp__interrupt_worker(self, private, pid)
   )
 )
 
@@ -4505,7 +4780,10 @@ wp_start_workers <- function(self, private) {
   ## Yeah, start some more
   to_start <- num - NROW(private$workers)
   sess <- lapply(1:to_start, function(x) callr::r_session$new(wait = FALSE))
-  fd <- viapply(sess, function(x) processx::conn_get_fileno(x$get_poll_connection()))
+  fd <- viapply(
+    sess,
+    function(x) processx::conn_get_fileno(x$get_poll_connection())
+  )
   new_workers <- data.frame(
     stringsAsFactors = FALSE,
     session = I(sess),
@@ -4524,8 +4802,13 @@ wp_add_task <- function(self, private, func, args, id, event_loop) {
     private$tasks,
     data.frame(
       stringsAsFactors = FALSE,
-      event_loop = event_loop, id = id, func = I(list(func)),
-      args = I(list(args)), status = "waiting", result = I(list(NULL)))
+      event_loop = event_loop,
+      id = id,
+      func = I(list(func)),
+      args = I(list(args)),
+      status = "waiting",
+      result = I(list(NULL))
+    )
   )
 
   private$try_start()
@@ -4548,9 +4831,9 @@ wp_get_poll_connections <- function(self, private) {
   sts <- vcapply(private$workers$session, function(x) x$get_state())
   busy <- sts %in% c("starting", "busy")
   structure(
-    lapply(private$workers$session[busy],
-           function(x) x$get_poll_connection()),
-    names = private$workers$pid[busy])
+    lapply(private$workers$session[busy], function(x) x$get_poll_connection()),
+    names = private$workers$pid[busy]
+  )
 }
 
 wp_notify_event <- function(self, private, pids, event_loop) {
@@ -4571,7 +4854,7 @@ wp_notify_event <- function(self, private, pids, event_loop) {
     }
   }
   if (length(dead)) {
-    private$workers <- private$workers[-dead,]
+    private$workers <- private$workers[-dead, ]
     self$start_workers()
   }
 
@@ -4697,12 +4980,15 @@ wp__interrupt_worker <- function(self, private, pid) {
 
   if (pr == "ready") {
     msg <- sess$read()
-    if (! inherits(msg, "interrupt")) {
-      tryCatch({
-        sess$write_input("base::Sys.sleep(0)\n")
-        sess$read_output()
-        sess$read_error()
-      }, error = function(e) kill <<- TRUE)
+    if (!inherits(msg, "interrupt")) {
+      tryCatch(
+        {
+          sess$write_input("base::Sys.sleep(0)\n")
+          sess$read_output()
+          sess$read_error()
+        },
+        error = function(e) kill <<- TRUE
+      )
     }
     private$workers$task[[ww]] <- NA_character_
   } else {
@@ -4766,17 +5052,18 @@ wp__interrupt_worker <- function(self, private, pid) {
 #' synchronise(afun())
 #' }
 
-external_process <- function(process_generator, error_on_status = TRUE,
-                             ...) {
-
-  process_generator; error_on_status; args <- list(...)
+external_process <- function(process_generator, error_on_status = TRUE, ...) {
+  process_generator
+  error_on_status
+  args <- list(...)
   args$encoding <- args$encoding %||% ""
   args$cleanup_tree <- args$cleanup_tree %||% TRUE
 
   id <- NULL
 
   deferred$new(
-    type = "external_process", call = sys.call(),
+    type = "external_process",
+    call = sys.call(),
     action = function(resolve) {
       resolve
       reject <- environment(resolve)$private$reject
@@ -4787,8 +5074,13 @@ external_process <- function(process_generator, error_on_status = TRUE,
       id <<- get_default_event_loop()$add_process(
         list(pipe),
         function(err, res) if (is.null(err)) resolve(res) else reject(err),
-        list(process = px, stdout = stdout, stderr = stderr,
-             error_on_status = error_on_status, encoding = args$encoding)
+        list(
+          process = px,
+          stdout = stdout,
+          stderr = stderr,
+          error_on_status = error_on_status,
+          encoding = args$encoding
+        )
       )
     },
     on_cancel = function(reason) {

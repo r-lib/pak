@@ -1,4 +1,3 @@
-
 #' A simple package cache
 #'
 #' This is an R6 class that implements a concurrency safe package cache.
@@ -140,8 +139,14 @@ package_cache <- R6Class(
       res
     },
 
-    add = function(file, path, sha256 = shasum256(file), ..., .list = NULL,
-                   .headers = NULL) {
+    add = function(
+      file,
+      path,
+      sha256 = shasum256(file),
+      ...,
+      .list = NULL,
+      .headers = NULL
+    ) {
       assert_that(is_existing_file(file))
 
       l <- private$lock(exclusive = TRUE)
@@ -162,133 +167,259 @@ package_cache <- R6Class(
       }
 
       idx <- find_in_data_frame(
-        db, path = path, sha256 = sha256, .list = extra)
+        db,
+        path = path,
+        sha256 = sha256,
+        .list = extra
+      )
 
       target <- file.path(private$path, path)
       mkdirp(dirname(target))
       file.copy(file, target, overwrite = TRUE)
       db <- append_to_data_frame(
-        db, fullpath = target, path = path, sha256 = null2na(sha256),
-        .list = extra)
+        db,
+        fullpath = target,
+        path = path,
+        sha256 = null2na(sha256),
+        .list = extra
+      )
       save_rds(db, dbfile)
       db[nrow(db), ]
     },
 
     ## Just download a file from an url and add it
     ## Returns a deferred value
-    async_add_url = function(url, path, ..., .list = NULL,
-                             on_progress = NULL, http_headers = NULL) {
-      self; private; url; path; list(...); .list; on_progress; http_headers
+    async_add_url = function(
+      url,
+      path,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
+      self
+      private
+      url
+      path
+      list(...)
+      .list
+      on_progress
+      http_headers
       target <- tempfile()
-      download_file(url, target, on_progress = on_progress,
-                    headers = http_headers)$
-        then(function(res) {
-          headers <- curl::parse_headers(res$response$headers, multiple = TRUE)
-          self$add(target, path, url = url, etag = res$etag, ...,
-                   sha256 = shasum256(target), .list = .list,
-                   .headers = headers)
-        })$
-        finally(function(x) unlink(target, recursive = TRUE))
+      download_file(
+        url,
+        target,
+        on_progress = on_progress,
+        headers = http_headers
+      )$then(function(res) {
+        headers <- curl::parse_headers(res$response$headers, multiple = TRUE)
+        self$add(
+          target,
+          path,
+          url = url,
+          etag = res$etag,
+          ...,
+          sha256 = shasum256(target),
+          .list = .list,
+          .headers = headers
+        )
+      })$finally(function(x) unlink(target, recursive = TRUE))
     },
 
-    add_url = function(url, path, ..., .list = NULL, on_progress = NULL,
-                       http_headers = NULL) {
-      synchronise(self$async_add_url(url, path, ..., .list = .list,
-        on_progress = on_progress, http_headers = http_headers))
+    add_url = function(
+      url,
+      path,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
+      synchronise(self$async_add_url(
+        url,
+        path,
+        ...,
+        .list = .list,
+        on_progress = on_progress,
+        http_headers = http_headers
+      ))
     },
 
     ## If the file is not in the cache, then download it and add it.
-    async_copy_or_add = function(target, urls, path, sha256 = NULL, ...,
-                                 .list = NULL, on_progress = NULL,
-                                 http_headers = NULL) {
-      self; private; target; urls; path; sha256; list(...); .list
-      on_progress; http_headers
+    async_copy_or_add = function(
+      target,
+      urls,
+      path,
+      sha256 = NULL,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
+      self
+      private
+      target
+      urls
+      path
+      sha256
+      list(...)
+      .list
+      on_progress
+      http_headers
       etag <- tempfile()
-      async_constant()$
-        then(function() self$copy_to(target, url = urls[1], ..., .list = .list))$
-        then(function(res) {
-          if (! nrow(res)) {
-            download_one_of(urls, target, on_progress = on_progress,
-                            headers = http_headers)$
-              then(function(d) {
-                headers <- curl::parse_headers(d$response$headers, multiple = TRUE)
-                sha256 <- shasum256(target)
-                self$add(target, path, url = d$url, etag = d$etag,
-                         sha256 = null2na(sha256), ..., .list = .list,
-                         .headers = headers)
-              })$
-              then(function(x) add_attr(x, "action", "Got"))
-          } else {
-            add_attr(res, "action", "Had")
-          }
-        })$
-        finally(function(x) unlink(etag, recursive = TRUE))
+      async_constant()$then(
+        function() self$copy_to(target, url = urls[1], ..., .list = .list)
+      )$then(function(res) {
+        if (!nrow(res)) {
+          download_one_of(
+            urls,
+            target,
+            on_progress = on_progress,
+            headers = http_headers
+          )$then(function(d) {
+            headers <- curl::parse_headers(d$response$headers, multiple = TRUE)
+            sha256 <- shasum256(target)
+            self$add(
+              target,
+              path,
+              url = d$url,
+              etag = d$etag,
+              sha256 = null2na(sha256),
+              ...,
+              .list = .list,
+              .headers = headers
+            )
+          })$then(function(x) add_attr(x, "action", "Got"))
+        } else {
+          add_attr(res, "action", "Had")
+        }
+      })$finally(function(x) unlink(etag, recursive = TRUE))
     },
 
-    copy_or_add = function(target, urls, path, sha256 = NULL, ...,
-                           .list = NULL, on_progress = NULL,
-                           http_headers = NULL) {
+    copy_or_add = function(
+      target,
+      urls,
+      path,
+      sha256 = NULL,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
       synchronise(self$async_copy_or_add(
-                         target, urls, path, sha256, ...,
-                         .list = .list, on_progress = on_progress,
-                         http_headers = http_headers))
+        target,
+        urls,
+        path,
+        sha256,
+        ...,
+        .list = .list,
+        on_progress = on_progress,
+        http_headers = http_headers
+      ))
     },
 
     ## Like copy_to_add, but we always try to update the file, from
     ## the URL, and if the update was successful, we update the file
     ## in the cache as well
-    async_update_or_add = function(target, urls, path, sha256 = NULL, ...,
-                                   .list = NULL, on_progress = NULL,
-                                   http_headers = NULL) {
-      self; private; target; urls; path; sha256; list(...); .list;
-      on_progress; http_headers
-      async_constant()$
-        then(function() self$copy_to(target, url = urls[1], path = path, ...,
-                            .list = .list))$
-        then(function(res) {
-          if (! nrow(res)) {
-            ## Not in the cache, download and add it
-            download_one_of(urls, target, on_progress = on_progress,
-                            headers = http_headers)$
-              then(function(d) {
-                headers <- curl::parse_headers(d$response$headers, multiple = TRUE)
-                sha256 <- shasum256(target)
-                self$add(target, path, url = d$url, etag = d$etag,
-                         sha256 = null2na(sha256), ..., .list = .list,
-                         .headers = headers)
-              })$
-              then(function(x) add_attr(x, "action", "Got"))
-          } else {
-            ## In the cache, check if it is current
-            cat(res$etag, file = etag <- tempfile())
-            download_one_of(urls, target, etag_file = etag,
-                            on_progress = on_progress,
-                            headers = http_headers)$
-              then(function(d) {
-                if (d$response$status_code != 304) {
-                  ## No current, update it
-                  headers <- curl::parse_headers(d$response$headers, multiple = TRUE)
-                  sha256 <- shasum256(target)
-                  x <- self$add(target, path, url = d$url,
-                                etag = d$etag, sha256 = null2na(sha256), ...,
-                                .list = .list, .headers = headers)
-                  add_attr(x, "action", "Got")
-                } else {
-                  ## Current, nothing to do
-                  add_attr(res, "action", "Current")
-                }
-              })$
-              finally(function(x) unlink(etag, recursive = TRUE))
-          }
-        })
+    async_update_or_add = function(
+      target,
+      urls,
+      path,
+      sha256 = NULL,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
+      self
+      private
+      target
+      urls
+      path
+      sha256
+      list(...)
+      .list
+      on_progress
+      http_headers
+      async_constant()$then(
+        function()
+          self$copy_to(target, url = urls[1], path = path, ..., .list = .list)
+      )$then(function(res) {
+        if (!nrow(res)) {
+          ## Not in the cache, download and add it
+          download_one_of(
+            urls,
+            target,
+            on_progress = on_progress,
+            headers = http_headers
+          )$then(function(d) {
+            headers <- curl::parse_headers(d$response$headers, multiple = TRUE)
+            sha256 <- shasum256(target)
+            self$add(
+              target,
+              path,
+              url = d$url,
+              etag = d$etag,
+              sha256 = null2na(sha256),
+              ...,
+              .list = .list,
+              .headers = headers
+            )
+          })$then(function(x) add_attr(x, "action", "Got"))
+        } else {
+          ## In the cache, check if it is current
+          cat(res$etag, file = etag <- tempfile())
+          download_one_of(
+            urls,
+            target,
+            etag_file = etag,
+            on_progress = on_progress,
+            headers = http_headers
+          )$then(function(d) {
+            if (d$response$status_code != 304) {
+              ## No current, update it
+              headers <- curl::parse_headers(
+                d$response$headers,
+                multiple = TRUE
+              )
+              sha256 <- shasum256(target)
+              x <- self$add(
+                target,
+                path,
+                url = d$url,
+                etag = d$etag,
+                sha256 = null2na(sha256),
+                ...,
+                .list = .list,
+                .headers = headers
+              )
+              add_attr(x, "action", "Got")
+            } else {
+              ## Current, nothing to do
+              add_attr(res, "action", "Current")
+            }
+          })$finally(function(x) unlink(etag, recursive = TRUE))
+        }
+      })
     },
 
-    update_or_add = function(target, urls, path, ..., .list = NULL,
-                             on_progress = NULL, http_headers = NULL) {
+    update_or_add = function(
+      target,
+      urls,
+      path,
+      ...,
+      .list = NULL,
+      on_progress = NULL,
+      http_headers = NULL
+    ) {
       synchronise(self$async_update_or_add(
-                         target, urls, path, ...,
-                         .list = .list, on_progress = on_progress,
-                         http_headers = http_headers))
+        target,
+        urls,
+        path,
+        ...,
+        .list = .list,
+        on_progress = on_progress,
+        http_headers = http_headers
+      ))
     },
 
     delete = function(..., .list = NULL) {
@@ -353,11 +484,11 @@ make_empty_db_data_frame <- function() {
   data.frame(
     stringsAsFactors = FALSE,
     fullpath = character(),
-    path     = character(),
-    package  = character(),
-    url      = character(),
-    etag     = character(),
-    sha256   = character()
+    path = character(),
+    package = character(),
+    url = character(),
+    etag = character(),
+    sha256 = character()
   )
 }
 
@@ -384,19 +515,29 @@ update_fields_for_ppm_download <- function(path, extra, headers) {
       distro <- pkgenv$ppm_distros$distribution[wdist]
       release <- pkgenv$ppm_distros$release[wdist]
       res$extra$platform <- paste0(
-        current$cpu, "-", current$vendor, "-", current$os, "-",
-        distro, "-", release
+        current$cpu,
+        "-",
+        current$vendor,
+        "-",
+        current$os,
+        "-",
+        distro,
+        "-",
+        release
       )
     }
 
     # fix path if needed
     if (dirname(path) == "src/contrib") {
       res$path <- paste0(
-        "src/contrib/", res$extra$platform %||% current$platform, "/",
-        rver, "/", basename(path)
+        "src/contrib/",
+        res$extra$platform %||% current$platform,
+        "/",
+        rver,
+        "/",
+        basename(path)
       )
     }
-
   } else {
     # Got a source package
     # Fix platform if needed

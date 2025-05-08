@@ -96,34 +96,40 @@ cran_archive_cache <- R6Class(
   "cran_archive_cache",
 
   public = list(
-    initialize = function(primary_path = NULL,
-                          replica_path = tempfile(),
-                          cran_mirror = default_cran_mirror(),
-                          update_after = as.difftime(7, units = "days"))
-      cac_init(self, private, primary_path, replica_path, cran_mirror,
-               update_after),
+    initialize = function(
+      primary_path = NULL,
+      replica_path = tempfile(),
+      cran_mirror = default_cran_mirror(),
+      update_after = as.difftime(7, units = "days")
+    )
+      cac_init(
+        self,
+        private,
+        primary_path,
+        replica_path,
+        cran_mirror,
+        update_after
+      ),
 
     list = function(packages = NULL, update_after = NULL)
       synchronise(self$async_list(packages, update_after)),
     async_list = function(packages = NULL, update_after = NULL)
-      cac_async_list(self, private, packages,
-                     update_after %||% private$update_after),
+      cac_async_list(
+        self,
+        private,
+        packages,
+        update_after %||% private$update_after
+      ),
 
-    update = function()
-      synchronise(self$async_update()),
-    async_update = function()
-      cac_async_update(self, private),
+    update = function() synchronise(self$async_update()),
+    async_update = function() cac_async_update(self, private),
 
-    check_update = function()
-      synchronise(self$async_check_update()),
-    async_check_update = function()
-      cac_async_check_update(self, private),
+    check_update = function() synchronise(self$async_check_update()),
+    async_check_update = function() cac_async_check_update(self, private),
 
-    summary = function()
-      cac_summary(self, private),
+    summary = function() cac_summary(self, private),
 
-    cleanup = function(force = FALSE)
-      cac_cleanup(self, private, force)
+    cleanup = function(force = FALSE) cac_cleanup(self, private, force)
   ),
 
   private = list(
@@ -140,15 +146,11 @@ cran_archive_cache <- R6Class(
       cac__get_current_data(self, private, max_age),
     get_memory_cache = function(max_age)
       cac__get_memory_cache(self, private, max_age),
-    load_replica = function(max_age)
-      cac__load_replica(self, private, max_age),
-    load_primary = function(max_age)
-      cac__load_primary(self, private, max_age),
+    load_replica = function(max_age) cac__load_replica(self, private, max_age),
+    load_primary = function(max_age) cac__load_primary(self, private, max_age),
 
-    update_memory_cache = function()
-      cac__update_memory_cache(self, private),
-    update_replica = function()
-      cac__update_replica(self, private),
+    update_memory_cache = function() cac__update_memory_cache(self, private),
+    update_replica = function() cac__update_replica(self, private),
     update_primary = function(lock = TRUE)
       cac__update_primary(self, private, lock),
     convert_archive_file = function(raw, out)
@@ -170,8 +172,14 @@ cran_archive_cache <- R6Class(
   )
 )
 
-cac_init <- function(self, private, primary_path, replica_path,
-                      cran_mirror, update_after) {
+cac_init <- function(
+  self,
+  private,
+  primary_path,
+  replica_path,
+  cran_mirror,
+  update_after
+) {
   private$primary_path <- primary_path %||% get_user_cache_dir()$root
   private$replica_path <- replica_path
   private$cran_mirror <- cran_mirror
@@ -182,54 +190,52 @@ cac_init <- function(self, private, primary_path, replica_path,
 cac_async_list <- function(self, private, packages, update_after) {
   assert_that(is.null(packages) || is_character(packages))
 
-  private$async_ensure_cache(update_after)$
-    then(function(x) {
-      if (is.null(packages)) x else x[x$package %in% packages, ]
-    })
+  private$async_ensure_cache(update_after)$then(function(x) {
+    if (is.null(packages)) x else x[x$package %in% packages, ]
+  })
 }
 
 cac_async_update <- function(self, private) {
   hash <- private$get_hash()
   if (!is.null(private$update_deferred)) {
-    return(private$update_deferred)                                 # nocov
+    return(private$update_deferred) # nocov
   }
 
-  private$update_deferred <- private$update_replica()$
-    then(function() private$update_primary())$
-    then(function() private$data)$
-    catch(error = function(err) {
-      err$message <- msg_wrap(                                                # nocov
-        conditionMessage(err), "\n\n",                                        # nocov
-        "Could not load or update archive cache. If you think your local ",   # nocov
-        "cache is broken, try deleting it with `cran_archive_cleanup()` or ", # nocov
-        "the `$cleanup()` method.")                                           # nocov
-      stop(err)                                                               # nocov
-    })$
-    finally(function() private$update_deferred <- NULL)$
-    share()
+  private$update_deferred <- private$update_replica()$then(
+    function() private$update_primary()
+  )$then(function() private$data)$catch(error = function(err) {
+    err$message <- msg_wrap(
+      # nocov
+      conditionMessage(err),
+      "\n\n", # nocov
+      "Could not load or update archive cache. If you think your local ", # nocov
+      "cache is broken, try deleting it with `cran_archive_cleanup()` or ", # nocov
+      "the `$cleanup()` method."
+    ) # nocov
+    stop(err) # nocov
+  })$finally(function() private$update_deferred <- NULL)$share()
 }
 
 cac_async_check_update <- function(self, private) {
-  self; private
+  self
+  private
 
-  if (!is.null(private$update_deferred)) return(private$update_deferred)          # nocov
-  if (!is.null(private$chk_update_deferred)) return(private$chk_update_deferred)  # nocov
+  if (!is.null(private$update_deferred)) return(private$update_deferred) # nocov
+  if (!is.null(private$chk_update_deferred)) return(private$chk_update_deferred) # nocov
 
-  private$chk_update_deferred <- async(private$update_replica)()$
-    then(function(ret) {
-      rep_file <- private$get_cache_file("replica")
-      rep_time <- file_get_time(rep_file)
-      stat <- ret$response$status_code
-      if (stat < 300) {
-        private$update_primary()
-        private$data
-
-      } else {
-        private$async_ensure_cache()
-      }
-    })$
-    finally(function() private$chk_update_deferred <- NULL)$
-    share()
+  private$chk_update_deferred <- async(private$update_replica)()$then(function(
+    ret
+  ) {
+    rep_file <- private$get_cache_file("replica")
+    rep_time <- file_get_time(rep_file)
+    stat <- ret$response$status_code
+    if (stat < 300) {
+      private$update_primary()
+      private$data
+    } else {
+      private$async_ensure_cache()
+    }
+  })$finally(function() private$chk_update_deferred <- NULL)$share()
 }
 
 cac_summary <- function(self, private) {
@@ -257,7 +263,7 @@ cac_cleanup <- function(self, private, force) {
       pri_rds
     )
     ans <- readline(msg)
-    if (! ans %in% c("y", "Y")) stop("Aborted")
+    if (!ans %in% c("y", "Y")) stop("Aborted")
   }
 
   rep_rds <- private$get_cache_file("replica")
@@ -292,8 +298,10 @@ cac__async_ensure_cache <- function(self, private, max_age) {
 
 cac__get_current_data <- function(self, private, max_age) {
   if (is.null(private$data)) stop("No data loaded")
-  if (is.null(private$data_time) ||
-      Sys.time() - private$data_time > max_age) {
+  if (
+    is.null(private$data_time) ||
+      Sys.time() - private$data_time > max_age
+  ) {
     stop("Loaded data outdated")
   }
   private$data
@@ -363,7 +371,7 @@ cac__update_replica <- function(self, private) {
   url <- paste0(private$cran_mirror, "/src/contrib/Meta/archive.rds")
   rep_file <- private$get_cache_file("replica")
   if (!file.exists(rep_file)) {
-   tryCatch(private$load_primary(private$update_after), error = function(e) e)
+    tryCatch(private$load_primary(private$update_after), error = function(e) e)
   }
 
   etag_file <- paste0(rep_file, "-etag")
@@ -373,25 +381,22 @@ cac__update_replica <- function(self, private) {
   file.create(tmp)
 
   key <- random_key()
-  async_constant()$
-    then(function() start_auth_cache(key))$
-    then(function() download_if_newer(url, tmp, etag_file, error_on_status = FALSE))$
-    then(function(dl) {
-      if (dl$response$status_code >= 300 && dl$response$status_code != 304) {
-        stop("Failed to update package archive metadata")
-      }
-      dl
-    })$
-    then(function(dl) {
-      if (dl$response$status_code != 304) {
-        private$convert_archive_file(tmp, rep_file)
-      }
-      dl
-    })$
-    finally(function() {
-      unlink(tmp)
-      clear_auth_cache(key)
-    })
+  async_constant()$then(function() start_auth_cache(key))$then(
+    function() download_if_newer(url, tmp, etag_file, error_on_status = FALSE)
+  )$then(function(dl) {
+    if (dl$response$status_code >= 300 && dl$response$status_code != 304) {
+      stop("Failed to update package archive metadata")
+    }
+    dl
+  })$then(function(dl) {
+    if (dl$response$status_code != 304) {
+      private$convert_archive_file(tmp, rep_file)
+    }
+    dl
+  })$finally(function() {
+    unlink(tmp)
+    clear_auth_cache(key)
+  })
 }
 
 cac__convert_archive_file <- function(self, private, raw, out) {
@@ -484,9 +489,11 @@ get_archive_cache <- function(cran_mirror) {
 #' @examplesIf pkgcache:::run_examples()
 #' cran_archive_list(packages = "readr")
 
-cran_archive_list <- function(cran_mirror = default_cran_mirror(),
-                              update_after = as.difftime(7, units = "days"),
-                              packages = NULL) {
+cran_archive_list <- function(
+  cran_mirror = default_cran_mirror(),
+  update_after = as.difftime(7, units = "days"),
+  packages = NULL
+) {
   get_archive_cache(cran_mirror)$list(
     update_after = update_after,
     packages = packages
@@ -510,8 +517,10 @@ cran_archive_update <- function(cran_mirror = default_cran_mirror()) {
 #'   `cran_mirror`.
 #' @return `cran_archive_cleanup()` returns nothing.
 
-cran_archive_cleanup <- function(cran_mirror = default_cran_mirror(),
-                                 force = FALSE) {
+cran_archive_cleanup <- function(
+  cran_mirror = default_cran_mirror(),
+  force = FALSE
+) {
   get_archive_cache(cran_mirror)$cleanup(force = force)
   invisible()
 }

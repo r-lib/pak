@@ -1,4 +1,3 @@
-
 list_bioc_repos <- function() {
   url <- "https://git.bioconductor.org/"
   resp <- curl::curl_fetch_memory(url)
@@ -19,22 +18,25 @@ get_bioc_sysreqs <- function(pkg, ref = "HEAD") {
 }
 
 async_get_bioc_sysreqs <- function(pkg, ref = "HEAD") {
-  url <- sprintf("https://raw.githubusercontent.com/bioc/%s/%s/DESCRIPTION", pkg, ref)
+  url <- sprintf(
+    "https://raw.githubusercontent.com/bioc/%s/%s/DESCRIPTION",
+    pkg,
+    ref
+  )
   tmp <- tempfile("pkgcache-bioc-")
   on.exit(unlink(tmp), add = TRUE)
 
-  http_get(url)$
-    then(http_stop_for_status)$
-    catch(async_http_404 = function(err) list(content = raw()))$
-    then(function(res) {
-      on.exit(close(con), add = TRUE)
-      desc <- read.dcf(con <- rawConnection(res$content))
-      if ("SystemRequirements" %in% colnames(desc)) {
-        unname(desc[, "SystemRequirements"])
-      } else {
-        NA_character_
-      }
-    })
+  http_get(url)$then(http_stop_for_status)$catch(
+    async_http_404 = function(err) list(content = raw())
+  )$then(function(res) {
+    on.exit(close(con), add = TRUE)
+    desc <- read.dcf(con <- rawConnection(res$content))
+    if ("SystemRequirements" %in% colnames(desc)) {
+      unname(desc[, "SystemRequirements"])
+    } else {
+      NA_character_
+    }
+  })
 }
 
 get_all_bioc_sysreqs <- function(ref = "HEAD") {
@@ -46,8 +48,12 @@ get_all_bioc_sysreqs <- function(ref = "HEAD") {
 
   prog <- function() {
     cat(
-      "\r[", paste(format(done), collapse = "/"), "]", sep = "",
-      " -- ", format_time$pretty_dt(Sys.time() - start_at)
+      "\r[",
+      paste(format(done), collapse = "/"),
+      "]",
+      sep = "",
+      " -- ",
+      format_time$pretty_dt(Sys.time() - start_at)
     )
   }
 
@@ -56,19 +62,19 @@ get_all_bioc_sysreqs <- function(ref = "HEAD") {
     pkgs,
     function(pkg) {
       force(pkg)
-      async_get_bioc_sysreqs(pkg, ref = ref)$
-        catch(error = function(e) {
-          message(
-            "\r", pkg, ":                         \n",
-            conditionMessage(e)
-          )
-          NA_character_
-        })$
-        then(function(x) {
-          done[1] <<- done[1] + 1L
-          prog()
-          x
-        })
+      async_get_bioc_sysreqs(pkg, ref = ref)$catch(error = function(e) {
+        message(
+          "\r",
+          pkg,
+          ":                         \n",
+          conditionMessage(e)
+        )
+        NA_character_
+      })$then(function(x) {
+        done[1] <<- done[1] + 1L
+        prog()
+        x
+      })
     }
   ))
   sq <- data.frame(

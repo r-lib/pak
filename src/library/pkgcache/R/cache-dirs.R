@@ -1,4 +1,3 @@
-
 get_user_cache_dir <- function() {
   ichk <- Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
   rdir <- Sys.getenv("R_USER_CACHE_DIR", "")
@@ -26,7 +25,7 @@ get_user_cache_dir <- function() {
 
   res <- list(
     root = cdir,
-    pkg  = file.path(cdir, "pkg"),
+    pkg = file.path(cdir, "pkg"),
     meta = file.path(cdir, "_metadata"),
     lock = file.path(cdir, "_metadata.lock")
   )
@@ -90,10 +89,8 @@ file_path <- function(...) {
 win_path_local <- function() {
   if (nzchar(lapp <- Sys.getenv("LOCALAPPDATA", ""))) {
     lapp
-
   } else if (nzchar(usrprof <- Sys.getenv("USERPROFILE", ""))) {
     file.path(usrprof, "AppData", "Local")
-
   } else {
     file.path(tempdir(), "r-pkg-cache")
   }

@@ -1,4 +1,3 @@
-
 # Result is underined if not Linux
 
 current_r_platform_data_linux <- function(raw, etc = "/etc") {
@@ -21,15 +20,17 @@ unknown_dist <- function() {
   )
 }
 
-parse_linux_platform_info <- function(os_release = NULL,
-                                      redhat_release = NULL) {
-  if (is.null(os_release) &&
-      is.null(redhat_release)) {
+parse_linux_platform_info <- function(
+  os_release = NULL,
+  redhat_release = NULL
+) {
+  if (
+    is.null(os_release) &&
+      is.null(redhat_release)
+  ) {
     unknown_dist()
-
   } else if (!is.null(os_release)) {
     parse_os_release(os_release)
-
   } else {
     parse_redhat_release(redhat_release)
   }

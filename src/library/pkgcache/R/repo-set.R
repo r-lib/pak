@@ -1,4 +1,3 @@
-
 #' Query and set the list of CRAN-like repositories
 #'
 #' pkgcache uses the `repos` option, see [options()]. It also automatically
@@ -41,8 +40,11 @@
 #' @examples
 #' repo_get()
 
-repo_get <- function(r_version = getRversion(), bioc = TRUE,
-                     cran_mirror = default_cran_mirror()) {
+repo_get <- function(
+  r_version = getRversion(),
+  bioc = TRUE,
+  cran_mirror = default_cran_mirror()
+) {
   cmc__get_repos(
     getOption("repos"),
     bioc = bioc,
@@ -169,13 +171,10 @@ repo_sugar <- function(x, nm, username = NULL) {
   # URL
   url <- if (!is.na(psd$protocol)) {
     repo_sugar_url(x, nm)
-
   } else if (grepl("^MRAN@", x)) {
     repo_sugar_mran(x, nm)
-
   } else if (grepl("^PPM@", x) || grepl("^RSPM@", x)) {
     repo_sugar_ppm(x, nm)
-
   } else {
     repo_sugar_path(x, nm)
   }
@@ -221,7 +220,8 @@ repo_sugar_ppm <- function(x, nm) {
   current <- current_r_platform_data()
   current_rver <- get_minor_r_version(getRversion())
   binaries <-
-    ! tolower(Sys.getenv("PKGCACHE_PPM_BINARIES")) %in% c("no", "false", "0", "off") &&
+    !tolower(Sys.getenv("PKGCACHE_PPM_BINARIES")) %in%
+      c("no", "false", "0", "off") &&
     current$cpu == "x86_64" &&
     grepl("linux", current$os)
 
@@ -244,7 +244,7 @@ repo_sugar_ppm <- function(x, nm) {
   rvers <- pkgenv$ppm_r_versions
   mch <- which(
     distros$distribution == current$distribution &
-    distros$release == current$release
+      distros$release == current$release
   )
   binaries <- binaries &&
     length(mch) == 1 &&
@@ -287,8 +287,10 @@ parse_spec <- function(x) {
 }
 
 parse_spec_r <- function(x) {
-  if (is.null(pkgenv$r_versions) ||
-      package_version(x) > last(pkgenv$r_versions)$version) {
+  if (
+    is.null(pkgenv$r_versions) ||
+      package_version(x) > last(pkgenv$r_versions)$version
+  ) {
     tryCatch(
       pkgenv$r_versions <- get_r_versions(),
       error = function(err) warning("Failed to update list of R versions")
@@ -298,7 +300,7 @@ parse_spec_r <- function(x) {
   vers <- vcapply(pkgenv$r_versions, "[[", "version")
   dates <- parse_iso_8601(vcapply(pkgenv$r_versions, "[[", "date"))
 
-  if (! x %in% vers) {
+  if (!x %in% vers) {
     stop("Unknown R version: '", x, "'")
   }
 
@@ -328,13 +330,15 @@ parse_spec_pkg <- function(x) {
     stop("Invalid package version: '", x, "'")
   }
 
-  if (is.null(pkgenv$pkg_versions[[pkg]]) ||
-      package_version(ver) > last(names(pkgenv$pkg_versions[[pkg]]))) {
+  if (
+    is.null(pkgenv$pkg_versions[[pkg]]) ||
+      package_version(ver) > last(names(pkgenv$pkg_versions[[pkg]]))
+  ) {
     pkgenv$pkg_versions[[pkg]] <- get_pkg_versions(pkg)
   }
 
   vers <- pkgenv$pkg_versions[[pkg]]
-  if (! ver %in% names(vers)) {
+  if (!ver %in% names(vers)) {
     stop("Unknown '", pkg, "' version: '", ver, "'")
   }
 

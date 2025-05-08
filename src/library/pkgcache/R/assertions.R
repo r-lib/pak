@@ -1,6 +1,5 @@
-
 is_character <- function(x) {
-  is.character(x) && ! any(is.na(x))
+  is.character(x) && !any(is.na(x))
 }
 
 on_failure(is_character) <- function(call, env) {
@@ -68,7 +67,7 @@ on_failure(is_path) <- function(call, env) {
 
 is_existing_file <- function(x) {
   assert_that(is_path(x))
-  file.exists(x) && ! file.info(x)$isdir
+  file.exists(x) && !file.info(x)$isdir
 }
 
 on_failure(is_existing_file) <- function(call, env) {
@@ -78,10 +77,13 @@ on_failure(is_existing_file) <- function(call, env) {
 is_dependencies <- function(x) {
   types <- dep_types()
   types <- c(types, tolower(types))
-  is_na_scalar(x) || isTRUE(x) || identical(x, FALSE) ||
+  is_na_scalar(x) ||
+    isTRUE(x) ||
+    identical(x, FALSE) ||
     (is_character(x) && all(x %in% types)) ||
-    (is.list(x) && all(names(x) == c("direct", "indirect")) &&
-     all(unlist(x) %in% types))
+    (is.list(x) &&
+      all(names(x) == c("direct", "indirect")) &&
+      all(unlist(x) %in% types))
 }
 
 on_failure(is_dependencies) <- function(call, env) {

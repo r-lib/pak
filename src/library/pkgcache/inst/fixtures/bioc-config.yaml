@@ -8,12 +8,12 @@ production_deploy_root: webadmin@master.bioconductor.org:/extra/www/bioc
 staging_dir: /loc/www/bioconductor-test-new
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-release_version: "3.20"
-r_version_associated_with_release: "4.4.0"
+release_version: "3.21"
+r_version_associated_with_release: "4.5.0"
 r_version_associated_with_devel: "4.5.0"
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-devel_version: "3.21"
+devel_version: "3.22"
 
 ## CHANGE THIS WHEN WE ADD A VERSION:
 ## This is the list of all versions for which we want to generate "new" 
@@ -24,8 +24,8 @@ devel_version: "3.21"
 ## let the no-longer-release version build one last time so package
 ## landing pages won't say "release version"):
 versions:
-- "3.20"
 - "3.21"
+- "3.22"
 
 ## CHANGE THIS (i.e., uncomment) as various parts of the new devel version 
 ## become available. set to "[]" if none are available.
@@ -37,11 +37,11 @@ devel_repos:
 
 ## CHANGE this when the build machines change:
 ## also, don't include machines that are not building yet (comment them out)
-active_release_builders:
+active_devel_builders:
   linux: "nebbiolo2"
   windows: "palomino8"
-  mac_monterey: "lconway"
-active_devel_builders:
+#  mac_monterey: "lconway"
+active_release_builders:
   linux: "nebbiolo1"
   windows: "palomino7"
 #  mac_monterey: "merida1"
@@ -163,6 +163,7 @@ r_ver_for_bioc_ver:
   "3.19": "4.4"
   "3.20": "4.4"
   "3.21": "4.5"
+  "3.22": "4.5"
 # UPDATE THIS when we release a version
 release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milestones
   "1.0": "1/5/2001"
@@ -211,6 +212,7 @@ release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milesto
   "3.18": "10/25/2023"
   "3.19": "05/01/2024"
   "3.20": "10/30/2024"
+  "3.21": "04/16/2025"
 release_last_built_dates:
   '2.0': 09/12/2007
   '2.1': 04/09/2008
@@ -247,6 +249,7 @@ release_last_built_dates:
   '3.17': 10/16/2023
   '3.18': 04/17/2024
   '3.19': 10/18/2024
+  '3.20': 04/02/2025
 mirrors:
  - 0-Bioconductor:
    - institution: Bioconductor, automatic redirection to servers worldwide
@@ -268,3 +271,148 @@ mirrors:
      https_mirror_url: https://bioconductor.posit.co/
      rsync: secure_mirror_from_master
      country_code: us
+ - Germany:
+   - institution: Department of Statistics, TU Dortmund
+     institution_url: https://www.statistik.tu-dortmund.de/
+     contact: Uwe Ligges
+     contact_email: ligges@statistik.tu-dortmund.de
+     mirror_url: http://bioconductor.statistik.tu-dortmund.de/
+     https_mirror_url: https://bioconductor.statistik.tu-dortmund.de/
+     rsync: 
+     city: Dortmund
+     country_code: de
+   - institution: GWDG
+     institution_url: https://ftp.gwdg.de/
+     contact: Tim Ehlers and Steffen Klemer
+     contact_email: ftpmaster@gwdg.de
+     mirror_url: http://ftp.gwdg.de/pub/misc/bioconductor/
+     https_mirror_url: https://ftp.gwdg.de/pub/misc/bioconductor/
+     rsync: secure_mirror_from_master
+     city: Gottingen
+     country_code: de
+ - Japan:
+   - institution: RIKEN Advanced Center for Computing and Communication
+     institution_url: https://accc.riken.jp/en/
+     contact: Itoshi NIKAIDO, Ph.D.
+     contact_email: dritoshi@gmail.com
+     mirror_url: http://bioconductor.riken.jp/
+     https_mirror_url: https://bioconductor.riken.jp/
+     rsync: secure_mirror_from_master
+     country_code: jp
+     city: Wako
+ - Taiwan:
+   - institution: National Center for High-performance Computing
+     institution_url: https://www.nchc.org.tw/
+     contact: Chenkai Sun
+     contact_email: ceasar@narlabs.org.tw
+     mirror_url: http://free.nchc.org.tw/bioconductor/
+     https_mirror_url: https://free.nchc.org.tw/bioconductor/
+     rsync: secure_mirror_from_master
+     country_code: tw
+     city: Hsinchu
+ - China:
+   - institution: TUNA Mirror Site, Tsinghua University 
+     institution_url: mirrors.tuna.tsinghua.edu.cn
+     contact: Miao Wang 
+     contact_email: mirroradmin@tuna.tsinghua.edu.cn 
+     mirror_url: http://mirrors.tuna.tsinghua.edu.cn/bioconductor/
+     https_mirror_url: https://mirrors.tuna.tsinghua.edu.cn/bioconductor/ 
+     rsync: secure_mirror_from_master
+     country_code: cn 
+     city: Peking 
+   - institution: eScience Center, Nanjing University
+     institution_url: https://sci.nju.edu.cn/
+     contact: Ge Yao
+     contact_email: yaoge@nju.edu.cn
+     mirror_url: http://mirrors.nju.edu.cn/bioconductor/
+     https_mirror_url: https://mirrors.nju.edu.cn/bioconductor/
+     rsync: secure_mirror_from_master
+     city: Nanjing
+     country_code: cn
+   - institution: University of Science and Technology of China (USTC)
+     institution_url: https://ustc.edu.cn
+     contact: Linux User Group (LUG) @ USTC
+     contact_email: lug@ustc.edu.cn
+     mirror_url: http://mirrors.ustc.edu.cn/bioc/
+     https_mirror_url: https://mirrors.ustc.edu.cn/bioc/
+     rsync: secure_mirror_from_master
+     city: Hefei Anhui
+     country_code: cn
+   - institution: High-Performance Computing Center, Westlake University
+     institution_url: https://www.westlake.edu.cn/
+     contact: Ling Yang
+     contact_email: yangling@westlake.edu.cn
+     mirror_url: https://mirrors.westlake.edu.cn/bioconductor
+     https_mirror_url: https://mirrors.westlake.edu.cn/bioconductor
+     rsync: secure_mirror_from_master
+     city: Hangzhou Westlake
+     country_code: cn
+   - institution: Zhejiang University
+     institution_url: https://www.zju.edu.cn/
+     contact: ZJUSCT Team Falcon
+     contact_email: mirrors@zju.edu.cn
+     mirror_url: https://mirrors.zju.edu.cn/bioconductor
+     https_mirror_url: https://mirrors.zju.edu.cn/bioconductor
+     rsync: TUNA
+     city: Zhejiang University
+     country_code: cn
+ - Norway:
+   - institution: University of Bergen
+     institution_url: https://www.uib.no/
+     contact: Trond Davidsen
+     contact_email: Trond.Davidsen@it.uib.no
+     mirror_url: http://bioconductor.uib.no/
+     https_mirror_url: https://bioconductor.uib.no/
+     rsync: secure_mirror_from_master
+     city: Bergen
+     country_code: "no"
+ - Italy:
+   - institution: University of Pisa
+     institution_url: https://www.unipi.it/
+     contact: Fabio Pratelli
+     contact_email: fabio.pratelli@unipi.it 
+     mirror_url: http://bioconductor.unipi.it
+     https_mirror_url: https://bioconductor.unipi.it
+     rsync: secure_mirror_from_master
+     city: Pisa
+     country_code: it
+ - Korea:
+   - institution: CRAN Asia
+     institution_url: https://cran.asia
+     contact: Seongho Bae
+     contact_email: admin@cran.asia
+     mirror_url: http://cran.asia
+     https_mirror_url: https://cran.asia
+     rsync: secure_mirror_from_master
+     city: Seoul
+     country_code: kr
+ - Australia:
+   - institution: AARNet Pty Ltd
+     institution_url: https://aarnet.edu.au
+     contact: AARNet Operations Center
+     contact_email: mirror@aarnet.edu.au
+     mirror_url: http://mirror.aarnet.edu.au/pub/bioconductor
+     https_mirror_url: https://mirror.aarnet.edu.au/pub/bioconductor
+     rsync: secure_mirror_from_master
+     city: Sydney
+     country_code: au
+ - Denmark:
+   - institution: dotsrc
+     institution_url: https://dotsrc.org/
+     contact: Anders Trier Olesen
+     contact_email: staff@dotsrc.org
+     mirror_url: http://mirrors.dotsrc.org/bioconductor/
+     https_mirror_url: https://mirrors.dotsrc.org/bioconductor/
+     rsync: secure_mirror_from_master
+     city: Aalborg
+     country_code: dk
+ - Sweden:
+   - institution: Academic Computer Club Umea
+     institution_url: https://www.accum.se/
+     contact: FTP admins
+     contact_email: ftp-adm@accum.se
+     mirror_url: http://mirror.accum.se/mirror/bioconductor.org/
+     https_mirror_url: https://mirror.accum.se/mirror/bioconductor.org/
+     rsync: secure_mirror_from_master
+     city: Umea
+     country_code: se

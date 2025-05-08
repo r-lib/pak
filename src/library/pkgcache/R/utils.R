@@ -1,4 +1,3 @@
-
 repoman_data <- new.env(parent = emptyenv())
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
@@ -31,13 +30,16 @@ mapx <- function(...) {
 
   lens <- setdiff(unique(viapply(data, length)), 1L)
   if (any(lens == 0)) {
-    data <- lapply(data, function(x) { length(x) <- 0; x })
+    data <- lapply(data, function(x) {
+      length(x) <- 0
+      x
+    })
     lens <- 0
   }
   if (length(lens) > 1) {
     stop(
       "Incompatible data lengths in `mapx()`: ",
-       paste(lens, collapse = ", ")
+      paste(lens, collapse = ", ")
     )
   }
 
@@ -47,8 +49,8 @@ mapx <- function(...) {
   )
 }
 
-lapply_rows <-  function(df, fun, ...) {
-  lapply(seq_len(nrow(df)), function(i) fun(df[i,], ...))
+lapply_rows <- function(df, fun, ...) {
+  lapply(seq_len(nrow(df)), function(i) fun(df[i, ], ...))
 }
 
 zip_vecs <- function(...) {
@@ -86,16 +88,12 @@ interpret_dependencies <- function(dp) {
 
   res <- if (isTRUE(dp)) {
     list(c(hard, "Suggests"), hard)
-
   } else if (identical(dp, FALSE)) {
     list(character(), character())
-
   } else if (is_na_scalar(dp)) {
     list(hard, hard)
-
   } else if (is.list(dp) && all(names(dp) == c("direct", "indirect"))) {
     dp
-
   } else {
     list(dp, dp)
   }
@@ -111,7 +109,7 @@ interpret_dependencies <- function(dp) {
 base_packages <- function() {
   if (is.null(repoman_data$base_packages)) {
     repoman_data$base_packages <-
-      parse_installed(.Library, priority="base")$Package
+      parse_installed(.Library, priority = "base")$Package
   }
   repoman_data$base_packages
 }
@@ -119,9 +117,21 @@ base_packages <- function() {
 recommended_packages <- function() {
   if (is.null(repoman_data$recommended_packages)) {
     repoman_data$recommended_packages <- c(
-      "boot", "class", "cluster", "codetools", "foreign", "KernSmooth",
-      "lattice", "MASS", "Matrix", "mgcv", "nlme", "nnet", "rpart",
-      "spatial", "survival"
+      "boot",
+      "class",
+      "cluster",
+      "codetools",
+      "foreign",
+      "KernSmooth",
+      "lattice",
+      "MASS",
+      "Matrix",
+      "mgcv",
+      "nlme",
+      "nnet",
+      "rpart",
+      "spatial",
+      "survival"
     )
   }
   repoman_data$recommended_packages
@@ -135,8 +145,8 @@ is_na_scalar <- function(x) {
     identical(x, NA)
 }
 
-drop_nulls <- function(x)  {
-  x[! vlapply(x, is.null)]
+drop_nulls <- function(x) {
+  x[!vlapply(x, is.null)]
 }
 
 null2na <- function(x) {
@@ -151,7 +161,7 @@ shasum256 <- function(x) {
   cli::hash_file_sha256(x)
 }
 
-file.size <- function (...) {
+file.size <- function(...) {
   file.info(...)$size
 }
 
@@ -169,8 +179,10 @@ run_examples <- function() {
   if (Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") == "") {
     # If this is not a check, then OK
     TRUE
-  } else if (identical(Sys.getenv("NOT_CRAN"), "true") &&
-      isTRUE(as.logical(Sys.getenv("CI")))) {
+  } else if (
+    identical(Sys.getenv("NOT_CRAN"), "true") &&
+      isTRUE(as.logical(Sys.getenv("CI")))
+  ) {
     # If NOT_CRAN is set and we are on the CI, then we run examples
     TRUE
   } else {
@@ -206,7 +218,7 @@ gzip_decompress <- function(from, chunk_size = 5 * 1000 * 1000) {
   pieces <- list()
   while (1) {
     pieces[[length(pieces) + 1]] <- readBin(con, what = "raw", n = chunk_size)
-    if (length(pieces[[length(pieces)]]) == 0) break;
+    if (length(pieces[[length(pieces)]]) == 0) break
   }
   do.call("c", pieces)
 }

@@ -1,4 +1,3 @@
-
 # This is not actually used anywhere, we I'll leave it here.
 # It might be useful for testing improvements for the more complicated
 # parsers.
@@ -24,7 +23,7 @@ parse_description <- function(path) {
 }
 
 fix_encodings <- function(lst, col = "Encoding") {
-  if (! col %in% names(lst)) return(lst)
+  if (!col %in% names(lst)) return(lst)
   utf8 <- which(!is.na(lst[[col]]) & lst[[col]] == "UTF-8")
   other <- which(!is.na(lst[[col]]) & lst[[col]] != "UTf-8")
   unq <- unique(lst[[col]][other])
@@ -37,10 +36,13 @@ fix_encodings <- function(lst, col = "Encoding") {
     for (u in unq) {
       wh <- which(!is.na(lst[[col]]) & lst[[col]] == u)
       for (i in seq_along(lst)) {
-        tryCatch({
-          trs <- iconv(lst[[i]][wh], u, "UTF-8")
-          lst[[i]][wh] <- ifelse(is.na(trs), lst[[i]][wh], trs)
-        }, error = function(e) NULL)
+        tryCatch(
+          {
+            trs <- iconv(lst[[i]][wh], u, "UTF-8")
+            lst[[i]][wh] <- ifelse(is.na(trs), lst[[i]][wh], trs)
+          },
+          error = function(e) NULL
+        )
       }
     }
   }
@@ -85,7 +87,6 @@ parse_packages <- function(path, type = NULL) {
   type <- type %||% guess_packages_type(path)
   if (type == "rds") {
     tab <- readRDS(path)
-
   } else {
     cmp <- .Call(pkgcache_read_raw, path)[[1]]
     if (is.character(cmp)) {
@@ -96,7 +97,7 @@ parse_packages <- function(path, type = NULL) {
       if (getRversion() >= "4.0.0") {
         bts <- memDecompress(cmp, type = "gzip")
       } else {
-        bts <- gzip_decompress(cmp)     # nocov
+        bts <- gzip_decompress(cmp) # nocov
       }
     } else if (type == "bzip2") {
       bts <- memDecompress(cmp, type = "bzip2")
@@ -107,11 +108,12 @@ parse_packages <- function(path, type = NULL) {
     }
 
     # Might still be an RDS we just uncompressed
-    if (length(bts) >= 2 &&
+    if (
+      length(bts) >= 2 &&
         bts[1] %in% as.raw(c(0x58, 0x41, 0x42)) &&
-        bts[2] == 0x0a) {
+        bts[2] == 0x0a
+    ) {
       tab <- unserialize(bts)
-
     } else {
       tab <- .Call(pkgcache_parse_packages_raw, bts)
       tab[] <- lapply(tab, function(x) {
@@ -141,27 +143,39 @@ packages_types <- c("uncompressed", "gzip", "bzip2", "xz", "rds")
 guess_packages_type <- function(path) {
   buf <- readBin(path, what = "raw", 6)
 
-  if (length(buf) >= 3 &&
+  if (
+    length(buf) >= 3 &&
       buf[1] == 0x1f &&
       buf[2] == 0x8b &&
-      buf[3] == 0x08) return("gzip")
+      buf[3] == 0x08
+  )
+    return("gzip")
 
-  if (length(buf) >= 3 &&
+  if (
+    length(buf) >= 3 &&
       buf[1] == 0x42 &&
       buf[2] == 0x5a &&
-      buf[3] == 0x68) return("bzip2")
+      buf[3] == 0x68
+  )
+    return("bzip2")
 
-  if (length(buf) >= 6 &&
+  if (
+    length(buf) >= 6 &&
       buf[1] == 0xFD &&
       buf[2] == 0x37 &&
       buf[3] == 0x7A &&
       buf[4] == 0x58 &&
       buf[5] == 0x5A &&
-      buf[6] == 0x00) return("xz")
+      buf[6] == 0x00
+  )
+    return("xz")
 
-  if (length(buf) >= 2 &&
+  if (
+    length(buf) >= 2 &&
       buf[1] %in% as.raw(c(0x58, 0x41, 0x42)) &&
-      buf[2] == 0x0a) return("rds")
+      buf[2] == 0x0a
+  )
+    return("rds")
 
   "uncompressed"
 }
@@ -231,17 +245,22 @@ guess_packages_type <- function(path) {
 #'
 #' @export
 
-parse_installed <- function(library = .libPaths(), priority = NULL,
-                            lowercase = FALSE, reencode = TRUE,
-                            packages = NULL) {
+parse_installed <- function(
+  library = .libPaths(),
+  priority = NULL,
+  lowercase = FALSE,
+  reencode = TRUE,
+  packages = NULL
+) {
   stopifnot(
     "`library` must be a character vector" = is.character(library),
-    "`priority` must be `NULL` or a character vector" =
-      is.null(priority) || is.character(priority) || identical(NA, priority),
+    "`priority` must be `NULL` or a character vector" = is.null(priority) ||
+      is.character(priority) ||
+      identical(NA, priority),
     "`library` cannot have length zero" = length(library) > 0,
     "`lowercase` must be a boolean flag" = is_flag(lowercase),
-    "`packages` must be `NULL` or a character vector" =
-      is.null(packages) || is.character(packages)
+    "`packages` must be `NULL` or a character vector" = is.null(packages) ||
+      is.character(packages)
   )
 
   # Merge multiple libraries
@@ -293,7 +312,8 @@ parse_installed <- function(library = .libPaths(), priority = NULL,
     bad <- prs[[2]] != ""
     tbl <- tbl[!bad, ]
     cnd <- new_pkgcache_warning(
-      "Cannot read DESCRIPTION files:\n", paste0("* ", prs[[2]][bad], "\n"),
+      "Cannot read DESCRIPTION files:\n",
+      paste0("* ", prs[[2]][bad], "\n"),
       class = "pkgcache_broken_install",
       data = list(errors = data_frame(file = dscs[bad], error = prs[[2]][bad]))
     )

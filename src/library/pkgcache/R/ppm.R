@@ -1,4 +1,3 @@
-
 #' Returns the current Posit Package Manager (PPM) repository URL
 #'
 #' @details
@@ -139,8 +138,12 @@ ppm_platforms <- function() {
   as_data_frame(plt)
 }
 
-async_get_ppm_status <- function(forget = FALSE, distribution = NULL,
-                                 release = NULL, r_version = NULL) {
+async_get_ppm_status <- function(
+  forget = FALSE,
+  distribution = NULL,
+  release = NULL,
+  r_version = NULL
+) {
   tmp2 <- tempfile()
 
   # is this a known distro?
@@ -151,7 +154,7 @@ async_get_ppm_status <- function(forget = FALSE, distribution = NULL,
   } else {
     mch <- which(
       distribution == pkgenv$ppm_distros_cached$distribution &
-      release == pkgenv$ppm_distros_cached$release
+        release == pkgenv$ppm_distros_cached$release
     )
     !is.na(mch)
   }
@@ -178,44 +181,40 @@ async_get_ppm_status <- function(forget = FALSE, distribution = NULL,
       "PKGCACHE_PPM_STATUS_URL",
       paste0(get_ppm_base_url(), "/__api__/status")
     )
-    download_file(url, tmp2)$
-      then(function(res) {
-        stat <- jsonlite::fromJSON(tmp2, simplifyVector = FALSE)
-        dst <- data.frame(
-          stringsAsFactors = FALSE,
-          name = vcapply(stat$distros, "[[", "name"),
-          os = vcapply(stat$distros, "[[", "os"),
-          binary_url = vcapply(stat$distros, "[[", "binaryURL"),
-          distribution = vcapply(stat$distros, "[[", "distribution"),
-          release = vcapply(stat$distros, "[[", "release"),
-          binaries = vlapply(stat$distros, "[[", "binaries")
-        )
-        pkgenv$ppm_distros <- dst
-        pkgenv$ppm_distros_cached <- dst
+    download_file(url, tmp2)$then(function(res) {
+      stat <- jsonlite::fromJSON(tmp2, simplifyVector = FALSE)
+      dst <- data.frame(
+        stringsAsFactors = FALSE,
+        name = vcapply(stat$distros, "[[", "name"),
+        os = vcapply(stat$distros, "[[", "os"),
+        binary_url = vcapply(stat$distros, "[[", "binaryURL"),
+        distribution = vcapply(stat$distros, "[[", "distribution"),
+        release = vcapply(stat$distros, "[[", "release"),
+        binaries = vlapply(stat$distros, "[[", "binaries")
+      )
+      pkgenv$ppm_distros <- dst
+      pkgenv$ppm_distros_cached <- dst
 
-        rvers <- unlist(stat$r_versions)
-        pkgenv$ppm_r_versions <- rvers
-        pkgenv$ppm_r_versions_cached <- rvers
-      })$
-      catch(error = function(err) {
-        warning("Failed to download PPM status")
-      })
+      rvers <- unlist(stat$r_versions)
+      pkgenv$ppm_r_versions <- rvers
+      pkgenv$ppm_r_versions_cached <- rvers
+    })$catch(error = function(err) {
+      warning("Failed to download PPM status")
+    })
   }
 
   key <- random_key()
-  async_constant()$
-    then(function() start_auth_cache(key))$
-    then(function() def)$
-    finally(function() {
-      clear_auth_cache(key)
-      unlink(tmp2)
-    })$
-    then(function() {
-      list(
-        distros = pkgenv$ppm_distros,
-        r_versions = pkgenv$ppm_r_versions
-      )
-    })
+  async_constant()$then(function() start_auth_cache(key))$then(
+    function() def
+  )$finally(function() {
+    clear_auth_cache(key)
+    unlink(tmp2)
+  })$then(function() {
+    list(
+      distros = pkgenv$ppm_distros,
+      r_versions = pkgenv$ppm_r_versions
+    )
+  })
 }
 
 #' Does PPM build binary packages for the current platform?
@@ -234,7 +233,8 @@ ppm_has_binaries <- function() {
   current <- current_r_platform_data()
 
   binaries <-
-    (! tolower(Sys.getenv("PKGCACHE_PPM_BINARIES")) %in% c("no", "false", "0", "off")) &&
+    (!tolower(Sys.getenv("PKGCACHE_PPM_BINARIES")) %in%
+      c("no", "false", "0", "off")) &&
     current$cpu == "x86_64" &&
     (current$os == "mingw32" || grepl("linux", current$os))
 
@@ -254,11 +254,10 @@ ppm_has_binaries <- function() {
       "windows" %in% distros$os &&
       all(distros$binaries[distros$os == "windows"]) &&
       current_rver %in% rver
-
   } else {
     mch <- which(
       distros$distribution == current$distribution &
-      distros$release == current$release
+        distros$release == current$release
     )
     binaries <- binaries &&
       length(mch) == 1 &&
