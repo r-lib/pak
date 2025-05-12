@@ -67,7 +67,7 @@ install.packages("pak", repos = sprintf(
 
 We have three types of binaries available:
 
-* `stable` corresponds to the latest CRAN release of CRAN.
+* `stable` corresponds to the latest CRAN release of pak.
 * `rc` is a release candidate build, and it is available about 1-2 weeks
   before a release. Otherwise it is the same as the `stable` build.
 * `devel` has builds from the development tree. Before release it might be

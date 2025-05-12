@@ -74,7 +74,7 @@ We have nightly binary builds, for the same systems as the table above:
 
 We have three types of binaries available:
 \itemize{
-\item \code{stable} corresponds to the latest CRAN release of CRAN.
+\item \code{stable} corresponds to the latest CRAN release of pak.
 \item \code{rc} is a release candidate build, and it is available about 1-2 weeks
 before a release. Otherwise it is the same as the \code{stable} build.
 \item \code{devel} has builds from the development tree. Before release it might be
