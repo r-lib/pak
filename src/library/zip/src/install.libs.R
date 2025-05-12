@@ -1,4 +1,3 @@
-
 progs <- if (WINDOWS) {
   file.path("tools", c("cmdzip.exe", "cmdunzip.exe", "zip.exe"))
 } else {

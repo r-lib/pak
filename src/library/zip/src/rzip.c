@@ -15,6 +15,20 @@
 #include "miniz.h"
 #include "zip.h"
 
+#ifndef S_IFLINK
+#define S_IFLNK         0120000         /* [XSI] symbolic link */
+#endif
+#ifndef S_IFSOCK
+#define S_IFSOCK        0140000         /* [XSI] socket */
+#endif
+
+#ifndef S_ISLNK
+#define S_ISLNK(m)      (((m) & S_IFMT) == S_IFLNK)     /* symbolic link */
+#endif
+#ifndef S_ISSOCK
+#define S_ISSOCK(m)     (((m) & S_IFMT) == S_IFSOCK)    /* socket */
+#endif
+
 SEXP R_zip_list(SEXP zipfile) {
   const char *czipfile = CHAR(STRING_ELT(zipfile, 0));
   size_t num_files;
@@ -59,7 +73,7 @@ SEXP R_zip_list(SEXP zipfile) {
   }
 
   num_files = mz_zip_reader_get_num_files(&zip_archive);
-  result = PROTECT(allocVector(VECSXP, 7));
+  result = PROTECT(allocVector(VECSXP, 8));
   SET_VECTOR_ELT(result, 0, allocVector(STRSXP, num_files));
   SET_VECTOR_ELT(result, 1, allocVector(REALSXP, num_files));
   SET_VECTOR_ELT(result, 2, allocVector(REALSXP, num_files));
@@ -67,6 +81,7 @@ SEXP R_zip_list(SEXP zipfile) {
   SET_VECTOR_ELT(result, 4, allocVector(INTSXP, num_files));
   SET_VECTOR_ELT(result, 5, allocVector(INTSXP, num_files));
   SET_VECTOR_ELT(result, 6, allocVector(REALSXP, num_files));
+  SET_VECTOR_ELT(result, 7, allocVector(INTSXP, num_files));
 
   for (i = 0; i < num_files; i++) {
     mz_zip_archive_file_stat file_stat;
@@ -82,6 +97,23 @@ SEXP R_zip_list(SEXP zipfile) {
     INTEGER(VECTOR_ELT(result, 4))[i] = (int) mode;
     INTEGER(VECTOR_ELT(result, 5))[i] = (int) file_stat.m_crc32;
     REAL(VECTOR_ELT(result, 6))[i] = (double) file_stat.m_local_header_ofs;
+    INTEGER(VECTOR_ELT(result, 7))[i] = 0;
+    mz_uint32 attr = file_stat.m_external_attr >> 16;
+    if (S_ISBLK(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 1;
+    } else if (S_ISCHR(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 2;
+    } else if (S_ISDIR(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 3;
+    } else if (S_ISFIFO(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 4;
+    } else if (S_ISREG(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 0;
+    } else if (S_ISLNK(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 5;
+    } else if (S_ISSOCK(attr)) {
+      INTEGER(VECTOR_ELT(result, 7))[i] = 6;
+    }
   }
 
   fclose(fh);

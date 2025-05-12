@@ -10,6 +10,8 @@
 #ifdef _WIN32
 #include <direct.h>		/* _mkdir */
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #include "miniz.h"
@@ -40,7 +42,8 @@ static const char *zip_error_strings[] = {
       "Cannot set permission on file `%s` in archive `%s`",
   /*15 R_ZIP_ECREATE      */ "Could not create zip archive `%s`",
   /*16 R_ZIP_EOPENX       */ "Cannot extract file `%s`",
-  /*17 R_ZIP_FILESIZE     */ "Cannot determine size of `%s`"
+  /*17 R_ZIP_FILESIZE     */ "Cannot determine size of `%s`",
+  /*18 R_ZIP_ECREATELINK  */ "Cannot create symlink `%s` in archive `%s`"
 };
 
 static zip_error_handler_t *zip_error_handler = 0;
@@ -175,6 +178,9 @@ int zip_unzip(const char *czipfile, const char **cfiles, int num_files,
       fclose(zfh);
       ZIP_ERROR(R_ZIP_ENOMEM, czipfile);
     }
+#ifndef WIN32
+    mz_uint32 attr = file_stat.m_external_attr >> 16;
+#endif
 
     if (file_stat.m_is_directory) {
       if (! cjunkpaths && zip_mkdirp(buffer, 1)) {
@@ -183,6 +189,41 @@ int zip_unzip(const char *czipfile, const char **cfiles, int num_files,
 	      fclose(zfh);
 	      ZIP_ERROR(R_ZIP_EBROKENENTRY, key, czipfile);
       }
+
+#ifndef WIN32
+    } else if (S_ISLNK(attr)) {
+      char *tmpbuf = malloc(file_stat.m_uncomp_size + 1); // trailing 0
+      if (!tmpbuf) {
+	      mz_zip_reader_end(&zip_archive);
+	      if (buffer) free(buffer);
+	      fclose(zfh);
+	      ZIP_ERROR(R_ZIP_ENOMEM, key, czipfile);
+      }
+
+      if (!mz_zip_reader_extract_to_mem(
+        &zip_archive,
+        idx,
+        tmpbuf,
+        file_stat.m_uncomp_size,
+        0
+      )) {
+        free(tmpbuf);
+	      mz_zip_reader_end(&zip_archive);
+	      if (buffer) free(buffer);
+	      fclose(zfh);
+	      ZIP_ERROR(R_ZIP_EBROKENENTRY, key, czipfile);
+      }
+      tmpbuf[file_stat.m_uncomp_size] = '\0';
+      if (symlink(tmpbuf, buffer)) {
+        free(tmpbuf);
+	      mz_zip_reader_end(&zip_archive);
+	      if (buffer) free(buffer);
+	      fclose(zfh);
+	      ZIP_ERROR(R_ZIP_ECREATELINK, key, czipfile);
+      }
+      free(tmpbuf);
+
+#endif
 
     } else {
       if (!coverwrite && zip_file_exists(buffer)) {

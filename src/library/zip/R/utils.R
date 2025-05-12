@@ -1,4 +1,3 @@
-
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 get_zip_data <- function(files, recurse, keep_path, include_directories) {
@@ -9,19 +8,18 @@ get_zip_data <- function(files, recurse, keep_path, include_directories) {
   }
 
   if (!include_directories) {
-    list <- list[! list$dir, ]
+    list <- list[!list$dir, ]
   }
 
   list
 }
 
 get_zip_data_path <- function(files, recurse) {
-    if (recurse && length(files)) {
+  if (recurse && length(files)) {
     data <- do.call(rbind, lapply(files, get_zip_data_path_recursive))
     dup <- duplicated(data$files)
-    if (any(dup)) data <- data <- data[ !dup, drop = FALSE ]
+    if (any(dup)) data <- data <- data[!dup, drop = FALSE]
     data
-
   } else {
     files <- ignore_dirs_with_warning(files)
     data_frame(
@@ -37,23 +35,29 @@ warn_for_dotdot <- function(files) {
     warning("Some paths start with `./`, creating non-portable zip file")
   }
   if (any(grepl("^[.][.][/\\\\]", files))) {
-    warning("Some paths reference parent directory, ",
-            "creating non-portable zip file")
+    warning(
+      "Some paths reference parent directory, ",
+      "creating non-portable zip file"
+    )
   }
   files
 }
 
 warn_for_colon <- function(files) {
   if (any(grepl(":", files, fixed = TRUE))) {
-    warning("Some paths include a `:` character, this might cause issues ",
-            "when uncompressing the zip file on Windows.")
+    warning(
+      "Some paths include a `:` character, this might cause issues ",
+      "when uncompressing the zip file on Windows."
+    )
   }
 }
 
 fix_absolute_paths <- function(files) {
-  if (any(substr(files, 1, 1) == "/")) {
-    warning("Dropping leading `/` from paths, all paths in a zip file ",
-            "must be relative paths.")
+  if (any(startsWith(files, "/"))) {
+    warning(
+      "Dropping leading `/` from paths, all paths in a zip file ",
+      "must be relative paths."
+    )
     files <- sub("^/", "", files)
   }
   files
@@ -61,14 +65,13 @@ fix_absolute_paths <- function(files) {
 
 get_zip_data_nopath <- function(files, recurse) {
   if ("." %in% files) {
-    files <- c(setdiff(files, "."), dir(all.files=TRUE, no.. = TRUE))
+    files <- c(setdiff(files, "."), dir(all.files = TRUE, no.. = TRUE))
   }
   if (recurse && length(files)) {
     data <- do.call(rbind, lapply(files, get_zip_data_nopath_recursive))
     dup <- duplicated(data$files)
-    if (any(dup)) data <- data[ !dup, drop = FALSE ]
+    if (any(dup)) data <- data[!dup, drop = FALSE]
     data
-
   } else {
     files <- ignore_dirs_with_warning(files)
     data_frame(
@@ -90,8 +93,17 @@ ignore_dirs_with_warning <- function(files) {
 
 get_zip_data_path_recursive <- function(x) {
   if (file.info(x)$isdir) {
-    files <- c(x, dir(x, recursive = TRUE, full.names = TRUE,
-                      all.files = TRUE, include.dirs = TRUE, no.. = TRUE))
+    files <- c(
+      x,
+      dir(
+        x,
+        recursive = TRUE,
+        full.names = TRUE,
+        all.files = TRUE,
+        include.dirs = TRUE,
+        no.. = TRUE
+      )
+    )
     dir <- file.info(files)$isdir
     data_frame(
       key = ifelse(dir, paste0(files, "/"), files),
@@ -109,7 +121,7 @@ get_zip_data_path_recursive <- function(x) {
 
 get_zip_data_nopath_recursive <- function(x) {
   if ("." %in% x) {
-    x <- c(setdiff(x, "."), dir(all.files=TRUE, no.. = TRUE))
+    x <- c(setdiff(x, "."), dir(all.files = TRUE, no.. = TRUE))
   }
   x <- normalizePath(x)
   wd <- getwd()

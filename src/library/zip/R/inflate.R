@@ -1,4 +1,3 @@
-
 #' Uncompress a raw GZIP stream
 #'
 #' @param buffer Raw vector, containing the data to uncompress.

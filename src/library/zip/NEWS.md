@@ -1,3 +1,9 @@
+# zip (development version)
+
+* `zip_list()` now has a `type` column, for the file type.
+
+* `unzip()` now correctly creates symbolic links on Unix (#127).
+
 # zip 2.3.2
 
 * `zip_list()` now returns a `tbl` object, and loads the pillar package,

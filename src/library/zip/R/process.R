@@ -1,18 +1,17 @@
-
 os_type <- function() {
   .Platform$OS.type
 }
 
-get_tool <- function (prog) {
+get_tool <- function(prog) {
   if (os_type() == "windows") prog <- paste0(prog, ".exe")
 
   exe <- system.file(package = "zip", "bin", .Platform$r_arch, prog)
-    if (exe == "") {
-      pkgpath <- system.file(package = "zip")
-      if (basename(pkgpath) == "inst") pkgpath <- dirname(pkgpath)
-      exe <- file.path(pkgpath, "src", "tools", prog)
-      if (!file.exists(exe)) return("")
-    }
+  if (exe == "") {
+    pkgpath <- system.file(package = "zip")
+    if (basename(pkgpath) == "inst") pkgpath <- dirname(pkgpath)
+    exe <- file.path(pkgpath, "src", "tools", prog)
+    if (!file.exists(exe)) return("")
+  }
   exe
 }
 
@@ -74,15 +73,25 @@ unzip_process <- function() {
       "unzip_process",
       inherit = processx::process,
       public = list(
-        initialize = function(zipfile, exdir = ".", poll_connection = TRUE,
-                              stderr = tempfile(), ...) {
+        initialize = function(
+          zipfile,
+          exdir = ".",
+          poll_connection = TRUE,
+          stderr = tempfile(),
+          ...
+        ) {
           stopifnot(
             is_string(zipfile),
-            is_string(exdir))
+            is_string(exdir)
+          )
           exdir <- normalizePath(exdir, winslash = "\\", mustWork = FALSE)
-          super$initialize(unzip_exe(), enc2c(c(zipfile, exdir)),
-                           poll_connection = poll_connection,
-                           stderr = stderr, ...)
+          super$initialize(
+            unzip_exe(),
+            enc2c(c(zipfile, exdir)),
+            poll_connection = poll_connection,
+            stderr = stderr,
+            ...
+          )
         }
       ),
       private = list()
@@ -142,20 +151,33 @@ zip_process <- function() {
       "zip_process",
       inherit = processx::process,
       public = list(
-        initialize = function(zipfile, files, recurse = TRUE,
-                              include_directories = TRUE,
-                              poll_connection = TRUE, stderr = tempfile(),
-                              ...) {
+        initialize = function(
+          zipfile,
+          files,
+          recurse = TRUE,
+          include_directories = TRUE,
+          poll_connection = TRUE,
+          stderr = tempfile(),
+          ...
+        ) {
           private$zipfile <- zipfile
           private$files <- files
           private$recurse <- recurse
           private$include_directories <- include_directories
           private$params_file <- tempfile()
-          write_zip_params(files, recurse, include_directories,
-                           private$params_file)
-          super$initialize(zip_exe(), enc2c(c(zipfile, private$params_file)),
-                           poll_connection = poll_connection,
-                           stderr = stderr, ...)
+          write_zip_params(
+            files,
+            recurse,
+            include_directories,
+            private$params_file
+          )
+          super$initialize(
+            zip_exe(),
+            enc2c(c(zipfile, private$params_file)),
+            poll_connection = poll_connection,
+            stderr = stderr,
+            ...
+          )
         }
       ),
       private = list(
@@ -171,8 +193,12 @@ zip_process <- function() {
 }
 
 write_zip_params <- function(files, recurse, include_directories, outfile) {
-  data <- get_zip_data(files, recurse, keep_path = FALSE,
-                       include_directories = include_directories)
+  data <- get_zip_data(
+    files,
+    recurse,
+    keep_path = FALSE,
+    include_directories = include_directories
+  )
   mtime <- as.double(file.info(data$file)$mtime)
 
   con <- file(outfile, open = "wb")
@@ -182,7 +208,7 @@ write_zip_params <- function(files, recurse, include_directories, outfile) {
   writeBin(con = con, as.integer(nrow(data)))
 
   ## Key, first total length
-  data$key <-   data$key <- fix_absolute_paths(data$key)
+  data$key <- data$key <- fix_absolute_paths(data$key)
   warn_for_colon(data$key)
   warn_for_dotdot(data$key)
   writeBin(con = con, as.integer(sum(nchar(data$key, type = "bytes") + 1L)))

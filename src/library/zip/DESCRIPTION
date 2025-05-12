@@ -1,11 +1,12 @@
 Package: zip
 Title: Cross-Platform 'zip' Compression
-Version: 2.3.2
+Version: 2.3.2.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Kuba", "Podgórski", role = "ctb"),
     person("Rich", "Geldreich", role = "ctb"),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
   )
 Description: Cross-Platform 'zip' Compression Library. A replacement for
     the 'zip' function, that does not require any additional external
@@ -16,14 +17,14 @@ BugReports: https://github.com/r-lib/zip/issues
 Suggests: covr, pillar, processx, R6, testthat, withr
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
+Config/usethis/last-upkeep: 2025-05-07
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2.9000
 NeedsCompilation: yes
-Packaged: 2025-02-01 22:18:43 UTC; gaborcsardi
+Packaged: 2025-05-12 08:21:11 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Kuba Podgórski [ctb],
   Rich Geldreich [ctb],
-  Posit Software, PBC [cph, fnd]
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
-Repository: CRAN
-Date/Publication: 2025-02-01 23:00:02 UTC
