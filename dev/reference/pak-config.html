@@ -9,7 +9,7 @@ options (as in base::options())."><meta name="robots" content="noindex"><script 
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ options (as in base::options())."><meta name="robots" content="noindex"><script 
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Environment variables and options that modify the default behavior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0.2/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
       <div class="d-none name"><code>pak-config.Rd</code></div>
     </div>
 
@@ -122,7 +122,8 @@ configured for the current user.</p></li>
 GitHub. If the update fails, then the cached or the build-in
 database if used. Defaults to TRUE.</p></li>
 <li><p>‘sysreqs_db_update_timeout’: (Env var: <code>PKG_SYSREQS_DB_UPDATE_TIMEOUT</code>, option: <code>pkg.sysreqs_db_update_timeout</code>.) Timeout for the system requirements database update.
-Defaults to five seconds.</p></li>
+Defaults to five seconds, except if the <code>CI</code> environment variable
+is set, then it is one minute.</p></li>
 <li><p>‘sysreqs_dry_run’: (Env var: <code>PKG_SYSREQS_DRY_RUN</code>, option: <code>pkg.sysreqs_dry_run</code>.) If <code>TRUE</code>, then pak only prints the system commands to
 install system requirements, but does not execute them.</p></li>
 <li><p>‘sysreqs_platform’: (Env var: <code>PKG_SYSREQS_PLATFORM</code>, option: <code>pkg.sysreqs_platform</code>.) The platform to use for system requirements lookup. On Linux, where
@@ -170,7 +171,7 @@ for R 4.2.0 and earlier.</p></li>
 
 <p>From version 0.4.0 pak copies the <code>PKG_*</code> environment variables and
 the <code>pkg.*</code> options to the pak subprocess, where they are actually
-used, so you don't need to restart R or reaload pak after a
+used, so you don't need to restart R or reload pak after a
 configuration change.</p>
 </div>
 

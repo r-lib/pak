@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Show the status of CRAN-like repositories</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0.2/R/repo.R" class="external-link"><code>R/repo.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/repo.R" class="external-link"><code>R/repo.R</code></a></small>
       <div class="d-none name"><code>repo_status.Rd</code></div>
     </div>
 
@@ -44,14 +44,14 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">repo_status</span><span class="op">(</span></span>
 <span>  platforms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  r_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  bioc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bioc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cran_mirror <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">repo_ping</span><span class="op">(</span></span>
 <span>  platforms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  r_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  bioc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bioc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cran_mirror <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -62,7 +62,7 @@
 
 <dl><dt id="arg-platforms">platforms<a class="anchor" aria-label="anchor" href="#arg-platforms"></a></dt>
 <dd><p>Platforms to use, default is the current platform,
-plus source packages.</p></dd>
+plus source packages, via the <code><a href="pak-config.html">pkg.platforms</a></code> option.</p></dd>
 
 
 <dt id="arg-r-version">r_version<a class="anchor" aria-label="anchor" href="#arg-r-version"></a></dt>
@@ -73,11 +73,13 @@ R version, via <code><a href="https://rdrr.io/r/base/numeric_version.html" class
 <dt id="arg-bioc">bioc<a class="anchor" aria-label="anchor" href="#arg-bioc"></a></dt>
 <dd><p>Whether to add the Bioconductor repositories. If you
 already configured them via <code>options(repos)</code>, then you can
-set this to <code>FALSE</code>.</p></dd>
+set this to <code>FALSE</code>. Defaults to the <code><a href="pak-config.html">pkg.use_bioconductor</a></code>
+option.</p></dd>
 
 
 <dt id="arg-cran-mirror">cran_mirror<a class="anchor" aria-label="anchor" href="#arg-cran-mirror"></a></dt>
-<dd><p>The CRAN mirror to use.</p></dd>
+<dd><p>The CRAN mirror to use. Defaults to the
+<code><a href="pak-config.html">pkg.cran_mirror</a></code> option.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,6 +93,13 @@ current Bioconductor repositories are <code>BioCsoft</code>, <code>BioCann</code
 <li><p><code>url</code>: base URL of the repository.</p></li>
 <li><p><code>bioc_version</code>: Bioconductor version, or <code>NA</code> for
 non-Bioconductor repositories.</p></li>
+<li><p><code>username</code>: Included if at least one repository is authenticated.
+<code>NA_character_</code> for repositories without authentication. See
+<code><a href="repo_auth.html">repo_auth()</a></code>.</p></li>
+<li><p><code>has_password</code>: <code>TRUE</code> is the function could retrieve the password
+for the authenticated repository. It is <code>NA</code> for repositories without
+authentication. This column is included only if at least one
+repository has authentication. See <code><a href="repo_auth.html">repo_auth()</a></code>.</p></li>
 <li><p><code>platform</code>: platform, possible values are <code>source</code>, <code>macos</code> and
 <code>windows</code> currently.</p></li>
 <li><p><code>path</code>: the path to the packages within the base URL, for a
@@ -115,21 +124,22 @@ summary of the data, and it returns its result invisibly.</p>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_status.html">repo_status</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt; <span style="color: #999999;"># A data frame: 10 × 10</span>
-#&gt;    name     url   type  bioc_…¹ platf…² path  r_ver…³ ok     ping error
-#&gt;    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;list&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 1</span> CRAN     http… cran  <span style="color: #DC322F;">NA</span>      source  src/… 4.2     TRUE  0.269 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 2</span> CRAN     http… cran  <span style="color: #DC322F;">NA</span>      aarch6… bin/… 4.2     TRUE  0.265 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 3</span> BioCsoft http… bioc  3.16    source  src/… 4.2     TRUE  0.264 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 4</span> BioCsoft http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.271 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 5</span> BioCann  http… bioc  3.16    source  src/… 4.2     TRUE  0.383 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 6</span> BioCann  http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.392 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 7</span> BioCexp  http… bioc  3.16    source  src/… 4.2     TRUE  0.507 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 8</span> BioCexp  http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.739 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 9</span> BioCwor… http… bioc  3.16    source  src/… 4.2     TRUE  0.505 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #c2c2c2;">10</span> BioCwor… http… bioc  3.16    aarch6… bin/… 4.2     TRUE  0.766 <span style="color: #999999;">&lt;NULL&gt;</span>
-#&gt; <span style="color: #999999;"># … with abbreviated variable names ¹​bioc_version, ²​platform,</span>
-#&gt; <span style="color: #999999;">#   ³​r_version</span>
+#&gt; <span style="color: #999999;"># A data frame: 12 × 10</span>
+#&gt;    name    url   type  bioc_version platform path  r_version ok     ping
+#&gt;    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+#&gt; <span style="color: #c2c2c2;"> 1</span> CRAN    http… cran  <span style="color: #DC322F;">NA</span>           source   src/… 4.4       TRUE  0.246
+#&gt; <span style="color: #c2c2c2;"> 2</span> CRAN    http… cran  <span style="color: #DC322F;">NA</span>           aarch64… bin/… 4.4       TRUE  0.298
+#&gt; <span style="color: #c2c2c2;"> 3</span> BioCso… http… bioc  3.20         source   src/… 4.4       TRUE  0.298
+#&gt; <span style="color: #c2c2c2;"> 4</span> BioCso… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.322
+#&gt; <span style="color: #c2c2c2;"> 5</span> BioCann http… bioc  3.20         source   src/… 4.4       TRUE  0.530
+#&gt; <span style="color: #c2c2c2;"> 6</span> BioCann http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.643
+#&gt; <span style="color: #c2c2c2;"> 7</span> BioCexp http… bioc  3.20         source   src/… 4.4       TRUE  0.498
+#&gt; <span style="color: #c2c2c2;"> 8</span> BioCexp http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.707
+#&gt; <span style="color: #c2c2c2;"> 9</span> BioCwo… http… bioc  3.20         source   src/… 4.4       TRUE  0.569
+#&gt; <span style="color: #c2c2c2;">10</span> BioCwo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.724
+#&gt; <span style="color: #c2c2c2;">11</span> BioCbo… http… bioc  3.20         source   src/… 4.4       TRUE  0.662
+#&gt; <span style="color: #c2c2c2;">12</span> BioCbo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.754
+#&gt; <span style="color: #999999;"># ℹ 1 more variable: error &lt;list&gt;</span>
 </pre></div></div>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_status.html">repo_status</a></span><span class="op">(</span></span>
@@ -137,36 +147,39 @@ summary of the data, and it returns its result invisibly.</p>
 <span>  r_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.0"</span>, <span class="st">"4.1"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt; <span style="color: #999999;"># A data frame: 15 × 10</span>
-#&gt;    name          url    type  bioc_…¹ platf…² r_ver…³ path  ok      ping
-#&gt;    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
-#&gt; <span style="color: #c2c2c2;"> 1</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      i386+x… 4.0     bin/… TRUE   0.198
-#&gt; <span style="color: #c2c2c2;"> 2</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      i386+x… 4.1     bin/… TRUE   0.197
-#&gt; <span style="color: #c2c2c2;"> 3</span> CRAN          https… cran  <span style="color: #DC322F;">NA</span>      aarch6… 4.1     bin/… TRUE   0.197
-#&gt; <span style="color: #c2c2c2;"> 4</span> BioCsoft      https… bioc  3.12    i386+x… 4.0     bin/… TRUE   0.988
-#&gt; <span style="color: #c2c2c2;"> 5</span> BioCann       https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.03
-#&gt; <span style="color: #c2c2c2;"> 6</span> BioCexp       https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.25
-#&gt; <span style="color: #c2c2c2;"> 7</span> BioCworkflows https… bioc  3.12    i386+x… 4.0     bin/… TRUE   1.47
-#&gt; <span style="color: #c2c2c2;"> 8</span> BioCsoft      https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.48
-#&gt; <span style="color: #c2c2c2;"> 9</span> BioCsoft      https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #c2c2c2;">10</span> BioCann       https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.45
-#&gt; <span style="color: #c2c2c2;">11</span> BioCann       https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #c2c2c2;">12</span> BioCexp       https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.72
-#&gt; <span style="color: #c2c2c2;">13</span> BioCexp       https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #c2c2c2;">14</span> BioCworkflows https… bioc  3.14    i386+x… 4.1     bin/… TRUE   1.71
-#&gt; <span style="color: #c2c2c2;">15</span> BioCworkflows https… bioc  3.14    aarch6… 4.1     bin/… FALSE <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #999999;"># … with 1 more variable: error &lt;list&gt;, and abbreviated variable names</span>
-#&gt; <span style="color: #999999;">#   ¹​bioc_version, ²​platform, ³​r_version</span>
+#&gt; <span style="color: #999999;"># A data frame: 18 × 10</span>
+#&gt;    name   url   type  bioc_version platform r_version path  ok      ping
+#&gt;    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+#&gt; <span style="color: #c2c2c2;"> 1</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           i386+x8… 4.0       bin/… TRUE   0.175
+#&gt; <span style="color: #c2c2c2;"> 2</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           i386+x8… 4.1       bin/… TRUE   0.180
+#&gt; <span style="color: #c2c2c2;"> 3</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;"> 4</span> BioCs… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.539
+#&gt; <span style="color: #c2c2c2;"> 5</span> BioCa… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.538
+#&gt; <span style="color: #c2c2c2;"> 6</span> BioCe… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   1.04
+#&gt; <span style="color: #c2c2c2;"> 7</span> BioCw… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.809
+#&gt; <span style="color: #c2c2c2;"> 8</span> BioCb… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.610
+#&gt; <span style="color: #c2c2c2;"> 9</span> BioCs… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   1.16
+#&gt; <span style="color: #c2c2c2;">10</span> BioCs… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;">11</span> BioCa… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.659
+#&gt; <span style="color: #c2c2c2;">12</span> BioCa… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;">13</span> BioCe… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.913
+#&gt; <span style="color: #c2c2c2;">14</span> BioCe… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;">15</span> BioCw… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.811
+#&gt; <span style="color: #c2c2c2;">16</span> BioCw… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;">17</span> BioCb… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   1.04
+#&gt; <span style="color: #c2c2c2;">18</span> BioCb… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #999999;"># ℹ 1 more variable: error &lt;list&gt;</span>
 </pre></div></div>
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_status.html">repo_ping</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
 #&gt; Repository summary:                   source aarch64-apple-darwin20<span style="color: #2AA198;">          </span>
-#&gt; CRAN          @ cloud.r-project.org   <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (194ms)</span>
-#&gt; BioCsoft      @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (352ms)</span>
-#&gt; BioCann       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (511ms)</span>
-#&gt; BioCexp       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (675ms)</span>
-#&gt; BioCworkflows @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (698ms)</span>
+#&gt; CRAN          @ cloud.r-project.org   <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (63ms )</span>
+#&gt; BioCsoft      @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (68ms )</span>
+#&gt; BioCann       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (153ms)</span>
+#&gt; BioCexp       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (186ms)</span>
+#&gt; BioCworkflows @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (112ms)</span>
+#&gt; BioCbooks     @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (193ms)</span>
 </pre></div></div>
     </div>
     <div class="section level2">

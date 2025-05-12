@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>List platforms with system requirements support</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0.2/R/sysreqsdocs.R" class="external-link"><code>R/sysreqsdocs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/sysreqsdocs.R" class="external-link"><code>R/sysreqsdocs.R</code></a></small>
       <div class="d-none name"><code>sysreqs_platforms.Rd</code></div>
     </div>
 
@@ -71,7 +71,7 @@ information.</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sysreqs_platforms</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 10 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 22 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name       os    distribution version update_command install_command</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Ubuntu Li… linux ubuntu       *       apt-get -y up… apt-get -y ins…</span>
@@ -81,9 +81,10 @@ information.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Red Hat E… linux redhat       6       <span style="color: #BB0000;">NA</span>             yum install -y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Red Hat E… linux redhat       7       <span style="color: #BB0000;">NA</span>             yum install -y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Red Hat E… linux redhat       *       <span style="color: #BB0000;">NA</span>             dnf install -y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Fedora Li… linux fedora       *       <span style="color: #BB0000;">NA</span>             dnf install -y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> openSUSE … linux opensuse     *       <span style="color: #BB0000;">NA</span>             zypper --non-i…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> SUSE Linu… linux sle          *       <span style="color: #BB0000;">NA</span>             zypper --non-i…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Red Hat E… linux rhel         7.0     <span style="color: #BB0000;">NA</span>             yum install -y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Red Hat E… linux rhel         7.1     <span style="color: #BB0000;">NA</span>             yum install -y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Red Hat E… linux rhel         7.2     <span style="color: #BB0000;">NA</span>             yum install -y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: query_command &lt;chr&gt;</span></span>
 </code></pre></div>
     </div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>System requirements</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0.2/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
       <div class="d-none name"><code>sysreqs.Rd</code></div>
     </div>
 
@@ -402,8 +402,8 @@ about.</p>
 
 </div>
 
-<p><code><a href="sysreqs_db_match.html">sysreqs_db_match()</a></code> manually matches <code>SystemREquirements</code> fields
-againts these system requirements:</p>
+<p><code><a href="sysreqs_db_match.html">sysreqs_db_match()</a></code> manually matches <code>SystemRequirements</code> fields
+against these system requirements:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/sysreqs_db_match.html">sysreqs_db_match</a></span><span class="op">(</span><span class="st">"Needs libcurl and also Java."</span><span class="op">)</span></span>
 <span><span class="va">sq</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
@@ -438,7 +438,7 @@ againts these system requirements:</p>
 
 </div>
 
-<p>You can also use it to query system requirements for other platfosm:</p>
+<p>You can also use it to query system requirements for other platforms:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">sqrhel9</span> <span class="op">&lt;-</span> <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="../reference/sysreqs_db_match.html">sysreqs_db_match</a></span><span class="op">(</span><span class="st">"Needs libcurl and also Java."</span>, <span class="st">"redhat-9"</span><span class="op">)</span></span>
 <span><span class="va">sqrhel9</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
@@ -572,7 +572,7 @@ planning on moving CRAN database to GitHub as well.)</p>
 file (e.g. <code>github::</code>, <code>git::</code>, etc.), pak obtains <code>SystemRequirements</code>
 directly from the <code>DESCRIPTION</code> file.</p>
 <p>Once having the <code>SystemRequirements</code> fields, pak matches them to the
-database, to obtain the cacnonized list of system requirements.</p>
+database, to obtain the canonized list of system requirements.</p>
 <p>Then pak queries the local platform, to see the exact system packages
 needed. It also queries the installed system packages, to avoid trying
 to install system packages that are already installed.</p>
@@ -646,7 +646,7 @@ macOS is similar to Windows, in that most repositories will serve
 statically linked macOS binary packages that do not need system
 software.</p>
 <p>If you do need to compile packages from source, then you possibly need
-to install some sytem libraries, either via Homebrew, or by downloading
+to install some system libraries, either via Homebrew, or by downloading
 CRAN’s static library builds from <a href="https://mac.r-project.org/bin/" class="external-link">https://mac.r-project.org/bin/</a></p>
 <p>We are planning on adding better macOS system software support to pak in
 the future.</p>

@@ -11,7 +11,7 @@ Bioconductor repositories. See the cran_mirror and bioc arguments."><meta name="
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@ Bioconductor repositories. See the cran_mirror and bioc arguments."><meta name="
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Query the currently configured CRAN-like repositories</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.8.0.2/R/repo.R" class="external-link"><code>R/repo.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/repo.R" class="external-link"><code>R/repo.R</code></a></small>
       <div class="d-none name"><code>repo_get.Rd</code></div>
     </div>
 
@@ -47,7 +47,7 @@ Bioconductor repositories. See the <code>cran_mirror</code> and <code>bioc</code
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">repo_get</span><span class="op">(</span>r_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>, bioc <span class="op">=</span> <span class="cn">TRUE</span>, cran_mirror <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">repo_get</span><span class="op">(</span>r_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>, bioc <span class="op">=</span> <span class="cn">NULL</span>, cran_mirror <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,6 +70,24 @@ mirror in <code>getOption("repos")</code> or an automatically selected one.</p><
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p><code>repo_get()</code> returns a data frame with columns:</p><ul><li><p><code>name</code>: repository name. Names are informational only.</p></li>
+<li><p><code>url</code>: repository URL.</p></li>
+<li><p><code>type</code>: repository type. This is also informational, currently it
+can be <code>cran</code> for CRAN, <code>bioc</code> for a Bioconductor repository, and
+<code>cranlike</code>: for other repositories.</p></li>
+<li><p><code>r_version</code>: R version that is supposed to be used with this
+repository. This is only set for Bioconductor repositories. It is <code>*</code>
+for others. This is also informational, and not used when retrieving
+the package metadata.</p></li>
+<li><p><code>bioc_version</code>: Bioconductor version. Only set for Bioconductor
+repositories, and it is <code>NA</code> for others.</p></li>
+<li><p><code>username</code>: user name, for authenticated repositories.</p></li>
+<li><p><code>has_password</code>: whether <code>repo_get()</code> could find the password for
+this repository. Call <code><a href="repo_auth.html">repo_auth()</a></code> for more information if the
+credential lookup failed.</p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>repo_get()</code> returns the table of the currently configured repositories.</p>
     </div>
@@ -80,15 +98,15 @@ mirror in <code>getOption("repos")</code> or an automatically selected one.</p><
 
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><div class="sourceCode"><pre>
-#&gt; <span style="color: #999999;"># A data frame: 5 × 5</span>
-#&gt;   name          url                                type  r_ver…¹ bioc_…²
-#&gt; <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                              <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>
-#&gt; <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org        cran  *       <span style="color: #DC322F;">NA</span>
-#&gt; <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/packages… bioc  4.2.2   3.16
-#&gt; <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/packages… bioc  4.2.2   3.16
-#&gt; <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/packages… bioc  4.2.2   3.16
-#&gt; <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/packages… bioc  4.2.2   3.16
-#&gt; <span style="color: #999999;"># … with abbreviated variable names ¹​r_version, ²​bioc_version</span>
+#&gt; <span style="color: #999999;"># A data frame: 6 × 5</span>
+#&gt;   name          url                         type  r_version bioc_version
+#&gt; <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>
+#&gt; <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>
+#&gt; <span style="color: #c2c2c2;">2</span> BioCsoft      https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">3</span> BioCann       https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">4</span> BioCexp       https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">5</span> BioCworkflows https://bioconductor.org/p… bioc  4.4.2     3.20
+#&gt; <span style="color: #c2c2c2;">6</span> BioCbooks     https://bioconductor.org/p… bioc  4.4.2     3.20
 </pre></div></div>
     </div>
     <div class="section level2">
