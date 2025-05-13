@@ -1,7 +1,10 @@
 
 # Package installation
 
-```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+```{asciicast}
+#| label: asciicast-setup
+#| include: false
+#| cache: false
 dir.create(.lib <- tempfile())
 .libPaths(c(.lib, .libPaths()))
 ```
@@ -13,11 +16,13 @@ Sometimes you still want a reinstall, e.g. to fix a broken installation.
 In this case you can delete the package and then install it, or use the
 `?reinstall` parameter:
 
-```{asciicast faq-reinstall}
+```{asciicast}
+#| label: faq-reinstall
 pak::pkg_install("tibble")
 ```
 
-```{asciicast faq-reinstall-2}
+```{asciicast}
+#| label: faq-reinstall-2
 pak::pkg_install("tibble?reinstall")
 ```
 
@@ -39,7 +44,8 @@ with `pkg = NULL`, so for these you need to explicitly use `upgrade = FALSE`.
 To force the installation of a source package (instead of a binary
 package), use the `?source` parameter:
 
-```{asciicast faq-source}
+```{asciicast}
+#| label: faq-source
 pak::pkg_install("tibble?source")
 ```
 
@@ -51,13 +57,15 @@ parameter with the `<package>=` form: `<package>=?source`.
 For example to install tibble, with its cli dependency installed from
 source you could write:
 
-```{asciicast faq-source-dep}
+```{asciicast}
+#| label: faq-source-dep
 pak::pkg_install(c("tibble", "cli=?source"))
 ```
 
 ## How do I ignore an optional dependency?
 
-```{asciicast faq-ignore}
+```{asciicast}
+#| label: faq-ignore
 pak::pkg_install(
   c("tibble", "DiagrammeR=?ignore", "formattable=?ignore"),
   dependencies = TRUE

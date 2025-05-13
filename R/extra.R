@@ -1,4 +1,3 @@
-
 extra_packages <- function() {
   "pillar"
 }
@@ -28,7 +27,9 @@ load_extra <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     if (show_extra()) {
       msg <- paste0(
-        "! Optional package `", pkg, "` is not available for pak.\n",
+        "! Optional package `",
+        pkg,
+        "` is not available for pak.\n",
         "  Use `pak::pak_install_extra()` to install optional packages.\n",
         "  Use `options(pak.no_extra_messages = TRUE)` to suppress this message.\n"
       )
@@ -58,7 +59,7 @@ once_per_session <- local({
   seen <- character()
   function(expr) {
     h <- hash(substitute(expr))
-    if (! h %in% seen) {
+    if (!h %in% seen) {
       seen <<- c(seen, h)
       expr
     }

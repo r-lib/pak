@@ -1,17 +1,21 @@
-
 if_fail <- function(expr, fn) {
   withCallingHandlers(expr, expectation_failure = fn)
 }
 
-test_temp_file <- function(fileext = "", pattern = "test-file-",
-                           envir = parent.frame(), create = TRUE) {
+test_temp_file <- function(
+  fileext = "",
+  pattern = "test-file-",
+  envir = parent.frame(),
+  create = TRUE
+) {
   tmp <- tempfile(pattern = pattern, fileext = fileext)
   if (identical(envir, .GlobalEnv)) {
     message("Temporary files will _not_ be cleaned up")
   } else {
     withr::defer(
       try(unlink(tmp, recursive = TRUE, force = TRUE), silent = TRUE),
-      envir = envir)
+      envir = envir
+    )
   }
   if (create) {
     cat("", file = tmp)
@@ -51,7 +55,9 @@ skip_if_offline <- function() {
 
 set_user_in_url <- function(url, username = "username", password = NULL) {
   psd <- parse_url(url)
-  paste0(psd$protocol, "://",
+  paste0(
+    psd$protocol,
+    "://",
     username,
     if (!is.null(password)) paste0(":", password),
     "@",

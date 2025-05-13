@@ -1,4 +1,3 @@
-
 #' Search CRAN packages
 #'
 #' Search the indexed database of current CRAN packages. It uses the
@@ -54,16 +53,31 @@ print.pak_search_result <- function(x, ...) {
   md <- attr(x, "metadata")
   md$size <- min(md$size, md$total - md$from + 1)
   catln(
-    "# '", md$query, "' -- hits ", md$from, "-",
-    md$from + md$size - 1, " of ", md$total
+    "# '",
+    md$query,
+    "' -- hits ",
+    md$from,
+    "-",
+    md$from + md$size - 1,
+    " of ",
+    md$total
   )
 
   num <- as.character(seq(md$from, md$from + md$size - 1))
   for (i in seq_len(nrow(x))) {
-    r <- x[i,]
+    r <- x[i, ]
     catln("")
-    catln(num[i], " ", r$package, " ", as.character(r$version), " -- by ",
-        r$maintainer_name, ", ", r$ago)
+    catln(
+      num[i],
+      " ",
+      r$package,
+      " ",
+      as.character(r$version),
+      " -- by ",
+      r$maintainer_name,
+      ", ",
+      r$ago
+    )
     catln(paste(strwrap(r$title, indent = 2), collapse = " "))
   }
 

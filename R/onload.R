@@ -35,8 +35,11 @@ pkg_data <- new.env(parent = emptyenv())
   invisible()
 }
 
-check_platform <- function(libname = dirname(find.package("pak")),
-                           pkgname = "pak", data = pak_sitrep_data) {
+check_platform <- function(
+  libname = dirname(find.package("pak")),
+  pkgname = "pak",
+  data = pak_sitrep_data
+) {
   # Is this load_all()?
   if (!file.exists(file.path(libname, pkgname, "help"))) {
     return(TRUE)

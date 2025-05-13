@@ -1,4 +1,3 @@
-
 ## Cases:
 ## - was already installed, current
 ## - was already installed, not current
@@ -42,17 +41,19 @@ nice_df_print <- function(x, ...) {
 
 print_install_summary <- function(x) {
   direct <- sum(x$direct & x$type != "deps")
-  deps <- sum(! x$direct)
+  deps <- sum(!x$direct)
 
   newly <- sum(x$lib_status == "new" & x$type != "deps")
-  upd   <- sum(x$lib_status == "update" & ! x$type %in% c("installed", "deps"))
-  curr  <- sum(x$lib_status == "current" & x$type != "deps")
+  upd <- sum(x$lib_status == "update" & !x$type %in% c("installed", "deps"))
+  curr <- sum(x$lib_status == "current" & x$type != "deps")
   # Not used currently. The packages we could have updated but did not
   noupd <- sum(x$lib_status == "no-update")
 
   downloaded <- sum(x$download_status == "Got")
-  cached <- sum(x$download_status == "Had" &
-                ! x$type %in% c("installed", "deps"))
+  cached <- sum(
+    x$download_status == "Had" &
+      !x$type %in% c("installed", "deps")
+  )
   dlbytes <- sum(x$file_size[x$download_status == "Got"])
   total_time <- format_time$pretty_dt(attr(x, "total_time")) %||% ""
 
@@ -61,11 +62,14 @@ print_install_summary <- function(x) {
     if (direct > 0 && deps > 0) " + ",
     if (deps > 0) "{deps} dep{?s}"
   )
-  updsum <- paste0(c(
-    if (curr > 0) "kept {curr}",
-    if (upd > 0) "upd {upd}",
-    if (newly > 0) "added {newly}"
-  ), collapse = ", ")
+  updsum <- paste0(
+    c(
+      if (curr > 0) "kept {curr}",
+      if (upd > 0) "upd {upd}",
+      if (newly > 0) "added {newly}"
+    ),
+    collapse = ", "
+  )
 
   dlsum <- if (downloaded > 0) {
     bytes <- format_bytes$pretty_bytes(dlbytes)

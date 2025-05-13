@@ -1,4 +1,3 @@
-
 #' Simplified manual. Start here!
 #'
 #' @name Get started with pak
@@ -195,16 +194,25 @@ doc_config <- function() {
   rd <- readRDS(rds)
   paste0(
     "\\itemize{",
-    paste(map_named(rd, function(name, entry) {
-      env <- toupper(chartr(".", "_", paste0("pkg_", name)))
-      opt <- paste0("pkg.", name)
-      paste0(
-        "\\item \\sQuote{", name, "}: ",
-        "(Env var: \\code{", env, "}, ",
-        "option: \\code{", opt, "}.) ",
-        entry
-      )
-    }), collapse = "\n"),
+    paste(
+      map_named(rd, function(name, entry) {
+        env <- toupper(chartr(".", "_", paste0("pkg_", name)))
+        opt <- paste0("pkg.", name)
+        paste0(
+          "\\item \\sQuote{",
+          name,
+          "}: ",
+          "(Env var: \\code{",
+          env,
+          "}, ",
+          "option: \\code{",
+          opt,
+          "}.) ",
+          entry
+        )
+      }),
+      collapse = "\n"
+    ),
     "}"
   )
 }

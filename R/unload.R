@@ -1,4 +1,3 @@
-
 #' Unload packages
 #'
 #' It will unload `packages` and their loaded reverse dependencies
@@ -24,7 +23,6 @@
 #' @noRd
 
 unload <- function(packages, msg = "  Unloading %s...") {
-
   badbase <- intersect(base_packages(), packages)
   if (length(badbase) > 0) {
     packages <- setdiff(packages, badbase)
@@ -88,7 +86,7 @@ needs_unload <- function(packages) {
 
 package_imports <- function(package, base = FALSE) {
   imp <- unique(names(getNamespaceInfo(package, "imports")))
-  if (!base) imp <- imp[! imp %in% base_packages()]
+  if (!base) imp <- imp[!imp %in% base_packages()]
   # pkgload has some unnamed components somehow?
   imp[imp != ""]
 }

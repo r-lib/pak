@@ -1,15 +1,10 @@
-
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 # Adapted from withr:::merge_new
 merge_new <- function(old, new, action = c("replace", "prepend", "append")) {
   action <- match.arg(action, c("replace", "prepend", "append"))
 
-  switch(action,
-    prepend = c(new, old),
-    append = c(old, new),
-    replace = new
-  )
+  switch(action, prepend = c(new, old), append = c(old, new), replace = new)
 }
 
 vcapply <- function(X, FUN, ...) {
@@ -42,22 +37,22 @@ is_verbose <- function() {
   }
 }
 
-backtick <- function (x) {
+backtick <- function(x) {
   encodeString(x, quote = "`", na.encode = FALSE)
 }
 
-format_items <- function (x) {
+format_items <- function(x) {
   paste0(cli::ansi_collapse(backtick(x), sep = ", ", last = " and "))
 }
 
-str_trim <- function (x) {
+str_trim <- function(x) {
   sub("^\\s+", "", sub("\\s+$", "", x))
 }
 
 list_files <- function(path) {
   if (!file.exists(path)) return(character())
   fs <- dir(path, full.names = TRUE)
-  basename(fs[! is_dir(fs)])
+  basename(fs[!is_dir(fs)])
 }
 
 file_mtime <- function(...) {
@@ -108,10 +103,8 @@ file_path <- function(...) {
 win_path_local <- function() {
   if (nzchar(lapp <- Sys.getenv("LOCALAPPDATA", ""))) {
     lapp
-
   } else if (nzchar(usrprof <- Sys.getenv("USERPROFILE", ""))) {
     file.path(usrprof, "AppData", "Local")
-
   } else {
     file.path(tempdir(), "r-pkg-cache")
   }
@@ -128,12 +121,14 @@ catln <- function(..., sep = "") {
 get_num_workers <- function() {
   n <- tryCatch(
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
-    error = function(e) NA_integer_)
+    error = function(e) NA_integer_
+  )
 
   if (length(n) != 1 || is.na(n)) {
     n <- tryCatch(
       ps::ps_cpu_count(logical = TRUE),
-      error = function(e) NA_integer_)
+      error = function(e) NA_integer_
+    )
   }
 
   if (is.na(n)) n <- 1L
@@ -154,15 +149,19 @@ to_package_name <- function(x) {
 
 strrep <- function(x, times) {
   x = as.character(x)
-  if (length(x) == 0L)
-    return(x)
-  unlist(.mapply(function(x, times) {
-    if (is.na(x) || is.na(times))
-      return(NA_character_)
-    if (times <= 0L)
-      return("")
-    paste0(replicate(times, x), collapse = "")
-  }, list(x = x, times = times), MoreArgs = list()), use.names = FALSE)
+  if (length(x) == 0L) return(x)
+  unlist(
+    .mapply(
+      function(x, times) {
+        if (is.na(x) || is.na(times)) return(NA_character_)
+        if (times <= 0L) return("")
+        paste0(replicate(times, x), collapse = "")
+      },
+      list(x = x, times = times),
+      MoreArgs = list()
+    ),
+    use.names = FALSE
+  )
 }
 
 testthat_testing <- function() {
@@ -215,10 +214,13 @@ append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
 }
 
 try_add_to_git <- function(path) {
-  tryCatch({
-    processx::run("git", c("add", path), timeout = 10)
-    cli::cli_alert_info("Add {.path {path}} to git.")
-  }, error = function(x) x)
+  tryCatch(
+    {
+      processx::run("git", c("add", path), timeout = 10)
+      cli::cli_alert_info("Add {.path {path}} to git.")
+    },
+    error = function(x) x
+  )
 }
 
 rimraf <- function(...) {
@@ -246,7 +248,9 @@ is_interactive <- function() {
     FALSE
   } else if (tolower(getOption("knitr.in.progress", "false")) == "true") {
     FALSE
-  } else if (tolower(getOption("rstudio.notebook.executing", "false")) == "true") {
+  } else if (
+    tolower(getOption("rstudio.notebook.executing", "false")) == "true"
+  ) {
     FALSE
   } else if (identical(Sys.getenv("TESTTHAT"), "true")) {
     FALSE
@@ -277,13 +281,24 @@ na_omit <- function(x) {
 ## Not an issue currently, might be in the future.
 
 base_packages <- function() {
-
   if (is.null(pkg_data$base_packages)) {
     pkg_data$base_packages <-
-      c("base", "compiler", "datasets", "graphics", "grDevices", "grid",
-        "methods", "parallel", "splines", "stats", "stats4", "tcltk",
-        "tools", "utils"
-        )
+      c(
+        "base",
+        "compiler",
+        "datasets",
+        "graphics",
+        "grDevices",
+        "grid",
+        "methods",
+        "parallel",
+        "splines",
+        "stats",
+        "stats4",
+        "tcltk",
+        "tools",
+        "utils"
+      )
   }
   pkg_data$base_packages
 }
@@ -310,8 +325,10 @@ rbind_expand <- function(..., .list = list()) {
         replicate(
           length(miss_cols),
           if (nrow(data[[i]])) NA else logical(),
-          simplify = FALSE),
-        names = miss_cols))
+          simplify = FALSE
+        ),
+        names = miss_cols
+      ))
       data[[i]] <- as_data_frame(cbind(data[[i]], na_df))
     }
   }

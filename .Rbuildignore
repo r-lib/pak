@@ -54,3 +54,5 @@
 ^src/library/zip/src/tools/cmdunzip$
 ^src/library/zip/src/tools/cmdzip$
 ^src/library/keyring/src/Makevars$
+^[\.]?air\.toml$
+^\.vscode$

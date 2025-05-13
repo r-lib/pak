@@ -13,7 +13,8 @@ editor_options:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -35,12 +36,18 @@ asciicast::init_knitr_engine(
 )
 ```
 
-```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+```{asciicast}
+#| label: asciicast-setup
+#| include: false
+#| cache: false
 dir.create(.lib <- tempfile())
 .libPaths(c(.lib, .libPaths()))
 ```
 
-```{asciicast tmp-cache, include = FALSE, cache = FALSE}
+```{asciicast}
+#| label: tmp-cache
+#| include: false
+#| cache: false
 Sys.setenv(R_USER_CACHE_DIR = tempfile())
 options(cli_num_colors = 256)
 ```
@@ -49,36 +56,43 @@ options(cli_num_colors = 256)
 
 #### Install or update packages from CRAN or Bioconductor
 
-```{asciicast cran}
+```{asciicast}
+#| label: cran
 pak::pkg_install("tibble")
 ```
 
 #### Install packages from GitHub
 
-```{asciicast gh}
+```{asciicast}
+#| label: gh
 pak::pkg_install("tidyverse/tibble")
 ```
 
 #### Look up dependencies
 
-```{asciicast deps}
+```{asciicast}
+#| label: deps
 pak::pkg_deps_tree("tibble")
 ```
 
 #### Explain dependencies
 
-```{asciicast explain}
+```{asciicast}
+#| label: explain
 pak::pkg_deps_explain("tibble", "rlang")
 ```
 
 #### Install a local package and its dependencies
 
-```{asciicast local-pre, include = FALSE}
+```{asciicast}
+#| label: local-pre
+#| include: false
 dl <- pak::pkg_download("cli", platforms = "source", tempdir())
 untar(dl$fulltarget[1])
 ```
 
-```{asciicast local}
+```{asciicast}
+#| label: local
 pak::local_install("cli")
 ```
 

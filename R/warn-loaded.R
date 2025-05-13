@@ -1,11 +1,10 @@
-
 warn_for_loaded_packages <- function(pkgs, lib, loaded, pid = NULL) {
   if (length(pkgs) == 0) return(list(status = "none-none"))
-   if (get_os() == "win") {
-     warn_for_loaded_packages_win(pkgs, lib, loaded, pid)
-   } else {
-     warn_for_loaded_packages_unix(pkgs, lib, loaded, pid)
-   }
+  if (get_os() == "win") {
+    warn_for_loaded_packages_win(pkgs, lib, loaded, pid)
+  } else {
+    warn_for_loaded_packages_unix(pkgs, lib, loaded, pid)
+  }
 }
 
 handle_status <- function(status, lib, ask) {
@@ -65,19 +64,14 @@ warn_for_loaded_packages_win <- function(pkgs, lib, loaded, pid = NULL) {
   status$answers <- if (current$status == "none" && others$status == "none") {
     # Nothing to do
     NULL
-
   } else if (current$status == "loaded" && others$status == "none") {
     warn_for_loaded_packages_loaded_none(current)
-
   } else if (current$status == "locked" && others$status == "none") {
     warn_for_loaded_packages_locked_none(current)
-
   } else if (current$status == "none" && others$status == "locked") {
     warn_for_loaded_packages_none_locked(others)
-
   } else if (current$status == "loaded" && others$status == "locked") {
     warn_for_loaded_packages_loaded_locked(current, others)
-
   } else if (current$status == "locked" && others$status == "locked") {
     warn_for_loaded_packages_locked_locked(current, others)
   }
@@ -99,11 +93,13 @@ warn_for_loaded_packages_locked_none <- function(current) {
     wrap = TRUE
   )
 
-  cli::cli_div(theme = list(
-    body = list("margin-left" = 2L),
-    par = list("margin-top" = 1L),
-    ol = list("margin-top" = 1L)
-  ))
+  cli::cli_div(
+    theme = list(
+      body = list("margin-left" = 2L),
+      par = list("margin-top" = 1L),
+      ol = list("margin-top" = 1L)
+    )
+  )
   cli::cli_par()
   cli::cli_text("What do you want to do?")
   cli::cli_ol(c(
@@ -131,12 +127,14 @@ warn_for_loaded_packages_none_locked <- function(others) {
     wrap = TRUE
   )
 
-  cli::cli_div(theme = list(
-    body = list("margin-left" = 2L),
-    par = list("margin-top" = 1L),
-    ol = list("margin-top" = 1L),
-    ul = list("margin-top" = 1L, "margin-bottom" = 1L)
-  ))
+  cli::cli_div(
+    theme = list(
+      body = list("margin-left" = 2L),
+      par = list("margin-top" = 1L),
+      ol = list("margin-top" = 1L),
+      ul = list("margin-top" = 1L, "margin-bottom" = 1L)
+    )
+  )
   cli::cli_par()
   cli::cli_ul(sess)
   cli::cli_text("What do you want to do?")
@@ -191,12 +189,14 @@ warn_for_loaded_packages_locked_locked <- function(current, others) {
     )
   }
 
-  cli::cli_div(theme = list(
-    body = list("margin-left" = 2L),
-    par = list("margin-top" = 1L),
-    ol = list("margin-top" = 1L),
-    ul = list("margin-top" = 1L, "margin-bottom" = 1L)
-  ))
+  cli::cli_div(
+    theme = list(
+      body = list("margin-left" = 2L),
+      par = list("margin-top" = 1L),
+      ol = list("margin-top" = 1L),
+      ul = list("margin-top" = 1L, "margin-bottom" = 1L)
+    )
+  )
   cli::cli_par()
   cli::cli_ul(sess)
   cli::cli_text("What do you want to do?")
@@ -218,7 +218,8 @@ r_process_names <- function() {
 #' @noRd
 
 r_app_names <- function() {
-  c("Rgui" = "Rgui.exe",
+  c(
+    "Rgui" = "Rgui.exe",
     "RStudio" = "rstudio.exe",
     "VScode" = "Code.exe",
     "Windows Terminal" = "WindowsTerminal.exe",
@@ -370,7 +371,10 @@ loaded_status_others <- function(locked, pid = NULL) {
   status <- if (nrow(oth_locked) > 0) "locked" else "none"
 
   oth_locked$create_time <- vdapply(oth_locked$ps_handle, ps::ps_create_time)
-  oth_locked$app_create_time <- vdapply(oth_locked$app_handle, ps::ps_create_time)
+  oth_locked$app_create_time <- vdapply(
+    oth_locked$app_handle,
+    ps::ps_create_time
+  )
   oth_locked$ps_handle <- NULL
   oth_locked$app_handle <- NULL
 
@@ -404,7 +408,7 @@ loaded_packages_response <- function(status, response) {
       )
     },
     "none-locked" = ,
-    "loaded-locked" =,
+    "loaded-locked" = ,
     "locked-locked" = {
       switch(
         response,

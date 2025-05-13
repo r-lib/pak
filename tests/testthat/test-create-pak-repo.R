@@ -1,6 +1,4 @@
-
 test_that("add_repo_links", {
-
   oldwd <- getwd()
   on.exit(setwd(oldwd), add = TRUE)
   dir.create(tmp <- tempfile())
@@ -10,23 +8,26 @@ test_that("add_repo_links", {
   mkdirp <- import_from("create_pak_repo", "mkdirp")
 
   plt <- rbind(
-    c("linux",        "x86_64"),
-    c("linux",        "aarch64"),
+    c("linux", "x86_64"),
+    c("linux", "aarch64"),
     c("darwin15.6.0", "x86_64"),
-    c("darwin17.0",   "x86_64"),
-    c("darwin20",     "aarch64"),
-    c("mingw32",      "x86_64")
+    c("darwin17.0", "x86_64"),
+    c("darwin20", "aarch64"),
+    c("mingw32", "x86_64")
   )
 
-  mkdirp(paste0("p", "/", "pak", "/", "stable", "/", plt[,1], "/", plt[,2]))
+  mkdirp(paste0("p", "/", "pak", "/", "stable", "/", plt[, 1], "/", plt[, 2]))
 
   for (i in seq_len(nrow(plt))) {
     path <- file.path("p/pak/stable", plt[i, 1], plt[i, 2], "PACKAGES")
-    writeLines(path, text = c(
-      "Package: pak",
-      "Version: 1.0.0",
-      paste0("Depends: ", plt[i, 1], "/", plt[i, 2])
-    ))
+    writeLines(
+      path,
+      text = c(
+        "Package: pak",
+        "Version: 1.0.0",
+        paste0("Depends: ", plt[i, 1], "/", plt[i, 2])
+      )
+    )
   }
 
   add_repo_links("p/pak", "stable")
@@ -34,7 +35,11 @@ test_that("add_repo_links", {
   # ----------------------------------------------------------------------
   # test the new repo form first: pkgtype/os/arch
 
-  tsts <- read.table(stringsAsFactors = FALSE, header = TRUE, textConnection("
+  tsts <- read.table(
+    stringsAsFactors = FALSE,
+    header = TRUE,
+    textConnection(
+      "
     pkg_type                 os           arch    rver result
     source                   linux-gnu    x86_64  4.1  linux/x86_64
     source                   linux-musl   x86_64  4.1  linux/x86_64
@@ -51,7 +56,9 @@ test_that("add_repo_links", {
     source                   darwin21.1.0 aarch64 4.1  NA
     source                   darwin21.1.0 x86_64  4.1  NA
     source                   darwin15.6.0 x86_64  3.6  NA
-  "))
+  "
+    )
+  )
 
   pref <- if (.Platform$OS.type == "windows") "file:///" else "file://"
   base <- paste0(pref, normalizePath("p/pak/stable"))
@@ -77,14 +84,20 @@ test_that("add_repo_links", {
   # ----------------------------------------------------------------------
   # now test the old form, where we don't include the additional data
 
-  tsts2 <- read.table(stringsAsFactors = FALSE, header = TRUE, textConnection("
+  tsts2 <- read.table(
+    stringsAsFactors = FALSE,
+    header = TRUE,
+    textConnection(
+      "
     pkg_type                  rver result
     source                    4.1  linux/x86_64
     win.binary                4.1  mingw32/x86_64
     mac.binary.el-capitan     3.6  darwin15.6.0/x86_64
     mac.binary                4.1  darwin17.0/x86_64
     mac.binary.big-sur-arm64  4.1  darwin20/aarch64
-  "))
+  "
+    )
+  )
 
   for (i in seq_len(nrow(tsts2))) {
     curl <- utils::contrib.url(base, tsts2$pkg_type[i])

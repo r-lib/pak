@@ -1,4 +1,3 @@
-
 #' Check if an R package name is available
 #'
 #' @inherit pkgdepends::pkg_name_check description details return

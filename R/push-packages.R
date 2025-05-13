@@ -44,13 +44,21 @@ push_packages <- local({
     Sys.getenv("PAK_PACKAGE_DIR", tempfile())
   }
 
-  git <- function(..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE,
-                  stderr_to_stdout = FALSE) {
+  git <- function(
+    ...,
+    echo_cmd = TRUE,
+    echo = TRUE,
+    dry_run = FALSE,
+    stderr_to_stdout = FALSE
+  ) {
     if (dry_run) {
       cat("git", c(...), "\n")
     } else {
-      processx::run("git", c(...),
-        echo_cmd = echo_cmd, echo = echo,
+      processx::run(
+        "git",
+        c(...),
+        echo_cmd = echo_cmd,
+        echo = echo,
         stderr_to_stdout = stderr_to_stdout
       )
     }
@@ -104,7 +112,12 @@ push_packages <- local({
 
   canonize_arch <- function(platform) {
     arch <- strsplit(platform, "-", fixed = TRUE)[[1]][1]
-    c("aarch64" = "arm64", "x86_64" = "amd64", "arm64" = "arm64", "amd64" = "amd64")[[arch]]
+    c(
+      "aarch64" = "arm64",
+      "x86_64" = "amd64",
+      "arm64" = "arm64",
+      "amd64" = "amd64"
+    )[[arch]]
   }
 
   canonize_os <- function(platform) {
@@ -132,17 +145,21 @@ push_packages <- local({
   # Extension from path, but keep .tar.gz
   get_ext <- function(path) {
     pcs <- strsplit(path, ".", fixed = TRUE)
-    vapply(pcs, function(x) {
-      x <- rev(x)
-      if (length(x) == 1) {
-        return("")
-      }
-      if (x[1] == "gz" && length(x) > 1 && x[2] == "tar") {
-        "tar.gz"
-      } else {
-        x[1]
-      }
-    }, character(1))
+    vapply(
+      pcs,
+      function(x) {
+        x <- rev(x)
+        if (length(x) == 1) {
+          return("")
+        }
+        if (x[1] == "gz" && length(x) > 1 && x[2] == "tar") {
+          "tar.gz"
+        } else {
+          x[1]
+        }
+      },
+      character(1)
+    )
   }
 
   image_title <- function(pkgs) {
@@ -361,11 +378,13 @@ push_packages <- local({
     package_version(substr(out$stdout, beg, end))
   }
 
-  update_packages <- function(paths,
-                              workdir,
-                              tag = "devel",
-                              keep_old = TRUE,
-                              dry_run = FALSE) {
+  update_packages <- function(
+    paths,
+    workdir,
+    tag = "devel",
+    keep_old = TRUE,
+    dry_run = FALSE
+  ) {
     shadir <- file.path(workdir, "blobs", "sha256")
     mkdirp(shadir)
 
@@ -426,7 +445,8 @@ push_packages <- local({
             }
          ]
        }',
-      .open = "<<", .close = ">>"
+      .open = "<<",
+      .close = ">>"
     ))
     write_files(idxjs, file.path(workdir, "index.json"))
 
@@ -502,8 +522,13 @@ push_packages <- local({
 
   update_manifest <- function(workdir, tag, pkgs) {
     cols <- c(
-      "r.platform", "r.version", "pak.version", "pak.revision",
-      "buildtime", "size", "digest"
+      "r.platform",
+      "r.version",
+      "pak.version",
+      "pak.revision",
+      "buildtime",
+      "size",
+      "digest"
     )
     pfms <- pkgs[, cols]
     newtags <- data.frame(
@@ -545,12 +570,29 @@ push_packages <- local({
     on.exit(setwd(old), add = TRUE)
     setwd(workdir)
     git("add", "manifest.json", dry_run = dry_run)
-    git("commit", "--allow-empty", "-m", "Auto-update packages", dry_run = dry_run)
-    git("push", "--porcelain", "origin", stderr_to_stdout = TRUE, dry_run = dry_run)
+    git(
+      "commit",
+      "--allow-empty",
+      "-m",
+      "Auto-update packages",
+      dry_run = dry_run
+    )
+    git(
+      "push",
+      "--porcelain",
+      "origin",
+      stderr_to_stdout = TRUE,
+      dry_run = dry_run
+    )
   }
 
-  push_packages <- function(paths, tag = "auto", keep_old = TRUE,
-                            dry_run = FALSE, cleanup = TRUE) {
+  push_packages <- function(
+    paths,
+    tag = "auto",
+    keep_old = TRUE,
+    dry_run = FALSE,
+    cleanup = TRUE
+  ) {
     dry_run
 
     if (tag == "auto") {
@@ -594,10 +636,12 @@ push_packages <- local({
           break
         },
         error = function(err) {
-          if (!grepl(
-            "(non-fast-forward|fetch first|cannot lock ref)",
-            err$stderr
-          )) {
+          if (
+            !grepl(
+              "(non-fast-forward|fetch first|cannot lock ref)",
+              err$stderr
+            )
+          ) {
             stop(err)
           }
           old <- getwd()
@@ -900,7 +944,11 @@ create_pak_repo <- local({
     data$Package <- field("Package")
     data$Version <- field("Version")
     data$Depends <- paste0(
-      "R (>= ", data$r.version, "), R (<= ", data$r.version, ".99)"
+      "R (>= ",
+      data$r.version,
+      "), R (<= ",
+      data$r.version,
+      ".99)"
     )
     data$Imports <- field("Imports")
     data$MD5sum <- unname(tools::md5sum(data$path))
@@ -926,14 +974,28 @@ create_pak_repo <- local({
         paste0(data$r.version[idx], ".99")
       )
       data$Depends[idx] <- paste0(
-        "R (>= ", data$r.version[idx], "), R (<= ", below_r_version, ")"
+        "R (>= ",
+        data$r.version[idx],
+        "), R (<= ",
+        below_r_version,
+        ")"
       )
     }
 
     cols <- c(
-      "Package", "Version", "Depends", "Imports", "License",
-      "MD5sum", "Sha256", "NeedsCompilation", "Built", "File",
-      "DownloadURL", "OS", "Arch"
+      "Package",
+      "Version",
+      "Depends",
+      "Imports",
+      "License",
+      "MD5sum",
+      "Sha256",
+      "NeedsCompilation",
+      "Built",
+      "File",
+      "DownloadURL",
+      "OS",
+      "Arch"
     )
     meta <- main <- data[, cols]
 
@@ -961,9 +1023,14 @@ create_pak_repo <- local({
 
     pkgfile <- paste0(
       "pak_",
-      data$pak.version, "_",
-      "R-", gsub("[.]", "-", data$r.version), "_",
-      cpu, "-", os,
+      data$pak.version,
+      "_",
+      "R-",
+      gsub("[.]", "-", data$r.version),
+      "_",
+      cpu,
+      "-",
+      os,
       pkgfile_ext(os)
     )
 

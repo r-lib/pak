@@ -1,4 +1,3 @@
-
 detect_platform <- function() {
   me <- list(
     os = R.Version()$os,
@@ -6,8 +5,16 @@ detect_platform <- function() {
     rver = get_minor_r_version(getRversion())
   )
 
-  if (me$os %in% c("linux-dietlibc", "linux-gnu", "linux-musl",
-                   "linux-uclibc", "linux-unknown")) {
+  if (
+    me$os %in%
+      c(
+        "linux-dietlibc",
+        "linux-gnu",
+        "linux-musl",
+        "linux-uclibc",
+        "linux-unknown"
+      )
+  ) {
     me$os <- "linux"
   }
   me
@@ -66,8 +73,8 @@ pak_repo_metadata <- function(repo = NULL, stream = "auto") {
 
 pak_update <- function(
   force = FALSE,
-  stream = c("auto", "stable", "rc", "devel")) {
-
+  stream = c("auto", "stable", "rc", "devel")
+) {
   stopifnot(is_flag(force))
   stream <- match.arg(stream)
   stream <- pak_stream(stream)
@@ -78,7 +85,9 @@ pak_update <- function(
     lib <- .libPaths()[1]
     warning(
       "`load_all()`-d pak package, updating in default library at\n  ",
-      "`", lib, "`",
+      "`",
+      lib,
+      "`",
       immediate. = TRUE
     )
   } else {
@@ -91,15 +100,17 @@ pak_update <- function(
   me <- detect_platform()
   cand <- which(
     meta$OS == me$os &
-    meta$Arch == me$arch &
-    meta$RVersion == me$rver
+      meta$Arch == me$arch &
+      meta$RVersion == me$rver
   )
 
   if (length(cand) == 0) {
     pak_update_unsupported_platform(stream, me, meta)
   } else if (length(cand) > 1) {
-    warning("Multiple pak candidates are available for this platform, ",
-            "this should not happen. Using the first one.")
+    warning(
+      "Multiple pak candidates are available for this platform, ",
+      "this should not happen. Using the first one."
+    )
     cand <- cand[1]
   }
   check_mac_cran_r(me, meta)
@@ -137,22 +148,25 @@ pak_update <- function(
   message("\nReloading pak.")
 
   # Try to use it to see if it was successful
-  suppressWarnings(tryCatch({
-    eapply(asNamespace("pak"), base::force, all.names = TRUE)
-    unloadNamespace("pak")
-    # This works around the help lazy load DB errors
-    intern <- base::.Internal
-    lazyLoadDBflush <- function(...) NULL
-    tryCatch(
-      intern(lazyLoadDBflush(file.path(lib, "pak", "help", "pak.rdb"))),
-      error = function(e) NULL
-    )
-    loadNamespace("pak")
-    if (attached) library(pak)
-    suppressWarnings(tools::Rd_db(package = "pak"))
-  }, error = function(err) {
-    message("\nFailed to reload pak. Please restart your R session.")
-  }))
+  suppressWarnings(tryCatch(
+    {
+      eapply(asNamespace("pak"), base::force, all.names = TRUE)
+      unloadNamespace("pak")
+      # This works around the help lazy load DB errors
+      intern <- base::.Internal
+      lazyLoadDBflush <- function(...) NULL
+      tryCatch(
+        intern(lazyLoadDBflush(file.path(lib, "pak", "help", "pak.rdb"))),
+        error = function(e) NULL
+      )
+      loadNamespace("pak")
+      if (attached) library(pak)
+      suppressWarnings(tools::Rd_db(package = "pak"))
+    },
+    error = function(err) {
+      message("\nFailed to reload pak. Please restart your R session.")
+    }
+  ))
 
   invisible()
 }
@@ -171,14 +185,19 @@ pak_update_unsupported_platform <- function(stream, me, meta) {
   pl2 <- sapply(rv, paste, collapse = ", ")
   message(paste0(" * ", names(pl2), ", ", pl2, "\n"))
   stop(
-    "pak is not available for ", me$os, ", ",
-    me$arch, ", R ", me$rver, ".x. Aborting now"
+    "pak is not available for ",
+    me$os,
+    ", ",
+    me$arch,
+    ", R ",
+    me$rver,
+    ".x. Aborting now"
   )
   # TODO: tell how to install from source
 }
 
 check_mac_cran_r <- function(me, meta) {
-  if (! grepl("^darwin", me$os)) return()
+  if (!grepl("^darwin", me$os)) return()
   if (.Platform$pkgType == "source") {
     stop(
       "pak only has binaries for the CRAN build of R, and this ",

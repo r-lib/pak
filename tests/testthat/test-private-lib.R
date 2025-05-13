@@ -1,4 +1,3 @@
-
 test_that("loading package from private lib", {
   skip_on_cran()
   on.exit(pkg_data$ns <- list(), add = TRUE)
@@ -35,7 +34,8 @@ test_that("cleanup of temp files", {
 
   pkg_data <- asNamespace("pak")$pkg_data
   pkg_data$ns$processx <- NULL
-  gc(); gc()
+  gc()
+  gc()
 
   expect_false(file.exists(pkgdir))
   paths <- sapply(.dynLibs(), "[[", "path")
@@ -49,7 +49,7 @@ test_that("no interference", {
   gc()
 
   asNamespace("ps")
-  expect_true("ps" %in%  loadedNamespaces())
+  expect_true("ps" %in% loadedNamespaces())
   expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
 
   load_private_package("ps")
@@ -57,7 +57,8 @@ test_that("no interference", {
   expect_true(is.function(asNamespace("ps")$ps))
 
   pkg_data$ns$ps <- NULL
-  gc(); gc()
+  gc()
+  gc()
 
   expect_true("ps" %in% loadedNamespaces())
   expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))

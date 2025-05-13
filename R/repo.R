@@ -1,4 +1,3 @@
-
 #' Show the status of CRAN-like repositories
 #'
 #' It checks the status of the configured or supplied repositories.
@@ -63,8 +62,12 @@
 #' repo_ping()
 #' ```
 
-repo_status <- function(platforms = NULL, r_version = getRversion(),
-                        bioc = NULL, cran_mirror = NULL) {
+repo_status <- function(
+  platforms = NULL,
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_status_internal(...),
@@ -72,9 +75,12 @@ repo_status <- function(platforms = NULL, r_version = getRversion(),
   )
 }
 
-repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
-                                 bioc = NULL, cran_mirror = NULL) {
-
+repo_status_internal <- function(
+  platforms = NULL,
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   config <- pkgdepends::current_config()
   platforms <- platforms %||% config$get("platforms")
   cran_mirror <- cran_mirror %||% config$get("cran_mirror")
@@ -94,9 +100,12 @@ repo_status_internal <- function(platforms = NULL, r_version = getRversion(),
 #' @export
 #' @rdname repo_status
 
-repo_ping <- function(platforms = NULL, r_version = getRversion(),
-                      bioc = NULL, cran_mirror = NULL) {
-
+repo_ping <- function(
+  platforms = NULL,
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   ret <- remote(
     function(...) asNamespace("pak")$repo_ping_internal(...),
     list(platforms, r_version, bioc, cran_mirror)
@@ -106,9 +115,12 @@ repo_ping <- function(platforms = NULL, r_version = getRversion(),
   invisible(ret$data)
 }
 
-repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
-                               bioc = NULL, cran_mirror = NULL) {
-
+repo_ping_internal <- function(
+  platforms = NULL,
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   config <- pkgdepends::current_config()
   platforms <- platforms %||% config$get("platforms")
   cran_mirror <- cran_mirror %||% config$get("cran_mirror")
@@ -165,8 +177,11 @@ repo_ping_internal <- function(platforms = NULL, r_version = getRversion(),
 #' repo_get()
 #' ```
 
-repo_get <- function(r_version = getRversion(),
-                     bioc = NULL, cran_mirror = NULL) {
+repo_get <- function(
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_get_internal(...),
@@ -174,8 +189,11 @@ repo_get <- function(r_version = getRversion(),
   )
 }
 
-repo_get_internal <- function(r_version = getRversion(), bioc = NULL,
-                              cran_mirror = NULL) {
+repo_get_internal <- function(
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL
+) {
   config <- pkgdepends::current_config()
   cran_mirror <- cran_mirror %||% config$get("cran_mirror")
   bioc <- bioc %||% config$get("use_bioconductor")
@@ -297,7 +315,8 @@ repo_add_internal <- function(.list, username) {
 repo_resolve <- function(spec, username = NULL) {
   remote(
     function(spec, username) pkgcache::repo_resolve(spec, username),
-    list(spec, username))
+    list(spec, username)
+  )
 }
 
 #' Authenticated repositories
@@ -409,10 +428,12 @@ repo_resolve <- function(spec, username = NULL) {
 #' @family authenticated repositories
 #' @export
 
-repo_auth <- function(r_version = getRversion(), bioc = NULL,
-                      cran_mirror = NULL,
-                      check_credentials = TRUE) {
-
+repo_auth <- function(
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL,
+  check_credentials = TRUE
+) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_auth_internal(...),
@@ -420,9 +441,12 @@ repo_auth <- function(r_version = getRversion(), bioc = NULL,
   )
 }
 
-repo_auth_internal <- function(r_version = getRversion(), bioc = NULL,
-                               cran_mirror = NULL,
-                               check_credentials = TRUE) {
+repo_auth_internal <- function(
+  r_version = getRversion(),
+  bioc = NULL,
+  cran_mirror = NULL,
+  check_credentials = TRUE
+) {
   config <- pkgdepends::current_config()
   cran_mirror <- cran_mirror %||% config$get("cran_mirror")
   bioc <- bioc %||% config$get("use_bioconductor")

@@ -1,4 +1,3 @@
-
 if (Sys.getenv("NOT_CRAN") != "true") return()
 
 if (Sys.getenv("PAK_TESTS") != "true") return()
@@ -21,7 +20,11 @@ test_that("Old URL", {
     rver_flt <- utils:::available_packages_filters_db$R_version
     repo <- paste0(repo_url, "/", br)
 
-    tsts <- read.table(stringsAsFactors = FALSE, header = TRUE, textConnection("
+    tsts <- read.table(
+      stringsAsFactors = FALSE,
+      header = TRUE,
+      textConnection(
+        "
       pkg_type                 rver
       mac.binary.big-sur-arm64 4.1.2
       mac.binary.big-sur-arm64 4.2.3
@@ -48,7 +51,9 @@ test_that("Old URL", {
       source                   4.2.3
       source                   4.3.1
       source                   4.4.0
-    "))
+    "
+      )
+    )
 
     for (i in seq_len(nrow(tsts))) {
       cu <- get_curl(repo, tsts$pkg_type[i], tsts$rver[i])
@@ -70,7 +75,11 @@ test_that("New URL", {
   for (br in branches) {
     rver_flt <- utils:::available_packages_filters_db$R_version
 
-    tsts <- read.table(stringsAsFactors = FALSE, header = TRUE, textConnection("
+    tsts <- read.table(
+      stringsAsFactors = FALSE,
+      header = TRUE,
+      textConnection(
+        "
       pkg_type                 os           arch    rver  branch
       source                   linux-gnu    x86_64  3.5.3 all
       source                   linux-gnu    x86_64  3.6.3 all
@@ -99,15 +108,22 @@ test_that("New URL", {
       mac.binary.big-sur-arm64 darwin20     aarch64 4.2.3 all
       mac.binary.big-sur-arm64 darwin20     aarch64 4.3.1 all
       mac.binary.big-sur-arm64 darwin20     aarch64 4.4.0 all
-    "))
+    "
+      )
+    )
 
     for (i in seq_len(nrow(tsts))) {
       if (br != tsts$branch[i] && tsts$branch[i] != "all") next
 
       repo <- paste0(
-        repo_url, "/", br, "/",
-        tsts$pkg_type[i], "/",
-        tsts$os[i], "/",
+        repo_url,
+        "/",
+        br,
+        "/",
+        tsts$pkg_type[i],
+        "/",
+        tsts$os[i],
+        "/",
         tsts$arch[i]
       )
 

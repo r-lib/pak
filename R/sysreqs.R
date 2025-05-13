@@ -1,4 +1,3 @@
-
 sysreqs_is_supported <- function(sysreqs_platform = NULL) {
   remote(
     function(...) pkgdepends::sysreqs_is_supported(...),
@@ -41,8 +40,7 @@ sysreqs_db_list <- function(sysreqs_platform = NULL) {
   )
 }
 
-sysreqs_check_installed <- function(packages = NULL,
-                                    library = .libPaths()[1]) {
+sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
   load_extra("pillar")
   remote(
     function(...) {
@@ -53,8 +51,7 @@ sysreqs_check_installed <- function(packages = NULL,
   )
 }
 
-sysreqs_fix_installed <- function(packages = NULL,
-                                    library = .libPaths()[1]) {
+sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
   load_extra("pillar")
   invisible(remote(
     function(...) {
@@ -68,16 +65,16 @@ sysreqs_fix_installed <- function(packages = NULL,
 #' Calculate system requirements of one of more packages
 #'
 #' @inheritParams pkg_install
-#' @param sysreqs_platform System requirements platform. 
-#' 
-#'   If `NULL`, then the `sysreqs_platform` 
-#'   \eval{man_config_link("configuration option")} is used, which defaults to 
-#'   the current platform. 
-#' 
-#'   Set this option if to one of \eval{platforms()} if \eval{.packageName} 
-#'   fails to correctly detect your platform or if you want to see the system 
+#' @param sysreqs_platform System requirements platform.
+#'
+#'   If `NULL`, then the `sysreqs_platform`
+#'   \eval{man_config_link("configuration option")} is used, which defaults to
+#'   the current platform.
+#'
+#'   Set this option if to one of \eval{platforms()} if \eval{.packageName}
+#'   fails to correctly detect your platform or if you want to see the system
 #'   requirements for a different platform.
-#'   
+#'
 #' @return List with entries:
 #'   * `os`: character string. Operating system.
 #'   * `distribution`: character string. Linux distribution, `NA` if the
@@ -106,8 +103,12 @@ sysreqs_fix_installed <- function(packages = NULL,
 #' @family system requirements functions
 #' @export
 
-pkg_sysreqs <- function(pkg, upgrade = TRUE, dependencies = NA,
-                        sysreqs_platform = NULL) {
+pkg_sysreqs <- function(
+  pkg,
+  upgrade = TRUE,
+  dependencies = NA,
+  sysreqs_platform = NULL
+) {
   load_extra("pillar")
   remote(
     function(...) {
@@ -122,8 +123,12 @@ pkg_sysreqs <- function(pkg, upgrade = TRUE, dependencies = NA,
   )
 }
 
-pkg_sysreqs_internal <- function(pkg, upgrade = TRUE, dependencies = NA,
-                                 sysreqs_platform = NULL) {
+pkg_sysreqs_internal <- function(
+  pkg,
+  upgrade = TRUE,
+  dependencies = NA,
+  sysreqs_platform = NULL
+) {
   dir.create(lib <- tempfile())
   on.exit(rimraf(lib), add = TRUE)
   config <- list(library = lib)
@@ -184,7 +189,10 @@ format.pak_sysreqs <- function(x, ...) {
     cli$rule(left = "Packages and their system dependencies"),
     if (length(pkgs)) {
       paste0(
-        format(names(pkgs)), " ", cli$symbol$en_dash, " ",
+        format(names(pkgs)),
+        " ",
+        cli$symbol$en_dash,
+        " ",
         vcapply(pkgs, function(x) paste(cisort(x), collapse = ", "))
       )
     }
@@ -199,12 +207,17 @@ print.pak_sysreqs <- function(x, ...) {
 
 #' @export
 
-`[.pak_sysreqs` <- function (x, i, j, drop = FALSE) {
+`[.pak_sysreqs` <- function(x, i, j, drop = FALSE) {
   class(x) <- setdiff(class(x), "pak_sysreqs")
   NextMethod("[")
 }
 
 
 platforms <- function() {
-  paste0('\\code{"', sort(sysreqs_platforms()$distribution), '"}', collapse = ", ")
+  paste0(
+    '\\code{"',
+    sort(sysreqs_platforms()$distribution),
+    '"}',
+    collapse = ", "
+  )
 }

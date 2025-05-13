@@ -1,4 +1,3 @@
-
 #' R platforms
 #'
 #' @details

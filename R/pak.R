@@ -1,4 +1,3 @@
-
 #' Install specified required packages
 #'
 #' Install the specified packages, or the ones required by

@@ -1,4 +1,3 @@
-
 #' @export
 
 format.pak_preformatted <- function(x, ...) {

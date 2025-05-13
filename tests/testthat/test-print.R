@@ -1,4 +1,3 @@
-
 cli::test_that_cli(configs = c("plain", "fancy"), "print_install_summary", {
   d <- data.frame(
     stringsAsFactors = FALSE,

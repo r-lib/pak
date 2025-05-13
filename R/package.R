@@ -1,4 +1,3 @@
-
 #' Install packages
 #'
 #' Install one or more packages and their dependencies into a single
@@ -68,30 +67,49 @@
 #' pkg_install("dplyr")
 #' ```
 
-pkg_install <- function(pkg, lib = .libPaths()[[1L]], upgrade = FALSE,
-                        ask = interactive(), dependencies = NA) {
-
+pkg_install <- function(
+  pkg,
+  lib = .libPaths()[[1L]],
+  upgrade = FALSE,
+  ask = interactive(),
+  dependencies = NA
+) {
   start <- Sys.time()
 
   status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
-    list(pkg = pkg, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, dependencies = dependencies,
-         loaded = loaded_packages(lib)))
+    list(
+      pkg = pkg,
+      lib = lib,
+      upgrade = upgrade,
+      ask = ask,
+      start = start,
+      dependencies = dependencies,
+      loaded = loaded_packages(lib)
+    )
+  )
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(proposal = NULL))
+    list(proposal = NULL)
+  )
 
   if (length(unloaded) > 0) offer_restart(unloaded)
 
   invisible(inst)
 }
 
-pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
-                                  dependencies, loaded) {
+pkg_install_make_plan <- function(
+  pkg,
+  lib,
+  upgrade,
+  ask,
+  start,
+  dependencies,
+  loaded
+) {
   prop <- pkgdepends::new_pkg_installation_proposal(
     pkg,
     config = list(library = lib, dependencies = dependencies)
@@ -106,9 +124,8 @@ pkg_install_make_plan <- function(pkg, lib, upgrade, ask, start,
 }
 
 pkg_install_do_plan <- function(proposal) {
-
   proposal <- proposal %||% pkg_data$tmp$proposal
-  start  <- pkg_data$tmp$start
+  start <- pkg_data$tmp$start
   pkg_data$tmp <- NULL
 
   # Actually download packages as needed
@@ -154,7 +171,8 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$pkg_status_internal(...),
-    list(pkg = pkg, lib = lib))
+    list(pkg = pkg, lib = lib)
+  )
 }
 
 pkg_status_internal <- function(pkg, lib = .libPaths()) {
@@ -321,8 +339,13 @@ pkg_list <- function(lib = .libPaths()[1]) {
 #' pkg_download("r-lib/pak", platforms = "source")
 #' ```
 
-pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
-                         platforms = NULL, r_versions = NULL) {
+pkg_download <- function(
+  pkg,
+  dest_dir = ".",
+  dependencies = FALSE,
+  platforms = NULL,
+  r_versions = NULL
+) {
   args <- list(
     pkg = pkg,
     dest_dir = dest_dir,
@@ -342,8 +365,13 @@ pkg_download <- function(pkg, dest_dir = ".", dependencies = FALSE,
   invisible(dl)
 }
 
-pkg_download_internal <- function(pkg, dest_dir = ".", dependencies = FALSE,
-                                  platforms = NULL, r_versions = NULL) {
+pkg_download_internal <- function(
+  pkg,
+  dest_dir = ".",
+  dependencies = FALSE,
+  platforms = NULL,
+  r_versions = NULL
+) {
   mkdirp(dest_dir)
   config <- list(cache_dir = dest_dir, dependencies = dependencies)
   if (!is.null(platforms)) config$platforms <- platforms

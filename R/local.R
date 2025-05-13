@@ -1,4 +1,3 @@
-
 #' About local package trees
 #'
 #' pak can install packages from local package trees. This is convenient
@@ -16,7 +15,7 @@
 #'
 #' @name local_package_trees
 #' @family local package trees
- NULL
+NULL
 
 #' Install a package tree
 #'
@@ -32,30 +31,51 @@
 #' @family local package trees
 #' @export
 
-local_install <- function(root = ".", lib = .libPaths()[1], upgrade = TRUE,
-                          ask = interactive(), dependencies = NA) {
-
+local_install <- function(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = TRUE,
+  ask = interactive(),
+  dependencies = NA
+) {
   start <- Sys.time()
 
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
-    list("local", root = root, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, dependencies = dependencies,
-         loaded = loaded_packages(lib)))
+    list(
+      "local",
+      root = root,
+      lib = lib,
+      upgrade = upgrade,
+      ask = ask,
+      start = start,
+      dependencies = dependencies,
+      loaded = loaded_packages(lib)
+    )
+  )
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(proposal = NULL))
+    list(proposal = NULL)
+  )
 
   if (length(unloaded) > 0) offer_restart(unloaded)
 
   invisible(inst)
 }
 
-local_install_make_plan <- function(type, root, lib, upgrade, ask, start,
-                                    dependencies, loaded) {
+local_install_make_plan <- function(
+  type,
+  root,
+  lib,
+  upgrade,
+  ask,
+  start,
+  dependencies,
+  loaded
+) {
   root <- find_package_root(path = root)
   pkg <- paste0(type, "::", root)
   pkg_install_make_plan(pkg, lib, upgrade, ask, start, dependencies, loaded)
@@ -76,22 +96,35 @@ local_install_make_plan <- function(type, root, lib, upgrade, ask, start,
 #' @family local package trees
 #' @export
 
-local_install_deps <- function(root = ".", lib = .libPaths()[1],
-                               upgrade = TRUE, ask = interactive(),
-                               dependencies = NA) {
+local_install_deps <- function(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = TRUE,
+  ask = interactive(),
+  dependencies = NA
+) {
   start <- Sys.time()
 
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
-    list("deps", root = root, lib = lib, upgrade = upgrade, ask = ask,
-         start = start, dependencies = dependencies,
-         loaded = loaded_packages(lib)))
+    list(
+      "deps",
+      root = root,
+      lib = lib,
+      upgrade = upgrade,
+      ask = ask,
+      start = start,
+      dependencies = dependencies,
+      loaded = loaded_packages(lib)
+    )
+  )
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
   inst <- remote(
     function(...) get("pkg_install_do_plan", asNamespace("pak"))(...),
-    list(proposal = NULL))
+    list(proposal = NULL)
+  )
 
   if (length(unloaded) > 0) offer_restart(unloaded)
 
@@ -110,18 +143,28 @@ local_install_deps <- function(root = ".", lib = .libPaths()[1],
 #' @family local package trees
 #' @export
 
-
-local_install_dev_deps <- function(root = ".", lib = .libPaths()[1],
-                                   upgrade = TRUE, ask = interactive(),
-                                   dependencies = TRUE) {
+local_install_dev_deps <- function(
+  root = ".",
+  lib = .libPaths()[1],
+  upgrade = TRUE,
+  ask = interactive(),
+  dependencies = TRUE
+) {
   start <- Sys.time()
 
   status <- remote(
     function(...) {
       get("local_install_dev_deps_make_plan", asNamespace("pak"))(...)
     },
-    list(root = root, lib = lib, upgrade = upgrade, start = start,
-         dependencies = dependencies, loaded = loaded_packages(lib)))
+    list(
+      root = root,
+      lib = lib,
+      upgrade = upgrade,
+      start = start,
+      dependencies = dependencies,
+      loaded = loaded_packages(lib)
+    )
+  )
 
   unloaded <- handle_status(status, lib, ask)$unloaded
 
@@ -173,7 +216,11 @@ local_dev_deps <- function(root = ".", upgrade = TRUE, dependencies = TRUE) {
 #' @export
 #' @rdname local_deps
 
-local_dev_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = TRUE) {
+local_dev_deps_tree <- function(
+  root = ".",
+  upgrade = TRUE,
+  dependencies = TRUE
+) {
   local_deps_tree(root, upgrade, dependencies)
 }
 
@@ -192,8 +239,12 @@ local_dev_deps_tree <- function(root = ".", upgrade = TRUE, dependencies = TRUE)
 #' @export
 #' @family local package trees
 
-local_deps_explain <- function(deps, root = ".", upgrade = TRUE,
-                               dependencies = NA) {
+local_deps_explain <- function(
+  deps,
+  root = ".",
+  upgrade = TRUE,
+  dependencies = NA
+) {
   ref <- paste0("local::", root)
   pkg_deps_explain(ref, deps, upgrade, dependencies)
 }
@@ -201,8 +252,12 @@ local_deps_explain <- function(deps, root = ".", upgrade = TRUE,
 #' @export
 #' @rdname local_deps_explain
 
-local_dev_deps_explain <- function(deps, root = ".", upgrade = TRUE,
-                                   dependencies = TRUE) {
+local_dev_deps_explain <- function(
+  deps,
+  root = ".",
+  upgrade = TRUE,
+  dependencies = TRUE
+) {
   ref <- paste0("local::", root)
   pkg_deps_explain(ref, deps, upgrade, dependencies)
 }
@@ -211,8 +266,14 @@ local_dev_deps_explain <- function(deps, root = ".", upgrade = TRUE,
 
 ## Almost the same as a "regular" install, but need to set dependencies
 
-local_install_dev_deps_make_plan <- function(root, lib, upgrade, start,
-                                             dependencies, loaded) {
+local_install_dev_deps_make_plan <- function(
+  root,
+  lib,
+  upgrade,
+  start,
+  dependencies,
+  loaded
+) {
   root <- find_package_root(path = root)
   prop <- pkgdepends::new_pkg_installation_proposal(
     paste0("deps::", root),
