@@ -3,7 +3,10 @@ output:
   github_document:
 ---
 
-```{r, setup, include = FALSE, cache = FALSE}
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
 library(pillar)
 pkgload::load_all()
 options(asciicast_timeout = 600)
@@ -37,7 +40,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{asciicast asciicast-setup, include = FALSE, cache = FALSE}
+```{asciicast}
+#| label: asciicast-setup
+#| include: false
+#| cache: false
 pkgload::load_all()
 library(pillar)
 dir.create(lib <- file.path(tempdir(), "lib"))
@@ -68,12 +74,14 @@ system packages.
 
 Call `pak::sysreqs_platforms()` to list all platforms that support system
 requirements:
-```{asciicast sysreqs-platforms}
+```{asciicast}
+#| label: sysreqs-platforms
 pak::sysreqs_platforms()
 ```
 
 Call `pak::sysreqs_is_supported()` to see if your system is supported:
-```{asciicast sysreqs-is-supported}
+```{asciicast}
+#| label: sysreqs-is-supported
 pak::sysreqs_is_supported()
 ```
 
@@ -87,12 +95,16 @@ of the code.
 If you are using pak as a superuser, on a supported platform, then pak
 will look up system requirements, and install the missing ones. Here is
 an example:
-```{asciicast pkg-inst-setup, include=FALSE, cache = FALSE}
+```{asciicast}
+#| label: pkg-inst-setup
+#| include: false
+#| cache: false
 system("apt-get remove -y libpq5")
 try(pak::pkg_remove("RPostres"))
 ```
 
-```{asciicast pkg-inst}
+```{asciicast}
+#| label: pkg-inst
 pak::pkg_install("RPostgres")
 ```
 
@@ -115,13 +127,18 @@ install the required system packages. Here is an example, on a system that
 does not have the required system package installed for RPostgres.
 If you are installing a source R package, the installation already fails:
 
-```{asciicast pkg-inst-user-setup, include=FALSE, cache = FALSE}
+```{asciicast}
+#| label: pkg-inst-user-setup
+#| include: false
+#| cache: false
 system("apt-get remove -y libpq5")
 try(pak::pkg_remove("RPostgres"))
 options(pkg.sysreqs = FALSE)
 ```
 
-```{asciicast pkg-install-user-src, error = TRUE}
+```{asciicast}
+#| label: pkg-install-user-src
+#| error: true
 pak::pkg_install("RPostgres?source")
 ```
 
@@ -129,7 +146,9 @@ On the other hand, if you are installing binary packages, e.g. from the
 Posit Package Manager, then the installation typically succeeds, but then
 loading the package fails:
 
-```{asciicast pkg-inst-user, error = TRUE}
+```{asciicast}
+#| label: pkg-inst-user
+#| error: true
 pak::pkg_install("RPostgres")
 library(RPostgres)
 ```
@@ -141,7 +160,8 @@ packages, use the `pkg_sysreqs()` function. This is similar to `pkg_deps()`
 but in addition to looking up package dependencies, it also looks up
 system dependencies, and only reports the latter:
 
-```{asciicast pkg-sysreqs}
+```{asciicast}
+#| label: pkg-sysreqs
 pak::pkg_sysreqs(c("curl", "xml2", "devtools", "CHRONOS"))
 ```
 
@@ -154,45 +174,54 @@ In addition to the automatic system package lookup and installation, pak
 also has some other functions to help you with system dependencies.
 The `sysreqs_db_list()` function lists all system requirements pak knows
 about.
-```{asciicast db-list}
+```{asciicast}
+#| label: db-list
 pak::sysreqs_db_list()
 ```
 
 `sysreqs_db_match()` manually matches `SystemRequirements` fields
 against these system requirements:
-```{asciicast db-match}
+```{asciicast}
+#| label: db-match
 sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
 sq
 ```
 
-```{asciicast db-match-2}
+```{asciicast}
+#| label: db-match-2
 sq[[1]]$packages
 ```
 
 You can also use it to query system requirements for other platforms:
-```{asciicast db-match-3}
+```{asciicast}
+#| label: db-match-3
 sqrhel9 <- pak::sysreqs_db_match("Needs libcurl and also Java.", "redhat-9")
 sqrhel9
 ```
 
-```{asciicast db-match-4}
+```{asciicast}
+#| label: db-match-4
 sqrhel9[[1]]$packages
 ```
 
 `sysreqs_list_system_packages()` is a cross-platform way of listing all
 installed system packages and capabilities:
-```{asciicast list-system-packages}
+```{asciicast}
+#| label: list-system-packages
 pak::sysreqs_list_system_packages()
 ```
 
 `sysreqs_check_installed()` is a handy function that checks if all
 system requirements are installed for some or all R packages that are
 installed in your library:
-```{asciicast check-installed-setup, include = FALSE}
+```{asciicast}
+#| label: check-installed-setup
+#| include: false
 .libPaths(.libPaths()[-1])
 ```
 
-```{asciicast check-installed}
+```{asciicast}
+#| label: check-installed
 pak::sysreqs_check_installed()
 ```
 

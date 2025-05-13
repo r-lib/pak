@@ -5,7 +5,9 @@ To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the `repos` option with
 [base::options()] as usual, or you can use [repo_add()].
 
-```{r, setup, include = FALSE}
+```{r}
+#| label: setup
+#| include: false
 # turn off bioc repos, for simplicity
 library(pak)
 options(pkg.use_bioconductor = FALSE)
@@ -16,7 +18,9 @@ options(pkg.show_progress = FALSE)
 For testing purposes pak includes a web app that creates an authenticated
 proxy to CRAN. This is how to run the proxy in a subprocess:
 
-```{r, proxy-start, message = FALSE}
+```{r}
+#| label: proxy-start
+#| message: false
 repo <- webfakes::new_app_process(pak:::auth_proxy_app())
 repo$url()
 ```
@@ -27,7 +31,8 @@ Next, we configure the proxy as the main CRAN repository. The default username
 of the proxy is `"username"` and the default password is `"token"`. We want to
 replace the default CRAN repository with the proxy, so we name it `CRAN`:
 
-```{r repo-add}
+```{r}
+#| label: repo-add
 repo_add(CRAN = repo$url(), username = "username")
 repo_get()
 ```
@@ -113,14 +118,16 @@ ephemeral store that is destroyed when the R process terminates.
 
 To continue our example from above:
 
-```{r key-set}
+```{r}
+#| label: key-set
 options(keyring_backend = "env")
 repo_auth_key_set(repo$url(), username = "username", password = "token")
 ```
 
 Use `repo_auth_key_get()` to check that the key is properly set:
 
-```{r key-get}
+```{r}
+#| label: key-get
 repo_auth_key_get(repo$url(), username = "username")
 ```
 
@@ -128,7 +135,8 @@ repo_auth_key_get(repo$url(), username = "username")
 `has_password` column to `TRUE`, because pak could find the credentials
 for our CRAN proxy:
 
-```{r repo-get}
+```{r}
+#| label: repo-get
 repo_get()
 ```
 
@@ -155,7 +163,8 @@ contain host credentials.
 
 To test that authentication works, use the `repo_status()` function:
 
-```{r repo-status}
+```{r}
+#| label: repo-status
 repo_status()
 ```
 
@@ -169,7 +178,8 @@ a repository.
 If you need even more information about repo authentication, e.g. because
 `repo_status()` shows some failures, then use the `repo_auth()` function:
 
-```{r repo-auth}
+```{r}
+#| label: repo-auth
 repo_auth()
 ```
 
@@ -178,7 +188,8 @@ The output of `repo_auth()` has the following extra columns:
 * `auth_domains`: these are the URLs that pak tries to use as the `service`
   when looking for credentials in the keyring. For our proxy, it tries
   these URLs:
-  ```{r repo-auth-domains}
+  ```{r}
+  #| label: repo-auth-domains
   repo_auth()$auth_domains
   ```
 * `auth_domain`: one of `auth_domains`, the URL for which pak found
@@ -201,11 +212,13 @@ reassuring messages for successful authentications, and warning messages
 for failed ones. Function calls that do not perform any HTTP requests,
 e.g. because they list cached data, do not display such messages.
 
-```{r meta-update}
+```{r}
+#| label: meta-update
 meta_update()
 ```
 
-```{r meta-list}
+```{r}
+#| label: meta-list
 meta_list()
 ```
 
