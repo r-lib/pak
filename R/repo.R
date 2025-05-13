@@ -309,9 +309,62 @@ repo_resolve <- function(spec, username = NULL) {
 #' https://<username>@<repo-host>/<repo-path>
 #' ```
 #'
-#' pak will look up password for this url and username from the
+#' pak will look up the password for this url and username from the
 #' the user's `.netrc` file and from the system credential store using
-#' the keyring package. pak currently supports the following keyring
+#' the keyring package.
+#'
+#' ## `.netrc`` files
+#'
+#' First pak searches in the `.netrc` file. If the `NETRC` environment
+#' variable is set, pak uses its value to determine the location of the
+#' `netrc` file.
+#'
+#' Otherwise pak looks for the `netrc` file in current user's home
+#' directory, at `~/.netrc`. On Windows it also looks for `~/_netrc` if the
+#' file starting with a dot does not exist.
+#'
+#' If you create a `netrc` file, make sure that is only readable by you.
+#' E.g. on Unix run
+#' ```sh
+#' chmod 600 ~/.netrc
+#' ```
+#'
+#' `netrc` files are simple text files that can store passwords for multiple
+#' hosts. They may contain three types of tokens:
+#'
+#' ### `machine <hostname>`
+#'
+#' A host name, without the protocol. Subsequent `login` and `password`
+#' tokens belong to this host, until another `machine` token is found, or
+#' the end of file.
+#'
+#' ### `login <username>`
+#'
+#' User name. It must be preceded by a `machine` token.
+#'
+#' ### `password <password>`
+#'
+#' Password. It must be preceded by a `machine` and a `login` token.
+#'
+#' Whitespace is ignored in `netrc` files. You may include multiple tokens
+#' on the same line, or have one token per line. Here is an example:
+#'
+#' ```
+#' machine myhost.mydomain.com login myuser password secret
+#' machine myhost2.mydomain.com
+#' login myuser
+#' password secret
+#' login anotheruser
+#' password stillsecret
+#' ```
+#'
+#' If you need to include whitespace in a password, put the password in double
+#' quotes.
+#'
+#'
+#' ## The system credential store
+#'
+#' pak currently supports the following keyring
 #' backends:
 #'
 #' * Windows credential store,

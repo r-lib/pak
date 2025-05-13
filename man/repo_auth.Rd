@@ -50,9 +50,63 @@ in the repo URL:
 }\if{html}{\out{</div>}}
 }
 \details{
-pak will look up password for this url and username from the
+pak will look up the password for this url and username from the
 the user's \code{.netrc} file and from the system credential store using
-the keyring package. pak currently supports the following keyring
+the keyring package.
+\subsection{`.netrc`` files}{
+
+First pak searches in the \code{.netrc} file. If the \code{NETRC} environment
+variable is set, pak uses its value to determine the location of the
+\code{netrc} file.
+
+Otherwise pak looks for the \code{netrc} file in current user's home
+directory, at \verb{~/.netrc}. On Windows it also looks for \verb{~/_netrc} if the
+file starting with a dot does not exist.
+
+If you create a \code{netrc} file, make sure that is only readable by you.
+E.g. on Unix run
+
+\if{html}{\out{<div class="sourceCode sh">}}\preformatted{chmod 600 ~/.netrc
+}\if{html}{\out{</div>}}
+
+\code{netrc} files are simple text files that can store passwords for multiple
+hosts. They may contain three types of tokens:
+\subsection{\verb{machine <hostname>}}{
+
+A host name, without the protocol. Subsequent \code{login} and \code{password}
+tokens belong to this host, until another \code{machine} token is found, or
+the end of file.
+}
+
+\subsection{\verb{login <username>}}{
+
+User name. It must be preceded by a \code{machine} token.
+}
+
+\subsection{\verb{password <password>}}{
+
+Password. It must be preceded by a \code{machine} and a \code{login} token.
+
+Whitespace is ignored in \code{netrc} files. You may include multiple tokens
+on the same line, or have one token per line. Here is an example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{machine myhost.mydomain.com login myuser password secret
+machine myhost2.mydomain.com
+login myuser
+password secret
+login anotheruser
+password stillsecret
+}\if{html}{\out{</div>}}
+
+If you need to include whitespace in a password, put the password in double
+quotes.
+}
+
+}
+
+\subsection{The system credential store}{
+
+pak currently supports the following keyring
 backends:
 \itemize{
 \item Windows credential store,
@@ -76,6 +130,7 @@ argument. Alternatively, you can set the \code{repos} option directly using
 
 \code{repo_auth()} lists authentication information for all configured
 repositories.
+}
 }
 \seealso{
 \link{Authenticated repositories}.
