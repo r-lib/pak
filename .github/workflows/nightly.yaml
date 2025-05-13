@@ -372,7 +372,7 @@ jobs:
       with:
         release: ${{ matrix.config.release }}
 
-    - uses: r-hub/actions/setup-r-openbsd@v1
+    - uses: r-hub/actions/setup-r-openbsd@main
       if: ${{ matrix.config.os == 'openbsd' }}
       with:
         release: ${{ matrix.config.release }}
