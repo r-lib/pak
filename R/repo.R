@@ -370,7 +370,6 @@ repo_resolve <- function(spec, username = NULL) {
 #' * Windows credential store,
 #' * macOS Keychain,
 #' * Linux Secret Service via libsecret, if built with libsecret support,
-#' * encrypted files,
 #' * environment variables.
 #'
 #' For the URL above it tries the following keyring
@@ -407,6 +406,7 @@ repo_resolve <- function(spec, username = NULL) {
 #'     authentication domains.
 #'
 #' @seealso [Authenticated repositories].
+#' @family authenticated repositories
 #' @export
 
 repo_auth <- function(r_version = getRversion(), bioc = NULL,

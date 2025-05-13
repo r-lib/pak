@@ -311,3 +311,9 @@ E.g. here \code{meta_update()} outputs an authentication message, but
 \code{meta_list()} does not.
 }
 }
+\seealso{
+Other authenticated repositories: 
+\code{\link{repo_auth}()},
+\code{\link{repo_auth_key_get}()}
+}
+\concept{authenticated repositories}

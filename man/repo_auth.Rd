@@ -112,7 +112,6 @@ backends:
 \item Windows credential store,
 \item macOS Keychain,
 \item Linux Secret Service via libsecret, if built with libsecret support,
-\item encrypted files,
 \item environment variables.
 }
 
@@ -135,4 +134,9 @@ repositories.
 }
 \seealso{
 \link{Authenticated repositories}.
+
+Other authenticated repositories: 
+\code{\link{Authenticated repositories}},
+\code{\link{repo_auth_key_get}()}
 }
+\concept{authenticated repositories}

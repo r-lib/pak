@@ -2,6 +2,7 @@
 #'
 #' @name Authenticated repositories
 #' @rdname repo-auth
+#' @family authenticated repositories
 #' @description
 #' pak supports HTTP basic authentication when interacting with CRAN-like
 #' repositories.
@@ -12,8 +13,8 @@ NULL
 
 #' Query or set repository password in the system credential store
 #'
-#' Use pak's internal copy of the keyring package to query or set a
-#' repository password in the system credential store.
+#' Use pak's keyring functions to query or set a repository password in
+#' the system credential store.
 #'
 #' `repo_auth_key_get()` retrieves a password from the default keyring. It
 #' errors if it cannot find the credentials for `url`.
@@ -28,6 +29,7 @@ NULL
 #' @return `repo_auth_key_get()` returns a single string, the repository
 #'   password.
 #'
+#' @family authenticated repositories
 #' @export
 
 repo_auth_key_get <- function(url, username = NULL) {

@@ -22,8 +22,8 @@ repo_auth_key_set(url, password, username = NULL)
 password.
 }
 \description{
-Use pak's internal copy of the keyring package to query or set a
-repository password in the system credential store.
+Use pak's keyring functions to query or set a repository password in
+the system credential store.
 }
 \details{
 \code{repo_auth_key_get()} retrieves a password from the default keyring. It
@@ -32,3 +32,9 @@ errors if it cannot find the credentials for \code{url}.
 \code{repo_auth_key_set()} adds or updates a password in the system
 credential store.
 }
+\seealso{
+Other authenticated repositories: 
+\code{\link{Authenticated repositories}},
+\code{\link{repo_auth}()}
+}
+\concept{authenticated repositories}
