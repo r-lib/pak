@@ -1,8 +1,5 @@
-
 format_bytes <- local({
-
   pretty_bytes <- function(bytes, style = c("default", "nopad", "6")) {
-
     style <- switch(
       match.arg(style),
       "default" = pretty_bytes_default,
@@ -24,7 +21,7 @@ format_bytes <- local({
       smallest_unit %in% units0
     )
 
-    limits <- c(1000, 999950 * 1000 ^ (seq_len(length(units0) - 2) - 1))
+    limits <- c(1000, 999950 * 1000^(seq_len(length(units0) - 2) - 1))
     low <- match(smallest_unit, units0)
     units <- units0[low:length(units0)]
     limits <- limits[low:length(limits)]
@@ -37,9 +34,9 @@ format_bytes <- local({
       nrow = length(limits),
       ncol = length(bytes)
     )
-    mat2 <- matrix(mat < limits, nrow  = length(limits), ncol = length(bytes))
+    mat2 <- matrix(mat < limits, nrow = length(limits), ncol = length(bytes))
     exponent <- length(limits) - colSums(mat2) + low - 1L
-    res <- bytes / 1000 ^ exponent
+    res <- bytes / 1000^exponent
     unit <- units[exponent - low + 2L]
 
     ## Zero bytes
@@ -49,7 +46,7 @@ format_bytes <- local({
     ## NA and NaN bytes
     res[is.na(bytes)] <- NA_real_
     res[is.nan(bytes)] <- NaN
-    unit[is.na(bytes)] <- units0[low]     # Includes NaN as well
+    unit[is.na(bytes)] <- units0[low] # Includes NaN as well
 
     data.frame(
       stringsAsFactors = FALSE,
@@ -83,10 +80,10 @@ format_bytes <- local({
     szs <- compute_bytes(bytes, smallest_unit = "kB")
     amt <- szs$amount
 
-    na   <- is.na(amt)
-    nan  <- is.nan(amt)
-    neg  <- !na & !nan & szs$negative
-    l10  <- !na & !nan & !neg & amt < 10
+    na <- is.na(amt)
+    nan <- is.nan(amt)
+    neg <- !na & !nan & szs$negative
+    l10 <- !na & !nan & !neg & amt < 10
     l100 <- !na & !nan & !neg & amt >= 10 & amt < 100
     b100 <- !na & !nan & !neg & amt >= 100
 
@@ -105,8 +102,8 @@ format_bytes <- local({
 
   structure(
     list(
-      .internal     = environment(),
-      pretty_bytes  = pretty_bytes,
+      .internal = environment(),
+      pretty_bytes = pretty_bytes,
       compute_bytes = compute_bytes
     ),
     class = c("standalone_bytes", "standalone")

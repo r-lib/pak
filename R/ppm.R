@@ -1,4 +1,3 @@
-
 #' Does PPM build binary packages for the current platform?
 #'
 #' @return `TRUE` or `FALSE`.

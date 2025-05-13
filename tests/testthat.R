@@ -1,4 +1,3 @@
-
 do <- function() {
   old <- Sys.getenv("R_PKG_CACHE_DIR", NA_character_)
   if (is.na(old)) {

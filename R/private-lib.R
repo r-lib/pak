@@ -1,4 +1,3 @@
-
 #' The directory of the private library
 #'
 #' This is usually within the package, but in dev mode in can be
@@ -7,7 +6,7 @@
 #'
 #' @noRd
 
-private_lib_dir <- function()  {
+private_lib_dir <- function() {
   mydir <- getNamespaceInfo(asNamespace(.packageName), "path")
   embedded <- file.path(mydir, "library")
 

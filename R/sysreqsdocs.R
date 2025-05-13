@@ -1,4 +1,3 @@
-
 #' List platforms with system requirements support
 #'
 #' @usage

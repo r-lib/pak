@@ -1,4 +1,3 @@
-
 test_that("merge_new", {
   expect_identical(merge_new("x", "y"), "y")
   expect_identical(merge_new("x", "y", "replace"), "y")

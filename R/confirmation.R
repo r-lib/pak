@@ -1,4 +1,3 @@
-
 should_ask_confirmation <- function(sol) {
   # We should ask if at least one package is updated
   any(sol$lib_status == "update")
@@ -13,11 +12,11 @@ print_install_details <- function(prop, lib, loaded) {
 
   sol <- prop$get_solution()$data
   direct <- sum(sol$direct)
-  deps <- sum(! sol$direct)
+  deps <- sum(!sol$direct)
 
   n_newly <- sum(newly <- sol$lib_status == "new")
-  n_upd   <- sum(upd   <- sol$lib_status == "update")
-  n_curr  <- sum(curr  <- sol$lib_status == "current")
+  n_upd <- sum(upd <- sol$lib_status == "update")
+  n_curr <- sum(curr <- sol$lib_status == "current")
   n_noupd <- sum(noupd <- sol$lib_status == "no-update")
 
   cli::cli_verbatim(" ")
@@ -47,26 +46,31 @@ print_install_details <- function(prop, lib, loaded) {
         cli::cli_alert("All {n_ch} packages ({b_ch}) are cached.")
       }
     }
-
   } else if (n_ch == 0) {
-    if (n_dl -  u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}).")
+    if (n_dl - u_dl > 0) {
+      cli::cli_alert(
+        "Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl})."
+      )
     }
     if (u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
+      cli::cli_alert(
+        "Will {.emph download} {u_dl} package{?s} with unknown size."
+      )
     }
-
   } else if (!any_unk) {
     cli::cli_alert(
-      "Will {.emph download} {n_dl} package{?s} ({b_dl}), cached: {n_ch} ({b_ch}).")
-
+      "Will {.emph download} {n_dl} package{?s} ({b_dl}), cached: {n_ch} ({b_ch})."
+    )
   } else {
     if (n_dl - u_dl > 0) {
       cli::cli_alert(
-        "Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}), cached: {n_ch} ({b_ch}).")
+        "Will {.emph download} {n_dl - u_dl} CRAN package{?s} ({b_dl}), cached: {n_ch} ({b_ch})."
+      )
     }
     if (u_dl > 0) {
-      cli::cli_alert("Will {.emph download} {u_dl} package{?s} with unknown size.")
+      cli::cli_alert(
+        "Will {.emph download} {u_dl} package{?s} with unknown size."
+      )
     }
   }
 
@@ -104,9 +108,9 @@ print_install_details <- function(prop, lib, loaded) {
   invisible(list(should_ask = should_ask, loaded_status = ls))
 }
 
-get_confirmation <-  function(q, msg = "Aborted.") {
+get_confirmation <- function(q, msg = "Aborted.") {
   ans <- readline(q)
-  if (! tolower(ans) %in% c("", "y", "yes", "yeah", "yep")) {
+  if (!tolower(ans) %in% c("", "y", "yes", "yeah", "yep")) {
     stop(msg, call. = FALSE)
   }
 }
@@ -127,9 +131,10 @@ get_answer <- function(answers, prompt = NULL) {
 }
 
 offer_restart <- function(unloaded) {
-  message("\n",
-          "! pak had to unload some packages before installation, and the\n",
-          "  current R session may be unstable. It is best to restart R now.\n"
+  message(
+    "\n",
+    "! pak had to unload some packages before installation, and the\n",
+    "  current R session may be unstable. It is best to restart R now.\n"
   )
 
   rs <- rstudio$detect()$type
@@ -143,15 +148,12 @@ offer_restart <- function(unloaded) {
     ans <- get_answer(1:3)
     if (ans == "1") {
       rstudioapi::restartSession()
-
     } else if (ans == "2") {
       message("Saving workspace to .RData...")
       save.image()
       rstudioapi::restartSession()
-
     } else if (ans == "3") {
       invisible("OK")
-
     }
   }
 }

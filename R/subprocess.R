@@ -18,7 +18,9 @@ remote <- function(func, args = list()) {
       Sys.getenv("PKG_SUBPROCESS_TIMEOUT", "")
     ))
     if (is.na(timeout)) timeout <- 5000
-    pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), timeout)[[1]]
+    pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), timeout)[[
+      1
+    ]]
     state <- rs$get_state()
     if (state == "starting") {
       rs$read()
@@ -67,36 +69,42 @@ remote <- function(func, args = list()) {
 
   opts <- options()
   extraopts <- c("Ncpus", "BioC_mirror")
-  pkg_options <- opts[grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts]
+  pkg_options <- opts[
+    grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts
+  ]
   envs <- Sys.getenv()
   extraenvs <- c("R_BIOC_VERSION", "PATH")
   if (any(grepl("@", subst_args[["__repos__"]]))) {
     extraenvs <- c(extraenvs, envs[grep("^https?://", names(envs))])
   }
   pkg_envs <- envs[grepl("^PKG_", names(envs)) | names(envs) %in% extraenvs]
-  rs$run(function(new_opts, new_envs) {
-    opts <- options()
-    old_opts <- opts[grepl("^pkg[.]", names(opts))]
-    # remove all pkg.* options
-    options(structure(
-      vector(length(old_opts), mode = "list"),
-      names = names(old_opts)
-    ))
-    # set new ones
-    options(new_opts)
+  rs$run(
+    function(new_opts, new_envs) {
+      opts <- options()
+      old_opts <- opts[grepl("^pkg[.]", names(opts))]
+      # remove all pkg.* options
+      options(structure(
+        vector(length(old_opts), mode = "list"),
+        names = names(old_opts)
+      ))
+      # set new ones
+      options(new_opts)
 
-    envs <- Sys.getenv()
-    old_envs <- envs[grepl("^PKG_", names(envs))]
-    Sys.unsetenv(old_envs)
-    if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
-  }, list(new_opts = pkg_options, new_envs = pkg_envs))
+      envs <- Sys.getenv()
+      old_envs <- envs[grepl("^PKG_", names(envs))]
+      Sys.unsetenv(old_envs)
+      if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
+    },
+    list(new_opts = pkg_options, new_envs = pkg_envs)
+  )
 
   res <- withCallingHandlers(
     callr_message = function(msg) {
       withRestarts(
         {
           signalCondition(msg)
-          out <- if (is_interactive() || sink.number() > 0) stdout() else stderr()
+          out <- if (is_interactive() || sink.number() > 0) stdout() else
+            stderr()
           cat(conditionMessage(msg), file = out, sep = "")
         },
         muffleMessage = function() NULL
@@ -119,8 +127,10 @@ remote <- function(func, args = list()) {
     }
     # This is a temporary workaround until we have a principled way of
     # printing the various error types in the main process.
-    if (inherits(res$error$parent, "package_build_error") &&
-      !is.null(res$error$parent$stdout)) {
+    if (
+      inherits(res$error$parent, "package_build_error") &&
+        !is.null(res$error$parent$stdout)
+    ) {
       res$error$parent$message <- paste0(
         res$error$parent$message,
         "\nFull installation output:\n",
@@ -171,9 +181,11 @@ try_new_remote_session <- function() {
 restart_remote_if_needed <- function() {
   "!DEBUG Restarting background process"
   rs <- pkg_data$remote
-  if (inherits(rs, "r_session") &&
-    rs$is_alive() &&
-    rs$get_state() != "busy") {
+  if (
+    inherits(rs, "r_session") &&
+      rs$is_alive() &&
+      rs$get_state() != "busy"
+  ) {
     return()
   }
 
@@ -213,8 +225,11 @@ load_private_packages <- function() {
   load_private_package("callr")
 }
 
-load_private_package <- function(package, reg_prefix = "",
-                                 lib = private_lib_dir()) {
+load_private_package <- function(
+  package,
+  reg_prefix = "",
+  lib = private_lib_dir()
+) {
   if (!is.null(pkg_data$ns[[package]])) {
     return()
   }
@@ -235,7 +250,8 @@ load_private_package <- function(package, reg_prefix = "",
     tryCatch(
       {
         pkg_dir <- pkg_env[["__pkg-dir__"]]
-        if (!is.null(pkg_dir)) pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
+        if (!is.null(pkg_dir))
+          pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
         if (!is.null(pkg_env[[".onUnload"]])) {
           tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
         }
@@ -254,10 +270,15 @@ load_private_package <- function(package, reg_prefix = "",
   })
 
   tryCatch(
-    suppressWarnings(lazyLoad(file.path(pkg_dir, "R", package), envir = pkg_env)),
+    suppressWarnings(lazyLoad(
+      file.path(pkg_dir, "R", package),
+      envir = pkg_env
+    )),
     error = function(err) {
       err$message <- paste0(
-        "Cannot load ", package, " from the private library: ",
+        "Cannot load ",
+        package,
+        " from the private library: ",
         err$message
       )
       stop(err)
@@ -298,7 +319,9 @@ load_private_package <- function(package, reg_prefix = "",
 
   ## Load shared library
   dll_file <- file.path(
-    pkg_dir, "libs", .Platform$r_arch,
+    pkg_dir,
+    "libs",
+    .Platform$r_arch,
     paste0(package, .Platform$dynlib.ext)
   )
   if (file.exists(dll_file)) {

@@ -1,4 +1,3 @@
-
 # Standalone JSON parser
 #
 # The purpose of this file is to provide a standalone JSON parser.
@@ -16,7 +15,6 @@
 # - 2019/05/15 First standalone version
 
 json <- local({
-
   tokenize_json <- function(text) {
     text <- paste(text, collapse = "\n")
 
@@ -30,7 +28,15 @@ json <- local({
 
     match <- gregexpr(
       pattern = paste0(
-        STRING, "|", NUMBER, "|", KEYWORD, "|", SPACE, "|", "."
+        STRING,
+        "|",
+        NUMBER,
+        "|",
+        KEYWORD,
+        "|",
+        SPACE,
+        "|",
+        "."
       ),
       text = text,
       perl = TRUE
@@ -58,7 +64,6 @@ json <- local({
   # @return R object corresponding to the JSON string.
 
   parse <- function(text) {
-
     tokens <- tokenize_json(text)
     token <- NULL
     ptr <- 1
@@ -77,7 +82,7 @@ json <- local({
         parse_object()
       } else if (token == "[") {
         parse_array()
-      } else if (token == "EOF" || (nchar(token) == 1 && ! token %in% 0:9)) {
+      } else if (token == "EOF" || (nchar(token) == 1 && !token %in% 0:9)) {
         throw("EXPECTED value GOT ", token)
       } else {
         j2r(token)
@@ -91,7 +96,6 @@ json <- local({
 
       ## Invariant: we are at the beginning of an element
       while (token != "}") {
-
         ## "key"
         if (grepl('^".*"$', token)) {
           key <- j2r(token)
@@ -101,7 +105,9 @@ json <- local({
 
         ## :
         read_token()
-        if (token != ":") { throw("EXPECTED : GOT ", token) }
+        if (token != ":") {
+          throw("EXPECTED : GOT ", token)
+        }
 
         ## value
         read_token()
@@ -171,5 +177,6 @@ json <- local({
       parse = parse,
       parse_file = parse_file
     ),
-    class = c("standalone_json", "standalone"))
+    class = c("standalone_json", "standalone")
+  )
 })

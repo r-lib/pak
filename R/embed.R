@@ -17,9 +17,20 @@ embed <- local({
 
   base_packages <- function() {
     c(
-      "base", "compiler", "datasets", "graphics", "grDevices", "grid",
-      "methods", "parallel", "splines", "stats", "stats4", "tcltk",
-      "tools", "utils"
+      "base",
+      "compiler",
+      "datasets",
+      "graphics",
+      "grDevices",
+      "grid",
+      "methods",
+      "parallel",
+      "splines",
+      "stats",
+      "stats4",
+      "tcltk",
+      "tools",
+      "utils"
     )
   }
 
@@ -186,8 +197,7 @@ embed <- local({
     }
 
     tab$status <- ifelse(
-      !is.na(tab$required) & !is.na(tab$current) &
-        tab$required == tab$current,
+      !is.na(tab$required) & !is.na(tab$current) & tab$required == tab$current,
       "OK",
       "UPDATE"
     )
@@ -200,9 +210,10 @@ embed <- local({
   }
 
   addupdate_package <- function(
-      pkg,
-      ver = NULL,
-      mode = c("add", "update")) {
+    pkg,
+    ver = NULL,
+    mode = c("add", "update")
+  ) {
     mode <- match.arg(mode)
     stopifnot(
       is_string(pkg),
@@ -235,7 +246,6 @@ embed <- local({
       system2("R", c("CMD", "build ", dir()))
       path <- normalizePath(dir(pattern = "[.]tar[.]gz$"))
       setwd(wd)
-
     } else {
       path <- utils::download.packages(pkg, tmp, repos = get_repos())[, 2]
     }

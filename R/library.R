@@ -1,5 +1,3 @@
-
-
 #' Status of packages in a library
 #'
 #' @param lib Path to library.
@@ -18,7 +16,8 @@ lib_status <- function(lib = .libPaths()[1]) {
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$lib_status_internal(...),
-    list(lib = lib))
+    list(lib = lib)
+  )
 }
 
 ## TODO: lib_check()

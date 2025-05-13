@@ -1,6 +1,4 @@
-
 test_that("get_os_from_platform", {
-
   cases <- list(
     c("x86_64-w64-mingw32", "windows"),
     c("i386-w64-mingw32", "windows"),

@@ -1,10 +1,8 @@
-
 terminate <- function(others, msg = "  Terminating %s (%i) ...") {
   load_private_packages()
   ps <- pkg_data$ns$ps
   pcs <- others$users
   pcs <- pcs[!duplicated(pcs$pid), , drop = FALSE]
-
 
   procs <- lapply(seq_len(nrow(pcs)), function(l) {
     proc <- ps$ps_handle(pcs$pid[l], .POSIXct(pcs$create_time[l]))
@@ -25,7 +23,10 @@ terminate <- function(others, msg = "  Terminating %s (%i) ...") {
 
   if (length(bad)) {
     str <- paste0(
-      pcs$name[bad], " (", pcs$pid[bad], ")",
+      pcs$name[bad],
+      " (",
+      pcs$pid[bad],
+      ")",
       collapse = ", "
     )
     stop("Failed to kill some processes: ", str)

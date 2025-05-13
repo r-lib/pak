@@ -1,4 +1,3 @@
-
 #' Create a lock file
 #'
 #' The lock file can be used later, possibly in a new R session, to carry
@@ -21,21 +20,36 @@
 #' @family lock files
 #' @export
 
-lockfile_create <- function(pkg = "deps::.", lockfile = "pkg.lock", lib = NULL,
-                            upgrade = FALSE, dependencies = NA) {
+lockfile_create <- function(
+  pkg = "deps::.",
+  lockfile = "pkg.lock",
+  lib = NULL,
+  upgrade = FALSE,
+  dependencies = NA
+) {
   ret <- remote(
     function(...) {
       get("lockfile_create_internal", asNamespace("pak"))(...)
     },
-    list(pkg = pkg, lockfile = lockfile, lib = lib, upgrade = upgrade,
-         dependencies = dependencies)
+    list(
+      pkg = pkg,
+      lockfile = lockfile,
+      lib = lib,
+      upgrade = upgrade,
+      dependencies = dependencies
+    )
   )
 
   invisible(ret)
 }
 
-lockfile_create_internal <- function(pkg, lockfile, lib, upgrade,
-                                     dependencies) {
+lockfile_create_internal <- function(
+  pkg,
+  lockfile,
+  lib,
+  upgrade,
+  dependencies
+) {
   if (is.null(lib)) {
     lib <- tempfile()
     mkdirp(lib)
@@ -71,17 +85,24 @@ lockfile_create_internal <- function(pkg, lockfile, lib, upgrade,
 #' @family lock files
 #' @export
 
-lockfile_install <- function(lockfile = "pkg.lock",
-                             lib = .libPaths()[1], update = TRUE) {
-
+lockfile_install <- function(
+  lockfile = "pkg.lock",
+  lib = .libPaths()[1],
+  update = TRUE
+) {
   start <- Sys.time()
   mkdirp(lib)
   ret <- remote(
     function(...) {
       get("lockfile_install_internal", asNamespace("pak"))(...)
     },
-    list(lockfile = lockfile, lib = lib, update = update, start = start,
-         loaded = loaded_packages(lib))
+    list(
+      lockfile = lockfile,
+      lib = lib,
+      update = update,
+      start = start,
+      loaded = loaded_packages(lib)
+    )
   )
 
   invisible(ret)

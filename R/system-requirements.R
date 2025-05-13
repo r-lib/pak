@@ -1,5 +1,5 @@
-DEFAULT_RSPM_REPO_ID <-  "1" # cran
-DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
+DEFAULT_RSPM_REPO_ID <- "1" # cran
+DEFAULT_RSPM <- "https://packagemanager.rstudio.com"
 
 #' Query system requirements
 #'
@@ -51,8 +51,14 @@ DEFAULT_RSPM <-  "https://packagemanager.rstudio.com"
 #' @export
 #' @examplesIf FALSE
 #' local_system_requirements("ubuntu", "20.04")
-local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", execute = FALSE, sudo = execute, echo = FALSE) {
-
+local_system_requirements <- function(
+  os = NULL,
+  os_release = NULL,
+  root = ".",
+  execute = FALSE,
+  sudo = execute,
+  echo = FALSE
+) {
   once_per_session(message(
     "`pak::local_system_requirements()` is deprecated since pak 0.6.0.\n",
     "Please use `pak::pkg_sysreqs()` instead."
@@ -60,7 +66,16 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = root, package = NULL, execute = execute, sudo = sudo, echo = echo))
+    list(
+      os = os,
+      os_release = os_release,
+      root = root,
+      package = NULL,
+      execute = execute,
+      sudo = sudo,
+      echo = echo
+    )
+  )
   if (execute) invisible(res) else res
 }
 
@@ -80,8 +95,14 @@ local_system_requirements <- function(os = NULL, os_release = NULL, root = ".", 
 #' # queried packages must exist
 #' pkg_system_requirements("iDontExist", "ubuntu", "20.04")
 #' pkg_system_requirements(c("curl", "iDontExist"), "ubuntu", "20.04")
-pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execute = FALSE, sudo = execute, echo = FALSE) {
-
+pkg_system_requirements <- function(
+  package,
+  os = NULL,
+  os_release = NULL,
+  execute = FALSE,
+  sudo = execute,
+  echo = FALSE
+) {
   once_per_session(message(
     "`pak::pkg_system_requirements()` is deprecated since pak 0.6.0.\n",
     "Please use `pak::pkg_sysreqs()` instead."
@@ -89,11 +110,28 @@ pkg_system_requirements <- function(package, os = NULL, os_release = NULL, execu
 
   res <- remote(
     function(...) asNamespace("pak")$system_requirements_internal(...),
-    list(os = os, os_release = os_release, root = NULL, package = package, execute = execute, sudo = sudo, echo = echo))
+    list(
+      os = os,
+      os_release = os_release,
+      root = NULL,
+      package = package,
+      execute = execute,
+      sudo = sudo,
+      echo = echo
+    )
+  )
   if (execute) invisible(res) else res
 }
 
-system_requirements_internal <- function(os, os_release, root, package, execute, sudo, echo) {
+system_requirements_internal <- function(
+  os,
+  os_release,
+  root,
+  package,
+  execute,
+  sudo,
+  echo
+) {
   if (is.null(os) || is.null(os_release)) {
     d <- pkgcache::current_r_platform_data()
     os <- os %||% d$distribution
@@ -110,7 +148,6 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
   rspm_repo_id <- Sys.getenv("RSPM_REPO_ID", DEFAULT_RSPM_REPO_ID)
   rspm_repo_url <- sprintf("%s/__api__/repos/%s", rspm, rspm_repo_id)
 
-
   if (!is.null(package)) {
     req_url <- sprintf(
       "%s/sysreqs?all=false&pkgname=%s&distribution=%s&release=%s",
@@ -125,11 +162,15 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
       stop(data$error)
     }
 
-    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["requirements"]], `[[`, c("requirements", "pre_install")))))
-    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["requirements"]], `[[`, c("requirements", "install_scripts")))))
-  }
-
-  else {
+    pre_install <- unique(unlist(c(
+      data[["pre_install"]],
+      lapply(data[["requirements"]], `[[`, c("requirements", "pre_install"))
+    )))
+    install_scripts <- unique(unlist(c(
+      data[["install_scripts"]],
+      lapply(data[["requirements"]], `[[`, c("requirements", "install_scripts"))
+    )))
+  } else {
     desc_file <- normalizePath(file.path(root, "DESCRIPTION"), mustWork = FALSE)
     if (!file.exists(desc_file)) {
       stop("`", root, "` must contain a package.", call. = FALSE)
@@ -147,15 +188,13 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
     desc_size <- file.size(desc_file)
     desc_data <- readBin(desc_file, "raw", desc_size)
 
-    curl::handle_setheaders(h,
+    curl::handle_setheaders(
+      h,
       customrequest = "POST",
       "content-type" = "text/plain"
     )
 
-    curl::handle_setopt(h,
-      postfieldsize = desc_size,
-      postfields = desc_data
-    )
+    curl::handle_setopt(h, postfieldsize = desc_size, postfields = desc_data)
 
     res <- curl::curl_fetch_memory(req_url, h)
 
@@ -164,8 +203,14 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
       stop(data$error)
     }
 
-    pre_install <- unique(unlist(c(data[["pre_install"]], lapply(data[["dependencies"]], `[[`, "pre_install"))))
-    install_scripts <- unique(unlist(c(data[["install_scripts"]], lapply(data[["dependencies"]], `[[`, "install_scripts"))))
+    pre_install <- unique(unlist(c(
+      data[["pre_install"]],
+      lapply(data[["dependencies"]], `[[`, "pre_install")
+    )))
+    install_scripts <- unique(unlist(c(
+      data[["install_scripts"]],
+      lapply(data[["dependencies"]], `[[`, "install_scripts")
+    )))
   }
 
   commands <- as.character(c(pre_install, simplify_install(install_scripts)))
@@ -182,7 +227,12 @@ system_requirements_internal <- function(os, os_release, root, package, execute,
       }
       cli::cli_alert_info("Executing {.code {cmd}}")
 
-      processx::run("sh", c("-c", cmd), stdout_callback = callback, stderr_to_stdout = TRUE)
+      processx::run(
+        "sh",
+        c("-c", cmd),
+        stdout_callback = callback,
+        stderr_to_stdout = TRUE
+      )
     }
   }
 

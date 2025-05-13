@@ -1,6 +1,4 @@
-
 rstudio <- local({
-
   standalone_env <- environment()
   parent.env(standalone_env) <- baseenv()
 
@@ -15,7 +13,8 @@ rstudio <- local({
       "RSTUDIO",
       "RSTUDIO_TERM",
       "RSTUDIO_CONSOLE_COLOR",
-      "ASCIICAST")
+      "ASCIICAST"
+    )
 
     d <- list(
       pid = Sys.getpid(),
@@ -55,16 +54,13 @@ rstudio <- local({
     new$type <- if (new$envs[["RSTUDIO"]] != "1") {
       # 1. Not RStudio at all
       "not_rstudio"
-
     } else if (new$gui == "RStudio" && new$api) {
       # 2. RStudio console, properly initialized
       "rstudio_console"
-
-    } else if (new$gui == "RStudio" && ! new$api) {
+    } else if (new$gui == "RStudio" && !new$api) {
       # 3. RStudio console, initilizing
       cache <- FALSE
       "rstudio_console_starting"
-
     } else if (new$tty && new$envs[["ASCIICAST"]] != "true") {
       # 4. R in the RStudio terminal
       # This could also be a subprocess of the console or build pane
@@ -72,17 +68,17 @@ rstudio <- local({
       # out, without inspecting some process data with ps::ps_*().
       # At least we rule out asciicast
       "rstudio_terminal"
-
-    } else if (! new$tty &&
-               new$envs[["RSTUDIO_TERM"]] == "" &&
-               new$envs[["R_BROWSER"]] == "false" &&
-               new$envs[["R_PDFVIEWER"]] == "false" &&
-               is_build_pane_command(new$args)) {
+    } else if (
+      !new$tty &&
+        new$envs[["RSTUDIO_TERM"]] == "" &&
+        new$envs[["R_BROWSER"]] == "false" &&
+        new$envs[["R_PDFVIEWER"]] == "false" &&
+        is_build_pane_command(new$args)
+    ) {
       # 5. R in the RStudio build pane
       # https://github.com/rstudio/rstudio/blob/main/src/cpp/session/
       # modules/build/SessionBuild.cpp#L231-L240
       "rstudio_build_pane"
-
     } else {
       # Otherwise it is a subprocess of the console, terminal or
       # build pane, and it is hard to say which, so we do not try.

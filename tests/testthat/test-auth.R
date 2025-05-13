@@ -90,9 +90,12 @@ test_that("repo_auth_unlock_internal", {
     keyring_backend = "file",
     keyring_keyring = basename(tempfile())
   )
-  expect_snapshot({
-    repo_auth_unlock_internal("pass")
-  }, transform = transform_tempfile)
+  expect_snapshot(
+    {
+      repo_auth_unlock_internal("pass")
+    },
+    transform = transform_tempfile
+  )
 
   # it exists, but unlock it
   keyring::keyring_lock()

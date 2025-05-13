@@ -1,6 +1,4 @@
-
 test_that("no dependencies are loaded with pak", {
-
   skip_on_cran()
 
   ## Skip this is covr, because covr loads a bunch of other packages

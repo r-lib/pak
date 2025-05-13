@@ -1,4 +1,3 @@
-
 #' Install missing packages on the fly
 #'
 #' Use this function to set up a global error handler, that is called
@@ -50,10 +49,12 @@ handle_package_not_found <- function(err) {
   cli <- load_private_cli()
   cli$cli_text()
   cli$cli_alert_danger(
-    c("Failed to load package {.pkg {pkg}}. Do you want to install it ",
-      "into the default library at {.path {lib}}?"),
+    c(
+      "Failed to load package {.pkg {pkg}}. Do you want to install it ",
+      "into the default library at {.path {lib}}?"
+    ),
     wrap = TRUE
-    )
+  )
   cli$cli_text()
 
   dv <- cli$cli_div(theme = list(ol = list("margin-left" = 2)))

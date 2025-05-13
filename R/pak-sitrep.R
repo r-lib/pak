@@ -25,15 +25,20 @@ pak_sitrep <- function() {
   comp <- platform_match(ver$platform, plt)
   cat0("* Version information:\n")
   cat0(
-    "- pak platform: ", ver$platform,
-    " (current: ", R.Version()$platform, if (comp) ", compatible", ")\n"
+    "- pak platform: ",
+    ver$platform,
+    " (current: ",
+    R.Version()$platform,
+    if (comp) ", compatible",
+    ")\n"
   )
   if (!comp) cat0("- platform is incompatible!\n")
   repo <- ver$`github-repository`
   sha <- ver$`github-sha`
   if (repo != "r-lib/pak") {
     cat0(
-      "- pak repository: ", repo,
+      "- pak repository: ",
+      repo,
       if (repo == "-") " (local install?)",
       "\n"
     )

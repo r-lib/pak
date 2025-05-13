@@ -57,14 +57,18 @@ check_keyring_backend <- function(backend) {
     if (!dk %in% kl$keyring) {
       # default keyring does not exist
       stop(
-        "The default keyring (", dk, ") does not exist, ",
+        "The default keyring (",
+        dk,
+        ") does not exist, ",
         "call `repo_auth_unlock()` to create it."
       )
     }
     if (kl$locked[match(dk, kl$keyring)]) {
       # default keyring is locked
       stop(
-        "The default keyring (", dk, ") is locked. ",
+        "The default keyring (",
+        dk,
+        ") is locked. ",
         "Call `repo_auth_unlock() to unlock it."
       )
     }
@@ -213,21 +217,28 @@ repo_auth_unlock_internal <- function(password) {
 #' meta_update()
 #' meta_list()
 
-auth_proxy_app <- function(repo_url = NULL, username = "username",
-                           password = "token") {
+auth_proxy_app <- function(
+  repo_url = NULL,
+  username = "username",
+  password = "token"
+) {
   repo_url <- repo_url %||% "https://cloud.r-project.org"
   webfakes::new_app()$get(
-    webfakes::new_regexp(""), function(req, res) {
+    webfakes::new_regexp(""),
+    function(req, res) {
       # base64_encode will be exported in the next version of webfakes
-      exp <- paste("Basic", asNamespace("webfakes")$base64_encode(paste0(username, ":", password)))
+      exp <- paste(
+        "Basic",
+        asNamespace("webfakes")$base64_encode(paste0(username, ":", password))
+      )
       hdr <- req$get_header("Authorization") %||% ""
       if (exp != hdr) {
-        res$
-          set_header("WWW-Authenticate", "Basic realm=\"CRAN with auth\"")$
-          send_status(401L)
+        res$set_header(
+          "WWW-Authenticate",
+          "Basic realm=\"CRAN with auth\""
+        )$send_status(401L)
       } else {
-        res$
-          redirect(sprintf("%s/%s", repo_url, req$path))
+        res$redirect(sprintf("%s/%s", repo_url, req$path))
       }
     }
   )
