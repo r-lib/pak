@@ -3,11 +3,14 @@
 \name{repo_auth_key_get}
 \alias{repo_auth_key_get}
 \alias{repo_auth_key_set}
+\alias{repo_auth_unlock}
 \title{Query or set repository password in the system credential store}
 \usage{
 repo_auth_key_get(url, username = NULL)
 
 repo_auth_key_set(url, password, username = NULL)
+
+repo_auth_unlock(keyring_password)
 }
 \arguments{
 \item{url}{Repository URL. It may contain a username, in which case
@@ -15,7 +18,9 @@ repo_auth_key_set(url, password, username = NULL)
 
 \item{username}{User name, if it is not included in \code{url}.}
 
-\item{password}{Password to set.}
+\item{password}{Password (key) to set.}
+
+\item{keyring_password}{Password to unlock the keyring.}
 }
 \value{
 \code{repo_auth_key_get()} returns a single string, the repository
@@ -31,6 +36,12 @@ errors if it cannot find the credentials for \code{url}.
 
 \code{repo_auth_key_set()} adds or updates a password in the system
 credential store.
+
+\code{repo_auth_unlock()} unlocks the default keyring, if it is locked.
+You might need this if the keyring is locked. If you are using
+ecrypted files to store the keys, then you typically need to call this
+function in each session. You typically don't need to do that if you
+are using the native Windows, macOS or Linux (Secret Service) backends.
 }
 \seealso{
 Other authenticated repositories: 

@@ -95,6 +95,7 @@ reference:
   - repo_auth
   - repo_auth_key_get
   - repo_auth_key_set
+  - repo_auth_unlock
   - repo_get
   - repo_status
 

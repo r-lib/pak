@@ -413,6 +413,7 @@ repo_auth <- function(r_version = getRversion(), bioc = NULL,
                       cran_mirror = NULL,
                       check_credentials = TRUE) {
 
+  load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$repo_auth_internal(...),
     list(r_version, bioc, cran_mirror, check_credentials)

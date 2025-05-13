@@ -59,3 +59,8 @@ set_user_in_url <- function(url, username = "username", password = NULL) {
     psd$path
   )
 }
+
+transform_tempfile <- function(x) {
+  x <- sub("file[a-zA-Z0-9]+", "<tempfile>", x)
+  x
+}
