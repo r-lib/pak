@@ -101,9 +101,63 @@ authentication domains.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>pak will look up password for this url and username from the
+    <p>pak will look up the password for this url and username from the
 the user's <code>.netrc</code> file and from the system credential store using
-the keyring package. pak currently supports the following keyring
+the keyring package.</p><div class="section">
+<h3 id="-netrc-files">`.netrc“ files<a class="anchor" aria-label="anchor" href="#-netrc-files"></a></h3>
+
+
+<p>First pak searches in the <code>.netrc</code> file. If the <code>NETRC</code> environment
+variable is set, pak uses its value to determine the location of the
+<code>netrc</code> file.</p>
+<p>Otherwise pak looks for the <code>netrc</code> file in current user's home
+directory, at <code>~/.netrc</code>. On Windows it also looks for <code>~/_netrc</code> if the
+file starting with a dot does not exist.</p>
+<p>If you create a <code>netrc</code> file, make sure that is only readable by you.
+E.g. on Unix run</p>
+<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">chmod</span> 600 ~/.netrc</span></code></pre><p></p></div>
+<p><code>netrc</code> files are simple text files that can store passwords for multiple
+hosts. They may contain three types of tokens:</p><div class="section">
+<h4 id="machine-lt-hostname-gt-"><code>machine &lt;hostname&gt;</code><a class="anchor" aria-label="anchor" href="#machine-lt-hostname-gt-"></a></h4>
+
+
+<p>A host name, without the protocol. Subsequent <code>login</code> and <code>password</code>
+tokens belong to this host, until another <code>machine</code> token is found, or
+the end of file.</p>
+</div>
+
+<div class="section">
+<h4 id="login-lt-username-gt-"><code>login &lt;username&gt;</code><a class="anchor" aria-label="anchor" href="#login-lt-username-gt-"></a></h4>
+
+
+<p>User name. It must be preceded by a <code>machine</code> token.</p>
+</div>
+
+<div class="section">
+<h4 id="password-lt-password-gt-"><code>password &lt;password&gt;</code><a class="anchor" aria-label="anchor" href="#password-lt-password-gt-"></a></h4>
+
+
+<p>Password. It must be preceded by a <code>machine</code> and a <code>login</code> token.</p>
+<p>Whitespace is ignored in <code>netrc</code> files. You may include multiple tokens
+on the same line, or have one token per line. Here is an example:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>machine myhost.mydomain.com login myuser password secret</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>machine myhost2.mydomain.com</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>login myuser</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>password secret</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>login anotheruser</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>password stillsecret</span></code></pre><p></p></div>
+<p>If you need to include whitespace in a password, put the password in double
+quotes.</p>
+</div>
+
+
+</div>
+
+<div class="section">
+<h3 id="the-system-credential-store">The system credential store<a class="anchor" aria-label="anchor" href="#the-system-credential-store"></a></h3>
+
+
+<p>pak currently supports the following keyring
 backends:</p><ul><li><p>Windows credential store,</p></li>
 <li><p>macOS Keychain,</p></li>
 <li><p>Linux Secret Service via libsecret, if built with libsecret support,</p></li>
@@ -119,6 +173,8 @@ argument. Alternatively, you can set the <code>repos</code> option directly usin
 <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code> and including the username in the repository URL.</p>
 <p><code>repo_auth()</code> lists authentication information for all configured
 repositories.</p>
+</div>
+
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
