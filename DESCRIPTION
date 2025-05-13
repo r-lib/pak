@@ -4,34 +4,62 @@ Version: 0.8.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
-    person("Posit Software, PBC", role = c("cph", "fnd"), comment = c(ROR = "03wc8by49")),
-    person("Winston", "Chang", role = "ctb", comment = "R6, callr, processx"),
-    person("Ascent Digital Services", role = c("cph", "fnd"), comment = "callr, processx"),
-    person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild, yaml"),
-    person("Jeroen", "Ooms", role = "ctb", comment = "curl, jsonlite"),
-    person("Maëlle", "Salmon", role = "ctb", comment = "desc, pkgsearch"),
-    person("Duncan", "Temple Lang", role = "ctb", comment = "jsonlite"),
-    person("Lloyd", "Hilaiel", role = "cph", comment = "jsonlite"),
-    person("Alec", "Wong", role = "ctb", comment = "keyring"),
-    person("Michel Berkelaar and lpSolve authors", role = "ctb", comment = "lpSolve"),
-    person("R Consortium", role = "fnd", comment = "pkgsearch"),
-    person("Jay", "Loden", role = "ctb", comment = "ps"),
-    person("Dave", "Daeschler", role = "ctb", comment = "ps"),
-    person("Giampaolo", "Rodola", role = "ctb", comment = "ps"),
-    person("Shawn", "Garbett", role = "ctb", comment = "yaml"),
-    person("Jeremy", "Stephens", role = "ctb", comment = "yaml"),
-    person("Kirill", "Simonov", role = "ctb", comment = "yaml"),
-    person("Yihui", "Xie", role = "ctb", comment = "yaml"),
-    person("Zhuoer", "Dong", role = "ctb", comment = "yaml"),
-    person("Jeffrey", "Horner", role = "ctb", comment = "yaml"),
-    person("Will", "Beasley", role = "ctb", comment = "yaml"),
-    person("Brendan", "O'Connor", role = "ctb", comment = "yaml"),
-    person("Gregory", "Warnes", role = "ctb", comment = "yaml"),
-    person("Michael", "Quinn", role = "ctb", comment = "yaml"),
-    person("Zhian", "Kamvar", role = "ctb", comment = "yaml"),
-    person("Charlie", "Gao", role = "ctb", comment = "yaml"),
-    person("Kuba", "Podgórski", role = "ctb", comment = "zip"),
-    person("Rich", "Geldreich", role = "ctb", comment = "zip")
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49")),
+    person("Winston", "Chang", role = "ctb",
+           comment = "R6, callr, processx"),
+    person("Ascent Digital Services", role = c("cph", "fnd"),
+           comment = "callr, processx"),
+    person("Hadley", "Wickham", role = c("ctb", "cph"),
+           comment = "cli, curl, pkgbuild, yaml"),
+    person("Jeroen", "Ooms", role = "ctb",
+           comment = "curl, jsonlite"),
+    person("Maëlle", "Salmon", role = "ctb",
+           comment = "desc, pkgsearch"),
+    person("Duncan", "Temple Lang", role = "ctb",
+           comment = "jsonlite"),
+    person("Lloyd", "Hilaiel", role = "cph",
+           comment = "jsonlite"),
+    person("Alec", "Wong", role = "ctb",
+           comment = "keyring"),
+    person("Michel Berkelaar and lpSolve authors", role = "ctb",
+           comment = "lpSolve"),
+    person("R Consortium", role = "fnd",
+           comment = "pkgsearch"),
+    person("Jay", "Loden", role = "ctb",
+           comment = "ps"),
+    person("Dave", "Daeschler", role = "ctb",
+           comment = "ps"),
+    person("Giampaolo", "Rodola", role = "ctb",
+           comment = "ps"),
+    person("Shawn", "Garbett", role = "ctb",
+           comment = "yaml"),
+    person("Jeremy", "Stephens", role = "ctb",
+           comment = "yaml"),
+    person("Kirill", "Simonov", role = "ctb",
+           comment = "yaml"),
+    person("Yihui", "Xie", role = "ctb",
+           comment = "yaml"),
+    person("Zhuoer", "Dong", role = "ctb",
+           comment = "yaml"),
+    person("Jeffrey", "Horner", role = "ctb",
+           comment = "yaml"),
+    person("Will", "Beasley", role = "ctb",
+           comment = "yaml"),
+    person("Brendan", "O'Connor", role = "ctb",
+           comment = "yaml"),
+    person("Gregory", "Warnes", role = "ctb",
+           comment = "yaml"),
+    person("Michael", "Quinn", role = "ctb",
+           comment = "yaml"),
+    person("Zhian", "Kamvar", role = "ctb",
+           comment = "yaml"),
+    person("Charlie", "Gao", role = "ctb",
+           comment = "yaml"),
+    person("Kuba", "Podgórski", role = "ctb",
+           comment = "zip"),
+    person("Rich", "Geldreich", role = "ctb",
+           comment = "zip")
   )
 Description: The goal of 'pak' is to make package installation faster and
     more reliable. In particular, it performs all HTTP operations in
@@ -75,6 +103,7 @@ Suggests:
 Remotes:
     r-lib/keyring,
     r-lib/pkgcache
+Biarch: true
 ByteCompile: true
 Config/build/extra-sources: configure*
 Config/needs/dependencies:
@@ -108,7 +137,6 @@ Config/Needs/deploy:
     processx,
     R6@2.5.1
 Config/testthat/edition: 3
+Config/usethis/last-upkeep: 2025-05-13
 Encoding: UTF-8
 RoxygenNote: 7.3.2.9000
-Biarch: true
-Config/usethis/last-upkeep: 2025-05-13
