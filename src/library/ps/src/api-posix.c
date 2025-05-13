@@ -16,7 +16,11 @@
 #include <sys/sysmacros.h>
 #endif
 #include <sys/param.h>
+#ifdef __linux__
+char *dirname(char *path);
+#else
 #include <libgen.h>
+#endif
 #include <stdlib.h>
 
 #include "ps-internal.h"

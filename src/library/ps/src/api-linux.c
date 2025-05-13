@@ -18,7 +18,9 @@
 #include <sys/sysinfo.h>
 #include <sched.h>
 #include <sys/vfs.h>
+#ifndef __linux__
 #include <libgen.h>
+#endif
 #include <sys/syscall.h>
 #include <sys/epoll.h>
 #include <time.h>

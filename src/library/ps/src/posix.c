@@ -224,7 +224,7 @@ SEXP psp__waitpid(SEXP r_pid) {
 }
 SEXP ps__define_signals(void) {
 
-  SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));
+  SEXP signalenv = PROTECT(ps_new_env());
 
 #define PS_ADD_SIGNAL(sig)						\
   defineVar(install(#sig), PROTECT(ScalarInteger(sig)), signalenv);	\
@@ -358,7 +358,7 @@ SEXP ps__define_signals(void) {
 
 
 SEXP ps__define_socket_address_families(void) {
-  SEXP afenv = PROTECT(Rf_allocSExp(ENVSXP));
+  SEXP afenv = PROTECT(ps_new_env());
 
 #define PS_ADD_AF(af)						\
   defineVar(install(#af), PROTECT(ScalarInteger(af)), afenv);	\
@@ -508,7 +508,7 @@ SEXP ps__define_socket_address_families(void) {
 }
 
 SEXP ps__define_socket_types(void) {
-  SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
+  SEXP env = PROTECT(ps_new_env());
 
 #define PS_ADD_SOCKET_TYPE(type)					\
   defineVar(install(#type), PROTECT(ScalarInteger(type)), env);		\

@@ -7,7 +7,7 @@ code <- '
 
 SEXP ps__define_errno(void) {
 
-  SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
+SEXP env = PROTECT(ps_new_env());
 
 #define PS_ADD_ERRNO(err,str,val)                                        \\
   defineVar(                                                             \\

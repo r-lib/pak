@@ -25,6 +25,11 @@
 #' If `expr` throws an error, then so does `with_process_cleanup()`, the
 #' same error. Nevertheless processes are still cleaned up.
 #'
+#' @section macOS issues:
+#'
+#' These functions do not work on macOS, unless specific criteria are
+#' met. See [ps_environ()] for details.
+#'
 #' @section Note:
 #' Note that `with_process_cleanup()` is problematic if the R process is
 #' multi-threaded and the other threads start subprocesses.

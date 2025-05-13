@@ -763,7 +763,7 @@ SEXP ps__define_tcp_statuses(void) {
 }
 
 SEXP ps__define_socket_address_families() {
-  SEXP afenv = PROTECT(Rf_allocSExp(ENVSXP));
+  SEXP afenv = PROTECT(ps_new_env());
 
   defineVar(install("AF_INET"), PROTECT(ScalarInteger(AF_INET)), afenv);
   UNPROTECT(1);
@@ -776,7 +776,7 @@ SEXP ps__define_socket_address_families() {
 }
 
 SEXP ps__define_socket_types() {
-  SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
+  SEXP env = PROTECT(ps_new_env());
 
   defineVar(install("SOCK_STREAM"), PROTECT(ScalarInteger(SOCK_STREAM)), env);
   UNPROTECT(1);
