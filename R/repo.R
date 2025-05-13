@@ -370,6 +370,7 @@ repo_resolve <- function(spec, username = NULL) {
 #' * Windows credential store,
 #' * macOS Keychain,
 #' * Linux Secret Service via libsecret, if built with libsecret support,
+#' * encrypted files,
 #' * environment variables.
 #'
 #' For the URL above it tries the following keyring

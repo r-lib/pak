@@ -112,6 +112,7 @@ backends:
 \item Windows credential store,
 \item macOS Keychain,
 \item Linux Secret Service via libsecret, if built with libsecret support,
+\item encrypted files,
 \item environment variables.
 }
 

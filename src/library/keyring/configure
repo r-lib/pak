@@ -2,27 +2,28 @@
 
 UNAME=`uname`
 
-echo "PKG_CPPFLAGS=-DMBEDTLS_AES_C -DMBEDTLS_ALLOW_PRIVATE_ACCESS -DMBEDTLS_PLATFORM_PRINTF_ALT -I." > src/Makevars
+echo "PKG_CPPFLAGS=-DMBEDTLS_AES_C -DMBEDTLS_ALLOW_PRIVATE_ACCESS -DMBEDTLS_PLATFORM_PRINTF_ALT -I." \
+     > src/Makevars
 
 if [ "$UNAME" = "Darwin" ]; then
     echo "PKG_LIBS=-framework Security" >> src/Makevars
 
+elif [ -n "$LIBSECRET_CFLAGS" -a -n "$LIBSECRET_LIBS" ]; then
+    echo "Found libsecret from LIBSECRET_CFLAGS and LIBSECRET_LIBS."
+    echo "PKG_CFLAGS=-DHAS_LIBSECRET $LIBSECRET_CFLAGS" >> src/Makevars
+    echo "PKG_LIBS=$LIBSECRET_LIBS" >> src/Makevars
+
+elif which pkg-config >/dev/null 2>/dev/null && pkg-config libsecret-1; then
+    echo "Found libsecret via pkg-config."
+    echo "PKG_CFLAGS=-DHAS_LIBSECRET $(pkg-config --cflags libsecret-1)" >> src/Makevars
+    echo "PKG_LIBS=$(pkg-config --libs libsecret-1)" >> src/Makevars
+
 else
-    if which pkg-config >/dev/null 2>/dev/null && pkg-config libsecret-1; then
-	echo "PKG_CFLAGS=-DHAS_LIBSECRET $(pkg-config --cflags libsecret-1)" >> src/Makevars
-	echo "PKG_LIBS=$(pkg-config --libs libsecret-1)" >> src/Makevars
-    else
-	if [ -n "$LIBSECRET_CFLAGS" && -n "$LIBSECRET_LIBS" ]; then
-	    echo "PKG_CFLAGS=-DHAS_LIBSECRET $LIBSECRET_CFLAGS" >> src/Makevars
-	    echo "PKG_LIBS=$LIBSECRET_LIBS" >> src/Makevars
-	else
-	    echo "Could not find libsecret headers or libs."
-	    echo "On Ubuntu, you need to install libsecret-1-dev via apt."
-	    echo "On RedHat, Fedora, and CentOS, you need to install libsecret-devel via yum or dnf."
-	    echo "Note that in addition to libsecret, you either need pkg-config or set the"
-	    echo "LIBSECRET_CFLAGS and LIBSECRET_LIBS environment variables."
-	    echo
-	    echo "This keyring build will not support the libsecret backend."
-	fi
-    fi
+    echo "Could not find libsecret headers or libs."
+    echo "On Ubuntu, you need to install libsecret-1-dev via apt."
+    echo "On RedHat, Fedora, and CentOS, you need to install libsecret-devel via yum or dnf."
+    echo "Note that in addition to libsecret, you either need pkg-config or set the"
+    echo "LIBSECRET_CFLAGS and LIBSECRET_LIBS environment variables."
+    echo
+    echo "This keyring build will not support the libsecret backend."
 fi
