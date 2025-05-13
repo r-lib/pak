@@ -23,7 +23,8 @@ test_that("output is printed on failure", {
         pak::pkg_install(pkg)
       },
       list(pkg = badcompile)
-    )
+    ),
+    class = "callr_error"
   )
 
   lines <- readLines(tmp)
@@ -45,7 +46,8 @@ test_that("output is printed on failure", {
         pak::pkg_install(pkg)
       },
       list(pkg = badcompile)
-    )
+    ),
+    class = "callr_error"
   )
 
   lines <- readLines(tmp)
