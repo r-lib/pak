@@ -4,7 +4,7 @@ Version: 0.8.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
-    person("Posit Software, PBC", role = c("cph", "fnd")),
+    person("Posit Software, PBC", role = c("cph", "fnd"), comment = c(ROR = "03wc8by49")),
     person("Winston", "Chang", role = "ctb", comment = "R6, callr, processx"),
     person("Ascent Digital Services", role = c("cph", "fnd"), comment = "callr, processx"),
     person("Hadley", "Wickham", role = c("ctb", "cph"), comment = "cli, curl, pkgbuild, yaml"),
