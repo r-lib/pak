@@ -138,13 +138,32 @@ default_platforms <- function() {
 
 parse_platform <- function(x) {
   pcs <- strsplit(x, "-", fixed = TRUE)
-  data.frame(
+  plt <- data.frame(
     stringsAsFactors = FALSE,
     cpu = vcapply(pcs, "[", 1),
     vendor = vcapply(pcs, "[", 2),
     os = vcapply(pcs, function(y) {
       if (length(y) < 3) NA_character_ else paste(y[-(1:2)], collapse = "-")
     })
+  )
+  linuxos <- re_match(plt$os, re_linux_platform())
+  islinux <- !is.na(linuxos$.match)
+  if (any(islinux)) {
+    plt$os[islinux] <- linuxos$os[islinux]
+    linuxos$distribution[linuxos$distribution == ""] <- NA_character_
+    linuxos$release[linuxos$release == ""] <- NA_character_
+    plt <- cbind(plt, linuxos[, c("distribution", "release")])
+  }
+  plt
+}
+
+re_linux_platform <- function() {
+  paste0(
+    "^",
+    "(?P<os>linux(?:-gnu|-musl|-uclibc|-dietlibc)?)?",
+    "(?:(?:-)(?P<distribution>[^-]+))?",
+    "(?:(?:-)(?P<release>.+))?",
+    "$"
   )
 }
 

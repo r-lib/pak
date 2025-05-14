@@ -124,6 +124,10 @@ ppm_snapshots <- function() {
 #' - `distribution`: for Linux platforms the name of the distribution,
 #' - `release`: for Linux platforms, the name of the release,
 #' - `binaries`: whether PPM builds binaries for this platform.
+#' - `platforms`: a list column of character vectors; for each row they
+#'   list all possible matching distribution and release strings. Each
+#'   string can be a fixes strings, but if it starts and ends with a
+#'   forward string, then it is used as regular expression.
 #'
 #' @seealso The 'pkgcache and Posit Package Manager on Linux'
 #'   article at <`r pkgdown_url()`>.
@@ -150,8 +154,10 @@ async_get_ppm_status <- function(
   known <- if (is.null(distribution)) {
     TRUE
   } else if (is.null(release)) {
+    # TODO: look at the platforms column as well
     distribution %in% pkgenv$ppm_distros_cached$distribution
   } else {
+    # TODO: look at the platforms column as well
     mch <- which(
       distribution == pkgenv$ppm_distros_cached$distribution &
         release == pkgenv$ppm_distros_cached$release
@@ -168,8 +174,8 @@ async_get_ppm_status <- function(
 
   # can we used the cached values? Only if
   # * not a forced update, and
-  # * distro is known, or we already updated.
-  # * r_Version is known, or we already updated
+  # * distro is known, or we already updated, and
+  # * r_version is known, or we already updated
   updated <- !is.null(pkgenv$ppm_distros)
   cached <- !forget && (known || updated) && (rver_known || updated)
   def <- if (isTRUE(cached)) {
@@ -192,8 +198,8 @@ async_get_ppm_status <- function(
         release = vcapply(stat$distros, "[[", "release"),
         binaries = vlapply(stat$distros, "[[", "binaries")
       )
-      pkgenv$ppm_distros <- dst
-      pkgenv$ppm_distros_cached <- dst
+      pkgenv$ppm_distros <- canonicalize_ppm_platforms(dst)
+      pkgenv$ppm_distros_cached <- pkgenv$ppm_distros
 
       rvers <- unlist(stat$r_versions)
       pkgenv$ppm_r_versions <- rvers
@@ -255,17 +261,26 @@ ppm_has_binaries <- function() {
       all(distros$binaries[distros$os == "windows"]) &&
       current_rver %in% rver
   } else {
-    mch <- which(
-      distros$distribution == current$distribution &
-        distros$release == current$release
-    )
+    current_plt <- paste0(current$distribution, "-", current$release)
+    mch <- ppm_match_platform(distros, current_plt)
     binaries <- binaries &&
-      length(mch) == 1 &&
+      !is.na(mch) &&
       distros$binaries[mch] &&
       current_rver %in% rver
   }
 
   binaries
+}
+
+ppm_match_platform <- function(distros, plt) {
+  which(vlapply(distros$platforms, function(dplts) {
+    if (plt %in% dplts) return(TRUE)
+    res <- grep("^/.*/$", dplts, value = TRUE)
+    any(vlapply(res, function(re) {
+      re <- sub("/$", "$", sub("^/", "^", re))
+      grepl(re, plt)
+    }))
+  }))[1]
 }
 
 #' List all R versions supported by Posit Package Manager (PPM)

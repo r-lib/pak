@@ -6,6 +6,12 @@
 * pkgcache now supports authenticated repositories, see `repo_auth()`
   for details.
 
+* `ppm_has_binaries()` now works correctly on all platforms (#121).
+
+* The output of `ppm_platforms()` now has a new column called `platform`,
+  which is a list column of character vectors, listing all possible
+  matching platforms.
+
 # pkgcache 2.2.3
 
 * The metadata cache now does not use source URLs for packages in `Archive`

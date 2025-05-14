@@ -242,12 +242,10 @@ repo_sugar_ppm <- function(x, nm) {
   # do we really have binaries? check in PPM status
   distros <- pkgenv$ppm_distros
   rvers <- pkgenv$ppm_r_versions
-  mch <- which(
-    distros$distribution == current$distribution &
-      distros$release == current$release
-  )
+  current_plt <- paste0(current$distribution, "-", current$release)
+  mch <- ppm_match_platform(distros, current_plt)
   binaries <- binaries &&
-    length(mch) == 1 &&
+    !is.na(mch) &&
     distros$binaries[mch] &&
     current_rver %in% rvers
 

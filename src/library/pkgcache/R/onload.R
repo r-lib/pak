@@ -136,40 +136,122 @@ pkgenv$r_versions <- list(
   list(version = "4.3.0", date = "2023-04-21T07:06:14.217164Z")
 )
 
+canonicalize_ppm_platforms <- function(distros) {
+  distros$platforms <- as.list(
+    paste0(distros$distribution, "-", distros$release)
+  )
+  # rhelx is good for rhelx.y, e.g. rhel-7 for rhel-7.5, etc.
+  rhel <- grep("^rhel[0-9]+$", distros$name)
+  for (idx in rhel) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      sub("^rhel([0-9]+)$", "rhel-\\1", distros$name[idx]),
+      sub("^rhel([0-9]+)$", "/rhel-\\1[.][0-9]+/", distros$name[idx])
+    )
+  }
+  # opensuse15 is good for opensuse-15.0 and opensuse-15.1
+  # ID is opensuse-leap on the Docker images
+  os15 <- which(distros$name == "opensuse15")
+  for (idx in os15) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      "opensuse-15.0",
+      "opensuse-15.1",
+      "opensuse-leap-15",
+      "opensuse-leap-15.0",
+      "opensuse-leap-15.1"
+    )
+  }
+  # other opensuse can also be opensuse-leap
+  os <- setdiff(grep("^opensuse", distros$name), os15)
+  for (idx in os) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      paste0(distros$distribution[idx], "-leap-", distros$release[idx])
+    )
+  }
+  # similarly, sle15 is good for sle 15.1 as well
+  # ID is sles on the Docker images
+  sle15 <- which(distros$name == "sles15")
+  for (idx in sle15) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      "sle-15.1",
+      "sles-15",
+      "sles-15.1"
+    )
+  }
+  # other sle is also called sles
+  sle <- setdiff(grep("^sles[0-9]+", distros$name), sle15)
+  for (idx in sle) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      paste0("sles-", distros$release[idx])
+    )
+  }
+  # rhelx (except for rhel7) also applies to rocky and almalinux
+  # ID is rocky and not rockylinux on the containers
+  rhelx <- setdiff(
+    grep("^rhel[0-9]+$", distros$name),
+    which(distros$name == "rhel7")
+  )
+  for (idx in rhelx) {
+    distros$platforms[[idx]] <- c(
+      distros$platforms[[idx]],
+      sub("^rhel([0-9]+)$", "rocky-\\1", distros$name[idx]),
+      sub("^rhel([0-9]+)$", "/rocky-\\1[.][0-9]+/", distros$name[idx]),
+      sub("^rhel([0-9]+)$", "almalinux-\\1", distros$name[idx]),
+      sub("^rhel([0-9]+)$", "/almalinux-\\1[.][0-9]+/", distros$name[idx])
+    )
+  }
+
+  # TODO: - windows - macos - manylinux
+
+  distros
+}
+
 pkgenv$ppm_distros_cached <-
-  utils::read.table(
+  canonicalize_ppm_platforms(utils::read.table(
     header = TRUE,
     stringsAsFactors = FALSE,
     textConnection(
       "
- name                    os      binary_url    distribution release   binaries
- centos7                 linux   centos7       centos       7         TRUE
- centos8                 linux   centos8       centos       8         TRUE
- rhel9                   linux   rhel9         rockylinux   9         TRUE
- opensuse15              linux   opensuse15    opensuse     15        TRUE
- opensuse152             linux   opensuse152   opensuse     15.2      TRUE
- opensuse153             linux   opensuse153   opensuse     15.3      TRUE
- opensuse154             linux   opensuse154   opensuse     15.4      TRUE
- opensuse42              linux   opensuse42    opensuse     42.3      TRUE
- rhel7                   linux   centos7       redhat       7         TRUE
- rhel8                   linux   centos8       redhat       8         TRUE
-\"rhel9 (unused alias)\" linux   rhel9         redhat       9         TRUE
- sles12                  linux   opensuse42    sle          12.3      TRUE
- sles15                  linux   opensuse15    sle          15        TRUE
- sles152                 linux   opensuse152   sle          15.2      TRUE
- sles153                 linux   opensuse153   sle          15.3      TRUE
- sles154                 linux   opensuse154   sle          15.4      TRUE
- xenial                  linux   xenial        ubuntu       16.04     TRUE
- bionic                  linux   bionic        ubuntu       18.04     TRUE
- focal                   linux   focal         ubuntu       20.04     TRUE
- jammy                   linux   jammy         ubuntu       22.04     TRUE
- buster                  linux   buster        debian       10        FALSE
- bullseye                linux   bullseye      debian       11        FALSE
- windows                 windows \"\"          windows      all       TRUE
- macOS                   macOS   \"\"          macOS        all       FALSE
-"
+ name                    os      binary_url     distribution release   binaries
+ centos7                 linux   centos7        centos       7         TRUE
+ centos8                 linux   centos8        centos       8         TRUE
+ rhel9                   linux   rhel9          rockylinux   9         TRUE
+ opensuse15              linux   opensuse15     opensuse     15        TRUE
+ opensuse152             linux   opensuse152    opensuse     15.2      TRUE
+ opensuse153             linux   opensuse153    opensuse     15.3      TRUE
+ opensuse154             linux   opensuse154    opensuse     15.4      TRUE
+ opensuse155             linux   opensuse155    opensuse     15.5      TRUE
+ opensuse156             linux   opensuse156    opensuse     15.6      TRUE
+ opensuse42              linux   opensuse42     opensuse     42.3      TRUE
+ rhel7                   linux   centos7        redhat       7         TRUE
+ rhel8                   linux   centos8        redhat       8         TRUE
+\"rhel9 (unused alias)\" linux   rhel9          redhat       9         TRUE
+ sles12                  linux   opensuse42     sle          12.3      TRUE
+ sles15                  linux   opensuse15     sle          15        TRUE
+ sles152                 linux   opensuse152    sle          15.2      TRUE
+ sles153                 linux   opensuse153    sle          15.3      TRUE
+ sles154                 linux   opensuse154    sle          15.4      TRUE
+ sles155                 linux   opensuse155    sle          15.5      TRUE
+ sles156                 linux   opensuse156    sle          15.6      TRUE
+ xenial                  linux   xenial         ubuntu       16.04     TRUE
+ bionic                  linux   bionic         ubuntu       18.04     TRUE
+ focal                   linux   focal          ubuntu       20.04     TRUE
+ jammy                   linux   jammy          ubuntu       22.04     TRUE
+ noble                   linux   noble          ubuntu       24.04     TRUE
+ buster                  linux   buster         debian       10        FALSE
+ bullseye                linux   bullseye       debian       11        TRUE
+ bookworm                linux   bookworm       debian       12        TRUE
+ windows                 windows \"\"           windows      all       TRUE
+ macos                   macos   \"\"           macos        all       TRUE
+ manylinux_2_28         linux    manylinux_2_28 centos       8         TRUE
+ internal               linux    internal       internal     all       TRUE
+ "
     )
-  )
+  ))
 
 pkgenv$ppm_r_versions_cached <- c("3.6", "4.0", "4.1", "4.2", "4.3")
 
