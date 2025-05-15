@@ -10,7 +10,10 @@ current_r_platform_data_linux <- function(raw, etc = "/etc") {
     error = function(e) NULL
   )
 
-  cbind(raw, parse_linux_platform_info(os, rh))
+  cbind(
+    raw[, setdiff(names(raw), c("distribution", "release")), drop = FALSE],
+    parse_linux_platform_info(os, rh)
+  )
 }
 
 unknown_dist <- function() {
