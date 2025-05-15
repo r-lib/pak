@@ -1,4 +1,3 @@
-
 milliseconds <- function(x) as.difftime(as.numeric(x) / 1000, units = "secs")
 seconds <- function(x) as.difftime(as.numeric(x), units = "secs")
 minutes <- function(x) as.difftime(as.numeric(x), units = "mins")
@@ -22,7 +21,6 @@ parse_iso_8601 <- function(dates, default_tz = "UTC") {
 }
 
 parse_iso_parts <- function(mm, default_tz) {
-
   num <- nrow(mm)
 
   ## -----------------------------------------------------------------
@@ -104,8 +102,11 @@ parse_iso_parts <- function(mm, default_tz) {
   if (default_tz != "UTC") {
     ftna <- mm$tzpm == "" & mm$tz == ""
     if (any(ftna)) {
-      dd <- as.POSIXct(format_iso_8601(date[ftna]),
-                       "%Y-%m-%dT%H:%M:%S+00:00", tz = default_tz)
+      dd <- as.POSIXct(
+        format_iso_8601(date[ftna]),
+        "%Y-%m-%dT%H:%M:%S+00:00",
+        tz = default_tz
+      )
       date[ftna] <- dd
     }
   }
@@ -117,25 +118,29 @@ iso_regex <- paste0(
   "^\\s*",
   "(?<year>[\\+-]?\\d{4}(?!\\d{2}\\b))",
   "(?:(?<dash>-?)",
-   "(?:(?<month>0[1-9]|1[0-2])",
-    "(?:\\g{dash}(?<day>[12]\\d|0[1-9]|3[01]))?",
-    "|W(?<week>[0-4]\\d|5[0-3])(?:-?(?<weekday>[1-7]))?",
-    "|(?<yearday>00[1-9]|0[1-9]\\d|[12]\\d{2}|3",
-      "(?:[0-5]\\d|6[1-6])))",
-   "(?<time>[T\\s](?:(?:(?<hour>[01]\\d|2[0-3])",
-            "(?:(?<colon>:?)(?<min>[0-5]\\d))?|24\\:?00)",
-           "(?<frac>[\\.,]\\d+(?!:))?)?",
-    "(?:\\g{colon}(?<sec>[0-5]\\d)(?:[\\.,]\\d+)?)?",
-    "(?<tz>[zZ]|(?<tzpm>[\\+-])",
-     "(?<tzhour>[01]\\d|2[0-3]):?(?<tzmin>[0-5]\\d)?)?)?)?$"
-  )
+  "(?:(?<month>0[1-9]|1[0-2])",
+  "(?:\\g{dash}(?<day>[12]\\d|0[1-9]|3[01]))?",
+  "|W(?<week>[0-4]\\d|5[0-3])(?:-?(?<weekday>[1-7]))?",
+  "|(?<yearday>00[1-9]|0[1-9]\\d|[12]\\d{2}|3",
+  "(?:[0-5]\\d|6[1-6])))",
+  "(?<time>[T\\s](?:(?:(?<hour>[01]\\d|2[0-3])",
+  "(?:(?<colon>:?)(?<min>[0-5]\\d))?|24\\:?00)",
+  "(?<frac>[\\.,]\\d+(?!:))?)?",
+  "(?:\\g{colon}(?<sec>[0-5]\\d)(?:[\\.,]\\d+)?)?",
+  "(?<tz>[zZ]|(?<tzpm>[\\+-])",
+  "(?<tzhour>[01]\\d|2[0-3]):?(?<tzmin>[0-5]\\d)?)?)?)?$"
+)
 
 iso_week <- function(year, week, weekday) {
+  wdmon <- function(date) {
+    (wday(date) + 5L) %% 7L
+  }
+  thu <- function(date) {
+    date - days(wdmon(date) - 3L)
+  }
 
-  wdmon <- function(date) { (wday(date) + 5L) %% 7L }
-  thu <- function(date) { date - days(wdmon(date) - 3L) }
-
-  thu(ymd(paste(year, "01", "04"))) + weeks(as.numeric(week) - 1L) +
+  thu(ymd(paste(year, "01", "04"))) +
+    weeks(as.numeric(week) - 1L) +
     days(as.numeric(weekday) - 4L)
 }
 

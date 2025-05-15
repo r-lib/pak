@@ -1,4 +1,3 @@
-
 should_show_progress_bar <- function() {
   # Option takes precedence
   opt <- getOption("pkg.show_progress", NULL)

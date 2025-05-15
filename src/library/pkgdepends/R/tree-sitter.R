@@ -1,16 +1,23 @@
 ts_languages <- c(r = 0L, markdown = 1L, "markdown-inline" = 2L, yaml = 3L)
 
-s_expr <- function(code, language = c("r", "markdown", "markdown-inline", "yaml"),
-                   ranges = NULL) {
+s_expr <- function(
+  code,
+  language = c("r", "markdown", "markdown-inline", "yaml"),
+  ranges = NULL
+) {
   language <- tolower(language)
   language <- ts_languages[match.arg(language)]
   if (is.character(code)) code <- charToRaw(paste(code, collapse = "\n"))
   call_with_cleanup(c_s_expr, code, language, ranges)
 }
 
-code_query <- function(code = NULL, query, file = NULL,
-                       language = c("r", "markdown", "markdown-inline", "yaml"),
-                       ranges = NULL) {
+code_query <- function(
+  code = NULL,
+  query,
+  file = NULL,
+  language = c("r", "markdown", "markdown-inline", "yaml"),
+  ranges = NULL
+) {
   language <- tolower(language)
   language <- ts_languages[match.arg(language)]
   qlen <- nchar(query, type = "bytes") + 1L # + \n

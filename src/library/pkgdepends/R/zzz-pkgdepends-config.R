@@ -1,4 +1,3 @@
-
 windows_archs <- function() c("prefer-x64", "both")
 
 default_windows_archs <- function() {
@@ -7,14 +6,14 @@ default_windows_archs <- function() {
 
 default_update_after <- function() as.difftime(24, units = "hours")
 
-env_decode_dependencies <- function(x, name) {
+env_decode_dependencies <- function(x, name, ...) {
   if (tolower(x) %in% c("yes", "true", "1", "on")) return(TRUE)
   if (tolower(x) %in% c("no", "false", "0", "off")) return(FALSE)
   if (tolower(x) == "na") return(NA)
   strsplit(x, ";", fixed = TRUE)[[1]]
 }
 
-env_decode_difftime <- function(x, name) {
+env_decode_difftime <- function(x, name, ...) {
   if (nchar(x) >= 2) {
     unit <- substr(x, nchar(x), nchar(x))
     unit <- c(s = "secs", m = "mins", h = "hours", d = "days")[unit]
@@ -73,8 +72,7 @@ pkgdepends_config <- sort_by_name(list(
   build_vignettes = list(
     type = "flag",
     default = FALSE,
-    docs =
-      "Whether to build vignettes for package trees.
+    docs = "Whether to build vignettes for package trees.
        This is only used if the package is obtained from a package tree,
        and not from a source (or binary) package archive. By default
        vignettes are not built in this case. If you set this to `TRUE`,
@@ -86,8 +84,7 @@ pkgdepends_config <- sort_by_name(list(
   cache_dir = list(
     type = "string",
     default = function() detect_download_cache_dir(),
-    docs =
-      "Directory to download the packages to. Defaults to a temporary
+    docs = "Directory to download the packages to. Defaults to a temporary
        directory within the R session temporary directory, see
        [base::tempdir()]."
   ),
@@ -96,12 +93,10 @@ pkgdepends_config <- sort_by_name(list(
   cran_mirror = list(
     type = "string",
     default = function() default_cran_mirror(),
-    docs =
-      "CRAN mirror to use. Defaults to the `repos` option
+    docs = "CRAN mirror to use. Defaults to the `repos` option
        (see [base::options()]), if that's not set then
        `https://cran.rstudio.com`.",
-    docs_pak =
-      "CRAN mirror to use. Defaults to the `repos` option
+    docs_pak = "CRAN mirror to use. Defaults to the `repos` option
        (see [base::options()]), if that's not set then
        `https://cran.rstudio.com`. See also [pak::repo_add()] and
        [pak::repo_get()]"
@@ -113,8 +108,7 @@ pkgdepends_config <- sort_by_name(list(
     default = function() pkg_dep_types_hard(),
     # pak functions take this as an argument, so we do not need it, for now
     pak = FALSE,
-    docs =
-      "Dependencies to consider or download or install.
+    docs = "Dependencies to consider or download or install.
        Defaults to the hard dependencies, see
        [pkgdepends::pkg_dep_types_hard()]. The following values are
        supported in the `PKG_DEPENDENCIES` environment variable:
@@ -127,8 +121,7 @@ pkgdepends_config <- sort_by_name(list(
   git_submodules = list(
     type = "flag",
     default = FALSE,
-    docs =
-      "Whether or not to update submodules in git repositories. This
+    docs = "Whether or not to update submodules in git repositories. This
        affects `git::` and `gitlab::` package sources only.
        If the R package is in a subdirectory then only the submodules
        within that directory are updated. If a submodule appears in
@@ -139,8 +132,7 @@ pkgdepends_config <- sort_by_name(list(
   include_linkingto = list(
     type = "flag",
     default = FALSE,
-    docs =
-      "Whether to always include `LinkingTo` dependencies in the solution
+    docs = "Whether to always include `LinkingTo` dependencies in the solution
        of and installation, even if they are needed because the packages
        are installed from binaries. This is sometimes useful, see e.g.
        <https://github.com/r-lib/pak/issues/485> for an example use case."
@@ -149,14 +141,12 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   library = list(
     type = "string_or_null",
-    docs =
-      "Package library to install packages to. It is also used for
+    docs = "Package library to install packages to. It is also used for
        already installed packages when considering dependencies in
        [dependency lookup][pkg_deps] or
        [package installation][pkg_installation_proposal]. Defaults to the
        first path in [.libPaths()].",
-    docs_pak =
-      "Package library to install packages to. It is also used for
+    docs_pak = "Package library to install packages to. It is also used for
        already installed packages when considering dependencies."
   ),
 
@@ -165,8 +155,7 @@ pkgdepends_config <- sort_by_name(list(
     type = "string",
     default = function() tempfile(),
     # TODO: do not link to pkgcache docs from pak
-    docs =
-      "Location of metadata replica of
+    docs = "Location of metadata replica of
        [`pkgcache::cranlike_metadata_cache`]. Defaults to a temporary
        directory within the R session temporary directory, see
        [base::tempdir()]."
@@ -176,14 +165,12 @@ pkgdepends_config <- sort_by_name(list(
   metadata_update_after = list(
     type = "difftime",
     default = function() default_update_after(),
-    docs =
-      "A time interval as a [difftime] object. pkgdepends will update the
+    docs = "A time interval as a [difftime] object. pkgdepends will update the
        metadata cache if it is older than this. The default is one day.
        The `PKG_METADATA_UPDATE_AFTER` environment variable may be set
        in seconds (`s` suffix), minutes (`m` suffix), hours (`h` suffix),
        or days (`d` suffix). E.g: `1d` means one day.",
-    docs_pak =
-      "A time interval as a [difftime] object. pak will update the
+    docs_pak = "A time interval as a [difftime] object. pak will update the
        metadata cache if it is older than this. The default is one day.
        The `PKG_METADATA_UPDATE_AFTER` environment variable may be set
        in seconds (`s` suffix), minutes (`m` suffix), hours (`h` suffix),
@@ -193,11 +180,9 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   package_cache_dir = list(
     type = "string",
-    docs =
-      "Package cache location of [`pkgcache::package_cache`]. The default
+    docs = "Package cache location of [`pkgcache::package_cache`]. The default
        is the pkgcache default.",
-    docs_pak =
-      "Location of the package cache on the disk. See
+    docs_pak = "Location of the package cache on the disk. See
        [pak::cache_summary()]. Default is selected by pkgcache."
   ),
 
@@ -206,8 +191,7 @@ pkgdepends_config <- sort_by_name(list(
     type = "character",
     default = function() default_platforms(),
     # TODO: do not link to pkgdepends docs from pak
-    docs =
-      "Character vector of platforms to _download_ or _install_ packages
+    docs = "Character vector of platforms to _download_ or _install_ packages
        for. See [pkgdepends::default_platforms()] for possible platform
        names. Defaults to the platform of the current R session, plus
        `\"source\"`."
@@ -218,8 +202,7 @@ pkgdepends_config <- sort_by_name(list(
     type = "character",
     default = function() current_r_version(),
     check = is_r_version_list,
-    docs =
-      "Character vector, R versions to download or install
+    docs = "Character vector, R versions to download or install
        packages for. It defaults to the current R version."
   ),
 
@@ -227,8 +210,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs = list(
     type = "flag",
     default = function(config) default_sysreqs(config),
-    docs =
-      "Whether to automatically look up and install system requirements.
+    docs = "Whether to automatically look up and install system requirements.
        If `TRUE`, then `r pak_or_pkgdepends()` will try to install required
        system packages. If `FALSE`, then system requirements are still
        printed (including OS packages on supported platforms), but they
@@ -242,8 +224,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_db_update = list(
     type = "flag",
     default = TRUE,
-    docs =
-      "Whether to try to update the system requirements database from
+    docs = "Whether to try to update the system requirements database from
        GitHub. If the update fails, then the cached or the build-in
        database if used. Defaults to TRUE."
   ),
@@ -251,9 +232,9 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_db_update_timeout = list(
     type = "difftime",
-    default = function() as.difftime(if (Sys.getenv("CI") == "") 5 else 60, units = "secs"),
-    docs =
-      "Timeout for the system requirements database update.
+    default = function()
+      as.difftime(if (Sys.getenv("CI") == "") 5 else 60, units = "secs"),
+    docs = "Timeout for the system requirements database update.
        Defaults to five seconds, except if the `CI` environment variable
        is set, then it is one minute."
   ),
@@ -262,11 +243,9 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_dry_run = list(
     type = "flag",
     default = FALSE,
-    docs =
-      "If `TRUE`, then pkgdepends only prints the system commands to
+    docs = "If `TRUE`, then pkgdepends only prints the system commands to
        install system requirements, but does not execute them.",
-    docs_pak =
-      "If `TRUE`, then pak only prints the system commands to
+    docs_pak = "If `TRUE`, then pak only prints the system commands to
        install system requirements, but does not execute them."
   ),
 
@@ -274,8 +253,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_platform = list(
     type = "string",
     default = function() default_sysreqs_platform(),
-    docs =
-      "The platform to use for system requirements lookup. On Linux, where
+    docs = "The platform to use for system requirements lookup. On Linux, where
        system requirements are currently supported, it must be a string
        containing the distribution name and release, separated by a dash.
        E.g.: `\"ubuntu-22.04\"`, or `\"rhel-9\"`."
@@ -285,8 +263,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_rspm_repo_id = list(
     type = "string",
     default = function() default_sysreqs_rspm_repo_id(),
-    docs =
-      "Posit Package Manager (formerly RStudio Package Manager) repository
+    docs = "Posit Package Manager (formerly RStudio Package Manager) repository
        id to use for CRAN system requirements lookup. Defaults to the
        `RSPM_REPO_ID` environment variable, if set. If not set, then it
         defaults to `1`."
@@ -306,8 +283,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_sudo = list(
     type = "flag",
     default = function() default_sysreqs_sudo(),
-    docs =
-      "Whether to use `sudo` to install system requirements,
+    docs = "Whether to use `sudo` to install system requirements,
        on Unix. By default it is `TRUE` on Linux if the effective user id
        of the current process is not the `root` user."
   ),
@@ -316,8 +292,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_update = list(
     type = "flag",
     default = function() default_sysreqs_update(),
-    docs =
-      "Whether to try to update system packages that are already installed.
+    docs = "Whether to try to update system packages that are already installed.
        It defaults to `TRUE` on CI systems: if the `CI` environment
        variable is set to `true`."
   ),
@@ -326,8 +301,7 @@ pkgdepends_config <- sort_by_name(list(
   sysreqs_verbose = list(
     type = "flag",
     default = function() default_sysreqs_verbose(),
-    docs =
-      "Whether to echo the output of system requirements installation.
+    docs = "Whether to echo the output of system requirements installation.
        Defaults to `TRUE` if the `CI` environment variable is set."
   ),
 
@@ -335,8 +309,7 @@ pkgdepends_config <- sort_by_name(list(
   use_bioconductor = list(
     type = "flag",
     default = TRUE,
-    docs =
-      "Whether to automatically use the Bioconductor repositories.
+    docs = "Whether to automatically use the Bioconductor repositories.
        Defaults to `TRUE`."
   ),
 
@@ -344,9 +317,8 @@ pkgdepends_config <- sort_by_name(list(
   windows_archs = list(
     type = "string",
     default = function() default_windows_archs(),
-    docs =
-  # we can't indent this "correctly" because markdown will take it as code
-  "Character scalar specifying which architectures
+    # we can't indent this "correctly" because markdown will take it as code
+    docs = "Character scalar specifying which architectures
    to download/install for on Windows. Its possible values are:
 
    - `\"prefer-x64\"`: Generally prefer x64 binaries. If the current R

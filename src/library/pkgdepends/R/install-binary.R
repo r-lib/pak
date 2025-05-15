@@ -1,15 +1,17 @@
-
-install_extracted_binary <- function(filename, lib_cache, pkg_cache, lib,
-                                     metadata, now) {
-
+install_extracted_binary <- function(
+  filename,
+  lib_cache,
+  pkg_cache,
+  lib,
+  metadata,
+  now
+) {
   pkg <- verify_extracted_package(filename, pkg_cache)
   add_metadata(pkg$path, metadata)
   pkg_name <- pkg$name
 
   lockfile <- lock_cache(lib_cache, pkg_name, getOption("install.lock"))
-  if (!is.null(lockfile)) {
-    on.exit(filelock::unlock(lockfile), add = TRUE)
-  }
+  on.exit(filelock::unlock(lockfile), add = TRUE)
 
   installed_path <- file.path(lib, pkg_name)
   if (file.exists(installed_path)) {
@@ -121,9 +123,14 @@ add_metadata <- function(pkg_path, metadata) {
   }
 }
 
-make_install_process <- function(filename, lib = .libPaths()[[1L]],
-                                 metadata = NULL) {
-  filename; lib; metadata
+make_install_process <- function(
+  filename,
+  lib = .libPaths()[[1L]],
+  metadata = NULL
+) {
+  filename
+  lib
+  metadata
 
   now <- Sys.time()
 
@@ -139,8 +146,7 @@ make_install_process <- function(filename, lib = .libPaths()[[1L]],
   mkdirp(pkg_cache <- tempfile(tmpdir = lib_cache))
 
   ppfun <- function() {
-   install_extracted_binary(filename, lib_cache, pkg_cache, lib,
-                            metadata, now)
+    install_extracted_binary(filename, lib_cache, pkg_cache, lib, metadata, now)
   }
 
   p <- if (type == "zip") {
@@ -150,8 +156,11 @@ make_install_process <- function(filename, lib = .libPaths()[[1L]],
     make_untar_process(filename, exdir = pkg_cache, post_process = ppfun)
   }
 
-  reg.finalizer(p, function(...) unlink(pkg_cache, recursive = TRUE),
-                onexit = TRUE)
+  reg.finalizer(
+    p,
+    function(...) unlink(pkg_cache, recursive = TRUE),
+    onexit = TRUE
+  )
 
   p
 }

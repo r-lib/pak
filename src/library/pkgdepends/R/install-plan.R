@@ -1,4 +1,3 @@
-
 #' Installation plans
 #'
 #' An installation plan contains all data that is needed to install a
@@ -61,23 +60,33 @@ NULL
 #'
 #' @export
 
-install_package_plan <- function(plan, lib = .libPaths()[[1]],
-                                 num_workers = 1, cache = NULL) {
-
+install_package_plan <- function(
+  plan,
+  lib = .libPaths()[[1]],
+  num_workers = 1,
+  cache = NULL
+) {
   start <- Sys.time()
   cli::ansi_hide_cursor()
   on.exit(cli::ansi_show_cursor())
 
   cli::cli_div(
-    theme = list(".timestamp" = list(
-      color = "darkgrey",
-      before = "(",
-      after = ")"
-    ))
+    theme = list(
+      ".timestamp" = list(
+        color = "darkgrey",
+        before = "(",
+        after = ")"
+      )
+    )
   )
 
   required_columns <- c(
-    "type", "binary", "dependencies", "file", "needscompilation", "package"
+    "type",
+    "binary",
+    "dependencies",
+    "file",
+    "needscompilation",
+    "package"
   )
   assert_that(
     inherits(plan, "data.frame"),
@@ -86,11 +95,11 @@ install_package_plan <- function(plan, lib = .libPaths()[[1]],
     is_count(num_workers, min = 1L)
   )
 
-  if (! "vignettes" %in% colnames(plan)) plan$vignettes <- FALSE
-  if (! "metadata" %in% colnames(plan)) {
+  if (!"vignettes" %in% colnames(plan)) plan$vignettes <- FALSE
+  if (!"metadata" %in% colnames(plan)) {
     plan$metadata <- replicate(nrow(plan), character(), simplify = FALSE)
   }
-  if (! "packaged" %in% colnames(plan)) plan$packaged <- TRUE
+  if (!"packaged" %in% colnames(plan)) plan$packaged <- TRUE
 
   plan <- add_recursive_dependencies(plan)
 
@@ -102,26 +111,28 @@ install_package_plan <- function(plan, lib = .libPaths()[[1]],
   state <- make_start_state(plan, config)
   state$cache <- cache
   state$progress <- create_progress_bar(state)
-  on.exit(done_progress_bar(state), add =  TRUE)
+  on.exit(done_progress_bar(state), add = TRUE)
 
-  withCallingHandlers({
+  withCallingHandlers(
+    {
+      ## Initialise one task for each worker
+      for (i in seq_len(state$config$num_workers)) {
+        task <- select_next_task(state)
+        state <- start_task(state, task)
+      }
 
-    ## Initialise one task for each worker
-    for (i in seq_len(state$config$num_workers)) {
-      task <- select_next_task(state)
-      state <- start_task(state, task)
-    }
+      repeat {
+        if (are_we_done(state)) break
+        update_progress_bar(state)
 
-    repeat {
-      if (are_we_done(state)) break;
-      update_progress_bar(state)
-
-      events <- poll_workers(state)
-      state <- handle_events(state, events)
-      task  <- select_next_task(state)
-      state <- start_task(state, task)
-    }
-  }, error = function(e) kill_all_processes(state))
+        events <- poll_workers(state)
+        state <- handle_events(state, events)
+        task <- select_next_task(state)
+        state <- start_task(state, task)
+      }
+    },
+    error = function(e) kill_all_processes(state)
+  )
 
   create_install_result(state)
 }
@@ -138,7 +149,7 @@ add_recursive_dependencies <- function(plan) {
 
   # Otherwise for every source package, we need to add its recursive
   # dependencies.
-  idx  <- structure(seq_len(nrow(plan)), names = plan$package)
+  idx <- structure(seq_len(nrow(plan)), names = plan$package)
   xdps <- structure(plan$dependencies, names = plan$package)
   done <- structure(logical(nrow(plan)), names = plan$package)
   srcidx <- which(!plan$binary)
@@ -158,7 +169,6 @@ add_recursive_dependencies <- function(plan) {
 }
 
 make_start_state <- function(plan, config) {
-
   ## We store the data about build and installation here
   install_cols <- data.frame(
     stringsAsFactors = FALSE,
@@ -167,7 +177,8 @@ make_start_state <- function(plan, config) {
     package_time = I(rep_list(nrow(plan), as.POSIXct(NA))),
     package_error = I(rep_list(nrow(plan), list())),
     package_stdout = I(rep_list(nrow(plan), character())),
-    build_done = (plan$type %in% c("deps", "installed")) | plan$binary,
+    build_done = (plan$type %in% c("deps", "installed")) |
+      plan$binary | plan$used_cached_binary,
     build_time = I(rep_list(nrow(plan), as.POSIXct(NA))),
     build_error = I(rep_list(nrow(plan), list())),
     build_stdout = I(rep_list(nrow(plan), character())),
@@ -185,7 +196,8 @@ make_start_state <- function(plan, config) {
   list(
     plan = plan,
     workers = list(),
-    config = config)
+    config = config
+  )
 }
 
 are_we_done <- function(state) {
@@ -198,7 +210,6 @@ poll_workers <- function(state) {
     procs <- lapply(state$workers, "[[", "process")
     res <- processx::poll(procs, ms = timeout)
     vlapply(res, function(x) "ready" %in% x)
-
   } else {
     logical()
   }
@@ -246,7 +257,6 @@ handle_event <- function(state, evidx) {
 }
 
 select_next_task <- function(state) {
-
   ## Cannot run more workers?
   if (length(state$workers) >= state$config$num_workers) {
     return(task("idle"))
@@ -254,9 +264,10 @@ select_next_task <- function(state) {
 
   ## Can we select a package tree to build into a source package? Do that.
   can_package <- which(
-    ! state$plan$package_done &
-    viapply(state$plan$deps_left, length) == 0 &
-    is.na(state$plan$worker_id))
+    !state$plan$package_done &
+      viapply(state$plan$deps_left, length) == 0 &
+      is.na(state$plan$worker_id)
+  )
 
   if (any(can_package)) {
     pkgidx <- can_package[1]
@@ -265,9 +276,10 @@ select_next_task <- function(state) {
 
   ## Can we select a source package build? Do that.
   can_build <- which(
-    ! state$plan$build_done &
-    viapply(state$plan$deps_left, length) == 0 &
-    is.na(state$plan$worker_id))
+    !state$plan$build_done &
+      viapply(state$plan$deps_left, length) == 0 &
+      is.na(state$plan$worker_id)
+  )
 
   if (any(can_build)) {
     pkgidx <- can_build[1]
@@ -279,8 +291,9 @@ select_next_task <- function(state) {
   ## Otherwise select a binary if there is one
   can_install <- which(
     state$plan$build_done &
-    ! state$plan$install_done &
-    is.na(state$plan$worker_id))
+      !state$plan$install_done &
+      is.na(state$plan$worker_id)
+  )
 
   if (any(can_install)) {
     pkgidx <- can_install[1]
@@ -308,16 +321,12 @@ task <- function(name, ...) {
 start_task <- function(state, task) {
   if (task$name == "idle") {
     state
-
   } else if (task$name == "package") {
     start_task_package(state, task)
-
   } else if (task$name == "build") {
     start_task_build(state, task)
-
   } else if (task$name == "install") {
     start_task_install(state, task)
-
   } else {
     throw(pkg_error(
       "Unknown task: {.val {task$name}}.",
@@ -355,9 +364,17 @@ get_rtools_path <- function() {
 
 # nocov end
 
-make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
-                               needscompilation, binary, cmd_args, metadata = NULL) {
-
+make_build_process <- function(
+  path,
+  pkg,
+  tmp_dir,
+  lib,
+  vignettes,
+  needscompilation,
+  binary,
+  cmd_args,
+  metadata = NULL
+) {
   # For windows, we need ensure the zip.exe bundled with the zip package is on the PATH
   # TODO: test this on Windows
   # nocov start
@@ -370,12 +387,16 @@ make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
 
   # We also allow an extra subdirectory, e.g. in .tar.gz files downloaded
   # from GHA
-  if (!file.exists(file.path(path, "DESCRIPTION")) &&
-      length(subdir <- dir(path)) == 1) {
+  if (
+    !file.exists(file.path(path, "DESCRIPTION")) &&
+      length(subdir <- dir(path)) == 1
+  ) {
     path <- file.path(path, subdir)
   }
-  if (!file.exists(file.path(path, "DESCRIPTION")) &&
-      length(subdir <- dir(path)) == 1) {
+  if (
+    !file.exists(file.path(path, "DESCRIPTION")) &&
+      length(subdir <- dir(path)) == 1
+  ) {
     path <- file.path(path, subdir)
   }
 
@@ -396,11 +417,21 @@ make_build_process <- function(path, pkg, tmp_dir, lib, vignettes,
 
   add_metadata(path, metadata)
 
-  withr_with_libpaths(c(tmplib, lib), action = "prefix",
+  withr_with_libpaths(
+    c(tmplib, lib),
+    action = "prefix",
     pkgbuild::pkgbuild_process$new(
-      path, tmp_dir, binary = binary, vignettes = vignettes,
-      needs_compilation = needscompilation, compile_attributes = FALSE,
-      args = c("--no-lock", cmd_args, if (binary) sprintf("--library=%s", tmplib))
+      path,
+      tmp_dir,
+      binary = binary,
+      vignettes = vignettes,
+      needs_compilation = needscompilation,
+      compile_attributes = FALSE,
+      args = c(
+        "--no-lock",
+        cmd_args,
+        if (binary) sprintf("--library=%s", tmplib)
+      )
     )
   )
 }
@@ -457,10 +488,16 @@ start_task_package_uncompress <- function(state, task) {
 
   task$args$phase <- "uncompress"
   px <- make_uncompress_process(path, task$args$tree_dir)
-  worker <- list(id = get_worker_id(), task = task, process = px,
-                 stdout = character())
+  worker <- list(
+    id = get_worker_id(),
+    task = task,
+    process = px,
+    stdout = character()
+  )
   state$workers <- c(
-    state$workers, structure(list(worker), names = worker$id))
+    state$workers,
+    structure(list(worker), names = worker$id)
+  )
   state$plan$worker_id[pkgidx] <- worker$id
   state
 }
@@ -482,7 +519,7 @@ start_task_package_build <- function(state, task) {
   pkg_dir <- file.path(root_dir, subdir)
   dir_root_dir <- dir(root_dir)
 
-  if (! "DESCRIPTION" %in% dir_root_dir && length(dir_root_dir) == 1) {
+  if (!"DESCRIPTION" %in% dir_root_dir && length(dir_root_dir) == 1) {
     pkg_dir <- file.path(root_dir, dir_root_dir, subdir)
   }
 
@@ -492,13 +529,27 @@ start_task_package_build <- function(state, task) {
   metadata <- state$plan$metadata[[pkgidx]]
 
   task$args$phase <- "build"
-  px <- make_build_process(pkg_dir, pkg, create_temp_dir(), lib, vignettes,
-                           needscompilation, binary = FALSE,
-                           cmd_args = NULL, metadata = metadata)
-  worker <- list(id = get_worker_id(), task = task, process = px,
-                 stdout = character())
+  px <- make_build_process(
+    pkg_dir,
+    pkg,
+    create_temp_dir(),
+    lib,
+    vignettes,
+    needscompilation,
+    binary = FALSE,
+    cmd_args = NULL,
+    metadata = metadata
+  )
+  worker <- list(
+    id = get_worker_id(),
+    task = task,
+    process = px,
+    stdout = character()
+  )
   state$workers <- c(
-    state$workers, structure(list(worker), names = worker$id))
+    state$workers,
+    structure(list(worker), names = worker$id)
+  )
   state$plan$worker_id[pkgidx] <- worker$id
   state$plan$build_time[[pkgidx]] <- Sys.time()
   state
@@ -522,12 +573,26 @@ start_task_build <- function(state, task) {
   } else {
     cmd_args <- NULL
   }
-  px <- make_build_process(path, pkg, tmp_dir, lib, vignettes, needscompilation,
-                           binary = TRUE, cmd_args = cmd_args)
-  worker <- list(id = get_worker_id(), task = task, process = px,
-                 stdout = character())
+  px <- make_build_process(
+    path,
+    pkg,
+    tmp_dir,
+    lib,
+    vignettes,
+    needscompilation,
+    binary = TRUE,
+    cmd_args = cmd_args
+  )
+  worker <- list(
+    id = get_worker_id(),
+    task = task,
+    process = px,
+    stdout = character()
+  )
   state$workers <- c(
-    state$workers, structure(list(worker), names = worker$id))
+    state$workers,
+    structure(list(worker), names = worker$id)
+  )
   state$plan$worker_id[pkgidx] <- worker$id
   state$plan$build_time[[pkgidx]] <- Sys.time()
   state
@@ -545,11 +610,16 @@ start_task_install <- function(state, task) {
 
   px <- make_install_process(filename, lib = lib, metadata = metadata)
   worker <- list(
-    id = get_worker_id(), task = task, process = px,
-    stdout = character())
+    id = get_worker_id(),
+    task = task,
+    process = px,
+    stdout = character()
+  )
 
   state$workers <- c(
-    state$workers, structure(list(worker), names = worker$id))
+    state$workers,
+    structure(list(worker), names = worker$id)
+  )
   state$plan$worker_id[pkgidx] <- worker$id
   state$plan$install_time[[pkgidx]] <- Sys.time()
   state
@@ -558,13 +628,10 @@ start_task_install <- function(state, task) {
 stop_task <- function(state, worker) {
   if (worker$task$name == "package") {
     stop_task_package(state, worker)
-
   } else if (worker$task$name == "build") {
     stop_task_build(state, worker)
-
   } else if (worker$task$name == "install") {
     stop_task_install(state, worker)
-
   } else {
     throw(pkg_error(
       "Unknown task: {.val {worker$task$name}}.",
@@ -595,7 +662,7 @@ stop_task_package_uncompress <- function(state, worker) {
 
     state$plan$package_done[[pkgidx]] <- TRUE
     state$plan$package_time[[pkgidx]] <- time
-    state$plan$package_error[[pkgidx]] <- ! success
+    state$plan$package_error[[pkgidx]] <- !success
     state$plan$package_stdout[[pkgidx]] <- worker$stdout
     state$plan$worker_id[[pkgidx]] <- NA_character_
 
@@ -625,27 +692,33 @@ stop_task_package_build <- function(state, worker) {
   ptime <- format_time$pretty_sec(as.numeric(time, units = "secs"))
 
   if (success) {
-    alert("success", paste0(
-      "Packaged {.pkg {pkg}} {.version {version}}",
-      if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
-    ))
+    alert(
+      "success",
+      paste0(
+        "Packaged {.pkg {pkg}} {.version {version}}",
+        if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
+      )
+    )
     ## Need to save the name of the built package
     state$plan$file[pkgidx] <- worker$process$get_built_file()
   } else {
-    alert("danger", "Failed to create source package {.pkg {pkg}} \\
-           {.version {version}}")
+    alert(
+      "danger",
+      "Failed to create source package {.pkg {pkg}} \\
+           {.version {version}}"
+    )
     if (!identical(worker$stdout, "")) {
       cli::cli_h1("Standard output")
       cli::cli_verbatim(worker$stdout)
     } else {
-      alert("info", "Standard output is empty")                     # nocov
+      alert("info", "Standard output is empty") # nocov
     }
   }
   update_progress_bar(state, 1L)
 
   state$plan$package_done[[pkgidx]] <- TRUE
   state$plan$package_time[[pkgidx]] <- time
-  state$plan$package_error[[pkgidx]] <- ! success
+  state$plan$package_error[[pkgidx]] <- !success
   state$plan$package_stdout[[pkgidx]] <- worker$stdout
   state$plan$worker_id[[pkgidx]] <- NA_character_
 
@@ -666,14 +739,22 @@ stop_task_package_build <- function(state, worker) {
   prms <- state$plan$params[[pkgidx]]
   if (!is.null(state$cache) && !is_true_param(prms, "nocache")) {
     tryCatch(
-      state$cache$add(state$plan$file[pkgidx], state$plan$target[pkgidx],
-                      package = pkg, version = version, built = TRUE,
-                      sha256 = state$plan$extra[[pkgidx]]$remotesha,
-                      vignettes = state$plan$vignettes[pkgidx],
-                      platform = "source"),
+      state$cache$add(
+        state$plan$file[pkgidx],
+        state$plan$target[pkgidx],
+        package = pkg,
+        version = version,
+        built = TRUE,
+        sha256 = state$plan$extra[[pkgidx]]$remotesha,
+        vignettes = state$plan$vignettes[pkgidx],
+        platform = "source"
+      ),
       error = function(err) {
-        alert("warning", "Failed to add {.pkg {pkg}} \\
-               {.version {version}} to the cache")
+        alert(
+          "warning",
+          "Failed to add {.pkg {pkg}} \\
+               {.version {version}} to the cache"
+        )
       }
     )
   }
@@ -682,7 +763,6 @@ stop_task_package_build <- function(state, worker) {
 }
 
 stop_task_build <- function(state, worker) {
-
   ## TODO: make sure exit status is non-zero on build error!
   success <- worker$process$get_exit_status() == 0
 
@@ -694,10 +774,13 @@ stop_task_build <- function(state, worker) {
   prms <- state$plan$params[[pkgidx]]
 
   if (success) {
-    alert("success", paste0(
-      "Built {.pkg {pkg}} {.version {version}}",
-      if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
-    ))
+    alert(
+      "success",
+      paste0(
+        "Built {.pkg {pkg}} {.version {version}}",
+        if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
+      )
+    )
     ## Need to save the name of the built package
     state$plan$file[pkgidx] <- worker$process$get_built_file()
   } else {
@@ -747,18 +830,26 @@ stop_task_build <- function(state, worker) {
     rv <- current_r_version()
     target <- paste0(state$plan$target[pkgidx], "-", ptfm, "-", rv)
     tryCatch(
-      state$cache$add(state$plan$file[pkgidx], target,
-                      package = pkg, version = version, built = TRUE,
-                      sha256 = state$plan$extra[[pkgidx]]$remotesha,
-                      vignettes = state$plan$vignettes[pkgidx],
-                      platform = ptfm, rversion = rv),
+      state$cache$add(
+        state$plan$file[pkgidx],
+        target,
+        package = pkg,
+        version = version,
+        built = TRUE,
+        sha256 = state$plan$extra[[pkgidx]]$remotesha,
+        vignettes = state$plan$vignettes[pkgidx],
+        platform = ptfm,
+        rversion = rv
+      ),
       error = function(err) {
-        alert("warning", "Failed to add {.pkg {pkg}} \\
-               {.version {version}} ({ptfm}) to the cache")
+        alert(
+          "warning",
+          "Failed to add {.pkg {pkg}} \\
+               {.version {version}} ({ptfm}) to the cache"
+        )
       }
     )
   }
-
 
   state
 }
@@ -766,15 +857,27 @@ stop_task_build <- function(state, worker) {
 installed_note <- function(pkg) {
   github_note <- function() {
     meta <- pkg$metadata[[1]]
-    paste0("(github::", meta[["RemoteUsername"]], "/", meta[["RemoteRepo"]],
-           "@", substr(meta[["RemoteSha"]], 1, 7), ")")
+    paste0(
+      "(github::",
+      meta[["RemoteUsername"]],
+      "/",
+      meta[["RemoteRepo"]],
+      "@",
+      substr(meta[["RemoteSha"]], 1, 7),
+      ")"
+    )
   }
 
   gitlab_note <- function() {
     meta <- pkg$metadata[[1]]
     paste0(
-      "(gitlab::", meta[["RemoteUsername"]], "/", meta[["RemoteRepo"]],
-      "@", substr(meta[["RemoteSha"]], 1, 7), ")"
+      "(gitlab::",
+      meta[["RemoteUsername"]],
+      "/",
+      meta[["RemoteRepo"]],
+      "@",
+      substr(meta[["RemoteSha"]], 1, 7),
+      ")"
     )
   }
 
@@ -802,7 +905,6 @@ installed_note <- function(pkg) {
 }
 
 stop_task_install <- function(state, worker) {
-
   ## TODO: make sure the install status is non-zero on exit
   success <- worker$process$get_exit_status() == 0
 
@@ -811,13 +913,16 @@ stop_task_install <- function(state, worker) {
   version <- state$plan$version[pkgidx]
   time <- Sys.time() - state$plan$install_time[[pkgidx]]
   ptime <- format_time$pretty_sec(as.numeric(time, units = "secs"))
-  note <- installed_note(state$plan[pkgidx,])
+  note <- installed_note(state$plan[pkgidx, ])
 
   if (success) {
-    alert("success", paste0(
-      "Installed {.pkg {pkg}} {.version {version}} {note}",
-      if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
-    ))
+    alert(
+      "success",
+      paste0(
+        "Installed {.pkg {pkg}} {.version {version}} {note}",
+        if (isTRUE(state$config$show_time)) " {.timestamp {ptime}}"
+      )
+    )
   } else {
     alert("danger", "Failed to install {.pkg {pkg}} {.version {version}}")
   }
@@ -825,7 +930,7 @@ stop_task_install <- function(state, worker) {
 
   state$plan$install_done[[pkgidx]] <- TRUE
   state$plan$install_time[[pkgidx]] <- time
-  state$plan$install_error[[pkgidx]] <- ! success
+  state$plan$install_error[[pkgidx]] <- !success
   state$plan$install_stdout[[pkgidx]] <- worker$stdout
   state$plan$worker_id[[pkgidx]] <- NA_character_
 
@@ -842,7 +947,7 @@ stop_task_install <- function(state, worker) {
   state
 }
 
-create_install_result <-  function(state) {
+create_install_result <- function(state) {
   result <- state$plan
   class(result) <- c("pkginstall_result", class(result))
   result
@@ -852,9 +957,9 @@ create_install_result <-  function(state) {
 
 print.pkginstall_result <- function(x, ...) {
   newly <- sum(x$lib_status == "new" & x$type != "deps")
-  upd   <- sum(x$lib_status == "update")
+  upd <- sum(x$lib_status == "update")
   noupd <- sum(x$lib_status == "no-update")
-  curr  <- sum(x$lib_status == "current")
+  curr <- sum(x$lib_status == "current")
 
   build_time <- sum(unlist(x$build_time), na.rm = TRUE)
   inst_time <- sum(unlist(x$install_time), na.rm = TRUE)
@@ -862,9 +967,9 @@ print.pkginstall_result <- function(x, ...) {
   res <- c(
     "Summary:",
     if (newly) paste0(emoji("sparkles", ""), " ", newly, " new"),
-    if (upd)   paste0(emoji("rocket", ""), " ", upd, " updated"),
+    if (upd) paste0(emoji("rocket", ""), " ", upd, " updated"),
     if (noupd + curr) paste0(emoji("hand", ""), " ", noupd + curr, " kept"),
-    if (! tolower(Sys.getenv("PKG_OMIT_TIMES")) == "true") {
+    if (!tolower(Sys.getenv("PKG_OMIT_TIMES")) == "true") {
       paste0("in ", format_time$pretty_sec(build_time + inst_time))
     }
   )

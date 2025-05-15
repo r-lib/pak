@@ -1,4 +1,3 @@
-
 #' Check whether a package name is valid
 #'
 #' @param nm Potential package name, string of length 1.
@@ -23,8 +22,10 @@ is_valid_package_name <- function(nm) {
   forbidden_names <- c("pkg", "description")
 
   # package_name_rx is in parse-remotes.R
-  if (grepl(paste0("^", package_name_rx(), "$"), nm) &&
-      ! tolower(nm) %in% forbidden_names) {
+  if (
+    grepl(paste0("^", package_name_rx(), "$"), nm) &&
+      !tolower(nm) %in% forbidden_names
+  ) {
     return(TRUE)
   }
 
@@ -41,12 +42,12 @@ is_valid_package_name <- function(nm) {
     "It can only contain letters, numbers and dot."
   } else if (nchar(nm) < 2) {
     "It must have at least two characters."
-  } else if (! grepl("^[a-zA-Z]", nm)) {
+  } else if (!grepl("^[a-zA-Z]", nm)) {
     "It must start with a letter."
   } else if (grepl("[.]$", nm)) {
     "It must not end with a dot."
   } else {
-    "Package name is invalid."                                      # nocov
+    "Package name is invalid." # nocov
   }
 
   structure(FALSE, reason = why)

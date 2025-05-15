@@ -1,4 +1,3 @@
-
 #' Create a tar background process
 #'
 #' Use an external tar program, if there is a working one, otherwise use
@@ -19,18 +18,39 @@
 #' @return The [processx::process] object.
 #' @noRd
 
-make_untar_process <- function(tarfile, files = NULL, exdir = ".",
-                               restore_times = TRUE, post_process = NULL,
-                               stdout = "|", stderr = "2>&1", ...) {
+make_untar_process <- function(
+  tarfile,
+  files = NULL,
+  exdir = ".",
+  restore_times = TRUE,
+  post_process = NULL,
+  stdout = "|",
+  stderr = "2>&1",
+  ...
+) {
   internal <- need_internal_tar()
   if (internal) {
-    r_untar_process$new(tarfile, files, exdir, restore_times,
-                        post_process = post_process, stdout = stdout,
-                        stderr = stderr, ...)
+    r_untar_process$new(
+      tarfile,
+      files,
+      exdir,
+      restore_times,
+      post_process = post_process,
+      stdout = stdout,
+      stderr = stderr,
+      ...
+    )
   } else {
-    external_untar_process$new(tarfile, files, exdir, restore_times,
-                               post_process = post_process,
-                               stdout = stdout, stderr = stderr, ...)
+    external_untar_process$new(
+      tarfile,
+      files,
+      exdir,
+      restore_times,
+      post_process = post_process,
+      stdout = stdout,
+      stderr = stderr,
+      ...
+    )
   }
 }
 
@@ -83,7 +103,6 @@ external_untar_process <- R6::R6Class(
   inherit = processx::process,
 
   public = list(
-
     #' @details
     #' Start running the background process that extracts the file.
     #'
@@ -102,14 +121,16 @@ external_untar_process <- R6::R6Class(
     #' @return New `r_untar_process` object.
 
     initialize = function(
-      tarfile, files = NULL, exdir = ".",
+      tarfile,
+      files = NULL,
+      exdir = ".",
       restore_times = TRUE,
       tar = Sys.getenv("TAR", "tar"),
       stdout = "|",
       stderr = "2>&1",
       post_process = NULL,
-      ...) {
-
+      ...
+    ) {
       private$options <- list(
         tarfile = normalizePath(tarfile),
         files = files,
@@ -148,7 +169,6 @@ r_untar_process <- R6::R6Class(
   inherit = callr::r_process,
 
   public = list(
-
     #' @details
     #' Start running the background R process that extracts the file.
     #'
@@ -164,29 +184,40 @@ r_untar_process <- R6::R6Class(
     #' @param ... Extra arguments for the process cosntructor.
     #' @return New `r_untar_process` object.
 
-    initialize = function(tarfile, files = NULL, exdir = ".",
-                          restore_times = TRUE, post_process = NULL,
-                          stdout = "|", stderr = "2>&1", ...) {
+    initialize = function(
+      tarfile,
+      files = NULL,
+      exdir = ".",
+      restore_times = TRUE,
+      post_process = NULL,
+      stdout = "|",
+      stderr = "2>&1",
+      ...
+    ) {
       options <- list(
         tarfile = normalizePath(tarfile),
         files = files,
         exdir = exdir,
         restore_times = restore_times,
         tar = tar,
-        post_process = post_process)
+        post_process = post_process
+      )
 
-      process_options <- callr::r_process_options(stdout = stdout, stderr = stderr)
+      process_options <- callr::r_process_options(
+        stdout = stdout,
+        stderr = stderr
+      )
       process_options$func <- function(options) {
         # nocov start
         ret <- utils::untar(
-                        tarfile = options$tarfile,
-                        files = options$files,
-                        list = FALSE,
-                        exdir = options$exdir,
-                        compressed = NA,
-                        restore_times = options$restore_times,
-                        tar = "internal"
-                      )
+          tarfile = options$tarfile,
+          files = options$files,
+          list = FALSE,
+          exdir = options$exdir,
+          compressed = NA,
+          restore_times = options$restore_times,
+          tar = "internal"
+        )
 
         if (!is.null(options$post_process)) options$post_process() else ret
         # nocov end
@@ -203,12 +234,15 @@ r_untar_process <- R6::R6Class(
 
 eup_get_args <- function(options) {
   c(
-    "-x", "-f", path_norm(options$tarfile),
-    "-C", path_norm(options$exdir),
+    "-x",
+    "-f",
+    path_norm(options$tarfile),
+    "-C",
+    path_norm(options$exdir),
     # do not restore ownership, this is problematic on some mounts, e.f. sshfs
     "-o",
     get_untar_decompress_arg(options$tarfile),
-    if (! options$restore_times) "-m",
+    if (!options$restore_times) "-m",
     options$files
   )
 }
@@ -315,7 +349,6 @@ run_uncompress_process <- function(archive, exdir = ".", ...) {
       stdout = stdout,
       stderr = stdout
     )
-
   } else {
     external_process(
       make_untar_process,

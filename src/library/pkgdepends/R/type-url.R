@@ -1,4 +1,3 @@
-
 # -----------------------------------------------------------------------
 # API
 
@@ -21,25 +20,51 @@ parse_remote_url <- function(specs, config, ...) {
 
   lapply(
     seq_len(nrow(parsed_specs)),
-    function(i) as.list(parsed_specs[i,])
+    function(i) as.list(parsed_specs[i, ])
   )
 }
 
-resolve_remote_url <- function(remote, direct, config, cache,
-                               dependencies, ...) {
-
-  remote; direct; config; cache; dependencies; list(...)
+resolve_remote_url <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
+  remote
+  direct
+  config
+  cache
+  dependencies
+  list(...)
   nocache <- is_true_param(remote$params, "nocache")
-  type_url_resolve(remote, cache, config, direct = direct,
-                   dependencies = dependencies[[2 - direct]],
-                   nocache = nocache)$
-    then(function(x) x$resolution)
+  type_url_resolve(
+    remote,
+    cache,
+    config,
+    direct = direct,
+    dependencies = dependencies[[2 - direct]],
+    nocache = nocache
+  )$then(function(x) x$resolution)
 }
 
-download_remote_url <- function(resolution, target, target_tree, config,
-                                cache, which, on_progress) {
-
-  resolution; target; target_tree; config; cache; which; on_progress
+download_remote_url <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
+  resolution
+  target
+  target_tree
+  config
+  cache
+  which
+  on_progress
 
   remote <- resolution$remote[[1]]
   packaged <- resolution$metadata[[1]][["RemotePackaged"]]
@@ -52,44 +77,42 @@ download_remote_url <- function(resolution, target, target_tree, config,
   # If we are installing an install plan, then it might not be there
   nocache <- is_true_param(resolution$params[[1]], "nocache")
   if (!file.exists(tmpd$ok)) {
-    dx <- type_url_resolve(remote, cache, config, nocache)$
-      then(function(x) {
-        newres <- x$resolution
-        status <<- x$data$status
-        res_etag <- resolution$metadata[[1]][["RemoteEtag"]]
-        new_etag <- newres$metadata[["RemoteEtag"]]
-        if (res_etag != new_etag) {
-          warning("Package file at `", remote$url, "` has changed") # nocov
-        }
-      })
+    dx <- type_url_resolve(remote, cache, config, nocache)$then(function(x) {
+      newres <- x$resolution
+      status <<- x$data$status
+      res_etag <- resolution$metadata[[1]][["RemoteEtag"]]
+      new_etag <- newres$metadata[["RemoteEtag"]]
+      if (res_etag != new_etag) {
+        warning("Package file at `", remote$url, "` has changed") # nocov
+      }
+    })
   } else {
     status <- "Had"
     dx <- async_constant(0)
   }
 
-  dx$
-    then(function() {
-      if (packaged == "TRUE") {
-        mkdirp(dirname(target))
-        if (!file.copy(tmpd$archive, target, overwrite = TRUE)) {
-          throw(pkg_error(
-            "Failed to copy package from {.path {tmpd$archive}} to
+  dx$then(function() {
+    if (packaged == "TRUE") {
+      mkdirp(dirname(target))
+      if (!file.copy(tmpd$archive, target, overwrite = TRUE)) {
+        throw(pkg_error(
+          "Failed to copy package from {.path {tmpd$archive}} to
              {.path{ target}}.",
-            i = "It was downloaded from {.url {remote$url}}."
-          ))
-        }
-      } else {
-        mkdirp(target_tree)
-        if (!file.copy(tmpd$extract, target_tree, recursive = TRUE)) {
-          throw(pkg_error(                                    # nocov start
-            "Failed to copy package from {.path {tmpd$archive}} to
-             {.path{ target}}.",
-            i = "It was downloaded from {.url {remote$url}}."
-          ))                                                  # nocov end
-        }
+          i = "It was downloaded from {.url {remote$url}}."
+        ))
       }
-    })$
-    then(function() status)
+    } else {
+      mkdirp(target_tree)
+      if (!file.copy(tmpd$extract, target_tree, recursive = TRUE)) {
+        throw(pkg_error(
+          # nocov start
+          "Failed to copy package from {.path {tmpd$archive}} to
+             {.path{ target}}.",
+          i = "It was downloaded from {.url {remote$url}}."
+        )) # nocov end
+      }
+    }
+  })$then(function() status)
 }
 
 satisfy_remote_url <- function(resolution, candidate, config, ...) {
@@ -137,7 +160,9 @@ type_url_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
     "(?:url::)",
     "(?<url>.*)",
     "$"
@@ -155,7 +180,8 @@ type_github_download_url_rx <- function() {
     "^",
     "(?:url::)",
     "https://github.com/",
-    github_username_rx(), "/",
+    github_username_rx(),
+    "/",
     github_repo_rx(),
     "/archive/",
     "(?<branch>[^/.]+)",
@@ -177,29 +203,37 @@ type_url_tempdir <- function(remote, config) {
   )
 }
 
-type_url_download_and_extract <- function(remote, cache, config, tmpd,
-                                          nocache) {
+type_url_download_and_extract <- function(
+  remote,
+  cache,
+  config,
+  tmpd,
+  nocache
+) {
   id <- NULL
   tmpd <- tmpd
-  async_constant(if (nocache) {
-    mkdirp(dirname(tmpd$archive))
-    download_one_of(remote$url, tmpd$archive)$
-      then(function(dl) { attr(dl, "action") <- "Got"; dl })
-  } else {
-    cache$package$async_update_or_add(
-      tmpd$archive,
-      remote$url,
-      path = tmpd$cachepath,
-      http_headers = default_download_headers(remote$url)
-    )
-  })$then(function(dl) {
+  async_constant(
+    if (nocache) {
+      mkdirp(dirname(tmpd$archive))
+      download_one_of(remote$url, tmpd$archive)$then(function(dl) {
+        attr(dl, "action") <- "Got"
+        dl
+      })
+    } else {
+      cache$package$async_update_or_add(
+        tmpd$archive,
+        remote$url,
+        path = tmpd$cachepath,
+        http_headers = default_download_headers(remote$url)
+      )
+    }
+  )$then(function(dl) {
     tmpd$status <<- attr(dl, "action")
     tmpd$etag <<- if (is.na(dl$etag)) substr(dl$sha256, 1, 16) else dl$etag
     tmpd$id <<- cli::hash_obj_md5(tmpd$etag)
     rimraf(c(tmpd$extract, tmpd$ok))
     mkdirp(tmpd$extract)
     run_uncompress_process(tmpd$archive, tmpd$extract)
-
   })$then(function(status) {
     tmpd$pkgdir <<- get_pkg_dir_from_archive_dir(tmpd$extract)
     cat("ok\n", file = tmpd$ok)
@@ -207,12 +241,18 @@ type_url_download_and_extract <- function(remote, cache, config, tmpd,
   })
 }
 
-type_url_resolve <- function(remote, cache, config, direct = FALSE,
-                             dependencies = character(), nocache = FALSE) {
+type_url_resolve <- function(
+  remote,
+  cache,
+  config,
+  direct = FALSE,
+  dependencies = character(),
+  nocache = FALSE
+) {
   tmpd <- type_url_tempdir(remote, config)
   xdirs <- NULL
-  type_url_download_and_extract(remote, cache, config, tmpd, nocache)$
-    then(function(dirs) {
+  type_url_download_and_extract(remote, cache, config, tmpd, nocache)$then(
+    function(dirs) {
       xdirs <<- dirs
       resolve_from_description(
         path = dirs$pkgdir,
@@ -223,20 +263,19 @@ type_url_resolve <- function(remote, cache, config, direct = FALSE,
         cache = cache,
         dependencies = dependencies
       )
-    })$
-    then(function(x) {
-      x$target <- file.path(
-        "src/contrib",
-        paste0(x$package, "_", x$version, "-",
-               substr(xdirs$id, 1, 10), ".tar.gz")
-      )
-      x$metadata[["RemoteEtag"]] <- xdirs$etag
-      x$extra[[1]][["resolve_download_status"]] <- tmpd$status
-      x$metadata[["RemotePackaged"]] <-
-        x$extra[[1]]$description$has_fields("Packaged")
-      x$params[[1]] <- remote$params
-      list(resolution = x, data = xdirs)
-    })
+    }
+  )$then(function(x) {
+    x$target <- file.path(
+      "src/contrib",
+      paste0(x$package, "_", x$version, "-", substr(xdirs$id, 1, 10), ".tar.gz")
+    )
+    x$metadata[["RemoteEtag"]] <- xdirs$etag
+    x$extra[[1]][["resolve_download_status"]] <- tmpd$status
+    x$metadata[["RemotePackaged"]] <-
+      x$extra[[1]]$description$has_fields("Packaged")
+    x$params[[1]] <- remote$params
+    list(resolution = x, data = xdirs)
+  })
 }
 
 

@@ -1,6 +1,10 @@
-
-pkg_error <- function(..., .data = NULL, .class = NULL, .envir = parent.frame(),
-                      call. = TRUE) {
+pkg_error <- function(
+  ...,
+  .data = NULL,
+  .class = NULL,
+  .envir = parent.frame(),
+  call. = TRUE
+) {
   .hide_from_trace <- TRUE
   cnd <- new_error(
     call. = call.,
@@ -18,8 +22,13 @@ pkg_error <- function(..., .data = NULL, .class = NULL, .envir = parent.frame(),
   cnd
 }
 
-pkg_warning <- function(..., .data = NULL, .class = NULL, .envir = parent.frame(),
-                      call. = TRUE) {
+pkg_warning <- function(
+  ...,
+  .data = NULL,
+  .class = NULL,
+  .envir = parent.frame(),
+  call. = TRUE
+) {
   .hide_from_trace <- TRUE
   cnd <- new_cond(
     call. = call.,

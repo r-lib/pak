@@ -17,7 +17,8 @@ format.pkg_scan_deps <- function(x, ...) {
     pkg <- format(names(fls))
     flsw <- cli::console_width() - nchar(pkg[1]) - 5
     c(
-      "", cli::col_yellow(paste0(labels[i], ":")),
+      "",
+      cli::col_yellow(paste0(labels[i], ":")),
       paste0(
         cli::col_grey("+ "),
         cli::col_blue(pkg),
@@ -39,7 +40,7 @@ print.pkg_scan_deps <- function(x, ...) {
 
 #' @export
 
-`[.pkg_scan_deps` <- function (x, i, j, drop = FALSE) {
+`[.pkg_scan_deps` <- function(x, i, j, drop = FALSE) {
   class(x) <- setdiff(class(x), "pkg_scan_deps")
   NextMethod("[")
 }

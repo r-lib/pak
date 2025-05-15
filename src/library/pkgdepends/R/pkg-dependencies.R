@@ -1,4 +1,3 @@
-
 #' @param refs Package names or references. See
 #'   ['Package references'][pkg_refs] for the syntax.
 #' @param ... Additional arguments, passed to
@@ -40,7 +39,6 @@ new_pkg_deps <- function(refs, ...) {
 pkg_deps <- R6::R6Class(
   "pkg_deps",
   public = list(
-
     #' @description
     #' Create a new `pkg_deps` object. Consider using `new_pkg_deps()`
     #' instead of calling the constructor directly.
@@ -65,10 +63,12 @@ pkg_deps <- R6::R6Class(
     #' pd <- pkg_deps$new("r-lib/pkgdepends")
     #' pd
 
-    initialize = function(refs, config = list(),
-                          policy = c("lazy", "upgrade"),
-                          remote_types = NULL) {
-
+    initialize = function(
+      refs,
+      config = list(),
+      policy = c("lazy", "upgrade"),
+      remote_types = NULL
+    ) {
       private$library <- tempfile()
       config$sysreqs_lookup_system <- FALSE
       policy <- match.arg(policy)
@@ -293,8 +293,10 @@ pkg_deps <- R6::R6Class(
 
       deps <- if (has_res) length(unique(res$package[!res$direct]))
 
-      c("<pkg_dependencies>",
-        "+ refs:", paste0("  - ", refs),
+      c(
+        "<pkg_dependencies>",
+        "+ refs:",
+        paste0("  - ", refs),
         if (has_res) paste0("+ has resolution (+", deps, " dependencies)"),
         if (res_err) "x has resolution errors",
         if (has_sol) "+ has solution",
@@ -305,7 +307,7 @@ pkg_deps <- R6::R6Class(
         if (has_sol) "(use `$show_solution()` to see the dependencies",
         if (has_sol) "(use `$get_solution()` to see the full solution results)",
         if (has_sol && !sol_err) "(use `$draw()` to draw the dependency tree)"
-        )
+      )
     },
 
     #' @description

@@ -41,7 +41,8 @@ parse_submodules <- function(file) {
   )
 
   values <- cbind(
-    submodule = fill(section_names), mapping_values[c("name", "value")],
+    submodule = fill(section_names),
+    mapping_values[c("name", "value")],
     stringsAsFactors = FALSE
   )
   values <- values[!is.na(mapping_values$.match), ]
@@ -105,7 +106,9 @@ update_submodule <- function(url, path, branch) {
 }
 
 async_update_submodule <- function(url, path, branch) {
-  url; path; branch
+  url
+  path
+  branch
   # if the directory already exists and not empty, we assume that
   # it was already downloaded. We still to update the submodules
   # recursively. This is problematic if a git download is interrupted
@@ -113,11 +116,12 @@ async_update_submodule <- function(url, path, branch) {
   # during normal operation of pkgdepends, I think. A better solution
   # would be to download the submodule to a temporary directory, and if
   # successful, then move the temporary directory to the correct place.
-  if (file.exists(path) &&
-    length(dir(path, all.files = TRUE, no.. = TRUE)) > 0) {
+  if (
+    file.exists(path) &&
+      length(dir(path, all.files = TRUE, no.. = TRUE)) > 0
+  ) {
     # message(path, " exists")
     async_update_git_submodules(path)
-
   } else {
     if (is.null(branch) || is.na(branch)) branch <- "HEAD"
     # message("getting ", path)
@@ -131,7 +135,7 @@ async_update_submodule <- function(url, path, branch) {
 }
 
 update_git_submodules_r <- function(path, subdir) {
-  synchronize(async_update_git_submodules_r(path, subdir))           # nocov
+  synchronize(async_update_git_submodules_r(path, subdir)) # nocov
 }
 
 async_update_git_submodules_r <- function(path, subdir) {
@@ -142,19 +146,20 @@ async_update_git_submodules_r <- function(path, subdir) {
   info <- parse_submodules(smfile)
   if (length(info) == 0) return()
 
-  to_ignore <- in_r_build_ignore(info$path, file.path(path, subdir, ".Rbuildignore"))
+  to_ignore <- in_r_build_ignore(
+    info$path,
+    file.path(path, subdir, ".Rbuildignore")
+  )
   info <- info[!to_ignore, ]
   if (nrow(info) == 0) return()
 
   async_map(seq_len(nrow(info)), function(i) {
     async_update_submodule(
       info$url[i],
-      file.path(path,
-      info$path[i]),
+      file.path(path, info$path[i]),
       info$branch[i]
     )
-  })$
-  then(function() invisible())
+  })$then(function() invisible())
 }
 
 update_git_submodules <- function(path) {
@@ -171,12 +176,10 @@ async_update_git_submodules <- function(path) {
   async_map(seq_len(nrow(info)), function(i) {
     async_update_submodule(
       info$url[i],
-      file.path(path,
-      info$path[i]),
+      file.path(path, info$path[i]),
       info$branch[i]
     )
-  })$
-  then(function() invisible())
+  })$then(function() invisible())
 }
 
 r_build_ignore_patterns <- c(
@@ -222,12 +225,12 @@ in_r_build_ignore <- function(paths, ignore_file) {
   vlapply(paths, should_ignore)
 }
 
-directories <- function (paths) {
+directories <- function(paths) {
   dirs <- unique(dirname(paths))
   out <- dirs[dirs != "."]
   while (length(dirs) > 0 && any(dirs != ".")) {
-      out <- unique(c(out, dirs[dirs != "."]))
-      dirs <- unique(dirname(dirs))
+    out <- unique(c(out, dirs[dirs != "."]))
+    dirs <- unique(dirname(dirs))
   }
   sort(out)
 }

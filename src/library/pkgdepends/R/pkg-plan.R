@@ -1,11 +1,22 @@
-
 pkg_plan <- R6::R6Class(
   "pkg_plan",
   public = list(
-    initialize = function(refs, config = list(), library = NULL,
-                          remote_types = NULL, lockfile = NULL)
-      pkgplan_init(self, private, refs, config, library, remote_types,
-                   lockfile),
+    initialize = function(
+      refs,
+      config = list(),
+      library = NULL,
+      remote_types = NULL,
+      lockfile = NULL
+    )
+      pkgplan_init(
+        self,
+        private,
+        refs,
+        config,
+        library,
+        remote_types,
+        lockfile
+      ),
 
     get_refs = function() private$refs,
     has_resolution = function() !is.null(private$resolution$result),
@@ -16,34 +27,26 @@ pkg_plan <- R6::R6Class(
     has_solution = function() !is.null(private$solution),
     get_config = function() private$config,
 
-    async_resolve = function()
-      pkgplan_async_resolve(self, private),
-    resolve = function()
-      pkgplan_resolve(self, private),
-    get_resolution = function()
-      pkgplan_get_resolution(self, private),
+    async_resolve = function() pkgplan_async_resolve(self, private),
+    resolve = function() pkgplan_resolve(self, private),
+    get_resolution = function() pkgplan_get_resolution(self, private),
 
     async_download_resolution = function()
       pkgplan_async_download_resolution(self, private),
-    download_resolution = function()
-      pkgplan_download_resolution(self, private),
+    download_resolution = function() pkgplan_download_resolution(self, private),
     get_resolution_download = function()
       pkgplan_get_resolution_download(self, private),
 
     solve = function(policy = c("lazy", "upgrade"))
       pkgplan_solve(self, private, match.arg(policy)),
-    delete_solution = function()
-      private$solution <- NULL,
+    delete_solution = function() private$solution <- NULL,
     stop_for_solve_error = function()
       pkgplan_stop_for_solve_error(self, private),
-    get_solution = function()
-      pkgplan_get_solution(self, private),
+    get_solution = function() pkgplan_get_solution(self, private),
     show_solution = function(key = FALSE)
       pkgplan_show_solution(self, private, key),
-    get_sysreqs = function()
-      pkgplan_get_sysreqs(self, private),
-    show_sysreqs = function()
-      pkgplan_show_sysreqs(self, private),
+    get_sysreqs = function() pkgplan_get_sysreqs(self, private),
+    show_sysreqs = function() pkgplan_show_sysreqs(self, private),
     get_install_plan = function()
       pkgplan_install_plan(self, private, downloads = TRUE),
     export_install_plan = function(plan_file = "pkg.lock", version = 2)
@@ -53,8 +56,7 @@ pkg_plan <- R6::R6Class(
 
     async_download_solution = function()
       pkgplan_async_download_solution(self, private),
-    download_solution = function()
-      pkgplan_download_solution(self, private),
+    download_solution = function() pkgplan_download_solution(self, private),
     get_solution_download = function()
       pkgplan_get_solution_download(self, private),
     stop_for_solution_download_error = function()
@@ -65,8 +67,7 @@ pkg_plan <- R6::R6Class(
     update = function() pkgplan_update(self, private),
     update_sysreqs = function() pkgplan_update_sysreqs(self, private),
 
-    print = function(...)
-      pkgplan_print(self, private, ...)
+    print = function(...) pkgplan_print(self, private, ...)
   ),
 
   private = list(
@@ -113,9 +114,15 @@ pkg_plan <- R6::R6Class(
 
 #' @importFrom utils modifyList
 
-pkgplan_init <- function(self, private, refs, config, library,
-                         remote_types, lockfile) {
-
+pkgplan_init <- function(
+  self,
+  private,
+  refs,
+  config,
+  library,
+  remote_types,
+  lockfile
+) {
   if (!is.null(lockfile)) {
     return(pkgplan_init_lockfile(
       self,
@@ -127,8 +134,7 @@ pkgplan_init <- function(self, private, refs, config, library,
     ))
   }
 
-  assert_that(is_character(refs),
-              is_optional_path(library))
+  assert_that(is_character(refs), is_optional_path(library))
 
   private$refs <- refs
   private$remotes <- parse_pkg_refs(refs)
@@ -159,7 +165,9 @@ pkgplan_init <- function(self, private, refs, config, library,
       update_after = private$config$get("metadata_update_after"),
       bioc = private$config$get("use_bioconductor")
     ),
-    package = pkgcache::package_cache$new(private$config$get("package_cache_dir")),
+    package = pkgcache::package_cache$new(private$config$get(
+      "package_cache_dir"
+    )),
     installed = installed
   )
 
@@ -167,8 +175,14 @@ pkgplan_init <- function(self, private, refs, config, library,
   invisible(self)
 }
 
-pkgplan_init_lockfile <- function(self, private, lockfile, config,
-                                   library, remote_types) {
+pkgplan_init_lockfile <- function(
+  self,
+  private,
+  lockfile,
+  config,
+  library,
+  remote_types
+) {
   assert_that(
     is_path(lockfile),
     is_optional_path(library)
@@ -207,35 +221,41 @@ pkgplan_init_lockfile <- function(self, private, lockfile, config,
   })
 
   soldata <- data_frame(
-    ref              = refs,
-    type             = vcapply(pkgs, "[[", "type"),
-    direct           = vlapply(pkgs, "[[", "direct"),
-    directpkg        = vlapply(pkgs, "[[", "directpkg"),
-    status           = "OK",
-    package          = vcapply(pkgs, "[[", "package"),
-    version          = vcapply(pkgs, "[[", "version"),
-    license          = vcapply(pkgs, function(x) x$license %||% NA_character_),
+    ref = refs,
+    type = vcapply(pkgs, "[[", "type"),
+    direct = vlapply(pkgs, "[[", "direct"),
+    directpkg = vlapply(pkgs, "[[", "directpkg"),
+    status = "OK",
+    package = vcapply(pkgs, "[[", "package"),
+    version = vcapply(pkgs, "[[", "version"),
+    license = vcapply(pkgs, function(x) x$license %||% NA_character_),
     needscompilation = vlapply(pkgs, function(x) x$needscompilation %||% NA),
-    sha256           = vcapply(pkgs, function(x) x$sha256 %||% NA_character_),
-    filesize         = viapply(pkgs, function(x) x$filesize %||% NA_integer_),
-    built            = vcapply(pkgs, function(x) x$built %||% NA_character_),
-    platform         = vcapply(pkgs, "[[", "platform"),
-    rversion         = vcapply(pkgs, "[[", "rversion"),
-    target           = vcapply(pkgs, "[[", "target"),
-    dependencies     = lapply(pkgs, function(x) unlist(x$dependencies) %||% character()),
-    sources          = lapply(pkgs, function(x) unlist(x$sources)),
-    metadata         = lapply(pkgs, function(x) unlist(x$metadata)),
-    dep_types        = lapply(pkgs, function(x) unlist(x$dep_types)),
-    remote           = parse_pkg_refs(refs),
-    cache_status     = "miss",
-    lib_status       = "new",
-    old_version      = NA_character_,
-    new_version      = vcapply(pkgs, "[[", "version"),
-    extra            = list(list()),
-    install_args     = lapply(pkgs, function(x) unlist(x$install_args) %||% character()),
-    repotype         = vcapply(pkgs, function(x) x$repotype %||% NA_character_),
-    params           = lapply(pkgs, function(x) unlist(x$params)),
-    sysreqs          = vcapply(pkgs, function(x) x[["sysreqs"]] %||% NA_character_),
+    sha256 = vcapply(pkgs, function(x) x$sha256 %||% NA_character_),
+    filesize = viapply(pkgs, function(x) x$filesize %||% NA_integer_),
+    built = vcapply(pkgs, function(x) x$built %||% NA_character_),
+    platform = vcapply(pkgs, "[[", "platform"),
+    rversion = vcapply(pkgs, "[[", "rversion"),
+    target = vcapply(pkgs, "[[", "target"),
+    dependencies = lapply(
+      pkgs,
+      function(x) unlist(x$dependencies) %||% character()
+    ),
+    sources = lapply(pkgs, function(x) unlist(x$sources)),
+    metadata = lapply(pkgs, function(x) unlist(x$metadata)),
+    dep_types = lapply(pkgs, function(x) unlist(x$dep_types)),
+    remote = parse_pkg_refs(refs),
+    cache_status = "miss",
+    lib_status = "new",
+    old_version = NA_character_,
+    new_version = vcapply(pkgs, "[[", "version"),
+    extra = list(list()),
+    install_args = lapply(
+      pkgs,
+      function(x) unlist(x$install_args) %||% character()
+    ),
+    repotype = vcapply(pkgs, function(x) x$repotype %||% NA_character_),
+    params = lapply(pkgs, function(x) unlist(x$params)),
+    sysreqs = vcapply(pkgs, function(x) x[["sysreqs"]] %||% NA_character_),
     sysreqs_packages = sysreqs_packages
   )
 
@@ -245,7 +265,9 @@ pkgplan_init_lockfile <- function(self, private, lockfile, config,
 
   private$cache <- list(
     metadata = NULL,
-    package = pkgcache::package_cache$new(private$config$get("package_cache_dir")),
+    package = pkgcache::package_cache$new(private$config$get(
+      "package_cache_dir"
+    )),
     installed = NULL
   )
 
@@ -286,7 +308,8 @@ pkgplan_print <- function(self, private, ...) {
   cat(
     strwrap(
       paste0("- refs: ", paste(backtick(refs), collapse = ", ")),
-      indent = 0, exdent = 4
+      indent = 0,
+      exdent = 4
     ),
     sep = "\n"
   )
@@ -321,7 +344,7 @@ pkgplan_update <- function(self, private) {
   libstat <- make_installed_cache(private$config$get("library"))$pkgs
   for (i in seq_len(nrow(private$solution$result$data))) {
     pkg <- private$solution$result$data$package[i]
-    if (! pkg %in% libstat$package) {
+    if (!pkg %in% libstat$package) {
       next
     }
 

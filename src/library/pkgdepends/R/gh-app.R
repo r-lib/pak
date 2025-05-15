@@ -1,4 +1,3 @@
-
 # nocov start
 
 str_starts_with <- function(x, pre) {
@@ -14,7 +13,9 @@ gr_response_headers_graphql <- function(upd = NULL) {
     `x-github-media-type` = "github.v3; format=json",
     `x-ratelimit-limit` = "5000",
     `x-ratelimit-remaining` = "4998",
-    `x-ratelimit-reset` = as.integer(Sys.time() + as.difftime(1, units = "hours")),
+    `x-ratelimit-reset` = as.integer(
+      Sys.time() + as.difftime(1, units = "hours")
+    ),
     `x-ratelimit-used` = "2",
     `x-ratelimit-resource` = "graphql",
     `access-control-expose-headers` = "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
@@ -79,13 +80,11 @@ process_repos <- function(repos) {
 gh_fmt_desc <- function(dsc) {
   if (is.null(dsc)) {
     return(NA)
-
   } else if (is.raw(dsc)) {
     list(
       isBinary = TRUE,
       text = NA
     )
-
   } else {
     list(
       isBinary = FALSE,
@@ -95,20 +94,21 @@ gh_fmt_desc <- function(dsc) {
 }
 
 gh_app <- function(repos = NULL, log = interactive(), options = list()) {
-
   app <- webfakes::new_app()
 
   # Log requests by default
   if (log) app$use("logger" = webfakes::mw_log())
 
   # Parse JSON body, even if no content-type header is sent
-  app$use("json body parser" = webfakes::mw_json(
+  app$use(
+    "json body parser" = webfakes::mw_json(
       type = c(
         "",
         "application/json",
         "application/json; charset=utf-8"
       )
-  ))
+    )
+  )
 
   #  app$use("text body parser" = webfakes::mw_text(type = c("text/plain", "application/json")))
   #  app$use("multipart body parser" = webfakes::mw_multipart())
@@ -150,9 +150,12 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
 
   app$post("/graphql", function(req, res) {
     re_ref <- paste0(
-      "owner:[ ]*\"(?<user>[^\"]+)\"", "(?s:.)*",
-      "name:[ ]*\"(?<repo>[^\"]+)\"", "(?s:.)*",
-      "description:[ ]*object[(]expression:[ ]*\"[^:]+:(?<path>[^\"]+)\"", "(?s:.)*",
+      "owner:[ ]*\"(?<user>[^\"]+)\"",
+      "(?s:.)*",
+      "name:[ ]*\"(?<repo>[^\"]+)\"",
+      "(?s:.)*",
+      "description:[ ]*object[(]expression:[ ]*\"[^:]+:(?<path>[^\"]+)\"",
+      "(?s:.)*",
       "sha:[ ]*object[(]expression:[ ]*\"(?<ref>[^\"]+)\""
     )
 
@@ -170,41 +173,57 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
 
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {
-      if ((!is.null(cmt$tag) && cmt$tag == psd$ref) ||
+      if (
+        (!is.null(cmt$tag) && cmt$tag == psd$ref) ||
           (!is.null(cmt$branch) && cmt$branch == psd$ref) ||
-          str_starts_with(cmt$sha, psd$ref)) {
+          str_starts_with(cmt$sha, psd$ref)
+      ) {
         add_gh_headers(res)
         dsc <- cmt$files[[psd$path]]
-        if (!is.null(cmt$token) &&
-            (is.null(req$.token) || req$.token != cmt$token)) {
+        if (
+          !is.null(cmt$token) &&
+            (is.null(req$.token) || req$.token != cmt$token)
+        ) {
           send_repo_not_found(res, psd)
           return()
         }
         res$send_json(
           auto_unbox = TRUE,
-          list(data = list(repository = list(
-            description = gh_fmt_desc(dsc),
-            sha = list(oid = cmt$sha)
-          )))
+          list(
+            data = list(
+              repository = list(
+                description = gh_fmt_desc(dsc),
+                sha = list(oid = cmt$sha)
+              )
+            )
+          )
         )
         return()
       }
     }
 
     res$set_status(200)
-    res$send_json(auto_unbox = TRUE,
-      list(data = list(repository = list(
-        description = NA,
-        sha = NA
-      )))
+    res$send_json(
+      auto_unbox = TRUE,
+      list(
+        data = list(
+          repository = list(
+            description = NA,
+            sha = NA
+          )
+        )
+      )
     )
   })
 
   app$post("/graphql", function(req, res) {
     re_pull <- paste0(
-      "owner:[ ]*\"(?<user>[^\"]+)\"", "(?s:.)*",
-      "name:[ ]*\"(?<repo>[^\"]+)\"", "(?s:.)*",
-      "pullRequest[(]number:[ ]*(?<pull>[0-9]+)[)]", "(?s:.)*",
+      "owner:[ ]*\"(?<user>[^\"]+)\"",
+      "(?s:.)*",
+      "name:[ ]*\"(?<repo>[^\"]+)\"",
+      "(?s:.)*",
+      "pullRequest[(]number:[ ]*(?<pull>[0-9]+)[)]",
+      "(?s:.)*",
       "file[(]path:[ ]*\"(?<path>.*)\""
     )
 
@@ -227,10 +246,18 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
         dsc <- cmt$files[[psd$path]]
         res$send_json(
           auto_unbox = TRUE,
-          list(data = list(repository = list(pullRequest = list(
-            headRefOid = cmt$sha,
-            headRef = list(target = list(file = list(object = gh_fmt_desc(dsc))))
-          ))))
+          list(
+            data = list(
+              repository = list(
+                pullRequest = list(
+                  headRefOid = cmt$sha,
+                  headRef = list(
+                    target = list(file = list(object = gh_fmt_desc(dsc)))
+                  )
+                )
+              )
+            )
+          )
         )
         return()
       }
@@ -242,8 +269,10 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
   # @*release
   app$post("/graphql", function(req, res) {
     re_release <- paste0(
-      "owner:[ ]*\"(?<user>[^\"]+)\"", "(?s:.)*",
-      "name:[ ]*\"(?<repo>[^\"]+)\"", "(?s:.)*",
+      "owner:[ ]*\"(?<user>[^\"]+)\"",
+      "(?s:.)*",
+      "name:[ ]*\"(?<repo>[^\"]+)\"",
+      "(?s:.)*",
       "file[(]path:[ ]*\"(?<path>.*)\""
     )
 
@@ -257,13 +286,19 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
         dsc <- cmt$files[[psd$path]]
         res$send_json(
           auto_unbox = TRUE,
-          list(data = list(repository = list(latestRelease = list(
-            tagName = cmt$tagName,
-            tagCommit = list(
-              oid = cmt$sha,
-              file = list(object = gh_fmt_desc(dsc))
+          list(
+            data = list(
+              repository = list(
+                latestRelease = list(
+                  tagName = cmt$tagName,
+                  tagCommit = list(
+                    oid = cmt$sha,
+                    file = list(object = gh_fmt_desc(dsc))
+                  )
+                )
+              )
             )
-          ))))
+          )
         )
         return()
       }
@@ -277,12 +312,17 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       send_user_not_found(res, req$params)
       return()
     }
-    if (!req$params$repo %in% names(app$locals$repos$users[[req$params$user]]$repos)) {
+    if (
+      !req$params$repo %in%
+        names(app$locals$repos$users[[req$params$user]]$repos)
+    ) {
       send_repo_not_found(res, req$params)
       return()
     }
 
-    commits <- app$locals$repos$users[[req$params$user]]$repos[[req$params$repo]]$commits
+    commits <- app$locals$repos$users[[req$params$user]]$repos[[
+      req$params$repo
+    ]]$commits
     shas <- vapply(commits, "[[", "", "sha")
     if (!req$params$sha %in% shas) {
       send_sha_not_found(res, req$params)
@@ -306,7 +346,8 @@ add_gh_headers <- function(res) {
 
 send_user_not_found <- function(res, psd) {
   res$set_status(200)
-  res$send_json(auto_unbox = TRUE,
+  res$send_json(
+    auto_unbox = TRUE,
     list(
       data = list(repository = NA),
       errors = list(
@@ -339,7 +380,8 @@ send_ref_not_found <- function(res, psd) {
 
 send_pull_not_found <- function(res, psd) {
   res$set_status(200)
-  res$send_json(auto_unbox = TRUE,
+  res$send_json(
+    auto_unbox = TRUE,
     list(
       data = list(repository = list(pullRequest = NA)),
       errors = list(
@@ -369,7 +411,8 @@ send_sha_not_found <- function(res, psd) {
 
 send_no_releases <- function(res, psd) {
   res$set_status(200)
-  res$send_json(auto_unbox = TRUE,
+  res$send_json(
+    auto_unbox = TRUE,
     list(
       data = list(repository = list(latestRelease = NA))
     )

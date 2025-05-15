@@ -1,4 +1,3 @@
-
 # nocov start
 
 #' @description

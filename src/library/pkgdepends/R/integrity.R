@@ -1,8 +1,7 @@
-
 is_valid_package <- function(file) {
   if (!file.exists(file)) {
     FALSE
-  }  else if (grepl("\\.zip$", file)) {
+  } else if (grepl("\\.zip$", file)) {
     is_valid_package_zip(file)
   } else if (grepl("\\.tgz$|\\.tar\\.gz$", file)) {
     is_valid_package_targz(file)
@@ -36,10 +35,10 @@ is_package_file_list <- function(file, list) {
   pkgname <- pkg_name_from_file(file)
 
   ## A single directory, named after the package
-  if (any(! grepl(paste0("^", pkgname, "\\b"), list))) return(FALSE)
+  if (any(!grepl(paste0("^", pkgname, "\\b"), list))) return(FALSE)
 
   ## DESCRIPTION file
-  if (! paste0(pkgname, "/DESCRIPTION") %in% list) return(FALSE)
+  if (!paste0(pkgname, "/DESCRIPTION") %in% list) return(FALSE)
 
   return(TRUE)
 }

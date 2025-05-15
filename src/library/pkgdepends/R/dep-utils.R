@@ -1,4 +1,3 @@
-
 #' @export
 #' @rdname pkg_dep_types
 
@@ -22,8 +21,13 @@ pkg_dep_types_soft <- function() c("Suggests", "Enhances")
 pkg_dep_types <- function() c(pkg_dep_types_hard(), pkg_dep_types_soft())
 
 make_null_deps <- function() {
-  data_frame(ref = character(), type = character(), package = character(),
-             op = character(), version = character())
+  data_frame(
+    ref = character(),
+    type = character(),
+    package = character(),
+    op = character(),
+    version = character()
+  )
 }
 
 parse_deps <- function(deps, type) {
@@ -40,7 +44,7 @@ parse_deps <- function(deps, type) {
   lapply(seq_along(deps), function(i) {
     x <- omit_cols(re_match(deps[[i]], pattern = rx), c(".text", ".match"))
     x$type <- if (length(x$type) > 0) type[[i]] else character()
-    x[! x$package %in% base, ]
+    x[!x$package %in% base, ]
   })
 }
 
@@ -130,16 +134,12 @@ as_pkg_dependencies <- function(deps) {
 
   res <- if (isTRUE(deps)) {
     list(c(hard, "Suggests"), hard)
-
   } else if (identical(deps, FALSE)) {
     list(character(), character())
-
   } else if (is_na_scalar(deps)) {
     list(hard, hard)
-
   } else if (is.list(deps) && all(names(deps) == c("direct", "indirect"))) {
     deps
-
   } else {
     list(deps, hard)
   }

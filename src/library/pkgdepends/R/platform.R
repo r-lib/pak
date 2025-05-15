@@ -1,4 +1,3 @@
-
 #' @details
 #' `current_r_platform()` detects the platform of the current R version.
 #'
@@ -87,18 +86,15 @@ platform_is_ok <- function(cand, exp, exp_archs = NULL) {
   if (cand %in% c("i386+x86_64-w64-mingw32", "x86_64+i386-w64-mingw32")) {
     # This is a multi-arch binary, that is OK, if binaries are allowed
     any(c("x86_64-w64-mingw32", "i386-w64-mingw32") %in% exp)
-
   } else if (cand == "x86_64-w64-mingw32") {
     # This is an x64 only binary. If we are on x64 and we "prefer-x64"
     # then it is OK. Otherwise we would prefer a multi-arch binary or
     # a source package.
     "x86_64-w64-mingw32" %in% exp && exp_archs == "prefer-x64"
-
   } else if (cand == "i386-w64-mingw32") {
     # This is an i386 only binary. This is not OK currently.
     # (We do not allow an i386-only installation.)
     FALSE
-
   } else {
     # Otherwise it is just a match
     cand %in% exp

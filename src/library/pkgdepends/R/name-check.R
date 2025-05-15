@@ -1,4 +1,3 @@
-
 # -------------------------------------------------------------------------
 #' Check if an R package name is available.
 #'
@@ -64,11 +63,11 @@ async_pkg_name_check <- function(name, dictionaries = NULL) {
 
   basics <- async_pnc_basics(name)
   result <- when_all(
-    basics     = basics,
-    wikipedia  = if ("wikipedia"  %in% dicts) async_wikipedia_get (name),
+    basics = basics,
+    wikipedia = if ("wikipedia" %in% dicts) async_wikipedia_get(name),
     wiktionary = if ("wiktionary" %in% dicts) async_wiktionary_get(name),
-    sentiment  = if ("sentiment"  %in% dicts) async_sentiment_get (name),
-    urban      = if ("urban"      %in% dicts) async_urban_get     (name)
+    sentiment = if ("sentiment" %in% dicts) async_sentiment_get(name),
+    urban = if ("urban" %in% dicts) async_urban_get(name)
   )$then(function(res) add_class(res, "pkg_name_check"))
 }
 
@@ -88,12 +87,12 @@ print.pkg_name_check <- function(x, ...) {
 
 async_pnc_basics <- function(name) {
   when_all(
-    name       = name,
-    valid      = pnc_valid(name),
-    base       = pnc_base(name),
-    crandb     = async_pnc_crandb(name),
-    bioc       = async_pnc_bioc(name),
-    profanity  = async_profanity_get (name)
+    name = name,
+    valid = pnc_valid(name),
+    base = pnc_base(name),
+    crandb = async_pnc_crandb(name),
+    bioc = async_pnc_bioc(name),
+    profanity = async_profanity_get(name)
   )$then(function(res) add_class(res, "pkg_name_check_basics"))
 }
 
@@ -141,27 +140,26 @@ async_cranlike_check <- function(name) {
     bioc = current_config()$get("use_bioconductor"),
     cran_mirror = "https://cran.r-project.org",
     repos = repos,
-    update_after = as.difftime(5, units = "mins"))
+    update_after = as.difftime(5, units = "mins")
+  )
 
-  meta$async_check_update()$
-    then(function(data) {
-      mch <- match(tolower(name), tolower(data$pkgs$package))
-      ret <- list(cran = TRUE, bioc = TRUE, package = NA_character_)
-      if (!is.na(mch)) {
-        ret$package <- data$pkgs$package[mch]
-        type <- data$pkgs$type[mch]
-        if (type == "cran") ret$cran <- FALSE
-        if (type == "bioc") ret$bioc <- FALSE
-      }
-      ret
-    })$then(function(res) add_class(res, "pkg_name_check_cranlike"))
+  meta$async_check_update()$then(function(data) {
+    mch <- match(tolower(name), tolower(data$pkgs$package))
+    ret <- list(cran = TRUE, bioc = TRUE, package = NA_character_)
+    if (!is.na(mch)) {
+      ret$package <- data$pkgs$package[mch]
+      type <- data$pkgs$type[mch]
+      if (type == "cran") ret$cran <- FALSE
+      if (type == "bioc") ret$bioc <- FALSE
+    }
+    ret
+  })$then(function(res) add_class(res, "pkg_name_check_cranlike"))
 }
 
 # -------------------------------------------------------------------------
 
 async_pnc_crandb <- function(name) {
-  async_pnc_crandb_query(name)$
-    then(pnc_crandb_process)
+  async_pnc_crandb_query(name)$then(pnc_crandb_process)
 }
 
 async_pnc_crandb_query <- function(name) {
@@ -195,13 +193,12 @@ print.pkg_name_check_basics <- function(x, ...) {
 #' @export
 
 format.pkg_name_check_basics <- function(x, ...) {
-
   cw <- cli::console_width()
   stars <- cli::col_yellow(cli::symbol$en_dash, "*", cli::symbol$en_dash)
   title <- paste(stars, cli::style_bold(cli::col_blue(x$name)), stars)
   tbox <- cli::boxx(
     cli::ansi_align(title, width = cw - 4, align = "center"),
-    padding = c(0,1,0,1),
+    padding = c(0, 1, 0, 1),
     border_style = "double",
     border_col = cli::col_yellow
   )
@@ -216,11 +213,13 @@ format.pkg_name_check_basics <- function(x, ...) {
     if ("profanity" %in% names(x)) {
       paste0(
         mark(!x$profanity),
-        if (!x$profanity) "  not a" else " ", " profanity")
+        if (!x$profanity) "  not a" else " ",
+        " profanity"
+      )
     }
   )
   cols <- cli::ansi_columns(str, width = cw - 4, max_cols = length(str))
-  bbox <- cli::boxx(cols, padding = c(0,1,0,1), border_col = cli::col_silver)
+  bbox <- cli::boxx(cols, padding = c(0, 1, 0, 1), border_col = cli::col_silver)
 
   c(tbox, bbox)
 }
@@ -228,10 +227,9 @@ format.pkg_name_check_basics <- function(x, ...) {
 # -------------------------------------------------------------------------
 
 async_wikipedia_get <- function(terms) {
-  async_wikipedia_get_query(terms)$
-    then(http_stop_for_status)$
-    then(function(resp) wikipedia_get_process(terms, resp))$
-    then(function(res) add_class(res, "pkg_name_check_wikipedia"))
+  async_wikipedia_get_query(terms)$then(http_stop_for_status)$then(
+    function(resp) wikipedia_get_process(terms, resp)
+  )$then(function(res) add_class(res, "pkg_name_check_wikipedia"))
 }
 
 async_wikipedia_get_query <- function(terms) {
@@ -259,8 +257,10 @@ make_wikipedia_data <- function(terms, intro = TRUE) {
 }
 
 wikipedia_get_process <- function(
-    terms, resp, base_url = "https://en.wikipedia.org/wiki/") {
-
+  terms,
+  resp,
+  base_url = "https://en.wikipedia.org/wiki/"
+) {
   obj <- jsonlite::fromJSON(
     rawToChar(resp$content),
     simplifyVector = FALSE
@@ -306,7 +306,7 @@ print.pkg_name_check_wikipedia <- function(x, ...) {
 #' @export
 
 format.pkg_name_check_wikipedia <- function(x, limit = 6, ...) {
-  x <- x[1,, drop = FALSE]
+  x <- x[1, , drop = FALSE]
 
   if (is.na(x$text)) {
     x$text <- "No definition found"
@@ -327,7 +327,7 @@ format.pkg_name_check_wikipedia <- function(x, limit = 6, ...) {
   if (length(alg) > limit) alg <- c(alg[1:limit], cli::symbol$ellipsis)
   cli::boxx(
     alg,
-    padding = c(0,1,0,1),
+    padding = c(0, 1, 0, 1),
     header = hdr,
     footer = ftr,
     border_col = cli::col_silver
@@ -342,14 +342,15 @@ clean_wikipedia_text <- function(x) {
     x
   )
   x <- gsub(" ()", "", x, fixed = TRUE)
-  x <- gsub("\n", "\n\n", x , fixed = TRUE)
+  x <- gsub("\n", "\n\n", x, fixed = TRUE)
 }
 
 # -------------------------------------------------------------------------
 
 async_wiktionary_get <- function(terms) {
-  async_wiktionary_get_query(terms)$
-    then(function(resp) wiktionary_get_process(terms, resp))
+  async_wiktionary_get_query(terms)$then(
+    function(resp) wiktionary_get_process(terms, resp)
+  )
 }
 
 async_wiktionary_get_query <- function(terms) {
@@ -383,7 +384,7 @@ print.pkg_name_check_wiktionary <- function(x, ...) {
 #' @export
 
 format.pkg_name_check_wiktionary <- function(x, limit = 6, ...) {
-  x <- x[1,, drop = FALSE]
+  x <- x[1, , drop = FALSE]
 
   if (is.na(x$text)) {
     x$text <- "No definition found"
@@ -401,7 +402,7 @@ format.pkg_name_check_wiktionary <- function(x, limit = 6, ...) {
   alg <- cli::ansi_align(wrp, width = cw - 4)
   cli::boxx(
     alg,
-    padding = c(0,1,0,1),
+    padding = c(0, 1, 0, 1),
     header = hdr,
     footer = ftr,
     border_col = cli::col_silver
@@ -431,10 +432,9 @@ clean_wiktionary_text <- function(x) {
 # -------------------------------------------------------------------------
 
 async_profanity_get <- function(term) {
-  async_profanity_get_query(term)$
-    then(http_stop_for_status)$
-    catch(error = function(err) list(content = charToRaw("NA")))$
-    then(function(resp) profanity_get_process(term, resp))
+  async_profanity_get_query(term)$then(http_stop_for_status)$catch(
+    error = function(err) list(content = charToRaw("NA"))
+  )$then(function(resp) profanity_get_process(term, resp))
 }
 
 async_profanity_get_query <- function(term) {
@@ -453,18 +453,18 @@ profanity_get_process <- function(term, resp) {
 
 # -------------------------------------------------------------------------
 
-sentiment_get_has_data <- function() ! is.null(pkgd_data$sentiment)
+sentiment_get_has_data <- function() !is.null(pkgd_data$sentiment)
 
 async_sentiment_get <- function(term) {
-  start <- if (! sentiment_get_has_data()) {
+  start <- if (!sentiment_get_has_data()) {
     async_sentiment_get_data()
   } else {
     async_constant(pkgd_data$sentiment)
   }
 
-  start$
-    then(function(stm) structure(stm[term], names = term))$
-    then(function(res) add_class(res, "pkg_name_check_sentiment"))
+  start$then(function(stm) structure(stm[term], names = term))$then(
+    function(res) add_class(res, "pkg_name_check_sentiment")
+  )
 }
 
 async_sentiment_get_data <- function() {
@@ -472,18 +472,17 @@ async_sentiment_get_data <- function() {
     "PKG_NAME_CHECK_SENTIMENT_URL",
     "https://raw.githubusercontent.com/fnielsen/afinn/master/afinn/data/AFINN-en-165.txt"
   )
-  http_get(url)$
-    then(http_stop_for_status)$
-    catch(error = function(err) list(content = raw()))$
-    then(function(resp) {
-      chr <- rawToChar(resp$content)
-      lns <- strsplit(chr, "\n", fixed = TRUE)[[1]]
-      cls <- strsplit(lns, "\t", fixed = TRUE)
-      pkgd_data$sentiment <- structure(
-        as.integer(vapply(cls, "[[", character(1), 2)),
-        names = vapply(cls, "[[", character(1), 1)
-      )
-    })
+  http_get(url)$then(http_stop_for_status)$catch(
+    error = function(err) list(content = raw())
+  )$then(function(resp) {
+    chr <- rawToChar(resp$content)
+    lns <- strsplit(chr, "\n", fixed = TRUE)[[1]]
+    cls <- strsplit(lns, "\t", fixed = TRUE)
+    pkgd_data$sentiment <- structure(
+      as.integer(vapply(cls, "[[", character(1), 2)),
+      names = vapply(cls, "[[", character(1), 1)
+    )
+  })
 }
 
 sentiment_string <- function(x) {
@@ -493,12 +492,12 @@ sentiment_string <- function(x) {
     "-3" = "\U0001F61E\U0001F61E",
     "-2" = "\U0001F61E",
     "-1" = "\U0001F610",
-    "0"  = "\U0001F610",
-    "1"  = "\U0001F642",
-    "2"  = "\U0001F642\U0001F642",
-    "3"  = "\U0001F606",
-    "4"  = "\U0001F606\U0001F606",
-    "5"  = "\U0001F970"
+    "0" = "\U0001F610",
+    "1" = "\U0001F642",
+    "2" = "\U0001F642\U0001F642",
+    "3" = "\U0001F606",
+    "4" = "\U0001F606\U0001F606",
+    "5" = "\U0001F970"
   )
 
   asc <- c(
@@ -507,12 +506,12 @@ sentiment_string <- function(x) {
     "-3" = ":(:(",
     "-2" = ":(",
     "-1" = ":|",
-    "0"  = ":|",
-    "1"  = ":)",
-    "2"  = ":):)",
-    "3"  = ":D",
-    "4"  = ":D:D",
-    "5"  = ""
+    "0" = ":|",
+    "1" = ":)",
+    "2" = ":):)",
+    "3" = ":D",
+    "4" = ":D:D",
+    "5" = ""
   )
   if (has_emoji()) emo[as.character(x)] else asc[as.character(x)]
 }
@@ -532,14 +531,13 @@ format.pkg_name_check_sentiment <- function(x, ...) {
   txt <- paste0("Sentiment: ", str, cli::col_silver(paste0(" (", x, ")")))
   cw <- cli::console_width()
   alg <- cli::ansi_align(txt, width = cw - 4)
-  cli::boxx(alg, padding = c(0,1,0,1), border_col = cli::col_silver)
+  cli::boxx(alg, padding = c(0, 1, 0, 1), border_col = cli::col_silver)
 }
 
 # -------------------------------------------------------------------------
 
 async_urban_get <- function(term) {
-  async_urban_get_query(term)$
-    then(function(resp) urban_get_process(term, resp))
+  async_urban_get_query(term)$then(function(resp) urban_get_process(term, resp))
 }
 
 async_urban_get_query <- function(term) {
@@ -548,16 +546,16 @@ async_urban_get_query <- function(term) {
     "http://api.urbandictionary.com/v0/"
   )
   url <- paste0(base, "define?term=", utils::URLencode(term))
-  http_get(url)$
-    then(http_stop_for_status)$
-    catch(error = function(err) list(content = charToRaw('{"list":[]}')))
+  http_get(url)$then(http_stop_for_status)$catch(
+    error = function(err) list(content = charToRaw('{"list":[]}'))
+  )
 }
 
 urban_get_process <- function(term, resp) {
   obj <- jsonlite::fromJSON(
     rawToChar(resp$content),
     simplifyVector = FALSE
-    )$list
+  )$list
   tbl <- data_frame(
     definition = vcapply(obj, "[[", "definition"),
     permalink = vcapply(obj, "[[", "permalink"),
@@ -595,12 +593,12 @@ format.pkg_name_check_urban <- function(x, limit = 6, ...) {
   if (length(alg) > limit) alg <- c(alg[1:limit], cli::symbol$ellipsis)
   cli::boxx(
     alg,
-    padding = c(0,1,0,1),
+    padding = c(0, 1, 0, 1),
     header = hdr,
     footer = ftr,
     border_col = cli::col_silver
   )
- }
+}
 
 clean_urban <- function(x) {
   gsub("[\r\n]", " ", x)
@@ -629,8 +627,9 @@ pnc_bioc_false <- function(pkg) {
 
 async_pnc_bioc_web <- function(name) {
   name
-  async_pnc_bioc_query(name)$
-    then(function(response) pnc_bioc_process(name, response))
+  async_pnc_bioc_query(name)$then(
+    function(response) pnc_bioc_process(name, response)
+  )
 }
 
 async_pnc_bioc_query <- function(name) {
@@ -680,53 +679,115 @@ pnc_bioc_parse_pgz <- function(response) {
 # These are the packages that are not in the Bioconductor git repo
 
 pnc_bioc_removed <- function() {
-  c(# removed in 3.5
-    "betr", "encoDnaseI", "ggtut",
+  c(
+    # removed in 3.5
+    "betr",
+    "encoDnaseI",
+    "ggtut",
     # removed in 3.4
-    "AffyTiling", "cellHTS", "DASiR", "DAVIDQuery", "GenoView",
-    "inSilicoDb", "inSilicoMerging", "jmosaic", "metaX", "MMDiff",
-    "neaGUI", "Rolexa", "RWebServices", "SJava", "SomaticCA", "spade",
+    "AffyTiling",
+    "cellHTS",
+    "DASiR",
+    "DAVIDQuery",
+    "GenoView",
+    "inSilicoDb",
+    "inSilicoMerging",
+    "jmosaic",
+    "metaX",
+    "MMDiff",
+    "neaGUI",
+    "Rolexa",
+    "RWebServices",
+    "SJava",
+    "SomaticCA",
+    "spade",
     # removed in 3.1
-    "asmn", "COPDSexualDimorphism", "DNaseR", "flowFlowJo", "flowPhyto",
+    "asmn",
+    "COPDSexualDimorphism",
+    "DNaseR",
+    "flowFlowJo",
+    "flowPhyto",
     # removed in 3.0
-    "RMAPPER", "virtualArray",
+    "RMAPPER",
+    "virtualArray",
     # removed in 2.14
-    "Agi4x44PreProcess", "maDB", "pgUtils",
+    "Agi4x44PreProcess",
+    "maDB",
+    "pgUtils",
     # removed in 2.13
-    "dualKS", "externalVector", "GeneGroupAnalysis", "iFlow", "KEGGSOAP",
+    "dualKS",
+    "externalVector",
+    "GeneGroupAnalysis",
+    "iFlow",
+    "KEGGSOAP",
     "xmapcore",
     # removed in 2.12
-    "cosmo", "cosmoGUI", "gene2pathway",
+    "cosmo",
+    "cosmoGUI",
+    "gene2pathway",
     # removed in 2.11
     "PatientGeneSets",
     # removed in 2.10
-    "edd", "GeneRfold", "ontoTools", "GeneR", "RMAGEML", "RTooks4TB",
+    "edd",
+    "GeneRfold",
+    "ontoTools",
+    "GeneR",
+    "RMAGEML",
+    "RTooks4TB",
     # Packages removed with Bioconductor 2.9 release
-    "GeneSpring", "GeneTraffic", "makePlatformDesign", "Rdbi", "RdbiPgSQL",
-    "rflowcyt", "Rredland", "Ruuid", "simulatorAPMS", "snpMatrix",
+    "GeneSpring",
+    "GeneTraffic",
+    "makePlatformDesign",
+    "Rdbi",
+    "RdbiPgSQL",
+    "rflowcyt",
+    "Rredland",
+    "Ruuid",
+    "simulatorAPMS",
+    "snpMatrix",
     # Packages removed with Bioconductor 2.8 release
-    "exonmap", "biocDatasets",
+    "exonmap",
+    "biocDatasets",
     # Packages removed with Bioconductor 2.7 release
-    "matchprobes", "GeneticsBase", "fbat",
+    "matchprobes",
+    "GeneticsBase",
+    "fbat",
     # Packages removed with Bioconductor 2.6 release
     "keggorth",
     # Packages removed with Bioconductor 2.5 release
-    "stam", "Rintact",
+    "stam",
+    "Rintact",
     # Packages removed with Bioconductor 2.4 release
-    "AnnBuilder", "RSNPer",
+    "AnnBuilder",
+    "RSNPer",
     # Packages removed with Bioconductor 2.3 release
-    "SemSim", "WidgetInvoke",
+    "SemSim",
+    "WidgetInvoke",
     # Packages removed with Bioconductor 2.2 release
-    "SAGElyzer", "GeneTS", "arrayMagic", "chromoViz", "iSPlot", "iSNetword",
+    "SAGElyzer",
+    "GeneTS",
+    "arrayMagic",
+    "chromoViz",
+    "iSPlot",
+    "iSNetword",
     # Packages removed with Bioconductor 2.1 release
-    "bim", "arrayQCplot",
+    "bim",
+    "arrayQCplot",
     # Packages removed with Bioconductor 2.0 release
-    "gff3Plotter", "mmgmos", "applera",
+    "gff3Plotter",
+    "mmgmos",
+    "applera",
     # Packages removed with Bioconductor 1.9 release
-    "reposTools", "exprExternal", "SNAData", "rfcdmin", "goCluster",
-    "GenomeBase", "y2hStat",
+    "reposTools",
+    "exprExternal",
+    "SNAData",
+    "rfcdmin",
+    "goCluster",
+    "GenomeBase",
+    "y2hStat",
     # Packages removed with Bioconductor 1.8 release
-    "msbase", "ideogram",
+    "msbase",
+    "ideogram",
     # Packages removed with Bioconductor 1.7 release
     "mscalib"
   )

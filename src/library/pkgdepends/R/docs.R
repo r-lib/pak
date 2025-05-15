@@ -1,10 +1,11 @@
-
 roxy_to_rd <- function(text) {
   roxy_text <- paste0(
     "#' @name foo\n",
     "#' @title title\n",
     "#' @details\n",
-    "#' ", gsub("\n", "\n#' ", text), "\n",
+    "#' ",
+    gsub("\n", "\n#' ", text),
+    "\n",
     "#' @md\n",
     "NULL\n"
   )
@@ -42,7 +43,6 @@ roxy_to_rd <- function(text) {
 }
 
 generate_config_docs <- function() {
-
   # for the dynamic help in pak
   config <- Filter(function(x) !is.null(x$docs), pkgdepends_config)
   nms <- names(config)

@@ -1,4 +1,3 @@
-
 #' @param refs Package names or references. See
 #'   ['Package references'][pkg_refs] for the syntax.
 #' @param ... Additional arguments, passed to
@@ -43,7 +42,6 @@ new_pkg_download_proposal <- function(refs, ...) {
 pkg_download_proposal <- R6::R6Class(
   "pkg_download_proposal",
   public = list(
-
     #' @description
     #' Create a new `pkg_download_proposal` object. Consider using
     #' `new_pkg_download_proposal()` instead of calling the constructor
@@ -220,8 +218,10 @@ pkg_download_proposal <- R6::R6Class(
 
       deps <- if (has_res) length(unique(res$package[!res$direct]))
 
-      c("<pkg_download_proposal>",
-        "+ refs:", paste0("  - ", refs),
+      c(
+        "<pkg_download_proposal>",
+        "+ refs:",
+        paste0("  - ", refs),
         if (has_res) paste0("+ has resolution (+", deps, " dependencies)"),
         if (res_err) "x has resolution errors",
         if (has_dls) "+ has downloads",
@@ -231,7 +231,7 @@ pkg_download_proposal <- R6::R6Class(
           "(use `$download()` to download packages)",
         if (has_res) "(use `$get_resolution()` to see resolution results)",
         if (has_dls) "(use `$get_downloads()` to get download data)"
-        )
+      )
     },
 
     #' @description

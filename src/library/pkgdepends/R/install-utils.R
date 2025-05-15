@@ -15,7 +15,7 @@ print.package_packaging_error <- function(x, ...) {
 format.package_uncompress_error <- function(x, ...) {
   out <- conditionMessage(x)
   if (!is.null(x$data$stdout)) {
-   stdout <- last_stdout_lines(x$stdout, "", prefix = "O> ")[-(1:2)]
+    stdout <- last_stdout_lines(x$stdout, "", prefix = "O> ")[-(1:2)]
     out <- c(out, "", "Standard output:", stdout)
   }
   out

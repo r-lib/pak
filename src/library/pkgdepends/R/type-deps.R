@@ -1,4 +1,3 @@
-
 parse_remote_deps <- function(specs, config, ...) {
   parsed_specs <- re_match(specs, type_deps_rx())
   parsed_specs$ref <- parsed_specs$.text
@@ -7,19 +6,37 @@ parse_remote_deps <- function(specs, config, ...) {
   parsed_specs$type <- "deps"
   lapply(
     seq_len(nrow(parsed_specs)),
-    function(i) as.list(parsed_specs[i,])
+    function(i) as.list(parsed_specs[i, ])
   )
 }
 
-resolve_remote_deps <- function(remote, direct, config, cache,
-                                     dependencies, ...) {
+resolve_remote_deps <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
   in_pkg <- is_package_root(remote$path)
   if (in_pkg) {
-    ret <- resolve_remote_local(remote, direct, config, cache,
-                                dependencies, ...)
+    ret <- resolve_remote_local(
+      remote,
+      direct,
+      config,
+      cache,
+      dependencies,
+      ...
+    )
   } else {
-    ret <- resolve_remote_local_autodeps(remote, direct, config, cache,
-                                         dependencies, ...)
+    ret <- resolve_remote_local_autodeps(
+      remote,
+      direct,
+      config,
+      cache,
+      dependencies,
+      ...
+    )
   }
 
   # We need to do some extra work for the case when a dependency
@@ -59,8 +76,14 @@ resolve_remote_deps <- function(remote, direct, config, cache,
   ret2
 }
 
-resolve_remote_local_autodeps <- function(remote, direct, config, cache,
-                                          dependencies, ...) {
+resolve_remote_local_autodeps <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
   proc <- cli::cli_process_start(
     "Scanning dependencies in {.path {remote$path}}"
   )
@@ -93,8 +116,15 @@ resolve_remote_local_autodeps <- function(remote, direct, config, cache,
   )
 }
 
-download_remote_deps <- function(resolution, target, target_tree, config,
-                                 cache, which, on_progress) {
+download_remote_deps <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
   ## Nothing to do here
   "Had"
 }

@@ -1,6 +1,4 @@
-
 ghr <- local({
-
   # -------------------------------------------------------------------------
 
   ghr_list <- function(repo) {
@@ -9,7 +7,8 @@ ghr <- local({
 
   async_ghr_list <- function(repo) {
     repo <- parse_slug(repo)
-    query <- glue::glue("{
+    query <- glue::glue(
+      "{
     rateLimit {
       cost
       remaining
@@ -24,18 +23,20 @@ ghr <- local({
         }
       }
     }
-  }", .open = "<", .close = ">")
+  }",
+      .open = "<",
+      .close = ">"
+    )
 
-    github_query(query)$
-      then(function(resp) {
-        rls <- resp$obj$data$repository$releases$nodes
-        data_frame(
-          id = vcapply(rls, "[[", "id"),
-          name = vcapply(rls, "[[", "name"),
-          tag_name = vcapply(rls, "[[", "tagName"),
-          created_at = parse_iso_8601(vcapply(rls, "[[", "createdAt"))
-        )
-      })
+    github_query(query)$then(function(resp) {
+      rls <- resp$obj$data$repository$releases$nodes
+      data_frame(
+        id = vcapply(rls, "[[", "id"),
+        name = vcapply(rls, "[[", "name"),
+        tag_name = vcapply(rls, "[[", "tagName"),
+        created_at = parse_iso_8601(vcapply(rls, "[[", "createdAt"))
+      )
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -47,10 +48,9 @@ ghr <- local({
   async_ghr_get <- function(repo, tag) {
     prepo <- parse_slug(repo)
     ep <- glue::glue("/repos/{prepo$owner}/{prepo$repo}/releases/tags/{tag}")
-    async_github_v3_query(ep)$
-      then(function(resp) {
-        jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
-      })
+    async_github_v3_query(ep)$then(function(resp) {
+      jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -60,9 +60,9 @@ ghr <- local({
   }
 
   async_ghr_list_assets <- function(repo, tag) {
-
     repo <- parse_slug(repo)
-    query <- glue::glue("{
+    query <- glue::glue(
+      "{
     rateLimit {
       cost
       remaining
@@ -82,21 +82,23 @@ ghr <- local({
         }
       }
     }
-  }", .open = "<", .close = ">")
+  }",
+      .open = "<",
+      .close = ">"
+    )
 
-    github_query(query)$
-      then(function(resp) {
-        asts <- resp$obj$data$repository$release$releaseAssets$nodes
-        data_frame(
-          id = vcapply(asts, "[[", "id"),
-          name = vcapply(asts, "[[", "name"),
-          download_url = vcapply(asts, "[[", "downloadUrl"),
-          size = viapply(asts, "[[", "size"),
-          created_at = parse_iso_8601(vcapply(asts, "[[", "createdAt")),
-          updated_at = parse_iso_8601(vcapply(asts, "[[", "updatedAt")),
-          content_type = vcapply(asts, "[[", "contentType")
-        )
-      })
+    github_query(query)$then(function(resp) {
+      asts <- resp$obj$data$repository$release$releaseAssets$nodes
+      data_frame(
+        id = vcapply(asts, "[[", "id"),
+        name = vcapply(asts, "[[", "name"),
+        download_url = vcapply(asts, "[[", "downloadUrl"),
+        size = viapply(asts, "[[", "size"),
+        created_at = parse_iso_8601(vcapply(asts, "[[", "createdAt")),
+        updated_at = parse_iso_8601(vcapply(asts, "[[", "updatedAt")),
+        content_type = vcapply(asts, "[[", "contentType")
+      )
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -105,32 +107,30 @@ ghr <- local({
     invisible(synchronize(async_ghr_add_asset(repo, file, tag, name)))
   }
 
-  async_ghr_add_asset <- function(repo, file, tag,
-                                  name = basename(file)) {
+  async_ghr_add_asset <- function(repo, file, tag, name = basename(file)) {
+    repo
+    file
+    tag
+    name
 
-    repo; file; tag; name
-
-    async_ghr_delete_asset(repo, tag, name)$
-      then(function(res) res$release$upload_url)$
-      catch(async_http_404 = function(err) {
-        async_ghr_create(repo, tag)$
-          then(function(rel) rel$upload_url)
-      })$
-      then(function(upload_url) {
-        upload_url <- sub("[{].*[}]", "", upload_url)
-        prepo <- parse_slug(repo)
-        async_github_v3_query(
-          url = upload_url,
-          endpoint = "",
-          query = c(name = name),
-          method = "POST",
-          headers = c("Content-Type" = "application/octet-stream"),
-          file = file
-        )
-      })$
-      then(function(resp) {
-        jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
-      })
+    async_ghr_delete_asset(repo, tag, name)$then(
+      function(res) res$release$upload_url
+    )$catch(async_http_404 = function(err) {
+      async_ghr_create(repo, tag)$then(function(rel) rel$upload_url)
+    })$then(function(upload_url) {
+      upload_url <- sub("[{].*[}]", "", upload_url)
+      prepo <- parse_slug(repo)
+      async_github_v3_query(
+        url = upload_url,
+        endpoint = "",
+        query = c(name = name),
+        method = "POST",
+        headers = c("Content-Type" = "application/octet-stream"),
+        file = file
+      )
+    })$then(function(resp) {
+      jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -141,24 +141,24 @@ ghr <- local({
 
   async_ghr_delete_asset <- function(repo, tag, name) {
     prepo <- parse_slug(repo)
-    async_ghr_get(repo, tag)$
-      then(function(res) {
-        release_id <- res$id
-        asset_names <- vcapply(res$assets, "[[", "name")
-        if (name %in% asset_names) {
-          asset_id <- res$assets[[match(name, asset_names)]]$id
-          ep <- glue::glue("/repos/{prepo$user}/{prepo$repo}/releases/assets/{asset_id}")
-          async_github_v3_query(ep, method = "DELETE")$
-            then(function(resp) {
-              list(
-                release = res,
-                deleted = TRUE
-              )
-            })
-        } else {
-          list(release = res, deleted = FALSE)
-        }
-      })
+    async_ghr_get(repo, tag)$then(function(res) {
+      release_id <- res$id
+      asset_names <- vcapply(res$assets, "[[", "name")
+      if (name %in% asset_names) {
+        asset_id <- res$assets[[match(name, asset_names)]]$id
+        ep <- glue::glue(
+          "/repos/{prepo$user}/{prepo$repo}/releases/assets/{asset_id}"
+        )
+        async_github_v3_query(ep, method = "DELETE")$then(function(resp) {
+          list(
+            release = res,
+            deleted = TRUE
+          )
+        })
+      } else {
+        list(release = res, deleted = FALSE)
+      }
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -167,28 +167,35 @@ ghr <- local({
     invisible(synchronize(async_ghr_create(repo, tag)))
   }
 
-  async_ghr_create <- function(repo, tag, description = "", draft = FALSE,
-                               prerelease = FALSE,
-                               generate_release_notes = FALSE) {
+  async_ghr_create <- function(
+    repo,
+    tag,
+    description = "",
+    draft = FALSE,
+    prerelease = FALSE,
+    generate_release_notes = FALSE
+  ) {
     prepo <- parse_slug(repo)
     ep <- glue::glue("/repos/{prepo$owner}/{prepo$repo}/releases")
-    data <- tojson$write_str(list(
-      tag_name = tag,
-      name = paste0(prepo$repo, " ", tag),
-      body = description,
-      draft = draft,
-      prerelease = prerelease,
-      generate_release_notes = generate_release_notes
-    ), list(auto_unbox = TRUE))
+    data <- tojson$write_str(
+      list(
+        tag_name = tag,
+        name = paste0(prepo$repo, " ", tag),
+        body = description,
+        draft = draft,
+        prerelease = prerelease,
+        generate_release_notes = generate_release_notes
+      ),
+      list(auto_unbox = TRUE)
+    )
 
     async_github_v3_query(
       ep,
       data = data,
       method = "POST"
-    )$
-      then(function(resp) {
-        jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
-      })
+    )$then(function(resp) {
+      jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
+    })
   }
 
   # -------------------------------------------------------------------------
@@ -198,40 +205,44 @@ ghr <- local({
     list(user = parts[1], owner = parts[1], repo = parts[2])
   }
 
-  async_github_v3_query <- function(endpoint, query = NULL,
-                                    method = c("GET", "POST", "DELETE"),
-                                    headers = NULL,
-                                    data = NULL,
-                                    file = NULL,
-                                    url = NULL) {
+  async_github_v3_query <- function(
+    endpoint,
+    query = NULL,
+    method = c("GET", "POST", "DELETE"),
+    headers = NULL,
+    data = NULL,
+    file = NULL,
+    url = NULL
+  ) {
     method <- match.arg(method)
 
     headers <- update_named_vector(type_github_get_headers(), headers)
 
-    base <- url %||% Sys.getenv("R_PKG_GITHUB_API_URL", "https://api.github.com")
+    base <- url %||%
+      Sys.getenv("R_PKG_GITHUB_API_URL", "https://api.github.com")
     query_str <- paste(
-      glue::glue("{curl::curl_escape(names(query))}={curl::curl_escape(query)}"),
+      glue::glue(
+        "{curl::curl_escape(names(query))}={curl::curl_escape(query)}"
+      ),
       collapse = "&"
     )
     url <- paste0(base, endpoint, "?", query_str)
 
     px <- if (method == "GET") {
-            http_get(url, headers = headers)
+      http_get(url, headers = headers)
+    } else if (method == "POST") {
+      if (is.null(data) + is.null(file) != 1) {
+        throw(pkg_error(
+          "Must specify exactly of {.arg data} and {.arg file} for POST requests."
+        ))
+      }
+      if (is.null(data)) data <- readBin(file, "raw", file.size(file))
+      http_post(url, data, headers = headers)
+    } else if (method == "DELETE") {
+      http_delete(url, headers = headers)
+    }
 
-          } else if (method == "POST") {
-            if (is.null(data) + is.null(file) != 1) {
-              throw(pkg_error(
-                "Must specify exactly of {.arg data} and {.arg file} for POST requests."
-              ))
-            }
-            if (is.null(data)) data <- readBin(file, "raw", file.size(file))
-            http_post(url, data, headers = headers)
-          } else if (method == "DELETE") {
-            http_delete(url, headers = headers)
-          }
-
-    px$
-      then(http_stop_for_status)
+    px$then(http_stop_for_status)
   }
 
   # github_query() is in type-github.R
@@ -241,21 +252,21 @@ ghr <- local({
 
   structure(
     list(
-      .internal          = environment(),
+      .internal = environment(),
 
-      async_add_asset    = async_ghr_add_asset,
+      async_add_asset = async_ghr_add_asset,
       async_delete_asset = async_ghr_delete_asset,
-      async_create       = async_ghr_create,
-      async_get          = async_ghr_get,
-      async_list         = async_ghr_list,
-      async_list_assets  = async_ghr_list_assets,
+      async_create = async_ghr_create,
+      async_get = async_ghr_get,
+      async_list = async_ghr_list,
+      async_list_assets = async_ghr_list_assets,
 
-      add_asset          = ghr_add_asset,
-      delete_asset       = ghr_delete_asset,
-      create             = ghr_create,
-      get                = ghr_get,
-      list               = ghr_list,
-      list_assets        = ghr_list_assets
+      add_asset = ghr_add_asset,
+      delete_asset = ghr_delete_asset,
+      create = ghr_create,
+      get = ghr_get,
+      list = ghr_list,
+      list_assets = ghr_list_assets
     )
   )
 })

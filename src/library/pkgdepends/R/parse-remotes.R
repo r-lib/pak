@@ -1,4 +1,3 @@
-
 #' Package references
 #'
 #' @description
@@ -23,9 +22,13 @@ standard_rx <- function(remote_name = "standard") {
   paste0(
     "^",
     ## Optional remote type
-    "(?:", remote_name, "::)?",
+    "(?:",
+    remote_name,
+    "::)?",
     ## Package name, only valid names
-    "(?<package>", package_name_rx(), ")",
+    "(?<package>",
+    package_name_rx(),
+    ")",
     ## Package version, only valid version numbers
     "(?:@(?:(?:(?<atleast>>=)?",
     "(?<version>[0-9]+[-\\.][0-9]+(?:[-\\.][0-9]+)*|current|last))))?",
@@ -66,12 +69,16 @@ github_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
     ## Optional remote type
     "(?:github::)?",
-    github_username_rx(), "/",
+    github_username_rx(),
+    "/",
     github_repo_rx(),
-    github_subdir_rx(), "?",
+    github_subdir_rx(),
+    "?",
     ## Commit / PR / Release
     github_detail_rx(),
     "$"
@@ -90,8 +97,10 @@ github_url_detail_rx <- function() {
   paste0(
     "(?:/(?:",
     github_url_commitish_rx(),
-    "|", github_url_pull_rx(),
-    "|", github_url_release_rx(),
+    "|",
+    github_url_pull_rx(),
+    "|",
+    github_url_release_rx(),
     "))?"
   )
 }
@@ -105,7 +114,9 @@ github_url_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
     ## Optional remote type
     "(?:github::)?",
     ## Protocol
@@ -114,7 +125,8 @@ github_url_rx <- function() {
     ## TODO: should probably restrict this is (configurable) GH servers
     "(?:[^/:]+)[/:]",
     ## Username
-    github_username_rx(), "/",
+    github_username_rx(),
+    "/",
     ## Repo
     github_url_repo_rx(),
     ## subdir, always empty
@@ -131,7 +143,9 @@ remote_type_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
     ## Remote type
     "(?:(?<type>[-_[:alnum:]]+)::)?",
     ## Rest of ref
@@ -145,16 +159,24 @@ local_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
-    "(?|", typed, "|", sugar, ")",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
+    "(?|",
+    typed,
+    "|",
+    sugar,
+    ")",
     "$"
   )
 }
 
 type_default_parse <- function(refs, ...) {
   m <- re_match(refs, remote_type_rx())
-  lapply_rows(m, function(x)
-    list(package = x$package, type = x$type, rest = x$rest, ref = x$.text)
+  lapply_rows(
+    m,
+    function(x)
+      list(package = x$package, type = x$type, rest = x$rest, ref = x$.text)
   )
 }
 
@@ -220,7 +242,10 @@ parse_pkg_refs <- function(refs, remote_types = NULL, ...) {
     parser <- remote_types[[this]]$parse %||% type_default_parse
     this_refs <- refs[types == this]
     new_remotes <- parser(this_refs, ...)
-    new_remotes <- lapply(new_remotes, function(x) { x$type <- this; x })
+    new_remotes <- lapply(new_remotes, function(x) {
+      x$type <- this
+      x
+    })
     new_remotes <- lapply(
       new_remotes,
       add_class,
@@ -247,7 +272,9 @@ parse_pkg_ref <- function(ref, remote_types = NULL, ...) {
 
 param_rx <- function() {
   paste0(
-    "(?:(?<package>", package_name_rx(), "|[*])=)",
+    "(?:(?<package>",
+    package_name_rx(),
+    "|[*])=)",
     "$"
   )
 }
@@ -305,7 +332,8 @@ parse_query <- function(ref) {
 }
 
 is_true_param <- function(params, which) {
-  which %in% names(params) &&
+  which %in%
+    names(params) &&
     tolower(params[[which]]) %in% c("", "true", "yes", "y", "on", "1")
 }
 

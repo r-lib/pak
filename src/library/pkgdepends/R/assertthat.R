@@ -1,13 +1,15 @@
-
 assert_that <- function(..., env = parent.frame(), msg = NULL) {
   asserts <- eval(substitute(alist(...)))
 
   for (assertion in asserts) {
-    res <- tryCatch({
-      eval(assertion, env)
-    }, assertError = function(e) {
-      structure(FALSE, msg = e$message)
-    })
+    res <- tryCatch(
+      {
+        eval(assertion, env)
+      },
+      assertError = function(e) {
+        structure(FALSE, msg = e$message)
+      }
+    )
     check_result(res)
     if (res) next
 
@@ -17,21 +19,30 @@ assert_that <- function(..., env = parent.frame(), msg = NULL) {
     } else {
       evalenv <- env
     }
-    throw(assert_error(
-      assertion,
-      res,
-      msg,
-      call. = sys.call(-1),
-      .envir = evalenv,
-    ), frame = env)
+    throw(
+      assert_error(
+        assertion,
+        res,
+        msg,
+        call. = sys.call(-1),
+        .envir = evalenv,
+      ),
+      frame = env
+    )
   }
 
   invisible(TRUE)
 }
 
-assert_error <- function(assertion, result, msg, .data = NULL, .class = NULL,
-                         .envir = parent.frame(), call. = TRUE) {
-
+assert_error <- function(
+  assertion,
+  result,
+  msg,
+  .data = NULL,
+  .class = NULL,
+  .envir = parent.frame(),
+  call. = TRUE
+) {
   myenv <- new.env(parent = .envir)
   myenv$.arg <- if (length(assertion) >= 2) deparse(assertion[[2]])
   myenv$.arg2 <- if (length(assertion) >= 3) deparse(assertion[[3]])
@@ -92,7 +103,7 @@ get_message <- function(res, call, env = parent.frame()) {
 fail_default <- function(call, env) {
   call_string <- deparse(call, width.cutoff = 60L)
   if (length(call_string) > 1L) {
-      call_string <- paste0(call_string[1L], "...")
+    call_string <- paste0(call_string[1L], "...")
   }
 
   paste0(call_string, " is not true")
@@ -117,8 +128,8 @@ logical_is_not <- function(failed) {
 }
 
 base_fs$"==" <- logical_is_not("equal")
-base_fs$"<" <-  logical_is_not("be less than")
-base_fs$">" <-  logical_is_not("be greater than")
+base_fs$"<" <- logical_is_not("be less than")
+base_fs$">" <- logical_is_not("be greater than")
 base_fs$">=" <- logical_is_not("be greater than or equal to")
 base_fs$"<=" <- logical_is_not("be less than or equal to")
 base_fs$"!=" <- logical_is_not("not be equal to")

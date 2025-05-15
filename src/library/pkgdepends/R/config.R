@@ -1,4 +1,3 @@
-
 #' Package configuration (internals)
 #'
 #' @description
@@ -112,7 +111,6 @@
 #' environment variable is set.
 
 config <- local({
-
   `%||%` <- function(l, r) if (is.null(l)) r else l
 
   # It is used as the check function if no check function is needed
@@ -153,7 +151,14 @@ config <- local({
   }
 
   # Built-in types
-  builtin_types <- c("character", "count", "custom", "flag", "string", "string_or_null")
+  builtin_types <- c(
+    "character",
+    "count",
+    "custom",
+    "flag",
+    "string",
+    "string_or_null"
+  )
 
   # Checks for builtin types
   builtin_checks <- list(
@@ -287,8 +292,10 @@ config <- local({
   #'
   #' # Configuration methods
 
-  new <- function(prefix = utils::packageName(parent.frame()),
-                  package = utils::packageName(parent.frame())) {
+  new <- function(
+    prefix = utils::packageName(parent.frame()),
+    package = utils::packageName(parent.frame())
+  ) {
     env <- new.env(parent = emptyenv())
     env$prefix <- if (!is.null(prefix)) paste0(prefix, ".")
     env$data <- new.env(parent = emptyenv())
@@ -336,8 +343,13 @@ config <- local({
     #'
     #' The configuration, invisibly.
 
-    env$add <- function(name, type = env$types, default = NULL,
-                        check = type[1], env_decode = type[1]) {
+    env$add <- function(
+      name,
+      type = env$types,
+      default = NULL,
+      check = type[1],
+      env_decode = type[1]
+    ) {
       # Need to explicitly add `env$types` on R 3.4.x
       type <- match.arg(type, env$types)
       assert_that(
@@ -361,8 +373,11 @@ config <- local({
       env_decode <- env_decode %||% identity
 
       env$data[[name]] <- list(
-        type = type, check = check, default = default,
-        env_decode = env_decode, value = NULL
+        type = type,
+        check = check,
+        default = default,
+        env_decode = env_decode,
+        value = NULL
       )
       invisible(env)
     }
@@ -683,5 +698,6 @@ config <- local({
       new = new,
       onload_hook = onload_hook
     ),
-    class = c("standalone_config", "standalone"))
+    class = c("standalone_config", "standalone")
+  )
 })

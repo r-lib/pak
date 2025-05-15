@@ -1,11 +1,11 @@
-
 # TODO: allow restriting to dumb, v1, v2 protocol
 
-git_app <- function(git_root,
-                    git_timeout = as.difftime(1, units = "mins"),
-                    filter = TRUE,
-                    cleanup = TRUE) {
-
+git_app <- function(
+  git_root,
+  git_timeout = as.difftime(1, units = "mins"),
+  filter = TRUE,
+  cleanup = TRUE
+) {
   app <- webfakes::new_app()
   app$locals$git_root <- git_root
   app$locals$git_timeout <- as.double(git_timeout, units = "secs") * 1000
@@ -96,9 +96,7 @@ git_env_vars <- function(req) {
 parse_cgi_output <- function(px, out, err, res) {
   if (px$is_alive() || px$get_exit_status() != 0) {
     px$kill()
-    res$
-      set_status(500)$
-      send(paste0("Internal git error: ", err))
+    res$set_status(500)$send(paste0("Internal git error: ", err))
   }
 
   out <- read_bin(out)
@@ -115,7 +113,7 @@ parse_cgi_output <- function(px, out, err, res) {
     }
   }
 
-  if (! "status" %in% names(headers)) {
+  if (!"status" %in% names(headers)) {
     res$set_status(200L)
   }
 
@@ -151,7 +149,7 @@ read_bin <- function(path) {
   readBin(path, "raw", file.info(path)$size)
 }
 
-parse_headers <- function (txt) {
+parse_headers <- function(txt) {
   headers <- grep(":", parse_headers0(txt), fixed = TRUE, value = TRUE)
   out <- lapply(headers, split_header)
   names <- tolower(vapply(out, `[[`, character(1), 1))
@@ -160,9 +158,8 @@ parse_headers <- function (txt) {
   values
 }
 
-parse_headers0 <- function (txt, multiple = FALSE) {
-  if (!length(txt))
-    return(NULL)
+parse_headers0 <- function(txt, multiple = FALSE) {
+  if (!length(txt)) return(NULL)
   if (is.raw(txt)) {
     txt <- rawToChar(txt)
   }
@@ -174,8 +171,7 @@ parse_headers0 <- function (txt, multiple = FALSE) {
   headers <- strsplit(sets, "\\r\\n|\\n|\\r")
   if (multiple) {
     headers
-  }
-  else {
+  } else {
     headers[[length(headers)]]
   }
 }
@@ -194,7 +190,7 @@ parse_url <- function(url) {
     "(?:(?<username>[^@/:]+)(?::(?<password>[^@/]+))?@)?",
     "(?<url>(?<host>[^:/]+)",
     "(?::(?<port>[0-9]+))?",
-    "(?<path>/.*))$"            # don't worry about query params here...
+    "(?<path>/.*))$" # don't worry about query params here...
   )
   re_match(url, re_url)
 }

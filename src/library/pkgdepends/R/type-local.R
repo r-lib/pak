@@ -1,4 +1,3 @@
-
 ### -----------------------------------------------------------------------
 ### API
 
@@ -15,22 +14,40 @@ parse_remote_local <- function(specs, config, ...) {
   parsed_specs$type <- "local"
   lapply(
     seq_len(nrow(parsed_specs)),
-    function(i) as.list(parsed_specs[i,])
+    function(i) as.list(parsed_specs[i, ])
   )
 }
 
-resolve_remote_local <- function(remote, direct, config, cache,
-                                 dependencies, ...) {
-
+resolve_remote_local <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
   sources <- paste0("file://", normalizePath(remote$path, mustWork = FALSE))
-  resolve_from_description(remote$path, sources, remote, direct,
-                           config, cache, dependencies[[2 - direct]])
+  resolve_from_description(
+    remote$path,
+    sources,
+    remote,
+    direct,
+    config,
+    cache,
+    dependencies[[2 - direct]]
+  )
 }
 
-download_remote_local <- function(resolution, target, target_tree, config,
-                                  cache, which, on_progress) {
-
-  source_file <- sub("^file://",  "",  resolution$sources[[1]])
+download_remote_local <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
+  source_file <- sub("^file://", "", resolution$sources[[1]])
   isdir <- file.info(source_file)$isdir
   if (is.na(isdir)) {
     throw(pkg_error(
@@ -42,20 +59,22 @@ download_remote_local <- function(resolution, target, target_tree, config,
   if (isdir) {
     unlink(target_tree, recursive = TRUE)
     mkdirp(target_tree)
-    if (! file.copy(source_file, target_tree, recursive = TRUE)) {
+    if (!file.copy(source_file, target_tree, recursive = TRUE)) {
       # deleted after the resolution?
-      throw(pkg_error(                                        # nocov start
+      throw(pkg_error(
+        # nocov start
         "Could not find local package file/directory at
        {.path {resolution$sources[[1]]}}"
-      ))                                                      # nocov end
+      )) # nocov end
     }
   } else {
-    if (! file.copy(source_file, target, overwrite = TRUE)) {
+    if (!file.copy(source_file, target, overwrite = TRUE)) {
       # deleted after the resolution?
-      throw(pkg_error(                                        # nocov start
+      throw(pkg_error(
+        # nocov start
         "Could not find local package file/directory at
        {.path {resolution$sources[[1]]}}"
-      ))                                                      # nocov end
+      )) # nocov end
     }
   }
 

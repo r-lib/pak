@@ -1,6 +1,5 @@
-
 alert <- function(type, msg, ..., .envir = parent.frame()) {
-  switch (
+  switch(
     type,
     success = cli::cli_alert_success(msg, ..., .envir = .envir),
     info = cli::cli_alert_info(msg, ..., .envir = .envir),
@@ -35,8 +34,8 @@ update_progress_bar <- function(state, tick = 0) {
 
   chars <- progress_chars()
 
-  xbar <- make_install_bar(installed / total, built/total, width =  15)
-  xbuilt  <- make_progress_block(state, chars$build, built, total, building)
+  xbar <- make_install_bar(installed / total, built / total, width = 15)
+  xbuilt <- make_progress_block(state, chars$build, built, total, building)
   xinst <- make_progress_block(state, chars$inst, installed, total, installing)
   xmsg <- make_install_trailing_progress_msg(state)
 
@@ -69,7 +68,9 @@ make_install_bar <- function(p1, p2, width) {
   p2chars <- rep(chars$half, w2)
   xchars <- rep(" ", max(width - w1 - w2, 0))
   bar <- paste(
-    c(chars$lpar, p1chars, p2chars, xchars, chars$rpar), collapse = "")
+    c(chars$lpar, p1chars, p2chars, xchars, chars$rpar),
+    collapse = ""
+  )
 
   if (is_older_rstudio()) bar else cli::col_green(bar)
 }
@@ -79,8 +80,11 @@ make_progress_block <- function(state, sym, done, total, prog) {
   spin <- prgs$spinner$frames[[prgs$spinner_state]]
   prgs$spinner_state <- prgs$spinner_state %% length(prgs$spinner$frames) + 1L
   paste0(
-    sym, "  ",
-    done, "/", total,
+    sym,
+    "  ",
+    done,
+    "/",
+    total,
     if (prog) paste0(" ", spin, " ", prog) else "    "
   )
 }

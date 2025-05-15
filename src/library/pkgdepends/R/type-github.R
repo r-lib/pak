@@ -1,9 +1,7 @@
-
 ### -----------------------------------------------------------------------
 ### API
 
 parse_remote_github <- function(specs, config, ...) {
-
   pds <- re_match(specs, github_rx())
   if (any(unk <- is.na(pds$.match))) {
     pds[unk] <- re_match(specs[unk], github_url_rx())
@@ -17,30 +15,42 @@ parse_remote_github <- function(specs, config, ...) {
   pds$package <- ifelse(nzchar(pds$package), pds$package, pds$repo)
   lapply(
     seq_len(nrow(pds)),
-    function(i) as.list(pds[i,])
+    function(i) as.list(pds[i, ])
   )
 }
 
-resolve_remote_github <- function(remote, direct, config, cache,
-                                  dependencies, ...) {
-
-  force(direct); force(dependencies)
+resolve_remote_github <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
+  force(direct)
+  force(dependencies)
   ## Get the DESCRIPTION data, and the SHA we need
-  type_github_get_data(remote)$
-    then(function(resp) {
-      data <- list(
-        desc = resp$description,
-        sha = resp$sha,
-        remote = remote,
-        direct = direct,
-        dependencies = dependencies[[2 - direct]])
-      type_github_make_resolution(data)
-    })
+  type_github_get_data(remote)$then(function(resp) {
+    data <- list(
+      desc = resp$description,
+      sha = resp$sha,
+      remote = remote,
+      direct = direct,
+      dependencies = dependencies[[2 - direct]]
+    )
+    type_github_make_resolution(data)
+  })
 }
 
-download_remote_github <- function(resolution, target, target_tree,
-                                   config, cache, which, on_progress) {
-
+download_remote_github <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
   ## A GitHub package needs to be built, from the downloaded repo
   ## If we are downloading a solution, then we skip building the vignettes,
   ## because these will be built later by pkginstall.
@@ -71,9 +81,14 @@ download_remote_github <- function(resolution, target, target_tree,
   if (!nocache && !source) {
     ptfm <- current_r_platform()
     hit <- cache$package$copy_to(
-      target, package = package, sha256 = sha, built = TRUE,
-      platform = ptfm, rversion = current_r_version(),
-      .list = c(if (need_vignettes) c(vignettes = TRUE)))
+      target,
+      package = package,
+      sha256 = sha,
+      built = TRUE,
+      platform = ptfm,
+      rversion = current_r_version(),
+      .list = c(if (need_vignettes) c(vignettes = TRUE))
+    )
 
     if (nrow(hit)) {
       return(paste("Had", ptfm)) # TODO: untested currently
@@ -88,8 +103,12 @@ download_remote_github <- function(resolution, target, target_tree,
 
   if (!nocache) {
     hit <- cache$package$copy_to(
-      target, package = package, sha256 = sha, built = TRUE,
-      .list = c(if (need_vignettes) c(vignettes = TRUE)))
+      target,
+      package = package,
+      sha256 = sha,
+      built = TRUE,
+      .list = c(if (need_vignettes) c(vignettes = TRUE))
+    )
     if (nrow(hit)) {
       "!DEBUG found GH `resolution$ref`@`sha` in the cache"
       return("Had")
@@ -102,7 +121,11 @@ download_remote_github <- function(resolution, target, target_tree,
   if (!nocache) {
     subdir <- resolution$remote[[1]]$subdir
     hit <- cache$package$copy_to(
-      target_tree, package = package, sha256 = sha, built = FALSE)
+      target_tree,
+      package = package,
+      sha256 = sha,
+      built = FALSE
+    )
     if (nrow(hit)) {
       "!DEBUG found GH zip for `resolution$ref`@`sha` in the cache"
       return("Had")
@@ -114,35 +137,62 @@ download_remote_github <- function(resolution, target, target_tree,
   "!DEBUG Need to download GH package `resolution$ref`@`sha`"
   urls <- resolution$sources[[1]]
   rel_zip <- paste0(rel_target, "-t")
-  type_github_download_repo(urls, target_tree, rel_zip, sha, package, cache,
-                            on_progress, nocache)$
-    then(function() {
-      "!DEBUG Building package `resolution$package`"
-      return("Got")
-    })
+  type_github_download_repo(
+    urls,
+    target_tree,
+    rel_zip,
+    sha,
+    package,
+    cache,
+    on_progress,
+    nocache
+  )$then(function() {
+    "!DEBUG Building package `resolution$package`"
+    return("Got")
+  })
 }
 
-type_github_download_repo <- function(urls, repo_zip, rel_zip, sha,
-                                      package, cache, on_progress, nocache) {
-
-  urls; repo_zip; sha; package; cache; on_progress; nocache
+type_github_download_repo <- function(
+  urls,
+  repo_zip,
+  rel_zip,
+  sha,
+  package,
+  cache,
+  on_progress,
+  nocache
+) {
+  urls
+  repo_zip
+  sha
+  package
+  cache
+  on_progress
+  nocache
   ## TODO: progress
   headers <- type_github_get_headers()
-  download_file(urls, repo_zip, on_progress = on_progress, headers = headers)$
-    then(function() {
-      if (!nocache) {
-        cache$package$add(
-          repo_zip, rel_zip, package = package, sha = sha, built = FALSE)
-      }
-      "Got"
-    })
+  download_file(
+    urls,
+    repo_zip,
+    on_progress = on_progress,
+    headers = headers
+  )$then(function() {
+    if (!nocache) {
+      cache$package$add(
+        repo_zip,
+        rel_zip,
+        package = package,
+        sha = sha,
+        built = FALSE
+      )
+    }
+    "Got"
+  })
 }
 
 ## ----------------------------------------------------------------------
 
-satisfy_remote_github <- function(resolution, candidate,
-                                    config, ...) {
-
+satisfy_remote_github <- function(resolution, candidate, config, ...) {
   ## 1. package name must match
   if (resolution$package != candidate$package) {
     return(structure(FALSE, reason = "Package names differ"))
@@ -167,11 +217,13 @@ satisfy_remote_github <- function(resolution, candidate,
   ## 2. local packages satisfy a GH remote
   ## See https://github.com/r-lib/pkgdepends/issues/229
   if (candidate$type == "local") {
-    return (TRUE)
+    return(TRUE)
   }
 
   ## 3. other refs are also good, as long as they have the same sha
-  sha1 <- (if (is.list(candidate$extra[[1]]))candidate$extra[[1]][["remotesha"]]) %||% NA_character_
+  sha1 <- (if (is.list(candidate$extra[[1]]))
+    candidate$extra[[1]][["remotesha"]]) %||%
+    NA_character_
   sha2 <- resolution$extra[[1]][["remotesha"]] %||% NA_character_
   ok <- is_string(sha1) && is_string(sha2) && same_sha(sha1, sha2)
   if (!ok) {
@@ -212,7 +264,11 @@ type_github_get_headers <- function() {
   if (Sys.getenv("CI", "") != "") {
     token <- Sys.getenv("CI_GITHUB_TOKEN", NA_character_)
   }
-  if (is.na(token)) token <- tryCatch(gitcreds_get()$password, error = function(e) NA_character_)
+  if (is.na(token))
+    token <- tryCatch(
+      gitcreds_get()$password,
+      error = function(e) NA_character_
+    )
   if (is.na(token)) token <- type_github_builtin_token()
   headers <- c(headers, c("Authorization" = paste("token", token)))
 
@@ -244,7 +300,8 @@ type_github_get_data_ref <- function(rem) {
   ref <- rem$commitish %|z|% "HEAD"
   subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
 
-  query <- sprintf("{
+  query <- sprintf(
+    "{
     repository(owner: \"%s\", name: \"%s\") {
       description: object(expression: \"%s:%sDESCRIPTION\") {
         ... on Blob {
@@ -257,18 +314,21 @@ type_github_get_data_ref <- function(rem) {
       }
     }
   }",
-  user, repo, ref, subdir, ref)
+    user,
+    repo,
+    ref,
+    subdir,
+    ref
+  )
 
-  github_query(query)$
-    then(function(resp) {
-      check_github_response_ref(resp$response, resp$obj, rem, call. = call)
-    })$
-    then(function(obj) {
-      list(
-        sha = obj[[c("data", "repository", "sha", "oid")]],
-        desc = obj[[c("data", "repository", "description", "text")]]
-      )
-    })
+  github_query(query)$then(function(resp) {
+    check_github_response_ref(resp$response, resp$obj, rem, call. = call)
+  })$then(function(obj) {
+    list(
+      sha = obj[[c("data", "repository", "sha", "oid")]],
+      desc = obj[[c("data", "repository", "description", "text")]]
+    )
+  })
 }
 
 check_github_response_ref <- function(resp, obj, rem, call.) {
@@ -294,7 +354,8 @@ type_github_get_data_pull <- function(rem) {
   pull <- rem$pull
   subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
 
-  query <- sprintf("{
+  query <- sprintf(
+    "{
     repository(owner: \"%s\", name: \"%s\") {
       pullRequest(number: %s) {
         headRefOid
@@ -315,18 +376,28 @@ type_github_get_data_pull <- function(rem) {
       }
     }
   }",
-  user, repo, pull, subdir)
+    user,
+    repo,
+    pull,
+    subdir
+  )
 
-  github_query(query)$
-    then(function(resp) {
-      check_github_response_pull(resp$response, resp$obj, rem, call. = call)
-    })$
-    then(function(obj) {
-      ref <- obj[[c("data", "repository", "pullRequest", "headRefOid")]]
-      txt <- obj[[c("data", "repository", "pullRequest", "headRef",
-                    "target", "file", "object", "text")]]
-      list(sha = ref, desc = txt)
-    })
+  github_query(query)$then(function(resp) {
+    check_github_response_pull(resp$response, resp$obj, rem, call. = call)
+  })$then(function(obj) {
+    ref <- obj[[c("data", "repository", "pullRequest", "headRefOid")]]
+    txt <- obj[[c(
+      "data",
+      "repository",
+      "pullRequest",
+      "headRef",
+      "target",
+      "file",
+      "object",
+      "text"
+    )]]
+    list(sha = ref, desc = txt)
+  })
 }
 
 check_github_response_pull <- function(resp, obj, rem, call.) {
@@ -336,15 +407,34 @@ check_github_response_pull <- function(resp, obj, rem, call.) {
   # No full coverage here, because unless something goes super wrong,
   # these cases almost never happen.
   if (!is.null(obj$errors)) {
-    throw(new_github_query_error(rem, resp, obj, call.))            # nocov
+    throw(new_github_query_error(rem, resp, obj, call.)) # nocov
   }
 
-  if (isTRUE(obj[[c("data", "repository", "pullRequest", "headRef",
-                    "target", "file", "object", "isBinary")]])) {
-    throw(new_github_baddesc_error(rem, call.))                     # nocov
+  if (
+    isTRUE(obj[[c(
+      "data",
+      "repository",
+      "pullRequest",
+      "headRef",
+      "target",
+      "file",
+      "object",
+      "isBinary"
+    )]])
+  ) {
+    throw(new_github_baddesc_error(rem, call.)) # nocov
   }
-  if (is.null(obj[[c("data", "repository", "pullRequest", "headRef",
-                     "target", "file", "object")]])) {
+  if (
+    is.null(obj[[c(
+      "data",
+      "repository",
+      "pullRequest",
+      "headRef",
+      "target",
+      "file",
+      "object"
+    )]])
+  ) {
     throw(new_github_no_package_error(rem, call.))
   }
   obj
@@ -357,7 +447,8 @@ type_github_get_data_release <- function(rem) {
   ref <- NULL
   subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
 
-  query <- sprintf("{
+  query <- sprintf(
+    "{
     repository(owner: \"%s\", name:\"%s\") {
       latestRelease {
         tagName
@@ -375,17 +466,26 @@ type_github_get_data_release <- function(rem) {
       }
     }
   }",
-  user, repo, subdir)
+    user,
+    repo,
+    subdir
+  )
 
-  github_query(query)$
-    then(function(resp) {
-      check_github_response_release(resp$response, resp$obj, rem, call. = call)
-    })$
-    then(function(obj) {
-      ref <- obj[[c("data", "repository", "latestRelease", "tagCommit", "oid")]]
-      txt <- obj[[c("data", "repository", "latestRelease", "tagCommit", "file", "object", "text")]]
-      list(sha = ref, desc = txt)
-    })
+  github_query(query)$then(function(resp) {
+    check_github_response_release(resp$response, resp$obj, rem, call. = call)
+  })$then(function(obj) {
+    ref <- obj[[c("data", "repository", "latestRelease", "tagCommit", "oid")]]
+    txt <- obj[[c(
+      "data",
+      "repository",
+      "latestRelease",
+      "tagCommit",
+      "file",
+      "object",
+      "text"
+    )]]
+    list(sha = ref, desc = txt)
+  })
 }
 
 check_github_response_release <- function(resp, obj, rem, call.) {
@@ -395,17 +495,35 @@ check_github_response_release <- function(resp, obj, rem, call.) {
   if (is.null(obj[[c("data", "repository", "latestRelease")]])) {
     throw(new_github_no_release_error(rem, call.))
   }
-  if (isTRUE(obj[[c("data", "repository", "latestRelease", "tagCommit", "file", "object", "isBinary")]])) {
+  if (
+    isTRUE(obj[[c(
+      "data",
+      "repository",
+      "latestRelease",
+      "tagCommit",
+      "file",
+      "object",
+      "isBinary"
+    )]])
+  ) {
     throw(new_github_baddesc_error(rem, call.))
   }
-  if (is.null(obj[[c("data", "repository", "latestRelease", "tagCommit", "file", "object")]])) {
+  if (
+    is.null(obj[[c(
+      "data",
+      "repository",
+      "latestRelease",
+      "tagCommit",
+      "file",
+      "object"
+    )]])
+  ) {
     throw(new_github_no_package_error(rem, call.))
   }
   obj
 }
 
 type_github_make_resolution <- function(data) {
-
   deps <- resolve_ref_deps(
     data$desc$get_deps(),
     data$desc$get("Remotes"),
@@ -431,7 +549,7 @@ type_github_make_resolution <- function(data) {
 
   meta <- c(
     RemoteType = "github",
-    RemoteHost =  host,
+    RemoteHost = host,
     RemoteRepo = repo,
     RemoteUsername = username,
     RemotePkgRef = data$remote$ref,
@@ -444,7 +562,8 @@ type_github_make_resolution <- function(data) {
     GithubRef = if (is.null(pull)) commitish %||% "HEAD" else NULL,
     GitHubPull = pull,
     GithubSHA1 = sha,
-    GithubSubdir = subdir)
+    GithubSubdir = subdir
+  )
 
   list(
     ref = data$remote$ref,
@@ -455,7 +574,13 @@ type_github_make_resolution <- function(data) {
     version = version,
     license = data$desc$get_field("License", NA_character_),
     sources = sprintf(
-      "%s://%s/repos/%s/%s/zipball/%s", proto, host, username, repo, sha),
+      "%s://%s/repos/%s/%s/zipball/%s",
+      proto,
+      host,
+      username,
+      repo,
+      sha
+    ),
     target = sprintf("src/contrib/%s_%s_%s.tar.gz", package, version, sha7),
     remote = list(data$remote),
     deps = list(deps),
@@ -467,14 +592,19 @@ type_github_make_resolution <- function(data) {
   )
 }
 
-github_query <- function(query,
-                         url = paste0(
-                           Sys.getenv("R_PKG_GITHUB_API_URL",
-                                      "https://api.github.com"),
-                           "/graphql"),
-                         headers = character(), ...) {
-
-  query; url; headers; list(...)
+github_query <- function(
+  query,
+  url = paste0(
+    Sys.getenv("R_PKG_GITHUB_API_URL", "https://api.github.com"),
+    "/graphql"
+  ),
+  headers = character(),
+  ...
+) {
+  query
+  url
+  headers
+  list(...)
 
   headers <- c(headers, type_github_get_headers())
   data <- tojson$write_str(
@@ -484,21 +614,18 @@ github_query <- function(query,
   resp <- NULL
   obj <- NULL
 
-  http_post(url, data = data, headers = headers, ...)$
-    catch(error = function(err) throw(new_github_offline_error()))$
-    then(function(res) {
-      resp <<- res
-      json <- rawToChar(res$content %||% raw())
-      obj <<- if (nzchar(json)) jsonlite::fromJSON(json, simplifyVector = FALSE)
-      res
-    })$
-    then(http_stop_for_status)$
-    catch(async_http_error = function(err) {
-      throw(new_github_http_error(resp, obj), parent = err)
-    })$
-    then(function(res) {
-      list(response = resp, obj = obj)
-    })
+  http_post(url, data = data, headers = headers, ...)$catch(
+    error = function(err) throw(new_github_offline_error())
+  )$then(function(res) {
+    resp <<- res
+    json <- rawToChar(res$content %||% raw())
+    obj <<- if (nzchar(json)) jsonlite::fromJSON(json, simplifyVector = FALSE)
+    res
+  })$then(http_stop_for_status)$catch(async_http_error = function(err) {
+    throw(new_github_http_error(resp, obj), parent = err)
+  })$then(function(res) {
+    list(response = resp, obj = obj)
+  })
 }
 
 # -----------------------------------------------------------------------
@@ -519,8 +646,11 @@ new_github_offline_error <- function(call. = NULL) {
 # HTTP error
 
 new_github_http_error <- function(response, obj, call. = NULL) {
-  if (response$status_code == 401 &&
-      nzchar(obj$message) && grepl("Bad credentials", obj$message)) {
+  if (
+    response$status_code == 401 &&
+      nzchar(obj$message) &&
+      grepl("Bad credentials", obj$message)
+  ) {
     return(new_github_badpat_error(call. = call.))
   }
   new_github_error("GitHub HTTP error", call. = call.)
@@ -533,31 +663,41 @@ new_github_query_error <- function(rem, response, obj, call. = NULL) {
     return(new_github_ratelimited_error(response, obj, call. = NULL))
 
     # we don't actually get this response currently
-  } else if (grepl("Could not resolve to a User",
-                   vcapply(obj$errors, "[[", "message"))) {
-    return(new_github_nouser_error(rem, obj, call. = call.))        # nocov
-
-  } else if (grepl("Could not resolve to a Repository",
-                   vcapply(obj$errors, "[[", "message"))) {
+  } else if (
+    grepl("Could not resolve to a User", vcapply(obj$errors, "[[", "message"))
+  ) {
+    return(new_github_nouser_error(rem, obj, call. = call.)) # nocov
+  } else if (
+    grepl(
+      "Could not resolve to a Repository",
+      vcapply(obj$errors, "[[", "message")
+    )
+  ) {
     return(new_github_norepo_error(rem, obj, call. = call.))
-  } else if (grepl("Could not resolve to a PullRequest",
-                   vcapply(obj$errors, "[[", "message"))) {
+  } else if (
+    grepl(
+      "Could not resolve to a PullRequest",
+      vcapply(obj$errors, "[[", "message")
+    )
+  ) {
     return(new_github_nopr_error(rem, obj, call. = call.))
   }
 
   # Otherwise some generic code
   ghmsgs <- sub("\\.?$", ".", vcapply(obj$errors, "[[", "message")) # nocov
-  msg <- paste0("GitHub error: ", paste0(ghmsgs, collapse = ", "))  # nocov
-  new_github_error(msg, call. = call.)                              # nocov
+  msg <- paste0("GitHub error: ", paste0(ghmsgs, collapse = ", ")) # nocov
+  new_github_error(msg, call. = call.) # nocov
 }
 
 # No such user/org
 
-new_github_nouser_error <- function(rem, obj, call. = NULL) {       # nocov
-  new_github_error(                                                 # nocov
-    "Can't find GitHub user {rem$username}.",                       # nocov
-    call. = call.                                                   # nocov
-  )                                                                 # nocov
+new_github_nouser_error <- function(rem, obj, call. = NULL) {
+  # nocov
+  new_github_error(
+    # nocov
+    "Can't find GitHub user {rem$username}.", # nocov
+    call. = call. # nocov
+  ) # nocov
 }
 
 # No such repo
@@ -573,7 +713,10 @@ new_github_norepo_error <- function(rem, obj, call. = NULL) {
 new_github_no_package_error <- function(rem, call. = NULL) {
   subdir <- rem$subdir %&z&% paste0(" in directory '", rem$subdir, "'")
   msg <- sprintf(
-    "Can't find R package in GitHub repo %s/%s%s", rem$username, rem$repo, subdir
+    "Can't find R package in GitHub repo %s/%s%s",
+    rem$username,
+    rem$repo,
+    subdir
   )
   new_github_error(msg, call. = call.)
 }
@@ -592,7 +735,10 @@ new_github_badpat_error <- function(call. = NULL) {
 new_github_baddesc_error <- function(rem, call. = NULL) {
   subdir <- rem$subdir %&z&% paste0(", in directory `", rem$subdir, "`")
   msg <- sprintf(
-    "Can't parse DESCRIPTION file in GitHub repo %s/%s%s", rem$username, rem$repo, subdir
+    "Can't parse DESCRIPTION file in GitHub repo %s/%s%s",
+    rem$username,
+    rem$repo,
+    subdir
   )
   new_github_error(msg, call. = call.)
 }
@@ -600,13 +746,22 @@ new_github_baddesc_error <- function(rem, call. = NULL) {
 # No such PR
 
 new_github_nopr_error <- function(rem, obj, call. = NULL) {
-  msg <- sprintf("Can't find PR #%s in GitHub repo %s/%s", rem$pull, rem$username, rem$repo)
+  msg <- sprintf(
+    "Can't find PR #%s in GitHub repo %s/%s",
+    rem$pull,
+    rem$username,
+    rem$repo
+  )
   new_github_error(msg, call. = call.)
 }
 
 # No releases
 new_github_no_release_error <- function(rem, obj, call. = NULL) {
-  msg <- sprintf("Can't find any release in GitHub repo %s/%s.", rem$username, rem$repo)
+  msg <- sprintf(
+    "Can't find any release in GitHub repo %s/%s.",
+    rem$username,
+    rem$repo
+  )
   new_github_error(msg, call. = call.)
 }
 
@@ -614,7 +769,12 @@ new_github_no_release_error <- function(rem, obj, call. = NULL) {
 
 new_github_noref_error <- function(rem, call. = NULL) {
   ref <- rem$commitish %|z|% "HEAD"
-  msg <- sprintf("Can't find reference @%s in GitHub repo %s/%s.", ref, rem$username, rem$repo)
+  msg <- sprintf(
+    "Can't find reference @%s in GitHub repo %s/%s.",
+    ref,
+    rem$username,
+    rem$repo
+  )
   new_github_error(msg, call. = call.)
 }
 

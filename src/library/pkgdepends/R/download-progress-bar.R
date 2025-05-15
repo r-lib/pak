@@ -1,4 +1,3 @@
-
 #' The download progress bar
 #'
 #' This is a short summary of the design of the download progress bar.
@@ -88,12 +87,11 @@ pkgplan__create_progress_bar <- function(what) {
 
   bar$what <- what[, c("type", "filesize", "package", "cache_status")]
   bar$what$idx <- seq_len(nrow(what))
-  bar$what$current <- 0L         # We got this many bytes
+  bar$what$current <- 0L # We got this many bytes
   bar$what$need <- bar$what$filesize
-  bar$what$status <- "todo"      # "todo", "data", "got", "had", "error"
+  bar$what$status <- "todo" # "todo", "data", "got", "had", "error"
   bar$what$skip <-
-    what$type %in% c("installed", "deps") |
-    what$cache_status != "miss"
+    what$type %in% c("installed", "deps") | what$cache_status != "miss"
   bar$what$status[bar$what$skip] <- "skip"
   bar$what$cache_status[what$type %in% c("installed", "deps")] <- NA_character_
 
@@ -112,10 +110,12 @@ pkgplan__create_progress_bar <- function(what) {
 
 pkgplan__init_progress_bar <- function(bar) {
   bar$timer <- new_async_timer(
-    1/10,
+    1 / 10,
     function() pkgplan__show_progress_bar(bar)
   )
-  bar$timer$listen_on("error", function(e) { stop(e) })
+  bar$timer$listen_on("error", function(e) {
+    stop(e)
+  })
 
   bar
 }
@@ -143,7 +143,8 @@ pkgplan__initial_pb_message <- function(bar) {
   } else {
     cli::cli_alert_info(c(
       "Getting",
-      if (bts > 0) " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}",
+      if (bts > 0)
+        " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}",
       if (bts > 0 && unk > 0) " and",
       if (unk > 0) " {unk} pkg{?s} with unknown size{?s}",
       if (nch > 0) ", {nch} ",
@@ -152,7 +153,7 @@ pkgplan__initial_pb_message <- function(bar) {
     ))
   }
   if (should_show_progress_bar()) {
-    bar$status <-cli::cli_status("", .auto_close = FALSE)
+    bar$status <- cli::cli_status("", .auto_close = FALSE)
   }
 }
 
@@ -189,11 +190,13 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
       cli::cli_alert_success(c(
         "Got {.pkg {data$package}} ",
         "{.version {data$version}} ({data$platform})",
-        if (!is.na(sz) && bar$show_size) " {.size ({format_bytes$pretty_bytes(sz)})}"
+        if (!is.na(sz) && bar$show_size)
+          " {.size ({format_bytes$pretty_bytes(sz)})}"
       ))
       if (!is.na(bar$what$filesize[idx])) {
         bar$chunks[[sec]] <- (bar$chunks[[sec]] %||% 0) -
-          bar$what$current[idx] + bar$what$filesize[idx]
+          bar$what$current[idx] +
+          bar$what$filesize[idx]
         bar$what$current[idx] <- bar$what$filesize[idx]
       }
     } else if (grepl("^(Had|Current)", data$download_status)) {
@@ -213,7 +216,6 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
       ))
       bar$what$status[idx] <- "error"
       bar$what$need[idx] <- bar$what$current[idx]
-
     } else {
       stop("Unknown download status, internal pkgdepends error :(")
     }
@@ -238,7 +240,8 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
 
   # Update data chunks
   bar$chunks[[sec]] <- (bar$chunks[[sec]] %||% 0) -
-    bar$what$current[idx] + data$current
+    bar$what$current[idx] +
+    data$current
 
   # Update current and total
   bar$what$current[idx] <- data$current
@@ -307,12 +310,11 @@ calculate_eta <- function(total, current, rate) {
 }
 
 calculate_progress_parts <- function(bar) {
-
   parts <- list()
 
   # We filter these here, instead at the beginning, because otherwise
   # the indices would not work in the update function
-  whatx <- bar$what[! bar$what$skip, ]
+  whatx <- bar$what[!bar$what$skip, ]
 
   now <- Sys.time()
 
@@ -323,7 +325,7 @@ calculate_progress_parts <- function(bar) {
   parts$pkg_total <- as.character(pkg_total)
   pkg_percent <- pkg_done / pkg_total
   bytes_done <- sum(whatx$current, na.rm = TRUE)
-  bytes_total <- sum(whatx$need)           # could be NA
+  bytes_total <- sum(whatx$need) # could be NA
   parts$bytes_total <- bytes_total
   bytes_percent <- bytes_done / bytes_total # could be NA
   percent <- if (!is.na(bytes_percent)) bytes_percent else pkg_percent

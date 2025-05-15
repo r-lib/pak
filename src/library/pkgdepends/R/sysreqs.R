@@ -7,12 +7,14 @@ sysreqs_platforms <- function() {
 }
 
 sysreqs_is_supported <- function(sysreqs_platform = NULL) {
-  sysreqs_platform <- sysreqs_platform %||% current_config()$get("sysreqs_platform")
+  sysreqs_platform <- sysreqs_platform %||%
+    current_config()$get("sysreqs_platform")
   !is.na(find_sysreqs_platform(sysreqs_platform))
 }
 
 sysreqs_db_list <- function(sysreqs_platform = NULL) {
-  sysreqs_platform <- sysreqs_platform %||% current_config()$get("sysreqs_platform")
+  sysreqs_platform <- sysreqs_platform %||%
+    current_config()$get("sysreqs_platform")
   plt <- parse_sysreqs_platform(sysreqs_platform)
 
   sysreqs_db_update()
@@ -23,9 +25,11 @@ sysreqs_db_list <- function(sysreqs_platform = NULL) {
     for (dep in rule$dependencies) {
       appl <- FALSE
       for (const in dep$constraints) {
-        if (identical(const$os, plt$os) &&
+        if (
+          identical(const$os, plt$os) &&
             identical(const$distribution, plt$distribution) &&
-            (is.null(const$versions) || plt$version %in% const$versions)) {
+            (is.null(const$versions) || plt$version %in% const$versions)
+        ) {
           appl <- TRUE
           break
         }
@@ -165,7 +169,7 @@ sysreqs_install_plan <- function(refs, upgrade = TRUE, config = list()) {
   sysreqs <- lapply(sol$data$sysreqs_packages, sapply, "[[", "sysreq")
   names <- as.character(sort(unique(unlist(sysreqs))))
   if (length(names)) {
-    records <- unlist(sol$data$sysreqs_packages, recursive=FALSE)
+    records <- unlist(sol$data$sysreqs_packages, recursive = FALSE)
     names(records) <- vcapply(records, "[[", "sysreq")
     records <- records[!duplicated(names(records))]
   }
@@ -175,18 +179,25 @@ sysreqs_install_plan <- function(refs, upgrade = TRUE, config = list()) {
     packages = lapply(names, function(n) {
       sol$data$package[vlapply(sysreqs, function(s) n %in% s)]
     }),
-    pre_install = lapply(names, function(n) as.character(records[[n]]$pre_install)),
-    system_packages = lapply(names, function(n) as.character(records[[n]]$packages)),
-    post_install = lapply(names, function(n) as.character(records[[n]]$post_install))
+    pre_install = lapply(
+      names,
+      function(n) as.character(records[[n]]$pre_install)
+    ),
+    system_packages = lapply(
+      names,
+      function(n) as.character(records[[n]]$packages)
+    ),
+    post_install = lapply(
+      names,
+      function(n) as.character(records[[n]]$post_install)
+    )
   )
 
   res$packages <- spkgs
   res
 }
 
-sysreqs_check_installed <- function(packages = NULL,
-                                    library = .libPaths()[1]) {
-
+sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
   data <- synchronize(when_all(
     sysreqs2_async_update_metadata(),
     async_system_list_packages(),
@@ -277,7 +288,9 @@ sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
   } else if (all(chk$installed)) {
     cli::cli_alert_success("All system requirements are installed.")
   } else {
-    cli::cli_alert_info("Need to install {sum(!chk$installed)} system package{?s}.")
+    cli::cli_alert_info(
+      "Need to install {sum(!chk$installed)} system package{?s}."
+    )
     config <- current_config()
     cmds <- sysreqs2_scripts(
       attr(chk, "sysreqs_records"),
@@ -303,7 +316,7 @@ async_parse_installed <- function(library, packages) {
 }
 
 sysreqs_list_system_packages <- function() {
-  synchronize(async_system_list_packages())                         # nocov
+  synchronize(async_system_list_packages()) # nocov
 }
 
 # -------------------------------------------------------------------------
@@ -314,10 +327,18 @@ parse_sysreqs_platform <- function(x) {
   stopifnot(length(x) == 1)
 
   # full form or only distro [+ version]
-  if (sum(strsplit(x, "")[[1]] == "-") >= 2) {
+  if (
+    sum(strsplit(x, "")[[1]] == "-") >= 2 &&
+      !grepl("opensuse-leap", x) &&
+      !grepl("opensuse-tumbleweed", x)
+  ) {
     osplt <- parse_platform(x)
     if (startsWith(osplt$os, "linux-")) {
-      rest <- sub("^linux[-]((dietlibc|gnu|musl|uclibc|unknown)[-])?", "", osplt$os)
+      rest <- sub(
+        "^linux[-]((dietlibc|gnu|musl|uclibc|unknown)[-])?",
+        "",
+        osplt$os
+      )
       osplt$os <- "linux"
     } else {
       rest <- ""
@@ -337,20 +358,34 @@ parse_sysreqs_platform <- function(x) {
     return(osplt)
   }
 
-  restpcs <- strsplit(rest, "-", fixed = TRUE)[[1]]
-  if (length(restpcs) == 1) {
-    osplt$distribution <- restpcs
-  } else if (length(restpcs) == 2) {
-    osplt$distribution <- restpcs[1]
-    osplt$version <- restpcs[2]
+  if (grepl("^opensuse-leap-", rest)) {
+    osplt$distribution <- "opensuse-leap"
+    osplt$version <- sub("^opensuse-leap-", "", rest)
+  } else if (grepl("^opensuse-tumbleweed-", rest)) {
+    osplt$distribution <- "opensuse-tumbleweed"
+    osplt$version <- sub("^opensuse-tumbleweed-", "", rest)
   } else {
-    osplt$distribution <- restpcs[1]
-    osplt$version <- paste0(restpcs[-1], collapse = "-")
+    restpcs <- strsplit(rest, "-", fixed = TRUE)[[1]]
+    if (length(restpcs) == 1) {
+      osplt$distribution <- restpcs
+    } else if (length(restpcs) == 2) {
+      osplt$distribution <- restpcs[1]
+      osplt$version <- restpcs[2]
+    } else {
+      osplt$distribution <- restpcs[1]
+      osplt$version <- paste0(restpcs[-1], collapse = "-")
+    }
   }
+
   osplt
 }
 
-sysreqs_resolve <- function(sysreqs, sysreqs_platform = NULL, config = NULL, ...) {
+sysreqs_resolve <- function(
+  sysreqs,
+  sysreqs_platform = NULL,
+  config = NULL,
+  ...
+) {
   if (tolower(Sys.getenv("R_PKG_SYSREQS2")) != "false") {
     synchronize(sysreqs2_async_resolve(sysreqs, sysreqs_platform, config, ...))
   } else {
@@ -359,19 +394,22 @@ sysreqs_resolve <- function(sysreqs, sysreqs_platform = NULL, config = NULL, ...
 }
 
 sysreqs_async_resolve <- function(sysreqs, sysreqs_platform, config) {
-  sysreqs; sysreqs_platform; config
-  sysreqs_async_resolve_query(sysreqs, sysreqs_platform, config)$
-    then(function(resp) {
-      if (resp$status_code < 400) return(resp)
-      throw(pkg_error(
-        call. = FALSE,
-        "Failed to look up system requirements for OS {sysreqs_platform}.",
-        i = "HTTP error {resp$status_code} for {.url {resp$url}}.",
-        i = "Response: {.val {rawToChar(resp$content)}}."
-      ))
-    })$
-      then(function(resp) sysreqs_resolve_process(sysreqs, sysreqs_platform, resp))$
-      then(function(res) add_class(res, "pkg_sysreqs_result"))
+  sysreqs
+  sysreqs_platform
+  config
+  sysreqs_async_resolve_query(sysreqs, sysreqs_platform, config)$then(function(
+    resp
+  ) {
+    if (resp$status_code < 400) return(resp)
+    throw(pkg_error(
+      call. = FALSE,
+      "Failed to look up system requirements for OS {sysreqs_platform}.",
+      i = "HTTP error {resp$status_code} for {.url {resp$url}}.",
+      i = "Response: {.val {rawToChar(resp$content)}}."
+    ))
+  })$then(
+    function(resp) sysreqs_resolve_process(sysreqs, sysreqs_platform, resp)
+  )$then(function(res) add_class(res, "pkg_sysreqs_result"))
 }
 
 sysreqs_async_resolve_query <- function(sysreqs, sysreqs_platform, config) {
@@ -438,14 +476,17 @@ sysreqs_canonise_query <- function(sysreqs) {
 
 sysreqs_resolve_make_data <- function(sysreqs) {
   sysreqs <- sysreqs_canonise_query(sysreqs)
-  paste(collapse = "\n", c(
-    "Package: pkgdependssysreqs",
-    "Version: 1.0.0",
-    "SystemRequirements: ",
-    paste0("    ", sysreqs),
-    "Note: and thank you!",
-    ""
-  ))
+  paste(
+    collapse = "\n",
+    c(
+      "Package: pkgdependssysreqs",
+      "Version: 1.0.0",
+      "SystemRequirements: ",
+      paste0("    ", sysreqs),
+      "Note: and thank you!",
+      ""
+    )
+  )
 }
 
 sysreqs_install <- function(sysreqs_cmds, config = NULL) {
@@ -481,8 +522,8 @@ sysreqs_install <- function(sysreqs_cmds, config = NULL) {
 
   output <- lapply(cmds, function(cmd) {
     if (sudo) {
-      sh <- "sudo"                                               # nocov
-      cmdline <- c("sh", "-c", cmd)                              # nocov
+      sh <- "sudo" # nocov
+      cmdline <- c("sh", "-c", cmd) # nocov
     } else {
       sh <- "sh"
       cmdline <- c("-c", cmd)
@@ -519,8 +560,11 @@ is_root <- function() {
 
 can_sudo_without_pw <- function() {
   if (os_type() != "unix") return(FALSE)
-  tryCatch({
-    processx::run("sudo", c("-s", "id"))
-    TRUE
-  }, error = function(err) FALSE)
+  tryCatch(
+    {
+      processx::run("sudo", c("-s", "id"))
+      TRUE
+    },
+    error = function(err) FALSE
+  )
 }

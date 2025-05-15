@@ -1,40 +1,38 @@
-
 res_make_empty_df <- local({
   data <- NULL
   function() {
     if (is.null(data)) {
       data <<- data_frame(
-        ref      = character(),
-        type     = character(),
-        direct   = logical(),
-        directpkg= logical(),
-        status   = character(),         # "OK" or "FAILED"
-        package  = character(),
-        version  = character(),
-        license  = character(),
-        needscompilation
-                 = logical(),
+        ref = character(),
+        type = character(),
+        direct = logical(),
+        directpkg = logical(),
+        status = character(), # "OK" or "FAILED"
+        package = character(),
+        version = character(),
+        license = character(),
+        needscompilation = logical(),
         priority = character(),
-        md5sum   = character(),
-        sha256   = character(),
+        md5sum = character(),
+        sha256 = character(),
         filesize = integer(),
-        built    = character(),
-        platform = character(),         # "source" or platform string
-        rversion = character(),         # * or version number (prefix)
+        built = character(),
+        platform = character(), # "source" or platform string
+        rversion = character(), # * or version number (prefix)
         repotype = character(),
-        repodir  = character(),
-        target   = character(),
-        deps     = list(),
-        mirror   = character(),         # for CRAN/BioC
-        sources  = list(),              # list of URLs
-        remote   = list(),              # parsed remote ref
-        error    = list(),              # list of errors
-        metadata = list(),              # named character of entries
-        extra    = list(),              # any extra data (e.g. GitHub sha)
-        dep_types= list(),
-        params   = list(),
-        sysreqs  = character(),
-        os_type  = character()
+        repodir = character(),
+        target = character(),
+        deps = list(),
+        mirror = character(), # for CRAN/BioC
+        sources = list(), # list of URLs
+        remote = list(), # parsed remote ref
+        error = list(), # list of errors
+        metadata = list(), # named character of entries
+        extra = list(), # any extra data (e.g. GitHub sha)
+        dep_types = list(),
+        params = list(),
+        sysreqs = character(),
+        os_type = character()
       )
     }
     data
@@ -46,33 +44,34 @@ res_df_defaults <- local({
   function() {
     if (is.null(data)) {
       data <<- list(
-        direct   = FALSE,
-        directpkg= FALSE,
-        status   = "OK",
-        license  = NA_character_,
-        needscompilation
-                 = TRUE,
+        direct = FALSE,
+        directpkg = FALSE,
+        status = "OK",
+        license = NA_character_,
+        needscompilation = TRUE,
         priority = NA_character_,
-        md5sum   = NA_character_,
-        sha256   = NA_character_,
+        md5sum = NA_character_,
+        sha256 = NA_character_,
         filesize = NA_integer_,
-        built    = NA_character_,
+        built = NA_character_,
         platform = "source",
         rversion = "*",
         repotype = NA_character_,
-        repodir  =  "src/contrib",
-        target   =
-          quote(file.path("src/contrib", paste0(package, "_", version, ".tar.gz"))),
-        deps     = list(make_null_deps()),
-        remote   = quote(parse_pkg_refs(ref)),
-        error    = list(list()),
+        repodir = "src/contrib",
+        target = quote(file.path(
+          "src/contrib",
+          paste0(package, "_", version, ".tar.gz")
+        )),
+        deps = list(make_null_deps()),
+        remote = quote(parse_pkg_refs(ref)),
+        error = list(list()),
         metadata = list(list()),
-        mirror   = NA_character_,
-        extra    = list(list()),
-        dep_types= list("default"),
-        params   = list(character()),
-        sysreqs  = NA_character_,
-        os_type  = NA_character_
+        mirror = NA_character_,
+        extra = list(list()),
+        dep_types = list("default"),
+        params = list(character()),
+        sysreqs = NA_character_,
+        os_type = NA_character_
       )
     }
     data
@@ -146,8 +145,12 @@ res_add_defaults <- function(df) {
 
   all_types <- res_df_entry_types()
   miss <- setdiff(names(all_types), names(df))
-  def <- lapply(res_df_defaults()[miss], eval, envir = df,
-                enclos = environment())
+  def <- lapply(
+    res_df_defaults()[miss],
+    eval,
+    envir = df,
+    enclos = environment()
+  )
   df[names(def)] <- def
   df <- df[, names(all_types)]
 
@@ -157,8 +160,14 @@ res_add_defaults <- function(df) {
   exp_types <- all_types[names(df)]
   if (any(bad <- ent_types != exp_types)) {
     items <- structure(
-      paste0(names(df)[bad], " (", ent_types[bad], ", expected ",
-             exp_types[bad], ")"),
+      paste0(
+        names(df)[bad],
+        " (",
+        ent_types[bad],
+        ", expected ",
+        exp_types[bad],
+        ")"
+      ),
       names = rep("*", sum(bad))
     )
     throw(pkg_error(

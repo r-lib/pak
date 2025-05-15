@@ -207,24 +207,30 @@ clear_deps_cache <- function() {
 re_r_dep <- function() {
   db <- renv_dependencies_database()
   fns <- as.character(unlist(lapply(db, names)))
-  paste0(collapse = "|", c(
-    "library", "require", "loadNamespace",
-    "::",
-    "setClass", "setGeneric",
-    "pkg_attach",
-    "p_load",
-    "module",
-    "import",
-    "box::",
-    "tar_option_set",
-    "glue",
-    "ggsave",
-    "set_engine",
-    "opts_chunk",
-    "geom_hex",
-    "JunitReporter",
-    fns
-  ))
+  paste0(
+    collapse = "|",
+    c(
+      "library",
+      "require",
+      "loadNamespace",
+      "::",
+      "setClass",
+      "setGeneric",
+      "pkg_attach",
+      "p_load",
+      "module",
+      "import",
+      "box::",
+      "tar_option_set",
+      "glue",
+      "ggsave",
+      "set_engine",
+      "opts_chunk",
+      "geom_hex",
+      "JunitReporter",
+      fns
+    )
+  )
 }
 
 scan_path_deps <- function(path) {
@@ -296,14 +302,15 @@ scan_deps_df <- function(
 scan_path_should_cache <- function(paths) {
   # we don't want to cache the ones that depend on the file
   # name, because caching is content-based.
-  ! basename(paths) %in% c(
-    "_bookdown.yml",
-    "_pkgdown.yml",
-    "_quarto.yml",
-    "renv.lock",
-    "rsconnect",
-    NULL
-  )
+  !basename(paths) %in%
+    c(
+      "_bookdown.yml",
+      "_pkgdown.yml",
+      "_quarto.yml",
+      "renv.lock",
+      "rsconnect",
+      NULL
+    )
 }
 
 scan_path_deps_do <- function(code, path) {
@@ -358,7 +365,9 @@ scan_path_deps_do_r <- function(code, path, ranges = NULL) {
   db_pat <- hits$patterns$id[hits$patterns$name %in% db_patterns]
   db_hits <- mct[mct$pattern %in% db_pat, ]
 
-  pkg_hits <- mct[! mct$pattern %in% c(gen_pat, fn_pat, jr_pat, ragg_pat, db_hits), ]
+  pkg_hits <- mct[
+    !mct$pattern %in% c(gen_pat, fn_pat, jr_pat, ragg_pat, db_hits),
+  ]
   rbind(
     if (nrow(pkg_hits) > 0) scan_path_deps_do_pkg_hits(pkg_hits, path),
     if (nrow(fn_hits) > 0) scan_path_deps_do_fn_hits(fn_hits, path),
@@ -434,7 +443,12 @@ scan_pat_deps_do_ragg_hits <- function(hits, path) {
   wcodes <- which(hits$name == "dep-code")
   for (wc in wcodes) {
     expr <- parse(text = hits$code[wc], keep.source = FALSE)
-    matched <- match.call(function(...) { }, expr, expand.dots=FALSE)
+    matched <- match.call(
+      function(...) {
+      },
+      expr,
+      expand.dots = FALSE
+    )
     args <- matched[["..."]]
     if ("dev" %in% names(args) && args[["dev"]] == "ragg_png") {
       return(scan_deps_df(
@@ -466,41 +480,89 @@ scan_pat_deps_do_db_hits <- function(hits, path) {
 }
 
 # nocov start
-prot_xfun_pkg_attach <- function(..., install, message) { }
-prot_xfun_pkg_attach2 <- function(...) { }
+prot_xfun_pkg_attach <- function(..., install, message) {
+}
+prot_xfun_pkg_attach2 <- function(...) {
+}
 prot_pacman_p_load <- function(
-  ..., char, install, update, character.only) {
+  ...,
+  char,
+  install,
+  update,
+  character.only
+) {
 }
 prot_modules_import <- function(
-  from, ..., attach = TRUE, where = parent.frame()) {
+  from,
+  ...,
+  attach = TRUE,
+  where = parent.frame()
+) {
 }
 prot_modules_module <- function(
-  expr = {}, topEncl = NULL, envir = parent.frame()) {
+  expr = {
+  },
+  topEncl = NULL,
+  envir = parent.frame()
+) {
 }
-prot_import_from <- function(.from, ..., .character_only = FALSE) { }
-prot_import_here <- function(.from, ..., .character_only = FALSE) { }
+prot_import_from <- function(.from, ..., .character_only = FALSE) {
+}
+prot_import_here <- function(.from, ..., .character_only = FALSE) {
+}
 prot_import_into <- function(
-  .into, ..., .from, .library = NULL, .directory = ".", .all = NULL,
-  .except = character(), .chdir = TRUE, .character_only = FALSE,
-  .S3 = FALSE) {
+  .into,
+  ...,
+  .from,
+  .library = NULL,
+  .directory = ".",
+  .all = NULL,
+  .except = character(),
+  .chdir = TRUE,
+  .character_only = FALSE,
+  .S3 = FALSE
+) {
 }
-prot_box_use <- function(...) { }
+prot_box_use <- function(...) {
+}
 prot_targets_tar_option_set <- function(
-  tidy_eval = NULL, packages = NULL, ...) {
+  tidy_eval = NULL,
+  packages = NULL,
+  ...
+) {
 }
 prot_glue_glue <- function(
-  ..., .sep = "", .envir = parent.frame(), .open = "{", .close = "}") {
+  ...,
+  .sep = "",
+  .envir = parent.frame(),
+  .open = "{",
+  .close = "}"
+) {
 }
-prot_ggplot2_ggsave <- function(filename, ...) { }
-prot_parsnip_set_engine <- function(object, engine, ...) { }
+prot_ggplot2_ggsave <- function(filename, ...) {
+}
+prot_parsnip_set_engine <- function(object, engine, ...) {
+}
 prot_r6_r6class <- function(
-  classname = NULL, public = list(), private = NULL, active = NULL,
-  inherit = NULL, ...) { }
-prot_testthat_test_package <- function(package, reporter = NULL, ...) { }
-prot_testthat_test_dir <- function(
-  path, filter = NULL, reporter = NULL, ...) {
+  classname = NULL,
+  public = list(),
+  private = NULL,
+  active = NULL,
+  inherit = NULL,
+  ...
+) {
 }
-prot_testthat_test_file <- function(path, reporter = NULL, ...) { }
+prot_testthat_test_package <- function(package, reporter = NULL, ...) {
+}
+prot_testthat_test_dir <- function(
+  path,
+  filter = NULL,
+  reporter = NULL,
+  ...
+) {
+}
+prot_testthat_test_file <- function(path, reporter = NULL, ...) {
+}
 # nocov end
 
 safe_parse_pkg_from_call <- function(ns, fn, code) {
@@ -512,7 +574,8 @@ safe_parse_pkg_from_call <- function(ns, fn, code) {
 
 parse_pkg_from_call_match <- function(fn, code) {
   expr <- parse(text = code, keep.source = FALSE)
-  fun <- switch(fn,
+  fun <- switch(
+    fn,
     "library" = base::library,
     "require" = base::require,
     "loadNamespace" = base::loadNamespace,
@@ -540,35 +603,29 @@ parse_pkg_from_call_match <- function(fn, code) {
 
 parse_pkg_from_call <- function(ns, fn, code) {
   matched <- parse_pkg_from_call_match(fn, code)
-  switch(fn,
-    "library" = , "require" =
-      parse_pkg_from_call_library(ns, fn, matched),
-    "loadNamespace" = , "requireNamespace" =
-      parse_pkg_from_call_loadnamespace(ns, fn, matched),
-    "pkg_attach" = , "pkg_attach2" =
-      parse_pkg_from_call_xfun(ns, fn, matched),
-    "p_load" =
-      parse_pkg_from_call_pacman(ns, fn, matched),
-    "import" =
-      parse_pkg_from_call_modules_import(ns, fn, matched),
-    "module" =
-      parse_pkg_from_call_modules_module(ns, fn, matched),
-    "from" = , "here" = , "into" =
-      parse_pkg_from_call_import(ns, fn, matched),
-    "use" =
-      parse_pkg_from_call_box(ns, fn, matched),
-    "tar_option_set" =
-      parse_pkg_from_call_targets(ns, fn, matched),
-    "glue" =
-      parse_pkg_from_call_glue(ns, fn, matched),
-    "ggsave" =
-      parse_pkg_from_call_ggplot2(ns, fn, matched),
-    "set_engine" =
-      parse_pkg_from_call_parsnip(ns, fn, matched),
-    "R6Class" =
-      parse_pkg_from_call_testthat_r6class(ns, fn, matched),
-    "test_package" = , "test_dir" = , "test_file" =
-      parse_pkg_from_call_testthat_test(ns, fn, matched)
+  switch(
+    fn,
+    "library" = ,
+    "require" = parse_pkg_from_call_library(ns, fn, matched),
+    "loadNamespace" = ,
+    "requireNamespace" = parse_pkg_from_call_loadnamespace(ns, fn, matched),
+    "pkg_attach" = ,
+    "pkg_attach2" = parse_pkg_from_call_xfun(ns, fn, matched),
+    "p_load" = parse_pkg_from_call_pacman(ns, fn, matched),
+    "import" = parse_pkg_from_call_modules_import(ns, fn, matched),
+    "module" = parse_pkg_from_call_modules_module(ns, fn, matched),
+    "from" = ,
+    "here" = ,
+    "into" = parse_pkg_from_call_import(ns, fn, matched),
+    "use" = parse_pkg_from_call_box(ns, fn, matched),
+    "tar_option_set" = parse_pkg_from_call_targets(ns, fn, matched),
+    "glue" = parse_pkg_from_call_glue(ns, fn, matched),
+    "ggsave" = parse_pkg_from_call_ggplot2(ns, fn, matched),
+    "set_engine" = parse_pkg_from_call_parsnip(ns, fn, matched),
+    "R6Class" = parse_pkg_from_call_testthat_r6class(ns, fn, matched),
+    "test_package" = ,
+    "test_dir" = ,
+    "test_file" = parse_pkg_from_call_testthat_test(ns, fn, matched)
   )
 }
 
@@ -578,8 +635,10 @@ parse_pkg_from_call_library <- function(ns, fn, matched) {
   if (is.character(pkg) && length(pkg) == 1) {
     return(pkg)
   }
-  if (is.symbol(pkg) &&
-      identical(matched[["character.only"]] %||% FALSE, FALSE)) {
+  if (
+    is.symbol(pkg) &&
+      identical(matched[["character.only"]] %||% FALSE, FALSE)
+  ) {
     return(as.character(pkg))
   }
   NULL
@@ -678,7 +737,8 @@ parse_pkg_from_call_box <- function(ns, fn, matched) {
     } else if (
       identical(arg[[1]], quote(`[`)) &&
         length(arg) > 1L &&
-        is.symbol(arg[[2L]])) {
+        is.symbol(arg[[2L]])
+    ) {
       as.character(arg[[2L]])
     }
     if (is.null(name) || name == "." || name == "..") {
@@ -703,9 +763,36 @@ parse_pkg_from_call_targets <- function(ns, fn, matched) {
 
 # from renv:::renv_dependencies_eval
 dependencies_eval <- function(expr) {
-  syms <- c("list", "c", "T", "F", "{", "(", "[", "[[", "::",
-    ":::", "$", "@", ":", "+", "-", "*", "/", "<", ">", "<=",
-    ">=", "==", "!=", "!", "&", "&&", "|", "||")
+  syms <- c(
+    "list",
+    "c",
+    "T",
+    "F",
+    "{",
+    "(",
+    "[",
+    "[[",
+    "::",
+    ":::",
+    "$",
+    "@",
+    ":",
+    "+",
+    "-",
+    "*",
+    "/",
+    "<",
+    ">",
+    "<=",
+    ">=",
+    "==",
+    "!=",
+    "!",
+    "&",
+    "&&",
+    "|",
+    "||"
+  )
   vals <- mget(syms, envir = baseenv())
   envir <- list2env(vals, parent = emptyenv())
   eval(expr, envir = envir)
@@ -722,7 +809,9 @@ parse_pkg_from_call_glue <- function(ns, fn, matched) {
       s,
       .open = matched[[".open"]] %||% "{",
       .close = matched[[".close"]] %||% "}",
-      .transformer = function(x, envir) { code <<- c(code, x) }
+      .transformer = function(x, envir) {
+        code <<- c(code, x)
+      }
     )
   }
 
@@ -757,16 +846,19 @@ parse_pkg_from_call_parsnip <- function(ns, fn, matched) {
     return(NULL)
   }
 
-  map <- getOption("renv.parsnip.engines", default = list(
-    glm    = "stats",
-    glmnet = "glmnet",
-    keras  = "keras",
-    kknn   = "kknn",
-    nnet   = "nnet",
-    rpart  = "rpart",
-    spark  = "sparklyr",
-    stan   = "rstanarm"
-  ))
+  map <- getOption(
+    "renv.parsnip.engines",
+    default = list(
+      glm = "stats",
+      glmnet = "glmnet",
+      keras = "keras",
+      kknn = "kknn",
+      nnet = "nnet",
+      rpart = "rpart",
+      spark = "sparklyr",
+      stan = "rstanarm"
+    )
+  )
 
   pkgs <- if (is.function(map)) {
     map(engine)
@@ -783,8 +875,10 @@ parse_pkg_from_call_parsnip <- function(ns, fn, matched) {
 parse_pkg_from_call_testthat_r6class <- function(ns, fn, matched) {
   if (!is.na(ns) && ns != "R6") return(NULL)
   inherit <- matched[["inherit"]]
-  if (identical(inherit, quote(JunitReporter)) ||
-      identical(inherit, quote(testthat::JunitReporter))) {
+  if (
+    identical(inherit, quote(JunitReporter)) ||
+      identical(inherit, quote(testthat::JunitReporter))
+  ) {
     return("xml2")
   }
   NULL
@@ -793,10 +887,12 @@ parse_pkg_from_call_testthat_r6class <- function(ns, fn, matched) {
 parse_pkg_from_call_testthat_test <- function(ns, fn, matched) {
   if (!is.na(ns) && ns != "testthat") return(NULL)
   reporter <- matched[["reporter"]]
-  if (identical(reporter, "Junit") ||
+  if (
+    identical(reporter, "Junit") ||
       identical(reporter, "junit") ||
       identical(reporter, quote(JunitReporter)) ||
-      identical(reporter, quote(JunitReporter))) {
+      identical(reporter, quote(JunitReporter))
+  ) {
     return("xml2")
   }
   NULL
@@ -808,12 +904,15 @@ scan_path_deps_do_rmd <- function(code, path) {
   hits <- code_query(code, language = "markdown", query = q_deps_rmd())
   inl_pat <- hits$patterns$id[hits$patterns$name == "inline"]
   inl_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% inl_pat, ]
+    hits$matched_captures$pattern %in% inl_pat,
+  ]
   hdr_pat <- hits$patterns$id[hits$patterns$name == "header"]
   hdr_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% hdr_pat, ]
+    hits$matched_captures$pattern %in% hdr_pat,
+  ]
   blk_hits <- hits$matched_captures[
-    ! hits$matched_captures$pattern %in% c(inl_pat, hdr_pat), ]
+    !hits$matched_captures$pattern %in% c(inl_pat, hdr_pat),
+  ]
   rbind(
     if (nrow(inl_hits)) scan_path_deps_do_inline_hits(code, inl_hits, path),
     if (nrow(blk_hits)) scan_path_deps_do_block_hits(code, blk_hits, path),
@@ -823,8 +922,12 @@ scan_path_deps_do_rmd <- function(code, path) {
 }
 
 range_cols <- c(
-  "start_row", "start_column", "end_row", "end_column",
-  "start_byte", "end_byte"
+  "start_row",
+  "start_column",
+  "end_row",
+  "end_column",
+  "start_byte",
+  "end_byte"
 )
 
 scan_path_deps_do_inline_hits <- function(code, inl_hits, path) {
@@ -852,7 +955,7 @@ scan_path_deps_do_inline_hits <- function(code, inl_hits, path) {
   }
   # need to adjust the ranges for the _ASCII_ (!) delimiters
   r_ranges <- cpt[cpt$name == "code", ][wcnd2, range_cols]
-  r_ranges$start_byte <- r_ranges$start_byte + pre_drop[wcnd2] + 2L   # 'r '
+  r_ranges$start_byte <- r_ranges$start_byte + pre_drop[wcnd2] + 2L # 'r '
   r_ranges$start_column <- r_ranges$start_column + pre_drop[wcnd2] + 2L
   r_ranges$end_byte <- r_ranges$end_byte - post_drop[wcnd2]
   scan_path_deps_do_r(code, path = path, ranges = r_ranges)
@@ -912,16 +1015,20 @@ scan_path_deps_do_header_hits <- function(code, hdr_hits, path) {
 
   shiny_pat <- hits$patterns$id[hits$patterns$name == "shiny"]
   shiny_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% shiny_pat, ]
+    hits$matched_captures$pattern %in% shiny_pat,
+  ]
   pkgstr_pat <- hits$patterns$id[hits$patterns$name == "pkgstring"]
   pkgstr_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% pkgstr_pat, ]
+    hits$matched_captures$pattern %in% pkgstr_pat,
+  ]
   bslib_pat <- hits$patterns$id[hits$patterns$name == "bslib"]
   bslib_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% bslib_pat, ]
+    hits$matched_captures$pattern %in% bslib_pat,
+  ]
   tag_pat <- hits$patterns$id[hits$patterns$name == "tag"]
   tag_hits <- hits$matched_captures[
-    hits$matched_captures$pattern %in% tag_pat, ]
+    hits$matched_captures$pattern %in% tag_pat,
+  ]
 
   rbind(
     if (nrow(shiny_hits)) {
@@ -956,16 +1063,22 @@ scan_path_deps_do_header_shiny_hits <- function(code, hits, path) {
 scan_path_deps_do_header_pkgstr_hits <- function(code, hits, path) {
   vals <- yaml_parse_scalar(hits$code)
   pkg <- vapply(vals, FUN.VALUE = character(1), function(x) {
-    tryCatch({
-      expr <- parse(text = x, keep.source = FALSE)[[1]]
-      if (length(expr) == 3 && is.call(expr) &&
-          (identical(expr[[1]], quote(`::`)) ||
-           identical(expr[[1]], quote(`:::`)))) {
-        as.character(expr[[2]])
-      } else {
-        NA_character_
-      }
-    }, error = function(...) NA_character_)
+    tryCatch(
+      {
+        expr <- parse(text = x, keep.source = FALSE)[[1]]
+        if (
+          length(expr) == 3 &&
+            is.call(expr) &&
+            (identical(expr[[1]], quote(`::`)) ||
+              identical(expr[[1]], quote(`:::`)))
+        ) {
+          as.character(expr[[2]])
+        } else {
+          NA_character_
+        }
+      },
+      error = function(...) NA_character_
+    )
   })
   if (all(is.na(pkg))) return(NULL)
   hits <- hits[!is.na(pkg), ]
@@ -1147,7 +1260,7 @@ scan_path_deps_rnw_chunk_is_ignored <- function(chunk) {
 
   # engine is not R / Rscript
   engine <- chunk$params[["engine"]] %||% "R"
-  if (!is.character(engine) || ! tolower(engine) %in% c("r", "rscript")) {
+  if (!is.character(engine) || !tolower(engine) %in% c("r", "rscript")) {
     return(TRUE)
   }
 
@@ -1184,14 +1297,18 @@ scan_path_deps_do_rnw_chunks <- function(code) {
   ranges <- scan_path_deps_do_rnw_ranges(code)
   from <- viapply(ranges, "[[", 1L)
   to <- viapply(ranges, "[[", 2L)
-  chunks <- .mapply(function(from, to) {
-    cheader <- code[from]
-    ccode <- code[(from+1):to]
-    if (ccode[[length(ccode)]] == "@") {
-      ccode <- ccode[-length(ccode)]
-    }
-    scan_path_deps_do_rnw_parse_chunk(cheader, ccode)
-  }, list(from, to), NULL)
+  chunks <- .mapply(
+    function(from, to) {
+      cheader <- code[from]
+      ccode <- code[(from + 1):to]
+      if (ccode[[length(ccode)]] == "@") {
+        ccode <- ccode[-length(ccode)]
+      }
+      scan_path_deps_do_rnw_parse_chunk(cheader, ccode)
+    },
+    list(from, to),
+    NULL
+  )
 
   # some chunks are ignored
   ignored <- vlapply(chunks, scan_path_deps_rnw_chunk_is_ignored)
@@ -1213,15 +1330,21 @@ scan_path_deps_do_rnw_parse_chunk_header <- function(header) {
       keep.source = FALSE
     )),
     error = function(e) {
-      stop("Invalid syntax for chunk options: ", opts, "\n", conditionMessage(e))
+      stop(
+        "Invalid syntax for chunk options: ",
+        opts,
+        "\n",
+        conditionMessage(e)
+      )
     }
   )
 
   idx <- which(names(res) == "")
   j <- NULL
-  for (i in idx) if (identical(res[[i]], alist(, )[[1]])) {
-    j <- c(j, i)
-  }
+  for (i in idx)
+    if (identical(res[[i]], alist(,)[[1]])) {
+      j <- c(j, i)
+    }
   if (length(j)) {
     res[j] <- NULL
   }
@@ -1232,7 +1355,8 @@ scan_path_deps_do_rnw_parse_chunk_header <- function(header) {
   }
   if ((n <- length(idx)) > 1L || (length(res) > 1L && is.null(names(res)))) {
     stop(
-      "Invalid chunk options: ", res,
+      "Invalid chunk options: ",
+      res,
       "\n\nAll options must be of the form 'tag=value' except for the chunk label."
     )
   }
@@ -1265,7 +1389,7 @@ xfun_quote_label <- function(x) {
 scan_path_deps_do_rnw_parse_chunk <- function(header, code) {
   params <- tryCatch(
     scan_path_deps_do_rnw_parse_chunk_header(header),
-    error = function(...) list(a=1)[0]
+    error = function(...) list(a = 1)[0]
   )
   list(params = params, code = code)
 }

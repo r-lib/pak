@@ -1,4 +1,3 @@
-
 ## ------------------------------------------------------------------------
 ## API
 
@@ -11,24 +10,35 @@ parse_remote_installed <- function(specs, config, ...) {
   parsed_specs$type <- "installed"
   lapply(
     seq_len(nrow(parsed_specs)),
-    function(i) as.list(parsed_specs[i,])
+    function(i) as.list(parsed_specs[i, ])
   )
 }
 
-resolve_remote_installed <- function(remote, direct, config,
-                                     cache, dependencies, ...) {
-
+resolve_remote_installed <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
   deps <- setdiff(dependencies[[2 - direct]], c("LinkingTo", "linkingto"))
   resolve_installed(cache, remote, direct, deps)
 }
 
-download_remote_installed <- function(resolution, target, target_tree,
-                                      config, cache, which, on_progress) {
+download_remote_installed <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
   "Had"
 }
 
-satisfy_remote_installed <- function(resolution, candidate,
-                                     config, ...) {
+satisfy_remote_installed <- function(resolution, candidate, config, ...) {
   TRUE
 }
 
@@ -45,7 +55,9 @@ type_installed_rx <- function() {
     "^",
     "(?:installed::)?",
     "(?<library>.*)/",
-    "(?<package>", package_name_rx(), ")",
+    "(?<package>",
+    package_name_rx(),
+    ")",
     "$"
   )
 }
@@ -66,9 +78,22 @@ make_installed_cache <- function(library, packages = NULL, priority = NULL) {
 
   all_fields <- names(inst)
   fields <- tolower(unique(c(
-    "Package", "Title", "Version", "Depends", "Suggests", "Imports",
-    "LinkingTo", "Enhances", "Built", "MD5sum", "NeedsCompilation",
-    "Platform", "License", "Priority", "Repository", "biocViews",
+    "Package",
+    "Title",
+    "Version",
+    "Depends",
+    "Suggests",
+    "Imports",
+    "LinkingTo",
+    "Enhances",
+    "Built",
+    "MD5sum",
+    "NeedsCompilation",
+    "Platform",
+    "License",
+    "Priority",
+    "Repository",
+    "biocViews",
     grep("^remote", all_fields, value = TRUE),
     grep("^config/needs/", all_fields, value = TRUE)
   )))
@@ -81,7 +106,8 @@ make_installed_cache <- function(library, packages = NULL, priority = NULL) {
   pkgs <- inst[, names(inst) %in% fields]
 
   # Called `sysreqs` in pkgcache, so we call it the same here
-  pkgs$sysreqs <- inst[["systemrequirements"]] %||% rep(NA_character_, nrow(pkgs))
+  pkgs$sysreqs <- inst[["systemrequirements"]] %||%
+    rep(NA_character_, nrow(pkgs))
 
   if (nrow(pkgs) == 0) {
     pkgs$ref <- character()
@@ -128,8 +154,10 @@ make_installed_cache <- function(library, packages = NULL, priority = NULL) {
 
   pkgs$sources <- replicate(nrow(pkgs), character(), simplify = FALSE)
   pkgs$needscompilation <- ifelse(
-    is.na(pkgs$needscompilation), NA,
-    tolower(pkgs$needscompilation) %in% c("true", "yes"))
+    is.na(pkgs$needscompilation),
+    NA,
+    tolower(pkgs$needscompilation) %in% c("true", "yes")
+  )
 
   cran <- !is.na(pkgs$repository) & pkgs$repository == "CRAN"
   bioc <- !is.na(pkgs$biocviews) & pkgs$biocviews != ""
@@ -137,7 +165,9 @@ make_installed_cache <- function(library, packages = NULL, priority = NULL) {
 
   deps <- packages_parse_deps(pkgs)
   pkgs_deps <- split(
-    deps[,-(1:2)], factor(deps$idx, levels = seq_len(nrow(pkgs))))
+    deps[, -(1:2)],
+    factor(deps$idx, levels = seq_len(nrow(pkgs)))
+  )
   pkgs$deps <- unname(pkgs_deps)
   list(pkgs = pkgs, deps = deps)
 }
@@ -186,32 +216,43 @@ packages_parse_deps <- function(pkgs) {
     sp <- strsplit(not_na_deps, ",", fixed = TRUE)
     ll <- sapply(sp, length, USE.NAMES = FALSE)
     sp <- unlist(sp, use.names = FALSE)
-    parsed <- re_match(sp,
-      paste0("^\\s*(?<package>[^(\\s]+)\\s*",
-             "(?:\\((?<op>[^0-9\\s]+)\\s*(?<version>[^)\\s]+)\\))?\\s*$"))
+    parsed <- re_match(
+      sp,
+      paste0(
+        "^\\s*(?<package>[^(\\s]+)\\s*",
+        "(?:\\((?<op>[^0-9\\s]+)\\s*(?<version>[^)\\s]+)\\))?\\s*$"
+      )
+    )
     parsed$idx <- rep(rep(seq_len(no_pkgs), length(cols))[nna], ll)
     parsed$type <- rep(rep(cols, each = no_pkgs)[nna], ll)
     parsed$ref <- parsed$package
     parsed$upstream <- pkgs$package[parsed$idx]
-    parsed <- parsed[, c("upstream", "idx", "ref", "type", "package",
-                         "op", "version")]
+    parsed <- parsed[, c(
+      "upstream",
+      "idx",
+      "ref",
+      "type",
+      "package",
+      "op",
+      "version"
+    )]
     parsed <- parsed[order(parsed$idx), ]
-
   } else {
-    parsed <- data_frame(upstream = character(),
-                     idx = integer(),
-                     ref = character(),
-                     type = character(),
-                     package = character(),
-                     version = character(),
-                     op = character())
+    parsed <- data_frame(
+      upstream = character(),
+      idx = integer(),
+      ref = character(),
+      type = character(),
+      package = character(),
+      version = character(),
+      op = character()
+    )
   }
 
   parsed
 }
 
-resolve_installed  <- function(cache, remotes, direct, dependencies) {
-
+resolve_installed <- function(cache, remotes, direct, dependencies) {
   dependencies <- tolower(dependencies)
 
   ## Single remote, or a list of remotes
@@ -219,7 +260,7 @@ resolve_installed  <- function(cache, remotes, direct, dependencies) {
     refs <- remotes$ref
     packages <- remotes$package
     params <- list(remotes$params %||% character())
-  } else  {
+  } else {
     refs <- vcapply(remotes, "[[", "ref")
     packages <- vcapply(remotes, "[[", "package")
     params <- lapply(remotes, "[[", "params")
@@ -227,15 +268,29 @@ resolve_installed  <- function(cache, remotes, direct, dependencies) {
 
   pkgs <- cache$installed$pkgs
   cols <- c(
-    "ref", "type", "status", "package", "version", "license",
-    "needscompilation", "priority", "md5sum", "platform", "rversion",
-    "sources", "built", "deps", "repotype", "sysreqs")
+    "ref",
+    "type",
+    "status",
+    "package",
+    "version",
+    "license",
+    "needscompilation",
+    "priority",
+    "md5sum",
+    "platform",
+    "rversion",
+    "sources",
+    "built",
+    "deps",
+    "repotype",
+    "sysreqs"
+  )
   res <- pkgs[pkgs$package %in% packages, cols]
   repotype <- pkgs$repotype[pkgs$package %in% packages]
 
   res$direct <- direct
   res$metadata <- get_installed_metadata(res)
-  res$deps <- lapply(res$deps, function(x) x[x$type %in% dependencies,])
+  res$deps <- lapply(res$deps, function(x) x[x$type %in% dependencies, ])
   # this might include extra rows from recommended packages
   idx <- match(res$ref, refs)
   res$params <- replicate(nrow(res), character())
@@ -243,7 +298,7 @@ resolve_installed  <- function(cache, remotes, direct, dependencies) {
 
   extracols <- c("repotype", grep("^remote", names(pkgs), value = TRUE))
   extra <- pkgs[pkgs$package %in% packages, extracols, drop = FALSE]
-  res$extra <- lapply(seq_len(nrow(res)), function(i) extra[i,,drop = FALSE])
+  res$extra <- lapply(seq_len(nrow(res)), function(i) extra[i, , drop = FALSE])
 
   attr(res, "unknown_deps") <-
     setdiff(unique(unlist(lapply(res$deps, "[[", "package"))), "R")
@@ -255,10 +310,12 @@ get_installed_metadata <- function(tab) {
   meta <- replicate(nrow(tab), character(), simplify = FALSE)
   for (i in seq_len(nrow(tab))) {
     meta[[i]] <-
-      c(RemoteType = tab$type[i],
+      c(
+        RemoteType = tab$type[i],
         RemotePkgRef = tab$ref[i],
         RemotePkgPlatform = tab$platform[i],
-        RemoteSha = tab$version[i])
+        RemoteSha = tab$version[i]
+      )
   }
   meta
 }
@@ -267,9 +324,9 @@ parse_built <- function(x) {
   xp <- strsplit(x, ";", fixed = TRUE)
   data.frame(
     stringsAsFactors = FALSE,
-    R        = trimws(vapply(xp, "[", character(1), 1)),
+    R = trimws(vapply(xp, "[", character(1), 1)),
     Platform = trimws(vapply(xp, "[", character(1), 2)),
-    Date     = trimws(vapply(xp, "[", character(1), 3)),
-    OStype   = trimws(vapply(xp, "[", character(1), 4))
+    Date = trimws(vapply(xp, "[", character(1), 3)),
+    OStype = trimws(vapply(xp, "[", character(1), 4))
   )
 }

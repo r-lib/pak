@@ -1,14 +1,20 @@
-
 parse_remote_git <- function(specs, config, ...) {
   pds <- re_match(specs, git_rx())
   pds$ref <- pds$.text
   cn <- setdiff(colnames(pds), c(".match", ".text"))
   pds <- pds[, cn]
   pds$type <- "git"
-  pds$dotgit <- ifelse(grepl("[.]git$", pds$repo), ".git",  "")
+  pds$dotgit <- ifelse(grepl("[.]git$", pds$repo), ".git", "")
   pds$repo <- sub("[.]git$", "", pds$repo)
   pds$package <- ifelse(nzchar(pds$package), pds$package, pds$repo)
-  pds$url <- paste0(pds$protocol, "://", pds$host, pds$path, pds$repo, pds$dotgit)
+  pds$url <- paste0(
+    pds$protocol,
+    "://",
+    pds$host,
+    pds$path,
+    pds$repo,
+    pds$dotgit
+  )
   pds$commitish[pds$commitish == ""] <- "HEAD"
   lapply(
     seq_len(nrow(pds)),
@@ -16,24 +22,35 @@ parse_remote_git <- function(specs, config, ...) {
   )
 }
 
-resolve_remote_git <- function(remote, direct, config, cache,
-                               dependencies, ...) {
-  type_git_get_data(remote)$
-    then(function(resp) {
-      data <- list(
-        desc = resp$description,
-        sha = resp$sha,
-        remote = remote,
-        direct = direct,
-        dependencies = dependencies[[2 - direct]]
-      )
-      type_git_make_resolution(data)
-    })
+resolve_remote_git <- function(
+  remote,
+  direct,
+  config,
+  cache,
+  dependencies,
+  ...
+) {
+  type_git_get_data(remote)$then(function(resp) {
+    data <- list(
+      desc = resp$description,
+      sha = resp$sha,
+      remote = remote,
+      direct = direct,
+      dependencies = dependencies[[2 - direct]]
+    )
+    type_git_make_resolution(data)
+  })
 }
 
-download_remote_git <- function(resolution, target, target_tree,
-                                config, cache, which, on_progress) {
-
+download_remote_git <- function(
+  resolution,
+  target,
+  target_tree,
+  config,
+  cache,
+  which,
+  on_progress
+) {
   # This is similar to github
 
   package <- resolution$package
@@ -50,9 +67,14 @@ download_remote_git <- function(resolution, target, target_tree,
   if (!nocache && !source) {
     ptfm <- current_r_platform()
     hit <- cache$package$copy_to(
-      target, package = package, sha256 = sha, built = TRUE,
-      platform = ptfm, rversion = current_r_version(),
-      .list = c(if (need_vignettes) c(vignettes = TRUE)))
+      target,
+      package = package,
+      sha256 = sha,
+      built = TRUE,
+      platform = ptfm,
+      rversion = current_r_version(),
+      .list = c(if (need_vignettes) c(vignettes = TRUE))
+    )
 
     if (nrow(hit)) {
       return(paste("Had", ptfm)) # TODO: untested currently
@@ -67,8 +89,12 @@ download_remote_git <- function(resolution, target, target_tree,
 
   if (!nocache) {
     hit <- cache$package$copy_to(
-      target, package = package, sha256 = sha, built = TRUE,
-      .list = c(if (need_vignettes) c(vignettes = TRUE)))
+      target,
+      package = package,
+      sha256 = sha,
+      built = TRUE,
+      .list = c(if (need_vignettes) c(vignettes = TRUE))
+    )
     if (nrow(hit)) {
       return("Had")
     }
@@ -80,7 +106,11 @@ download_remote_git <- function(resolution, target, target_tree,
   subdir <- resolution$remote[[1]]$subdir
   if (!nocache) {
     hit <- cache$package$copy_to(
-      target_tree, package = package, sha256 = sha, built = FALSE)
+      target_tree,
+      package = package,
+      sha256 = sha,
+      built = FALSE
+    )
     if (nrow(hit)) {
       return("Had")
     }
@@ -105,8 +135,7 @@ download_remote_git <- function(resolution, target, target_tree,
   })
 }
 
-satisfy_remote_git <- function(resolution, candidate,
-                               config, ...) {
+satisfy_remote_git <- function(resolution, candidate, config, ...) {
   ## 1. package name must match
   if (resolution$package != candidate$package) {
     return(structure(FALSE, reason = "Package names differ"))
@@ -131,11 +160,13 @@ satisfy_remote_git <- function(resolution, candidate,
   ## 3. local packages satisfy a git remote
   ## See https://github.com/r-lib/pkgdepends/issues/229
   if (candidate$type == "local") {
-    return (TRUE)
+    return(TRUE)
   }
 
   ## 3. other refs are also good, as long as they have the same sha
-  sha1 <- (if (is.list(candidate$extra[[1]]))candidate$extra[[1]][["remotesha"]]) %||% NA_character_
+  sha1 <- (if (is.list(candidate$extra[[1]]))
+    candidate$extra[[1]][["remotesha"]]) %||%
+    NA_character_
   sha2 <- resolution$extra[[1]][["remotesha"]] %||% NA_character_
   ok <- is_string(sha1) && is_string(sha2) && same_sha(sha1, sha2)
   if (!ok) {
@@ -157,7 +188,9 @@ git_rx <- function() {
   paste0(
     "^",
     ## Optional package name
-    "(?:(?<package>", package_name_rx(), ")=)?",
+    "(?:(?<package>",
+    package_name_rx(),
+    ")=)?",
     ## Remote type
     "(?:git::)",
     "(?:(?<protocol>[^/]*)://)?",
@@ -179,46 +212,50 @@ type_git_get_data <- function(remote) {
     paste0(remote$subdir, "/", "DESCRIPTION")
   }
 
-  async_git_list_files(url, remote$commitish)$
-    catch(error = function(err) {
-      throw(pkg_error(
+  async_git_list_files(url, remote$commitish)$catch(error = function(err) {
+    throw(
+      pkg_error(
         "Failed to download {.path {desc_path}} from git repo at {.url {remote$url}}."
-      ), parent = err)
-    })$
-    then(function(files) {
-      sha <<- files$sha
-      desc_idx <- which(files$files$path == desc_path)
-      if (length(desc_idx) == 0) {
-        throw(pkg_error(
-          "Could not find {.path {desc_path}} in git repo at {.url {remote$url}}."
-        ))
+      ),
+      parent = err
+    )
+  })$then(function(files) {
+    sha <<- files$sha
+    desc_idx <- which(files$files$path == desc_path)
+    if (length(desc_idx) == 0) {
+      throw(pkg_error(
+        "Could not find {.path {desc_path}} in git repo at {.url {remote$url}}."
+      ))
+    }
+    if (files$files$type[desc_idx] != "blob") {
+      throw(pkg_error(
+        "{.path {desc_path}} is a directory in git repo at {.url {remote$url}}."
+      ))
+    }
+    files$files$hash[desc_idx]
+  })$then(function(desc_hash) {
+    async_git_download_file(url, desc_hash, output = NULL)$catch(
+      error = function(err) {
+        throw(
+          pkg_error(
+            "Failed to download {.path {desc_path}} from git repo at {.url {remote$url}}."
+          ),
+          parent = err
+        )
       }
-      if (files$files$type[desc_idx] != "blob") {
-        throw(pkg_error(
-          "{.path {desc_path}} is a directory in git repo at {.url {remote$url}}."
-        ))
-      }
-      files$files$hash[desc_idx]
-    })$
-    then(function(desc_hash) {
-      async_git_download_file(url, desc_hash, output = NULL)$
-      catch(error = function(err) {
-        throw(pkg_error(
-          "Failed to download {.path {desc_path}} from git repo at {.url {remote$url}}."
-        ), parent = err)
-      })$
-      then(function(desc_dl) {
-        dsc <<- desc::desc(text = rawToChar(desc_dl$raw))
-      })$
-      catch(error = function(err) {
-        throw(pkg_error(
+    )$then(function(desc_dl) {
+      dsc <<- desc::desc(text = rawToChar(desc_dl$raw))
+    })$catch(error = function(err) {
+      throw(
+        pkg_error(
           "Failed to parse {.path {desc_path}} from git repo at {.url {remote$url}}."
-        ), parent = err)
-      })
-    })$
-    then(function() {
-      list(sha = sha, description = dsc)
+        ),
+        parent = err
+      )
     })
+  })$then(function() {
+    list(sha = sha, description = dsc)
+  })
 }
 
 type_git_make_resolution <- function(data) {
@@ -254,7 +291,12 @@ type_git_make_resolution <- function(data) {
     version = version,
     license = data$desc$get_field("License", NA_character_),
     sources = data$remote$url,
-    target = unclass(sprintf("src/contrib/%s_%s_git_%s", package, version, sha7)),
+    target = unclass(sprintf(
+      "src/contrib/%s_%s_git_%s",
+      package,
+      version,
+      sha7
+    )),
     remote = list(data$remote),
     deps = list(deps),
     unknown_deps = unknown,

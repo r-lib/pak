@@ -1,6 +1,4 @@
-
 verify_extracted_package <- function(filename, parent_path) {
-
   pkg_name <- dir(parent_path)
   pkg_path <- file.path(parent_path, pkg_name)
 
@@ -9,7 +7,6 @@ verify_extracted_package <- function(filename, parent_path) {
       "{.path {filename}} is not a valid R package, it is an empty archive.",
       .class = "install_input_error"
     ))
-
   } else if (length(pkg_name) > 1) {
     throw(pkg_error(
       "{.path {filename}} is not a valid R package, it should contain a
@@ -26,7 +23,7 @@ verify_extracted_package <- function(filename, parent_path) {
 
   has_files <- file.exists(package_files)
   if (!all(has_files)) {
-    miss <- rel_package_files[! has_files]
+    miss <- rel_package_files[!has_files]
     throw(pkg_error(
       "{.path {filename}} is not a valid binary, it is missing {miss}.",
       .data = list(package = pkg_name),

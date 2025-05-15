@@ -1,4 +1,3 @@
-
 progress_chars <- function() {
   if (cli::is_utf8_output()) {
     list(
@@ -9,7 +8,6 @@ progress_chars <- function() {
       fill = "\u2588",
       half = "\u2592"
     )
-
   } else {
     list(
       build = "[BLD]",
@@ -23,7 +21,8 @@ progress_chars <- function() {
 }
 
 res__create_progress_bar <- function(self, private) {
-  self; private
+  self
+  private
 
   if (!should_show_progress_bar()) return()
 
@@ -35,10 +34,12 @@ res__create_progress_bar <- function(self, private) {
   bar$status <- cli::cli_status("", .auto_close = FALSE)
 
   bar$timer <- new_async_timer(
-    1/10,
+    1 / 10,
     function() res__show_progress_bar(self, private)
   )
-  bar$timer$listen_on("error", function(e) { stop(e) })
+  bar$timer$listen_on("error", function(e) {
+    stop(e)
+  })
 
   bar
 }
@@ -69,7 +70,7 @@ res__show_progress_bar <- function(self, private) {
   cli::cli_status_update(private$bar$status, str)
 }
 
-make_bar <- function(chars, p, width =  15) {
+make_bar <- function(chars, p, width = 15) {
   width <- width - 2L
 
   w <- if (isTRUE(all.equal(p, 1))) width else trunc(width * p)
@@ -78,7 +79,8 @@ make_bar <- function(chars, p, width =  15) {
   xchars <- rep(" ", max(width - w, 0))
   bar <- paste(
     c(chars$lpar, pchars, xchars, chars$rpar),
-    collapse = "")
+    collapse = ""
+  )
 
   if (is_older_rstudio()) bar else cli::col_green(bar)
 }
@@ -99,7 +101,7 @@ make_progress_main <- function(deps, done, total) {
   )
 }
 
-make_progress_spinner  <- function(self, private) {
+make_progress_spinner <- function(self, private) {
   bar <- private$bar
   spin <- bar$spinner$frames[[bar$spinner_state]]
   bar$spinner_state <-
@@ -114,10 +116,10 @@ make_trailing_progress_msg <- function(self, private) {
 
   types <- vcapply(ongoing$remote, "[[", "type")
   remote <- if (all(types %in% c("cran", "bioc", "standard"))) {
-    ongoing$remote[[ order(ongoing$started_at)[1] ]]
+    ongoing$remote[[order(ongoing$started_at)[1]]]
   } else {
-    nonstd <- ongoing[! types %in% c("cran", "bioc", "special"), ]
-    nonstd$remote[[ order(nonstd$started_at)[1] ]]
+    nonstd <- ongoing[!types %in% c("cran", "bioc", "special"), ]
+    nonstd$remote[[order(nonstd$started_at)[1]]]
   }
 
   if (remote$type %in% c("cran", "bioc", "standard")) {

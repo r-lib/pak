@@ -147,61 +147,59 @@ git_list_files <- function(url, ref = "HEAD") {
 }
 
 async_git_resolve_ref <- function(url, ref) {
-  url; ref
+  url
+  ref
   sha <- ref
 
   if (!grepl("^[0-9a-f]{40}$", ref)) {
     # Only use 'ref' as a filter if it is not a sha prefix of at least 7 chars
-    filt <- if (nchar(ref) < 7 || ! grepl("^[0-9a-f]+$", ref)) {
+    filt <- if (nchar(ref) < 7 || !grepl("^[0-9a-f]+$", ref)) {
       paste0(c("", "refs/heads/", "refs/tags/"), ref)
     }
-    async_git_list_refs(url, filt)$
-      catch(error = function(e) async_git_list_refs_v1(url))$
-      then(function(refs) {
-        result <- if (ref %in% refs$refs$ref) {
-          refs$refs$hash[refs$refs$ref == ref]
-
-        } else if (paste0("refs/tags/", ref) %in% refs$refs$ref) {
-          refs$refs$hash[refs$refs$ref == paste0("refs/tags/", ref)]
-
-        } else if (paste0("refs/heads/", ref) %in% refs$refs$ref) {
-          refs$refs$hash[refs$refs$ref == paste0("refs/heads/", ref)]
-
-        } else if (any(startsWith(refs$refs$hash, ref))) {
-          sha <- unique(refs$refs$hash[startsWith(refs$refs$hash, ref)])
-          if (length(sha) > 1) {
-            throw(pkg_error(
-              "Found multiple git refs with prefix {.val {ref}}, it is ambiguous.",
-              "i" = "Matching git refs: {.val {sha}}.",
-              "i" = "Specify a longer prefix to choose a single git ref."
-            ))
-          }
-          sha
-
-        } else {
+    async_git_list_refs(url, filt)$catch(
+      error = function(e) async_git_list_refs_v1(url)
+    )$then(function(refs) {
+      result <- if (ref %in% refs$refs$ref) {
+        refs$refs$hash[refs$refs$ref == ref]
+      } else if (paste0("refs/tags/", ref) %in% refs$refs$ref) {
+        refs$refs$hash[refs$refs$ref == paste0("refs/tags/", ref)]
+      } else if (paste0("refs/heads/", ref) %in% refs$refs$ref) {
+        refs$refs$hash[refs$refs$ref == paste0("refs/heads/", ref)]
+      } else if (any(startsWith(refs$refs$hash, ref))) {
+        sha <- unique(refs$refs$hash[startsWith(refs$refs$hash, ref)])
+        if (length(sha) > 1) {
           throw(pkg_error(
-            "Unknown git ref: {.val {ref}}.",
-            .class = "git_proto_error_unknown_ref",
-            .data = list(ref = ref, url = redact_url(url))
+            "Found multiple git refs with prefix {.val {ref}}, it is ambiguous.",
+            "i" = "Matching git refs: {.val {sha}}.",
+            "i" = "Specify a longer prefix to choose a single git ref."
           ))
         }
+        sha
+      } else {
+        throw(pkg_error(
+          "Unknown git ref: {.val {ref}}.",
+          .class = "git_proto_error_unknown_ref",
+          .data = list(ref = ref, url = redact_url(url))
+        ))
+      }
 
-        attr(result, "protocol") <- if ("version 2" %in% refs$caps) 2 else 1
-        attr(result, "filter") <- any(grepl("\\bfilter\\b", refs$caps))
-        result
-      })
-
+      attr(result, "protocol") <- if ("version 2" %in% refs$caps) 2 else 1
+      attr(result, "filter") <- any(grepl("\\bfilter\\b", refs$caps))
+      result
+    })
   } else {
     async_constant(ref)
   }
 }
 
 async_git_list_files <- function(url, ref = "HEAD") {
-  url; ref
+  url
+  ref
   sha2 <- ref
-  async_git_resolve_ref(url, ref)$
-    then(function(sha) { sha2 <<- sha; async_git_fetch(url, sha) })$
-    then(function(pf) async_git_list_files_process(pf, ref, sha2, url))
+  async_git_resolve_ref(url, ref)$then(function(sha) {
+    sha2 <<- sha
+    async_git_fetch(url, sha)
+  })$then(function(pf) async_git_list_files_process(pf, ref, sha2, url))
 }
 
 async_git_list_files_process <- function(packfile, ref, sha, url) {
@@ -237,7 +235,7 @@ async_git_list_files_process <- function(packfile, ref, sha, url) {
       idx <<- idx + 1L
       if (tr$type[l] == "tree") {
         tidx <- which(tr$hash[l] == names(trees))[1]
-        if (is.na(tidx)) next                                       # nocov
+        if (is.na(tidx)) next # nocov
         wd <<- c(wd, tr$path[l])
         process_tree(tidx)
         wd <<- utils::head(wd, -1)
@@ -300,24 +298,25 @@ git_download_file <- function(url, sha, output = sha) {
 }
 
 async_git_download_file <- function(url, sha, output = sha) {
-  url; sha; output
-  async_git_fetch(url, sha)$
-    then(function(packfile) {
-      if (length(packfile) != 1 || packfile[[1]]$type != "blob") {
-        # nocov start
-        throw(pkg_error(
-          "Invalid response from git server, packfile should have a single blob.",
-          .class = "git_proto_error_unexpected_response",
-          .data = list(url = redact_url(url), sha = sha)
-        ))
-        # nocov end
-      }
-      if (!is.null(output)) {
-        mkdirp(dirname(output))
-        writeBin(packfile[[1]]$raw, output)
-      }
-      invisible(packfile[[1]])
-    })
+  url
+  sha
+  output
+  async_git_fetch(url, sha)$then(function(packfile) {
+    if (length(packfile) != 1 || packfile[[1]]$type != "blob") {
+      # nocov start
+      throw(pkg_error(
+        "Invalid response from git server, packfile should have a single blob.",
+        .class = "git_proto_error_unexpected_response",
+        .data = list(url = redact_url(url), sha = sha)
+      ))
+      # nocov end
+    }
+    if (!is.null(output)) {
+      mkdirp(dirname(output))
+      writeBin(packfile[[1]]$raw, output)
+    }
+    invisible(packfile[[1]])
+  })
 }
 
 # -------------------------------------------------------------------------
@@ -356,7 +355,8 @@ git_fetch <- function(url, sha, blobs = FALSE) {
 }
 
 async_git_fetch <- function(url, sha, blobs = FALSE) {
-  url; sha
+  url
+  sha
 
   if (!is.null(attr(sha, "protocol"))) {
     if (attr(sha, "protocol") == 1) {
@@ -365,8 +365,9 @@ async_git_fetch <- function(url, sha, blobs = FALSE) {
       async_git_fetch_v2(url, sha, blobs)
     }
   } else {
-    async_git_fetch_v2(url, sha, blobs)$
-      catch(error = function(err) async_git_fetch_v1(url, sha, blobs))
+    async_git_fetch_v2(url, sha, blobs)$catch(
+      error = function(err) async_git_fetch_v1(url, sha, blobs)
+    )
   }
 }
 
@@ -380,7 +381,7 @@ async_git_fetch_v1 <- function(url, sha, blobs) {
       "done",
       ""
     ),
-    caps = c("multi_ack" ,"no-done", "no-progress", paste0("agent=", git_ua()))
+    caps = c("multi_ack", "no-done", "no-progress", paste0("agent=", git_ua()))
   )$then(function(reply) git_fetch_process_v1(reply, url, sha))
 }
 
@@ -423,7 +424,6 @@ git_fetch_process_v1 <- function(reply, url, sha) {
 }
 
 git_fetch_process <- function(reply, url, sha) {
-
   # https://github.com/git/git/blob/7c2ef319c52c4997256f5807564523dfd4acdfc7/Documentation/gitprotocol-v2.txt#L240
   #
   #     output = acknowledgements flush-pkt |
@@ -468,7 +468,7 @@ git_fetch_process <- function(reply, url, sha) {
 
   # There should be only one 'shallow' line I think
   idx <- 2L
-  while (idx <= length(reply) && ! identical(reply[[idx]]$text, "packfile")) {
+  while (idx <= length(reply) && !identical(reply[[idx]]$text, "packfile")) {
     idx <- idx + 1L
   }
   idx <- idx + 1L
@@ -494,7 +494,7 @@ git_fetch_process <- function(reply, url, sha) {
     # nocov end
   }
 
-  data <- reply[idx:(length(reply)-1)]
+  data <- reply[idx:(length(reply) - 1)]
 
   if (any(vcapply(data, "[[", "type") != "data-pkt")) {
     # nocov start
@@ -530,25 +530,35 @@ git_fetch_process <- function(reply, url, sha) {
 
 # -------------------------------------------------------------------------
 
-git_download_repo <- function(url, ref = "HEAD", output = ref,
-                              submodules = FALSE) {
+git_download_repo <- function(
+  url,
+  ref = "HEAD",
+  output = ref,
+  submodules = FALSE
+) {
   synchronize(async_git_download_repo(url, ref, output, submodules))
 }
 
-async_git_download_repo <- function(url, ref = "HEAD", output = ref,
-                                    submodules = FALSE) {
-  url; ref
-  async_git_resolve_ref(url, ref)$
-    then(function(sha) {
-      async_git_download_repo_sha(url, sha, output, submodules)
-    })
+async_git_download_repo <- function(
+  url,
+  ref = "HEAD",
+  output = ref,
+  submodules = FALSE
+) {
+  url
+  ref
+  async_git_resolve_ref(url, ref)$then(function(sha) {
+    async_git_download_repo_sha(url, sha, output, submodules)
+  })
 }
 
-async_git_download_repo_sha <- function(url, sha, output,
-                                        submodules = FALSE) {
-  url; sha; output
-  p <- async_git_fetch(url, sha, blobs = TRUE)$
-    then(function(packfile) unpack_packfile_repo(packfile, output, url))
+async_git_download_repo_sha <- function(url, sha, output, submodules = FALSE) {
+  url
+  sha
+  output
+  p <- async_git_fetch(url, sha, blobs = TRUE)$then(
+    function(packfile) unpack_packfile_repo(packfile, output, url)
+  )
   if (!submodules) {
     p
   } else {
@@ -575,10 +585,11 @@ unpack_packfile_repo <- function(parsed, output, url) {
       if (tr$type[l] == "tree") {
         tidx <- which(tr$hash[l] == names(trees))[1]
         if (is.na(tidx)) {
-          throw(new_error(                                          # nocov
+          throw(new_error(
+            # nocov
             "git tree missing from packfile: {.val {tr$hash[i]}}.", # nocov
-            .class = "git_proto_error_unexpected_response"          # nocov
-          ))                                                        # nocov
+            .class = "git_proto_error_unexpected_response" # nocov
+          )) # nocov
         }
         wd <<- c(wd, tr$path[l])
         mkdirp(opath)
@@ -608,7 +619,6 @@ unpack_packfile_repo <- function(parsed, output, url) {
       url
     )
   }
-
 
   for (i in seq_along(trees)) process_tree(i)
 
@@ -673,7 +683,7 @@ git_parse_message <- function(msg) {
         .class = "git_proto_error_invalid_data"
       ))
     }
-    pkg_len <- msg[pos:(pos+3)]
+    pkg_len <- msg[pos:(pos + 3)]
     if (!all(pkg_len == charToRaw("PACK"))) {
       if (any(pkg_len < charToRaw('0') | pkg_len > charToRaw('f'))) {
         throw(pkg_error(
@@ -698,7 +708,7 @@ git_parse_message <- function(msg) {
       pos <- pos + 4L
     } else if (len == 2) {
       lines[[length(lines) + 1L]] <- list(type = "response-end-pkt") # nocov
-      pos <- pos + 4L                                               # nocov
+      pos <- pos + 4L # nocov
     } else {
       if (pos + len - 1L > length(msg)) {
         throw(pkg_error(
@@ -758,8 +768,8 @@ git_parse_message <- function(msg) {
 git_create_message_v2 <- function(
   cmd,
   caps = character(),
-  args = character()) {
-
+  args = character()
+) {
   caps <- ifelse(last_char(caps) == "\n", caps, paste0(caps, "\n"))
   args <- ifelse(last_char(args) == "\n", args, paste0(args, "\n"))
 
@@ -803,8 +813,8 @@ git_send_message_v2 <- function(
   url,
   cmd,
   caps = character(),
-  args = character()) {
-
+  args = character()
+) {
   synchronize(async_git_send_message_v2(url, cmd, caps = caps, args = args)) # nocov
 }
 
@@ -817,8 +827,8 @@ async_git_send_message_v2 <- function(
   url,
   cmd,
   caps = character(),
-  args = character()) {
-
+  args = character()
+) {
   msg <- git_create_message_v2(cmd, caps = caps, args = args)
 
   url2 <- paste0(url, "/git-upload-pack")
@@ -835,12 +845,12 @@ async_git_send_message_v2 <- function(
     url2,
     data = msg,
     headers = headers
-  )$then(http_stop_for_status)$
-    then(function(res) git_parse_message(res$content))
+  )$then(http_stop_for_status)$then(
+    function(res) git_parse_message(res$content)
+  )
 }
 
 async_git_send_message_v1 <- function(url, args, caps) {
-
   msg <- git_create_message_v1(caps = caps, args = args)
 
   url2 <- paste0(url, "/git-upload-pack")
@@ -854,8 +864,9 @@ async_git_send_message_v1 <- function(url, args, caps) {
     url2,
     data = msg,
     headers = headers
-  )$then(http_stop_for_status)$
-    then(function(res) git_parse_message(res$content))
+  )$then(http_stop_for_status)$then(
+    function(res) git_parse_message(res$content)
+  )
 }
 
 delim_pkt <- function() {
@@ -923,9 +934,9 @@ git_list_refs_v1 <- function(url) {
 async_git_list_refs_v1 <- function(url) {
   url
   url1 <- paste0(url, "/info/refs?service=git-upload-pack")
-  git_http_get(url1, headers = c("User-Agent" = git_ua()))$
-    then(http_stop_for_status)$
-    then(function(response) git_list_refs_v1_process(response, url))
+  git_http_get(url1, headers = c("User-Agent" = git_ua()))$then(
+    http_stop_for_status
+  )$then(function(response) git_list_refs_v1_process(response, url))
 }
 
 #' Process the response to a version 1 reference list query
@@ -955,12 +966,12 @@ git_list_refs_v1_process <- function(response, url) {
   }
 
   caps <- if (nul < length(psd[[1]]$data)) {
-    rawToChar(psd[[1]]$data[(nul+1):length(psd[[1]]$data)])
+    rawToChar(psd[[1]]$data[(nul + 1):length(psd[[1]]$data)])
   } else {
-    ""                                                              # nocov
+    "" # nocov
   }
   caps <- strsplit(trimws(caps), " ", fixed = TRUE)[[1]]
-  psd[[1]]$data <- if (nul == 1) raw() else psd[[1]]$data[1:(nul-1)]
+  psd[[1]]$data <- if (nul == 1) raw() else psd[[1]]$data[1:(nul - 1)]
   psd[[1]]$text <- rawToChar(psd[[1]]$data)
 
   if (psd[[length(psd)]]$type != "flush-pkt") {
@@ -973,7 +984,7 @@ git_list_refs_v1_process <- function(response, url) {
     # nocov end
   }
 
-  refs <- git_parse_pkt_line_refs(psd[1:(length(psd)-1)], url)
+  refs <- git_parse_pkt_line_refs(psd[1:(length(psd) - 1)], url)
   list(refs = refs, caps = caps)
 }
 
@@ -1008,8 +1019,11 @@ git_parse_pkt_line_refs <- function(lines, url) {
 
   for (idx in seq_along(lines)) {
     line <- lines[[idx]]
-    if (line$type != "data-pkt" || is.null(line$text) ||
-        !grepl("^[0-9a-f]{40} .+$", line$text)) {
+    if (
+      line$type != "data-pkt" ||
+        is.null(line$text) ||
+        !grepl("^[0-9a-f]{40} .+$", line$text)
+    ) {
       # nocov start
       throw(pkg_error(
         "Expected response from git server.",
@@ -1046,7 +1060,8 @@ git_list_refs_v2 <- function(url, prefixes = character()) {
 #' @noRd
 
 async_git_list_refs_v2 <- function(url, prefixes = character()) {
-  url; prefixes
+  url
+  prefixes
 
   url1 <- paste0(url, "/info/refs?service=git-upload-pack")
 
@@ -1055,9 +1070,9 @@ async_git_list_refs_v2 <- function(url, prefixes = character()) {
     "git-protocol" = "version=2"
   )
 
-  git_http_get(url1, headers = headers)$
-    then(http_stop_for_status)$
-    then(function(res) async_git_list_refs_v2_process_1(res, url, prefixes))
+  git_http_get(url1, headers = headers)$then(http_stop_for_status)$then(
+    function(res) async_git_list_refs_v2_process_1(res, url, prefixes)
+  )
 }
 
 #' Helper function to post-process the response to the initial client
@@ -1118,18 +1133,22 @@ async_git_list_refs_v2_process_2 <- function(response, psd, url, prefixes) {
     ))
   }
 
-  caps <- unlist(lapply(psd[1:(length(psd)-1)], "[[", "text"))
+  caps <- unlist(lapply(psd[1:(length(psd) - 1)], "[[", "text"))
 
   args <- if (length(prefixes)) paste0("ref-prefix ", prefixes, "\n")
 
-  async_git_send_message_v2(url, "ls-refs", args = as.character(args))$
-    then(function(res) async_git_list_refs_v2_process_3(res, caps, url))
+  async_git_send_message_v2(url, "ls-refs", args = as.character(args))$then(
+    function(res) async_git_list_refs_v2_process_3(res, caps, url)
+  )
 }
 
 drop_service_line <- function(psd) {
   # Actually, this might not be present in V2 servers...
-  if (length(psd) > 0 && !is.null(psd[[1]]$text) &&
-      grepl("^# service=.+", psd[[1]]$text)) {
+  if (
+    length(psd) > 0 &&
+      !is.null(psd[[1]]$text) &&
+      grepl("^# service=.+", psd[[1]]$text)
+  ) {
     psd <- psd[-1]
   }
 
@@ -1142,11 +1161,11 @@ drop_service_line <- function(psd) {
 
 check_initial_response <- function(psd, url) {
   if (length(psd) < 1 || psd[[1]]$type != "data-pkt") {
-      throw(pkg_error(
-        "Unexpected response from git server, no {.code data-pkt} line.",
-        .class = "git_proto_error_unexpected_response",
-        .data = list(url = redact_url(url))
-      ))
+    throw(pkg_error(
+      "Unexpected response from git server, no {.code data-pkt} line.",
+      .class = "git_proto_error_unexpected_response",
+      .data = list(url = redact_url(url))
+    ))
   }
 }
 
@@ -1171,7 +1190,7 @@ async_git_list_refs_v2_process_3 <- function(reply, caps, url) {
   refs <- if (length(reply) == 1) {
     git_parse_pkt_line_refs(list(), url)
   } else {
-    git_parse_pkt_line_refs(reply[1:(length(reply)-1)], url)
+    git_parse_pkt_line_refs(reply[1:(length(reply) - 1)], url)
   }
   list(refs = refs, caps = caps)
 }
@@ -1207,13 +1226,13 @@ git_unpack <- function(pack) {
       .class = "git_proto_error_invalid_data"
     ))
   }
-  if (! all(pack[1:4] == charToRaw("PACK"))) {
+  if (!all(pack[1:4] == charToRaw("PACK"))) {
     throw(pkg_error(
       "Not a git packfile, it does not have a {.code PACK} header.",
       .class = "git_proto_error_invalid_data"
     ))
   }
-  if (! all(pack[5:8] == as.raw(c(0x00, 0x00, 0x00, 0x02)))) {
+  if (!all(pack[5:8] == as.raw(c(0x00, 0x00, 0x00, 0x02)))) {
     throw(pkg_error(
       "Unexpected packfile version, must be version 2.",
       .class = "git_proto_error_unexpected_response"
@@ -1235,7 +1254,15 @@ git_unpack <- function(pack) {
   objects <- vector("list", n_obj)
   object_starts <- integer()
 
-  types <- c("commit", "tree", "blob", "tag", "reserved", "ofs_delta", "ref_delta")
+  types <- c(
+    "commit",
+    "tree",
+    "blob",
+    "tag",
+    "reserved",
+    "ofs_delta",
+    "ref_delta"
+  )
 
   unpack_object <- function() {
     start <- idx
@@ -1253,7 +1280,7 @@ git_unpack <- function(pack) {
         ))
         # nocov end
       }
-      base <- bin_to_sha(pack[idx:(idx+19)])
+      base <- bin_to_sha(pack[idx:(idx + 19)])
       idx <<- idx + 20
     }
     obj <- zip::inflate(pack, idx, size$size)
@@ -1399,7 +1426,7 @@ git_list_pack_index <- function(idx) {
   }
 
   tab <- matrix(as.integer(idx[9L:(9L + (256L * 4L) - 1L)]), nrow = 4)
-  tab <- tab[1,] * 256**3 + tab[2,] * 256**2 + tab[3,] * 256 + tab[4,]
+  tab <- tab[1, ] * 256**3 + tab[2, ] * 256**2 + tab[3, ] * 256 + tab[4, ]
   n_obj <- tab[256]
 
   hash_off <- 256L * 4L + 9L
@@ -1413,17 +1440,17 @@ git_list_pack_index <- function(idx) {
   crc_off <- hash_off + hash_len
   crc_len <- n_obj * 4
   crc <- matrix(as.integer(idx[crc_off:(crc_off + crc_len - 1L)]), nrow = 4)
-  crc <- crc[1,] * 256**3 + crc[2,] * 256**2 + crc[3,] * 256 + crc[4,]
+  crc <- crc[1, ] * 256**3 + crc[2, ] * 256**2 + crc[3, ] * 256 + crc[4, ]
 
   off_off <- crc_off + crc_len
   off_len <- n_obj * 4
   off <- matrix(as.integer(idx[off_off:(off_off + off_len - 1L)]), nrow = 4)
-  off <- off[1,] * 256**3 + off[2,] * 256**2 + off[3,] * 256 + off[4,]
+  off <- off[1, ] * 256**3 + off[2, ] * 256**2 + off[3, ] * 256 + off[4, ]
 
-  data_chksum <- idx[(off_off + off_len): (off_off + off_len + 20L - 1L)]
+  data_chksum <- idx[(off_off + off_len):(off_off + off_len + 20L - 1L)]
   data_chksum <- paste(as.character(data_chksum), collapse = "")
 
-  idx_chksum <- idx[(off_off + off_len): (off_off + off_len + 20L - 1L) + 20L]
+  idx_chksum <- idx[(off_off + off_len):(off_off + off_len + 20L - 1L) + 20L]
   idx_chksum <- paste(as.character(idx_chksum), collapse = "")
 
   if (length(idx) > off_off + off_len + 40L) {
@@ -1458,7 +1485,7 @@ parse_int32_nwb <- function(x) {
       "Cannot parse integer, not raw or number of bytes is wrong."
     ))
   }
-  sum(as.integer(x) * (256L ** (3:0)))
+  sum(as.integer(x) * (256L**(3:0)))
 }
 
 #' Parse a variable length size field
@@ -1506,7 +1533,6 @@ parse_size <- function(x, idx) {
 }
 
 parse_ofs_size <- function(x, idx) {
-
 }
 
 parse_delta_size <- function(x, idx) {
@@ -1665,7 +1691,7 @@ parse_commit <- function(commit) {
   message <- if (is.na(delim)) {
     NA_character_
   } else if (delim == length(lines)) {
-    ""                                                              # nocov
+    "" # nocov
   } else {
     paste(lines[(delim + 1):length(lines)], collapse = "\n")
   }
@@ -1701,12 +1727,9 @@ async_git_dumb_list_refs <- function(url) {
     "User-Agent" = git_ua()
   )
   when_all(
-    git_http_get(url1, headers = headers)$
-      then(http_stop_for_status),
-    git_http_get(url2, headers = headers)$
-      then(http_stop_for_status)
-  )$
-    then(function(res) async_git_dumb_list_refs_process(res, url))
+    git_http_get(url1, headers = headers)$then(http_stop_for_status),
+    git_http_get(url2, headers = headers)$then(http_stop_for_status)
+  )$then(function(res) async_git_dumb_list_refs_process(res, url))
 }
 
 async_git_dumb_list_refs_process <- function(res, url) {
@@ -1715,12 +1738,12 @@ async_git_dumb_list_refs_process <- function(res, url) {
   lines <- strsplit(rawToChar(res_refs$content), "\n", fixed = TRUE)[[1]]
   lines2 <- strsplit(lines, "\t", fixed = TRUE)
   ref <- vcapply(lines2, "[[", 2)
-  hash <-   vcapply(lines2, "[[", 1)
+  hash <- vcapply(lines2, "[[", 1)
 
   head <- trimws(rawToChar(res_head$content))
   head <- sub("^[^ ]* ", "", head)
   has_head <- head != ""
-  if (has_head && ! head %in% ref) {
+  if (has_head && !head %in% ref) {
     throw(pkg_error(
       "HEAD does not refer to a ref in git repo at {.url {url}}.",
       "i" = "HEAD is {.val {head}}."
@@ -1744,48 +1767,52 @@ git_dumb_download_file <- function(url, sha, path, output = basename(path)) {
 # Also, it only works if the object with sha is not in a pack file!
 # So it is pretty limited, and can only be used with a fallback.
 
-async_git_dumb_download_file <- function(url, sha, path, output = basename(path)) {
-  async_git_dumb_get_commit(url, sha)$
-    then(function(cmt) {
-      async_git_dumb_get_tree(url, cmt[["tree"]])
-    })$
-    then(function(tree) {
-      wh <- match(path, tree$path)
-      if (is.na(wh)) {
-        throw(pkg_error(
-          "Could not find path {.val {path}} in git repo at {.url {url}}."
-        ))
-      }
-      if (tree$type[wh] != "blob") {
-        throw(pkg_error(
-          "Path {.val {path}} is not a blob in git repo at {.url {url}}."
-        ))
-      }
-      tree$hash[wh]
-    })$
-    then(function(blob) {
-      async_git_dumb_get_blob(url, blob)
-    })$
-    then(function(bytes) {
-      if (!is.null(output)) {
-        mkdirp(dirname(output))
-        writeBin(bytes, output)
-      }
-      invisible(bytes)
-    })
+async_git_dumb_download_file <- function(
+  url,
+  sha,
+  path,
+  output = basename(path)
+) {
+  async_git_dumb_get_commit(url, sha)$then(function(cmt) {
+    async_git_dumb_get_tree(url, cmt[["tree"]])
+  })$then(function(tree) {
+    wh <- match(path, tree$path)
+    if (is.na(wh)) {
+      throw(pkg_error(
+        "Could not find path {.val {path}} in git repo at {.url {url}}."
+      ))
+    }
+    if (tree$type[wh] != "blob") {
+      throw(pkg_error(
+        "Path {.val {path}} is not a blob in git repo at {.url {url}}."
+      ))
+    }
+    tree$hash[wh]
+  })$then(function(blob) {
+    async_git_dumb_get_blob(url, blob)
+  })$then(function(bytes) {
+    if (!is.null(output)) {
+      mkdirp(dirname(output))
+      writeBin(bytes, output)
+    }
+    invisible(bytes)
+  })
 }
 
 async_git_dumb_get_commit <- function(url, sha) {
   url1 <- paste0(
-    url, "/objects/", substr(sha, 1, 2), "/", substr(sha, 3, nchar(sha))
+    url,
+    "/objects/",
+    substr(sha, 1, 2),
+    "/",
+    substr(sha, 3, nchar(sha))
   )
   headers <- c(
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  git_http_get(url = url1, headers = headers)$
-    then(http_stop_for_status)$
-    then(function(res) {
+  git_http_get(url = url1, headers = headers)$then(http_stop_for_status)$then(
+    function(res) {
       cmt <- zip::inflate(res$content)$output
       if (any(utils::head(cmt, 6) != charToRaw("commit"))) {
         throw(pkg_error(
@@ -1800,21 +1827,25 @@ async_git_dumb_get_commit <- function(url, sha) {
            contain a single zero byte, in git repo at {.url {url}}."
         ))
       }
-      parse_commit(rawToChar(cmt[(nul+1):length(cmt)]))
-    })
+      parse_commit(rawToChar(cmt[(nul + 1):length(cmt)]))
+    }
+  )
 }
 
 async_git_dumb_get_tree <- function(url, sha) {
   url1 <- paste0(
-    url, "/objects/", substr(sha, 1, 2), "/", substr(sha, 3, nchar(sha))
+    url,
+    "/objects/",
+    substr(sha, 1, 2),
+    "/",
+    substr(sha, 3, nchar(sha))
   )
   headers <- c(
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  git_http_get(url = url1, headers = headers)$
-    then(http_stop_for_status)$
-    then(function(res) {
+  git_http_get(url = url1, headers = headers)$then(http_stop_for_status)$then(
+    function(res) {
       cmt <- zip::inflate(res$content)$output
       if (any(utils::head(cmt, 4) != charToRaw("tree"))) {
         throw(pkg_error(
@@ -1829,21 +1860,25 @@ async_git_dumb_get_tree <- function(url, sha) {
            contain any zero bytes, in git repo at {.url {url}}."
         ))
       }
-      parse_tree(cmt[(nul+1):length(cmt)])
-    })
+      parse_tree(cmt[(nul + 1):length(cmt)])
+    }
+  )
 }
 
 async_git_dumb_get_blob <- function(url, sha) {
   url1 <- paste0(
-    url, "/objects/", substr(sha, 1, 2), "/", substr(sha, 3, nchar(sha))
+    url,
+    "/objects/",
+    substr(sha, 1, 2),
+    "/",
+    substr(sha, 3, nchar(sha))
   )
   headers <- c(
     "User-Agent" = git_ua(),
     "accept-encoding" = "deflate, gzip"
   )
-  git_http_get(url = url1, headers = headers)$
-    then(http_stop_for_status)$
-    then(function(res) {
+  git_http_get(url = url1, headers = headers)$then(http_stop_for_status)$then(
+    function(res) {
       cmt <- zip::inflate(res$content)$output
       if (any(utils::head(cmt, 4) != charToRaw("blob"))) {
         throw(pkg_error(
@@ -1858,6 +1893,7 @@ async_git_dumb_get_blob <- function(url, sha) {
            contain any zero bytes, in git repo at {.url {url}}."
         ))
       }
-      cmt[(nul+1):length(cmt)]
-    })
+      cmt[(nul + 1):length(cmt)]
+    }
+  )
 }

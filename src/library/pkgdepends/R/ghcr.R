@@ -1,13 +1,12 @@
-
 ghcr_const_annotations <- list(
   com.github.package.type = "r_package"
-#  org.opencontainers.image.authors = "Gabor Csardi",
-#  org.opencontainers.image.url = "https://github.com/r-lib/pak",
-#  org.opencontainers.image.documentation = "https://pak.r-lib.org/",
-#  org.opencontainers.image.source = "https://github.com/r-lib/pak",
-#  org.opencontainers.image.title = "pak R package",
-#  org.opencontainers.image.description = "Package manager for R",
-#  org.opencontainers.image.licenses = "GPL-3"
+  #  org.opencontainers.image.authors = "Gabor Csardi",
+  #  org.opencontainers.image.url = "https://github.com/r-lib/pak",
+  #  org.opencontainers.image.documentation = "https://pak.r-lib.org/",
+  #  org.opencontainers.image.source = "https://github.com/r-lib/pak",
+  #  org.opencontainers.image.title = "pak R package",
+  #  org.opencontainers.image.description = "Package manager for R",
+  #  org.opencontainers.image.licenses = "GPL-3"
 )
 
 ghcr_const_annotations_js <- function() {
@@ -66,9 +65,12 @@ ghcr_get_package_data <- function(path) {
   )
 }
 
-ghcr_create_oci_repo <- function(pkgs, repo = NULL, oci_path = NULL,
-                                 cleanup = TRUE) {
-
+ghcr_create_oci_repo <- function(
+  pkgs,
+  repo = NULL,
+  oci_path = NULL,
+  cleanup = TRUE
+) {
   if (nrow(pkgs) > 1) {
     throw(pkg_error("Multiple package versions are not supported yet."))
   }
@@ -118,7 +120,9 @@ ghcr_create_oci_repo <- function(pkgs, repo = NULL, oci_path = NULL,
             "size": <<nchar(imidx, "bytes")>>
           }
        ]
-     }', .open = "<<", .close = ">>"
+     }',
+    .open = "<<",
+    .close = ">>"
   ))
   write_files(idxjs, file.path(oci_path, "index.json"))
 
@@ -138,7 +142,8 @@ ghcr_create_oci_repo <- function(pkgs, repo = NULL, oci_path = NULL,
                "": [{"type":"insecureAcceptAnything"}]
              }
          }
-     }')
+     }'
+  )
   write_files(policy, policy_file)
 
   oci_path
@@ -171,9 +176,11 @@ ghcr_push_oci_repo <- function(oci_path, ghcr_tag = NULL) {
   args <- c(
     "copy",
     "--all",
-    "--retry-times", 20,
+    "--retry-times",
+    20,
     "--preserve-digests",
-    "--policy", policy_file,
+    "--policy",
+    policy_file,
     paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()),
     paste0("oci:", oci_path),
     paste0(ghcr_uri(), ":", ghcr_tag)

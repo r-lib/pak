@@ -1,4 +1,3 @@
-
 #' @param lockfile Path to the lock file to use.
 #' @param config Configuration options, a named list. See
 #'  ['Configuration'][pkgdepends-config]. If it does not include `library`, then
@@ -11,8 +10,11 @@
 #' @export
 #' @rdname pkg_installation_plan
 
-new_pkg_installation_plan <- function(lockfile = "pkg.lock",
-                                      config = list(), ...) {
+new_pkg_installation_plan <- function(
+  lockfile = "pkg.lock",
+  config = list(),
+  ...
+) {
   config$library <- config$library %||% .libPaths()[[1]]
   pkg_installation_plan$new(lockfile, config = config, ...)
 }
@@ -36,7 +38,6 @@ pkg_installation_plan <- R6::R6Class(
   "pkg_installation_plan",
   inherit = pkg_installation_proposal,
   public = list(
-
     #' @description
     #' Create a new `pkg_installation_plan` object. Consider using
     #' `new_pkg_installation_plan()` instead of calling the constructor
@@ -56,7 +57,7 @@ pkg_installation_plan <- R6::R6Class(
       lockfile = "pkg.lock",
       config = list(),
       remote_types = NULL
-      ) {
+    ) {
       assert_that(is_path(config$library))
       private$library <- config$library
       config$goal <- "install"
@@ -72,14 +73,18 @@ pkg_installation_plan <- R6::R6Class(
     #' This function is implemented for installation plans, and will error.
 
     resolve = function() {
-      throw(pkg_error("Cannot resolve an installation plan, it is already resolved."))
+      throw(pkg_error(
+        "Cannot resolve an installation plan, it is already resolved."
+      ))
     },
 
     #' @description
     #' This function is implemented for installation plans, and will error.
 
     async_resolve = function() {
-      throw(pkg_error("Cannot resolve an installation plan, it is already resolved."))
+      throw(pkg_error(
+        "Cannot resolve an installation plan, it is already resolved."
+      ))
     },
 
     #' @description
@@ -92,14 +97,18 @@ pkg_installation_plan <- R6::R6Class(
     #' This function is implemented for installation plans, and will error.
 
     set_solve_policy = function() {
-      throw(pkg_error("Cannot solve an installation plan, it is already solved."))
+      throw(pkg_error(
+        "Cannot solve an installation plan, it is already solved."
+      ))
     },
 
     #' @description
     #' This function is implemented for installation plans, and will error.
 
     solve = function() {
-      throw(pkg_error("Cannot solve an installation plan, it is already solved."))
+      throw(pkg_error(
+        "Cannot solve an installation plan, it is already solved."
+      ))
     },
 
     #' @description
@@ -139,8 +148,10 @@ pkg_installation_plan <- R6::R6Class(
 
       has_sys <- !is.null(private$plan$get_solution()$sysreqs)
 
-      c("<pkg_installation_plan>",
-        "+ refs:", paste0("  - ", refs),
+      c(
+        "<pkg_installation_plan>",
+        "+ refs:",
+        paste0("  - ", refs),
         "+ has solution",
         if (has_dls) "+ has downloads",
         if (dls_err) "x has download errors",
@@ -151,11 +162,11 @@ pkg_installation_plan <- R6::R6Class(
         if (!has_dls) "(use `$download()` to download packages)",
         if (has_dls) "(use `$get_downloads()` to get download data)",
         if (has_dls) "(use `$get_install_plan()` to get the installation plan)",
-        if (has_sys) "(use `$install_sysreqs()` to install system requirements)",
+        if (has_sys)
+          "(use `$install_sysreqs()` to install system requirements)",
         if (has_dls) "(use `$install()` to install the packages)"
       )
     }
-
   ),
 
   private = list(

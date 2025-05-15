@@ -1,9 +1,12 @@
 ghrepo <- local({
-
-  ghrepo_update <- function(repo, subdir, release_org = "cran",
-                            source_repo = "https://cran.r-project.org",
-                            ignore_build_errors = TRUE, packages = NULL) {
-
+  ghrepo_update <- function(
+    repo,
+    subdir,
+    release_org = "cran",
+    source_repo = "https://cran.r-project.org",
+    ignore_build_errors = TRUE,
+    packages = NULL
+  ) {
     subdir <- sub("/+$", "", subdir)
     if (endsWith(subdir, "src/contrib")) {
       subdir <- sub("src/contrib$", "", subdir)
@@ -110,7 +113,8 @@ ghrepo <- local({
     proc <- cli::cli_process_start(
       "Getting packages from {.emph {repo}/{subdir}}."
     )
-    platform <- if (.Platform$pkgType == "source") "source" else pkgcache::current_r_platform()
+    platform <- if (.Platform$pkgType == "source") "source" else
+      pkgcache::current_r_platform()
     r_mirror <- suppressMessages(pkgcache::cranlike_metadata_cache$new(
       platforms = platform,
       bioc = FALSE,
@@ -147,9 +151,11 @@ ghrepo <- local({
   }
 
   install_pkgs <- function(pkgs, library, source_repo, repo, subdir) {
-    opt <- options(repos = c(
-      RHUB = get_mirror_repo_url(repo, subdir),
-      CRAN = source_repo)
+    opt <- options(
+      repos = c(
+        RHUB = get_mirror_repo_url(repo, subdir),
+        CRAN = source_repo
+      )
     )
     on.exit(options(opt), add = TRUE)
     prop <- new_pkg_installation_proposal(
@@ -173,7 +179,7 @@ ghrepo <- local({
     was_inst <- inst$package[inst$type == "installed"]
     drop <- setdiff(was_inst, dir(library))
     if (length(drop) > 0) {
-      inst <- inst[! inst$package %in% drop,, drop = FALSE ]
+      inst <- inst[!inst$package %in% drop, , drop = FALSE]
     }
     inst
   }
@@ -188,20 +194,25 @@ ghrepo <- local({
     mirror_ver <- mirror_pkgs$version[match(mirrored, mirror_pkgs$package)]
     to_update <- mirrored[package_version(inst_ver) > mirror_ver]
     todo <- c(to_add, to_update)
-    inst <- inst[match(todo, inst$package),, drop = FALSE]
+    inst <- inst[match(todo, inst$package), , drop = FALSE]
 
     # get build numbers
     inst$buildnum <- rep(1L, nrow(inst))
     inst$buildnum[todo %in% mirrored] <-
-      parse_build_number(mirror_pkgs$target[match(todo[todo %in% mirrored], mirror_pkgs$package)])
+      parse_build_number(mirror_pkgs$target[match(
+        todo[todo %in% mirrored],
+        mirror_pkgs$package
+      )])
     inst
   }
 
   build_pkgs <- function(inst, library) {
     files <- rep(NA_character_, nrow(inst))
     for (i in seq_along(inst$package)) {
-      if (length(inst$build_error[[i]]) &&
-          !identical(inst$build_error[[i]], FALSE)) {
+      if (
+        length(inst$build_error[[i]]) &&
+          !identical(inst$build_error[[i]], FALSE)
+      ) {
         cli::cli_alert_warning(
           "Failed to build package {.pkg {inst$package[[i]]}}."
         )

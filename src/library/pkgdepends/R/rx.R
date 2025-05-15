@@ -1,4 +1,3 @@
-
 #' A set of handy regular expressions related to R packages
 #'
 #' If you use these in R, make sure you specify `perl = TRUE`, see
@@ -26,17 +25,17 @@
 
 pkg_rx <- function() {
   list(
-    pkg_name         = package_name_rx(),
-    type_cran        = standard_rx("cran"),
-    type_bioc        = standard_rx("bioc"),
-    type_standard    = standard_rx("standard"),
-    type_github      = github_rx(),
-    type_git         = git_rx(),
-    type_local       = local_rx(),
-    type_deps        = type_deps_rx(),
-    type_installed   = type_installed_rx(),
-    github_username  = github_username_rx(),
-    github_repo      = github_repo_rx(),
-    github_url       = github_url_rx()
+    pkg_name = package_name_rx(),
+    type_cran = standard_rx("cran"),
+    type_bioc = standard_rx("bioc"),
+    type_standard = standard_rx("standard"),
+    type_github = github_rx(),
+    type_git = git_rx(),
+    type_local = local_rx(),
+    type_deps = type_deps_rx(),
+    type_installed = type_installed_rx(),
+    github_username = github_username_rx(),
+    github_repo = github_repo_rx(),
+    github_url = github_url_rx()
   )
 }

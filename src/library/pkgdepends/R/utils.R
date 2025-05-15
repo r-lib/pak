@@ -1,4 +1,3 @@
-
 zwnj <- function() {
   if (cli::is_utf8_output()) "\u200c" else ""
 }
@@ -47,9 +46,20 @@ str_trim <- function(x) {
 base_packages <- function() {
   if (is.null(pkgd_data$base_packages)) {
     pkgd_data$base_packages <- c(
-      "base", "compiler", "datasets", "graphics", "grDevices", "grid",
-      "methods", "parallel", "splines", "stats", "stats4", "tcltk",
-      "tools", "utils"
+      "base",
+      "compiler",
+      "datasets",
+      "graphics",
+      "grDevices",
+      "grid",
+      "methods",
+      "parallel",
+      "splines",
+      "stats",
+      "stats4",
+      "tcltk",
+      "tools",
+      "utils"
     )
   }
   pkgd_data$base_packages
@@ -58,9 +68,21 @@ base_packages <- function() {
 recommended_packages <- function() {
   if (is.null(pkgd_data$recommended_packages)) {
     pkgd_data$recommended_packages <- c(
-      "boot", "class", "cluster", "codetools", "foreign", "KernSmooth",
-      "lattice", "MASS", "Matrix", "mgcv", "nlme", "nnet", "rpart",
-      "spatial", "survival"
+      "boot",
+      "class",
+      "cluster",
+      "codetools",
+      "foreign",
+      "KernSmooth",
+      "lattice",
+      "MASS",
+      "Matrix",
+      "mgcv",
+      "nlme",
+      "nnet",
+      "rpart",
+      "spatial",
+      "survival"
     )
   }
   pkgd_data$recommended_packages
@@ -109,10 +131,8 @@ make_dl_status <- function(status, url, target, bytes, error = NULL) {
 
   if (status == "Got") {
     obj$bytes <- as.double(bytes)
-
   } else if (status == "Failed") {
     obj$error <- error
-
   } else if (grepl("^Had", status)) {
     obj$bytes <- as.double(bytes)
   }
@@ -144,14 +164,16 @@ omit_cols <- function(df, omit) {
   if (!length(omit)) {
     df
   } else {
-    df[ , setdiff(names(df), omit), drop = FALSE]
+    df[, setdiff(names(df), omit), drop = FALSE]
   }
 }
 
 same_sha <- function(s1, s2) {
   assert_that(
-    is.character(s1), length(s1) == 1,
-    is.character(s2), length(s2) == 1
+    is.character(s1),
+    length(s1) == 1,
+    is.character(s2),
+    length(s2) == 1
   )
   if (is.na(s1) || is.na(s2)) return(FALSE)
   assert_that(
@@ -163,7 +185,7 @@ same_sha <- function(s1, s2) {
   substr(s1, 1, len) == substr(s2, 1, len)
 }
 
-format_iso_8601 <- function (date) {
+format_iso_8601 <- function(date) {
   format(as.POSIXlt(date, tz = "UTC"), "%Y-%m-%dT%H:%M:%S+00:00")
 }
 
@@ -171,8 +193,8 @@ cat0 <- function(..., sep = "") {
   cat(..., sep = sep)
 }
 
-lapply_rows <-  function(df, fun, ...) {
-  lapply(seq_len(nrow(df)), function(i) fun(df[i,], ...))
+lapply_rows <- function(df, fun, ...) {
+  lapply(seq_len(nrow(df)), function(i) fun(df[i, ], ...))
 }
 
 detect_download_cache_dir <- local({
@@ -193,8 +215,10 @@ rbind_expand <- function(..., .list = list()) {
         replicate(
           length(miss_cols),
           if (nrow(data[[i]])) NA else logical(),
-          simplify = FALSE),
-        names = miss_cols))
+          simplify = FALSE
+        ),
+        names = miss_cols
+      ))
       data[[i]] <- as_data_frame(cbind(data[[i]], na_df))
     }
   }
@@ -203,7 +227,7 @@ rbind_expand <- function(..., .list = list()) {
 }
 
 drop_nulls <- function(x) {
-  x[! vlapply(x, is.null)]
+  x[!vlapply(x, is.null)]
 }
 
 ## R CMD check fixes
@@ -215,12 +239,14 @@ dummy <- function() {
 get_num_workers <- function() {
   n <- tryCatch(
     suppressWarnings(as.integer(getOption("Ncpus", NA_integer_))),
-    error = function(e) NA_integer_)
+    error = function(e) NA_integer_
+  )
 
   if (length(n) != 1 || is.na(n)) {
     n <- tryCatch(
       ps::ps_cpu_count(logical = TRUE),
-      error = function(e) NA_integer_)
+      error = function(e) NA_integer_
+    )
   }
 
   if (is.na(n)) n <- 1L
@@ -259,7 +285,7 @@ once_per_session <- local({
       return(invisible())
     } else {
       h <- cli::hash_obj_md5(substitute(expr))
-      if (! h %in% seen) {
+      if (!h %in% seen) {
         seen <<- c(seen, h)
         expr
       }
@@ -348,7 +374,11 @@ format_error_with_stdout <- function(x, ...) {
 last_stdout_lines <- function(lines, std, prefix = "E> ") {
   if (err$is_interactive()) {
     pref <- paste0(
-      ", ", std, if (length(lines) > 10) " (last 10 lines)", ":")
+      ", ",
+      std,
+      if (length(lines) > 10) " (last 10 lines)",
+      ":"
+    )
     out <- paste0(prefix, utils::tail(lines, 10))
     c(pref, "", out)
   } else {
@@ -365,9 +395,11 @@ rimraf <- function(...) {
   if ("~" %in% x) {
     throw(pkg_error(
       "Cowardly refusing to delete {.path ~}.",
-      "i" = paste0("You have a file or directory named {.path ~} and ",
-                   "because of an R bug deleting that could delete your ",
-                   "whole home directory.")
+      "i" = paste0(
+        "You have a file or directory named {.path ~} and ",
+        "because of an R bug deleting that could delete your ",
+        "whole home directory."
+      )
     ))
   }
   unlink(x, recursive = TRUE, force = TRUE)
@@ -382,7 +414,7 @@ is_windows <- function() {
 # used in coverage condition
 
 is_linux <- function() {
-  identical(tolower(Sys.info()[["sysname"]]), "linux")                # nocov
+  identical(tolower(Sys.info()[["sysname"]]), "linux") # nocov
 }
 
 # This is a workaround for some RStudio bugs:
@@ -440,10 +472,10 @@ get_euid <- function() {
 }
 
 zip_list <- function(zipfile) {
-  utils::unzip(zipfile, list = TRUE, unzip = "internal")[,1]
+  utils::unzip(zipfile, list = TRUE, unzip = "internal")[, 1]
 }
 
-os_type <- function() .Platform$OS.type                             # nocov
+os_type <- function() .Platform$OS.type # nocov
 
 is.dir <- function(path) {
   assert_that(is_string(path), file.exists(path))
@@ -468,7 +500,8 @@ pak_or_pkgdepends <- function() {
 }
 
 pakx_version <- function() {
-  if (is_pak()) utils::packageVersion("pak") else utils::packageVersion("pkgdepends")
+  if (is_pak()) utils::packageVersion("pak") else
+    utils::packageVersion("pkgdepends")
 }
 
 remove_entry <- function(l, n) {

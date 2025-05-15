@@ -1,6 +1,8 @@
-
-withr_with_path <- function(new, code,
-                            action = c("prefix", "suffix", "replace")) {
+withr_with_path <- function(
+  new,
+  code,
+  action = c("prefix", "suffix", "replace")
+) {
   old <- withr_get_path(path = new, action = action)
   on.exit((function(old) withr_set_path(old, "replace"))(old))
   withr_set_path(path = new, action = action)
@@ -22,8 +24,7 @@ withr_merge_new <- function(old, new, action, merge_fun = c) {
   action <- match.arg(action, c("replace", "prefix", "suffix"))
   if (action == "suffix") {
     new <- merge_fun(old, new)
-  }
-  else if (action == "prefix") {
+  } else if (action == "prefix") {
     new <- merge_fun(new, old)
   }
   new
@@ -33,11 +34,16 @@ withr_get_path <- function(...) {
   strsplit(Sys.getenv("PATH"), .Platform$path.sep)[[1]]
 }
 
-withr_local_path <- function (new = list(),
-                              action = c("prefix", "suffix", "replace"),
-                              .local_envir = parent.frame()) {
+withr_local_path <- function(
+  new = list(),
+  action = c("prefix", "suffix", "replace"),
+  .local_envir = parent.frame()
+) {
   old <- withr_get_path(path = new, action = action)
-  withr_defer((function(old) withr_set_path(old, "replace"))(old), frame = .local_envir)
+  withr_defer(
+    (function(old) withr_set_path(old, "replace"))(old),
+    frame = .local_envir
+  )
   withr_set_path(path = new, action = action)
   invisible(old)
 }
@@ -98,8 +104,7 @@ withr_set_envvar <- function(envs, action = "replace") {
   if (any(both_set)) {
     if (action == "prefix") {
       envs[both_set] <- paste(envs[both_set], old[both_set])
-    }
-    else if (action == "suffix") {
+    } else if (action == "suffix") {
       envs[both_set] <- paste(old[both_set], envs[both_set])
     }
   }
@@ -129,7 +134,7 @@ withr_vlapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = logical(1), ...)
 }
 
-withr_is_named <- function (x) {
+withr_is_named <- function(x) {
   !is.null(names(x)) && all(names(x) != "")
 }
 

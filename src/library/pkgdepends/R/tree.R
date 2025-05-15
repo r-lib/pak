@@ -1,5 +1,4 @@
 pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
-
   assert_that(is.null(pkgs) || is_character(pkgs))
 
   self$stop_for_solve_error()
@@ -25,11 +24,19 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
     v <- cli::col_silver(sol$version)
     upd <- sol$lib_status == "update"
     if (any(upd)) {
-      v[upd] <- cli::col_green(paste(sol$old_version[upd], "->", sol$version[upd]))
+      v[upd] <- cli::col_green(paste(
+        sol$old_version[upd],
+        "->",
+        sol$version[upd]
+      ))
     }
     nupd <- sol$lib_status == "no-update"
     if (any(nupd)) {
-      v[nupd] <- cli::col_green(paste(sol$version[nupd], "<", sol$new_version[nupd]))
+      v[nupd] <- cli::col_green(paste(
+        sol$version[nupd],
+        "<",
+        sol$new_version[nupd]
+      ))
     }
     v
   }
@@ -60,12 +67,14 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
 
   if (annotate && any(unlist(ann))) {
     key <- paste0(
-      if (any(ann$new))     paste(" |", cli::col_green(emoji("sparkles")), "new"),
-      if (any(ann$upd))     paste(" |", cli::col_green(emoji("rocket")), "update"),
-      if (any(ann$noupd))   paste(" |", cli::col_green(emoji("hand")), "outdated"),
-      if (any(ann$dl))      paste(" |", cli::col_green(emoji("dl")), "download"),
-      if (any(ann$build))   paste(" |", cli::col_green(builder), "build"),
-      if (any(ann$compile)) paste(" |", cli::col_green(emoji("wrench")), "compile")
+      if (any(ann$new)) paste(" |", cli::col_green(emoji("sparkles")), "new"),
+      if (any(ann$upd)) paste(" |", cli::col_green(emoji("rocket")), "update"),
+      if (any(ann$noupd))
+        paste(" |", cli::col_green(emoji("hand")), "outdated"),
+      if (any(ann$dl)) paste(" |", cli::col_green(emoji("dl")), "download"),
+      if (any(ann$build)) paste(" |", cli::col_green(builder), "build"),
+      if (any(ann$compile))
+        paste(" |", cli::col_green(emoji("wrench")), "compile")
     )
     key <- paste0("Key: ", sub("^ [|]", "", key))
     trees <- c(trees, key)
@@ -89,10 +98,11 @@ get_tree_annotation <- function(sol) {
     new = sol$lib_status == "new",
     upd = sol$lib_status == "update",
     noupd = sol$lib_status == "no-update",
-    dl  = !is.na(sol$cache_status) & sol$cache_status == "miss"
+    dl = !is.na(sol$cache_status) & sol$cache_status == "miss"
   )
   ann$build <- (ann$new | ann$upd) & sol$platform == "source"
-  ann$compile <- (ann$new | ann$upd) & !is.na(sol$needscompilation) &
+  ann$compile <- (ann$new | ann$upd) &
+    !is.na(sol$needscompilation) &
     sol$needscompilation
 
   ann
@@ -121,14 +131,14 @@ emoji <- function(what, alt = NULL) {
   emo <- has_emoji()
   switch(
     what,
-    "rocket"   = if (emo) "\U1F680" else alt %||% "[upd]",
-    "sparkles" = if (emo) "\u2728"  else alt %||% "[new]",
-    "hand"     = if (emo) "\u270B"  else alt %||% "[old]",
-    "dl"       = if (emo) " \u2B07"  else alt %||% "[dl]",
-    "builder"  = if (emo) emo_builder() else alt %||% "[bld]",
-    "wrench"   = if (emo) "\U1F527" else alt %||% "[cmp]",
-    "pkg"      = if (emo) "\U1F4E6" else alt %||% "pkg",
-    "pkgs"     = if (emo) "\U1F4E6" else alt %||% "pkgs",
+    "rocket" = if (emo) "\U1F680" else alt %||% "[upd]",
+    "sparkles" = if (emo) "\u2728" else alt %||% "[new]",
+    "hand" = if (emo) "\u270B" else alt %||% "[old]",
+    "dl" = if (emo) " \u2B07" else alt %||% "[dl]",
+    "builder" = if (emo) emo_builder() else alt %||% "[bld]",
+    "wrench" = if (emo) "\U1F527" else alt %||% "[cmp]",
+    "pkg" = if (emo) "\U1F4E6" else alt %||% "pkg",
+    "pkgs" = if (emo) "\U1F4E6" else alt %||% "pkgs",
     ""
   )
 }

@@ -1,4 +1,3 @@
-
 snapshot <- function(x, width = Inf, ...) {
   UseMethod("snapshot")
 }
@@ -16,9 +15,8 @@ print.snapshot <- function(x, ...) {
 
 #' @export
 
-snapshot.pkg_resolution_result <- function(x, width = Inf, extra = NULL,
-                                           ...) {
-  if (! "pillar" %in% loadedNamespaces()) {
+snapshot.pkg_resolution_result <- function(x, width = Inf, extra = NULL, ...) {
+  if (!"pillar" %in% loadedNamespaces()) {
     throw(pkg_error("Needs pillar loaded!"))
   }
   if ("md5sum" %in% colnames(x)) {
@@ -60,7 +58,9 @@ snapshot.pkg_resolution_result <- function(x, width = Inf, extra = NULL,
 format.remote_ref <- function(x, ...) {
   x$params <- paste(vcapply(x$params, format), collapse = ", ")
   paste0(
-    "<", paste(class(x), collapse = "/"), "> ",
+    "<",
+    paste(class(x), collapse = "/"),
+    "> ",
     paste0(names(x), ": ", vcapply(x, format), collapse = "; ")
   )
 }
@@ -73,7 +73,9 @@ format.pkg_metadata <- function(x, ...) {
 format_error <- function(x, ...) {
   if (length(x) == 0) return("-")
   paste0(
-    "<", paste0(class(x), collapse = "/"), "> ",
+    "<",
+    paste0(class(x), collapse = "/"),
+    "> ",
     conditionMessage(x)
   )
 }

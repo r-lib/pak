@@ -1,4 +1,3 @@
-
 # There is no easy way to update the database in yum/dnf/zypper.
 # But FIXME. We'll need to solve this issue when (and if) we'll check the
 # installed system packages, and only install/update the ones that are
@@ -9,45 +8,53 @@
 # TODO: get this data from the DB
 
 sysreqs2_cmds <- utils::read.table(
-   stringsAsFactors = FALSE, header = TRUE, textConnection("
-   name                       os      distribution version  update_command      install_command                     query_command
-   'Ubuntu Linux'             linux   ubuntu       *        'apt-get -y update' 'apt-get -y install'                dpkg-query
-   'Debian Linux'             linux   debian       *        'apt-get -y update' 'apt-get -y install'                dpkg-query
-   'CentOS Linux'             linux   centos       *         NA                  'yum install -y'                    rpm
-   'Rocky Linux'              linux   rockylinux   *         NA                  'dnf install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   redhat       6         NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   redhat       7         NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   redhat       *         NA                  'dnf install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.0       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.1       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.2       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.3       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.4       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.5       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.6       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.7       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.8       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         7.9       NA                  'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel         *         NA                  'dnf install -y'                    rpm
-   'Fedora Linux'             linux   fedora       *         NA                  'dnf install -y'                    rpm
-   'openSUSE Linux'           linux   opensuse     *         NA                  'zypper --non-interactive install'  rpm
-   'SUSE Linux Enterprise'    linux   sle          *         NA                  'zypper --non-interactive install'  rpm
-   'Alpine Linux'             linux   alpine       *         NA                  'apk add --no-cache'                apk
-"))
+  stringsAsFactors = FALSE,
+  header = TRUE,
+  textConnection(
+    "
+   name                       os      id                  distribution version  version_match update_command      install_command                     query_command
+   'Ubuntu Linux'             linux   ubuntu              ubuntu       *        NA            'apt-get -y update' 'apt-get -y install'                dpkg-query
+   'Debian Linux'             linux   debian              debian       *        NA            'apt-get -y update' 'apt-get -y install'                dpkg-query
+   'CentOS Linux'             linux   centos              centos       *        NA             NA                 'yum install -y'                    rpm
+   'Rocky Linux'              linux   rocky               rockylinux   *        NA             NA                 'dnf install -y'                    rpm
+   'Rocky Linux'              linux   rockylinux          rockylinux   *        NA             NA                 'dnf install -y'                    rpm
+   'AlmaLinux'                linux   almalinux           almalinux    *        NA             NA                 'dnf install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel                redhat       6        major          NA                 'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel                redhat       7        major          NA                 'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel                redhat       *        NA             NA                 'dnf install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   redhat              redhat       6        major          NA                 'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   redhat              redhat       7        major          NA                 'yum install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   redhat              redhat       *        NA             NA                 'dnf install -y'                    rpm
+   'Fedora Linux'             linux   fedora              fedora       *        NA             NA                 'dnf install -y'                    rpm
+   'openSUSE Linux'           linux   opensuse            opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
+   'openSUSE Linux'           linux   opensuse-leap       opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
+   'openSUSE Linux'           linux   opensuse-tumbleweed opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
+   'SUSE Linux Enterprise'    linux   sles                sle          *        NA             NA                 'zypper --non-interactive install'  rpm
+   'SUSE Linux Enterprise'    linux   sle                 sle          *        NA             NA                 'zypper --non-interactive install'  rpm
+   'Alpine Linux'             linux   alpine              alpine       *        NA             NA                 'apk add --no-cache'                apk
+"
+  )
+)
 
 find_sysreqs_platform <- function(sysreqs_platform = NULL) {
-  sysreqs_platform <- sysreqs_platform %||% current_config()$get("sysreqs_platform")
+  sysreqs_platform <- sysreqs_platform %||%
+    current_config()$get("sysreqs_platform")
   plt <- parse_sysreqs_platform(sysreqs_platform)
-  idx <- which(
+  plt$version_major <- sub("[.].*$", "", plt$version)
+  which(
     sysreqs2_cmds$os == plt$os &
-    sysreqs2_cmds$distribution == plt$distribution &
-    sysreqs2_cmds$version %in% c("*", plt$version)
+      sysreqs2_cmds$id == plt$distribution &
+      (sysreqs2_cmds$version %in%
+        c("*", plt$version) |
+        sysreqs2_cmds$version_match == "major" &
+          sysreqs2_cmds$version == plt$version_major)
   )[1]
 }
 
-sysreqs2_command <- function(sysreqs_platform = NULL,
-                             cmd = c("install_command", "update_command",
-                                     "query_command")) {
+sysreqs2_command <- function(
+  sysreqs_platform = NULL,
+  cmd = c("install_command", "update_command", "query_command")
+) {
   cmd <- match.arg(cmd)
   sel <- find_sysreqs_platform(sysreqs_platform)
   if (is.na(sel)) {
@@ -61,24 +68,34 @@ sysreqs2_command <- function(sysreqs_platform = NULL,
   sysreqs2_cmds[[cmd]][sel]
 }
 
-sysreqs2_resolve <- function(sysreqs, sysreqs_platform = NULL,
-                             config = NULL, ...) {
+sysreqs2_resolve <- function(
+  sysreqs,
+  sysreqs_platform = NULL,
+  config = NULL,
+  ...
+) {
   synchronize(sysreqs2_async_resolve(sysreqs, sysreqs_platform, config, ...))
 }
 
 sysreqs2_async_resolve <- function(sysreqs, sysreqs_platform, config, ...) {
-  sysreqs; sysreqs_platform; config; list(...)
+  sysreqs
+  sysreqs_platform
+  config
+  list(...)
 
   config <- config %||% current_config()
   sysreqs_platform <- sysreqs_platform %||% config$get("sysreqs_platform")
 
-  sysreqs2_async_update_metadata(config = config)$
-    then(function() {
-      sysreqs2_match(sysreqs, sysreqs_platform = sysreqs_platform, config = config, ...)
-    })$
-    then(function(recs) {
-      sysreqs2_scripts(recs, sysreqs_platform)
-    })
+  sysreqs2_async_update_metadata(config = config)$then(function() {
+    sysreqs2_match(
+      sysreqs,
+      sysreqs_platform = sysreqs_platform,
+      config = config,
+      ...
+    )
+  })$then(function(recs) {
+    sysreqs2_scripts(recs, sysreqs_platform)
+  })
 }
 
 sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
@@ -157,38 +174,36 @@ sysreqs2_async_update_metadata <- function(path = NULL, config = NULL) {
   upd <- function() {
     head <- if (file.exists(head_file)) readLines(head_file)[1] else ""
     repo <- sysreqs2_git_repo()
-    async_git_list_refs_v1(repo$repo)$
-      then(function(refs) {
-        rem_head <- refs$refs$hash[refs$refs$ref == "HEAD"]
-        if (rem_head == head) {
-          # still update the time stamps
-          Sys.setFileTime(head_file, Sys.time())
-          return()
-        }
-        tmp <- paste0(path, "-new")
-        async_git_download_repo(repo$repo, rem_head, tmp)$
-          then(function() {
-            unlink(path, recursive = TRUE, force = TRUE)
-            file.rename(tmp, path)
-            writeLines(rem_head, head_file)
-            writeLines(sysreqs_db_version, ver_file)
-          })
+    async_git_list_refs_v1(repo$repo)$then(function(refs) {
+      rem_head <- refs$refs$hash[refs$refs$ref == "HEAD"]
+      if (rem_head == head) {
+        # still update the time stamps
+        Sys.setFileTime(head_file, Sys.time())
+        return()
+      }
+      tmp <- paste0(path, "-new")
+      async_git_download_repo(repo$repo, rem_head, tmp)$then(function() {
+        unlink(path, recursive = TRUE, force = TRUE)
+        file.rename(tmp, path)
+        writeLines(rem_head, head_file)
+        writeLines(sysreqs_db_version, ver_file)
       })
+    })
   }
 
   timeout <- as.double(
     config$get("sysreqs_db_update_timeout"),
     units = "secs"
   )
-  async_timeout(upd, timeout)$
-    catch(error = function(e) {
-      cli::cli_alert_warning(                                  # nocov start
-        "Failed to update system requirement mappings,
+  async_timeout(upd, timeout)$catch(error = function(e) {
+    cli::cli_alert_warning(
+      # nocov start
+      "Failed to update system requirement mappings,
          will use cached mappings.",
-        wrap = TRUE
-      )                                                        # nocov end
-      invisible()
-    })
+      wrap = TRUE
+    ) # nocov end
+    invisible()
+  })
 }
 
 sysreqs2_list_rules <- function(path = NULL) {
@@ -202,12 +217,19 @@ sysreqs2_list_rules <- function(path = NULL) {
       path <- system.file("sysreqs", package = "pkgdepends")
     }
   }
-  rules <- dir(file.path(path, "rules"), pattern = "[.]json$", full.names = TRUE)
+  rules <- dir(
+    file.path(path, "rules"),
+    pattern = "[.]json$",
+    full.names = TRUE
+  )
 }
 
-sysreqs2_match <- function(sysreqs, path = NULL, sysreqs_platform = NULL,
-                           config = NULL) {
-
+sysreqs2_match <- function(
+  sysreqs,
+  path = NULL,
+  sysreqs_platform = NULL,
+  config = NULL
+) {
   rules <- sysreqs2_list_rules(path)
 
   result <- structure(
@@ -217,7 +239,9 @@ sysreqs2_match <- function(sysreqs, path = NULL, sysreqs_platform = NULL,
   todo <- !is.na(sysreqs) & sysreqs != ""
 
   config <- config %||% current_config()
-  plt <- parse_sysreqs_platform(sysreqs_platform %||% config$get("sysreqs_platform"))
+  plt <- parse_sysreqs_platform(
+    sysreqs_platform %||% config$get("sysreqs_platform")
+  )
 
   rsysreqs <- sysreqs[todo]
   for (r in rules) {
@@ -235,9 +259,11 @@ sysreqs2_match <- function(sysreqs, path = NULL, sysreqs_platform = NULL,
     for (dep in rule$dependencies) {
       appl <- FALSE
       for (const in dep$constraints) {
-        if (identical(const$os, plt$os) &&
+        if (
+          identical(const$os, plt$os) &&
             identical(const$distribution, plt$distribution) &&
-            (is.null(const$versions) || plt$version %in% const$versions)) {
+            (is.null(const$versions) || plt$version %in% const$versions)
+        ) {
           appl <- TRUE
           break
         }

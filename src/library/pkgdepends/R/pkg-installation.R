@@ -1,4 +1,3 @@
-
 #' @param refs Package names or references. See
 #'   ['Package references'][pkg_refs] for the syntax.
 #' @param config Configuration options, a named list. See
@@ -69,7 +68,6 @@ new_pkg_installation_proposal <- function(refs, config = list(), ...) {
 pkg_installation_proposal <- R6::R6Class(
   "pkg_installation_proposal",
   public = list(
-
     #' @description
     #' Create a new `pkg_installation_proposal` object. Consider using
     #' `new_pkg_installation_proposal()` instead of calling the constructor
@@ -97,8 +95,8 @@ pkg_installation_proposal <- R6::R6Class(
       refs,
       config = list(),
       policy = c("lazy", "upgrade"),
-      remote_types = NULL) {
-
+      remote_types = NULL
+    ) {
       config$goal <- "install"
       policy <- match.arg(policy)
       assert_that(is_path(config$library))
@@ -288,7 +286,6 @@ pkg_installation_proposal <- R6::R6Class(
 
     get_solution = function() private$plan$get_solution(),
 
-
     #' @description
     #' Show the solution on the screen.
     #'
@@ -463,8 +460,12 @@ pkg_installation_proposal <- R6::R6Class(
       plan <- private$plan$get_install_plan()
       nw <- get_num_workers()
       cache <- get_private(private$plan)$cache$package
-      install_package_plan(plan, lib = private$library, num_workers = nw,
-                           cache = cache)
+      install_package_plan(
+        plan,
+        lib = private$library,
+        num_workers = nw,
+        cache = cache
+      )
     },
 
     #' @description
@@ -475,11 +476,11 @@ pkg_installation_proposal <- R6::R6Class(
       config <- get_private(private$plan)$config
       if (!config$get("sysreqs")) return()
       srq <- self$get_solution()$data$sysreqs_packages
-      if (is.null(srq)) return(invisible())                         # nocov
+      if (is.null(srq)) return(invisible()) # nocov
       cmds <- sysreqs2_scripts(
         srq,
         sysreqs_platform = config$get("sysreqs_platform"),
-        missing = ! config$get("sysreqs_update")
+        missing = !config$get("sysreqs_update")
       )
       sysreqs_install(cmds, config)
     },
@@ -525,8 +526,10 @@ pkg_installation_proposal <- R6::R6Class(
 
       has_sys <- has_sol && !is.null(sol$sysreqs)
 
-      c("<pkg_installation_proposal>",
-        "+ refs:", paste0("  - ", refs),
+      c(
+        "<pkg_installation_proposal>",
+        "+ refs:",
+        paste0("  - ", refs),
         paste0("+ solution policy: ", private$policy),
         if (has_sol) "+ has solution",
         if (sol_err) "x has solution errors",

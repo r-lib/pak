@@ -1,8 +1,5 @@
-
 ghmirror <- local({
-
-  ghmirror_update <- function(pkg,
-                              source_repo = "https://cran.r-project.org") {
+  ghmirror_update <- function(pkg, source_repo = "https://cran.r-project.org") {
     cran_versions <- get_package_versions(pkg, source_repo)
     atgh_versions <- get_github_versions(pkg)
 
@@ -23,9 +20,10 @@ ghmirror <- local({
 
   cran_versions <- NULL
 
-  get_all_cran_versions <- function(source_repo = "https://cran.r-project.org",
-                                    forget = FALSE) {
-
+  get_all_cran_versions <- function(
+    source_repo = "https://cran.r-project.org",
+    forget = FALSE
+  ) {
     if (!is.null(cran_versions) && !forget) {
       return(cran_versions)
     }
@@ -49,8 +47,8 @@ ghmirror <- local({
 
     # we'll just drop versions with invalid version numbers, these are
     # old packages only
-    badver <- is.na(package_version(r_archive_pkgs$version, strict=FALSE))
-    r_archive_pkgs <- r_archive_pkgs[!badver,, drop = FALSE]
+    badver <- is.na(package_version(r_archive_pkgs$version, strict = FALSE))
+    r_archive_pkgs <- r_archive_pkgs[!badver, , drop = FALSE]
 
     res <- data_frame(
       package = c(r_archive_pkgs$package, r_source_pkgs$package),
@@ -63,11 +61,13 @@ ghmirror <- local({
     res
   }
 
-  get_package_versions <- function(pkg,
-                                   source_repo = "https://cran.r-project.org",
-                                   forget = FALSE) {
+  get_package_versions <- function(
+    pkg,
+    source_repo = "https://cran.r-project.org",
+    forget = FALSE
+  ) {
     all <- get_all_cran_versions(source_repo, forget = forget)
-    res <- all[all$package == pkg,, drop = FALSE]
+    res <- all[all$package == pkg, , drop = FALSE]
     res
   }
 
@@ -132,7 +132,6 @@ ghmirror <- local({
         pkgsearch::cran_package(pkg),
         error = function(e) NULL
       )
-
     } else if (inherits(pkg, "description")) {
       pkg <- list(
         Package = pkg$get("Package"),
@@ -140,19 +139,25 @@ ghmirror <- local({
         URL = pkg$get("URL"),
         BugReports = pkg$get("BugReports")
       )
-
     } else {
       stop("'pkg' must be a character scalar or a 'description' object")
     }
 
     dsc <- paste(
       sep = "  ",
-      dont_break(":exclamation: This is a read-only mirror of the CRAN R package repository."),
       dont_break(
-        pkg$Package, " \u2014 ", pkg$Title,
+        ":exclamation: This is a read-only mirror of the CRAN R package repository."
+      ),
+      dont_break(
+        pkg$Package,
+        " \u2014 ",
+        pkg$Title,
         nullna_or(pkg$URL, paste0(". Homepage: ", pkg$URL))
       ),
-      nullna_or(pkg$BugReports, dont_break("Report bugs for this package: ", pkg$BugReports))
+      nullna_or(
+        pkg$BugReports,
+        dont_break("Report bugs for this package: ", pkg$BugReports)
+      )
     )
 
     # Limit is 350 characters, but be conservative
@@ -162,7 +167,6 @@ ghmirror <- local({
   }
 
   add_missing_version <- function(package, version, repo) {
-
     proc <- cli::cli_process_start("Adding {.pkg {package}} {version}")
 
     ## Rename the .git directory. We'll need it later
@@ -208,9 +212,12 @@ ghmirror <- local({
       env = c("GIT_COMMITTER_DATE" = date),
       "commit",
       "--allow-empty",
-      "-m", paste0("version ", version),
-      "--date", date,
-      "--author", fix_maintainer(maint, auth)
+      "-m",
+      paste0("version ", version),
+      "--date",
+      date,
+      "--author",
+      fix_maintainer(maint, auth)
     )
 
     git("tag", version)
@@ -240,7 +247,6 @@ ghmirror <- local({
   }
 
   set_git_user <- function(path, user = NULL, email = NULL) {
-
     user <- user %||% default_cranatgh_user()
     email <- email %||% default_cranatgh_email()
 
@@ -264,7 +270,9 @@ ghmirror <- local({
 
   clone_git_repo <- function(pkg) {
     url <- get_clone_url(pkg)
-    proc <- cli::cli_process_start("Cloning GitHub repo from {.url {safe_url(url)}}")
+    proc <- cli::cli_process_start(
+      "Cloning GitHub repo from {.url {safe_url(url)}}"
+    )
     git("clone", url)
     cli::cli_process_done(proc)
   }
@@ -274,7 +282,6 @@ ghmirror <- local({
   }
 
   get_clone_url <- function(package) {
-
     owner <- default_cranatgh_org()
     token <- get_gh_token()
     token <- if (is.na(token)) "" else paste0(token, "@")
@@ -295,11 +302,14 @@ ghmirror <- local({
     ok <- FALSE
     for (url in urls) {
       dest_file <- basename(url)
-      tryCatch({
-        curl::curl_download(url, dest_file)
-        ok <- TRUE
-        break
-      }, error = function(err) err)
+      tryCatch(
+        {
+          curl::curl_download(url, dest_file)
+          ok <- TRUE
+          break
+        },
+        error = function(err) err
+      )
     }
 
     if (!ok) stop("Cannot download package ", package)
@@ -310,14 +320,19 @@ ghmirror <- local({
     # work around some mistakes, file names do not match the version number
     if (package == "HTML" && version == "0.4") {
       "https://cran.rstudio.com/src/contrib/Archive/HTML/HTML_0.4-1.tar.gz"
-
     } else if (package == "timeslab" && version == "1.0") {
       "https://cran.r-project.org/src/contrib/Archive/timeslab/timeslab_1.0-1.tar.gz"
-
     } else {
-      c(sprintf("%s/src/contrib/%s_%s.tar.gz", repo, package, version),
-        sprintf("%s/src/contrib/Archive/%s/%s_%s.tar.gz", repo,
-                package, package, version))
+      c(
+        sprintf("%s/src/contrib/%s_%s.tar.gz", repo, package, version),
+        sprintf(
+          "%s/src/contrib/Archive/%s/%s_%s.tar.gz",
+          repo,
+          package,
+          package,
+          version
+        )
+      )
     }
   }
 
@@ -360,30 +375,35 @@ ghmirror <- local({
   }
 
   add_gh_remote <- function(package) {
-
     current <- git("remote")$stdout
-    if (! grepl("\\borigin\\b", current)) {
+    if (!grepl("\\borigin\\b", current)) {
       git(
-        "remote", "add", "origin",
+        "remote",
+        "add",
+        "origin",
         get_clone_url(package)
       )
     }
   }
 
-  update_description <- function(package,
-                                 description = make_description(package)) {
-
+  update_description <- function(
+    package,
+    description = make_description(package)
+  ) {
     description <- clean_description(description)
 
-    proc <- cli::cli_process_start("Updating repo description for {.pkg {package}}")
-    gh::gh("PATCH /repos/:owner/:repo",
-       owner = default_cranatgh_org(),
-       repo = package,
-       name = package,
-       description = description,
-       homepage = "",
-       .token = get_gh_token()
-       )
+    proc <- cli::cli_process_start(
+      "Updating repo description for {.pkg {package}}"
+    )
+    gh::gh(
+      "PATCH /repos/:owner/:repo",
+      owner = default_cranatgh_org(),
+      repo = package,
+      name = package,
+      description = description,
+      homepage = "",
+      .token = get_gh_token()
+    )
     cli::cli_process_done(proc)
   }
 

@@ -1,4 +1,3 @@
-
 is_character <- function(x) {
   if (!is.character(x)) {
     structure(
@@ -17,7 +16,6 @@ is_character <- function(x) {
   } else {
     TRUE
   }
-
 }
 
 is_string <- function(x) {
@@ -150,22 +148,28 @@ is_dependencies <- function(x) {
   valid <- function(x) {
     x %in% dep_types | x %in% extra_config_fields(x)
   }
-  if (is_na_scalar(x) || isTRUE(x) || identical(x, FALSE) ||
+  if (
+    is_na_scalar(x) ||
+      isTRUE(x) ||
+      identical(x, FALSE) ||
       (is_character(x) && all(valid(x))) ||
-      (is.list(x) && all(names(x) == c("direct", "indirect")) &&
-       all(valid(unlist(x))))) {
+      (is.list(x) &&
+        all(names(x) == c("direct", "indirect")) &&
+        all(valid(unlist(x))))
+  ) {
     return(TRUE)
   }
 
   structure(
     FALSE,
     msg = c(
-        "{.arg {(.arg)}} must be one of the following: {.code NA},
+      "{.arg {(.arg)}} must be one of the following: {.code NA},
          {.code TRUE}, {.code FALSE}, a character vector of dependency types,
          a named list with entries {.code direct} and {.code indirect},
          both character vectors of dependency types.",
       "i" = "valid dependency types are: {.val {dep_types}}, and
-         {.code config/needs/*} types"),
+         {.code config/needs/*} types"
+    ),
     env = environment()
   )
 }
@@ -208,8 +212,13 @@ is_difftime <- function(x) {
 }
 
 is_count <- function(x, min = 0L) {
-  if (is.numeric(x) && length(x) == 1 && !is.na(x) &&
-      as.integer(x) == x && x >= min) {
+  if (
+    is.numeric(x) &&
+      length(x) == 1 &&
+      !is.na(x) &&
+      as.integer(x) == x &&
+      x >= min
+  ) {
     return(TRUE)
   }
   if (!is.numeric(x) || length(x) != 1 || (!is.na(x) && as.integer(x) != x)) {

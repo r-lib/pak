@@ -3,7 +3,8 @@ Title: Package Dependency Resolution and Downloads
 Version: 0.8.0.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
   )
 Description: Find recursive dependencies of 'R' packages from various
     sources. Solve the dependencies to obtain a consistent set of packages
@@ -25,17 +26,18 @@ Imports: callr (>= 3.3.1), cli (>= 3.6.0), curl, desc (>= 1.4.3),
 Suggests: asciicast (>= 2.2.0.9000), codetools, covr, debugme, fansi,
         fs, gh, gitcreds, glue, htmlwidgets, mockery, pak, pingr (>=
         2.0.0), rmarkdown, rstudioapi, spelling, svglite, testthat (>=
-        3.2.0), tibble, webfakes (>= 1.1.5.9000), withr (>= 2.1.1),
+        3.2.0), tibble, webfakes (>= 1.1.5.9000), withr (>= 2.1.1)
 Remotes: r-lib/pkgcache
 Config/Needs/builder: gh, pkgsearch, withr (>= 2.1.1)
 Config/Needs/coverage: r-lib/asciicast, covr
 Config/Needs/website: r-lib/asciicast, pkgdown (>= 2.0.2),
         tidyverse/tidytemplate
 Config/testthat/edition: 3
+Config/usethis/last-upkeep: 2025-05-05
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.2.9000
 NeedsCompilation: yes
-Packaged: 2025-04-14 18:13:44 UTC; gaborcsardi
+Packaged: 2025-05-15 11:13:22 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
-  Posit Software, PBC [cph, fnd]
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

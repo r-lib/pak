@@ -1,6 +1,4 @@
-
 repo <- local({
-
   # List packages in local repo -------------------------------------------
 
   repo_list <- function(..., path = ".") {
@@ -63,9 +61,9 @@ repo <- local({
 
     idx <- which(
       pkgs$Package == pkg_data$Package &
-      pkgs$RVersion == pkg_data$RVersion &
-      (is.na(pkg_data$OS) | is.na(pkgs$OS) | pkgs$OS == pkg_data$OS) &
-      (is.na(pkg_data$Arch) | is.na(pkgs$Arch) | pkgs$Arch == pkg_data$Arch)
+        pkgs$RVersion == pkg_data$RVersion &
+        (is.na(pkg_data$OS) | is.na(pkgs$OS) | pkgs$OS == pkg_data$OS) &
+        (is.na(pkg_data$Arch) | is.na(pkgs$Arch) | pkgs$Arch == pkg_data$Arch)
     )
     if (length(idx)) {
       pkgs <- pkgs[-idx, , drop = FALSE]
@@ -92,7 +90,13 @@ repo <- local({
 
     oldwd <- getwd()
     workdir <- tempfile()
-    on.exit({ setwd(oldwd); unlink(workdir, recursive = TRUE) }, add = TRUE)
+    on.exit(
+      {
+        setwd(oldwd)
+        unlink(workdir, recursive = TRUE)
+      },
+      add = TRUE
+    )
     dir.create(workdir)
     setwd(workdir)
 
@@ -105,27 +109,31 @@ repo <- local({
     git("config", "user.name", "Gabor Csardi")
     git("config", "credential.helper", "cache")
     gitcreds::gitcreds_approve(list(
-                url = "https://github.com",
-                username = "PersonalAccessToken",
-                password = Sys.getenv("GITHUB_PAT")
-              ))
+      url = "https://github.com",
+      username = "PersonalAccessToken",
+      password = Sys.getenv("GITHUB_PAT")
+    ))
 
     repeat {
       git("pull")
       for (file in files) {
         repo_update(file, release_org = release_org)
       }
-      tryCatch({
-        git_push()
-        break
-      }, error = function(err) {
-        if (!grepl("(non-fast-forward|fetch first|cannot lock ref)",
-                   err$stderr)) {
-          stop(err)
+      tryCatch(
+        {
+          git_push()
+          break
+        },
+        error = function(err) {
+          if (
+            !grepl("(non-fast-forward|fetch first|cannot lock ref)", err$stderr)
+          ) {
+            stop(err)
+          }
+          git("reset", "HEAD^")
+          git("checkout", "--", ".")
         }
-        git("reset", "HEAD^")
-        git("checkout", "--", ".")
-      })
+      )
     }
 
     invisible()
@@ -156,7 +164,11 @@ repo <- local({
       Version = pkgver,
       Depends = paste0(
         if (!is.na(deps)) paste0(deps, ", "),
-        "R (>= ", rminor, "), R (< ", rminor, ".99)"
+        "R (>= ",
+        rminor,
+        "), R (< ",
+        rminor,
+        ".99)"
       ),
       Imports = unname(desc$get("Imports")),
       Suggests = unname(desc$get("Suggests")),
@@ -165,7 +177,9 @@ repo <- local({
       License = unname(desc$get("License")),
       File = basename(path),
       DownloadURL = paste0(
-        "https://github.com/", release_org, "/",
+        "https://github.com/",
+        release_org,
+        "/",
         pkgname,
         "/releases/download/",
         pkgver,
@@ -228,13 +242,23 @@ repo <- local({
     os
   }
 
-  git <- function (..., echo_cmd = TRUE, echo = TRUE, dry_run = FALSE,
-                   stderr_to_stdout = FALSE) {
+  git <- function(
+    ...,
+    echo_cmd = TRUE,
+    echo = TRUE,
+    dry_run = FALSE,
+    stderr_to_stdout = FALSE
+  ) {
     if (dry_run) {
       cat("git", c(...), "\n")
     } else {
-      processx::run("git", c(...), echo_cmd = echo_cmd, echo = echo,
-                    stderr_to_stdout = stderr_to_stdout)
+      processx::run(
+        "git",
+        c(...),
+        echo_cmd = echo_cmd,
+        echo = echo,
+        stderr_to_stdout = stderr_to_stdout
+      )
     }
   }
 
@@ -281,11 +305,11 @@ repo <- local({
   structure(
     list(
       .internal = environment(),
-      add       = repo_add,
-      delete    = repo_delete,
-      list      = repo_list,
-      list_gh   = repo_list_gh,
-      update    = repo_update,
+      add = repo_add,
+      delete = repo_delete,
+      list = repo_list,
+      list_gh = repo_list_gh,
+      update = repo_update,
       update_gh = repo_update_gh
     ),
     class = c("standalone_repo", "standalone")

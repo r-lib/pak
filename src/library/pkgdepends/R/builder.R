@@ -1,4 +1,3 @@
-
 #' Create a binary package from an installed package
 #'
 #' The built package will be in the current working directory.
@@ -18,9 +17,12 @@
 #' @export
 #' @keywords internal
 
-pkg_build <- function(pkg, library = .libPaths()[1],
-                      flavor = Sys.getenv("PKG_BUILD_FLAVOR"),
-                      build_number = 1L) {
+pkg_build <- function(
+  pkg,
+  library = .libPaths()[1],
+  flavor = Sys.getenv("PKG_BUILD_FLAVOR"),
+  build_number = 1L
+) {
   pkgdir <- file.path(library, pkg)
   if (!dir.exists(pkgdir)) {
     throw(pkg_error(
@@ -45,20 +47,32 @@ pkg_build <- function(pkg, library = .libPaths()[1],
   if (sys == "windows") {
     install_md5_sums(pkg)
     fn <- paste0(
-      pkg, "_", version, "_",
-      "b", build_number, "_",
-      "R", rversion,
+      pkg,
+      "_",
+      version,
+      "_",
+      "b",
+      build_number,
+      "_",
+      "R",
+      rversion,
       if (nzchar(flavor %||% "")) paste0("_", flavor),
       ".zip"
     )
     zip::zip(fn, pkgdir, mode = "cherry-pick")
-
   } else {
     ext <- if (sys == "mac") ".tgz" else ".tar.gz"
     fn <- paste0(
-      pkg, "_", version, "_",
-      "b", build_number, "_",
-      "R", rversion, "_",
+      pkg,
+      "_",
+      version,
+      "_",
+      "b",
+      build_number,
+      "_",
+      "R",
+      rversion,
+      "_",
       platform,
       ext
     )
