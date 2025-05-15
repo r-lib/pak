@@ -104,10 +104,30 @@ pak does not detect your platform correctly.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># This only works on supported platforms</span></span></span>
 <span class="r-in"><span><span class="fu">sysreqs_check_installed</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> <span style="color: #BBBB00;">!</span> error in pak subprocess</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error</span> in `sysreqs2_command(sysreqs_platform, "query")`:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Unknown OS. Don't know how to query or install system packages</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> for x86_64-pc-linux-gnu-NA-NA-ubuntu-24.04.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> system package       installed required by                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------       --        -----------                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> git                  ✔         credentials, gitcreds         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gsfonts              ✔         magick                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libcurl4-openssl-dev ✔         curl                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libfontconfig1-dev   ✔         systemfonts                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libfreetype6-dev     ✔         ragg, systemfonts, textshaping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libfribidi-dev       ✔         textshaping                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libgit2-dev          ✔         gert                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libharfbuzz-dev      ✔         textshaping                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libicu-dev           ✔         stringi                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libjpeg-dev          ✔         ragg                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libmagick++-dev      ✔         magick                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libnode-dev          ✔         V8                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libpng-dev           ✔         ragg                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libsecret-1-dev      ✔         keyring                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libsodium-dev        ✖         sodium                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libssl-dev           ✔         curl, openssl, PKI            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libtiff-dev          ✔         ragg                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libx11-dev           ✔         clipr                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> libxml2-dev          ✔         xml2                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> make                 ✔         fs, httpuv, rticles, sass     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pandoc               ✔         knitr, pkgdown, rmarkdown     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> zlib1g-dev           ✔         httpuv                        </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
