@@ -134,7 +134,7 @@ package_cache <- R6Class(
       res <- private$find_locked(..., .list = .list)
       if (!is.null(target) && nrow(res) >= 1) {
         mkdirp(dirname(target))
-        file.copy(res$fullpath[1], target)
+        file.copy(res$fullpath[1], target, overwrite = TRUE)
       }
       res
     },
