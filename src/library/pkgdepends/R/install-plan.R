@@ -100,6 +100,9 @@ install_package_plan <- function(
     plan$metadata <- replicate(nrow(plan), character(), simplify = FALSE)
   }
   if (!"packaged" %in% colnames(plan)) plan$packaged <- TRUE
+  if (!"used_cached_binary" %in% colnames(plan)) {
+    plan$used_cached_binary <- FALSE
+  }
 
   plan <- add_recursive_dependencies(plan)
 
@@ -178,7 +181,8 @@ make_start_state <- function(plan, config) {
     package_error = I(rep_list(nrow(plan), list())),
     package_stdout = I(rep_list(nrow(plan), character())),
     build_done = (plan$type %in% c("deps", "installed")) |
-      plan$binary | plan$used_cached_binary,
+      plan$binary |
+      plan$used_cached_binary,
     build_time = I(rep_list(nrow(plan), as.POSIXct(NA))),
     build_error = I(rep_list(nrow(plan), list())),
     build_stdout = I(rep_list(nrow(plan), character())),

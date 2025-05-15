@@ -15,40 +15,75 @@ sysreqs2_cmds <- utils::read.table(
    name                       os      id                  distribution version  version_match update_command      install_command                     query_command
    'Ubuntu Linux'             linux   ubuntu              ubuntu       *        NA            'apt-get -y update' 'apt-get -y install'                dpkg-query
    'Debian Linux'             linux   debian              debian       *        NA            'apt-get -y update' 'apt-get -y install'                dpkg-query
-   'CentOS Linux'             linux   centos              centos       *        NA             NA                 'yum install -y'                    rpm
-   'Rocky Linux'              linux   rocky               rockylinux   *        NA             NA                 'dnf install -y'                    rpm
-   'Rocky Linux'              linux   rockylinux          rockylinux   *        NA             NA                 'dnf install -y'                    rpm
-   'AlmaLinux'                linux   almalinux           almalinux    *        NA             NA                 'dnf install -y'                    rpm
+   'CentOS Linux'             linux   centos              centos       *        major          NA                 'yum install -y'                    rpm
+   'Rocky Linux'              linux   rocky               rockylinux   *        major          NA                 'dnf install -y'                    rpm
+   'Rocky Linux'              linux   rockylinux          rockylinux   *        major          NA                 'dnf install -y'                    rpm
+   'AlmaLinux'                linux   almalinux           rockylinux   *        major          NA                 'dnf install -y'                    rpm
    'Red Hat Enterprise Linux' linux   rhel                redhat       6        major          NA                 'yum install -y'                    rpm
    'Red Hat Enterprise Linux' linux   rhel                redhat       7        major          NA                 'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   rhel                redhat       *        NA             NA                 'dnf install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   rhel                redhat       *        major          NA                 'dnf install -y'                    rpm
    'Red Hat Enterprise Linux' linux   redhat              redhat       6        major          NA                 'yum install -y'                    rpm
    'Red Hat Enterprise Linux' linux   redhat              redhat       7        major          NA                 'yum install -y'                    rpm
-   'Red Hat Enterprise Linux' linux   redhat              redhat       *        NA             NA                 'dnf install -y'                    rpm
+   'Red Hat Enterprise Linux' linux   redhat              redhat       *        major          NA                 'dnf install -y'                    rpm
    'Fedora Linux'             linux   fedora              fedora       *        NA             NA                 'dnf install -y'                    rpm
    'openSUSE Linux'           linux   opensuse            opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
    'openSUSE Linux'           linux   opensuse-leap       opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
    'openSUSE Linux'           linux   opensuse-tumbleweed opensuse     *        NA             NA                 'zypper --non-interactive install'  rpm
    'SUSE Linux Enterprise'    linux   sles                sle          *        NA             NA                 'zypper --non-interactive install'  rpm
    'SUSE Linux Enterprise'    linux   sle                 sle          *        NA             NA                 'zypper --non-interactive install'  rpm
-   'Alpine Linux'             linux   alpine              alpine       *        NA             NA                 'apk add --no-cache'                apk
+   'Alpine Linux'             linux   alpine              alpine       *        minor          NA                 'apk add --no-cache'                apk
 "
   )
 )
 
-find_sysreqs_platform <- function(sysreqs_platform = NULL) {
-  sysreqs_platform <- sysreqs_platform %||%
-    current_config()$get("sysreqs_platform")
-  plt <- parse_sysreqs_platform(sysreqs_platform)
-  plt$version_major <- sub("[.].*$", "", plt$version)
+# do not use package_version, in case the distro is nor semver
+get_major_version <- function(x) {
+  sub("[.].*$", "", x)
+}
+get_minor_version <- function(x) {
+  sub("([.][^.]+)[.].*$", "\\1", x)
+}
+
+find_sysreqs_platform <- function(sysreqs_platform = NULL, parsed = NULL) {
+  plt <- parsed %||%
+    parse_sysreqs_platform(
+      sysreqs_platform %||% current_config()$get("sysreqs_platform")
+    )
+  plt$version_major <- get_major_version(plt$version)
+  plt$version_minor <- get_minor_version(plt$version)
   which(
     sysreqs2_cmds$os == plt$os &
       sysreqs2_cmds$id == plt$distribution &
       (sysreqs2_cmds$version %in%
         c("*", plt$version) |
-        sysreqs2_cmds$version_match == "major" &
-          sysreqs2_cmds$version == plt$version_major)
+        (sysreqs2_cmds$version_match == "major" &
+          sysreqs2_cmds$version == plt$version_major) |
+        (sysreqs2_cmds$version_match == "minor" &
+          sysreqs2_cmds$version == plt$version_minor))
   )[1]
+}
+
+canonize_sysreqs_platform <- function(sysreqs_platform) {
+  parsed <- parse_sysreqs_platform(sysreqs_platform)
+  known <- find_sysreqs_platform(parsed = parsed)
+  if (is.na(known)) {
+    sysreqs_platform
+  } else {
+    plt <- sysreqs_platforms()[known, ]
+    paste0(
+      plt$distribution,
+      "-",
+      if (plt$version != "*") {
+        plt$version
+      } else if (identical(plt$version_match, "major")) {
+        get_major_version(parsed$version)
+      } else if (identical(plt$version_match, "minor")) {
+        get_minor_version(parsed$version)
+      } else {
+        parsed$version
+      }
+    )
+  }
 }
 
 sysreqs2_command <- function(
@@ -99,6 +134,7 @@ sysreqs2_async_resolve <- function(sysreqs, sysreqs_platform, config, ...) {
 }
 
 sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
+  sysreqs_platform <- canonize_sysreqs_platform(sysreqs_platform)
   plt <- parse_sysreqs_platform(sysreqs_platform)
   flatrecs <- unlist(recs, recursive = FALSE)
   upd <- sysreqs2_command(sysreqs_platform, "update")
@@ -239,9 +275,9 @@ sysreqs2_match <- function(
   todo <- !is.na(sysreqs) & sysreqs != ""
 
   config <- config %||% current_config()
-  plt <- parse_sysreqs_platform(
+  plt <- parse_sysreqs_platform(canonize_sysreqs_platform(
     sysreqs_platform %||% config$get("sysreqs_platform")
-  )
+  ))
 
   rsysreqs <- sysreqs[todo]
   for (r in rules) {
