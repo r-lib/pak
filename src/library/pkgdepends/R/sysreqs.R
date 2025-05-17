@@ -327,10 +327,12 @@ parse_sysreqs_platform <- function(x) {
   stopifnot(length(x) == 1)
 
   # full form or only distro [+ version]
+  n_hyphens <- sum(strsplit(x, "")[[1]] == "-")
   if (
-    sum(strsplit(x, "")[[1]] == "-") >= 2 &&
-      !grepl("opensuse-leap", x) &&
-      !grepl("opensuse-tumbleweed", x)
+    n_hyphens >= 2 &&
+      !grepl("^opensuse-leap", x) &&
+      !grepl("^opensuse-tumbleweed", x) &&
+      !(n_hyphens == 2 && endsWith(x, "libc++"))
   ) {
     osplt <- parse_platform(x)
     if (startsWith(osplt$os, "linux-")) {
