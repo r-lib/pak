@@ -50,6 +50,7 @@ reference:
   - pkg_deps
   - pkg_deps_explain
   - pkg_deps_tree
+  - scan_deps
 - subtitle: Download
   contents:
   - pkg_download
