@@ -15,4 +15,17 @@ if(!file.exists("../windows/libcurl/include/curl/curl.h")){
   unlink(basename(url))
   setwd("../windows")
   file.rename(list.files(), 'libcurl')
+  # fix CR or CRLF line endings in a header file
+  badfile <- "libcurl/include/nghttp2/nghttp2ver.h"
+  if (file.exists(badfile)) {
+    cnts <- readBin(badfile, "raw", file.size(badfile))
+    if (any(cnts == 0x0a)) {
+      # has \r\n, remove the \r
+      cnts <- cnts[cnts != 0x0d]
+    } else {
+      # convert \r to \r
+      cnts[cnts == 0x0d] <- as.raw(0x0a)
+    }
+    writeBin(cnts, badfile)
+  }
 }
