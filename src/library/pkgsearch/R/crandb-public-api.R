@@ -209,6 +209,7 @@ cran_new <- function(from = "last-week", to = "now", last = Inf) {
     "https://crandb.r-pkg.org:2053/cran/_design/internal/_view/new?",
     paste0(names(param), "=", param, collapse = "&")
   )
+  url <- utils::URLencode(url)
 
   rsp <- http_get(url)
   cnt <- rawToChar(rsp$content)

@@ -1,6 +1,6 @@
 Package: pkgsearch
 Title: Search and Query CRAN R Packages
-Version: 3.1.4
+Version: 3.1.5
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Maëlle", "Salmon", role = "aut",
@@ -24,10 +24,10 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 RoxygenNote: 7.3.1.9000
 NeedsCompilation: no
-Packaged: 2025-01-09 11:26:35 UTC; gaborcsardi
+Packaged: 2025-04-12 09:10:04 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Maëlle Salmon [aut] (<https://orcid.org/0000-0002-2815-0399>),
   R Consortium [fnd]
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-01-09 11:50:02 UTC
+Date/Publication: 2025-04-12 09:40:02 UTC
