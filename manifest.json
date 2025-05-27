@@ -448,11 +448,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.6",
-          "pak.version": "0.8.0.9000",
+          "pak.version": "0.9.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-05-27T05:46:59+00:00",
-          "size": 10058571,
-          "digest": "sha256:e1d881e61e16b427bf78493a78c6bce45036d89805f90e3efbcb3e2d10bab577"
+          "buildtime": "2025-05-27T15:45:15+00:00",
+          "size": 10058163,
+          "digest": "sha256:14a2ae27dda42309f0e212f367cf2228a9f782ea3accca0a36a58d02911c4775"
         },
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
