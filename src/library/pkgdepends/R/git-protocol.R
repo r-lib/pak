@@ -26,9 +26,9 @@
 #'   download from GitHub, so not really needed.
 #'
 #' ## Docs and other helpful links:
-#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-common.txt>
-#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-pack.txt>
-#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-v2.txt>
+#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-common.adoc>
+#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-pack.adoc>
+#' - <https://github.com/git/git/blob/master/Documentation/gitprotocol-v2.adoc>
 #' - <https://github.com/calebsander/git-internals/blob/part2/src/main.rs>
 #' - <https://dev.to/calebsander/git-internals-part-1-the-git-object-model-474m>
 #'
