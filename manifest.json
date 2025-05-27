@@ -331,11 +331,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.5",
-          "pak.version": "0.8.0.9000",
+          "pak.version": "0.9.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-05-27T05:46:54+00:00",
-          "size": 9961164,
-          "digest": "sha256:61d3bf31fb18aca1cd75f09e6568f85d0e243e17b1088e2817b71c9a0dfeedf8"
+          "buildtime": "2025-05-27T15:50:22+00:00",
+          "size": 9962837,
+          "digest": "sha256:865edbe47408d0a60857786b2fd965661ccdfe07aeeb6666e55cf488e7a3a78b"
         },
         {
           "r.platform": "amd64-portbld-freebsd13.3",
