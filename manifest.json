@@ -1196,11 +1196,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.8.0.2",
+          "pak.version": "0.9.0",
           "pak.revision": "TODO",
-          "buildtime": "2025-04-24T08:41:37+00:00",
-          "size": 9009670,
-          "digest": "sha256:4a9f8b6004e9eccf85a6d51bb705eec261cb3b4f91bc8b6f5eef06e939a08119"
+          "buildtime": "2025-05-27T13:07:14+00:00",
+          "size": 10052687,
+          "digest": "sha256:4e46f3225c3d288a5ca8e2a026ac336475b68de5425fb57953a418e8d21a89ec"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
