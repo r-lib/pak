@@ -25,8 +25,8 @@ pkg_system_requirements(
 }
 \arguments{
 \item{os, os_release}{The operating system and operating system release
-version, e.g. "ubuntu", "debian", "centos", "redhat". See
-\url{https://github.com/rstudio/r-system-requirements#operating-systems} for
+version, e.g. "ubuntu",  "centos", "redhat". See
+\code{supported_os_versions()} for
 all full list of supported operating systems.
 
 If \code{NULL}, the default, these will be looked up.}
