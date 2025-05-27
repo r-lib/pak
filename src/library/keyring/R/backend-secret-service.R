@@ -20,7 +20,6 @@
 #'
 #' @family keyring backends
 #' @export
-#' @include backend-class.R
 #' @examples
 #' \dontrun{
 #' ## This only works on Linux, typically desktop Linux

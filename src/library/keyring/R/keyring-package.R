@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @aliases keyring
 "_PACKAGE"
 
 ## usethis namespace: start

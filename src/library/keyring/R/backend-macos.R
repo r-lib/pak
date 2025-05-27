@@ -8,7 +8,6 @@
 #' See [backend] for the documentation of the individual methods.
 #'
 #' @family keyring backends
-#' @include backend-class.R
 #' @export
 #' @examples
 #' \dontrun{

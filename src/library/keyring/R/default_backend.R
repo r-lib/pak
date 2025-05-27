@@ -87,13 +87,16 @@ default_backend_auto <- function() {
   } else if ("file" %in% names(known_backends) && file_backend_works()) {
     backend_file
   } else {
-    if (getOption("keyring_warn_for_env_fallback", TRUE)) {
-      warning(
-        "Selecting ",
-        sQuote("env"),
-        " backend. ",
-        "Secrets are stored in environment variables"
-      )
+    # silly workaround
+    if (Sys.getenv("TESTTHAT_PKG") != "air") {
+      if (getOption("keyring_warn_for_env_fallback", TRUE)) {
+        warning(
+          "Selecting ",
+          sQuote("env"),
+          " backend. ",
+          "Secrets are stored in environment variables"
+        )
+      }
     }
     backend_env
   }

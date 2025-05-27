@@ -17,7 +17,6 @@
 #'
 #' @family keyring backends
 #' @export
-#' @include backend-class.R
 #' @examples
 #' \dontrun{
 #' env <- backend_env$new()

@@ -11,7 +11,6 @@ b_file_keyrings <- new.env(parent = emptyenv())
 #'
 #' @family keyring backends
 #' @export
-#' @include backend-class.R
 #' @examples
 #' \dontrun{
 #' kb <- backend_file$new()

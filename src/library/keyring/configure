@@ -8,7 +8,7 @@ echo "PKG_CPPFLAGS=-DMBEDTLS_AES_C -DMBEDTLS_ALLOW_PRIVATE_ACCESS -DMBEDTLS_PLAT
 if [ "$UNAME" = "Darwin" ]; then
     echo "PKG_LIBS=-framework Security" >> src/Makevars
 
-elif [ -n "$LIBSECRET_CFLAGS" -a -n "$LIBSECRET_LIBS" ]; then
+elif [ -n "$LIBSECRET_CFLAGS" ] && [ -n "$LIBSECRET_LIBS" ]; then
     echo "Found libsecret from LIBSECRET_CFLAGS and LIBSECRET_LIBS."
     echo "PKG_CFLAGS=-DHAS_LIBSECRET $LIBSECRET_CFLAGS" >> src/Makevars
     echo "PKG_LIBS=$LIBSECRET_LIBS" >> src/Makevars
