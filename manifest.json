@@ -187,11 +187,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.1",
-          "pak.version": "0.8.0.9000",
+          "pak.version": "0.9.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-05-27T05:53:18+00:00",
-          "size": 10053267,
-          "digest": "sha256:537e78c90fd0a2ffabb434805f551980c6a90a9ec43e35e8e6c608f7e15fc6db"
+          "buildtime": "2025-05-27T15:44:34+00:00",
+          "size": 10059517,
+          "digest": "sha256:27db044162ea42b905317a03a813cbf39c9edaca0f2e328f2fd46ae93efb2cdb"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
