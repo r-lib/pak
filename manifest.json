@@ -1052,11 +1052,11 @@
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.8.0.2",
+          "pak.version": "0.9.0",
           "pak.revision": "TODO",
-          "buildtime": "2025-04-24T08:38:33+00:00",
-          "size": 8452282,
-          "digest": "sha256:24ab355ce2758942813bab8d83fdfe948cfb63c133a5ce58fbec6fb126113110"
+          "buildtime": "2025-05-27T13:03:38+00:00",
+          "size": 9472863,
+          "digest": "sha256:3c58d4190b5f2237ce9f617f8671851d676812368a449e41ea2e2fd5ad92e146"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
