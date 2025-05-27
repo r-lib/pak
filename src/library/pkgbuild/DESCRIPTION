@@ -1,6 +1,6 @@
 Package: pkgbuild
 Title: Find Tools Needed to Build R Packages
-Version: 1.4.7.9000
+Version: 1.4.8
 Authors@R: c(
     person("Hadley", "Wickham", role = "aut"),
     person("Jim", "Hester", role = "aut"),
@@ -22,12 +22,13 @@ Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
 Config/usethis/last-upkeep: 2025-04-30
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2025-05-08 10:35:47 UTC; gaborcsardi
+Packaged: 2025-05-26 10:36:48 UTC; gaborcsardi
 Author: Hadley Wickham [aut],
   Jim Hester [aut],
   Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2025-05-26 14:10:06 UTC
