@@ -100,9 +100,6 @@ Suggests:
     webfakes,
     withr,
     yaml
-Remotes:
-    r-lib/keyring,
-    r-lib/pkgcache
 Biarch: true
 ByteCompile: true
 Config/build/extra-sources: configure*
@@ -113,10 +110,10 @@ Config/needs/dependencies:
     desc,
     filelock,
     jsonlite,
-    r-lib/keyring,
+    keyring,
     lpSolve,
-    r-lib/pkgbuild,
-    r-lib/pkgcache,
+    pkgbuild,
+    pkgcache,
     r-lib/pkgdepends,
     pkgsearch,
     processx,
