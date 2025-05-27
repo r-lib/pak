@@ -15,3 +15,10 @@ pak_preformat <- function(x, ...) {
   class(x) <- c("pak_preformatted", class(x))
   x
 }
+
+#' @export
+
+`[.pak_preformatted` <- function(x, i, j, drop = FALSE) {
+  class(x) <- setdiff(class(x), "pak_preformatted")
+  NextMethod("[")
+}
