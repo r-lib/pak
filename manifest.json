@@ -412,11 +412,11 @@
         {
           "r.platform": "amd64-portbld-freebsd13.4",
           "r.version": "4.4",
-          "pak.version": "0.8.0.9000",
+          "pak.version": "0.9.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-05-27T05:53:46+00:00",
-          "size": 6512619,
-          "digest": "sha256:af6735c998e3d1534b2f2687930585dceb19f0b797bad416c427096c0456d755"
+          "buildtime": "2025-05-27T15:54:54+00:00",
+          "size": 6511778,
+          "digest": "sha256:dbaa2a14e6daa563cdf869929a9d0602490a33991466990aff6c9c6bcbd6d141"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
