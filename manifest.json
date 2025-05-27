@@ -935,6 +935,15 @@
           "buildtime": "2025-04-24T09:15:38+00:00",
           "size": 5460638,
           "digest": "sha256:91b744fcf29920e8979d6278f5246bc9f001f1284854b8bbca85bc99792fb443"
+        },
+        {
+          "r.platform": "x86_64-portbld-dragonfly6.4",
+          "r.version": "4.4",
+          "pak.version": "0.9.0",
+          "pak.revision": "TODO",
+          "buildtime": "2025-05-27T13:52:27+00:00",
+          "size": 6467709,
+          "digest": "sha256:c85498c35d634d83b52487b59776328efd90774c0a44e7aa22a9bffa13f593e8"
         }
       ]
     },
