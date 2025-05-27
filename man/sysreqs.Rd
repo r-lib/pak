@@ -50,7 +50,7 @@ system requirements:
 ## <span style="color: #c2c2c2;"> 8</span> Fedora Lin… linux fedora       *       <span style="color: #DC322F;">NA</span>             dnf install -y
 ## <span style="color: #c2c2c2;"> 9</span> openSUSE L… linux opensuse     *       <span style="color: #DC322F;">NA</span>             zypper --non-i…
 ## <span style="color: #c2c2c2;">10</span> SUSE Linux… linux sle          *       <span style="color: #DC322F;">NA</span>             zypper --non-i…
-## <span style="color: #999999;"># ℹ 1 more variable: query_command &lt;chr&gt;</span>
+## <span style="color: #999999;"># i 1 more variable: query_command &lt;chr&gt;</span>
 </pre>
 }}
 \if{html}{\out{
@@ -89,12 +89,12 @@ an example:
 }}
 \if{html}{\out{
 <pre>
-## <span style="color: #859900;">✔</span> Loading metadata database ... done
+## <span style="color: #859900;">v</span> Loading metadata database ... done
 ##
 ## → Will <span style="font-style: italic;">install</span> 17 packages.
 ## → All 17 packages (0 B) are cached.
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">DBI</span>          1.1.3
-## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">✖</span><span style="color: #2AA198;"> libpq-dev</span>
+## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">x</span><span style="color: #2AA198;"> libpq-dev</span>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">Rcpp</span>         1.0.10
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit</span>          4.0.5
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit64</span>        4.0.5
@@ -112,28 +112,28 @@ an example:
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0
 ## → Will <span style="font-style: italic;">install</span> 1 system package:
 ## <span style="color: #525252;">+ </span><span style="color: #2AA198;">libpq-dev</span>  <span style="color: #525252;">- </span><span style="color: #268BD2;">RPostgres</span>
-## <span style="color: #2AA198;">ℹ</span> No downloads are needed, 17 pkgs are cached
-## <span style="color: #2AA198;">ℹ</span> Installing system requirements
-## <span style="color: #2AA198;">ℹ</span> Executing `sh -c apt-get -y update`
-## <span style="color: #2AA198;">ℹ</span> Executing `sh -c apt-get -y install libpq-dev`
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">DBI</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">RPostgres</span> 1.4.5  <span style="color: #a3a3a3;">(1.2s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">Rcpp</span> 1.0.10  <span style="color: #a3a3a3;">(1.2s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(1.2s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(148ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">blob</span> 1.2.4  <span style="color: #a3a3a3;">(63ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.6.1  <span style="color: #a3a3a3;">(88ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(61ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(63ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">hms</span> 1.1.3  <span style="color: #a3a3a3;">(62ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(61ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.2  <span style="color: #a3a3a3;">(87ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(62ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.1.1  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">timechange</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.6.2  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> 1 pkg + 16 deps: added 17 <span style="color: #b8b8b8;">[17.5s]</span>
+## <span style="color: #2AA198;">i</span> No downloads are needed, 17 pkgs are cached
+## <span style="color: #2AA198;">i</span> Installing system requirements
+## <span style="color: #2AA198;">i</span> Executing `sh -c apt-get -y update`
+## <span style="color: #2AA198;">i</span> Executing `sh -c apt-get -y install libpq-dev`
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">DBI</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">RPostgres</span> 1.4.5  <span style="color: #a3a3a3;">(1.2s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">Rcpp</span> 1.0.10  <span style="color: #a3a3a3;">(1.2s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(1.2s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(148ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">blob</span> 1.2.4  <span style="color: #a3a3a3;">(63ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">cli</span> 3.6.1  <span style="color: #a3a3a3;">(88ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(61ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(63ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">hms</span> 1.1.3  <span style="color: #a3a3a3;">(62ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(61ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.2  <span style="color: #a3a3a3;">(87ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(62ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">rlang</span> 1.1.1  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">timechange</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">vctrs</span> 0.6.2  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> 1 pkg + 16 deps: added 17 <span style="color: #b8b8b8;">[17.5s]</span>
 </pre>
 }}
 \if{html}{\out{
@@ -165,13 +165,13 @@ installing a source R package, the installation already fails:
 \if{html}{\out{
 <pre>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">plogr</span>       0.2.0
-## <span style="color: #DC322F;">✖</span> Missing 1 system package. You'll probably need to install it
+## <span style="color: #DC322F;">x</span> Missing 1 system package. You'll probably need to install it
 ## manually:
 ## <span style="color: #525252;">+ </span><span style="color: #2AA198;">libpq-dev</span>  <span style="color: #525252;">- </span><span style="color: #268BD2;">RPostgres</span>
-## <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (1.47 MB) are cached
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">plogr</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">RPostgres</span> 1.4.5
-## <span style="color: #DC322F;">✖</span> Failed to build <span style="color: #268BD2;">RPostgres</span> 1.4.5
+## <span style="color: #2AA198;">i</span> No downloads are needed, 2 pkgs (1.47 MB) are cached
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">plogr</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #2AA198;">i</span> Building <span style="color: #268BD2;">RPostgres</span> 1.4.5
+## <span style="color: #DC322F;">x</span> Failed to build <span style="color: #268BD2;">RPostgres</span> 1.4.5
 ## Registered S3 methods overwritten by 'callr':
 ##   method                    from
 ##   format.callr_status_error
@@ -253,7 +253,7 @@ library(RPostgres)
 ## → Will <span style="font-style: italic;">install</span> 17 packages.
 ## → All 17 packages (0 B) are cached.
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">DBI</span>          1.1.3
-## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">✖</span><span style="color: #2AA198;"> libpq-dev</span>
+## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">x</span><span style="color: #2AA198;"> libpq-dev</span>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">Rcpp</span>         1.0.10
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit</span>          4.0.5
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit64</span>        4.0.5
@@ -269,28 +269,28 @@ library(RPostgres)
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">timechange</span>   0.2.0
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>        0.6.2
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0
-## <span style="color: #DC322F;">✖</span> Missing 1 system package. You'll probably need to install it
+## <span style="color: #DC322F;">x</span> Missing 1 system package. You'll probably need to install it
 ## manually:
 ## <span style="color: #525252;">+ </span><span style="color: #2AA198;">libpq-dev</span>  <span style="color: #525252;">- </span><span style="color: #268BD2;">RPostgres</span>
-## <span style="color: #2AA198;">ℹ</span> No downloads are needed, 17 pkgs are cached
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">DBI</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">RPostgres</span> 1.4.5  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">Rcpp</span> 1.0.10  <span style="color: #a3a3a3;">(1.2s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(1.2s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(144ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">blob</span> 1.2.4  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">cli</span> 3.6.1  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(90ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(87ms)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">hms</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.2  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">rlang</span> 1.1.1  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">timechange</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">vctrs</span> 0.6.2  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(1.1s)</span>
-## <span style="color: #859900;">✔</span> 1 pkg + 16 deps: added 17 <span style="color: #b8b8b8;">[11.6s]</span>
+## <span style="color: #2AA198;">i</span> No downloads are needed, 17 pkgs are cached
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">DBI</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">RPostgres</span> 1.4.5  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">Rcpp</span> 1.0.10  <span style="color: #a3a3a3;">(1.2s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">bit</span> 4.0.5  <span style="color: #a3a3a3;">(1.2s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">bit64</span> 4.0.5  <span style="color: #a3a3a3;">(144ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">blob</span> 1.2.4  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">cli</span> 3.6.1  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(90ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(87ms)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">hms</span> 1.1.3  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lubridate</span> 1.9.2  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">rlang</span> 1.1.1  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">timechange</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">vctrs</span> 0.6.2  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(1.1s)</span>
+## <span style="color: #859900;">v</span> 1 pkg + 16 deps: added 17 <span style="color: #b8b8b8;">[11.6s]</span>
 ## Error: package or namespace load failed for ‘RPostgres’ in dyn.load(file
 ## , DLLpath = DLLpath, ...):
 ##  unable to load shared object '/tmp/RtmpWqZycA/lib/RPostgres/libs/RPostg
@@ -318,7 +318,7 @@ looks up system dependencies, and only reports the latter:
 }}
 \if{html}{\out{
 <pre>
-## <span style="color: #859900;">✔</span> Loading metadata database ... done
+## <span style="color: #859900;">v</span> Loading metadata database ... done
 ## ── Install scripts ───────────────────────────────────── Ubuntu 22.04 ──
 ## apt-get -y update
 ## apt-get -y install libcurl4-openssl-dev libssl-dev libxml2-dev git make
@@ -388,7 +388,7 @@ about.
 ## <span style="color: #c2c2c2;"> 8</span> bwidget    <span style="color: #999999;">&lt;chr [1]&gt;</span> <span style="color: #999999;">&lt;chr [1]&gt;</span> <span style="color: #999999;">&lt;NULL&gt;</span>      <span style="color: #999999;">&lt;NULL&gt;</span>
 ## <span style="color: #c2c2c2;"> 9</span> cairo      <span style="color: #999999;">&lt;chr [1]&gt;</span> <span style="color: #999999;">&lt;chr [1]&gt;</span> <span style="color: #999999;">&lt;NULL&gt;</span>      <span style="color: #999999;">&lt;NULL&gt;</span>
 ## <span style="color: #c2c2c2;">10</span> chrome     <span style="color: #999999;">&lt;chr [1]&gt;</span> <span style="color: #999999;">&lt;NULL&gt;</span>    <span style="color: #999999;">&lt;chr [3]&gt;</span>   <span style="color: #999999;">&lt;chr [1]&gt;</span>
-## <span style="color: #999999;"># ℹ 96 more rows</span>
+## <span style="color: #999999;"># i 96 more rows</span>
 </pre>
 }}
 \if{html}{\out{
@@ -503,7 +503,7 @@ installed system packages and capabilities:
 ## <span style="color: #c2c2c2;"> 8</span> ii     bash            5.1-6ubuntu1    <span style="color: #999999;">&lt;chr [0]&gt;</span>
 ## <span style="color: #c2c2c2;"> 9</span> ii     binutils        2.38-4ubuntu2.1 <span style="color: #999999;">&lt;chr [2]&gt;</span>
 ## <span style="color: #c2c2c2;">10</span> ii     binutils-common 2.38-4ubuntu2.1 <span style="color: #999999;">&lt;chr [0]&gt;</span>
-## <span style="color: #999999;"># ℹ 423 more rows</span>
+## <span style="color: #999999;"># i 423 more rows</span>
 </pre>
 }}
 \if{html}{\out{
@@ -523,27 +523,27 @@ installed in your library:
 <pre>
 ## system package       installed required by
 ## --------------       --        -----------
-## git                  <span style="color: #859900;">✔</span>         gitcreds
-## gsfonts              <span style="color: #859900;">✔</span>         magick
-## imagemagick          <span style="color: #859900;">✔</span>         magick
-## libarchive-dev       <span style="color: #859900;">✔</span>         archive
-## libcurl4-openssl-dev <span style="color: #859900;">✔</span>         curl
-## libfontconfig1-dev   <span style="color: #859900;">✔</span>         systemfonts
-## libfreetype6-dev     <span style="color: #859900;">✔</span>         ragg, systemfonts, textshaping
-## libfribidi-dev       <span style="color: #859900;">✔</span>         textshaping
-## libharfbuzz-dev      <span style="color: #859900;">✔</span>         textshaping
-## libicu-dev           <span style="color: #859900;">✔</span>         stringi
-## libjpeg-dev          <span style="color: #859900;">✔</span>         ragg
-## libmagick++-dev      <span style="color: #859900;">✔</span>         magick
-## libnode-dev          <span style="color: #859900;">✔</span>         V8
-## libpng-dev           <span style="color: #859900;">✔</span>         ragg
-## libpq-dev            <span style="color: #DC322F;">✖</span>         RPostgres
-## libssl-dev           <span style="color: #859900;">✔</span>         curl, openssl
-## libtiff-dev          <span style="color: #859900;">✔</span>         ragg
-## libxml2-dev          <span style="color: #859900;">✔</span>         xml2
-## make                 <span style="color: #859900;">✔</span>         fs, sass
-## pandoc               <span style="color: #859900;">✔</span>         knitr, rmarkdown
-## zlib1g-dev           <span style="color: #859900;">✔</span>         data.table
+## git                  <span style="color: #859900;">v</span>         gitcreds
+## gsfonts              <span style="color: #859900;">v</span>         magick
+## imagemagick          <span style="color: #859900;">v</span>         magick
+## libarchive-dev       <span style="color: #859900;">v</span>         archive
+## libcurl4-openssl-dev <span style="color: #859900;">v</span>         curl
+## libfontconfig1-dev   <span style="color: #859900;">v</span>         systemfonts
+## libfreetype6-dev     <span style="color: #859900;">v</span>         ragg, systemfonts, textshaping
+## libfribidi-dev       <span style="color: #859900;">v</span>         textshaping
+## libharfbuzz-dev      <span style="color: #859900;">v</span>         textshaping
+## libicu-dev           <span style="color: #859900;">v</span>         stringi
+## libjpeg-dev          <span style="color: #859900;">v</span>         ragg
+## libmagick++-dev      <span style="color: #859900;">v</span>         magick
+## libnode-dev          <span style="color: #859900;">v</span>         V8
+## libpng-dev           <span style="color: #859900;">v</span>         ragg
+## libpq-dev            <span style="color: #DC322F;">x</span>         RPostgres
+## libssl-dev           <span style="color: #859900;">v</span>         curl, openssl
+## libtiff-dev          <span style="color: #859900;">v</span>         ragg
+## libxml2-dev          <span style="color: #859900;">v</span>         xml2
+## make                 <span style="color: #859900;">v</span>         fs, sass
+## pandoc               <span style="color: #859900;">v</span>         knitr, rmarkdown
+## zlib1g-dev           <span style="color: #859900;">v</span>         data.table
 </pre>
 }}
 \if{html}{\out{

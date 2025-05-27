@@ -56,8 +56,8 @@ How does dplyr depend on rlang?
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_deps_explain("dplyr", "rlang")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Updated metadata database: 5.09 MB in 12 files.                       
-#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                   
+#> <span style="color: #859900;">v</span> Updated metadata database: 5.09 MB in 12 files.                       
+#> <span style="color: #859900;">v</span> Updating metadata database ... done                                   
 #> dplyr -&gt; lifecycle -&gt; rlang                                             
 #> dplyr -&gt; rlang                                                          
 #> dplyr -&gt; tibble -&gt; lifecycle -&gt; rlang                                   

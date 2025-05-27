@@ -93,7 +93,7 @@ The current metadata DB:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_list()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Loading metadata database ... done                                    
+#> <span style="color: #859900;">v</span> Loading metadata database ... done                                    
 #> <span style="color: #999999;"># A data frame: 45,279 × 32</span>                                             
 #>    package version depends sugge…¹ license imports linki…² archs enhan…³
 #>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  
@@ -146,8 +146,8 @@ Update the metadata DB
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_update()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">✔</span> Updated metadata database: 1.23 MB in 1 file.                         
-#> <span style="color: #859900;">✔</span> Updating metadata database ... done                                   
+#> <span style="color: #859900;">v</span> Updated metadata database: 1.23 MB in 1 file.                         
+#> <span style="color: #859900;">v</span> Updating metadata database ... done                                   
 </pre></div>
 }}
 
@@ -157,7 +157,7 @@ Delete the metadata DB
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{meta_clean()
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> Cleaning up cache directory <span style="color: #268BD2;">/Users/gaborcsardi/Library/Caches/org.R-pr</span>
+#> <span style="color: #2AA198;">i</span> Cleaning up cache directory <span style="color: #268BD2;">/Users/gaborcsardi/Library/Caches/org.R-pr</span>
 #> <span style="color: #268BD2;">oject.R/R/pkgcache/_metadata</span>.                                          <span style="color: #268BD2;"> </span>
 </pre></div>
 }}

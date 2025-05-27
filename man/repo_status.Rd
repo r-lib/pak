@@ -94,7 +94,7 @@ summary of the data, and it returns its result invisibly.
 #> <span style="color: #c2c2c2;">10</span> BioCwo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.724
 #> <span style="color: #c2c2c2;">11</span> BioCbo… http… bioc  3.20         source   src/… 4.4       TRUE  0.662
 #> <span style="color: #c2c2c2;">12</span> BioCbo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.754
-#> <span style="color: #999999;"># ℹ 1 more variable: error &lt;list&gt;</span>                                       
+#> <span style="color: #999999;"># i 1 more variable: error &lt;list&gt;</span>                                       
 </pre></div>
 }}
 
@@ -126,7 +126,7 @@ summary of the data, and it returns its result invisibly.
 #> <span style="color: #c2c2c2;">16</span> BioCw… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
 #> <span style="color: #c2c2c2;">17</span> BioCb… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   1.04 
 #> <span style="color: #c2c2c2;">18</span> BioCb… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #999999;"># ℹ 1 more variable: error &lt;list&gt;</span>                                       
+#> <span style="color: #999999;"># i 1 more variable: error &lt;list&gt;</span>                                       
 </pre></div>
 }}
 
@@ -135,12 +135,12 @@ summary of the data, and it returns its result invisibly.
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> Repository summary:                   source aarch64-apple-darwin20<span style="color: #2AA198;">          </span>
-#> CRAN          @ cloud.r-project.org   <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (63ms )</span>
-#> BioCsoft      @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (68ms )</span>
-#> BioCann       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (153ms)</span>
-#> BioCexp       @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (186ms)</span>
-#> BioCworkflows @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (112ms)</span>
-#> BioCbooks     @ bioconductor.org      <span style="color: #859900;">  ✔   </span> <span style="color: #859900;">          ✔           </span><span style="color: #2AA198;">   (193ms)</span>
+#> CRAN          @ cloud.r-project.org   <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (63ms )</span>
+#> BioCsoft      @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (68ms )</span>
+#> BioCann       @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (153ms)</span>
+#> BioCexp       @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (186ms)</span>
+#> BioCworkflows @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (112ms)</span>
+#> BioCbooks     @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (193ms)</span>
 </pre></div>
 }}
 }

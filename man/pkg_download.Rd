@@ -61,7 +61,7 @@ TODO: explain result
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{dl <- pkg_download("forcats")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (641.53 kB) are cached                
+#> <span style="color: #2AA198;">i</span> No downloads are needed, 2 pkgs (641.53 kB) are cached                
 </pre></div>
 }}
 
@@ -97,7 +97,7 @@ TODO: explain result
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_download("r-lib/pak", platforms = "source")
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #2AA198;">ℹ</span> No downloads are needed, 1 pkg is cached                              
+#> <span style="color: #2AA198;">i</span> No downloads are needed, 1 pkg is cached                              
 </pre></div>
 }}
 }

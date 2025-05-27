@@ -84,7 +84,7 @@ pak::pkg_install("RPostgres")
 ## → Will <span style="font-style: italic;">install</span> 17 packages.
 ## → All 17 packages (0 B) are cached.
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">DBI</span>          1.1.3
-## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">✖</span><span style="color: #2AA198;"> libpq-dev</span>
+## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">x</span><span style="color: #2AA198;"> libpq-dev</span>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">Rcpp</span>         1.0.10
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit</span>          4.0.5
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit64</span>        4.0.5
@@ -154,13 +154,13 @@ pak::pkg_install("RPostgres?source")
 
 <pre>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">plogr</span>       0.2.0
-## <span style="color: #DC322F;">✖</span> Missing 1 system package. You'll probably need to install it
+## <span style="color: #DC322F;">x</span> Missing 1 system package. You'll probably need to install it
 ## manually:
 ## <span style="color: #525252;">+ </span><span style="color: #2AA198;">libpq-dev</span>  <span style="color: #525252;">- </span><span style="color: #268BD2;">RPostgres</span>
 ## <span style="color: #2AA198;">ℹ</span> No downloads are needed, 2 pkgs (1.47 MB) are cached
 ## <span style="color: #859900;">✔</span> Installed <span style="color: #268BD2;">plogr</span> 0.2.0  <span style="color: #a3a3a3;">(1.1s)</span>
 ## <span style="color: #2AA198;">ℹ</span> Building <span style="color: #268BD2;">RPostgres</span> 1.4.5
-## <span style="color: #DC322F;">✖</span> Failed to build <span style="color: #268BD2;">RPostgres</span> 1.4.5
+## <span style="color: #DC322F;">x</span> Failed to build <span style="color: #268BD2;">RPostgres</span> 1.4.5
 ## Registered S3 methods overwritten by 'callr':
 ##   method                    from
 ##   format.callr_status_error
@@ -240,7 +240,7 @@ library(RPostgres)
 ## → Will <span style="font-style: italic;">install</span> 17 packages.
 ## → All 17 packages (0 B) are cached.
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">DBI</span>          1.1.3
-## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">✖</span><span style="color: #2AA198;"> libpq-dev</span>
+## <span style="color: #525252;">+ </span><span style="color: #268BD2;">RPostgres</span>    1.4.5  <span style="color: #525252;"> + </span><span style="color: #DC322F;">x</span><span style="color: #2AA198;"> libpq-dev</span>
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">Rcpp</span>         1.0.10
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit</span>          4.0.5
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">bit64</span>        4.0.5
@@ -256,7 +256,7 @@ library(RPostgres)
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">timechange</span>   0.2.0
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>        0.6.2
 ## <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0
-## <span style="color: #DC322F;">✖</span> Missing 1 system package. You'll probably need to install it
+## <span style="color: #DC322F;">x</span> Missing 1 system package. You'll probably need to install it
 ## manually:
 ## <span style="color: #525252;">+ </span><span style="color: #2AA198;">libpq-dev</span>  <span style="color: #525252;">- </span><span style="color: #268BD2;">RPostgres</span>
 ## <span style="color: #2AA198;">ℹ</span> No downloads are needed, 17 pkgs are cached
@@ -507,7 +507,7 @@ pak::sysreqs_check_installed()
 ## libmagick++-dev      <span style="color: #859900;">✔</span>         magick
 ## libnode-dev          <span style="color: #859900;">✔</span>         V8
 ## libpng-dev           <span style="color: #859900;">✔</span>         ragg
-## libpq-dev            <span style="color: #DC322F;">✖</span>         RPostgres
+## libpq-dev            <span style="color: #DC322F;">x</span>         RPostgres
 ## libssl-dev           <span style="color: #859900;">✔</span>         curl, openssl
 ## libtiff-dev          <span style="color: #859900;">✔</span>         ragg
 ## libxml2-dev          <span style="color: #859900;">✔</span>         xml2
