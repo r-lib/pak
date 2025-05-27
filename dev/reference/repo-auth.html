@@ -19,7 +19,7 @@ of the proxy is &quot;username&quot; and the default password is &quot;token&quo
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -127,7 +127,7 @@ repo_get() now does not show a warning message, and also sets the
 has_password column to TRUE, because pak could find the credentials
 for our CRAN proxy:
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -168,7 +168,7 @@ Testing
 
 To test that authentication works, use the repo_status() function:
 repo_status()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 12 x 12
 #&amp;gt;    name  url   type  bioc_version username has_password platform path  r_version
@@ -196,7 +196,7 @@ a repository.
 If you need even more information about repo authentication, e.g. because
 repo_status() shows some failures, then use the repo_auth() function:
 repo_auth()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
+#&amp;gt; v Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
 #&amp;gt; # A data frame: 1 x 11
 #&amp;gt;   name  url              type  r_version bioc_version username has_password auth_domains auth_domain
 #&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;I&amp;lt;list&amp;gt;&amp;gt;    &amp;lt;chr&amp;gt;
@@ -208,7 +208,7 @@ auth_domains: these are the URLs that pak tries to use as the service
 when looking for credentials in the keyring. For our proxy, it tries
 these URLs:
 repo_auth()$auth_domains
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
+#&amp;gt; v Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
 #&amp;gt; [[1]]
 #&amp;gt; [1] &quot;http://username@127.0.0.1:59571/&quot; &quot;http://127.0.0.1:59571/&quot;
 #&amp;gt; [3] &quot;http://username@127.0.0.1:59571&quot;  &quot;http://127.0.0.1:59571&quot;
@@ -242,26 +242,13 @@ meta_update()
 #&amp;gt; ! Cannot find credentials for URL &amp;lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&amp;gt;, credential lookup
 #&amp;gt; failed. Keyring backend: &quot;macos&quot;.
 #&amp;gt; Checking for 15 new metadata files
-✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
-#&amp;gt; Checking for 15 new metadata files
-⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
-#&amp;gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
-#&amp;gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
-#&amp;gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
-#&amp;gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
-#&amp;gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
-#&amp;gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
-#&amp;gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
-#&amp;gt; ✔ Updated metadata database: 2.92 MB in 5 files.
 #&amp;gt;
-#&amp;gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&amp;gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&amp;gt; ℹ Updating metadata database
-#&amp;gt; ✔ Updating metadata database ... done
+#&amp;gt; i R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; i source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; i Updating metadata database
+#&amp;gt; v Updating metadata database ... done
 
 meta_list()
 #&amp;gt; # A data frame: 50,701 x 33
@@ -308,7 +295,7 @@ of the proxy is &quot;username&quot; and the default password is &quot;token&quo
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -416,7 +403,7 @@ repo_get() now does not show a warning message, and also sets the
 has_password column to TRUE, because pak could find the credentials
 for our CRAN proxy:
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -457,7 +444,7 @@ Testing
 
 To test that authentication works, use the repo_status() function:
 repo_status()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 12 x 12
 #&amp;gt;    name  url   type  bioc_version username has_password platform path  r_version
@@ -485,7 +472,7 @@ a repository.
 If you need even more information about repo authentication, e.g. because
 repo_status() shows some failures, then use the repo_auth() function:
 repo_auth()
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
+#&amp;gt; v Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
 #&amp;gt; # A data frame: 1 x 11
 #&amp;gt;   name  url              type  r_version bioc_version username has_password auth_domains auth_domain
 #&amp;gt; * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;lgl&amp;gt;        &amp;lt;I&amp;lt;list&amp;gt;&amp;gt;    &amp;lt;chr&amp;gt;
@@ -497,7 +484,7 @@ auth_domains: these are the URLs that pak tries to use as the service
 when looking for credentials in the keyring. For our proxy, it tries
 these URLs:
 repo_auth()$auth_domains
-#&amp;gt; ✔ Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
+#&amp;gt; v Found credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt; (keyring:env).
 #&amp;gt; [[1]]
 #&amp;gt; [1] &quot;http://username@127.0.0.1:59571/&quot; &quot;http://127.0.0.1:59571/&quot;
 #&amp;gt; [3] &quot;http://username@127.0.0.1:59571&quot;  &quot;http://127.0.0.1:59571&quot;
@@ -531,26 +518,13 @@ meta_update()
 #&amp;gt; ! Cannot find credentials for URL &amp;lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&amp;gt;, credential lookup
 #&amp;gt; failed. Keyring backend: &quot;macos&quot;.
 #&amp;gt; Checking for 15 new metadata files
-✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
+x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:59571/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
-#&amp;gt; Checking for 15 new metadata files
-⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
-#&amp;gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
-#&amp;gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
-#&amp;gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
-#&amp;gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
-#&amp;gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
-#&amp;gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
-#&amp;gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
-#&amp;gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
-#&amp;gt; ✔ Updated metadata database: 2.92 MB in 5 files.
 #&amp;gt;
-#&amp;gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&amp;gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&amp;gt; ℹ Updating metadata database
-#&amp;gt; ✔ Updating metadata database ... done
+#&amp;gt; i R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; i source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&amp;gt; i Updating metadata database
+#&amp;gt; v Updating metadata database ... done
 
 meta_list()
 #&amp;gt; # A data frame: 50,701 x 33
@@ -633,7 +607,7 @@ of the proxy is <code>"username"</code> and the default password is <code>"token
 replace the default CRAN repository with the proxy, so we name it <code>CRAN</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>CRAN <span class="op">=</span> <span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span>, username <span class="op">=</span> <span class="st">"username"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
 <span><span class="co">#&gt; lookup failed (macos backend).</span></span>
 <span><span class="co">#&gt; # A data frame: 6 x 7</span></span>
 <span><span class="co">#&gt;   name          url           type  r_version bioc_version username has_password</span></span>
@@ -734,7 +708,7 @@ ephemeral store that is destroyed when the R process terminates.</p>
 <code>has_password</code> column to <code>TRUE</code>, because pak could find the credentials
 for our CRAN proxy:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
 <span><span class="co">#&gt; lookup failed (macos backend).</span></span>
 <span><span class="co">#&gt; # A data frame: 6 x 7</span></span>
 <span><span class="co">#&gt;   name          url           type  r_version bioc_version username has_password</span></span>
@@ -772,7 +746,7 @@ contain host credentials.</p>
 
 <p>To test that authentication works, use the <code><a href="repo_status.html">repo_status()</a></code> function:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_status.html">repo_status</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
+<span><span class="co">#&gt; x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring</span></span>
 <span><span class="co">#&gt; lookup failed (macos backend).</span></span>
 <span><span class="co">#&gt; # A data frame: 12 x 12</span></span>
 <span><span class="co">#&gt;    name  url   type  bioc_version username has_password platform path  r_version</span></span>
@@ -799,7 +773,7 @@ a repository.</p>
 <p>If you need even more information about repo authentication, e.g. because
 <code><a href="repo_status.html">repo_status()</a></code> shows some failures, then use the <code><a href="repo_auth.html">repo_auth()</a></code> function:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_auth.html">repo_auth</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
+<span><span class="co">#&gt; v Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
 <span><span class="co">#&gt; # A data frame: 1 x 11</span></span>
 <span><span class="co">#&gt;   name  url              type  r_version bioc_version username has_password auth_domains auth_domain</span></span>
 <span><span class="co">#&gt; * &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;        &lt;I&lt;list&gt;&gt;    &lt;chr&gt;</span></span>
@@ -809,7 +783,7 @@ a repository.</p>
 when looking for credentials in the keyring. For our proxy, it tries
 these URLs:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_auth.html">repo_auth</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">auth_domains</span></span>
-<span><span class="co">#&gt; ✔ Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
+<span><span class="co">#&gt; v Found credentials for repo &lt;http://username@127.0.0.1:59571/&gt; (keyring:env).</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] "http://username@127.0.0.1:59571/" "http://127.0.0.1:59571/"</span></span>
 <span><span class="co">#&gt; [3] "http://username@127.0.0.1:59571"  "http://127.0.0.1:59571"</span></span></code></pre><p></p></div></li>
@@ -840,26 +814,13 @@ e.g. because they list cached data, do not display such messages.</p>
 #&gt; ! Cannot find credentials for URL &lt;http://username@127.0.0.1:59571//bin/macosx/big-sur-arm64/contrib/4.4/PACKAGES.gz&gt;, credential lookup
 #&gt; failed. Keyring backend: "macos".
 #&gt; Checking for 15 new metadata files
-✖ Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring
+x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, keyring
 #&gt; lookup failed (macos backend).
-#&gt; Checking for 15 new metadata files
-⠋ Updating metadata database [0/15] | Downloading [0 B / 0 B]
-#&gt; ⠙ Updating metadata database [5/15] | Downloading [23.98 kB / 23.98 kB]
-#&gt; ⠹ Updating metadata database [7/15] | Downloading [23.98 kB / 23.98 kB]
-#&gt; ⠸ Updating metadata database [9/15] | Downloading [23.98 kB / 23.98 kB]
-#&gt; ⠼ Updating metadata database [9/15] | Downloading [273.51 kB / 2.92 MB]
-#&gt; ⠴ Updating metadata database [10/15] | Downloading [900.76 kB / 2.92 MB]
-#&gt; ⠦ Updating metadata database [10/15] | Downloading [1.43 MB / 2.92 MB]
-#&gt; ⠧ Updating metadata database [10/15] | Downloading [1.75 MB / 2.92 MB]
-#&gt; ⠇ Updating metadata database [10/15] | Downloading [2.20 MB / 2.92 MB]
-#&gt; ⠏ Updating metadata database [10/15] | Downloading [2.65 MB / 2.92 MB]
-#&gt; ⠋ Updating metadata database [10/15] | Downloading [2.86 MB / 2.92 MB]
-#&gt; ✔ Updated metadata database: 2.92 MB in 5 files.
 #&gt;
-#&gt; ℹ R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&gt; ℹ source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
-#&gt; ℹ Updating metadata database
-#&gt; ✔ Updating metadata database ... done
+#&gt; i R 4.4 aarch64-apple-darwin20 packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&gt; i source packages are missing from CRAN: Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server and Failed to connect to 127.0.0.1 port 59571 after 0 ms: Couldn't connect to server
+#&gt; i Updating metadata database
+#&gt; v Updating metadata database ... done
 </code></pre><p></p></div>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/metadata.html">meta_list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A data frame: 50,701 x 33</span></span>
