@@ -1286,11 +1286,11 @@
         {
           "r.platform": "x86_64--netbsd",
           "r.version": "4.4",
-          "pak.version": "0.8.0",
+          "pak.version": "0.9.0",
           "pak.revision": "TODO",
-          "buildtime": "2024-11-06T09:25:05+00:00",
-          "size": 5312871,
-          "digest": "sha256:7893b13379f489967f6cad1dd1ab9645f944441ba24fa4f9213174967ab6cdb4"
+          "buildtime": "2025-05-27T13:52:48+00:00",
+          "size": 6420631,
+          "digest": "sha256:f4156a04389930641f985115215f88eb6b1ca23caa4c599e9a16d00c8a3586b6"
         },
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
