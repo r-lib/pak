@@ -1358,11 +1358,11 @@
         {
           "r.platform": "x86_64-unknown-openbsd7.4",
           "r.version": "4.2",
-          "pak.version": "0.8.0",
+          "pak.version": "0.9.0",
           "pak.revision": "TODO",
-          "buildtime": "2024-11-06T09:25:52+00:00",
-          "size": 5391066,
-          "digest": "sha256:e0c65ebb62a005844022dbe18e96ccada873103fb46feaef4f400a4f040057ec"
+          "buildtime": "2025-05-27T13:53:15+00:00",
+          "size": 6550125,
+          "digest": "sha256:4c0ba32fe92789d826869788b9d03666ef2fe67d8e33cc8a5690278c74fdc51d"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
