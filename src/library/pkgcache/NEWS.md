@@ -1,4 +1,4 @@
-# pkgcache (development version)
+# pkgcache 2.2.4
 
 * `parse_packages()` now parses files ending with an extra newline
   correctly (#122).
@@ -11,6 +11,8 @@
 * The output of `ppm_platforms()` now has a new column called `platform`,
   which is a list column of character vectors, listing all possible
   matching platforms.
+
+* pkgcache now detects the platform and R version of R Universe binaries.
 
 # pkgcache 2.2.3
 

@@ -402,7 +402,7 @@ next_day <- function(x) {
 #' * The `RSPM@` prefix is still supported and treated the same way as
 #'   `PPM@`.
 #' * The MRAN service is now retired, see
-#'   <https://techcommunity.microsoft.com/t5/azure-sql-blog/microsoft-r-application-network-retirement/ba-p/3707161>
+#'   `https://techcommunity.microsoft.com/blog/azuresqlblog/microsoft-r-application-network-retirement/3707161`
 #'   for details.
 #' * `MRAN@...` repository specifications now resolve to PPM, but note that
 #'   PPM snapshots are only available from 2017-10-10. See more about this
