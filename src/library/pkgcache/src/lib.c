@@ -430,7 +430,7 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
         UNPROTECT(1);
 
         /* end of package? */
-	/* maybe it ends with \r\n but we put a \0 over the \n */
+        /* maybe it ends with \r\n but we put a \0 over the \n */
         if (*p == '\n' || *p == '\r') {
           p++;
           npkg++;
@@ -458,6 +458,12 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
     case S_WS:
       /* more whitespace? */
       if (*p == ' ' || *p == '\t') {
+        p++;
+
+      /* a line with whitespace only? */
+      /* e.g. https://github.com/r-lib/pak/issues/785 */
+      } else if (*p == '\n' || *p == '\r') {
+        state = S_NL;
         p++;
 
       /* otherwise continuation line, so this is still the value */
