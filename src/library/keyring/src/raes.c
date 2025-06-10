@@ -6,9 +6,10 @@
 #include "mbedtls/aes.h"
 
 // silence mbedtls functions
-int mbedtls_printf(const char *format, ...) {
+int mbedtls_printf_(const char *format, ...) {
   return 0;
 }
+int (*mbedtls_printf)(const char *format, ...) = mbedtls_printf_;
 
 SEXP keyring_aes_cbc(SEXP msg, SEXP key, SEXP iv, int decrypt) {
   if (Rf_length(key) != 32) {

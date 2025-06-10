@@ -2,8 +2,9 @@
 
 UNAME=`uname`
 
-echo "PKG_CPPFLAGS=-DMBEDTLS_AES_C -DMBEDTLS_ALLOW_PRIVATE_ACCESS -DMBEDTLS_PLATFORM_PRINTF_ALT -I." \
-     > src/Makevars
+echo > src/Makevars
+
+PKG_CPPFLAGS="-DMBEDTLS_AES_C -DMBEDTLS_ALLOW_PRIVATE_ACCESS -DMBEDTLS_PLATFORM_PRINTF_ALT -I."
 
 if [ "$UNAME" = "Darwin" ]; then
     echo "PKG_LIBS=-framework Security" >> src/Makevars
@@ -27,3 +28,11 @@ else
     echo
     echo "This keyring build will not support the libsecret backend."
 fi
+
+if [ "$UNAME" = "FreeBSD" ]; then
+    PKG_CPPFLAGS="$PKG_CPPFLAGS -DHAVE_SYS_RANDOM_H"
+elif [ "$UNAME" = "DragonFly" ]; then
+    PKG_CPPFLAGS="$PKG_CPPFLAGS -DHAVE_SYS_RANDOM_H"
+fi
+
+echo PKG_CPPFLAGS="$PKG_CPPFLAGS" >> src/Makevars
