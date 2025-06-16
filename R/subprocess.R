@@ -83,7 +83,8 @@ remote <- function(func, args = list()) {
   }
   pkg_envs <- envs[grepl("^PKG_", names(envs)) | names(envs) %in% extraenvs]
   rs$run(
-    function(new_opts, new_envs) {
+    function(wd, new_opts, new_envs) {
+      setwd(wd)
       opts <- options()
       old_opts <- opts[grepl("^pkg[.]", names(opts))]
       # remove all pkg.* options
@@ -99,7 +100,7 @@ remote <- function(func, args = list()) {
       Sys.unsetenv(old_envs)
       if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
     },
-    list(new_opts = pkg_options, new_envs = pkg_envs)
+    list(wd = getwd(), new_opts = pkg_options, new_envs = pkg_envs)
   )
 
   res <- withCallingHandlers(
