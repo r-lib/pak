@@ -1,6 +1,10 @@
-if (Sys.getenv("NOT_CRAN") != "true") return()
+if (Sys.getenv("NOT_CRAN") != "true") {
+  return()
+}
 
-if (Sys.getenv("PAK_TESTS") != "true") return()
+if (Sys.getenv("PAK_TESTS") != "true") {
+  return()
+}
 
 repo_url <- Sys.getenv(
   "PAK_TEST_REPO_URL",
@@ -62,7 +66,9 @@ test_that("Old URL", {
       res <- rver_flt(av)
 
       expect_equal(nrow(res), 1L)
-      if (nrow(res) != 1) next
+      if (nrow(res) != 1) {
+        next
+      }
 
       pkgurl <- paste0(res[, "Repository"], "/", res[, "File"])
       hd <- curlGetHeaders(pkgurl)
@@ -113,7 +119,9 @@ test_that("New URL", {
     )
 
     for (i in seq_len(nrow(tsts))) {
-      if (br != tsts$branch[i] && tsts$branch[i] != "all") next
+      if (br != tsts$branch[i] && tsts$branch[i] != "all") {
+        next
+      }
 
       repo <- paste0(
         repo_url,
@@ -133,7 +141,9 @@ test_that("New URL", {
       res <- rver_flt(av)
 
       expect_equal(nrow(res), 1L)
-      if (nrow(res) != 1) next
+      if (nrow(res) != 1) {
+        next
+      }
 
       pkgurl <- paste0(res[, "Repository"], "/", res[, "File"])
       hd <- curlGetHeaders(pkgurl)

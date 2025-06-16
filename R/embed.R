@@ -42,10 +42,14 @@ embed <- local({
     bail <- function() {
       stop("Working directory must be the root of the pak package")
     }
-    if (!file.exists("DESCRIPTION")) bail()
+    if (!file.exists("DESCRIPTION")) {
+      bail()
+    }
     dsc <- read.dcf("DESCRIPTION")
     pkg <- dsc[, "Package"]
-    if (!is_string(pkg)) bail()
+    if (!is_string(pkg)) {
+      bail()
+    }
     if (pkg != "pak") bail()
   }
 

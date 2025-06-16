@@ -25,7 +25,9 @@ pkg_data <- new.env(parent = emptyenv())
     )
     ca_path <- system.file(package = "pak", "curl-ca-bundle.crt")
     cainfo <- getOption("async_http_cainfo")
-    if (is.null(cainfo) && ca_path != "") options(async_http_cainfo = ca_path)
+    if (is.null(cainfo) && ca_path != "") {
+      options(async_http_cainfo = ca_path)
+    }
     use_private_lib()
   } else {
     ## In a subprocess of a worker

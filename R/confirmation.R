@@ -125,7 +125,9 @@ get_answer <- function(answers, prompt = NULL) {
   while (TRUE) {
     ans <- readline(prompt)
     ans <- str_trim(ans)
-    if (ans == "") ans <- answers[1]
+    if (ans == "") {
+      ans <- answers[1]
+    }
     if (ans %in% answers) return(ans)
   }
 }

@@ -246,16 +246,24 @@ err <- local({
     always_trace <- isTRUE(getOption("rlib_error_always_trace"))
     .hide_from_trace <- 1L
     # .error_frame <- cond
-    if (!always_trace) signalCondition(cond)
+    if (!always_trace) {
+      signalCondition(cond)
+    }
 
-    if (is.null(cond$`_pid`)) cond$`_pid` <- Sys.getpid()
-    if (is.null(cond$`_timestamp`)) cond$`_timestamp` <- Sys.time()
+    if (is.null(cond$`_pid`)) {
+      cond$`_pid` <- Sys.getpid()
+    }
+    if (is.null(cond$`_timestamp`)) {
+      cond$`_timestamp` <- Sys.time()
+    }
 
     # If we get here that means that the condition was not caught by
     # an exiting handler. That means that we need to create a trace.
     # If there is a hand-constructed trace already in the error object,
     # then we'll just leave it there.
-    if (is.null(cond$trace)) cond <- add_trace_back(cond, frame = frame)
+    if (is.null(cond$trace)) {
+      cond <- add_trace_back(cond, frame = frame)
+    }
 
     # Set up environment to store .Last.error, it will be just before
     # baseenv(), so it is almost as if it was in baseenv() itself, like
@@ -272,11 +280,15 @@ err <- local({
     env$.Last.error.trace <- cond$trace
 
     # If we always wanted a trace, then we signal the condition here
-    if (always_trace) signalCondition(cond)
+    if (always_trace) {
+      signalCondition(cond)
+    }
 
     # If this is not an error, then we'll just return here. This allows
     # throwing interrupt conditions for example, with the same UI.
-    if (!inherits(cond, "error")) return(invisible())
+    if (!inherits(cond, "error")) {
+      return(invisible())
+    }
     .hide_from_trace <- NULL
 
     # Top-level handler, this is intended for testing only for now,
@@ -530,8 +542,12 @@ err <- local({
     for (start in hide_from) {
       hide_this <- invisible_frames[[funs[start]]]
       for (i in seq_along(hide_this)) {
-        if (start + i > length(funs)) break
-        if (funs[start + i] != hide_this[i]) break
+        if (start + i > length(funs)) {
+          break
+        }
+        if (funs[start + i] != hide_this[i]) {
+          break
+        }
         visibles[start + i] <- FALSE
       }
     }
@@ -565,19 +581,32 @@ err <- local({
   }
 
   get_call_scope <- function(call, ns) {
-    if (is.na(ns)) return("global")
-    if (!is.call(call)) return("")
+    if (is.na(ns)) {
+      return("global")
+    }
+    if (!is.call(call)) {
+      return("")
+    }
     if (
       is.call(call[[1]]) &&
         (call[[1]][[1]] == quote(`::`) || call[[1]][[1]] == quote(`:::`))
-    )
+    ) {
       return("")
-    if (ns == "base") return("::")
-    if (!ns %in% loadedNamespaces()) return("")
+    }
+    if (ns == "base") {
+      return("::")
+    }
+    if (!ns %in% loadedNamespaces()) {
+      return("")
+    }
     name <- call_name(call)
     nsenv <- asNamespace(ns)$.__NAMESPACE__.
-    if (is.null(nsenv)) return("::")
-    if (is.null(nsenv$exports)) return(":::")
+    if (is.null(nsenv)) {
+      return("::")
+    }
+    if (is.null(nsenv$exports)) {
+      return(":::")
+    }
     if (exists(name, envir = nsenv$exports, inherits = FALSE)) {
       "::"
     } else if (exists(name, envir = asNamespace(ns), inherits = FALSE)) {
@@ -779,7 +808,9 @@ err <- local({
           conditionMessage(cond$parent)
         }
         add_exp <- substr(cli::ansi_strip(msg[1]), 1, 1) != "!"
-        if (add_exp) msg[1] <- paste0(exp, msg[1])
+        if (add_exp) {
+          msg[1] <- paste0(exp, msg[1])
+        }
         c(format_header_line_cli(cond$parent, prefix = "Caused by error"), msg)
       }
     )
@@ -879,14 +910,18 @@ err <- local({
       NULL
     } else {
       cl <- trimws(format(call))
-      if (length(cl) > 1) cl <- paste0(cl[1], " ", cli::symbol$ellipsis)
+      if (length(cl) > 1) {
+        cl <- paste0(cl[1], " ", cli::symbol$ellipsis)
+      }
       cli::format_inline("{.code {cl}}")
     }
   }
 
   format_srcref_cli <- function(call, srcref = NULL) {
     ref <- get_srcref(call, srcref)
-    if (is.null(ref)) return("")
+    if (is.null(ref)) {
+      return("")
+    }
 
     link <- if (ref$file != "") {
       if (Sys.getenv("R_CLI_HYPERLINK_STYLE") == "iterm") {
@@ -932,11 +967,12 @@ err <- local({
     srcref <- if ("srcref" %in% names(x) || "procsrcref" %in% names(x)) {
       vapply(
         seq_len(nrow(x)),
-        function(i)
+        function(i) {
           format_srcref_cli(
             x[["call"]][[i]],
             x$procsrcref[[i]] %||% x$srcref[[i]]
-          ),
+          )
+        },
         character(1)
       )
     } else {
@@ -1020,11 +1056,12 @@ err <- local({
     srcref <- if ("srcref" %in% names(x) || "procsrfref" %in% names(x)) {
       vapply(
         seq_len(nrow(x)),
-        function(i)
+        function(i) {
           format_srcref_plain(
             x[["call"]][[i]],
             x$procsrcref[[i]] %||% x$srcref[[i]]
-          ),
+          )
+        },
         character(1)
       )
     } else {
@@ -1075,14 +1112,18 @@ err <- local({
       NULL
     } else {
       cl <- trimws(format(call))
-      if (length(cl) > 1) cl <- paste0(cl[1], " ...")
+      if (length(cl) > 1) {
+        cl <- paste0(cl[1], " ...")
+      }
       paste0("`", cl, "`")
     }
   }
 
   format_srcref_plain <- function(call, srcref = NULL) {
     ref <- get_srcref(call, srcref)
-    if (is.null(ref)) return("")
+    if (is.null(ref)) {
+      return("")
+    }
 
     link <- if (ref$file != "") {
       paste0(basename(ref$file), ":", ref$line, ":", ref$col)
@@ -1135,10 +1176,16 @@ err <- local({
 
   get_srcref <- function(call, srcref = NULL) {
     ref <- srcref %||% utils::getSrcref(call)
-    if (is.null(ref)) return(NULL)
-    if (inherits(ref, "processed_srcref")) return(ref)
+    if (is.null(ref)) {
+      return(NULL)
+    }
+    if (inherits(ref, "processed_srcref")) {
+      return(ref)
+    }
     file <- utils::getSrcFilename(ref, full.names = TRUE)[1]
-    if (is.na(file)) file <- ""
+    if (is.na(file)) {
+      file <- ""
+    }
     line <- utils::getSrcLocation(ref) %||% ""
     col <- utils::getSrcLocation(ref, which = "column") %||% ""
     structure(

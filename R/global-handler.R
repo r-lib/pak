@@ -36,10 +36,14 @@
 
 handle_package_not_found <- function(err) {
   # TODO: is this what we want? Or refine this? E.g. testthat, knitr?
-  if (!is_interactive()) return()
+  if (!is_interactive()) {
+    return()
+  }
 
   # TODO: what if message output is redirected? we ignore for now
-  if (sink.number() != 0) return()
+  if (sink.number() != 0) {
+    return()
+  }
 
   pkg <- err$package
   lib <- err$lib.loc %||% .libPaths()[1]
@@ -72,7 +76,9 @@ handle_package_not_found <- function(err) {
 
   cat("\n")
 
-  if (ans == "2") return()
+  if (ans == "2") {
+    return()
+  }
 
   cli$cli_rule("start installation")
   pkg_install(pkg, lib = lib[1])

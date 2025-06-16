@@ -1,4 +1,3 @@
-
 options(asciicast_timeout = 600)
 if (exists(".knitr_asciicast_process", envir = .GlobalEnv)) {
   rm(list = ".knitr_asciicast_process", envir = .GlobalEnv)

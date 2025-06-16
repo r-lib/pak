@@ -32,7 +32,9 @@ pak_sitrep <- function() {
     if (comp) ", compatible",
     ")\n"
   )
-  if (!comp) cat0("- platform is incompatible!\n")
+  if (!comp) {
+    cat0("- platform is incompatible!\n")
+  }
   repo <- ver$`github-repository`
   sha <- ver$`github-sha`
   if (repo != "r-lib/pak") {
@@ -43,7 +45,9 @@ pak_sitrep <- function() {
       "\n"
     )
   }
-  if (repo != "-" || sha != "-") cat0("- pak sha: ", sha, "\n")
+  if (repo != "-" || sha != "-") {
+    cat0("- pak sha: ", sha, "\n")
+  }
 
   ## recommended packages
   xpkgs <- extra_packages()

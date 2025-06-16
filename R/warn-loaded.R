@@ -1,5 +1,7 @@
 warn_for_loaded_packages <- function(pkgs, lib, loaded, pid = NULL) {
-  if (length(pkgs) == 0) return(list(status = "none-none"))
+  if (length(pkgs) == 0) {
+    return(list(status = "none-none"))
+  }
   if (get_os() == "win") {
     warn_for_loaded_packages_win(pkgs, lib, loaded, pid)
   } else {
@@ -14,7 +16,9 @@ handle_status <- function(status, lib, ask) {
     status$should_ask <- FALSE
     ans <- get_answer(loaded_status$answers)
     sts <- loaded_packages_response(loaded_status, ans)
-    if (sts$status != "try-again") break
+    if (sts$status != "try-again") {
+      break
+    }
     loaded_status <- remote(
       function(...) get("warn_for_loaded_packages", asNamespace("pak"))(...),
       list(loaded_status$pkgs, lib, loaded_packages(lib))
@@ -32,10 +36,14 @@ handle_status <- function(status, lib, ask) {
 # -- Unix ------------------------------------------------------------
 
 warn_for_loaded_packages_unix <- function(pkgs, lib, loaded, pid) {
-  if (is.null(loaded)) return()
+  if (is.null(loaded)) {
+    return()
+  }
   bad <- intersect(pkgs, loaded)
   bad <- setdiff(bad, "pak")
-  if (length(bad)) warn_for_loaded_packages_emit(bad)
+  if (length(bad)) {
+    warn_for_loaded_packages_emit(bad)
+  }
   list(status = "none-none")
 }
 
@@ -275,7 +283,9 @@ get_locked_libs <- function(lib, pkgs) {
     filter = r_process_names()
   )
   package <- dirname(dirname(users$path))
-  if (nzchar(.Platform$r_arch)) package <- dirname(package)
+  if (nzchar(.Platform$r_arch)) {
+    package <- dirname(package)
+  }
   users$package <- basename(package)
   users
 }

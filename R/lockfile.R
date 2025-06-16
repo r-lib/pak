@@ -113,7 +113,9 @@ lockfile_install_internal <- function(lockfile, lib, update, loaded, start) {
 
   config <- list(library = lib)
   plan <- pkgdepends::new_pkg_installation_plan(lockfile, config = config)
-  if (update) plan$update()
+  if (update) {
+    plan$update()
+  }
 
   print_install_details(plan, lib, loaded)
 

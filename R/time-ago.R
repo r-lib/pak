@@ -63,7 +63,9 @@ format_time_ago <- local({
   time_ago <- function(date, format = c("default", "short", "terse")) {
     date <- as.POSIXct(date)
 
-    if (length(date) > 1) return(sapply(date, time_ago, format = format))
+    if (length(date) > 1) {
+      return(sapply(date, time_ago, format = format))
+    }
 
     seconds <- difftime(Sys.time(), date, units = "secs")
 
@@ -77,7 +79,9 @@ format_time_ago <- local({
     seconds <- as.vector(dt)
 
     ## Simplest to quit here for empty input
-    if (!length(seconds)) return(character())
+    if (!length(seconds)) {
+      return(character())
+    }
 
     pieces <- list(
       minutes = seconds / 60,

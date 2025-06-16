@@ -9,7 +9,9 @@ cli::test_that_cli(configs = c("plain", "fancy"), "print_install_summary", {
   )
   attr(d, "total_time") <- as.difftime(12.123, units = "secs")
 
-  while (!is.null(cli::default_app())) cli::stop_app()
+  while (!is.null(cli::default_app())) {
+    cli::stop_app()
+  }
 
   expect_snapshot(print_install_summary(d))
 

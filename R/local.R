@@ -61,7 +61,9 @@ local_install <- function(
     list(proposal = NULL)
   )
 
-  if (length(unloaded) > 0) offer_restart(unloaded)
+  if (length(unloaded) > 0) {
+    offer_restart(unloaded)
+  }
 
   invisible(inst)
 }
@@ -126,7 +128,9 @@ local_install_deps <- function(
     list(proposal = NULL)
   )
 
-  if (length(unloaded) > 0) offer_restart(unloaded)
+  if (length(unloaded) > 0) {
+    offer_restart(unloaded)
+  }
 
   invisible(inst)
 }
@@ -175,7 +179,9 @@ local_install_dev_deps <- function(
     list()
   )
 
-  if (length(unloaded) > 0) offer_restart(unloaded)
+  if (length(unloaded) > 0) {
+    offer_restart(unloaded)
+  }
 
   invisible(inst)
 }

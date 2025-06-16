@@ -20,8 +20,12 @@ pak_cleanup <- function(
     stop("Refused to clean up, please specify `force = TRUE`")
   }
 
-  if (package_cache) package_cache <- pak_cleanup_package_cache(force)
-  if (metadata_cache) metadata_cache <- pak_cleanup_metadata_cache(force)
+  if (package_cache) {
+    package_cache <- pak_cleanup_package_cache(force)
+  }
+  if (metadata_cache) {
+    metadata_cache <- pak_cleanup_metadata_cache(force)
+  }
   all <- package_cache && metadata_cache
 
   invisible()
@@ -59,7 +63,9 @@ pak_cleanup_package_cache2 <- function() {
   sum <- pkgcache::pkg_cache_summary()
   unlink(sum$cachepath, recursive = TRUE)
   root <- dirname(sum$cachepath)
-  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
+  if (length(dir(root)) == 0) {
+    unlink(root, recursive = TRUE)
+  }
   cli::cli_alert_success("Cleaned up package cache")
   invisible()
 }
@@ -97,7 +103,9 @@ pak_cleanup_metadata_cache2 <- function() {
   unlink(sum$cachepath, recursive = TRUE)
   unlink(sum$lockfile, recursive = TRUE)
   root <- dirname(sum$cachepath)
-  if (length(dir(root)) == 0) unlink(root, recursive = TRUE)
+  if (length(dir(root)) == 0) {
+    unlink(root, recursive = TRUE)
+  }
   cli::cli_alert_success("Cleaned up metadata cache")
   invisible()
 }

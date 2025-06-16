@@ -115,7 +115,9 @@ format.pak_deps_explain <- function(x, ...) {
     unlist(lapply(x$paths, format_path)),
     if (length(nope) > 0L) paste0("x ", nope)
   )
-  if (fmt[[length(fmt)]] == "") fmt <- fmt[-length(fmt)]
+  if (fmt[[length(fmt)]] == "") {
+    fmt <- fmt[-length(fmt)]
+  }
 
   fmt
 }

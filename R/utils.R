@@ -50,7 +50,9 @@ str_trim <- function(x) {
 }
 
 list_files <- function(path) {
-  if (!file.exists(path)) return(character())
+  if (!file.exists(path)) {
+    return(character())
+  }
   fs <- dir(path, full.names = TRUE)
   basename(fs[!is_dir(fs)])
 }
@@ -131,7 +133,9 @@ get_num_workers <- function() {
     )
   }
 
-  if (is.na(n)) n <- 1L
+  if (is.na(n)) {
+    n <- 1L
+  }
 
   n
 }
@@ -149,12 +153,18 @@ to_package_name <- function(x) {
 
 strrep <- function(x, times) {
   x = as.character(x)
-  if (length(x) == 0L) return(x)
+  if (length(x) == 0L) {
+    return(x)
+  }
   unlist(
     .mapply(
       function(x, times) {
-        if (is.na(x) || is.na(times)) return(NA_character_)
-        if (times <= 0L) return("")
+        if (is.na(x) || is.na(times)) {
+          return(NA_character_)
+        }
+        if (times <= 0L) {
+          return("")
+        }
         paste0(replicate(times, x), collapse = "")
       },
       list(x = x, times = times),
@@ -187,11 +197,17 @@ mkdirp <- function(dir, msg = NULL) {
 
 fix_macos_path_in_rstudio <- function() {
   ## Only in RStudio
-  if (Sys.getenv("RSTUDIO") != "1") return()
+  if (Sys.getenv("RSTUDIO") != "1") {
+    return()
+  }
   ## Only on macOS
-  if (Sys.info()["sysname"] != "Darwin") return()
+  if (Sys.info()["sysname"] != "Darwin") {
+    return()
+  }
 
-  if (!file.exists("/etc/paths")) return()
+  if (!file.exists("/etc/paths")) {
+    return()
+  }
 
   path <- Sys.getenv("PATH")
   new_path <- readLines("/etc/paths", n = 1000)
@@ -205,7 +221,9 @@ append_union <- function(path, cnt, msg_new = NULL, msg_done = NULL) {
   new_cnt <- setdiff(cnt, lines)
   if (length(new_cnt)) {
     new_lines <- c(lines, new_cnt)
-    if (!is.null(msg_new)) cli::cli_alert_info(msg_new)
+    if (!is.null(msg_new)) {
+      cli::cli_alert_info(msg_new)
+    }
     writeLines(new_lines, path)
   } else {
     if (!is.null(msg_done)) cli::cli_alert_info(msg_done)
@@ -225,7 +243,9 @@ try_add_to_git <- function(path) {
 
 rimraf <- function(...) {
   x <- file.path(...)
-  if ("~" %in% x) stop("Cowardly refusing to delete `~`")
+  if ("~" %in% x) {
+    stop("Cowardly refusing to delete `~`")
+  }
   unlink(x, recursive = TRUE, force = TRUE)
 }
 

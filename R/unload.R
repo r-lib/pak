@@ -86,7 +86,9 @@ needs_unload <- function(packages) {
 
 package_imports <- function(package, base = FALSE) {
   imp <- unique(names(getNamespaceInfo(package, "imports")))
-  if (!base) imp <- imp[!imp %in% base_packages()]
+  if (!base) {
+    imp <- imp[!imp %in% base_packages()]
+  }
   # pkgload has some unnamed components somehow?
   imp[imp != ""]
 }
@@ -107,7 +109,9 @@ unload_order_topo <- function(packages) {
   topo <- character()
   while (length(topo) < length(revs)) {
     new <- names(imp_by)[viapply(imp_by, length) == 0]
-    if (length(new) == 0) stop("Loop in package imports???")
+    if (length(new) == 0) {
+      stop("Loop in package imports???")
+    }
     topo <- c(topo, new)
     imp_by <- lapply(imp_by, setdiff, new)[setdiff(names(imp_by), new)]
   }

@@ -75,7 +75,14 @@ install_order <- function() {
   ## TODO: look up the correct order
   pkgs <- c(
     # no deps
-    "R6", "cli", "curl", "filelock", "jsonlite", "lpSolve", "ps", "zip",
+    "R6",
+    "cli",
+    "curl",
+    "filelock",
+    "jsonlite",
+    "lpSolve",
+    "ps",
+    "zip",
     # ps, R6
     "processx",
     # processx, R6
@@ -196,7 +203,9 @@ install_all <- function(lib = NULL) {
       )
     }
   } else {
-    for (pkg in pkgs) install_one(pkg, lib = lib)
+    for (pkg in pkgs) {
+      install_one(pkg, lib = lib)
+    }
   }
   file.create("DONE")
   invisible()
@@ -230,7 +239,9 @@ update_all <- function(lib = NULL) {
   for (pkg in pkgs) {
     oldver <- get_ver(file.path(lib, pkg))
     newver <- get_ver(file.path("library", pkg))
-    if (is.na(newver)) stop("Cannot find embedded ", pkg)
+    if (is.na(newver)) {
+      stop("Cannot find embedded ", pkg)
+    }
     if (is.na(oldver)) {
       message("Adding ", pkg)
       rimraf(file.path(lib, pkg)) # in case it is a broken install
@@ -289,18 +300,24 @@ install_embedded_main <- function() {
   cat("Build platform: ", pl$build, "\n")
   cat("Target platform: ", pl$target, "\n")
 
-  if (grepl("linux", pl$current) &&
-    grepl("darwin", pl$target)) {
+  if (
+    grepl("linux", pl$current) &&
+      grepl("darwin", pl$target)
+  ) {
     # PPM: current is Linux, target is (some) Darwin
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)
-  } else if (grepl("x86_64-apple-darwin", pl$current) &&
-    grepl("aarch64-apple-darwin", pl$target)) {
+  } else if (
+    grepl("x86_64-apple-darwin", pl$current) &&
+      grepl("aarch64-apple-darwin", pl$target)
+  ) {
     # Current is Darwin x86_64, target is Darwin aarch64
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)
-  } else if (grepl("x86_64.*linux", pl$current) &&
-    grepl("aarch64.*linux", pl$target)) {
+  } else if (
+    grepl("x86_64.*linux", pl$current) &&
+      grepl("aarch64.*linux", pl$target)
+  ) {
     # Current is Linux x86_64, target is Linux aarch64
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)

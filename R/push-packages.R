@@ -84,7 +84,9 @@ push_packages <- local({
     branch <- "packages"
     git("remote", "set-branches", "--add", remote, branch, dry_run = dry_run)
     git("fetch", remote, branch, dry_run = dry_run)
-    if (dry_run) mkdirp(dir)
+    if (dry_run) {
+      mkdirp(dir)
+    }
     git_worktree_add(dir, remote, branch, dry_run = dry_run)
     dir
   }
@@ -122,9 +124,15 @@ push_packages <- local({
 
   canonize_os <- function(platform) {
     os <- strsplit(platform, "-", fixed = TRUE)[[1]][3]
-    if (substr(os, 1, 6) == "darwin") os <- "darwin"
-    if (substr(os, 1, 5) == "mingw") os <- "windows"
-    if (substr(os, 1, 7) == "solaris") os <- "solaris"
+    if (substr(os, 1, 6) == "darwin") {
+      os <- "darwin"
+    }
+    if (substr(os, 1, 5) == "mingw") {
+      os <- "windows"
+    }
+    if (substr(os, 1, 7) == "solaris") {
+      os <- "solaris"
+    }
     os
   }
 
@@ -371,7 +379,9 @@ push_packages <- local({
     skopeo <- find_skopeo()
     out <- processx::run(skopeo, "--version")
     re_ver <- "[ ]([0-9]+[.][0-9]+[.][0-9]+)"
-    if (!grepl(re_ver, out$stdout)) stop("Cannot determine skopeo version")
+    if (!grepl(re_ver, out$stdout)) {
+      stop("Cannot determine skopeo version")
+    }
     mch <- regexpr(re_ver, out$stdout, perl = TRUE)
     beg <- attr(mch, "capture.start")[1]
     end <- beg + attr(mch, "capture.length")[1] - 1L
@@ -401,7 +411,9 @@ push_packages <- local({
       file.path(shadir, sub("^sha256:", "", pkgs$digest[tocopy])),
       overwrite = TRUE
     )
-    if (any(!ret)) stop("Failed to copy package file(s)")
+    if (any(!ret)) {
+      stop("Failed to copy package file(s)")
+    }
 
     # Create image config files. These are dummy files currenty ({}),
     # but in case we switch to proper files, we write them out properly
@@ -486,7 +498,9 @@ push_packages <- local({
 
     workdir <- normalizePath(workdir, winslash = "/")
     args <- c("copy", "--all", "--retry-times", 20)
-    if (skopeo_ver >= "1.6.0") args <- c(args, "--preserve-digests")
+    if (skopeo_ver >= "1.6.0") {
+      args <- c(args, "--preserve-digests")
+    }
     args <- c(args, "--policy", policy_file)
     args <- c(args, paste0("--dest-creds=", ghcr_user(), ":", ghcr_token()))
     args <- c(args, paste0("oci:", workdir), paste0(ghcr_uri(), ":", tag))
@@ -510,7 +524,9 @@ push_packages <- local({
             break
           },
           error = function(e) {
-            if (tries == 0) stop(e)
+            if (tries == 0) {
+              stop(e)
+            }
             tries <<- tries - 1
           }
         )
@@ -908,7 +924,9 @@ create_pak_repo <- local({
       orig <- file.path(link, links[[idx]])
       origfile <- file.path(orig, "PACKAGES")
       linkfile <- file.path(link, "PACKAGES")
-      if (!file.exists(origfile)) next
+      if (!file.exists(origfile)) {
+        next
+      }
       file.copy(origfile, linkfile, overwrite = TRUE)
       # TODO: properly update the file
       lines <- c(readLines(origfile), "")
@@ -921,7 +939,9 @@ create_pak_repo <- local({
   }
 
   write_dcf <- function(meta, PACKAGES, quiet = FALSE) {
-    if (!quiet) cat("Writing ", PACKAGES, "\n")
+    if (!quiet) {
+      cat("Writing ", PACKAGES, "\n")
+    }
     meta <- as.matrix(meta)
     write.dcf(meta, PACKAGES, width = 200)
     con <- gzfile(paste0(PACKAGES, ".gz"), "wt")
@@ -933,7 +953,9 @@ create_pak_repo <- local({
   create_packages_files <- function(data, root, tag) {
     data$dir <- dirname(data$path)
     data$sha <- unname(vapply(data$path, sha256, ""))
-    if (any(data$digest != paste0("sha256:", data$sha))) stop("SHA mismatch")
+    if (any(data$digest != paste0("sha256:", data$sha))) {
+      stop("SHA mismatch")
+    }
     baseuri <- download_uri()
     field <- function(f) vapply(dscs, function(x) x$get_field(f), "")
     fix_built <- function(built, platform) {

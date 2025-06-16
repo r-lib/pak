@@ -37,7 +37,9 @@ test_that("should_ask_confirmation", {
     )
   )
 
-  for (x in neg) expect_false(should_ask_confirmation(x))
+  for (x in neg) {
+    expect_false(should_ask_confirmation(x))
+  }
 
   pos <- list(
     # update direct ref: yes
@@ -53,5 +55,7 @@ test_that("should_ask_confirmation", {
     )
   )
 
-  for (x in pos) expect_true(should_ask_confirmation(x))
+  for (x in pos) {
+    expect_true(should_ask_confirmation(x))
+  }
 })

@@ -17,7 +17,9 @@ remote <- function(func, args = list()) {
     timeout <- suppressWarnings(as.numeric(
       Sys.getenv("PKG_SUBPROCESS_TIMEOUT", "")
     ))
-    if (is.na(timeout)) timeout <- 5000
+    if (is.na(timeout)) {
+      timeout <- 5000
+    }
     pr <- pkg_data$ns$processx$poll(list(rs$get_poll_connection()), timeout)[[
       1
     ]]
@@ -27,7 +29,9 @@ remote <- function(func, args = list()) {
       state <- rs$get_state()
     }
   }
-  if (state != "idle") stop("Subprocess is busy or cannot start")
+  if (state != "idle") {
+    stop("Subprocess is busy or cannot start")
+  }
 
   func2 <- func
   width <- pkg_data$ns$cli$console_width()
@@ -103,8 +107,11 @@ remote <- function(func, args = list()) {
       withRestarts(
         {
           signalCondition(msg)
-          out <- if (is_interactive() || sink.number() > 0) stdout() else
+          out <- if (is_interactive() || sink.number() > 0) {
+            stdout()
+          } else {
             stderr()
+          }
           cat(conditionMessage(msg), file = out, sep = "")
         },
         muffleMessage = function() NULL
@@ -250,8 +257,9 @@ load_private_package <- function(
     tryCatch(
       {
         pkg_dir <- pkg_env[["__pkg-dir__"]]
-        if (!is.null(pkg_dir))
+        if (!is.null(pkg_dir)) {
           pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
+        }
         if (!is.null(pkg_env[[".onUnload"]])) {
           tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
         }
@@ -260,7 +268,9 @@ load_private_package <- function(
         matchidx <- grepl(pkg_dir, paths, fixed = TRUE)
         if (any(matchidx)) {
           pkglibs <- libs[matchidx]
-          for (lib in pkglibs) dyn.unload(lib[["path"]])
+          for (lib in pkglibs) {
+            dyn.unload(lib[["path"]])
+          }
           .dynLibs(libs[!matchidx])
         }
         unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)

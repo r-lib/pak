@@ -98,7 +98,7 @@
 #' @examplesIf FALSE
 #' scan_deps("myproject")
 #' scan_deps("myproject")[]
-#' 
+#'
 #' @export
 
 scan_deps <- function(path = NULL, root = NULL) {
@@ -107,7 +107,8 @@ scan_deps <- function(path = NULL, root = NULL) {
     function(...) {
       ret <- asNamespace("pak")$scan_deps_internal(...)
       asNamespace("pak")$pak_preformat(ret)
-    }, list(path = path, root = root)
+    },
+    list(path = path, root = root)
   )
 }
 

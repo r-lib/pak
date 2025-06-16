@@ -160,7 +160,9 @@ pak_update <- function(
         error = function(e) NULL
       )
       loadNamespace("pak")
-      if (attached) library(pak)
+      if (attached) {
+        library(pak)
+      }
       suppressWarnings(tools::Rd_db(package = "pak"))
     },
     error = function(err) {
@@ -197,7 +199,9 @@ pak_update_unsupported_platform <- function(stream, me, meta) {
 }
 
 check_mac_cran_r <- function(me, meta) {
-  if (!grepl("^darwin", me$os)) return()
+  if (!grepl("^darwin", me$os)) {
+    return()
+  }
   if (.Platform$pkgType == "source") {
     stop(
       "pak only has binaries for the CRAN build of R, and this ",
@@ -217,17 +221,23 @@ should_update_to <- function(new) {
 
   # otherwise use version number first
   dsc <- utils::packageDescription("pak")
-  if (package_version(dsc$Version) < new$Version) return(TRUE)
+  if (package_version(dsc$Version) < new$Version) {
+    return(TRUE)
+  }
 
   # or the build date
   blt_cur <- get_built_date(dsc$Built)
   blt_new <- get_built_date(new$Built)
-  if (is.na(blt_cur) || blt_cur < blt_new) return(TRUE)
+  if (is.na(blt_cur) || blt_cur < blt_new) {
+    return(TRUE)
+  }
   FALSE
 }
 
 get_built_date <- function(x) {
-  if (!is_string(x)) return(NA_character_)
+  if (!is_string(x)) {
+    return(NA_character_)
+  }
   # We can compare these dates as strings, so no need to parse
   strsplit(x, "[ ]*;[ ]*")[[1]][3]
 }
