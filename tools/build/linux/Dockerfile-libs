@@ -19,25 +19,22 @@ RUN cd zlib-* &&                                                     \
     make &&                                                          \
     make install
 
-# openssl -----------------------------------------------------------------
+# mbedtls -----------------------------------------------------------------
 
-RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
-RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
-RUN apk add perl linux-headers
-RUN cd openssl-* &&                                                  \
-    CFLAGS="-fPIC -static -U__GNUC__" ./config -fPIC no-shared &&    \
-    make &&                                                          \
-    make install_sw &&                                               \
-    rm -rf /usr/local/bin/openssl                                    \
-       /usr/local/share/{man/doc}
+RUN wget https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.4/mbedtls-3.6.4.tar.bz2
+RUN tar xf mbedtls-*.tar.bz2 && rm mbedtls-*.tar.bz2
+RUN apk add python3 cmake
+RUN cd mbedtls-* && \
+    mkdir -p build && cd build && CFLAGS=-fPIC cmake .. && cmake --build . && \
+    cmake --install .
 
 # libcurl now -------------------------------------------------------------
 
-RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
+RUN wget https://curl.haxx.se/download/curl-8.11.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
-RUN apk add pkgconfig
+RUN apk add pkgconfig perl
 RUN cd curl-* && \
-    ./configure --enable-static --disable-shared;                    \
+    ./configure --enable-static --disable-shared --with-mbedtls --without-libpsl --enable-symbol-hiding; \
     make &&                                                          \
     make install &&                                                  \
     rm -rf /usr/local/bin/curl                                       \
