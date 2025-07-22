@@ -78,7 +78,7 @@ lockfile_create_internal <- function(
 #'
 #' @param lockfile Path to the lock file.
 #' @param lib Library to carry out the installation on.
-#' @param update Whether to online install the packages that
+#' @param update Whether to only install the packages that
 #'   either not installed in `lib`, or a different version is installed
 #'   for them.
 #'
