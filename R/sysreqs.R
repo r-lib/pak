@@ -95,6 +95,36 @@ sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
 
 sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
   load_extra("pillar")
+
+  # Check if sysreqs support is enabled
+  sysreqs_enabled <- remote(
+    function() {
+      config <- pkgdepends::current_config()
+      config$get("sysreqs")
+    }
+  )
+
+  if (!sysreqs_enabled) {
+    cli::cli_alert_info(
+      "System requirements checking is disabled in the config."
+    )
+    cli::cli_alert_info(
+      "Use {.code Sys.setenv('PKG_SYSREQS' = 'TRUE')}
+      or {.code options(pkg.sysreqs = TRUE)}."
+    )
+
+    # Return an empty data frame with the expected structure
+    result <- data.frame(
+      system_package = character(0),
+      installed = logical(0),
+      packages = I(list()),
+      pre_install = I(list()),
+      post_install = I(list())
+    )
+    class(result) <- c("pkg_sysreqs_check_result", class(result))
+    return(invisible(pak_preformat(result)))
+  }
+
   invisible(remote(
     function(...) {
       ret <- pkgdepends::sysreqs_fix_installed(...)
