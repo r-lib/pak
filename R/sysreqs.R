@@ -152,7 +152,15 @@ pkg_sysreqs <- function(
   sysreqs_platform = NULL
 ) {
   load_extra("pillar")
-  remote(
+  # Check if sysreqs support is enabled
+  sysreqs_enabled <- remote(
+    function() {
+      config <- pkgdepends::current_config()
+      config$get("sysreqs")
+    }
+  )
+
+  result <- remote(
     function(...) {
       get("pkg_sysreqs_internal", asNamespace("pak"))(...)
     },
@@ -163,6 +171,26 @@ pkg_sysreqs <- function(
       sysreqs_platform = sysreqs_platform
     )
   )
+
+  # Add informational message if results are shown
+  if (sysreqs_enabled && length(result$install_scripts) > 0) {
+    cli::cli_alert_info(
+      "System packages detected via system package manager only."
+    )
+    cli::cli_alert_info(
+      "Software in non-standard locations may require manual verification."
+    )
+  } else if (!sysreqs_enabled) {
+    cli::cli_alert_info(
+      "System requirements lookup is disabled."
+    )
+    cli::cli_alert_info(
+      "Enable with {.code Sys.setenv('PKG_SYSREQS' = 'TRUE')}
+      or {.code options(pkg.sysreqs = TRUE)}."
+    )
+  }
+
+  result
 }
 
 pkg_sysreqs_internal <- function(
