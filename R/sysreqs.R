@@ -180,6 +180,17 @@ format.pak_sysreqs <- function(x, ...) {
     out
   }
 
+  # Add warning message about detection limitations
+  warning_msg <- c(
+    "",
+    cli$rule(left = "System package detection", col = "yellow"),
+    paste(
+      cli$col_yellow(cli$symbol$warning),
+      "System packages are detected via the system package manager only."
+    ),
+    "Software installed in non-standard locations may not be detected."
+  )
+
   c(
     cli$rule(left = "Install scripts", right = label),
     x$pre_install,
@@ -195,7 +206,8 @@ format.pak_sysreqs <- function(x, ...) {
         " ",
         vcapply(pkgs, function(x) paste(cisort(x), collapse = ", "))
       )
-    }
+    },
+    warning_msg
   )
 }
 
