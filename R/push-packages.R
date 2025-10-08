@@ -1066,6 +1066,19 @@ create_pak_repo <- local({
       pkgfile_ext(os)
     )
 
+    # R 4.5.x aarch64 Windows cannot install our normal filenames,
+    # we need to special case it
+    aarch64_win <- cpu == "aarch64" & os == "mingw32"
+    if (any(aarch64_win)) {
+      pkgfile[aarch64_win] <- paste0(
+        "pak_",
+        data$pak.version[aarch64_win],
+        "-",
+        gsub("[.]", "-", data$r.version[aarch64_win]),
+        pkgfile_ext(os[aarch64_win])
+      )
+    }
+
     data$path <- file.path(pkgdir, pkgfile)
     miss <- !file.exists(data$path)
     bad <- rep(NA, length(miss))
