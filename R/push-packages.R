@@ -709,6 +709,7 @@ create_pak_repo <- local({
   # - openbsd7.4/x86_64
   # - netbsd/x86_64
   # - dragonfly6.4/x86_64
+  # - mingw32/aarch64
 
   # ## New form of the install command will use these repo URL and paths:
   # ```
@@ -724,6 +725,8 @@ create_pak_repo <- local({
   #      darwin15.6.0/x86_64
   # win.binary/mingw32/x86_64 + /bin/windows/contrib/4.1 ->
   #      mingw32/x86_64
+  # win.binary/mingw32/aarch64 + /bin/windows/contrib/4.1 ->
+  #      mingw32/aarch64
   # win.binary/mingw32/i386 + /bin/windows/contrib/4.1 ->
   #      mingw32/x86_64
   # source/freebsd15.0/amd64 + /src/contrib ->
@@ -772,7 +775,7 @@ create_pak_repo <- local({
     "linux-dietlibc/aarch64" = "../../linux/aarch64",
     "linux-unknown/aarch64" = "../../linux/aarch64",
 
-    # On Windows we server bi-arch packages:
+    # On Windows we serve bi-arch packages:
     "mingw32/i386" = "../x86_64",
 
     # Map the pkgType/os/arch packages to os/arch on Linux, because on
@@ -815,6 +818,7 @@ create_pak_repo <- local({
 
     # Map the pkgType/os/arch form binaries of other OSes to the right place.
     "win.binary/mingw32/x86_64/src/contrib" = "../../../../../mingw32/x86_64",
+    "win.binary/mingw32/aarch64/src/contrib" = "../../../../../mingw32/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/src/contrib" = "../../../../../darwin20/aarch64",
     "mac.binary/darwin17.0/x86_64/src/contrib" = "../../../../../darwin17.0/x86_64",
     "mac.binary.el-capitan/darwin15.6.0/x86_64/src/contrib" = "../../../../../darwin15.6.0/x86_64",
@@ -829,6 +833,9 @@ create_pak_repo <- local({
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.4" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.5" = "../../../../../../../mingw32/x86_64",
     "win.binary/mingw32/x86_64/bin/windows/contrib/4.6" = "../../../../../../../mingw32/x86_64",
+    "win.binary/mingw32/aarch64/bin/windows/contrib/4.4" = "../../../../../../../mingw32/aarch64",
+    "win.binary/mingw32/aarch64/bin/windows/contrib/4.5" = "../../../../../../../mingw32/aarch64",
+    "win.binary/mingw32/aarch64/bin/windows/contrib/4.6" = "../../../../../../../mingw32/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.1" = "../../../../../../../../darwin20/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.2" = "../../../../../../../../darwin20/aarch64",
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.3" = "../../../../../../../../darwin20/aarch64",
@@ -850,6 +857,7 @@ create_pak_repo <- local({
 
     # Now the compatibility maps, these are for the old
     # repos = "https://r-lib.github.io/p/pak/stable" form
+    # NOTE: we don't have these for aarch64 Windows
     "bin/windows/contrib/3.4" = "../../../../mingw32/x86_64",
     "bin/windows/contrib/3.5" = "../../../../mingw32/x86_64",
     "bin/windows/contrib/3.6" = "../../../../mingw32/x86_64",
