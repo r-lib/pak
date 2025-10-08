@@ -1507,6 +1507,33 @@
           "buildtime": "2025-05-27T13:58:22+00:00",
           "size": 6500834,
           "digest": "sha256:fc378c70a44a9ee7cd2bbd31c34789ad9eb05068f63f669d41c003b4e13e9830"
+        },
+        {
+          "r.platform": "aarch64-w64-mingw32",
+          "r.version": "4.4",
+          "pak.version": "0.9.0",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-08T13:12:06+00:00",
+          "size": 9142596,
+          "digest": "sha256:3f54026a237f7fb33a7cfc2220dd6a8edc6459c903db934052e0cfbee7bb5634"
+        },
+        {
+          "r.platform": "aarch64-w64-mingw32",
+          "r.version": "4.5",
+          "pak.version": "0.9.0",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-08T13:16:11+00:00",
+          "size": 9144707,
+          "digest": "sha256:a483376070e92c2047cb21dc55c5637ef90d16fe604d4a139b65fba8527dc270"
+        },
+        {
+          "r.platform": "aarch64-w64-mingw32",
+          "r.version": "4.6",
+          "pak.version": "0.9.0",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-08T13:11:52+00:00",
+          "size": 9142048,
+          "digest": "sha256:6670e8175e40985a58aacc125d2d6121de0d37444ca0196274d405a82aedc4e5"
         }
       ]
     }
