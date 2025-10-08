@@ -525,6 +525,24 @@
           "buildtime": "2025-10-08T12:51:14+00:00",
           "size": 9149237,
           "digest": "sha256:c6d4b60ae909dbe30d2d3ad8d883eb190de5040faa46079bd4ae92919bd78c06"
+        },
+        {
+          "r.platform": "aarch64-w64-mingw32",
+          "r.version": "4.4",
+          "pak.version": "0.9.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-08T12:50:51+00:00",
+          "size": 9150091,
+          "digest": "sha256:69d5576c0b478fde14fd331118f193119be8f4cb2ca53ae5774411b8b3c3bf80"
+        },
+        {
+          "r.platform": "aarch64-w64-mingw32",
+          "r.version": "4.5",
+          "pak.version": "0.9.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-08T12:51:09+00:00",
+          "size": 9152871,
+          "digest": "sha256:bd26f04a95d421d5bb5e31c4147006e6ed5b1b082eb232b6d8acc904839149bf"
         }
       ]
     },
