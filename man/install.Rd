@@ -29,6 +29,7 @@ This is supported for the following systems:\tabular{lll}{
    macOS High Sierra+ \tab x86_64 \tab R 3.4.0 - R-devel \cr
    macOS Big Sur+ \tab aarch64 \tab R 4.1.0 - R-devel \cr
    Windows \tab x86_64 \tab R 3.4.0 - R-devel \cr
+   Windows \tab aarch64 \tab R 4.4.0 - R-devel \cr
    FreeBSD 13.x or later \tab x86_64 \tab R 4.4.x \cr
    OpenBSD 7.4, 7.5, 7.6 \tab x86_64 \tab R 4.2.x (7.4, 7.5), R 4.4.x (7.6) \cr
    NetBSD 10.0 \tab x86_64 \tab R 4.4.x \cr
@@ -70,20 +71,17 @@ We have nightly binary builds, for the same systems as the table above:
   R.Version()$arch
 ))
 }\if{html}{\out{</div>}}
-\subsection{\code{stable}, \code{rc} and \code{devel} streams}{
+\subsection{\code{stable} and \code{devel} streams}{
 
 We have three types of binaries available:
 \itemize{
 \item \code{stable} corresponds to the latest CRAN release of pak.
-\item \code{rc} is a release candidate build, and it is available about 1-2 weeks
-before a release. Otherwise it is the same as the \code{stable} build.
-\item \code{devel} has builds from the development tree. Before release it might be
-the same as the \code{rc} build.
+\item \code{devel} has builds from the development tree.
 }
 
 The streams are available under different repository URLs:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{stream <- "rc"
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{stream <- "stable"
 install.packages("pak", repos = sprintf(
   "https://r-lib.github.io/p/pak/\%s/\%s/\%s/\%s",
   stream,
