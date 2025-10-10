@@ -615,17 +615,10 @@ push_packages <- local({
       version <- unclass(package_version(
         desc::desc_get(file = paths[1], "Version")
       ))[[1]]
-      if (length(version) >= 4 && version[4] == 9999) {
-        # rc is also pushed to devel, as devel should be the latest
-        p1 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
-        p2 <- push_packages(paths, "devel", keep_old, dry_run, cleanup)
-        return(invisible(rbind(p1, p2)))
-      } else if (length(version) >= 4 && version[4] >= 9000) {
+      if (length(version) >= 4 && version[4] >= 9000) {
         tag <- "devel"
       } else {
-        # stable is also pushed to rc
         p1 <- push_packages(paths, "stable", keep_old, dry_run, cleanup)
-        p2 <- push_packages(paths, "rc", keep_old, dry_run, cleanup)
         return(invisible(rbind(p1, p2)))
       }
     }
@@ -682,7 +675,8 @@ create_pak_repo <- local({
   read_metadata <- import_from("push_packages", "read_metadata")
   sha256 <- import_from("push_packages", "sha256")
 
-  tags <- c("stable", "rc", "devel")
+  tags <- c("stable", "devel")
+  tag_aliases <- list(stable = c("rc", "dev"), devel = character())
 
   cpu_map <- c(
     "arm64" = "aarch64",
@@ -1045,7 +1039,13 @@ create_pak_repo <- local({
     }
   }
 
-  create_package_repo_tag <- function(root, workdir, tag, dry_run = FALSE) {
+  create_package_repo_tag <- function(
+    root,
+    workdir,
+    tag,
+    tag_aliases,
+    dry_run = FALSE
+  ) {
     data <- read_metadata(workdir, tag)
     plat <- parse_platform(data$r.platform)
     cpu <- cpu_map[plat$cpu] %NA% plat$cpu
@@ -1096,9 +1096,61 @@ create_pak_repo <- local({
     create_packages_files(data, root, tag)
 
     add_repo_links(root, tag)
+    for (alias in tag_aliases) {
+      add_repo_tag_alias(root, tag, alias)
+    }
   }
 
-  create_pak_repo <- function(path = "repo", dry_run = FALSE, cleanup = TRUE) {
+  add_repo_tag_alias <- function(root, tag, alias) {
+    pkg_files <- dir(
+      file.path(root, tag),
+      pattern = "^PACKAGES$",
+      recursive = TRUE
+    )
+    pkg_dirs <- dirname(pkg_files)
+    for (pkg_dir in pkg_dirs) {
+      link <- file.path(root, alias, pkg_dir)
+      mkdirp(link)
+      origfile <- file.path(root, tag, pkg_dir, "PACKAGES")
+      linkfile <- file.path(link, "PACKAGES")
+      file.copy(origfile, linkfile, overwrite = TRUE)
+      lines <- readLines(origfile)
+      paths <- grepl("^Path:", lines)
+      if (sum(paths) > 0) {
+        lines[paths] <- sub(
+          "[.][.]/(?=[a-z])",
+          paste0("../../", tag, "/"),
+          lines[paths],
+          perl = TRUE
+        )
+      } else {
+        lines <- c(lines, "")
+        entry <- paste0(
+          "Path: ",
+          strrep("../", str_count(pkg_dir, "/") + 2),
+          tag,
+          "/",
+          pkg_dir,
+          "\n"
+        )
+        lines[nchar(lines) == 0] <- entry
+      }
+      writeLines(lines, linkfile)
+      tab <- read.dcf(linkfile, all = TRUE)
+      write_dcf(tab, linkfile, quiet = TRUE)
+    }
+  }
+
+  str_count <- function(str, chr) {
+    sum(charToRaw(str) == charToRaw(chr))
+  }
+
+  create_pak_repo <- function(
+    path = "repo",
+    aliases = NULL,
+    dry_run = FALSE,
+    cleanup = TRUE
+  ) {
     workdir <- package_dir()
     if (!file.exists(workdir)) {
       init_package_dir(workdir, dry_run = dry_run)
@@ -1114,9 +1166,13 @@ create_pak_repo <- local({
     cat("\n", file = file.path(path, ".nojekyll"))
 
     for (tag in tags) {
-      create_package_repo_tag(root, workdir, tag = tag, dry_run = dry_run)
+      create_package_repo_tag(
+        root,
+        workdir,
+        tag = tag,
+        tag_aliases = tag_aliases[[tag]],
+        dry_run = dry_run
+      )
     }
-
-    file.symlink("stable", file.path(root, "dev"))
   }
 })
