@@ -25,6 +25,7 @@ This is supported for the following systems:
 | macOS High Sierra+    | x86_64    | R 3.4.0 - R-devel                 |
 | macOS Big Sur+        | aarch64   | R 4.1.0 - R-devel                 |
 | Windows               | x86_64    | R 3.4.0 - R-devel                 |
+| Windows               | aarch64   | R 4.4.0 - R-devel                 |
 | FreeBSD 13.x or later | x86_64    | R 4.4.x                           |
 | OpenBSD 7.4, 7.5, 7.6 | x86_64    | R 4.2.x (7.4, 7.5), R 4.4.x (7.6) |
 | NetBSD 10.0           | x86_64    | R 4.4.x                           |
@@ -63,20 +64,17 @@ install.packages("pak", repos = sprintf(
 ))
 ```
 
-### `stable`, `rc` and `devel` streams
+### `stable` and `devel` streams
 
 We have three types of binaries available:
 
 * `stable` corresponds to the latest CRAN release of pak.
-* `rc` is a release candidate build, and it is available about 1-2 weeks
-  before a release. Otherwise it is the same as the `stable` build.
-* `devel` has builds from the development tree. Before release it might be
-  the same as the `rc` build.
+* `devel` has builds from the development tree.
 
 The streams are available under different repository URLs:
 
 ``` r
-stream <- "rc"
+stream <- "stable"
 install.packages("pak", repos = sprintf(
   "https://r-lib.github.io/p/pak/%s/%s/%s/%s",
   stream,
