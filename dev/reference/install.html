@@ -23,6 +23,7 @@ Linuxaarch64R 3.4.0 - R-devel
 macOS High Sierra+x86_64R 3.4.0 - R-devel
 macOS Big Sur+aarch64R 4.1.0 - R-devel
 Windowsx86_64R 3.4.0 - R-devel
+Windowsaarch64R 4.4.0 - R-devel
 FreeBSD 13.x or laterx86_64R 4.4.x
 OpenBSD 7.4, 7.5, 7.6x86_64R 4.2.x (7.4, 7.5), R 4.4.x (7.6)
 NetBSD 10.0x86_64R 4.4.x
@@ -70,19 +71,16 @@ install.packages(&quot;pak&quot;, repos = sprintf(
   R.Version()$arch
 ))
 
-stable, rc and devel streams
+stable and devel streams
 
 
 We have three types of binaries available:
 stable corresponds to the latest CRAN release of pak.
-rc is a release candidate build, and it is available about 1-2 weeks
-before a release. Otherwise it is the same as the stable build.
-devel has builds from the development tree. Before release it might be
-the same as the rc build.
+devel has builds from the development tree.
 
 
 The streams are available under different repository URLs:
-stream &amp;lt;- &quot;rc&quot;
+stream &amp;lt;- &quot;stable&quot;
 install.packages(&quot;pak&quot;, repos = sprintf(
   &quot;https://r-lib.github.io/p/pak/%s/%s/%s/%s&quot;,
   stream,
@@ -119,6 +117,7 @@ Linuxaarch64R 3.4.0 - R-devel
 macOS High Sierra+x86_64R 3.4.0 - R-devel
 macOS Big Sur+aarch64R 4.1.0 - R-devel
 Windowsx86_64R 3.4.0 - R-devel
+Windowsaarch64R 4.4.0 - R-devel
 FreeBSD 13.x or laterx86_64R 4.4.x
 OpenBSD 7.4, 7.5, 7.6x86_64R 4.2.x (7.4, 7.5), R 4.4.x (7.6)
 NetBSD 10.0x86_64R 4.4.x
@@ -166,19 +165,16 @@ install.packages(&quot;pak&quot;, repos = sprintf(
   R.Version()$arch
 ))
 
-stable, rc and devel streams
+stable and devel streams
 
 
 We have three types of binaries available:
 stable corresponds to the latest CRAN release of pak.
-rc is a release candidate build, and it is available about 1-2 weeks
-before a release. Otherwise it is the same as the stable build.
-devel has builds from the development tree. Before release it might be
-the same as the rc build.
+devel has builds from the development tree.
 
 
 The streams are available under different repository URLs:
-stream &amp;lt;- &quot;rc&quot;
+stream &amp;lt;- &quot;stable&quot;
 install.packages(&quot;pak&quot;, repos = sprintf(
   &quot;https://r-lib.github.io/p/pak/%s/%s/%s/%s&quot;,
   stream,
@@ -244,7 +240,7 @@ Install a pre-built binary build of pak from our repository on GitHub:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div>
-<p>This is supported for the following systems:</p><table class="table table"><tr><td>OS</td><td>CPU</td><td>R version</td></tr><tr><td>Linux</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>Linux</td><td>aarch64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>macOS High Sierra+</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>macOS Big Sur+</td><td>aarch64</td><td>R 4.1.0 - R-devel</td></tr><tr><td>Windows</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>FreeBSD 13.x or later</td><td>x86_64</td><td>R 4.4.x</td></tr><tr><td>OpenBSD 7.4, 7.5, 7.6</td><td>x86_64</td><td>R 4.2.x (7.4, 7.5), R 4.4.x (7.6)</td></tr><tr><td>NetBSD 10.0</td><td>x86_64</td><td>R 4.4.x</td></tr><tr><td>DragonFly BSD 6.4</td><td>x86_64</td><td>R 4.3.x</td></tr></table><div class="section">
+<p>This is supported for the following systems:</p><table class="table table"><tr><td>OS</td><td>CPU</td><td>R version</td></tr><tr><td>Linux</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>Linux</td><td>aarch64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>macOS High Sierra+</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>macOS Big Sur+</td><td>aarch64</td><td>R 4.1.0 - R-devel</td></tr><tr><td>Windows</td><td>x86_64</td><td>R 3.4.0 - R-devel</td></tr><tr><td>Windows</td><td>aarch64</td><td>R 4.4.0 - R-devel</td></tr><tr><td>FreeBSD 13.x or later</td><td>x86_64</td><td>R 4.4.x</td></tr><tr><td>OpenBSD 7.4, 7.5, 7.6</td><td>x86_64</td><td>R 4.2.x (7.4, 7.5), R 4.4.x (7.6)</td></tr><tr><td>NetBSD 10.0</td><td>x86_64</td><td>R 4.4.x</td></tr><tr><td>DragonFly BSD 6.4</td><td>x86_64</td><td>R 4.3.x</td></tr></table><div class="section">
 <h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a></h4>
 
 <ul><li><p>For macOS we only support the official CRAN R build. Other builds, e.g.
@@ -279,16 +275,13 @@ binaries packages for.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">os</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Version.html" class="external-link">R.Version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">arch</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div><div class="section">
-<h4 id="stable-rc-and-devel-streams"><code>stable</code>, <code>rc</code> and <code>devel</code> streams<a class="anchor" aria-label="anchor" href="#stable-rc-and-devel-streams"></a></h4>
+<h4 id="stable-and-devel-streams"><code>stable</code> and <code>devel</code> streams<a class="anchor" aria-label="anchor" href="#stable-and-devel-streams"></a></h4>
 
 
 <p>We have three types of binaries available:</p><ul><li><p><code>stable</code> corresponds to the latest CRAN release of pak.</p></li>
-<li><p><code>rc</code> is a release candidate build, and it is available about 1-2 weeks
-before a release. Otherwise it is the same as the <code>stable</code> build.</p></li>
-<li><p><code>devel</code> has builds from the development tree. Before release it might be
-the same as the <code>rc</code> build.</p></li>
+<li><p><code>devel</code> has builds from the development tree.</p></li>
 </ul><p>The streams are available under different repository URLs:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">stream</span> <span class="op">&lt;-</span> <span class="st">"rc"</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="va">stream</span> <span class="op">&lt;-</span> <span class="st">"stable"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://r-lib.github.io/p/pak/%s/%s/%s/%s"</span>,</span>
 <span>  <span class="va">stream</span>,</span>
