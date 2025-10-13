@@ -87,8 +87,11 @@ COPY Makevars-aarch64 /root/.R/Makevars
 # but we want to make sure that we are using the platform string that
 # aarch64 R would give.
 
+# Except that on R 3.5 and earlier R uses linux-gnu in the platform string,
+# even though it is a musl system.
+
 RUN mkdir -p /root/lib
-RUN R -s -e 'cat(R.Version()$platform)' | \
+RUN R -s -e 'cat(R.Version()$platform)' | sed 's/linux-gnu/linux-musl/g' | \
     sed 's/^x86_64-pc/aarch64-unknown/' > /tmp/r-target-platform
 RUN R CMD INSTALL -l /root/lib --no-test-load \
     --configure-args="--host=`cat /tmp/r-target-platform`" \

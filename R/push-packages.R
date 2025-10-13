@@ -123,7 +123,11 @@ push_packages <- local({
   }
 
   canonize_os <- function(platform) {
-    os <- strsplit(platform, "-", fixed = TRUE)[[1]][3]
+    spl <- strsplit(platform, "-", fixed = TRUE)[[1]]
+    os <- spl[3]
+    if (length(spl) >= 4 && spl[4] == "gnu") {
+      os <- paste0(os, "-gnu")
+    }
     if (substr(os, 1, 6) == "darwin") {
       os <- "darwin"
     }
@@ -685,10 +689,12 @@ create_pak_repo <- local({
 
   os_map <- c(
     "linux-musl" = "linux",
-    "linux-gnu" = "linux"
+    "linux-gnu" = "linux-gnu"
   )
 
   # The REAL directories containing the packages are:
+  # - linux-gnu/x86_64
+  # - linux-gnu/aarch64
   # - linux/x86_64
   # - linux/aarch64
   # - darwin15.6.0/x86_64
@@ -708,9 +714,9 @@ create_pak_repo <- local({
   # ## New form of the install command will use these repo URL and paths:
   # ```
   # source/linux-gnu/x85_64 + /src/contrib ->
-  #      linux/x86_64
+  #      linux-gnu/x86_64
   # source/linux-gnu/aarch64 + /src/contrib ->
-  #      linux/aarch64
+  #      linux-gnu/aarch64
   # mac.binary.big-sur-arm64/darwin20/aarch64 + /bin/macosx/big-sur-arm64/contrib/4.1 ->
   #      darwin20/aarch64
   # mac.binary/darwin17.0/x86_64 + /bin/macosx/contrib/4.1 ->
@@ -757,13 +763,11 @@ create_pak_repo <- local({
   # ```
 
   links <- c(
-    # Make sure all Linux maps to the same place since we fully static pkgs
-    "linux-gnu/x86_64" = "../../linux/x86_64",
+    # Link non-gnu linux to static musl builds
     "linux-musl/x86_64" = "../../linux/x86_64",
     "linux-uclibc/x86_64" = "../../linux/x86_64",
     "linux-dietlibc/x86_64" = "../../linux/x86_64",
     "linux-unknown/x86_64" = "../../linux/x86_64",
-    "linux-gnu/aarch64" = "../../linux/aarch64",
     "linux-musl/aarch64" = "../../linux/aarch64",
     "linux-uclibc/aarch64" = "../../linux/aarch64",
     "linux-dietlibc/aarch64" = "../../linux/aarch64",
@@ -774,14 +778,15 @@ create_pak_repo <- local({
 
     # Map the pkgType/os/arch packages to os/arch on Linux, because on
     # Linux we serve binaries as sources, but on other OSes not.
+    "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+    "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+
     "source/linux/x86_64/src/contrib" = "../../../../../linux/x86_64",
-    "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux/x86_64",
     "source/linux-musl/x86_64/src/contrib" = "../../../../../linux/x86_64",
     "source/linux-uclibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
     "source/linux-dietlibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
     "source/linux-unknown/x86_64/src/contrib" = "../../../../../linux/x86_64",
     "source/linux/aarch64/src/contrib" = "../../../../../linux/aarch64",
-    "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-musl/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
     "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",

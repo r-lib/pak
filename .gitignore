@@ -44,6 +44,8 @@
 /src/library/keyring/src/Makevars
 /tools/build/linux/pak_*.tar.gz
 /tools/build/linux/*.done
+/tools/build/linux-glibc/*.done
+/tools/build/linux-glibc/pak_*.tar.gz
 /vignettes/internals.html
 /vignettes/internals.md
 /.dev

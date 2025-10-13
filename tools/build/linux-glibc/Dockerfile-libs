@@ -1,0 +1,105 @@
+# -*- Dockerfile -*- ------------------------------------------------------
+
+FROM golang:1.25 AS skopeo-build
+
+WORKDIR /usr/src/skopeo
+
+ARG SKOPEO_VERSION="1.20.0"
+RUN curl -fsSL "https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.gz" \
+  | tar -xzf - --strip-components=1
+
+RUN CGO_ENABLED=0 DISABLE_DOCS=1 make BUILDTAGS=containers_image_openpgp GO_DYN_FLAGS=
+
+RUN ./bin/skopeo --version
+
+FROM scratch AS skopeo-rootfs
+
+COPY --from=skopeo-build /usr/src/skopeo/bin/skopeo /usr/local/bin/
+COPY --from=skopeo-build /usr/src/skopeo/default-policy.json /etc/containers/policy.json
+
+# ------------------------------------------------------------------------------
+
+FROM ubuntu:18.04 AS build
+
+USER root
+WORKDIR /root
+
+RUN apt-get update && \
+    apt-get install -y build-essential g++ gfortran curl \
+    pkg-config zlib1g-dev
+
+ENV TZ=UTC
+
+RUN export ARCH=$(dpkg --print-architecture) && \
+    if [ "$ARCH" = "amd64" ]; then \
+      curl -LO https://github.com/r-hub/r-glibc/releases/download/bionic/zlib1g-dev_1.2.11.dfsg-0ubuntu2.2_$ARCH.deb && \
+      curl -LO https://github.com/r-hub/r-glibc/releases/download/bionic/zlib1g_1.2.11.dfsg-0ubuntu2.2_$ARCH.deb && \
+      dpkg -i ./zlib1g*.deb && \
+      rm *.deb; \
+    fi
+
+# this is neeeed for openssl to compile on x86_64
+RUN export ARCH=$(dpkg --print-architecture) && \
+    if [ "$ARCH" = "amd64" ]; then \
+      curl -LO https://github.com/r-hub/r-glibc/releases/download/bionic/libgcc-7-dev_7.5.0-3ubuntu1.18.04_$ARCH.deb && \
+      apt-get update && \
+      dpkg -i ./libgcc* || true && \
+      rm *.deb && \
+      apt-get -f -y install && \
+      dpkg -s libgcc-7-dev >/dev/null 2>/dev/null; \
+    fi
+
+# use a newer openssl, for security
+RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.4.1/openssl-3.4.1.tar.gz
+RUN tar xzf openssl-3.4.1.tar.gz && rm openssl-3.4.1.tar.gz
+RUN cd openssl-* && \
+    CFLAGS="-fPIC" ./config -fPIC no-shared --prefix=/opt/r-lib && \
+    make && \
+    make install_sw
+
+# not all R versions will find libssl.a in /opt/r-lib/lib64, move it
+RUN mkdir -p /opt/r-lib/lib && \
+    cp /opt/r-lib/lib64/*.a /opt/r-lib/lib/ || true
+
+# roll our own libcurl, the original has way too many dependencies
+RUN curl -LO https://curl.haxx.se/download/curl-8.11.0.tar.gz
+RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
+RUN cd curl-* && \
+    LDFLAGS="-L/opt/r-lib/lib" \
+    ./configure --prefix=/opt/r-lib \
+      --enable-static --disable-shared --with-openssl=/opt/r-lib \
+      --without-libpsl --without-brotli; \
+    make && \
+    make install
+
+# =========================================================================
+# We don't need to keep the compilation artifacts, so copy the results
+# to a clean image
+
+FROM ubuntu:18.04
+COPY --from=build  /opt/r-lib /opt/r-lib
+
+USER root
+WORKDIR /root
+ENV TZ=UTC
+ENV PKG_CONFIG_PATH=/opt/r-lib/lib/pkgconfig
+
+# We can pre-install the compiler and libs
+
+RUN apt-get update && \
+    apt-get install -y build-essential zlib1g-dev curl pkg-config patchelf git && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# skopeo as well, it is not in 18.04
+
+COPY --from=skopeo-rootfs / /
+RUN skopeo --version
+
+# Some of this info is shown on the GH packages pages
+
+LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
+LABEL org.opencontainers.image.description="This image builds and contains \
+    static libraries for libcurl and its dependencies. See \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux-glibc/Dockerfile-libs \
+    for details."
+LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"
