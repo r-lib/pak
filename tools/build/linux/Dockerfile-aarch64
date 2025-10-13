@@ -97,9 +97,15 @@ RUN R CMD INSTALL -l /root/lib --no-test-load \
     --configure-args="--host=`cat /tmp/r-target-platform`" \
     pak_*.tar.gz
 
-# Minimize library --------------------------------------------------------
-
+# Also replace in the installed package, this is what wee actually use.
+# We don't care about replacing it in the RDS file, that's not needed.
+# Need to also do it in curl, because that's where wee are taking the
+# platform, as pak has no compiled code.
 ENV PAKROOT=/root/lib/pak
+RUN sed -i 's/linux-gnu/linux-musl/g' ${PAKROOT}/DESCRIPTION
+RUN sed -i 's/linux-gnu/linux-musl/g' ${PAKROOT}/library/curl/DESCRIPTION
+
+# Minimize library --------------------------------------------------------
 
 # We are not linking to libR, so no need to remove that dependency
 

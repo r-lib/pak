@@ -35,10 +35,15 @@ RUN R -s -e 'cat(R.Version()$platform)' | sed 's/linux-gnu/linux-musl/g' \
 RUN PROCESSX_UNLINK_R=true R CMD INSTALL \
      --configure-args="--host=`cat /tmp/r-target-platform`" \
      pak_*.tar.gz
+# Also replace in the installed package, this is what wee actually use.
+# We don't care about replacing it in the RDS file, that's not needed.
+# Need to also do it in curl, because that's where wee are taking the
+# platform, as pak has no compiled code.
+ENV PAKROOT=/usr/local/lib/R/library/pak
+RUN sed -i 's/linux-gnu/linux-musl/g' ${PAKROOT}/DESCRIPTION
+RUN sed -i 's/linux-gnu/linux-musl/g' ${PAKROOT}/library/curl/DESCRIPTION
 
 # Minimize library --------------------------------------------------------
-
-ENV PAKROOT=/usr/local/lib/R/library/pak
 
 RUN find ${PAKROOT}/library -name "*.so" | \
     xargs patchelf --remove-needed libR.so
