@@ -1,5 +1,5 @@
 ARG ARCH=invalid
-FROM ghcr.io/r-lib/pak-glibc-${ARCH}-libs:latest
+FROM ghcr.io/r-lib/pak-glibc-${ARCH}-libs:latest AS prepare
 
 ARG R_VERSION=4.5.1
 
@@ -16,6 +16,9 @@ RUN curl -LO https://github.com/r-hub/R/releases/download/v${R_VERSION}/r-${R_VE
 # Install pak ------------------------------------------------------------------
 
 COPY pak_*.tar.gz /root/
+
+FROM prepare AS install
+
 RUN PROCESSX_UNLINK_R=true R CMD INSTALL pak_*.tar.gz
 
 # Minimize library --------------------------------------------------------

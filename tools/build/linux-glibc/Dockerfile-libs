@@ -38,28 +38,19 @@ RUN export ARCH=$(dpkg --print-architecture) && \
       rm *.deb; \
     fi
 
-# this is neeeed for openssl to compile on x86_64
-RUN export ARCH=$(dpkg --print-architecture) && \
-    if [ "$ARCH" = "amd64" ]; then \
-      curl -LO https://github.com/r-hub/r-glibc/releases/download/bionic/libgcc-7-dev_7.5.0-3ubuntu1.18.04_$ARCH.deb && \
-      apt-get update && \
-      dpkg -i ./libgcc* || true && \
-      rm *.deb && \
-      apt-get -f -y install && \
-      dpkg -s libgcc-7-dev >/dev/null 2>/dev/null; \
-    fi
+# static zlib
+RUN mkdir -p /opt/r-lib/lib && cp `find /usr/ -name libz.a` /opt/r-lib/lib/
 
-# use a newer openssl, for security
-RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.4.1/openssl-3.4.1.tar.gz
-RUN tar xzf openssl-3.4.1.tar.gz && rm openssl-3.4.1.tar.gz
-RUN cd openssl-* && \
-    CFLAGS="-fPIC" ./config -fPIC no-shared --prefix=/opt/r-lib && \
-    make && \
-    make install_sw
-
-# not all R versions will find libssl.a in /opt/r-lib/lib64, move it
-RUN mkdir -p /opt/r-lib/lib && \
-    cp /opt/r-lib/lib64/*.a /opt/r-lib/lib/ || true
+# use mbedtls instead of openssl, because openssl's libcrypto is used
+# by R on som distros (Fedora 42), and this causes symbol clashes
+RUN curl -LO https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.4/mbedtls-3.6.4.tar.bz2
+RUN tar xf mbedtls-*.tar.bz2 && rm mbedtls-*.tar.bz2
+RUN apt-get update && apt-get install -y python3 cmake
+RUN cd mbedtls-* && \
+    mkdir -p build && cd build && \
+    CFLAGS=-fPIC cmake .. -DCMAKE_INSTALL_PREFIX=/opt/r-lib && \
+    cmake --build . && \
+    make install
 
 # roll our own libcurl, the original has way too many dependencies
 RUN curl -LO https://curl.haxx.se/download/curl-8.11.0.tar.gz
@@ -67,8 +58,8 @@ RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN cd curl-* && \
     LDFLAGS="-L/opt/r-lib/lib" \
     ./configure --prefix=/opt/r-lib \
-      --enable-static --disable-shared --with-openssl=/opt/r-lib \
-      --without-libpsl --without-brotli; \
+      --enable-static --disable-shared --with-mbedtls=/opt/r-lib \
+      --without-libpsl --without-brotli --enable-symbol-hiding; \
     make && \
     make install
 
