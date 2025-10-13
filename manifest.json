@@ -642,6 +642,15 @@
           "buildtime": "2025-10-13T12:46:00+00:00",
           "size": 7653682,
           "digest": "sha256:008f2fc0e931b860f0cec7ec07349df1818f9753a2ecdc59ad50a0bc1d8e148a"
+        },
+        {
+          "r.platform": "x86_64-pc-linux-gnu",
+          "r.version": "3.6",
+          "pak.version": "0.9.0.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2025-10-13T13:04:43+00:00",
+          "size": 7652020,
+          "digest": "sha256:e754a7bf19299edde408bdc96d6ba612abb771ce895a8283ae1efe78bdd3a1f0"
         }
       ]
     },
