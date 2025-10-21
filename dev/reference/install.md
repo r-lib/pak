@@ -1,0 +1,83 @@
+# All about installing pak.
+
+Read this if the default installation methods do not work for you or if
+you want the release candidate or development version.
+
+### Pre-built binaries
+
+Our pre-built binaries have the advantage that they are completely
+self-contained and dependency free. No additional R packages, system
+libraries or tools (e.g. compilers) are needed for them. Install a
+pre-built binary build of pak from our repository on GitHub:
+
+    install.packages("pak", repos = sprintf(
+      "https://r-lib.github.io/p/pak/stable/%s/%s/%s",
+      .Platform$pkgType,
+      R.Version()$os,
+      R.Version()$arch
+    ))
+
+This is supported for the following systems:
+
+|                       |         |                                   |
+|-----------------------|---------|-----------------------------------|
+| OS                    | CPU     | R version                         |
+| Linux                 | x86_64  | R 3.4.0 - R-devel                 |
+| Linux                 | aarch64 | R 3.4.0 - R-devel                 |
+| macOS High Sierra+    | x86_64  | R 3.4.0 - R-devel                 |
+| macOS Big Sur+        | aarch64 | R 4.1.0 - R-devel                 |
+| Windows               | x86_64  | R 3.4.0 - R-devel                 |
+| Windows               | aarch64 | R 4.4.0 - R-devel                 |
+| FreeBSD 13.x or later | x86_64  | R 4.4.x                           |
+| OpenBSD 7.4, 7.5, 7.6 | x86_64  | R 4.2.x (7.4, 7.5), R 4.4.x (7.6) |
+| NetBSD 10.0           | x86_64  | R 4.4.x                           |
+| DragonFly BSD 6.4     | x86_64  | R 4.3.x                           |
+
+#### Notes
+
+- For macOS we only support the official CRAN R build. Other builds,
+  e.g. Homebrew R, are not supported.
+
+- We only support R builds that have an R shared library. CRAN's Windows
+  and macOS installers are such, so the the R builds in the common Linux
+  distributions. But this might be an issue if you build R yourself
+  without the `--enable-R-shlib` option.
+
+### Install from CRAN
+
+Install the released version of the package from CRAN as usual:
+
+    install.packages("pak")
+
+This potentially needs a C compiler on platforms CRAN does not have
+binaries packages for.
+
+### Nightly builds
+
+We have nightly binary builds, for the same systems as the table above:
+
+    install.packages("pak", repos = sprintf(
+      "https://r-lib.github.io/p/pak/devel/%s/%s/%s",
+      .Platform$pkgType,
+      R.Version()$os,
+      R.Version()$arch
+    ))
+
+#### `stable` and `devel` streams
+
+We have three types of binaries available:
+
+- `stable` corresponds to the latest CRAN release of pak.
+
+- `devel` has builds from the development tree.
+
+The streams are available under different repository URLs:
+
+    stream <- "stable"
+    install.packages("pak", repos = sprintf(
+      "https://r-lib.github.io/p/pak/%s/%s/%s/%s",
+      stream,
+      .Platform$pkgType,
+      R.Version()$os,
+      R.Version()$arch
+    ))
