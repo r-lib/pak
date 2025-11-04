@@ -84,7 +84,7 @@
 - **Zhian Kamvar**. Contributor.  
   yaml
 
-- **Charlie Gao**. Contributor.  
+- **[Charlie Gao](https://github.com/shikokuchuo)**. Contributor.  
   yaml
 
 - **Kuba Podgórski**. Contributor.  
