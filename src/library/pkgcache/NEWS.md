@@ -1,5 +1,11 @@
 # pkgcache (development version)
 
+* pkgcache now supports comments in `DESCRIPTION` and `PACKAGES` files.
+  Current R-devel supports this since
+  https://github.com/wch/r-source/commit/92d9660517ceae66d422a510dc58e0840d55cdfc.
+  Comments are lines that start with a hash (`#`), without leading
+  whitespace. Comments within values are also supported (#130).
+
 # pkgcache 2.2.4
 
 * `parse_packages()` now parses files ending with an extra newline

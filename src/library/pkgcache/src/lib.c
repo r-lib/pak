@@ -160,6 +160,30 @@ SEXP pkgcache_read_raw(SEXP paths) {
   return result;
 }
 
+// `vlsize` is the total size of the value, without the trailing NL
+// `comment_size` is the total size of comment lines, including trailing NL
+static SEXP create_value(char *vl, int vlsize, int comment_size) {
+  SEXP val = Rf_mkCharLenCE(vl, vlsize - comment_size, CE_BYTES);
+  if (comment_size == 0) return val;
+
+  char *src = vl, *tgt = (char*) CHAR(val), *end = tgt + vlsize - comment_size;
+
+  // the value cannot start with a comment, comments begin at column zero
+  while (tgt < end) {
+    if (*src == '\n' && *(src + 1) == '#') {
+      src++;
+      while (*src != '\n') src++;
+      // do not skip the last newline, we'll copy this over in the next
+      // iteration, if any, if the next line is not a comment
+    } else {
+      *tgt = *src;
+      tgt++;
+      src++;
+    }
+  }
+  return val;
+}
+
 /* --------------------------------------------------------------------- */
 
 #define S_BG 0                  /* beginning of the file */
@@ -175,6 +199,8 @@ SEXP pkgcache_parse_description_raw(SEXP raw) {
   char *kw = NULL, *vl = NULL;
   int kwsize = 0, vlsize = 0;
   int linum = 1;
+  int comment_size = 0;
+  int tail_comment = 0;
 
   SEXP result = PROTECT(allocVector(STRSXP, 200));
   SEXP names = PROTECT(allocVector(STRSXP, 200));
@@ -185,6 +211,16 @@ SEXP pkgcache_parse_description_raw(SEXP raw) {
 
     /* -- at the begining ---------------------------------------------- */
     case S_BG:
+      /* skip comments and whitespace */
+      while (*p == '#' || isspace(*p)) {
+        if (*p == '\n') linum++;
+        if (*p == '#') {
+          while (*p != '\n' && *p != '\0') p++;
+          linum++;
+        }
+        if (*p != '\0') p++;
+      }
+
       if (*p == ':' || *p == '\r' || *p == '\n' || *p == ' ' || *p == '\t') {
         R_THROW_ERROR(
           "Invalid DESCRIPTION file, must start with an "
@@ -223,6 +259,7 @@ SEXP pkgcache_parse_description_raw(SEXP raw) {
 
     /* --- within a value ---------------------------------------------- */
     case S_VL:
+      tail_comment = 0;
       /* newline might be the end of the value, if no continuation. */
       if (*p == '\n') {
         state = S_NL;
@@ -237,15 +274,27 @@ SEXP pkgcache_parse_description_raw(SEXP raw) {
 
     /* -- right after a newline ---------------------------------------- */
     case S_NL:
+      /* comment line? */
+      if (*p == '#') {
+        tail_comment = 1;
+        char *cs = p;
+        while (*p != '\n' && *p != '\0') p++;
+        // vlsize does not include trailing newlines
+        vlsize = p - vl;
+        if (*p != '\0') p++;
+        // comment_size does include trailing newlines
+        comment_size += (p - cs);
+
       /* maybe a continuation line */
-      if (*p == ' ' || *p == '\t') {
+      } else if (*p == ' ' || *p == '\t') {
         state = S_WS;
         p++;
 
       /* othewise we can save the field, and start parsing the next one */
       } else {
-        SET_STRING_ELT(result, ridx, Rf_mkCharLenCE(vl, vlsize, CE_BYTES));
+        SET_STRING_ELT(result, ridx, create_value(vl, vlsize, comment_size));
         SET_STRING_ELT(names, ridx, Rf_mkCharLenCE(kw, kwsize, CE_NATIVE));
+        comment_size = 0;
         ridx++;
         kw = p;
         state = S_KW;
@@ -277,10 +326,11 @@ SEXP pkgcache_parse_description_raw(SEXP raw) {
   if (state == S_KW) {
     R_THROW_ERROR("DESCRIPTION file ended while parsing a key");
   } else if (state != S_BG) {
-    /* Strip the trailing newline(s) */
-    while (p - 1 > start && *(p-1) == '\n') p--;
+    if (tail_comment) p--;
+    /* Strip the trailing newline(s), need to ignore the last comment(s) */
+    while (p - 1 > start && *(p - 1) == '\n') p--;
     vlsize = p - vl;
-    SET_STRING_ELT(result, ridx, Rf_mkCharLenCE(vl, vlsize, CE_BYTES));
+    SET_STRING_ELT(result, ridx, create_value(vl, vlsize, comment_size));
     SET_STRING_ELT(names, ridx, Rf_mkCharLenCE(kw, kwsize, CE_NATIVE));
     ridx++;
   }
@@ -321,14 +371,19 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   char tail = p[len - 1];
   p[len - 1] = '\0';
 
-  /* Skip whitespace first, check for empty file */
+  /* Skip comments and whitespace */
+  while (*p == '#' || isspace(*p)) {
+    if (*p == '#') while (*p != '\n' && *p != '\0') p++;
+    if (*p != '\0') p++;
+  }
+  const char *begin = p;
 
-  while (*p == '\n' || *p == '\r') p++;
+  /* Check for empty file.*/
   if (*p == '\0') return R_NilValue;
 
-  /* This is faster than manual search, because strchr is optimized.
-     It is also faster than strstr, for this special case of a two
-     character pattern. */
+  /* Count the number of packages. This is faster than manual search,
+     because strchr is optimized. It is also faster than strstr, for this
+     special case of a two character pattern. */
 
   for (;;) {
     p = strchr(p, '\n');
@@ -348,6 +403,8 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   char *kw = NULL, *vl = NULL;
   int kwsize = 0, vlsize = 0;
   int linum = 1;
+  int comment_size = 0;
+  int tail_comment = 0;
   int max_cols = 1000;
 
   SEXP nms = PROTECT(allocVector(STRSXP, max_cols));
@@ -357,7 +414,7 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   hash_create(&table, nms, cols, tab, max_cols, npkgs);
   int npkg = 0;
 
-  p = (char*) RAW(raw);
+  p = (char*) begin;
   while (*p != '\0') {
     switch (state) {
 
@@ -402,6 +459,7 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
 
     /* --- within a value ---------------------------------------------- */
     case S_VL:
+      tail_comment = 0;
       /* newline might be the end of the value, if no continuation. */
       if (*p == '\n') {
         state = S_NL;
@@ -416,16 +474,27 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
 
     /* -- right after a newline ---------------------------------------- */
     case S_NL:
+      /* comment line, ignore */
+      if (*p == '#') {
+        tail_comment = 1;
+        char *cs = p;
+        while (*p != '\n' && *p != '\0') p++;
+        // vlsize does not include trailing newlines
+        vlsize = p - vl;
+        if (*p != '\0') p++;
+        // comment_size does include trailing newlines
+        comment_size += (p - cs);
 
       /* maybe a continuation line */
-      if (*p == ' ' || *p == '\t') {
+      } else if (*p == ' ' || *p == '\t') {
         state = S_WS;
         p++;
 
       /* end of field */
       } else {
         /* Save field */
-        SEXP val = PROTECT(mkCharLenCE(vl, vlsize, CE_BYTES));
+        SEXP val = PROTECT(create_value(vl, vlsize, comment_size));
+        comment_size = 0;
         hash_update(&table, kw, kwsize, npkg, val, /* err */ 1);
         UNPROTECT(1);
 
@@ -484,6 +553,8 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
   vlsize = p - vl;
   p = (char*) RAW(raw);
   p[len - 1] = tail;
+  /* if ended with a comment, then need to drop last \n */
+  if (tail_comment) tail = '\n';
   if (state == S_VL && tail != '\n') vlsize++;
   /* if the tail is a \n, we don't need that. We also drop \r, which
      is possibly not correct, but in practice better */
@@ -493,7 +564,7 @@ SEXP pkgcache_parse_packages_raw(SEXP raw) {
     R_THROW_ERROR("PACKAGES file ended while parsing a key");
   } else if (state != S_BG) {
     /* Save field */
-    SEXP val = PROTECT(mkCharLenCE(vl, vlsize, CE_BYTES));
+    SEXP val = PROTECT(create_value(vl, vlsize, comment_size));
     hash_update(&table, kw, kwsize, npkg, val, /* err= */ 1);
     UNPROTECT(1);
   }
@@ -543,6 +614,8 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
     kwsize = 0;
     vlsize = 0;
     linum = 1;
+    int comment_size = 0;
+    int tail_comment = 0;
 
     int len = LENGTH(raw);
     char *p = (char*) RAW(raw);
@@ -553,6 +626,16 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
       switch(state) {
       /* -- at the begining -------------------------------------------- */
       case S_BG:
+        /* skip comments and whitespace */
+        while (*p == '#' || isspace(*p)) {
+          if (*p == '\n') linum++;
+          if (*p == '#') {
+            while (*p != '\n' && *p != '\0') p++;
+            linum++;
+          }
+          if (*p != '\0') p++;
+        }
+
         if (*p == ':' || *p == '\r' || *p == '\n' || *p == ' ' || *p == '\t') {
           SET_STRING_ELT(
             errors,
@@ -606,6 +689,7 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
 
       /* --- within a value -------------------------------------------- */
       case S_VL:
+        tail_comment = 0;
         if (*p == '\n') {
           state = S_NL;
           vlsize = p - vl;
@@ -620,14 +704,26 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
 
       /* -- right after a newline -------------------------------------- */
       case S_NL:
+      /* comment line? */
+      if (*p == '#') {
+        tail_comment = 1;
+        char *cs = p;
+        while (*p != '\n' && *p != '\0') p++;
+        // vlsize does not include trailing newlines
+        vlsize = p - vl;
+        if (*p != '\0') p++;
+        // comment_size does include trailing newlines
+        comment_size += (p - cs);
+
         /* maybe a continuation line */
-        if (*p == ' ' || *p == '\t') {
+        } else if (*p == ' ' || *p == '\t') {
           state = S_WS;
           p++;
 
         /* othewise we can save the field, and start parsing the next one */
         } else {
-          SEXP val = PROTECT(mkCharLenCE(vl, vlsize, CE_BYTES));
+          SEXP val = PROTECT(create_value(vl, vlsize, comment_size));
+          comment_size = 0;
           hash_update(&table, kw, kwsize, npkg, val, 1);
           UNPROTECT(1);
 
@@ -663,7 +759,12 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
     vlsize = p - vl;
     p = (char*) RAW(raw);
     p[len - 1] = tail;
+    /* if ended with a comment, then need to drop last \n */
+    if (tail_comment) tail = '\n';
     if (state == S_VL && tail != '\n') vlsize++;
+    /* if the tail is a \n, we don't need that. We also drop \r, which
+      is possibly not correct, but in practice better */
+    if (state == S_NL && (tail == '\n' || tail == '\r')) vlsize--;
 
     if (state == S_KW) {
       SET_STRING_ELT(
@@ -679,7 +780,7 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase) {
 
     } else {
       /* Save field */
-      SEXP val = PROTECT(mkCharLenCE(vl, vlsize, CE_BYTES));
+      SEXP val = PROTECT(create_value(vl, vlsize, comment_size));
       hash_update(&table, kw, kwsize, npkg, val, /* err = */ 1);
       UNPROTECT(1);
     }
