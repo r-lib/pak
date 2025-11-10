@@ -127,7 +127,7 @@ No changes.
 
 * New `include_linkingto` config parameter to always include `LinkingTo`
   packages in the solution, even for binaries
-  (https://github.com/r-lib/pkgdepends/issues/485).
+  (https://github.com/r-lib/pak/issues/485).
 
 * `pkg_name_check()` now does not include Acromine results, because the web
   site was unstable.
