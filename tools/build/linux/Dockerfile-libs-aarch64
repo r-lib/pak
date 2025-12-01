@@ -13,7 +13,7 @@
 
 FROM ghcr.io/r-lib/pak-cross-aarch64:latest AS cross
 
-FROM alpine:3.19 AS build
+FROM alpine:3.22 AS build
 USER root
 WORKDIR /root
 
@@ -104,7 +104,7 @@ RUN cd curl-* && \
 
 # TODO: create a multi-arch pak-libs image
 
-FROM --platform=linux/arm64 alpine:3.19
+FROM --platform=linux/arm64 alpine:3.22
 COPY --from=build /usr/local /usr/local/
 
 # Some of this info is shown on the GH packages pages

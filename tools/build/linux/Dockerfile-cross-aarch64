@@ -15,11 +15,11 @@
 # TODO: make the arch a build arg, so it is easy to create cross compilers
 # for other architectures.
 
-# We use Alpine 3.19, because that's what r-minimal uses currently.
+# We use Alpine 3.22, because that's what r-minimal uses currently.
 # When we update r-minimal, this image needs an update as well.
 # (We could probably use some r-minimal image as the base image, that's
 # slightly larger, but then we don't need to manually match versions.)
-FROM alpine:3.19 AS build
+FROM alpine:3.22 AS build
 
 RUN apk add alpine-sdk sudo git
 
@@ -35,7 +35,7 @@ WORKDIR /home/csardi
 # /home/csardi/sysroot-aarch64 but gcc commands have command line
 # options to change that.
 RUN abuild-keygen -a -i -n
-RUN git clone -b 3.19-stable https://github.com/alpinelinux/aports --depth 1
+RUN git clone -b 3.22-stable https://github.com/alpinelinux/aports --depth 1
 
 # We don't want to build the whole small Alpine system that is the default
 # in `bootstreap.sh`, so we bail out before. We just need a fully
@@ -52,7 +52,7 @@ RUN CBUILDROOT=~/sysroot-$BARCH ~/aports/scripts/bootstrap.sh $BARCH
 # host system, anyway, as ultimately we'll use r-minimal as base, not
 # this image. So we might as well do that for the cross packages as well.)
 
-FROM alpine:3.19
+FROM alpine:3.22
 USER root
 WORKDIR /root
 COPY --from=build /home/csardi/packages /root/packages
