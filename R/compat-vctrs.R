@@ -1,3 +1,5 @@
+# nocov start
+
 compat_vctrs <- local({
   # Modified from https://github.com/r-lib/rlang/blob/master/R/compat-vctrs.R
 
