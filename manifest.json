@@ -376,11 +376,11 @@
         {
           "r.platform": "x86_64-unknown-openbsd7.6",
           "r.version": "4.4",
-          "pak.version": "0.9.0.9000",
+          "pak.version": "0.9.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-10-12T05:46:44+00:00",
-          "size": 6534608,
-          "digest": "sha256:bf95ede0345417108a777ae04d3ca0addbf6979632c5e89db2b9447e8afee583"
+          "buildtime": "2025-12-01T15:52:57+00:00",
+          "size": 6536946,
+          "digest": "sha256:1fe864dd8eace37534ec5be3360f9fe28982ffc85b5e2972dd7d880246660cd2"
         },
         {
           "r.platform": "x86_64--netbsd",
