@@ -1628,11 +1628,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.6",
-          "pak.version": "0.9.0",
+          "pak.version": "0.9.1",
           "pak.revision": "TODO",
-          "buildtime": "2025-05-27T13:04:14+00:00",
-          "size": 9063959,
-          "digest": "sha256:cd7a354be219c967bfbca3493d70f2a3ba42a1101ec58c8baf28d63293d175fc"
+          "buildtime": "2025-12-01T10:18:44+00:00",
+          "size": 9094964,
+          "digest": "sha256:302a32fbce78419eae1771f55af754fd0c6fff0ff3b7832f53fb0103bf858996"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
