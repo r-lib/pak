@@ -41,44 +41,44 @@ pak::pkg_install("tibble")
     #> ✔ Got glue 1.8.0 (source) (126.68 kB)
     #> ✔ Got lifecycle 1.0.4 (source) (107.66 kB)
     #> ✔ Got cli 3.6.5 (source) (640.24 kB)
-    #> ✔ Got rlang 1.1.6 (source) (767.93 kB)
-    #> ✔ Got vctrs 0.6.5 (source) (969.07 kB)
-    #> ✔ Got magrittr 2.0.4 (source) (281.79 kB)
-    #> ✔ Got tibble 3.3.0 (source) (588.67 kB)
-    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
-    #> ✔ Got utf8 1.2.6 (source) (243.86 kB)
     #> ✔ Got pillar 1.11.1 (source) (409.51 kB)
+    #> ✔ Got utf8 1.2.6 (source) (243.86 kB)
+    #> ✔ Got rlang 1.1.6 (source) (767.93 kB)
+    #> ✔ Got tibble 3.3.0 (source) (588.67 kB)
+    #> ✔ Got magrittr 2.0.4 (source) (281.79 kB)
+    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
+    #> ✔ Got vctrs 0.6.5 (source) (969.07 kB)
     #> ℹ Building cli 3.6.5
     #> ℹ Building glue 1.8.0
     #> ℹ Building magrittr 2.0.4
     #> ℹ Building pkgconfig 2.0.3
-    #> ✔ Built pkgconfig 2.0.3 (1.4s)
+    #> ✔ Built pkgconfig 2.0.3 (1.5s)
     #> ℹ Building rlang 1.1.6
-    #> ✔ Built magrittr 2.0.4 (2s)
+    #> ✔ Built magrittr 2.0.4 (2.2s)
     #> ℹ Building utf8 1.2.6
     #> ✔ Built glue 1.8.0 (2.7s)
-    #> ✔ Installed glue 1.8.0  (45ms)
-    #> ✔ Installed magrittr 2.0.4  (37ms)
+    #> ✔ Installed glue 1.8.0  (42ms)
+    #> ✔ Installed magrittr 2.0.4  (35ms)
     #> ✔ Installed pkgconfig 2.0.3  (26ms)
-    #> ✔ Built utf8 1.2.6 (4.4s)
-    #> ✔ Installed utf8 1.2.6  (1s)
-    #> ✔ Built cli 3.6.5 (11.9s)
-    #> ✔ Installed cli 3.6.5  (1s)
+    #> ✔ Built utf8 1.2.6 (4.2s)
+    #> ✔ Installed utf8 1.2.6  (21ms)
+    #> ✔ Built cli 3.6.5 (12.1s)
+    #> ✔ Installed cli 3.6.5  (33ms)
     #> ✔ Built rlang 1.1.6 (12.6s)
-    #> ✔ Installed rlang 1.1.6  (1s)
+    #> ✔ Installed rlang 1.1.6  (38ms)
     #> ℹ Building lifecycle 1.0.4
-    #> ✔ Built lifecycle 1.0.4 (1.3s)
+    #> ✔ Built lifecycle 1.0.4 (1.4s)
     #> ✔ Installed lifecycle 1.0.4  (1s)
     #> ℹ Building vctrs 0.6.5
-    #> ✔ Built vctrs 0.6.5 (16.2s)
-    #> ✔ Installed vctrs 0.6.5  (1s)
+    #> ✔ Built vctrs 0.6.5 (16.9s)
+    #> ✔ Installed vctrs 0.6.5  (46ms)
     #> ℹ Building pillar 1.11.1
-    #> ✔ Built pillar 1.11.1 (3s)
+    #> ✔ Built pillar 1.11.1 (3.3s)
     #> ✔ Installed pillar 1.11.1  (1s)
     #> ℹ Building tibble 3.3.0
-    #> ✔ Built tibble 3.3.0 (2.9s)
-    #> ✔ Installed tibble 3.3.0  (1s)
-    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.14 MB) [49.4s]
+    #> ✔ Built tibble 3.3.0 (3s)
+    #> ✔ Installed tibble 3.3.0  (34ms)
+    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.14 MB) [47.7s]
 
 #### Install packages from GitHub
 
@@ -89,16 +89,16 @@ pak::pkg_install("tidyverse/tibble")
     #>
     #> → Will update 1 package.
     #> → The package (0 B) is cached.
-    #> + tibble 3.3.0 → 3.3.0.9006 [bld][cmp] (GitHub: 29145a0)
+    #> + tibble 3.3.0 → 3.3.0.9013 [bld][cmp] (GitHub: 5ec7a22)
     #>
     #> ℹ No downloads are needed, 1 pkg is cached
-    #> ✔ Got tibble 3.3.0.9006 (source) (1.35 MB)
-    #> ℹ Packaging tibble 3.3.0.9006
-    #> ✔ Packaged tibble 3.3.0.9006 (771ms)
-    #> ℹ Building tibble 3.3.0.9006
-    #> ✔ Built tibble 3.3.0.9006 (2.7s)
-    #> ✔ Installed tibble 3.3.0.9006 (github::tidyverse/tibble@29145a0) (1s)
-    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [6.5s]
+    #> ✔ Got tibble 3.3.0.9013 (source) (1.36 MB)
+    #> ℹ Packaging tibble 3.3.0.9013
+    #> ✔ Packaged tibble 3.3.0.9013 (785ms)
+    #> ℹ Building tibble 3.3.0.9013
+    #> ✔ Built tibble 3.3.0.9013 (2.9s)
+    #> ✔ Installed tibble 3.3.0.9013 (github::tidyverse/tibble@5ec7a22) (1s)
+    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [6.2s]
 
 #### Look up dependencies
 
@@ -159,11 +159,11 @@ pak::local_install("cli")
     #> ℹ No downloads are needed, 1 pkg is cached
     #> ✔ Got cli 3.6.5 (source) (640.24 kB)
     #> ℹ Packaging cli 3.6.5
-    #> ✔ Packaged cli 3.6.5 (1.4s)
+    #> ✔ Packaged cli 3.6.5 (1.5s)
     #> ℹ Building cli 3.6.5
-    #> ✔ Built cli 3.6.5 (8.5s)
+    #> ✔ Built cli 3.6.5 (8.9s)
     #> ✔ Installed cli 3.6.5 (local) (1s)
-    #> ✔ 1 pkg: upd 1, dld 1 (640.24 kB) [11.5s]
+    #> ✔ 1 pkg: upd 1, dld 1 (640.24 kB) [12s]
 
 ## 🔗 Quick links (start here if in doubt!)
 

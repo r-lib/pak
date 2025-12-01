@@ -2,6 +2,23 @@
 
 ## pak (development version)
 
+- pak is now more tolerant with extraneous whitespace in `PACKAGES*`
+  metadata files (<https://github.com/r-lib/pak/issues/785>).
+
+- pak now builds again on FreeBSD
+  ([\#790](https://github.com/r-lib/pak/issues/790)).
+
+- Installing dependencies of a package file with `deps::<filename>`
+  works again ([\#784](https://github.com/r-lib/pak/issues/784)).
+
+- pak now always uses the correct working directory in the subprocess;
+  this was a common source of errors.
+
+- New (nightly) binary builds for aarch64 Windows.
+
+- We do not build binary builds for the release candidate of pak any
+  more, only for stable and devel pak. `rc` is an alias to `stable` now.
+
 ## pak 0.9.0
 
 CRAN release: 2025-05-27

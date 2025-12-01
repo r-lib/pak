@@ -36,7 +36,13 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
-</div>
+<ul><li><p>pak is now more tolerant with extraneous whitespace in <code>PACKAGES*</code> metadata files (<a href="https://github.com/r-lib/pak/issues/785" class="external-link uri">https://github.com/r-lib/pak/issues/785</a>).</p></li>
+<li><p>pak now builds again on FreeBSD (<a href="https://github.com/r-lib/pak/issues/790" class="external-link">#790</a>).</p></li>
+<li><p>Installing dependencies of a package file with <code>deps::&lt;filename&gt;</code> works again (<a href="https://github.com/r-lib/pak/issues/784" class="external-link">#784</a>).</p></li>
+<li><p>pak now always uses the correct working directory in the subprocess; this was a common source of errors.</p></li>
+<li><p>New (nightly) binary builds for aarch64 Windows.</p></li>
+<li><p>We do not build binary builds for the release candidate of pak any more, only for stable and devel pak. <code>rc</code> is an alias to <code>stable</code> now.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.0" id="pak-090">pak 0.9.0<a class="anchor" aria-label="anchor" href="#pak-090"></a></h2><p class="text-muted">CRAN release: 2025-05-27</p>
 <ul><li><p>pak now supports HTTP basic authentication for CRAN-like repositories. See ‘Authenticated repositories’ in the reference manual.</p></li>
@@ -202,7 +208,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
   </div></footer></body></html>
