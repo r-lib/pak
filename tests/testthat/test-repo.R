@@ -11,7 +11,7 @@ repo_url <- Sys.getenv(
   "https://raw.githubusercontent.com/r-lib/r-lib.github.io/test/p/pak/"
 )
 
-branches <- c("stable", "rc", "devel")
+branches <- c("stable", "devel")
 
 get_curl <- function(repo, type, rver) {
   url <- utils::contrib.url(repo, type)
