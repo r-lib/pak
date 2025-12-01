@@ -1,5 +1,21 @@
 # pak (development version)
 
+* pak is now more tolerant with extraneous whitespace in `PACKAGES*`
+  metadata files (https://github.com/r-lib/pak/issues/785).
+
+* pak now builds again on FreeBSD (#790).
+
+* Installing dependencies of a package file with `deps::<filename>`
+  works again (#784).
+
+* pak now always uses the correct working directory in the subprocess;
+  this was a common source of errors.
+
+* New (nightly) binary builds for aarch64 Windows.
+
+* We do not build binary builds for the release candidate of pak any
+  more, only for stable and devel pak. `rc` is an alias to `stable` now.
+
 # pak 0.9.0
 
 * pak now supports HTTP basic authentication for CRAN-like repositories.
@@ -8,11 +24,11 @@
 * New function `scan_deps()` to auto-detect package dependencies from
   R code. `deps::.` automatically uses detected dependencies now if no
   `DESCRIPTION` file is found.
-  
+
 * The dependency solver now uses better heuristics, that works better
-  (=faster) with multiple repositories with large overlaps 
+  (=faster) with multiple repositories with large overlaps
   (https://github.com/r-lib/pkgdepends/pull/392).
-  
+
 * pak is now much better at detecting the correct Linux distribution
   when deciding about PPM and system requirements support.
 
