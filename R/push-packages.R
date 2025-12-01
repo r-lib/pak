@@ -619,7 +619,7 @@ push_packages <- local({
         tag <- "devel"
       } else {
         p1 <- push_packages(paths, "stable", keep_old, dry_run, cleanup)
-        return(invisible(rbind(p1, p2)))
+        return(invisible(p1))
       }
     }
 
