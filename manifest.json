@@ -385,11 +385,11 @@
         {
           "r.platform": "x86_64--netbsd",
           "r.version": "4.4",
-          "pak.version": "0.9.0.9000",
+          "pak.version": "0.9.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2025-10-12T05:41:07+00:00",
-          "size": 6428463,
-          "digest": "sha256:29317277d8277b6656af2c16d985579b15009f5048f3ed912c9a3c2f4f124c41"
+          "buildtime": "2025-12-01T15:48:57+00:00",
+          "size": 6430276,
+          "digest": "sha256:49d3d841993ab99415ff81a8b0b813b8c6f4916275ceefe3bd3a088596707f8c"
         },
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
