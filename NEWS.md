@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.9.1
 
 * pak is now more tolerant with extraneous whitespace in `PACKAGES*`
   metadata files (https://github.com/r-lib/pak/issues/785).
