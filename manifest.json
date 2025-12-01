@@ -543,6 +543,15 @@
           "buildtime": "2025-10-08T12:51:09+00:00",
           "size": 9152871,
           "digest": "sha256:bd26f04a95d421d5bb5e31c4147006e6ed5b1b082eb232b6d8acc904839149bf"
+        },
+        {
+          "r.platform": "amd64-portbld-freebsd14.3",
+          "r.version": "4.5",
+          "pak.version": "0.9.1.9000",
+          "pak.revision": "TODO",
+          "buildtime": "2025-12-01T15:50:03+00:00",
+          "size": 6509443,
+          "digest": "sha256:bc8669c1af2aef6591bf5e526ab595cc9d23c6e98250d562093efbe46ea5eaa6"
         }
       ]
     },
