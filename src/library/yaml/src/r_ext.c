@@ -39,7 +39,7 @@ int Ryaml_is_named_list(SEXP s_obj)
   if (TYPEOF(s_obj) != VECSXP)
     return 0;
 
-  s_names = GET_NAMES(s_obj);
+  s_names = getAttrib(s_obj, R_NamesSymbol);
   return (TYPEOF(s_names) == STRSXP && LENGTH(s_names) == LENGTH(s_obj));
 }
 
@@ -126,7 +126,7 @@ SEXP Ryaml_sanitize_handlers(SEXP s_handlers)
     return R_NilValue;
   }
   else {
-    PROTECT(s_names = GET_NAMES(s_handlers));
+    PROTECT(s_names = getAttrib(s_handlers, R_NamesSymbol));
 
     PROTECT(s_handlers_2 = allocVector(VECSXP, length(s_handlers)));
     PROTECT(s_names_2 = allocVector(STRSXP, length(s_names)));
@@ -168,7 +168,7 @@ SEXP Ryaml_sanitize_handlers(SEXP s_handlers)
       UNPROTECT(1); /* s_name */
     }
 
-    SET_NAMES(s_handlers_2, s_names_2);
+    setAttrib(s_handlers_2, R_NamesSymbol, s_names_2);
     s_handlers = s_handlers_2;
 
     UNPROTECT(3); /* s_names, s_names_2, s_handlers_2 */
@@ -185,7 +185,7 @@ SEXP Ryaml_find_handler(SEXP s_handlers, const char *name)
 
   /* Look for a custom R handler */
   if (s_handlers != R_NilValue) {
-    PROTECT(s_names = GET_NAMES(s_handlers));
+    PROTECT(s_names = getAttrib(s_handlers, R_NamesSymbol));
     for (i = 0; i < length(s_names); i++) {
       PROTECT(s_name = STRING_ELT(s_names, i));
       if (s_name != NA_STRING) {

@@ -1,17 +1,18 @@
-`yaml.load_file` <-
-function(input, error.label, readLines.warn=TRUE, ...) {
+#' @export
+#' @rdname yaml.load
+yaml.load_file <- function(input, error.label, readLines.warn = TRUE, ...) {
   if (missing(error.label)) {
     if (inherits(input, "connection")) {
       # try to guess filename
       s <- try(summary(input), silent = TRUE)
-      if (!inherits(s, "try-error") && is.list(s) && "description" %in% names(s)) {
+      if (
+        !inherits(s, "try-error") && is.list(s) && "description" %in% names(s)
+      ) {
         error.label <- s$description
       }
-    }
-    else if (is.character(input) && nzchar(input[1])) {
+    } else if (is.character(input) && nzchar(input[1])) {
       error.label <- input[1]
-    }
-    else {
+    } else {
       error.label <- NULL
     }
   }
@@ -22,6 +23,9 @@ function(input, error.label, readLines.warn=TRUE, ...) {
   } else {
     con <- input
   }
-  yaml.load(readLines(con, warn=readLines.warn),
-            error.label = error.label, ...)
+  yaml.load(
+    readLines(con, warn = readLines.warn),
+    error.label = error.label,
+    ...
+  )
 }

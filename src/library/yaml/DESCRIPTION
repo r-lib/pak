@@ -1,20 +1,54 @@
-Package: yaml
 Type: Package
+Package: yaml
 Title: Methods to Convert R Data to YAML and Back
-Date: 2024-07-22
-Version: 2.3.10
-Suggests: RUnit
-Author: Shawn P Garbett [aut], Jeremy Stephens [aut, cre], Kirill Simonov [aut], Yihui Xie [ctb],
-  Zhuoer Dong [ctb], Hadley Wickham [ctb], Jeffrey Horner [ctb], reikoch [ctb],
-  Will Beasley [ctb], Brendan O'Connor [ctb], Gregory R. Warnes [ctb],
-  Michael Quinn [ctb], Zhian N. Kamvar [ctb], Charlie Gao [ctb]
-Maintainer: Shawn Garbett <shawn.garbett@vumc.org>
-License: BSD_3_clause + file LICENSE
+Version: 2.3.12
+Authors@R: c(
+    person("Hadley", "Wickham", , "hadley@posit.co", role = "cre",
+           comment = c(ORCID = "0000-0003-4757-117X")),
+    person("Shawn", "Garbett", , "shawn.garbett@vumc.org", role = "ctb",
+           comment = c(ORCID = "0000-0003-4079-5621")),
+    person("Jeremy", "Stephens", role = c("aut", "ctb")),
+    person("Kirill", "Simonov", role = "aut"),
+    person("Yihui", "Xie", role = "ctb",
+           comment = c(ORCID = "0000-0003-0645-5666")),
+    person("Zhuoer", "Dong", role = "ctb"),
+    person("Jeffrey", "Horner", role = "ctb"),
+    person("reikoch", role = "ctb"),
+    person("Will", "Beasley", role = "ctb",
+           comment = c(ORCID = "0000-0002-5613-5006")),
+    person("Brendan", "O'Connor", role = "ctb"),
+    person("Michael", "Quinn", role = "ctb"),
+    person("Charlie", "Gao", role = "ctb"),
+    person(c("Gregory", "R."), "Warnes", role = "ctb"),
+    person(c("Zhian", "N."), "Kamvar", role = "ctb")
+  )
 Description: Implements the 'libyaml' 'YAML' 1.1 parser and emitter
-  (<https://pyyaml.org/wiki/LibYAML>) for R.
-URL: https://github.com/vubiostat/r-yaml/
-BugReports: https://github.com/vubiostat/r-yaml/issues
+    (<https://pyyaml.org/wiki/LibYAML>) for R.
+License: BSD_3_clause + file LICENSE
+URL: https://yaml.r-lib.org, https://github.com/r-lib/yaml/
+BugReports: https://github.com/r-lib/yaml/issues
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/Needs/website: tidyverse/tidytemplate
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2024-07-22 15:44:18 UTC; garbetsp
+Packaged: 2025-12-08 16:53:07 UTC; hadleywickham
+Author: Hadley Wickham [cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>),
+  Shawn Garbett [ctb] (ORCID: <https://orcid.org/0000-0003-4079-5621>),
+  Jeremy Stephens [aut, ctb],
+  Kirill Simonov [aut],
+  Yihui Xie [ctb] (ORCID: <https://orcid.org/0000-0003-0645-5666>),
+  Zhuoer Dong [ctb],
+  Jeffrey Horner [ctb],
+  reikoch [ctb],
+  Will Beasley [ctb] (ORCID: <https://orcid.org/0000-0002-5613-5006>),
+  Brendan O'Connor [ctb],
+  Michael Quinn [ctb],
+  Charlie Gao [ctb],
+  Gregory R. Warnes [ctb],
+  Zhian N. Kamvar [ctb]
+Maintainer: Hadley Wickham <hadley@posit.co>
 Repository: CRAN
-Date/Publication: 2024-07-26 15:10:02 UTC
+Date/Publication: 2025-12-10 07:00:01 UTC

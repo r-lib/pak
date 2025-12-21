@@ -541,7 +541,7 @@ static int handle_sequence(
         PROTECT(s_new_obj = allocVector(VECSXP, total_len));
         if (coerce_keys) {
           s_keys = allocVector(STRSXP, total_len);
-          SET_NAMES(s_new_obj, s_keys);
+          setAttrib(s_new_obj, R_NamesSymbol, s_keys);
         }
         else {
           s_keys = allocVector(VECSXP, total_len);
@@ -555,7 +555,7 @@ static int handle_sequence(
             SET_VECTOR_ELT(s_new_obj, idx, VECTOR_ELT(s_obj, j));
 
             if (coerce_keys) {
-              PROTECT(s_key = STRING_ELT(GET_NAMES(s_obj), j));
+              PROTECT(s_key = STRING_ELT(getAttrib(s_obj, R_NamesSymbol), j));
               SET_STRING_ELT(s_keys, idx, s_key);
 
               if (Ryaml_index(s_keys, s_key, 1, idx) >= 0) {
@@ -668,7 +668,7 @@ static int expand_merge(
   int i = 0, count = 0;
   const char *inspect = NULL;
 
-  s_merge_keys = coerce_keys ? GET_NAMES(s_merge_list) : getAttrib(s_merge_list, Ryaml_KeysSymbol);
+  s_merge_keys = coerce_keys ? getAttrib(s_merge_list, R_NamesSymbol) : getAttrib(s_merge_list, Ryaml_KeysSymbol);
   for (i = 0; i < length(s_merge_list); i++) {
     s_value = VECTOR_ELT(s_merge_list, i);
     if (coerce_keys) {
@@ -733,7 +733,7 @@ static int handle_map_entry(
     /* (Possibly) convert this key to a character vector, and then save
      * the first element in the vector (CHARSXP element). Throw away
      * the containing vector, since it's not needed anymore. */
-    PROTECT(s_key = AS_CHARACTER(s_key));
+    PROTECT(s_key = coerceVector(s_key, STRSXP));
     len = length(s_key);
 
     if (len == 0) {
@@ -954,8 +954,8 @@ static int handle_map(
 
   /* Initialize key list/vector */
   if (coerce_keys) {
-    s_keys = NEW_STRING(count);
-    SET_NAMES(s_list, s_keys);
+    s_keys = allocVector(STRSXP, count);
+    setAttrib(s_list, R_NamesSymbol, s_keys);
   }
   else {
     s_keys = allocVector(VECSXP, count);

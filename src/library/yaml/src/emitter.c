@@ -25,15 +25,15 @@
 
 #define PUT_BREAK(emitter)                                                      \
     (FLUSH(emitter)                                                             \
-     && ((emitter->line_break == YAML_CR_BREAK ?                                \
+     && ((void)(emitter->line_break == YAML_CR_BREAK ?                          \
              (*(emitter->buffer.pointer++) = (yaml_char_t) '\r') :              \
           emitter->line_break == YAML_LN_BREAK ?                                \
              (*(emitter->buffer.pointer++) = (yaml_char_t) '\n') :              \
           emitter->line_break == YAML_CRLN_BREAK ?                              \
-             (*(emitter->buffer.pointer++) = (yaml_char_t) '\r',                \
+             ((void)(*(emitter->buffer.pointer++) = (yaml_char_t) '\r'),        \
               *(emitter->buffer.pointer++) = (yaml_char_t) '\n') : 0),          \
-         emitter->column = 0,                                                   \
-         emitter->line ++,                                                      \
+         (void)(emitter->column = 0),                                           \
+         (void)(++emitter->line),                                               \
          1))
 
 /*
@@ -53,12 +53,12 @@
 #define WRITE_BREAK(emitter,string)                                             \
     (FLUSH(emitter)                                                             \
      && (CHECK(string,'\n') ?                                                   \
-         (PUT_BREAK(emitter),                                                   \
-          string.pointer ++,                                                    \
+         ((void)PUT_BREAK(emitter),                                             \
+          (void)(++string.pointer),                                             \
           1) :                                                                  \
-         (COPY(emitter->buffer,string),                                         \
-          emitter->column = 0,                                                  \
-          emitter->line ++,                                                     \
+         ((void)COPY(emitter->buffer,string),                                   \
+          (void)(emitter->column = 0),                                          \
+          (void)(++emitter->line),                                              \
           1)))
 
 /*

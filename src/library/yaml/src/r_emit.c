@@ -37,7 +37,6 @@ static SEXP Ryaml_deparse_function(SEXP s_obj)
   if (TYPEOF(s_obj) == CLOSXP) {
     PROTECT(s_obj);
     PROTECT(s_new_obj = R_mkClosure(R_ClosureFormals(s_obj), R_ClosureBody(s_obj), R_ClosureEnv(s_obj)));
-    SET_OBJECT(s_new_obj, OBJECT(s_obj));
     UNPROTECT(2);
     s_obj = s_new_obj;
   }
@@ -275,7 +274,7 @@ static SEXP Ryaml_yoink(SEXP s_vec, int index)
       break;
     case INTSXP:
       if (factor) {
-        s_levels = GET_LEVELS(s_vec);
+        s_levels = getAttrib(s_vec, R_LevelsSymbol);
         level_idx = INTEGER(s_vec)[index];
         if (level_idx == NA_INTEGER || level_idx < 1 || level_idx > LENGTH(s_levels)) {
           SET_STRING_ELT(s_tmp, 0, NA_STRING);
@@ -396,7 +395,7 @@ static int emit_factor(
   yaml_scalar_style_t *scalar_styles = NULL, scalar_style;
   int i = 0, len = 0, level_idx = 0, result = 0, *scalar_style_is_set = NULL;
 
-  s_levels = GET_LEVELS(s_obj);
+  s_levels = getAttrib(s_obj, R_LevelsSymbol);
   len = length(s_levels);
   scalar_styles = (yaml_scalar_style_t *)malloc(sizeof(yaml_scalar_style_t) * len);
   scalar_style_is_set = (int *)calloc(len, sizeof(int));
@@ -639,7 +638,7 @@ static int emit_object(
       if (Ryaml_has_class(s_obj, "data.frame") && length(s_obj) > 0 && !column_major) {
         rows = length(VECTOR_ELT(s_obj, 0));
         cols = length(s_obj);
-        PROTECT(s_names = GET_NAMES(s_obj));
+        PROTECT(s_names = getAttrib(s_obj, R_NamesSymbol));
 
         yaml_sequence_start_event_initialize(event, NULL, (yaml_char_t *)tag,
             implicit_tag, YAML_ANY_SEQUENCE_STYLE);
@@ -721,7 +720,7 @@ static int emit_object(
           break;
         }
 
-        PROTECT(s_names = GET_NAMES(s_obj));
+        PROTECT(s_names = getAttrib(s_obj, R_NamesSymbol));
         for (i = 0; i < length(s_obj); i++) {
           if (omap) {
             yaml_mapping_start_event_initialize(event, NULL, NULL, 1,
@@ -798,7 +797,7 @@ static int emit_object(
 
     default:
       PROTECT(s_type = type2str(TYPEOF(s_obj)));
-      PROTECT(s_classes = GET_CLASS(s_obj));
+      PROTECT(s_classes = getAttrib(s_obj, R_ClassSymbol));
       if (TYPEOF(s_classes) != STRSXP || LENGTH(s_classes) == 0) {
         Ryaml_set_error_msg("don't know how to emit object of type: '%s'\n", CHAR(s_type));
       }
