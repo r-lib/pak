@@ -1,5 +1,7 @@
 # pak (development version)
 
+* No user visible changes.
+
 # pak 0.9.1
 
 * pak is now more tolerant with extraneous whitespace in `PACKAGES*`
