@@ -2,6 +2,8 @@
 
 ## pak (development version)
 
+- No user visible changes.
+
 ## pak 0.9.1
 
 CRAN release: 2025-12-01
