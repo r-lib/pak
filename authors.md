@@ -96,15 +96,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-lib/pak/blob/v0.9.1/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-lib/pak/blob/main/DESCRIPTION)
 
 Csárdi G, Hester J (2025). *pak: Another Approach to Package
-Installation*. R package version 0.9.1, <https://pak.r-lib.org/>.
+Installation*. R package version 0.9.2, <https://pak.r-lib.org/>.
 
     @Manual{,
       title = {pak: Another Approach to Package Installation},
       author = {Gábor Csárdi and Jim Hester},
       year = {2025},
-      note = {R package version 0.9.1},
+      note = {R package version 0.9.2},
       url = {https://pak.r-lib.org/},
     }

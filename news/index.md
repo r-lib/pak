@@ -1,6 +1,14 @@
 # Changelog
 
+## pak 0.9.2
+
+CRAN release: 2025-12-22
+
+- No user visible changes.
+
 ## pak 0.9.1
+
+CRAN release: 2025-12-01
 
 - pak is now more tolerant with extraneous whitespace in `PACKAGES*`
   metadata files (<https://github.com/r-lib/pak/issues/785>).
