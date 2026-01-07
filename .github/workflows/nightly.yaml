@@ -380,7 +380,7 @@ jobs:
     - uses: r-hub/actions/setup-r-netbsd@main
       if: ${{ matrix.config.os == 'netbsd' }}
 
-    - uses: r-hub/actions/setup-r-dragonflybsd@v1
+    - uses: r-hub/actions/setup-r-dragonflybsd@main
       if: ${{ matrix.config.os == 'dragonflybsd' }}
 
     - name: Build pak binary
