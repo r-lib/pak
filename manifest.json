@@ -1412,11 +1412,11 @@
         {
           "r.platform": "x86_64--netbsd",
           "r.version": "4.4",
-          "pak.version": "0.9.1",
+          "pak.version": "0.9.2",
           "pak.revision": "TODO",
-          "buildtime": "2025-12-01T10:23:28+00:00",
-          "size": 6428842,
-          "digest": "sha256:eb69d43561956c34e093096775f93d73af91b82e506ec5c9680d60107738c673"
+          "buildtime": "2026-01-07T13:17:12+00:00",
+          "size": 6429849,
+          "digest": "sha256:07edfeb29073cf951b80f1093725cfc2cfea359121c611d132a27812a59cf94b"
         },
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
