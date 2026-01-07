@@ -1214,11 +1214,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.2",
-          "pak.version": "0.9.1",
+          "pak.version": "0.9.2",
           "pak.revision": "TODO",
-          "buildtime": "2025-12-01T10:12:53+00:00",
-          "size": 9093020,
-          "digest": "sha256:afcabd062f9371bc0c6dccb3c670e16b07d85c979e3273c113bd66222e065131"
+          "buildtime": "2026-01-07T05:44:06+00:00",
+          "size": 9088586,
+          "digest": "sha256:11f2697e508f02da09cc8b7e7c47e5feaab438c4c5480e86c9c8c85a015ff18d"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
