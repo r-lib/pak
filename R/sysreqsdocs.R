@@ -205,3 +205,39 @@ sysreqs_fix_installed <- sysreqs_fix_installed
 #' sysreqs_list_system_packages()[1:10,]
 
 sysreqs_list_system_packages
+
+#' System requirements detection limitations
+#'
+#' @description
+#' System requirements detection in pak only considers packages installed via the system package manager.
+#' Supported package managers include:
+#' * `apt` on Debian/Ubuntu systems
+#' * `yum`/`dnf` on RedHat/CentOS/Fedora systems
+#' * `zypper` on openSUSE/SUSE systems
+#' * `apk` on Alpine systems
+#'
+#' pak does **not** detect software installed via:
+#' * Environment modules (e.g., lmod, environment modules)
+#' * Custom compilation from source
+#' * Alternative package managers (e.g., conda, spack, nix, homebrew)
+#' * User-space installations
+#' * Software loaded via environment variables
+#'
+#' If your system has software installed in non-standard locations, you may need to:
+#' * Install the required system packages via your system package manager
+#' * Disable system requirements checking with `PKG_SYSREQS=FALSE`
+#' * Use `options(pkg.sysreqs = FALSE)` to disable system requirements globally
+#'
+#' Use [sysreqs_status()] to check your current configuration.
+#'
+#' @name sysreqs_detection_limitations
+#' @family system requirements functions
+#' @keywords internal
+#' @examplesIf Sys.getenv("IN_PKGDOWN") == "true"
+#' # Check current system requirements status
+#' sysreqs_status()
+#'
+#' # Disable system requirements globally
+#' options(pkg.sysreqs = FALSE)
+
+check_sysreqs_enabled
