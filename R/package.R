@@ -66,6 +66,7 @@
 #' ```{asciicast pkg-install-cran}
 #' pkg_install("dplyr")
 #' ```
+#'
 
 pkg_install <- function(
   pkg,
@@ -74,6 +75,7 @@ pkg_install <- function(
   ask = interactive(),
   dependencies = NA
 ) {
+  pkg <- trimws(pkg)
   start <- Sys.time()
 
   status <- remote(
@@ -166,8 +168,10 @@ pkg_install_do_plan <- function(proposal) {
 #' ```{asciicast pkg-status}
 #' pkg_status("MASS")
 #' ```
+#'
 
 pkg_status <- function(pkg, lib = .libPaths()) {
+  pkg <- trimws(pkg)
   stopifnot(length(pkg == 1) && is.character(pkg))
 
   load_extra("pillar")
@@ -191,6 +195,7 @@ pkg_status_internal <- function(pkg, lib = .libPaths()) {
 #' @family package functions
 
 pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
+  pkg <- trimws(pkg)
   remote(
     function(...) {
       get("pkg_remove_internal", asNamespace("pak"))(...)
@@ -226,8 +231,10 @@ pkg_remove_internal <- function(pkg, lib) {
 #' ```{asciicast pkg-deps-gh}
 #' pkg_deps("r-lib/callr")
 #' ```
+#'
 
 pkg_deps <- function(pkg, upgrade = TRUE, dependencies = NA) {
+  pkg <- trimws(pkg)
   stopifnot(is.character(pkg))
   load_extra("pillar")
   remote(
@@ -276,11 +283,13 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #' pkg_deps_tree("dplyr")
 #' ```
 #'
-#' ```{asciicast pkg-deps-tree-2}
+#' ```{asciicast pkg-deos-tree-2}
 #' pkg_deps_tree("r-lib/usethis")
 #' ```
+#'
 
 pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
+  pkg <- trimws(pkg)
   stopifnot(length(pkg == 1) && is.character(pkg))
   ret <- remote(
     function(...) {
@@ -344,6 +353,7 @@ pkg_list <- function(lib = .libPaths()[1]) {
 #' ```{asciicast pkg-download-4}
 #' pkg_download("r-lib/pak", platforms = "source")
 #' ```
+#'
 
 pkg_download <- function(
   pkg,
@@ -352,6 +362,7 @@ pkg_download <- function(
   platforms = NULL,
   r_versions = NULL
 ) {
+  pkg <- trimws(pkg)
   args <- list(
     pkg = pkg,
     dest_dir = dest_dir,
