@@ -125,7 +125,7 @@ Config/Needs/website:
     roxygen2,
     tidyverse/tidytemplate
 Config/Needs/deploy:
-    cli@3.6.2,
+    cli,
     curl,
     desc,
     gitcreds,
