@@ -356,7 +356,6 @@ jobs:
           - { os: 'freebsd', release: '13.4' }
           - { os: 'openbsd', release: '7.6' }
           - { os: 'openbsd', release: '7.5' }
-          - { os: 'openbsd', release: '7.4' }
           - { os: 'netbsd' }
           - { os: 'dragonflybsd' }
 
