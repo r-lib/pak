@@ -74,6 +74,7 @@ Other system requirements functions:
 sysreqs_check_installed()
 #> system package       installed required by                   
 #> --------------       --        -----------                   
+#> cmake                ✔         nanonext                      
 #> git                  ✔         credentials, gitcreds         
 #> gsfonts              ✔         magick                        
 #> libcurl4-openssl-dev ✔         curl                          
