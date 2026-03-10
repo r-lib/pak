@@ -331,6 +331,13 @@ ghmirror <- local({
           package,
           package,
           version
+        ),
+        sprintf(
+          "%s/src/contrib/%s/Other/%s_%s.tar.gz",
+          repo,
+          as.character(getRversion()),
+          package,
+          version
         )
       )
     }

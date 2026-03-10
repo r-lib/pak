@@ -735,7 +735,15 @@ pkgplan_i_lp_prefer_new_binaries <- function(lp) {
   # I tried adding a penalty to older versions, but that did not work.
   pkgs <- lp$pkgs
   whpp <- pkgs$status == "OK" & !is.na(pkgs$version)
-  pn <- unique(pkgs$package[whpp])
+  # Skip packages directly referenced with a version pin. Those are
+  # handled by pkgplan_i_lp_latest_direct, and ruling out older binaries
+  # here would conflict with the satisfy-direct constraint.
+  vreq <- vlapply(
+    lp$pkgs$remote,
+    function(r) is.list(r) && !is.null(r$version) && r$version != ""
+  )
+  pinned <- unique(lp$pkgs$package[lp$pkgs$direct & vreq])
+  pn <- setdiff(unique(pkgs$package[whpp]), pinned)
   ruled_out <- integer()
   for (p in pn) {
     whp <- which(

@@ -95,6 +95,10 @@ platform_is_ok <- function(cand, exp, exp_archs = NULL) {
     # This is an i386 only binary. This is not OK currently.
     # (We do not allow an i386-only installation.)
     FALSE
+  } else if (cand == "") {
+    # PPM with binaries gives an empty string if the package doesn't require
+    # compilation. So this is OK.
+    TRUE
   } else {
     # Otherwise it is just a match
     cand %in% exp
