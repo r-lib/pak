@@ -121,7 +121,7 @@ jobs:
         sudo rig add 4.3 --arch x86_64
         sudo rig add 4.4 --arch x86_64
         sudo rig add release --arch x86_64
-        sudo rig add devel --arch x86_64
+	# sudo rig add devel --arch x86_64
         rig default release
 
     - name: Install skopeo
@@ -174,7 +174,7 @@ jobs:
         sudo rig add 4.3
         sudo rig add 4.4
         sudo rig add release
-        sudo rig add devel
+	# sudo rig add devel
         rig default release
 
     - name: Install skopeo
