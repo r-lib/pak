@@ -359,3 +359,68 @@ rbind_expand <- function(..., .list = list()) {
 cisort <- function(x) {
   x[order(tolower(x))]
 }
+
+sysreqs_status <- function() {
+  config_info <- remote(
+    function() {
+      config <- pkgdepends::current_config()
+      list(
+        enabled = config$get("sysreqs"),
+        platform = config$get("sysreqs_platform"),
+        supported = pkgdepends::sysreqs_is_supported()
+      )
+    }
+  )
+
+  # Check source of configuration
+  env_sysreqs <- Sys.getenv("PKG_SYSREQS", "")
+  opt_sysreqs <- getOption("pkg.sysreqs", NULL)
+
+  config_source <- if (nzchar(env_sysreqs)) {
+    "environment variable PKG_SYSREQS"
+  } else if (!is.null(opt_sysreqs)) {
+    "option pkg.sysreqs"
+  } else {
+    "default"
+  }
+
+  cli::cli_h2("System Requirements Configuration")
+
+  if (config_info$enabled) {
+    cli::cli_alert_success(
+      "System requirements: {.strong enabled} (via {config_source})"
+    )
+
+    cli::cli_alert_info(
+      "Platform: {.val {config_info$platform}}"
+    )
+    cli::cli_alert_info(
+      "Platform supported: {.val {config_info$supported}}"
+    )
+    cli::cli_alert_warning(
+      "Detection method: {.strong system package manager only}"
+    )
+    cli::cli_text("")
+    cli::cli_text(
+      "
+    Software in non-standard locations will {.strong not} be detected:"
+    )
+    cli::cli_ul(c(
+      "Environment modules (lmod)",
+      "Custom compilation from source",
+      "Alternative package managers (conda, spack, nix)",
+      "User-space installations"
+    ))
+  } else {
+    cli::cli_alert_info(
+      "System requirements: {.strong disabled} (via {config_source})"
+    )
+    cli::cli_text("")
+    cli::cli_text("To enable system requirements:")
+    cli::cli_code("Sys.setenv('PKG_SYSREQS' = 'TRUE')")
+    cli::cli_text("or")
+    cli::cli_code("options(pkg.sysreqs = TRUE)")
+  }
+
+  invisible(config_info)
+}
