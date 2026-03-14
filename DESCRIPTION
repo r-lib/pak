@@ -74,6 +74,9 @@ BugReports: https://github.com/r-lib/pak/issues
 Depends:
     R (>= 3.5)
 Imports:
+    RcppTOML,
+    openssl,
+    httr2,
     tools,
     utils
 Suggests:
