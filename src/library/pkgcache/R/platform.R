@@ -341,6 +341,7 @@ macos_cran_platforms <- read.table(
      4.5.0 x86_64-apple-darwin20     big-sur-x86_64
      4.5.0 aarch64-apple-darwin20    big-sur-arm64
      4.6.0 x86_64-apple-darwin20     big-sur-x86_64
+     4.6.0 aarch64-apple-darwin20    big-sur-arm64
      4.6.0 aarch64-apple-darwin23    sonoma-arm64
      5.0.0 x86_64-apple-darwin20     big-sur-x86_64
      5.0.0 aarch64-apple-darwin23    sonoma-arm64
