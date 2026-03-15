@@ -1,0 +1,34 @@
+diff --git a/src/multi.c b/src/multi.c
+index 2e0be9c..3cf9332 100644
+--- a/src/library/curl/src/multi.c
++++ b/src/library/curl/src/multi.c
+@@ -1,6 +1,11 @@
+ #include "curl-common.h"
+ #include <time.h>
+ 
++#include <Rversion.h>
++#if R_VERSION < R_Version(4, 5, 0)
++# define R_ClosureFormals(x) FORMALS(x)
++#endif
++
+ /* Notes:
+  *  - First check for unhandled messages in curl_multi_info_read() before curl_multi_perform()
+  *  - Use Rf_eval() to callback instead of R_tryEval() to propagate interrupt or error back to C
+@@ -146,7 +151,7 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
+         if(status == CURLE_OK){
+           total_success++;
+           if(Rf_isFunction(cb_complete)){
+-            int arglen = Rf_length(FORMALS(cb_complete));
++            int arglen = Rf_length(R_ClosureFormals(cb_complete));
+             SEXP out = PROTECT(make_handle_response(ref));
+             SET_VECTOR_ELT(out, 6, buf);
+             SEXP call = PROTECT(Rf_lcons(cb_complete, arglen ? Rf_lcons(out, R_NilValue) : R_NilValue));
+@@ -157,7 +162,7 @@ SEXP R_multi_run(SEXP pool_ptr, SEXP timeout, SEXP max){
+         } else {
+           total_fail++;
+           if(Rf_isFunction(cb_error)){
+-            int arglen = Rf_length(FORMALS(cb_error));
++            int arglen = Rf_length(R_ClosureFormals(cb_error));
+             SEXP buf = PROTECT(Rf_mkString(strlen(ref->errbuf) ? ref->errbuf : curl_easy_strerror(status)));
+             SEXP call = PROTECT(Rf_lcons(cb_error, arglen ? Rf_lcons(buf, R_NilValue) : R_NilValue));
+             //R_tryEval(call, R_GlobalEnv, &cbfail);
