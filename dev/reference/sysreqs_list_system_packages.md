@@ -56,5 +56,5 @@ sysreqs_list_system_packages()[1:10,]
 #>  7 ii     adwaita-icon-theme       46.0-1             <chr [2]>
 #>  8 ii     ant                      1.10.14-1          <chr [0]>
 #>  9 ii     ant-optional             1.10.14-1          <chr [0]>
-#> 10 ii     apache2                  2.4.58-1ubuntu8.11 <chr [2]>
+#> 10 ii     apache2                  2.4.58-1ubuntu8.10 <chr [2]>
 ```
