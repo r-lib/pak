@@ -38,47 +38,47 @@ pak::pkg_install("tibble")
     #> + vctrs       0.7.1  [bld][cmp][dl] (1.08 MB)
     #>
     #> ℹ Getting 10 pkgs (4.22 MB)
-    #> ✔ Got cli 3.6.5 (source) (640.24 kB)
-    #> ✔ Got lifecycle 1.0.5 (source) (107.14 kB)
     #> ✔ Got glue 1.8.0 (source) (126.68 kB)
-    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
+    #> ✔ Got lifecycle 1.0.5 (source) (107.14 kB)
+    #> ✔ Got cli 3.6.5 (source) (640.24 kB)
+    #> ✔ Got pillar 1.11.1 (source) (409.51 kB)
     #> ✔ Got rlang 1.1.7 (source) (770.34 kB)
     #> ✔ Got utf8 1.2.6 (source) (243.86 kB)
-    #> ✔ Got pillar 1.11.1 (source) (409.51 kB)
+    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
+    #> ✔ Got vctrs 0.7.1 (source) (1.08 MB)
     #> ✔ Got tibble 3.3.1 (source) (557.13 kB)
     #> ✔ Got magrittr 2.0.4 (source) (281.79 kB)
-    #> ✔ Got vctrs 0.7.1 (source) (1.08 MB)
     #> ℹ Building cli 3.6.5
     #> ℹ Building glue 1.8.0
     #> ℹ Building magrittr 2.0.4
     #> ℹ Building pkgconfig 2.0.3
-    #> ✔ Built pkgconfig 2.0.3 (1.4s)
+    #> ✔ Built pkgconfig 2.0.3 (1.6s)
     #> ℹ Building rlang 1.1.7
     #> ✔ Built magrittr 2.0.4 (2.3s)
     #> ℹ Building utf8 1.2.6
-    #> ✔ Built glue 1.8.0 (2.8s)
-    #> ✔ Installed glue 1.8.0  (52ms)
-    #> ✔ Installed magrittr 2.0.4  (42ms)
-    #> ✔ Installed pkgconfig 2.0.3  (70ms)
-    #> ✔ Built utf8 1.2.6 (4.9s)
-    #> ✔ Installed utf8 1.2.6  (33ms)
+    #> ✔ Built glue 1.8.0 (2.7s)
+    #> ✔ Installed glue 1.8.0  (47ms)
+    #> ✔ Installed magrittr 2.0.4  (40ms)
+    #> ✔ Installed pkgconfig 2.0.3  (30ms)
+    #> ✔ Built utf8 1.2.6 (4.3s)
+    #> ✔ Installed utf8 1.2.6  (1s)
     #> ✔ Built cli 3.6.5 (12.3s)
-    #> ✔ Installed cli 3.6.5  (37ms)
-    #> ✔ Built rlang 1.1.7 (13.3s)
-    #> ✔ Installed rlang 1.1.7  (61ms)
+    #> ✔ Installed cli 3.6.5  (1s)
+    #> ✔ Built rlang 1.1.7 (13s)
+    #> ✔ Installed rlang 1.1.7  (40ms)
     #> ℹ Building lifecycle 1.0.5
     #> ✔ Built lifecycle 1.0.5 (1.5s)
-    #> ✔ Installed lifecycle 1.0.5  (1.1s)
+    #> ✔ Installed lifecycle 1.0.5  (1s)
     #> ℹ Building vctrs 0.7.1
-    #> ✔ Built vctrs 0.7.1 (24s)
+    #> ✔ Built vctrs 0.7.1 (23.2s)
     #> ✔ Installed vctrs 0.7.1  (58ms)
     #> ℹ Building pillar 1.11.1
-    #> ✔ Built pillar 1.11.1 (3.5s)
-    #> ✔ Installed pillar 1.11.1  (31ms)
+    #> ✔ Built pillar 1.11.1 (3.4s)
+    #> ✔ Installed pillar 1.11.1  (29ms)
     #> ℹ Building tibble 3.3.1
     #> ✔ Built tibble 3.3.1 (3.2s)
-    #> ✔ Installed tibble 3.3.1  (32ms)
-    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.22 MB) [55.7s]
+    #> ✔ Installed tibble 3.3.1  (31ms)
+    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.22 MB) [54.1s]
 
 #### Install packages from GitHub
 
@@ -89,16 +89,16 @@ pak::pkg_install("tidyverse/tibble")
     #>
     #> → Will update 1 package.
     #> → The package (0 B) is cached.
-    #> + tibble 3.3.1 → 3.3.1.9008 [bld][cmp] (GitHub: 29f843d)
+    #> + tibble 3.3.1 → 3.3.1.9008 [bld][cmp] (GitHub: 70f25d0)
     #>
     #> ℹ No downloads are needed, 1 pkg is cached
     #> ✔ Got tibble 3.3.1.9008 (source) (1.39 MB)
     #> ℹ Packaging tibble 3.3.1.9008
-    #> ✔ Packaged tibble 3.3.1.9008 (855ms)
+    #> ✔ Packaged tibble 3.3.1.9008 (839ms)
     #> ℹ Building tibble 3.3.1.9008
     #> ✔ Built tibble 3.3.1.9008 (3.1s)
-    #> ✔ Installed tibble 3.3.1.9008 (github::tidyverse/tibble@29f843d) (1s)
-    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [6.5s]
+    #> ✔ Installed tibble 3.3.1.9008 (github::tidyverse/tibble@70f25d0) (26ms)
+    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [5.6s]
 
 #### Look up dependencies
 
@@ -158,11 +158,11 @@ pak::local_install("cli")
     #> ℹ No downloads are needed, 1 pkg is cached
     #> ✔ Got cli 3.6.5 (source) (640.24 kB)
     #> ℹ Packaging cli 3.6.5
-    #> ✔ Packaged cli 3.6.5 (1.6s)
+    #> ✔ Packaged cli 3.6.5 (1.5s)
     #> ℹ Building cli 3.6.5
-    #> ✔ Built cli 3.6.5 (9.6s)
-    #> ✔ Installed cli 3.6.5 (local) (63ms)
-    #> ✔ 1 pkg: upd 1, dld 1 (640.24 kB) [11.8s]
+    #> ✔ Built cli 3.6.5 (9.2s)
+    #> ✔ Installed cli 3.6.5 (local) (36ms)
+    #> ✔ 1 pkg: upd 1, dld 1 (640.24 kB) [11.3s]
 
 ## 🔗 Quick links (start here if in doubt!)
 
