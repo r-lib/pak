@@ -11,7 +11,9 @@ assert_that <- function(..., env = parent.frame(), msg = NULL) {
       }
     )
     check_result(res)
-    if (res) next
+    if (res) {
+      next
+    }
 
     if (is.null(msg)) {
       msg <- get_message(res, assertion, env)
@@ -55,8 +57,12 @@ assert_error <- function(
     )
   )
 
-  if (length(.data)) cnd[names(.data)] <- .data
-  if (length(class)) class(cnd) <- unique(c(.class, "assertError", class(cnd)))
+  if (length(.data)) {
+    cnd[names(.data)] <- .data
+  }
+  if (length(class)) {
+    class(cnd) <- unique(c(.class, "assertError", class(cnd)))
+  }
 
   cnd
 }
@@ -90,7 +96,9 @@ get_message <- function(res, call, env = parent.frame()) {
   }
 
   f <- eval(call[[1]], env)
-  if (is.call(call) && !is.primitive(f)) call <- match.call(f, call)
+  if (is.call(call) && !is.primitive(f)) {
+    call <- match.call(f, call)
+  }
   fname <- deparse(call[[1]])
 
   base_fs[[fname]] %||% fail_default(call, env)
@@ -110,7 +118,9 @@ fail_default <- function(call, env) {
 }
 
 has_attr <- function(x, which) {
-  if (!is.null(attr(x, which, exact = TRUE))) return(TRUE)
+  if (!is.null(attr(x, which, exact = TRUE))) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "{.arg {(.arg)}} must have attribute {.code {which}}.",

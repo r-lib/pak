@@ -175,8 +175,9 @@ type_default_parse <- function(refs, ...) {
   m <- re_match(refs, remote_type_rx())
   lapply_rows(
     m,
-    function(x)
+    function(x) {
       list(package = x$package, type = x$type, rest = x$rest, ref = x$.text)
+    }
   )
 }
 

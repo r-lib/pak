@@ -227,8 +227,9 @@ pkg_download_proposal <- R6::R6Class(
         if (has_dls) "+ has downloads",
         if (dls_err) "x has download errors",
         if (!has_res) "(use `$resolve()` to resolve dependencies)",
-        if (has_res && !res_err && !has_dls)
-          "(use `$download()` to download packages)",
+        if (has_res && !res_err && !has_dls) {
+          "(use `$download()` to download packages)"
+        },
         if (has_res) "(use `$get_resolution()` to see resolution results)",
         if (has_dls) "(use `$get_downloads()` to get download data)"
       )

@@ -10,7 +10,9 @@ format.pkg_scan_deps <- function(x, ...) {
   )
   lns <- lapply(seq_along(labels), function(i) {
     deps <- x[x$type == names(labels)[i], , drop = FALSE]
-    if (nrow(deps) == 0) return(NULL)
+    if (nrow(deps) == 0) {
+      return(NULL)
+    }
     fls <- tapply(deps$path, deps$package, "c", simplify = FALSE)
     fls[] <- lapply(fls, unique)
     fls <- vcapply(fls, paste, collapse = ", ")

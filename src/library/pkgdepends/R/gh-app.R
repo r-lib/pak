@@ -97,7 +97,9 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
   app <- webfakes::new_app()
 
   # Log requests by default
-  if (log) app$use("logger" = webfakes::mw_log())
+  if (log) {
+    app$use("logger" = webfakes::mw_log())
+  }
 
   # Parse JSON body, even if no content-type header is sent
   app$use(
@@ -128,7 +130,9 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
 
   app$use(function(req, res) {
     auth <- req$get_header("Authorization")
-    if (is.null(auth)) return("next")
+    if (is.null(auth)) {
+      return("next")
+    }
     if (!grepl(re_gh_auth(), auth)) {
       res$set_status(401)
       res$send_json(
@@ -160,7 +164,9 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     )
 
     psd <- re_match(req$json$query, re_ref)
-    if (is.na(psd$.match)) return("next")
+    if (is.na(psd$.match)) {
+      return("next")
+    }
 
     if (!psd$user %in% names(app$locals$repos$users)) {
       send_user_not_found(res, psd)
@@ -228,7 +234,9 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     )
 
     psd <- re_match(req$json$query, re_pull)
-    if (is.na(psd$.match)) return("next")
+    if (is.na(psd$.match)) {
+      return("next")
+    }
 
     if (!psd$user %in% names(app$locals$repos$users)) {
       send_user_not_found(res, psd)
@@ -277,7 +285,9 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     )
 
     psd <- re_match(req$json$query, re_release)
-    if (is.na(psd$.match)) return("next")
+    if (is.na(psd$.match)) {
+      return("next")
+    }
 
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {

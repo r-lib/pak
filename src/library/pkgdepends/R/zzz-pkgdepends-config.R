@@ -7,9 +7,15 @@ default_windows_archs <- function() {
 default_update_after <- function() as.difftime(24, units = "hours")
 
 env_decode_dependencies <- function(x, name, ...) {
-  if (tolower(x) %in% c("yes", "true", "1", "on")) return(TRUE)
-  if (tolower(x) %in% c("no", "false", "0", "off")) return(FALSE)
-  if (tolower(x) == "na") return(NA)
+  if (tolower(x) %in% c("yes", "true", "1", "on")) {
+    return(TRUE)
+  }
+  if (tolower(x) %in% c("no", "false", "0", "off")) {
+    return(FALSE)
+  }
+  if (tolower(x) == "na") {
+    return(NA)
+  }
   strsplit(x, ";", fixed = TRUE)[[1]]
 }
 
@@ -140,7 +146,7 @@ pkgdepends_config <- sort_by_name(list(
 
   # -----------------------------------------------------------------------
   library = list(
-    type = "string_or_null",
+    type = "character_or_null",
     docs = "Package library to install packages to. It is also used for
        already installed packages when considering dependencies in
        [dependency lookup][pkg_deps] or
@@ -232,8 +238,9 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   sysreqs_db_update_timeout = list(
     type = "difftime",
-    default = function()
-      as.difftime(if (Sys.getenv("CI") == "") 5 else 60, units = "secs"),
+    default = function() {
+      as.difftime(if (Sys.getenv("CI") == "") 5 else 60, units = "secs")
+    },
     docs = "Timeout for the system requirements database update.
        Defaults to five seconds, except if the `CI` environment variable
        is set, then it is one minute."

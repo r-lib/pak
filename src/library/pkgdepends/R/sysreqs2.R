@@ -140,7 +140,9 @@ sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
   upd <- sysreqs2_command(sysreqs_platform, "update")
   pre <- unlist(lapply(flatrecs, "[[", "pre_install"))
   post <- unlist(lapply(flatrecs, "[[", "post_install"))
-  if (is.na(upd)) upd <- character()
+  if (is.na(upd)) {
+    upd <- character()
+  }
   cmd <- sysreqs2_command(sysreqs_platform, "install")
   allpkgs <- unique(unlist(lapply(flatrecs, "[[", "packages")))
   misspkgs <- unique(unlist(lapply(flatrecs, function(x) {
@@ -154,7 +156,9 @@ sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
   ipkgs <- if (length(pkgs)) paste(pkgs, collapse = " ") else character()
   ipkgs <- if (length(ipkgs)) paste(cmd, ipkgs)
   # no need to update if nothing to do
-  if (length(pre) + length(ipkgs) + length(post) == 0) upd <- character()
+  if (length(pre) + length(ipkgs) + length(post) == 0) {
+    upd <- character()
+  }
   res <- list(
     os = plt$os,
     distribution = plt$distribution,
@@ -165,7 +169,9 @@ sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
     post_install = post,
     packages = allpkgs
   )
-  if (missing) res$misspkgs <- misspkgs
+  if (missing) {
+    res$misspkgs <- misspkgs
+  }
   res
 }
 
@@ -192,7 +198,9 @@ sysreqs_db_version <- "1"
 
 sysreqs2_async_update_metadata <- function(path = NULL, config = NULL) {
   config <- config %||% current_config()
-  if (!config$get("sysreqs_db_update")) return(async_constant())
+  if (!config$get("sysreqs_db_update")) {
+    return(async_constant())
+  }
 
   path <- path %||% file.path(get_user_cache_dir()$root, "sysreqs")
   head_file <- file.path(path, "HEAD")
@@ -291,7 +299,9 @@ sysreqs2_match <- function(
       ignore.case = TRUE
     )
     mch <- apply(rbind(mch), 1, any)
-    if (!any(mch)) next
+    if (!any(mch)) {
+      next
+    }
     for (dep in rule$dependencies) {
       appl <- FALSE
       for (const in dep$constraints) {
@@ -304,7 +314,9 @@ sysreqs2_match <- function(
           break
         }
       }
-      if (!appl) next
+      if (!appl) {
+        next
+      }
       sysreq_name <- tools::file_path_sans_ext(basename(r))
       rec <- list(
         sysreq = sysreq_name,

@@ -42,8 +42,12 @@ rstudio <- local({
 
   detect <- function(clear_cache = FALSE) {
     # Cached?
-    if (clear_cache) data <<- list()
-    if (!is.null(data)) return(get_caps(data))
+    if (clear_cache) {
+      data <<- list()
+    }
+    if (!is.null(data)) {
+      return(get_caps(data))
+    }
 
     # Otherwise get data
     new <- get_data()
@@ -85,7 +89,9 @@ rstudio <- local({
       "rstudio_subprocess"
     }
 
-    if (cache) data <<- new
+    if (cache) {
+      data <<- new
+    }
 
     get_caps(new)
   }

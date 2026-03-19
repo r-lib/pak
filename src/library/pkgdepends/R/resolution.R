@@ -112,10 +112,12 @@ resolution <- R6::R6Class(
   "resolution",
   public = list(
     result = NULL,
-    initialize = function(config, cache, library = NULL, remote_types = NULL)
-      res_init(self, private, config, cache, library, remote_types),
-    push = function(..., direct = FALSE, .list = list())
-      res_push(self, private, ..., direct = direct, .list = .list),
+    initialize = function(config, cache, library = NULL, remote_types = NULL) {
+      res_init(self, private, config, cache, library, remote_types)
+    },
+    push = function(..., direct = FALSE, .list = list()) {
+      res_push(self, private, ..., direct = direct, .list = .list)
+    },
     when_complete = function() private$deferred
   ),
 
@@ -135,14 +137,16 @@ resolution <- R6::R6Class(
 
     delayed = list(),
     delayed_refs = character(),
-    resolve_delayed = function(resolve)
-      res__resolve_delayed(self, private, resolve),
+    resolve_delayed = function(resolve) {
+      res__resolve_delayed(self, private, resolve)
+    },
 
     create_progress_bar = function() res__create_progress_bar(self, private),
     done_progress_bar = function() res__done_progress_bar(self, private),
 
-    set_result = function(row_idx, value)
-      res__set_result(self, private, row_idx, value),
+    set_result = function(row_idx, value) {
+      res__set_result(self, private, row_idx, value)
+    },
     sysreqs_match = function() res__sysreqs_match(self, private),
     try_finish = function(resolve) res__try_finish(self, private, resolve)
   )
@@ -174,7 +178,9 @@ res_init <- function(self, private, config, cache, library, remote_types) {
     parent_resolve = function(value, resolve) {
       "!DEBUG resolution done"
       # maybe a non-resolution task ended, e.g. sysreqs
-      if (!"id" %in% names(value)) return(private$try_finish(resolve))
+      if (!"id" %in% names(value)) {
+        return(private$try_finish(resolve))
+      }
       id <- value$id
       value <- value$value
       wh <- which(id == private$state$async_id)
@@ -183,7 +189,9 @@ res_init <- function(self, private, config, cache, library, remote_types) {
       ## Rule out installed:: refs and packages with ?source param
       not_inst <- value$type != "installed"
       prms <- value[["params"]]
-      if (!is.data.frame(value)) prms <- list(prms)
+      if (!is.data.frame(value)) {
+        prms <- list(prms)
+      }
       want_source <- vlapply(prms, is_true_param, "source")
       want_reinst <- vlapply(prms, is_true_param, "reinstall")
 
@@ -200,18 +208,23 @@ res_init <- function(self, private, config, cache, library, remote_types) {
       npkgs <- value$package[not_inst & !want_source & !want_reinst]
 
       ## Installed already? Resolve that as well
-      if (!is.null(private$library) && length(npkgs)) {
-        ml <- file.exists(file.path(private$library, npkgs))
-        rc <- file.exists(file.path(.Library, npkgs)) &
+      if (length(npkgs)) {
+        for (lib in private$library) {
+          ex <- file.exists(file.path(lib, npkgs))
+          if (any(ex)) {
+            lib <- normalizePath(lib, winslash = "/", mustWork = FALSE)
+            refs <- paste0("installed::", lib, "/", npkgs[ex])
+            refs <- setdiff(refs, private$state$ref)
+            self$push(.list = parse_pkg_refs(refs))
+            npkgs <- npkgs[!ex]
+          }
+        }
+        lib <- .Library
+        ex <- file.exists(file.path(lib, npkgs)) &
           npkgs %in% recommended_packages()
-        npkgs <- npkgs[ml | rc]
-        if (length(npkgs)) {
-          lib <- normalizePath(
-            private$library,
-            winslash = "/",
-            mustWork = FALSE
-          )
-          refs <- paste0("installed::", lib, "/", npkgs)
+        if (any(ex)) {
+          lib <- normalizePath(lib, winslash = "/", mustWork = FALSE)
+          refs <- paste0("installed::", lib, "/", npkgs[ex])
           refs <- setdiff(refs, private$state$ref)
           self$push(.list = parse_pkg_refs(refs))
         }
@@ -414,7 +427,9 @@ res__set_result_df <- function(self, private, row_idx, value) {
 
 res__set_result_list <- function(self, private, row_idx, value) {
   # already done?
-  if (all(value$ref %in% self$result$ref)) return()
+  if (all(value$ref %in% self$result$ref)) {
+    return()
+  }
   if (is.data.frame(value)) {
     # if a data frame, then some might be done
     done <- value$ref %in% private$state$ref
@@ -467,7 +482,9 @@ res__sysreqs_match <- function(self, private) {
 
 res__try_finish <- function(self, private, resolve) {
   "!DEBUG resolution trying to finish with `nrow(self$result)` results"
-  if (length(private$delayed)) return(private$resolve_delayed(resolve))
+  if (length(private$delayed)) {
+    return(private$resolve_delayed(resolve))
+  }
   if (
     all(!is.na(private$state$status)) &&
       !identical(private$system_packages, NA) &&
@@ -554,7 +571,9 @@ update_params <- function(self, private, params) {
         p
       })
       self$result$remote <- lapply(self$result$remote, function(rem) {
-        if (is.list(rem)) rem$params[names(par$params)] <- par$params
+        if (is.list(rem)) {
+          rem$params[names(par$params)] <- par$params
+        }
         rem
       })
     } else {
@@ -567,7 +586,9 @@ update_params <- function(self, private, params) {
         self$result$remote[sel] <- lapply(
           self$result$remote[sel],
           function(rem) {
-            if (is.list(rem)) rem$params[names(par$params)] <- par$params
+            if (is.list(rem)) {
+              rem$params[names(par$params)] <- par$params
+            }
             rem
           }
         )
@@ -644,7 +665,9 @@ resolve_from_description <- function(
   }
 
   nc <- dsc$get_field("NeedsCompilation", NA)
-  if (!is.na(nc)) nc <- tolower(nc) %in% c("true", "yes")
+  if (!is.na(nc)) {
+    nc <- tolower(nc) %in% c("true", "yes")
+  }
 
   unknown <- deps$ref[deps$type %in% dependencies]
 
@@ -718,7 +741,9 @@ resolve_from_metadata <- function(
     params <- lapply(remotes, "[[", "params")
   }
 
-  if (!direct) dependencies <- dependencies$indirect
+  if (!direct) {
+    dependencies <- dependencies$indirect
+  }
   "!DEBUG resolving `length(refs)` batch resolution"
   cache$metadata$async_deps(packages, dependencies = dependencies)$then(
     function(data) {
@@ -765,7 +790,9 @@ resolve_from_metadata <- function(
       # Drop binaries if source package was requested
       want_source <- vlapply(res$params, is_true_param, "source")
       todrop <- res$platform != "source" & want_source
-      if (any(todrop)) res <- res[!todrop, ]
+      if (any(todrop)) {
+        res <- res[!todrop, ]
+      }
 
       if (length(bad <- attr(data, "unknown"))) {
         idx <- match(bad, packages)

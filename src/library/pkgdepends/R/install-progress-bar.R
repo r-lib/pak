@@ -22,7 +22,9 @@ create_progress_bar <- function(state) {
 }
 
 update_progress_bar <- function(state, tick = 0) {
-  if (is.null(state$progress$status)) return()
+  if (is.null(state$progress$status)) {
+    return()
+  }
 
   plan <- state$plan
   total <- nrow(plan)
@@ -51,7 +53,9 @@ update_progress_bar <- function(state, tick = 0) {
     st <- v1
   }
 
-  if (state$progress$simple) st <- cli::ansi_strip(st)
+  if (state$progress$simple) {
+    st <- cli::ansi_strip(st)
+  }
   cli::cli_status_update(state$progress$status, st)
 }
 

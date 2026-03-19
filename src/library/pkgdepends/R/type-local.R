@@ -99,7 +99,9 @@ satisfy_remote_local <- function(resolution, candidate, config, ...) {
   }
 
   if (candidate$type == "local") {
-    if (candidate$remote[[1]]$path == resolution$remote[[1]]$path) return(TRUE)
+    if (candidate$remote[[1]]$path == resolution$remote[[1]]$path) {
+      return(TRUE)
+    }
     return(structure(FALSE, reason = "Paths differ"))
   }
 

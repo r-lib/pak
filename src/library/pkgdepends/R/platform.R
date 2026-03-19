@@ -75,7 +75,9 @@ default_platforms <- function() unique(c(current_r_platform(), "source"))
 #       opts out from them.
 
 platform_is_ok <- function(cand, exp, exp_archs = NULL) {
-  if (cand %in% c("*", "source") && "source" %in% exp) return(TRUE)
+  if (cand %in% c("*", "source") && "source" %in% exp) {
+    return(TRUE)
+  }
 
   # This is an installed linux package, probably, prefix is OK, e.g.
   # cand = x86_64-pc-linux-gnu vs exp = x86_64-pc-linux-gnu-ubuntu-18.04

@@ -139,7 +139,9 @@ satisfy_remote_url <- function(resolution, candidate, config, ...) {
 
   ## 3. same url is good
   if (candidate$type == "url") {
-    if (resolution$ref == candidate$ref) return(TRUE)
+    if (resolution$ref == candidate$ref) {
+      return(TRUE)
+    }
     return(structure(FALSE, reason = "URL mismatch"))
   }
 

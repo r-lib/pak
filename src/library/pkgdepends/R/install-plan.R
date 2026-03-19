@@ -70,6 +70,8 @@ install_package_plan <- function(
   cli::ansi_hide_cursor()
   on.exit(cli::ansi_show_cursor())
 
+  lib <- lib[1]
+
   cli::cli_div(
     theme = list(
       ".timestamp" = list(
@@ -95,11 +97,15 @@ install_package_plan <- function(
     is_count(num_workers, min = 1L)
   )
 
-  if (!"vignettes" %in% colnames(plan)) plan$vignettes <- FALSE
+  if (!"vignettes" %in% colnames(plan)) {
+    plan$vignettes <- FALSE
+  }
   if (!"metadata" %in% colnames(plan)) {
     plan$metadata <- replicate(nrow(plan), character(), simplify = FALSE)
   }
-  if (!"packaged" %in% colnames(plan)) plan$packaged <- TRUE
+  if (!"packaged" %in% colnames(plan)) {
+    plan$packaged <- TRUE
+  }
   if (!"used_cached_binary" %in% colnames(plan)) {
     plan$used_cached_binary <- FALSE
   }
@@ -125,7 +131,9 @@ install_package_plan <- function(
       }
 
       repeat {
-        if (are_we_done(state)) break
+        if (are_we_done(state)) {
+          break
+        }
         update_progress_bar(state)
 
         events <- poll_workers(state)
@@ -148,7 +156,9 @@ add_recursive_dependencies <- function(plan) {
   # If all packages are source packages then there is nothing to do,
   # we cannot get into a bad situation. Similarly if we only have
   # binary packages.
-  if (all(plan$binary) || all(!plan$binary)) return(plan)
+  if (all(plan$binary) || all(!plan$binary)) {
+    return(plan)
+  }
 
   # Otherwise for every source package, we need to add its recursive
   # dependencies.
@@ -158,14 +168,20 @@ add_recursive_dependencies <- function(plan) {
   srcidx <- which(!plan$binary)
 
   do <- function(i) {
-    if (done[[i]]) return()
+    if (done[[i]]) {
+      return()
+    }
     miss <- idx[names(!done[xdps[[i]]])]
     done[[i]] <<- TRUE
-    for (m in miss) do(m)
+    for (m in miss) {
+      do(m)
+    }
     xdps[[i]] <<- unique(c(xdps[[i]], unlist(xdps[xdps[[i]]])))
   }
 
-  for (i in srcidx) do(i)
+  for (i in srcidx) {
+    do(i)
+  }
 
   plan$dependencies[srcidx] <- unname(xdps[srcidx])
   plan
@@ -222,7 +238,9 @@ poll_workers <- function(state) {
 get_timeout <- function(state) 100
 
 handle_events <- function(state, events) {
-  for (i in which(events)) state <- handle_event(state, i)
+  for (i in which(events)) {
+    state <- handle_event(state, i)
+  }
   state$workers <- drop_nulls(state$workers)
   state
 }
@@ -251,7 +269,9 @@ handle_event <- function(state, evidx) {
   worker <- state$workers[[evidx]]
   state$workers[evidx] <- list(NULL)
 
-  if (is.function(proc$get_result)) proc$get_result()
+  if (is.function(proc$get_result)) {
+    proc$get_result()
+  }
 
   ## Cut stdout to lines
   worker$stdout <- cut_into_lines(worker$stdout)
@@ -351,7 +371,9 @@ get_worker_id <- (function() {
 # nocov start
 
 get_rtools_path <- function() {
-  if (!is.null(pkgd_data$rtools_path)) return(pkgd_data$rtools_path)
+  if (!is.null(pkgd_data$rtools_path)) {
+    return(pkgd_data$rtools_path)
+  }
   # no need to mess with Rtools on R >= 4.3.0, R puts Rtools on the PATH
   # the error message for missing Rtools will be worse, though :(
   if (getRversion() >= "4.3.0") {
@@ -444,11 +466,15 @@ make_build_process <- function(
 # nocov start
 
 warn_for_long_paths <- function(path, pkg) {
-  if (!is_windows()) return()
+  if (!is_windows()) {
+    return()
+  }
   pkg_paths <- dir(path, recursive = TRUE, full.names = TRUE)
   # No files here for R CMD INSTALL --build, path is a file there
   max_len <- max(c(0, nchar(pkg_paths)))
-  if (max_len < 255) return(path)
+  if (max_len < 255) {
+    return(path)
+  }
   alert(
     "warning",
     paste0(

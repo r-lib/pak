@@ -130,9 +130,13 @@ split_cgi_output <- function(x) {
 
   body <- x[nlnl:length(x)]
   ndrop <- 1L
-  while (body[ndrop] != 0x0a) ndrop <- ndrop + 1L
+  while (body[ndrop] != 0x0a) {
+    ndrop <- ndrop + 1L
+  }
   ndrop <- ndrop + 1L
-  while (body[ndrop] != 0x0a) ndrop <- ndrop + 1L
+  while (body[ndrop] != 0x0a) {
+    ndrop <- ndrop + 1L
+  }
   body <- utils::tail(body, -ndrop)
 
   list(headers = headers, body = body)
@@ -159,7 +163,9 @@ parse_headers <- function(txt) {
 }
 
 parse_headers0 <- function(txt, multiple = FALSE) {
-  if (!length(txt)) return(NULL)
+  if (!length(txt)) {
+    return(NULL)
+  }
   if (is.raw(txt)) {
     txt <- rawToChar(txt)
   }

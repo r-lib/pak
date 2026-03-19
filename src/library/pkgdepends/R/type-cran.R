@@ -89,7 +89,9 @@ satisfy_remote_cran <- function(resolution, candidate, config, ...) {
   }
 
   ## 5. version requirements must be satisfied. Otherwise good.
-  if (resolution$remote[[1]]$version == "") return(TRUE)
+  if (resolution$remote[[1]]$version == "") {
+    return(TRUE)
+  }
 
   if (
     !version_satisfies(

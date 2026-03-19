@@ -135,7 +135,9 @@ renv_dependencies_database <- function() {
 q_database <- function() {
   db <- renv_dependencies_database()
   fns <- unlist(lapply(db, names))
-  if (length(fns) == 0) return(NULL)
+  if (length(fns) == 0) {
+    return(NULL)
+  }
   structure(
     sprintf(
       '((identifier) @id

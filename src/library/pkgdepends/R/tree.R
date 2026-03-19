@@ -69,12 +69,14 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
     key <- paste0(
       if (any(ann$new)) paste(" |", cli::col_green(emoji("sparkles")), "new"),
       if (any(ann$upd)) paste(" |", cli::col_green(emoji("rocket")), "update"),
-      if (any(ann$noupd))
-        paste(" |", cli::col_green(emoji("hand")), "outdated"),
+      if (any(ann$noupd)) {
+        paste(" |", cli::col_green(emoji("hand")), "outdated")
+      },
       if (any(ann$dl)) paste(" |", cli::col_green(emoji("dl")), "download"),
       if (any(ann$build)) paste(" |", cli::col_green(builder), "build"),
-      if (any(ann$compile))
+      if (any(ann$compile)) {
         paste(" |", cli::col_green(emoji("wrench")), "compile")
+      }
     )
     key <- paste0("Key: ", sub("^ [|]", "", key))
     trees <- c(trees, key)
@@ -85,10 +87,18 @@ pkgplan_draw_solution_tree <- function(self, private, pkgs, annotate) {
 }
 
 has_emoji <- function() {
-  if (!cli::is_utf8_output()) return(FALSE)
-  if (isTRUE(opt <- getOption("pkg.emoji"))) return(TRUE)
-  if (identical(opt, FALSE)) return(FALSE)
-  if (Sys.info()[["sysname"]] != "Darwin") return(FALSE)
+  if (!cli::is_utf8_output()) {
+    return(FALSE)
+  }
+  if (isTRUE(opt <- getOption("pkg.emoji"))) {
+    return(TRUE)
+  }
+  if (identical(opt, FALSE)) {
+    return(FALSE)
+  }
+  if (Sys.info()[["sysname"]] != "Darwin") {
+    return(FALSE)
+  }
   TRUE
 }
 

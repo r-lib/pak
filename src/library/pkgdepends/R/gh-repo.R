@@ -17,7 +17,9 @@ ghrepo <- local({
     mirror_pkgs <- get_mirror_packages(repo, subdir)
 
     to_build <- get_outdated_packages(source_pkgs, mirror_pkgs, packages)
-    if (length(to_build) == 0) return(invisible(character()))
+    if (length(to_build) == 0) {
+      return(invisible(character()))
+    }
 
     cli::cli_h2("Install packages")
     dir.create(lib <- tempfile("pkgdepends-lib-"))
@@ -30,7 +32,9 @@ ghrepo <- local({
     )
     inst <- keep_updated(inst, mirror_pkgs)
     # I don't think this can happen....
-    if (nrow(inst) == 0) return(invisible(character()))
+    if (nrow(inst) == 0) {
+      return(invisible(character()))
+    }
 
     cli::cli_h2("Build binary packages")
     inst <- build_pkgs(inst, lib)
@@ -113,8 +117,11 @@ ghrepo <- local({
     proc <- cli::cli_process_start(
       "Getting packages from {.emph {repo}/{subdir}}."
     )
-    platform <- if (.Platform$pkgType == "source") "source" else
+    platform <- if (.Platform$pkgType == "source") {
+      "source"
+    } else {
       pkgcache::current_r_platform()
+    }
     r_mirror <- suppressMessages(pkgcache::cranlike_metadata_cache$new(
       platforms = platform,
       bioc = FALSE,
@@ -285,7 +292,9 @@ ghrepo <- local({
   print_table <- function(cols) {
     cols <- as.list(cols)
     for (i in seq_along(cols)) {
-      if (names(cols)[i] == "-") names(cols)[i] <- ""
+      if (names(cols)[i] == "-") {
+        names(cols)[i] <- ""
+      }
       cols[[i]] <- format(c(names(cols)[i], "", cols[[i]]))
       if (names(cols)[i] != "") {
         cols[[i]][2] <- strrep("-", nchar(cols[[i]][1]))

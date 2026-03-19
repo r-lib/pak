@@ -7,7 +7,9 @@ s_expr <- function(
 ) {
   language <- tolower(language)
   language <- ts_languages[match.arg(language)]
-  if (is.character(code)) code <- charToRaw(paste(code, collapse = "\n"))
+  if (is.character(code)) {
+    code <- charToRaw(paste(code, collapse = "\n"))
+  }
   call_with_cleanup(c_s_expr, code, language, ranges)
 }
 
@@ -26,7 +28,9 @@ code_query <- function(
   query1 <- paste0(query, "\n", collapse = "")
 
   if (!is.null(code)) {
-    if (is.character(code)) code <- charToRaw(paste(code, collapse = "\n"))
+    if (is.character(code)) {
+      code <- charToRaw(paste(code, collapse = "\n"))
+    }
     res <- call_with_cleanup(c_code_query, code, query1, language, ranges)
   } else {
     res <- call_with_cleanup(c_code_query_path, file, query1, language, ranges)

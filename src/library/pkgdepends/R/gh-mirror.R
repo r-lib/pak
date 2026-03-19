@@ -93,21 +93,31 @@ ghmirror <- local({
 
   get_gh_token <- function() {
     token <- Sys.getenv("CRANATGH_GITHUB_TOKEN", NA_character_)
-    if (is.na(token)) token <- Sys.getenv("GITHUB_PAT", NA_character_)
-    if (is.na(token)) token <- Sys.getenv("GITHUB_TOKEN", NA_character_)
+    if (is.na(token)) {
+      token <- Sys.getenv("GITHUB_PAT", NA_character_)
+    }
+    if (is.na(token)) {
+      token <- Sys.getenv("GITHUB_TOKEN", NA_character_)
+    }
     token
   }
 
   add_missing_versions <- function(pkg, versions, new_pkg, repo) {
-    if (length(versions) == 0) return()
+    if (length(versions) == 0) {
+      return()
+    }
 
     oldwd <- getwd()
     on.exit(setwd(oldwd), add = TRUE)
     change_to_cranatgh_home()
 
-    if (new_pkg) create_git_repo(pkg)
+    if (new_pkg) {
+      create_git_repo(pkg)
+    }
 
-    if (!file.exists(pkg)) clone_git_repo(pkg)
+    if (!file.exists(pkg)) {
+      clone_git_repo(pkg)
+    }
 
     set_git_user(pkg)
 
@@ -117,11 +127,15 @@ ghmirror <- local({
 
     desc <- make_description(metadata)
 
-    if (new_pkg) create_gh_repo(pkg, desc)
+    if (new_pkg) {
+      create_gh_repo(pkg, desc)
+    }
 
     push_to_github(pkg)
 
-    if (!new_pkg) update_description(pkg, desc)
+    if (!new_pkg) {
+      update_description(pkg, desc)
+    }
 
     invisible()
   }
@@ -161,7 +175,9 @@ ghmirror <- local({
     )
 
     # Limit is 350 characters, but be conservative
-    if (nchar(dsc) > 320) dsc <- paste0(substr(dsc, 1, 320), " ...")
+    if (nchar(dsc) > 320) {
+      dsc <- paste0(substr(dsc, 1, 320), " ...")
+    }
 
     dsc
   }
@@ -229,7 +245,9 @@ ghmirror <- local({
 
   change_to_cranatgh_home <- function() {
     home <- default_tree_location()
-    if (is.na(home)) dir.create(home <- tempfile())
+    if (is.na(home)) {
+      dir.create(home <- tempfile())
+    }
     setwd(home)
   }
 
@@ -312,7 +330,9 @@ ghmirror <- local({
       )
     }
 
-    if (!ok) stop("Cannot download package ", package)
+    if (!ok) {
+      stop("Cannot download package ", package)
+    }
     dest_file
   }
 
@@ -344,7 +364,9 @@ ghmirror <- local({
   }
 
   fix_maintainer <- function(maint, auth) {
-    if (is.na(maint)) maint <- auth
+    if (is.na(maint)) {
+      maint <- auth
+    }
     maint <- sub("\\s*<", " <", maint)
 
     ## ': end of single quote
@@ -354,9 +376,15 @@ ghmirror <- local({
     ## ': start of single quote for the rest of the string
     maint <- gsub("'", paste0("'", '"', "'", '"', "'"), maint)
 
-    if (is.na(maint)) maint <- "??? <???@???>"
-    if (!grepl("<.*>", maint)) maint <- paste0(maint, " <???@???>")
-    if (toupper(maint) == "ORPHANED") maint <- "ORPHANED <cran@R-project.org>"
+    if (is.na(maint)) {
+      maint <- "??? <???@???>"
+    }
+    if (!grepl("<.*>", maint)) {
+      maint <- paste0(maint, " <???@???>")
+    }
+    if (toupper(maint) == "ORPHANED") {
+      maint <- "ORPHANED <cran@R-project.org>"
+    }
     maint
   }
 

@@ -123,7 +123,9 @@ async_update_submodule <- function(url, path, branch) {
     # message(path, " exists")
     async_update_git_submodules(path)
   } else {
-    if (is.null(branch) || is.na(branch)) branch <- "HEAD"
+    if (is.null(branch) || is.na(branch)) {
+      branch <- "HEAD"
+    }
     # message("getting ", path)
     async_git_download_repo(
       url,
@@ -141,17 +143,23 @@ update_git_submodules_r <- function(path, subdir) {
 async_update_git_submodules_r <- function(path, subdir) {
   subdir <- subdir %||% "."
   smfile <- file.path(path, ".gitmodules")
-  if (!file.exists(smfile)) return()
+  if (!file.exists(smfile)) {
+    return()
+  }
 
   info <- parse_submodules(smfile)
-  if (length(info) == 0) return()
+  if (length(info) == 0) {
+    return()
+  }
 
   to_ignore <- in_r_build_ignore(
     info$path,
     file.path(path, subdir, ".Rbuildignore")
   )
   info <- info[!to_ignore, ]
-  if (nrow(info) == 0) return()
+  if (nrow(info) == 0) {
+    return()
+  }
 
   async_map(seq_len(nrow(info)), function(i) {
     async_update_submodule(
@@ -168,10 +176,14 @@ update_git_submodules <- function(path) {
 
 async_update_git_submodules <- function(path) {
   smfile <- file.path(path, ".gitmodules")
-  if (!file.exists(smfile)) return()
+  if (!file.exists(smfile)) {
+    return()
+  }
 
   info <- parse_submodules(smfile)
-  if (nrow(info) == 0) return()
+  if (nrow(info) == 0) {
+    return()
+  }
 
   async_map(seq_len(nrow(info)), function(i) {
     async_update_submodule(

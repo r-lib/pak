@@ -175,7 +175,9 @@ same_sha <- function(s1, s2) {
     is.character(s2),
     length(s2) == 1
   )
-  if (is.na(s1) || is.na(s2)) return(FALSE)
+  if (is.na(s1) || is.na(s2)) {
+    return(FALSE)
+  }
   assert_that(
     is_string(s1),
     is_string(s2)
@@ -200,7 +202,9 @@ lapply_rows <- function(df, fun, ...) {
 detect_download_cache_dir <- local({
   dir <- NULL
   function() {
-    if (is.null(dir)) dir <<- tempfile()
+    if (is.null(dir)) {
+      dir <<- tempfile()
+    }
     dir
   }
 })
@@ -249,7 +253,9 @@ get_num_workers <- function() {
     )
   }
 
-  if (is.na(n)) n <- 1L
+  if (is.na(n)) {
+    n <- 1L
+  }
 
   n
 }
@@ -266,7 +272,9 @@ is_online <- local({
   online <- TRUE
   expires <- Sys.time()
   function() {
-    if (is_rcmd_check()) return(FALSE)
+    if (is_rcmd_check()) {
+      return(FALSE)
+    }
     t <- Sys.time()
     if (t >= expires) {
       online <<- pingr::is_online()
@@ -430,7 +438,9 @@ is_older_rstudio <- function() {
 }
 
 ansi_align_width <- function(text) {
-  if (length(text) == 0) return(text)
+  if (length(text) == 0) {
+    return(text)
+  }
   width <- max(cli::ansi_nchar(text, type = "width"))
   cli::ansi_align(text, width = width)
 }
@@ -467,7 +477,9 @@ get_euid <- function() {
     as.integer(processx::run("id", "-u")$stdout),
     error = function(e) NA_integer_
   )
-  if (length(euid) != 1 || is.na(euid)) euid <- NA_integer_
+  if (length(euid) != 1 || is.na(euid)) {
+    euid <- NA_integer_
+  }
   euid
 }
 
@@ -500,8 +512,11 @@ pak_or_pkgdepends <- function() {
 }
 
 pakx_version <- function() {
-  if (is_pak()) utils::packageVersion("pak") else
+  if (is_pak()) {
+    utils::packageVersion("pak")
+  } else {
     utils::packageVersion("pkgdepends")
+  }
 }
 
 remove_entry <- function(l, n) {

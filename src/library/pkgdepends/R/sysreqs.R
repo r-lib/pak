@@ -231,7 +231,9 @@ sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
       sp <- unlist(lapply(s, "[[", "packages"))
       if (p %in% sp) {
         newpre <- unlist(lapply(s, "[[", "pre_install"))
-        if (length(newpre) > 0) pre[[pi]] <- c(pre[[pi]], newpre)
+        if (length(newpre) > 0) {
+          pre[[pi]] <- c(pre[[pi]], newpre)
+        }
         newpost <- unlist(lapply(s, "[[", "post_install"))
         if (length(newpost) > 0) post[[pi]] <- c(post[[pi]], newpost)
       }
@@ -402,7 +404,9 @@ sysreqs_async_resolve <- function(sysreqs, sysreqs_platform, config) {
   sysreqs_async_resolve_query(sysreqs, sysreqs_platform, config)$then(function(
     resp
   ) {
-    if (resp$status_code < 400) return(resp)
+    if (resp$status_code < 400) {
+      return(resp)
+    }
     throw(pkg_error(
       call. = FALSE,
       "Failed to look up system requirements for OS {sysreqs_platform}.",
@@ -502,7 +506,9 @@ sysreqs_install <- function(sysreqs_cmds, config = NULL) {
     "install_scripts",
     "post_install"
   )])
-  if (length(cmds) == 0) return()
+  if (length(cmds) == 0) {
+    return()
+  }
 
   cli::cli_alert_info("Installing system requirements")
 
@@ -511,7 +517,9 @@ sysreqs_install <- function(sysreqs_cmds, config = NULL) {
 
   cmds <- compact_cmds(cmds)
 
-  if (dry_run) cmds <- paste("echo", cmds)
+  if (dry_run) {
+    cmds <- paste("echo", cmds)
+  }
 
   if (verbose) {
     callback <- function(x, ...) {
@@ -556,12 +564,16 @@ compact_cmds <- function(x) {
 }
 
 is_root <- function() {
-  if (os_type() != "unix") return(FALSE)
+  if (os_type() != "unix") {
+    return(FALSE)
+  }
   ps::ps_uids()[["effective"]] == 0
 }
 
 can_sudo_without_pw <- function() {
-  if (os_type() != "unix") return(FALSE)
+  if (os_type() != "unix") {
+    return(FALSE)
+  }
   tryCatch(
     {
       processx::run("sudo", c("-s", "id"))

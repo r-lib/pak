@@ -99,6 +99,11 @@
 #' String or `NULL`. `NA` is not allowed. In environment variables the
 #' string `NULL` means an R `NULL` value.
 #'
+#' ## `character_or_null`
+#'
+#' Character vector or `NULL`. `NA` is not allowed. In environment variables
+#' the entries are separated by a semicolon.
+#'
 #' ## `character`
 #'
 #' Character vector without `NA` values. In environment variables the
@@ -117,7 +122,9 @@ config <- local({
   true <- function(...) TRUE
 
   is_config_name <- function(name) {
-    if (is_string(name)) return(TRUE)
+    if (is_string(name)) {
+      return(TRUE)
+    }
     structure(
       FALSE,
       msg = c(
@@ -129,7 +136,9 @@ config <- local({
   }
 
   is_config_check <- function(check) {
-    if (is_string(check) || is.function(check) || is.null(check)) return(TRUE)
+    if (is_string(check) || is.function(check) || is.null(check)) {
+      return(TRUE)
+    }
     structure(
       FALSE,
       msg = c(
@@ -153,6 +162,7 @@ config <- local({
   # Built-in types
   builtin_types <- c(
     "character",
+    "character_or_null",
     "count",
     "custom",
     "flag",
@@ -163,6 +173,9 @@ config <- local({
   # Checks for builtin types
   builtin_checks <- list(
     character = function(x) is.character(x) && !anyNA(x),
+    character_or_null = function(x) {
+      (is.character(x) && !anyNA(x)) || is.null(x)
+    },
     custom = function(x) true(x),
     flag = function(x) is_flag(x),
     string = function(x) is_string(x),
@@ -183,8 +196,12 @@ config <- local({
     },
     flag = function(x, name, ...) {
       x <- tolower(x)
-      if (tolower(x) %in% c("yes", "true", "1", "on")) return(TRUE)
-      if (tolower(x) %in% c("no", "false", "0", "off")) return(FALSE)
+      if (tolower(x) %in% c("yes", "true", "1", "on")) {
+        return(TRUE)
+      }
+      if (tolower(x) %in% c("no", "false", "0", "off")) {
+        return(FALSE)
+      }
       throw(pkg_error(
         "Invalid value for the {.envvar {name}} environment variable.",
         i = "It must be either {.code true} or {.code false}."
@@ -192,6 +209,9 @@ config <- local({
     },
     string = function(x, ...) x,
     string_or_null = function(x, ...) if (identical(x, "NULL")) NULL else x,
+    character_or_null = function(x, ...) {
+      if (x %in% c("", "NULL")) NULL else strsplit(x, ";", fixed = TRUE)[[1]]
+    },
     count = function(x, name, ...) {
       num <- suppressWarnings(as.numeric(num))
       if (is.na(num) || !is_count(num)) {
@@ -218,13 +238,17 @@ config <- local({
     rec <- env$data[[name]]
 
     # was explicitly set?
-    if (!is.null(rec$value)) return(list("set", rec$value))
+    if (!is.null(rec$value)) {
+      return(list("set", rec$value))
+    }
 
     # set via options()
     optname <- paste0(env$prefix, name)
     opt <- getOption(optname)
     if (!is.null(opt)) {
-      if (!is.null(chk <- env$data[[name]]$check)) chk(opt)
+      if (!is.null(chk <- env$data[[name]]$check)) {
+        chk(opt)
+      }
       return(list("option", opt))
     }
 
@@ -365,11 +389,17 @@ config <- local({
         ))
       }
 
-      if (is_string(check)) check <- env$checks[[check]]
+      if (is_string(check)) {
+        check <- env$checks[[check]]
+      }
       check <- check %||% true
-      if (!is.null(default) && !is.function(default)) check(default)
+      if (!is.null(default) && !is.function(default)) {
+        check(default)
+      }
 
-      if (is_string(env_decode)) env_decode <- env$env_decode[[env_decode]]
+      if (is_string(env_decode)) {
+        env_decode <- env$env_decode[[env_decode]]
+      }
       env_decode <- env_decode %||% identity
 
       env$data[[name]] <- list(
@@ -454,7 +484,9 @@ config <- local({
           i = "See `$list()` for the list of all config entries."
         ))
       }
-      if (!is.null(chk <- env$data[[name]]$check)) chk(value)
+      if (!is.null(chk <- env$data[[name]]$check)) {
+        chk(value)
+      }
       env$data[[name]]$value <- value
       invisible(env)
     }

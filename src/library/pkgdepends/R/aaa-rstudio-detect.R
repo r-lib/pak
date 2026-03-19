@@ -51,8 +51,12 @@ rstudio <- local({
     }
 
     # Cached?
-    if (clear_cache) data <<- NULL
-    if (!is.null(data)) return(get_caps(data))
+    if (clear_cache) {
+      data <<- NULL
+    }
+    if (!is.null(data)) {
+      return(get_caps(data))
+    }
 
     if (
       (rspid <- Sys.getenv("RSTUDIO_SESSION_PID")) != "" &&
@@ -86,7 +90,9 @@ rstudio <- local({
     pane <- Sys.getenv("RSTUDIO_CHILD_PROCESS_PANE")
 
     # this should not happen, but be defensive and fall back
-    if (pane == "") return(detect_old(clear_cache))
+    if (pane == "") {
+      return(detect_old(clear_cache))
+    }
 
     # direct subprocess
     new$type <- if (rspid == parentpid) {
@@ -175,7 +181,9 @@ rstudio <- local({
     }
 
     installing <- Sys.getenv("R_PACKAGE_DIR", "")
-    if (cache && installing == "") data <<- new
+    if (cache && installing == "") {
+      data <<- new
+    }
 
     get_caps(new)
   }

@@ -202,7 +202,9 @@ repo <- local({
   }
 
   write_dcf <- function(meta, PACKAGES, quiet = TRUE) {
-    if (!quiet) cat("Writing ", PACKAGES, "\n")
+    if (!quiet) {
+      cat("Writing ", PACKAGES, "\n")
+    }
     meta <- as.matrix(meta)
     write.dcf(meta, PACKAGES, width = 200)
     con <- gzfile(paste0(PACKAGES, ".gz"), "wt")
@@ -219,7 +221,9 @@ repo <- local({
     idx <- seq_len(nrow(df))
     names(df) <- tolower(names(df))
     for (i in seq_along(cols)) {
-      if (length(idx) == 0) break
+      if (length(idx) == 0) {
+        break
+      }
       n <- tolower(names(cols)[i])
       idx <- idx[df[[n]][idx] %in% cols[[i]]]
     }
@@ -228,17 +232,27 @@ repo <- local({
   }
 
   canonize_arch <- function(platform) {
-    if (platform == "") return(NA_character_)
+    if (platform == "") {
+      return(NA_character_)
+    }
     arch <- strsplit(platform, "-", fixed = TRUE)[[1]][1]
     c("aarch64" = "arm64", "x86_64" = "amd64", "s390x" = "s390x")[[arch]]
   }
 
   canonize_os <- function(platform) {
-    if (platform == "") return(NA_character_)
+    if (platform == "") {
+      return(NA_character_)
+    }
     os <- strsplit(platform, "-", fixed = TRUE)[[1]][3]
-    if (substr(os, 1, 6) == "darwin") os <- "darwin"
-    if (substr(os, 1, 5) == "mingw") os <- "windows"
-    if (substr(os, 1, 7) == "solaris") os <- "solaris"
+    if (substr(os, 1, 6) == "darwin") {
+      os <- "darwin"
+    }
+    if (substr(os, 1, 5) == "mingw") {
+      os <- "windows"
+    }
+    if (substr(os, 1, 7) == "solaris") {
+      os <- "solaris"
+    }
     os
   }
 

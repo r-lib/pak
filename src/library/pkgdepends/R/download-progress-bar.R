@@ -143,8 +143,9 @@ pkgplan__initial_pb_message <- function(bar) {
   } else {
     cli::cli_alert_info(c(
       "Getting",
-      if (bts > 0)
-        " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}",
+      if (bts > 0) {
+        " {num-unk} pkg{?s} {.size ({format_bytes$pretty_bytes(bts)})}"
+      },
       if (bts > 0 && unk > 0) " and",
       if (unk > 0) " {unk} pkg{?s} with unknown size{?s}",
       if (nch > 0) ", {nch} ",
@@ -186,12 +187,15 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
     if (data$download_status == "Got") {
       bar$what$status[idx] <- "got"
       sz <- na.omit(file.size(c(data$fulltarget, data$fulltarget_tree)))[1]
-      if (!is.na(sz)) bar$what$filesize[idx] <- sz
+      if (!is.na(sz)) {
+        bar$what$filesize[idx] <- sz
+      }
       cli::cli_alert_success(c(
         "Got {.pkg {data$package}} ",
         "{.version {data$version}} ({data$platform})",
-        if (!is.na(sz) && bar$show_size)
+        if (!is.na(sz) && bar$show_size) {
           " {.size ({format_bytes$pretty_bytes(sz)})}"
+        }
       ))
       if (!is.na(bar$what$filesize[idx])) {
         bar$chunks[[sec]] <- (bar$chunks[[sec]] %||% 0) -
@@ -245,7 +249,9 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
 
   # Update current and total
   bar$what$current[idx] <- data$current
-  if (data$total > 0) bar$what$filesize[idx] <- bar$what$need[idx] <- data$total
+  if (data$total > 0) {
+    bar$what$filesize[idx] <- bar$what$need[idx] <- data$total
+  }
 
   TRUE
 }
@@ -257,10 +263,14 @@ pkgplan__update_progress_bar <- function(bar, idx, event, data) {
 #' @noRd
 
 pkgplan__show_progress_bar <- function(bar) {
-  if (is.null(bar$status)) return()
+  if (is.null(bar$status)) {
+    return()
+  }
 
   # Don't show if there is nothing to download
-  if (sum(!bar$what$skip) == 0) return()
+  if (sum(!bar$what$skip) == 0) {
+    return()
+  }
   parts <- calculate_progress_parts(bar)
 
   # Ready to update. We can't use the package emoji because its
@@ -284,7 +294,9 @@ calculate_rate <- function(start, now, chunks) {
   data <- unlist(mget(labels, envir = chunks, ifnotfound = 0L))
   fact <- time_at - max(time_at_s - 3, 0)
   rate <- sum(data) / fact
-  if (is.nan(rate)) rate <- 0
+  if (is.nan(rate)) {
+    rate <- 0
+  }
   if (rate == 0 && time_at < 4) {
     rstr <- strrep(" ", 8)
   } else {
@@ -329,7 +341,9 @@ calculate_progress_parts <- function(bar) {
   parts$bytes_total <- bytes_total
   bytes_percent <- bytes_done / bytes_total # could be NA
   percent <- if (!is.na(bytes_percent)) bytes_percent else pkg_percent
-  if (round(percent * 100) == 100 && percent < 1) percent <- 0.99
+  if (round(percent * 100) == 100 && percent < 1) {
+    percent <- 0.99
+  }
   parts$percent <- format(
     paste0(round(100 * percent), "%"),
     width = 4,
@@ -362,7 +376,9 @@ calculate_progress_parts <- function(bar) {
 }
 
 pkgplan__done_progress_bar <- function(bar) {
-  if (is.null(bar$status)) return()
+  if (is.null(bar$status)) {
+    return()
+  }
 
   end_at <- Sys.time()
   dt <- format_time$pretty_dt(Sys.time() - bar$start_at)
