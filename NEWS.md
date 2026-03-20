@@ -1,13 +1,8 @@
 # pak (development version)
 
-* Setting `use_bioconductor = FALSE` (or `options(pkg.use_bioconductor = FALSE)`)
-  now truly prevents any network contact with Bioconductor. Previously,
-  `cmc__get_repos()` in pkgcache unconditionally called
-  `bioconductor$get_repos()` to classify repository types — even when
-  `bioc = FALSE` — which could trigger an HTTP request to
-  `https://bioconductor.org/config.yaml` for R versions not in the
-  built-in R → Bioc version map (e.g. R 4.5). This request causes a hard
-  failure behind corporate firewalls (#TODO).
+* Setting `use_bioconductor = FALSE` (i.e. the `PKG_USE_BIOCONDUCTOR`
+  env var, or the `pkg.use_bioconductor` option) now truly prevents
+  any network contact with Bioconductor.
 
 # pak 0.9.2
 
