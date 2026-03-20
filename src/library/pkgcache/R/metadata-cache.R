@@ -1040,7 +1040,7 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
 cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {
   repos[["CRAN"]] <- cran_mirror
   repos <- unlist(repos)
-  bioc_names <- bioconductor$get_repos()
+  bioc_names <- if (bioc) bioconductor$get_repos() else character(0L)
   res <- data_frame(
     name = names(repos),
     url = unname(repos),
