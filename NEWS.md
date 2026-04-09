@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.9.3
 
 * Setting `use_bioconductor = FALSE` (i.e. the `PKG_USE_BIOCONDUCTOR`
   env var, or the `pkg.use_bioconductor` option) now truly prevents
