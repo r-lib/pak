@@ -17,7 +17,7 @@ License: MIT + file LICENSE
 URL: https://keyring.r-lib.org/, https://github.com/r-lib/keyring
 BugReports: https://github.com/r-lib/keyring/issues
 Depends: R (>= 3.5)
-Imports: askpass, filelock, R6, tools, utils, yaml
+Imports: filelock, R6, tools, utils, yaml
 Suggests: callr, covr, openssl, testthat (>= 3.0.0), withr
 Biarch: true
 Config/Needs/website: tidyverse/tidytemplate
