@@ -23,7 +23,7 @@ SEXP yaml_parse_scalar(SEXP rx) {
   yaml_parser_initialize(&parser);
   yaml_parser_set_input_string(&parser, (const unsigned char*) x, strlen(x));
 
-  SEXP res = R_NilValue;
+  SEXP res = Rf_protect(R_NilValue);
   int done = 0;
 
   while (!done) {
@@ -37,7 +37,8 @@ SEXP yaml_parse_scalar(SEXP rx) {
           break;
 
         case YAML_SCALAR_EVENT:
-          res = handle_scalar(&event);
+	  Rf_unprotect(1);
+          res = Rf_protect(handle_scalar(&event));
           yaml_event_delete(&event);
           yaml_parser_delete(&parser);
           done = 1;
@@ -61,5 +62,6 @@ SEXP yaml_parse_scalar(SEXP rx) {
     }
   }
 
+  Rf_unprotect(1);
   return res;
 }

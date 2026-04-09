@@ -37,8 +37,12 @@ SEXP cleancall_fns_dot_call = NULL;
 
 static SEXP callbacks = NULL;
 
+#if (defined(R_VERSION) && R_VERSION < R_Version(4, 5, 0))
+#define R_getVar(x,y,z) Rf_findVar(x,y)
+#endif
+
 void cleancall_init(void) {
-  cleancall_fns_dot_call = Rf_findVar(Rf_install(".Call"), R_BaseEnv);
+  cleancall_fns_dot_call = R_getVar(Rf_install(".Call"), R_BaseEnv, TRUE);
   callbacks = R_NilValue;
 }
 
