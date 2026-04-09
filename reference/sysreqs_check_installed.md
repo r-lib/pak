@@ -74,6 +74,7 @@ Other system requirements functions:
 sysreqs_check_installed()
 #> system package       installed required by                   
 #> --------------       --        -----------                   
+#> cmake                ✔         fs, nanonext                  
 #> git                  ✔         credentials, gitcreds         
 #> gsfonts              ✔         magick                        
 #> libcurl4-openssl-dev ✔         curl                          
@@ -90,6 +91,7 @@ sysreqs_check_installed()
 #> libsecret-1-dev      ✔         keyring                       
 #> libssl-dev           ✔         curl, openssl, PKI            
 #> libtiff-dev          ✔         ragg                          
+#> libuv1-dev           ✔         fs                            
 #> libwebp-dev          ✔         ragg                          
 #> libx11-dev           ✔         clipr                         
 #> libxml2-dev          ✔         xml2                          
