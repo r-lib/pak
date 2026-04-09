@@ -1313,11 +1313,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.3",
-          "pak.version": "0.9.2",
+          "pak.version": "0.9.3",
           "pak.revision": "TODO",
-          "buildtime": "2026-01-07T05:54:15+00:00",
-          "size": 10076156,
-          "digest": "sha256:beced4f0adb6c2e1c2129943dead78a6edcde3d1e8319242fedac19cad7878cb"
+          "buildtime": "2026-04-09T12:06:42+00:00",
+          "size": 10071677,
+          "digest": "sha256:e6f268c611c7804a1f243a123ad29beaa78b4a8e9af18e12eac4c51fd1bd518f"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
