@@ -74,7 +74,7 @@ remote <- function(func, args = list()) {
   opts <- options()
   extraopts <- c("Ncpus", "BioC_mirror")
   pkg_options <- opts[
-    grepl("^pkg[.]", names(opts)) | names(opts) %in% extraopts
+    grepl("^pkg[.]", names(opts)) | grepl("^async_http_", names(opts)) | names(opts) %in% extraopts
   ]
   envs <- Sys.getenv()
   extraenvs <- c("R_BIOC_VERSION", "PATH")
