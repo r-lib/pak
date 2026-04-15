@@ -155,24 +155,41 @@
 #'     error_on_status = FALSE)
 
 run <- function(
-  command = NULL, args = character(), error_on_status = TRUE, wd = NULL,
-  echo_cmd = FALSE, echo = FALSE, spinner = FALSE,
-  timeout = Inf, stdout = "|", stderr = "|",
-  stdout_line_callback = NULL, stdout_callback = NULL,
-  stderr_line_callback = NULL, stderr_callback = NULL,
-  stderr_to_stdout = FALSE, env = NULL,
-  windows_verbatim_args = FALSE, windows_hide_window = FALSE,
-  encoding = "", cleanup_tree = FALSE, ...) {
-
+  command = NULL,
+  args = character(),
+  error_on_status = TRUE,
+  wd = NULL,
+  echo_cmd = FALSE,
+  echo = FALSE,
+  spinner = FALSE,
+  timeout = Inf,
+  stdout = "|",
+  stderr = "|",
+  stdout_line_callback = NULL,
+  stdout_callback = NULL,
+  stderr_line_callback = NULL,
+  stderr_callback = NULL,
+  stderr_to_stdout = FALSE,
+  env = NULL,
+  windows_verbatim_args = FALSE,
+  windows_hide_window = FALSE,
+  encoding = "",
+  cleanup_tree = FALSE,
+  ...
+) {
   assert_that(is_flag(error_on_status))
   assert_that(is_time_interval(timeout))
   assert_that(is_flag(spinner))
   assert_that(is_string_or_null(stdout))
   assert_that(is_string_or_null(stderr))
-  assert_that(is.null(stdout_line_callback) ||
-              is.function(stdout_line_callback))
-  assert_that(is.null(stderr_line_callback) ||
-              is.function(stderr_line_callback))
+  assert_that(
+    is.null(stdout_line_callback) ||
+      is.function(stdout_line_callback)
+  )
+  assert_that(
+    is.null(stderr_line_callback) ||
+      is.function(stderr_line_callback)
+  )
   assert_that(is.null(stdout_callback) || is.function(stdout_callback))
   assert_that(is.null(stderr_callback) || is.function(stderr_callback))
   assert_that(is_flag(cleanup_tree))
@@ -180,16 +197,27 @@ run <- function(
   ## The rest is checked by process$new()
   "!DEBUG run() Checked arguments"
 
-  if (!interactive()) spinner <- FALSE
+  if (!interactive()) {
+    spinner <- FALSE
+  }
 
   ## Run the process
-  if (stderr_to_stdout) stderr <- "2>&1"
+  if (stderr_to_stdout) {
+    stderr <- "2>&1"
+  }
   pr <- process$new(
-    command, args, echo_cmd = echo_cmd, wd = wd,
+    command,
+    args,
+    echo_cmd = echo_cmd,
+    wd = wd,
     windows_verbatim_args = windows_verbatim_args,
     windows_hide_window = windows_hide_window,
-    stdout = stdout, stderr = stderr, env = env, encoding = encoding,
-    cleanup_tree = cleanup_tree, ...
+    stdout = stdout,
+    stderr = stderr,
+    env = env,
+    encoding = encoding,
+    cleanup_tree = cleanup_tree,
+    ...
   )
   "#!DEBUG run() Started the process: `pr$get_pid()`"
 
@@ -223,9 +251,18 @@ run <- function(
   }
 
   res <- tryCatch(
-    run_manage(pr, timeout, spinner, stdout, stderr,
-               stdout_line_callback, stdout_callback,
-               stderr_line_callback, stderr_callback, resenv),
+    run_manage(
+      pr,
+      timeout,
+      spinner,
+      stdout,
+      stderr,
+      stdout_line_callback,
+      stdout_callback,
+      stderr_line_callback,
+      stderr_callback,
+      resenv
+    ),
     interrupt = function(e) {
       "!DEBUG run() process `pr$get_pid()` killed on interrupt"
       out <- if (has_stdout) {
@@ -241,10 +278,15 @@ run <- function(
       tryCatch(pr$kill(), error = function(e) NULL)
       signalCondition(new_process_interrupt_cond(
         list(
-          interrupt = TRUE, stderr = err, stdout = out,
-          command = command, args = args
+          interrupt = TRUE,
+          stderr = err,
+          stdout = out,
+          command = command,
+          args = args
         ),
-        runcall, echo = echo, stderr_to_stdout = stderr_to_stdout
+        runcall,
+        echo = echo,
+        stderr_to_stdout = stderr_to_stdout
       ))
       cat("\n")
       invokeRestart("abort")
@@ -253,9 +295,15 @@ run <- function(
 
   if (error_on_status && (is.na(res$status) || res$status != 0)) {
     "!DEBUG run() error on status `res$status` for process `pr$get_pid()`"
-    throw(new_process_error(res, call = sys.call(), echo = echo,
-                            stderr_to_stdout, res$status, command = command,
-                            args = args))
+    throw(new_process_error(
+      res,
+      call = sys.call(),
+      echo = echo,
+      stderr_to_stdout,
+      res$status,
+      command = command,
+      args = args
+    ))
   }
 
   res
@@ -265,16 +313,26 @@ echo_callback <- function(user_callback, type) {
   force(user_callback)
   force(type)
   function(x, ...) {
-    if (type == "stderr" && has_package("cli")) x <- cli::col_red(x)
+    if (type == "stderr" && has_package("cli")) {
+      x <- cli::col_red(x)
+    }
     cat(x, sep = "")
     if (!is.null(user_callback)) user_callback(x, ...)
   }
 }
 
-run_manage <- function(proc, timeout, spinner, stdout, stderr,
-                       stdout_line_callback, stdout_callback,
-                       stderr_line_callback, stderr_callback, resenv) {
-
+run_manage <- function(
+  proc,
+  timeout,
+  spinner,
+  stdout,
+  stderr,
+  stdout_line_callback,
+  stdout_callback,
+  stderr_line_callback,
+  stderr_callback,
+  resenv
+) {
   timeout <- as.difftime(timeout, units = "secs")
   start_time <- proc$get_start_time()
 
@@ -285,17 +343,21 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
   pushback_err <- ""
 
   do_output <- function() {
-
     ok <- FALSE
     if (has_stdout) {
-      newout <- tryCatch({
-        ret <- proc$read_output(2000)
-        ok <- TRUE
-        ret
-      }, error = function(e) NULL)
+      newout <- tryCatch(
+        {
+          ret <- proc$read_output(2000)
+          ok <- TRUE
+          ret
+        },
+        error = function(e) NULL
+      )
 
       if (length(newout) && nzchar(newout)) {
-        if (!is.null(stdout_callback)) stdout_callback(newout, proc)
+        if (!is.null(stdout_callback)) {
+          stdout_callback(newout, proc)
+        }
         resenv$outbuf$push(newout)
         if (!is.null(stdout_line_callback)) {
           newout <- paste0(pushback_out, newout)
@@ -311,15 +373,20 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
     }
 
     if (has_stderr) {
-      newerr <- tryCatch({
-        ret <- proc$read_error(2000)
-        ok <- TRUE
-        ret
-      }, error = function(e) NULL)
+      newerr <- tryCatch(
+        {
+          ret <- proc$read_error(2000)
+          ok <- TRUE
+          ret
+        },
+        error = function(e) NULL
+      )
 
       if (length(newerr) && nzchar(newerr)) {
         resenv$errbuf$push(newerr)
-        if (!is.null(stderr_callback)) stderr_callback(newerr, proc)
+        if (!is.null(stderr_callback)) {
+          stderr_callback(newerr, proc)
+        }
         if (!is.null(stderr_line_callback)) {
           newerr <- paste0(pushback_err, newerr)
           pushback_err <<- ""
@@ -350,9 +417,14 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
 
   while (proc$is_alive()) {
     ## Timeout? Maybe finished by now...
-    if (!is.null(timeout) && is.finite(timeout) &&
-        Sys.time() - start_time > timeout) {
-      if (proc$kill(close_connections = FALSE)) timeout_happened <- TRUE
+    if (
+      !is.null(timeout) &&
+        is.finite(timeout) &&
+        Sys.time() - start_time > timeout
+    ) {
+      if (proc$kill(close_connections = FALSE)) {
+        timeout_happened <- TRUE
+      }
       "!DEBUG Timeout killed run() process `proc$get_pid()`"
       break
     }
@@ -372,7 +444,9 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
     polled <- proc$poll_io(remains)
 
     ## If output/error, then collect it
-    if (any(polled == "ready")) do_output()
+    if (any(polled == "ready")) {
+      do_output()
+    }
 
     if (spinner) spin()
   }
@@ -383,13 +457,17 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
 
   ## We might still have output
   "!DEBUG run() reading leftover output / error, process `proc$get_pid()`"
-  while ((has_stdout && proc$is_incomplete_output()) ||
-         (proc$has_error_connection() && proc$is_incomplete_error())) {
+  while (
+    (has_stdout && proc$is_incomplete_output()) ||
+      (proc$has_error_connection() && proc$is_incomplete_error())
+  ) {
     proc$poll_io(-1)
     if (!do_output()) break
   }
 
-  if (spinner) cat("\r \r")
+  if (spinner) {
+    cat("\r \r")
+  }
 
   list(
     status = proc$get_exit_status(),
@@ -399,21 +477,51 @@ run_manage <- function(proc, timeout, spinner, stdout, stderr,
   )
 }
 
-new_process_error <- function(result, call, echo, stderr_to_stdout,
-                              status = NA_integer_, command, args) {
+new_process_error <- function(
+  result,
+  call,
+  echo,
+  stderr_to_stdout,
+  status = NA_integer_,
+  command,
+  args
+) {
   if (isTRUE(result$timeout)) {
-    new_process_timeout_error(result, call, echo, stderr_to_stdout, status,
-                              command, args)
+    new_process_timeout_error(
+      result,
+      call,
+      echo,
+      stderr_to_stdout,
+      status,
+      command,
+      args
+    )
   } else {
-    new_process_status_error(result, call, echo, stderr_to_stdout, status,
-                             command, args)
+    new_process_status_error(
+      result,
+      call,
+      echo,
+      stderr_to_stdout,
+      status,
+      command,
+      args
+    )
   }
 }
 
-new_process_status_error <- function(result, call, echo, stderr_to_stdout,
-                                     status = NA_integer_, command, args) {
+new_process_status_error <- function(
+  result,
+  call,
+  echo,
+  stderr_to_stdout,
+  status = NA_integer_,
+  command,
+  args
+) {
   err <- new_error(
-    "System command '", basename(command), "' failed",
+    "System command '",
+    basename(command),
+    "' failed",
     call. = call
   )
   err$stderr <- if (stderr_to_stdout) result$stdout else result$stderr
@@ -424,10 +532,17 @@ new_process_status_error <- function(result, call, echo, stderr_to_stdout,
   add_class(err, c("system_command_status_error", "system_command_error"))
 }
 
-new_process_interrupt_cond <- function(result, call, echo, stderr_to_stdout,
-                                      status = NA_integer_) {
+new_process_interrupt_cond <- function(
+  result,
+  call,
+  echo,
+  stderr_to_stdout,
+  status = NA_integer_
+) {
   cond <- new_cond(
-    "System command '", basename(result$command), "' interrupted",
+    "System command '",
+    basename(result$command),
+    "' interrupted",
     call. = call
   )
   cond$stderr <- if (stderr_to_stdout) result$stdout else result$stderr
@@ -438,10 +553,21 @@ new_process_interrupt_cond <- function(result, call, echo, stderr_to_stdout,
   add_class(cond, c("system_command_interrupt", "interrupt"))
 }
 
-new_process_timeout_error <- function(result, call, echo, stderr_to_stdout,
-                                      status = NA_integer_, command, args) {
+new_process_timeout_error <- function(
+  result,
+  call,
+  echo,
+  stderr_to_stdout,
+  status = NA_integer_,
+  command,
+  args
+) {
   err <- new_error(
-    "System command '", basename(command), "' timed out", call. = call)
+    "System command '",
+    basename(command),
+    "' timed out",
+    call. = call
+  )
   err$stderr <- if (stderr_to_stdout) result$stdout else result$stderr
   err$echo <- echo
   err$stderr_to_stdout <- stderr_to_stdout
@@ -452,8 +578,13 @@ new_process_timeout_error <- function(result, call, echo, stderr_to_stdout,
 
 #' @export
 
-format.system_command_error <- function(x, trace = TRUE, class = TRUE,
-                                        advice = !trace, ...) {
+format.system_command_error <- function(
+  x,
+  trace = TRUE,
+  class = TRUE,
+  advice = !trace,
+  ...
+) {
   class(x) <- setdiff(class(x), "system_command_error")
 
   lines <- NextMethod(
@@ -494,7 +625,9 @@ system_error_parts <- function(x) {
 }
 
 last_stderr_lines <- function(text, std, prefix = "") {
-  if (!nzchar(text)) return(paste0(std, ": <empty>"))
+  if (!nzchar(text)) {
+    return(paste0(std, ": <empty>"))
+  }
   lines <- strsplit(text, "\r?\n")[[1]]
 
   if (is_interactive() && length(lines) > 10) {

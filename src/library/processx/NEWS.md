@@ -1,3 +1,7 @@
+# processx 3.8.7
+
+No changes.
+
 # processx 3.8.6
 
 * `processx::process` objects are cloneable again, temporarily,
