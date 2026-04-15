@@ -1,5 +1,3 @@
-
-
 code <- '
 #include "common.h"
 
@@ -26,7 +24,10 @@ SEXP env = PROTECT(ps_new_env());
 }
 '
 
-data <- read.csv(stringsAsFactors = FALSE, textConnection('
+data <- read.csv(
+  stringsAsFactors = FALSE,
+  textConnection(
+    '
 name,txt
 EPERM,"Operation not permitted."
 ENOENT,"No such file or directory."
@@ -184,15 +185,25 @@ EOWNERDEAD,"Owner died."
 ENOTRECOVERABLE,"State not recoverable."
 ERFKILL,"Operation not possible due to RF-kill."
 EHWPOISON,"Memory page has hardware error."
-'))
+'
+  )
+)
 
-defs <- sprintf("
+defs <- sprintf(
+  "
 #ifdef %s
   PS_ADD_ERRNO(%s,\"%s\",%s);
 #else
   PS_ADD_ERRNO(%s,\"%s\",NA_INTEGER);
 #endif
-", data$name, data$name, data$txt, data$name, data$name, data$txt)
+",
+  data$name,
+  data$name,
+  data$txt,
+  data$name,
+  data$name,
+  data$txt
+)
 
 txt <- paste0(sprintf(code, paste(defs, collapse = "\n")), collapse = "\n")
 writeBin(charToRaw(txt), con = "src/error-codes.c")

@@ -1,4 +1,3 @@
-
 #' List of 'errno' error codes
 #'
 #' For the errors that are not used on the current platform, `value` is

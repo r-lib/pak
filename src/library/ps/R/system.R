@@ -1,4 +1,3 @@
-
 #' Ids of all processes on the system
 #'
 #' @return Integer vector of process ids.
@@ -6,14 +5,15 @@
 
 ps_pids <- function() {
   os <- ps_os_type()
-  pp <- if (os[["MACOS"]])
+  pp <- if (os[["MACOS"]]) {
     ps_pids_macos()
-  else if (os[["LINUX"]])
+  } else if (os[["LINUX"]]) {
     ps_pids_linux()
-  else if (os[["WINDOWS"]])
+  } else if (os[["WINDOWS"]]) {
     ps_pids_windows()
-  else
+  } else {
     stop("Not implemented for this platform")
+  }
 
   sort(pp)
 }
@@ -25,7 +25,7 @@ ps_pids_windows <- function() {
 ps_pids_macos <- function() {
   ls <- .Call(ps__pids)
   ## 0 is missing from the list, usually, even though it is a process
-  if (! 0L %in% ls && ps_pid_exists_macos(0L)) {
+  if (!0L %in% ls && ps_pid_exists_macos(0L)) {
     ls <- c(ls, 0L)
   }
   ls
@@ -66,7 +66,7 @@ ps_users <- function() {
     tty = vapply(l, "[[", character(1), 2),
     hostname = vapply(l, "[[", character(1), 3),
     start_time = format_unix_time(vapply(l, "[[", double(1), 4)),
-    pid = vapply(l, "[[", integer(1),  5)
+    pid = vapply(l, "[[", integer(1), 5)
   )
 
   d
@@ -90,9 +90,9 @@ ps_cpu_count <- function(logical = TRUE) {
   if (logical) ps_cpu_count_logical() else ps_cpu_count_physical()
 }
 
- ps_cpu_count_logical <- function() {
-   .Call(ps__cpu_count_logical)
- }
+ps_cpu_count_logical <- function() {
+  .Call(ps__cpu_count_logical)
+}
 
 ps_cpu_count_physical <- function() {
   if (ps_os_type()[["LINUX"]]) {
@@ -193,23 +193,28 @@ ps_tty_size <- function() {
 #' r_procs <- c("Rgui.exe", "Rterm.exe", "rsession.exe")
 #' ps_shared_lib_users(psdll, filter = r_procs)
 
-ps_shared_lib_users <- function(paths, user = ps_username(),
-                                filter = NULL) {
+ps_shared_lib_users <- function(paths, user = ps_username(), filter = NULL) {
   os <- ps_os_type()
   if (!os[["WINDOWS"]]) {
     stop("`ps_shared_lib_users()` currently only works on Windows")
   }
   assert_character(paths)
-  if (!is.null(user)) assert_string(user)
-  if (!is.null(filter)) assert_character(filter)
-  if (os[["WINDOWS"]]) paths <- gsub("/", "\\", paths, fixed = TRUE)
+  if (!is.null(user)) {
+    assert_string(user)
+  }
+  if (!is.null(filter)) {
+    assert_character(filter)
+  }
+  if (os[["WINDOWS"]]) {
+    paths <- gsub("/", "\\", paths, fixed = TRUE)
+  }
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {
-    tryCatch(ps_handle(p), error = function(e) NULL) }))
+    tryCatch(ps_handle(p), error = function(e) NULL)
+  }))
 
-  nm <- map_chr(processes, function(p)
-    fallback(ps_name(p), NA_character_))
+  nm <- map_chr(processes, function(p) fallback(ps_name(p), NA_character_))
 
   if (!is.null(filter)) {
     selected <- glob$test_any(filter, nm)
@@ -217,8 +222,7 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
     nm <- nm[selected]
   }
 
-  us <- map_chr(processes, function(p)
-    fallback(ps_username(p), NA_character_))
+  us <- map_chr(processes, function(p) fallback(ps_username(p), NA_character_))
 
   if (!is.null(user)) {
     us2 <- short_username(us)
@@ -303,14 +307,17 @@ find_loadavg_counter <- function() {
     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\",
     "CurrentLanguage"
   )
-  tryCatch({
-    pc <- utils::readRegistry(key)
-    idx <- seq(2, length(pc$Counter), by = 2)
-    cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
-    nm <- paste0("\\", cnt["2"], "\\", cnt["44"])
-    Encoding(nm) <- ""
-    enc2utf8(nm)
-  }, error = function(e) "\\System\\Processor Queue Length")
+  tryCatch(
+    {
+      pc <- utils::readRegistry(key)
+      idx <- seq(2, length(pc$Counter), by = 2)
+      cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
+      nm <- paste0("\\", cnt["2"], "\\", cnt["44"])
+      Encoding(nm) <- ""
+      enc2utf8(nm)
+    },
+    error = function(e) "\\System\\Processor Queue Length"
+  )
 }
 
 #' System CPU times.

@@ -1,4 +1,3 @@
-
 ## nocov start
 memoize <- function(fun) {
   fun
@@ -7,7 +6,9 @@ memoize <- function(fun) {
     stop("Only memoizing functions without arguments")
   }
   dec <- function() {
-    if (is.null(cache)) cache <<- fun()
+    if (is.null(cache)) {
+      cache <<- fun()
+    }
     cache
   }
   attr(dec, "clear") <- function() cache <<- TRUE
@@ -15,7 +16,7 @@ memoize <- function(fun) {
   dec
 }
 
-`$.memoize`  <- function(x, name) {
+`$.memoize` <- function(x, name) {
   switch(
     name,
     "clear" = attr(x, "clear"),

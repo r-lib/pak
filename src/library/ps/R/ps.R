@@ -1,4 +1,3 @@
-
 #' @useDynLib ps, .registration = TRUE
 NULL
 
@@ -65,8 +64,12 @@ NULL
 #' @export
 
 ps <- function(user = NULL, after = NULL, columns = NULL) {
-  if (!is.null(user)) assert_string(user)
-  if (!is.null(after)) assert_time(after)
+  if (!is.null(user)) {
+    assert_string(user)
+  }
+  if (!is.null(after)) {
+    assert_time(after)
+  }
 
   columns <- unique(columns %||% ps_default_columns)
   if ("*" %in% columns) {
@@ -75,14 +78,17 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
   }
   if (any(bad <- !columns %in% ps_all_columns)) {
     stop(
-      "Unknown column", if (sum(bad) > 1) "s", " requested: ",
+      "Unknown column",
+      if (sum(bad) > 1) "s",
+      " requested: ",
       paste(columns[bad], collapse = ", ")
     )
   }
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {
-    tryCatch(ps_handle(p), error = function(e) NULL) }))
+    tryCatch(ps_handle(p), error = function(e) NULL)
+  }))
 
   ct <- NULL
   if (!is.null(after)) {
@@ -94,20 +100,22 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
 
   us <- NULL
   if (!is.null(user)) {
-    us <- map_chr(processes, function(p)
-      fallback(ps_username(p), NA_character_))
+    us <- map_chr(
+      processes,
+      function(p) fallback(ps_username(p), NA_character_)
+    )
     selected <- !is.na(us) & us == user
     processes <- processes[selected]
     us <- us[selected]
     ct <- ct[selected]
   }
 
-  ct <- ct %||% lapply(processes, function(p)
-    fallback(ps_create_time(p), NA_time()))
+  ct <- ct %||%
+    lapply(processes, function(p) fallback(ps_create_time(p), NA_time()))
 
   if (c_username <- "username" %in% columns) {
-    us <- us %||% map_chr(processes, function(p)
-      fallback(ps_username(p), NA_character_))
+    us <- us %||%
+      map_chr(processes, function(p) fallback(ps_username(p), NA_character_))
   }
   if (c_pid <- "pid" %in% columns) {
     pd <- map_int(processes, function(p) fallback(ps_pid(p), NA_integer_))
@@ -124,8 +132,11 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
     on.exit(options(opt), add = TRUE)
     st <- map_chr(processes, function(p) fallback(ps_status(p), NA_character_))
     options(opt)
-    if (ps_os_type()[["MACOS"]] && !isTRUE(getOption("ps.no_external_ps")) &&
-        anyNA(st[pids != 0])) {
+    if (
+      ps_os_type()[["MACOS"]] &&
+        !isTRUE(getOption("ps.no_external_ps")) &&
+        anyNA(st[pids != 0])
+    ) {
       misspids <- map_int(processes[is.na(st)], ps_pid)
       st[is.na(st)] <- ps_status_macos_ps(misspids)
     }
@@ -155,11 +166,26 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
   c_mem_uss <- "mem_uss" %in% columns
   c_mem_pss <- "mem_pss" %in% columns
   c_mem_swap <- "mem_swap" %in% columns
-  if (c_rss || c_vms || c_mem_shared || c_mem_text || c_mem_data ||
-      c_mem_lib || c_mem_dirty || c_mem_pfaults || c_mem_pageins ||
-      c_mem_maxrss || c_mem_uss || c_mem_pss || c_mem_swap) {
+  if (
+    c_rss ||
+      c_vms ||
+      c_mem_shared ||
+      c_mem_text ||
+      c_mem_data ||
+      c_mem_lib ||
+      c_mem_dirty ||
+      c_mem_pfaults ||
+      c_mem_pageins ||
+      c_mem_maxrss ||
+      c_mem_uss ||
+      c_mem_pss ||
+      c_mem_swap
+  ) {
     if (c_mem_maxrss || c_mem_uss || c_mem_pss || c_mem_swap) {
-      mem <- lapply(processes, function(p) fallback(ps_memory_full_info(p), NULL))
+      mem <- lapply(
+        processes,
+        function(p) fallback(ps_memory_full_info(p), NULL)
+      )
     } else {
       mem <- lapply(processes, function(p) fallback(ps_memory_info(p), NULL))
     }
@@ -172,7 +198,7 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
     mem_dirty <- map_dbl(mem, function(x) x["dirty"] %||% NA_real_)
     mem_pfaults <- map_dbl(mem, function(x) x["pfaults"] %||% NA_real_)
     mem_pageins <- map_dbl(mem, function(x) x["pageins"] %||% NA_real_)
-    mem_maxrss<- map_dbl(mem, function(x) x["maxrss"] %||% NA_real_)
+    mem_maxrss <- map_dbl(mem, function(x) x["maxrss"] %||% NA_real_)
     mem_uss <- map_dbl(mem, function(x) x["uss"] %||% NA_real_)
     mem_pss <- map_dbl(mem, function(x) x["pss"] %||% NA_real_)
     mem_swap <- map_dbl(mem, function(x) x["swap"] %||% NA_real_)
@@ -202,31 +228,58 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
     exe <- map_chr(processes, function(x) fallback(ps_exe(x), NA_character_))
   }
   if (c_num_fds <- "num_fds" %in% columns) {
-    num_fds <- map_int(processes, function(x) fallback(ps_num_fds(x), NA_integer_))
+    num_fds <- map_int(
+      processes,
+      function(x) fallback(ps_num_fds(x), NA_integer_)
+    )
   }
   if (c_num_threads <- "num_threads" %in% columns) {
-    num_threads <- map_int(processes, function(x) fallback(ps_num_threads(x), NA_integer_))
+    num_threads <- map_int(
+      processes,
+      function(x) fallback(ps_num_threads(x), NA_integer_)
+    )
   }
   if (c_terminal <- "terminal" %in% columns) {
-    terminal <- map_chr(processes, function(x) fallback(ps_terminal(x), NA_character_))
+    terminal <- map_chr(
+      processes,
+      function(x) fallback(ps_terminal(x), NA_character_)
+    )
   }
   c_uid_real <- "uid_real" %in% columns
   c_uid_effective <- "uid_effective" %in% columns
   c_uid_saved <- "uid_saved" %in% columns
   if (c_uid_real || c_uid_effective || c_uid_saved) {
     uids <- lapply(processes, function(x) fallback(ps_uids(x), NULL))
-    uid_real <- map_int(uids, function(x) if (is.null(x)) NA_integer_ else x[["real"]])
-    uid_effective <- map_int(uids, function(x) if (is.null(x)) NA_integer_ else x[["effective"]])
-    uid_saved <- map_int(uids, function(x) if (is.null(x)) NA_integer_ else x[["saved"]])
+    uid_real <- map_int(
+      uids,
+      function(x) if (is.null(x)) NA_integer_ else x[["real"]]
+    )
+    uid_effective <- map_int(
+      uids,
+      function(x) if (is.null(x)) NA_integer_ else x[["effective"]]
+    )
+    uid_saved <- map_int(
+      uids,
+      function(x) if (is.null(x)) NA_integer_ else x[["saved"]]
+    )
   }
   c_gid_real <- "gid_real" %in% columns
   c_gid_effective <- "gid_effective" %in% columns
   c_gid_saved <- "gid_saved" %in% columns
   if (c_gid_real || c_gid_effective || c_gid_saved) {
     gids <- lapply(processes, function(x) fallback(ps_gids(x), NULL))
-    gid_real <- map_int(gids, function(x) if (is.null(x)) NA_integer_ else x[["real"]])
-    gid_effective <- map_int(gids, function(x) if (is.null(x)) NA_integer_ else x[["effective"]])
-    gid_saved <- map_int(gids, function(x) if (is.null(x)) NA_integer_ else x[["saved"]])
+    gid_real <- map_int(
+      gids,
+      function(x) if (is.null(x)) NA_integer_ else x[["real"]]
+    )
+    gid_effective <- map_int(
+      gids,
+      function(x) if (is.null(x)) NA_integer_ else x[["effective"]]
+    )
+    gid_saved <- map_int(
+      gids,
+      function(x) if (is.null(x)) NA_integer_ else x[["saved"]]
+    )
   }
 
   c_created <- "created" %in% columns
@@ -234,45 +287,45 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
 
   pss <- as_data_frame(not_null(list(
     # default
-    pid       = if (c_pid)       pd,
-    ppid      = if (c_ppid)      pp,
-    name      = if (c_name)      nm,
-    username  = if (c_username)  us,
-    status    = if (c_status)    st,
-    user      = if (c_user)      cpt,
-    system    = if (c_system)    cps,
-    rss       = if (c_rss)       rss,
-    vms       = if (c_vms)       vms,
-    created   = if (c_created)   created,
+    pid = if (c_pid) pd,
+    ppid = if (c_ppid) pp,
+    name = if (c_name) nm,
+    username = if (c_username) us,
+    status = if (c_status) st,
+    user = if (c_user) cpt,
+    system = if (c_system) cps,
+    rss = if (c_rss) rss,
+    vms = if (c_vms) vms,
+    created = if (c_created) created,
     ps_handle = if (c_ps_handle) ps_handle,
 
     # optional
-    cmdline   = if (c_vcmdline)  cmdline,
-    vcmdline  = if (c_vcmdline)  vcmdline,
-    cwd       = if (c_cwd)       cwd,
-    exe       = if (c_exe)       exe,
-    num_fds   = if (c_num_fds)   num_fds,
+    cmdline = if (c_cmdline) cmdline,
+    vcmdline = if (c_vcmdline) vcmdline,
+    cwd = if (c_cwd) cwd,
+    exe = if (c_exe) exe,
+    num_fds = if (c_num_fds) num_fds,
     num_threads = if (c_num_threads) num_threads,
     cpu_children_user = if (c_cpu_children_user) cpct,
     cpu_children_system = if (c_cpu_children_system) cpcs,
-    terminal            = if (c_terminal)            terminal,
-    uid_real            = if (c_uid_real)            uid_real,
-    uid_effective       = if (c_uid_effective)       uid_effective,
-    uid_saved           = if (c_uid_saved)           uid_saved,
-    gid_real            = if (c_gid_real)            gid_real,
-    gid_effective       = if (c_gid_effective)       gid_effective,
-    gid_saved           = if (c_gid_saved)           gid_saved,
-    mem_shared          = if (c_mem_shared)          mem_shared,
-    mem_text            = if (c_mem_text)            mem_text,
-    mem_data            = if (c_mem_data)            mem_data,
-    mem_lib             = if (c_mem_lib)             mem_lib,
-    mem_dirty           = if (c_mem_dirty)           mem_dirty,
-    mem_pfaults         = if (c_mem_pfaults)         mem_pfaults,
-    mem_pageins         = if (c_mem_pageins)         mem_pageins,
-    mem_maxrss          = if (c_mem_maxrss)          mem_maxrss,
-    mem_uss             = if (c_mem_uss)             mem_uss,
-    mem_pss             = if (c_mem_pss)             mem_pss,
-    mem_swap            = if (c_mem_swap)            mem_swap,
+    terminal = if (c_terminal) terminal,
+    uid_real = if (c_uid_real) uid_real,
+    uid_effective = if (c_uid_effective) uid_effective,
+    uid_saved = if (c_uid_saved) uid_saved,
+    gid_real = if (c_gid_real) gid_real,
+    gid_effective = if (c_gid_effective) gid_effective,
+    gid_saved = if (c_gid_saved) gid_saved,
+    mem_shared = if (c_mem_shared) mem_shared,
+    mem_text = if (c_mem_text) mem_text,
+    mem_data = if (c_mem_data) mem_data,
+    mem_lib = if (c_mem_lib) mem_lib,
+    mem_dirty = if (c_mem_dirty) mem_dirty,
+    mem_pfaults = if (c_mem_pfaults) mem_pfaults,
+    mem_pageins = if (c_mem_pageins) mem_pageins,
+    mem_maxrss = if (c_mem_maxrss) mem_maxrss,
+    mem_uss = if (c_mem_uss) mem_uss,
+    mem_pss = if (c_mem_pss) mem_pss,
+    mem_swap = if (c_mem_swap) mem_swap,
 
     NULL
   )))
@@ -300,29 +353,29 @@ ps_default_columns <- c(
 
 ps_all_columns <- c(
   ps_default_columns,
-  "cmdline",                    # ps_cmdline
+  "cmdline", # ps_cmdline
   "vcmdline",
-  "cwd",                        # ps_cwd
+  "cwd", # ps_cwd
   "exe",
-  "num_fds",                    # ps_num_fds
-  "num_threads",                # ps_num_threads
-  "cpu_children_user",          # ps_cpu_times
+  "num_fds", # ps_num_fds
+  "num_threads", # ps_num_threads
+  "cpu_children_user", # ps_cpu_times
   "cpu_children_system",
-  "terminal",                   # ps_terminal
-  "uid_real",                   # ps_uids
+  "terminal", # ps_terminal
+  "uid_real", # ps_uids
   "uid_effective",
   "uid_saved",
-  "gid_real",                   # ps_gids
+  "gid_real", # ps_gids
   "gid_effective",
   "gid_saved",
-  "mem_shared",                 # ps_memory_info
+  "mem_shared", # ps_memory_info
   "mem_text",
   "mem_data",
   "mem_lib",
   "mem_dirty",
   "mem_pfaults",
   "mem_pageins",
-  "mem_maxrss",                 # ps_full_memory_info
+  "mem_maxrss", # ps_full_memory_info
   "mem_uss",
   "mem_pss",
   "mem_swap",

@@ -1,4 +1,3 @@
-
 #' @importFrom utils read.table
 
 psl_connections <- function(p) {
@@ -10,16 +9,15 @@ psl_connections <- function(p) {
 
   flt <- function(x, col, values) x[x[[col]] %in% values, ]
 
-  unix <- flt(psl__read_table("/proc/net/unix"),         "V7",  sock$id)
-  tcp  <- flt(psl__read_table("/proc/net/tcp") [, 1:10], "V10", sock$id)
+  unix <- flt(psl__read_table("/proc/net/unix"), "V7", sock$id)
+  tcp <- flt(psl__read_table("/proc/net/tcp")[, 1:10], "V10", sock$id)
   tcp6 <- flt(psl__read_table("/proc/net/tcp6")[, 1:10], "V10", sock$id)
-  udp  <- flt(psl__read_table("/proc/net/udp") [, 1:10], "V10", sock$id)
+  udp <- flt(psl__read_table("/proc/net/udp")[, 1:10], "V10", sock$id)
   udp6 <- flt(psl__read_table("/proc/net/udp6")[, 1:10], "V10", sock$id)
 
   ## Sockets that still existed when we queried /proc/net,
   ## because some of them might be closed already...
-  sockx <- flt(sock, "id",
-               c(unix$V7, tcp$V10, tcp6$V10, udp$V10, udp6$V10))
+  sockx <- flt(sock, "id", c(unix$V7, tcp$V10, tcp6$V10, udp$V10, udp6$V10))
 
   if (length(tcp) && nrow(tcp)) {
     tcp$type <- "SOCK_STREAM"
@@ -64,7 +62,7 @@ psl_connections <- function(p) {
     state = character()
   )
 
-  if (length(unix) &&  nrow(unix)) {
+  if (length(unix) && nrow(unix)) {
     d <- data_frame(
       fd = sockx$fd[match(unix$V7, sockx$id)],
       family = "AF_UNIX",
@@ -73,15 +71,25 @@ psl_connections <- function(p) {
       lport = NA_integer_,
       raddr = NA_character_,
       rport = NA_integer_,
-      state = NA_character_)
+      state = NA_character_
+    )
   }
 
   if (!is.null(net)) {
-
-    laddr <- mapply(psl__decode_address, net$V2, net$family,
-                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    raddr <- mapply(psl__decode_address, net$V3, net$family,
-                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    laddr <- mapply(
+      psl__decode_address,
+      net$V2,
+      net$family,
+      SIMPLIFY = FALSE,
+      USE.NAMES = FALSE
+    )
+    raddr <- mapply(
+      psl__decode_address,
+      net$V3,
+      net$family,
+      SIMPLIFY = FALSE,
+      USE.NAMES = FALSE
+    )
 
     net_d <- data_frame(
       fd = sockx$fd[match(net$V10, sockx$id)],
@@ -91,7 +99,8 @@ psl_connections <- function(p) {
       lport = vapply(laddr, "[[", integer(1), 2),
       raddr = vapply(raddr, "[[", character(1), 1),
       rport = vapply(raddr, "[[", integer(1), 2),
-      state = match_names(ps_env$constants$tcp_statuses, net$V4))
+      state = match_names(ps_env$constants$tcp_statuses, net$V4)
+    )
 
     d <- rbind(d, net_d)
   }
@@ -99,35 +108,50 @@ psl_connections <- function(p) {
   d
 }
 
-psl__read_table <- function(file, stringsAsFactors = FALSE, header = FALSE,
-                            skip = 1, fill = TRUE, ...) {
+psl__read_table <- function(
+  file,
+  stringsAsFactors = FALSE,
+  header = FALSE,
+  skip = 1,
+  fill = TRUE,
+  ...
+) {
   tryCatch(
-    read.table(file, stringsAsFactors = stringsAsFactors, header = header,
-               skip = skip, fill = fill, ...),
+    read.table(
+      file,
+      stringsAsFactors = stringsAsFactors,
+      header = header,
+      skip = skip,
+      fill = fill,
+      ...
+    ),
     error = function(e) NULL
   )
 }
 
 psl__decode_address <- function(addr, family) {
   ipp <- strsplit(addr, ":")[[1]]
-  if (length(ipp) != 2) return(list(NA_character_, NA_integer_))
+  if (length(ipp) != 2) {
+    return(list(NA_character_, NA_integer_))
+  }
   addr <- str_strip(ipp[[1]])
   port <- strtoi(ipp[[2]], 16)
 
   if (family == "AF_INET") {
     AF_INET <- ps_env$constants$address_families[["AF_INET"]]
-    addrn <- strtoi(substring(addr, 1:4*2-1, 1:4*2), base = 16)
-    if (.Platform$endian == "little") addrn <- rev(addrn)
+    addrn <- strtoi(substring(addr, 1:4 * 2 - 1, 1:4 * 2), base = 16)
+    if (.Platform$endian == "little") {
+      addrn <- rev(addrn)
+    }
     addrs <- .Call(ps__inet_ntop, as.raw(addrn), AF_INET) %||% NA_character_
     list(addrs, port)
-
   } else {
     AF_INET6 <- ps_env$constants$address_families[["AF_INET6"]]
-    addrn <- strtoi(substring(addr, 1:16*2-1, 1:16*2), base = 16)
+    addrn <- strtoi(substring(addr, 1:16 * 2 - 1, 1:16 * 2), base = 16)
     if (.Platform$endian == "little") {
-      addrn[ 1: 4] <- rev(addrn[ 1: 4])
-      addrn[ 5: 8] <- rev(addrn[ 5: 8])
-      addrn[ 9:12] <- rev(addrn[ 9:12])
+      addrn[1:4] <- rev(addrn[1:4])
+      addrn[5:8] <- rev(addrn[5:8])
+      addrn[9:12] <- rev(addrn[9:12])
       addrn[13:16] <- rev(addrn[13:16])
     }
     addrs <- .Call(ps__inet_ntop, as.raw(addrn), AF_INET6) %||% NA_character_
@@ -136,11 +160,14 @@ psl__decode_address <- function(addr, family) {
 }
 
 psl__cpu_count_from_lscpu <- function() {
-  tryCatch({
-    lines <- system("lscpu -p=core", intern = TRUE)
-    cores <- unique(lines[!str_starts_with(lines, "#")])
-    length(cores)
-  }, error = function(e) psl__cpu_count_from_cpuinfo())
+  tryCatch(
+    {
+      lines <- system("lscpu -p=core", intern = TRUE)
+      cores <- unique(lines[!str_starts_with(lines, "#")])
+      length(cores)
+    },
+    error = function(e) psl__cpu_count_from_cpuinfo()
+  )
 }
 
 psl__cpu_count_from_cpuinfo <- function() {
@@ -151,17 +178,19 @@ psl__cpu_count_from_cpuinfo <- function() {
   for (l in lines) {
     l <- tolower(str_strip(l))
     if (!nchar(l)) {
-      if ("physical id" %in% names(current) &&
-          "cpu cores" %in% names(current)) {
-        mapping[[ current[["physical id"]] ]] <- current[["cpu cores"]]
+      if (
+        "physical id" %in% names(current) && "cpu cores" %in% names(current)
+      ) {
+        mapping[[current[["physical id"]]]] <- current[["cpu cores"]]
       }
       current <- list()
-
     } else {
-      if (str_starts_with(l, "physical id") ||
-          str_starts_with(l, "cpu cores")) {
+      if (
+        str_starts_with(l, "physical id") ||
+          str_starts_with(l, "cpu cores")
+      ) {
         kv <- strsplit(l, "\\t+:")[[1]]
-        current[[ kv[[1]] ]] <- kv[[2]]
+        current[[kv[[1]]]] <- kv[[2]]
       }
     }
   }
@@ -179,14 +208,22 @@ ps_cpu_count_physical_linux <- function() {
 
 ps__system_cpu_times_linux <- function() {
   clock_ticks <- tryCatch(
-    as.numeric(system("getconf CLK_TCK", intern=TRUE)),
+    as.numeric(system("getconf CLK_TCK", intern = TRUE)),
     error = function(e) return(250)
   )
   stat <- readLines("/proc/stat", n = 1)
   tms <- as.double(strsplit(stat, "\\s+")[[1]][-1]) / clock_ticks
   nms <- c(
-    "user", "nice", "system", "idle", "iowait", "irq", "softirq", "steal",
-    "guest", "guest_nice"
+    "user",
+    "nice",
+    "system",
+    "idle",
+    "iowait",
+    "irq",
+    "softirq",
+    "steal",
+    "guest",
+    "guest_nice"
   )
   names(tms) <- nms[1:length(tms)]
   tms
@@ -200,13 +237,15 @@ ps__disk_io_counters_linux <- function() {
   } else if (dir.exists("/sys/block")) {
     ps__read_sysfs()
   } else {
-    stop("Can't read disk IO, neither /proc/diskstats or /sys/block on this system")
+    stop(
+      "Can't read disk IO, neither /proc/diskstats or /sys/block on this system"
+    )
   }
 }
 
 ps__is_storage_device <- function(name, including_virtual = TRUE) {
   # Whether a named drive (e.g. 'sda') is a real storage device, or a virtual one
-  name <- gsub("/", "!", name, fixed=TRUE)
+  name <- gsub("/", "!", name, fixed = TRUE)
   if (including_virtual) {
     path <- file.path("/sys/block", name)
   } else {
@@ -282,7 +321,7 @@ ps__read_sysfs <- function() {
 
     # Save all info as a dataframe
     block_info <- data.frame(
-      name = strsplit(stat, "/", fixed=TRUE)[[1]][[5]], # Extract name from stat filepath
+      name = strsplit(stat, "/", fixed = TRUE)[[1]][[5]], # Extract name from stat filepath
       read_count = as.numeric(fields[[1]]),
       read_merged_count = as.numeric(fields[[2]]),
       read_bytes = as.numeric(fields[[3]]) * 512, # Multiple by disk sector size to get bytes

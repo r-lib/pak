@@ -1,6 +1,4 @@
-
 glob <- local({
-
   to_regex <- function(glob) {
     restr <- new.env(parent = emptyenv(), size = 1003)
     idx <- 0L
@@ -11,33 +9,26 @@ glob <- local({
       if (c %in% c("/", "$", "^", "+", ".", "(", ")", "=", "!", "|")) {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- paste0("\\", c)
-
       } else if (c == "?") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- "."
-
       } else if (c == "[" || c == "]") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- c
-
       } else if (c == "{") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- "("
         in_group <- TRUE
-
       } else if (c == "}") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- ")"
         in_group <- FALSE
-
-      } else if (c ==",") {
+      } else if (c == ",") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- if (in_group) "|" else paste0("\\", c)
-
       } else if (c == "*") {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- ".*"
-
       } else {
         idx <- idx + 1L
         restr[[as.character(idx)]] <- c
@@ -47,7 +38,8 @@ glob <- local({
     paste0(
       "^",
       paste(mget(as.character(seq_len(idx)), restr), collapse = ""),
-      "$")
+      "$"
+    )
   }
 
   test <- function(glob, paths) {
@@ -56,11 +48,14 @@ glob <- local({
   }
 
   test_any <- function(globs, paths) {
-    if (!length(paths)) return(logical())
+    if (!length(paths)) {
+      return(logical())
+    }
     res <- vapply(globs, to_regex, character(1))
     m <- matrix(
       as.logical(unlist(lapply(res, grepl, x = paths))),
-      nrow = length(paths))
+      nrow = length(paths)
+    )
     apply(m, 1, any)
   }
 

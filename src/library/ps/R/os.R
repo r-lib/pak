@@ -1,4 +1,3 @@
-
 #' Query the type of the OS
 #'
 #' @return `ps_os_type` returns a named logical vector. The rest of the
@@ -12,7 +11,9 @@
 #' ps_is_supported()
 
 ps_os_type <- function() {
-  if (is.null(ps_env$os_type)) ps_env$os_type <- .Call(ps__os_type)
+  if (is.null(ps_env$os_type)) {
+    ps_env$os_type <- .Call(ps__os_type)
+  }
   ps_env$os_type
 }
 
@@ -30,12 +31,14 @@ ps_is_supported <- function() {
   if (os[["LINUX"]]) {
     # On Linux we need to check if /proc is readable
     supported <- FALSE
-    tryCatch({
-      readLines("/proc/stat", warn = FALSE, n = 1)
-      supported <- TRUE
-    }, error = function(e) e)
+    tryCatch(
+      {
+        readLines("/proc/stat", warn = FALSE, n = 1)
+        supported <- TRUE
+      },
+      error = function(e) e
+    )
     supported
-
   } else {
     os <- os[setdiff(names(os), c("BSD", "POSIX"))]
     any(os)
