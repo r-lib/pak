@@ -1,4 +1,3 @@
-
 #' Whether cli is emitting UTF-8 characters
 #'
 #' UTF-8 cli characters can be turned on by setting the `cli.unicode`
@@ -12,7 +11,7 @@
 
 is_utf8_output <- function() {
   opt <- getOption("cli.unicode", NULL)
-  if (! is.null(opt)) {
+  if (!is.null(opt)) {
     isTRUE(opt)
   } else {
     l10n_info()$`UTF-8` && !is_latex_output()
@@ -47,14 +46,15 @@ is_utf8_output <- function() {
 #' utf8_nchar(emo, "width")
 #' utf8_nchar(emo, "codepoints")
 #'
-#' # For comparision, the output for width depends on the R version used:
+#' # For comparison, the output for width depends on the R version used:
 #' nchar(emo, "chars")
 #' nchar(emo, "bytes")
 #' nchar(emo, "width")
 
-utf8_nchar <- function(x, type = c("chars", "bytes", "width", "graphemes",
-                                   "codepoints")) {
-
+utf8_nchar <- function(
+  x,
+  type = c("chars", "bytes", "width", "graphemes", "codepoints")
+) {
   type <- match.arg(type)
   if (type == "chars") type <- "graphemes"
 
@@ -62,14 +62,12 @@ utf8_nchar <- function(x, type = c("chars", "bytes", "width", "graphemes",
 
   if (type == "width") {
     .Call(clic_utf8_display_width, x)
-
   } else if (type == "graphemes") {
     .Call(clic_utf8_nchar_graphemes, x)
-
   } else if (type == "codepoints") {
     base::nchar(x, allowNA = FALSE, keepNA = TRUE, type = "chars")
-
-  } else { # bytes
+  } else {
+    # bytes
     base::nchar(x, allowNA = FALSE, keepNA = TRUE, type = "bytes")
   }
 }
@@ -107,7 +105,7 @@ utf8_substr <- function(x, start, stop) {
     throw(cli_error(
       "{.arg start} and {.arg stop} must be numeric vectors",
       "i" = if (!is.numeric(start)) "{.arg start} is {.typeof {start}}",
-      "i" = if (!is.numeric(stop))  "{.arg stop}  is {.typeof {stop}}"
+      "i" = if (!is.numeric(stop)) "{.arg stop}  is {.typeof {stop}}"
     ))
   }
   start2 <- suppressWarnings(as.integer(start))
@@ -116,7 +114,7 @@ utf8_substr <- function(x, start, stop) {
     throw(cli_error(
       "{.arg start} and {.arg stop} must have at least length 1",
       "i" = if (!length(start2)) "{.arg start} has length 0",
-      "i" = if (!length(stop2))  "{.arg stop}  has length 0"
+      "i" = if (!length(stop2)) "{.arg stop}  has length 0"
     ))
   }
   x <- enc2utf8(x)

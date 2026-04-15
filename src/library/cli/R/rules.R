@@ -1,6 +1,4 @@
-
 make_line <- function(x, char = symbol$line, col = NULL) {
-
   ## Easiest to handle this specially
   if (x <= 0) return("")
 
@@ -118,10 +116,16 @@ make_line <- function(x, char = symbol$line, col = NULL) {
 #'
 #' @export
 
-rule <- function(left = "", center = "", right = "", line = 1,
-                 col = NULL, line_col = col, background_col = NULL,
-                 width = console_width()) {
-
+rule <- function(
+  left = "",
+  center = "",
+  right = "",
+  line = 1,
+  col = NULL,
+  line_col = col,
+  background_col = NULL,
+  width = console_width()
+) {
   try_silently(left <- as.character(left))
   try_silently(center <- as.character(center))
   try_silently(right <- as.character(right))
@@ -145,20 +149,21 @@ rule <- function(left = "", center = "", right = "", line = 1,
 
   res <- if (ansi_nchar(center)) {
     if (ansi_nchar(left) || ansi_nchar(right)) {
-      stop(sQuote("center"), " cannot be specified with ", sQuote("left"),
-           " or ", sQuote("right"))
+      stop(
+        sQuote("center"),
+        " cannot be specified with ",
+        sQuote("left"),
+        " or ",
+        sQuote("right")
+      )
     }
     rule_center(options)
-
   } else if (ansi_nchar(left) && ansi_nchar(right)) {
     rule_left_right(options)
-
   } else if (ansi_nchar(left)) {
     rule_left(options)
-
   } else if (ansi_nchar(right)) {
     rule_right(options)
-
   } else {
     rule_line(options)
   }
@@ -173,17 +178,16 @@ rule <- function(left = "", center = "", right = "", line = 1,
 get_line_char <- function(line) {
   if (identical(line, 1) || identical(line, 1L) || identical(line, "single")) {
     symbol$line
-
-  } else if (identical(line, 2) || identical(line, 2L) || identical(line, "double")) {
+  } else if (
+    identical(line, 2) || identical(line, 2L) || identical(line, "double")
+  ) {
     symbol$double_line
-
   } else if (length(line) == 1 && line %in% paste0("bar", 1:8)) {
     bars <- structure(
       paste0("lower_block_", 1:8),
       names = paste0("bar", 1:8)
     )
-    symbol[[ bars[[line]] ]]
-
+    symbol[[bars[[line]]]]
   } else {
     paste(as.character(line), collapse = "")
   }
@@ -194,7 +198,6 @@ rule_line <- function(o) {
 }
 
 rule_center <- function(o) {
-
   o$center <- ansi_substring(o$center, 1, o$width - 4)
   o$center <- paste0(" ", o$center, " ")
   ncc <- ansi_nchar(o$center, "width")
@@ -213,7 +216,9 @@ rule_left <- function(o) {
 
   paste0(
     make_line(2, get_line_char(o$line), o$line_col),
-    " ", o$left, " ",
+    " ",
+    o$left,
+    " ",
     make_line(o$width - ncl - 4, o$line, o$line_col)
   )
 }
@@ -223,24 +228,29 @@ rule_right <- function(o) {
 
   paste0(
     make_line(o$width - ncr - 4, o$line, o$line_col),
-    " ", o$right, " ",
+    " ",
+    o$right,
+    " ",
     make_line(2, o$line, o$line_col)
   )
 }
 
 rule_left_right <- function(o) {
-
   ncl <- ansi_nchar(o$left, "width")
-  ncr <- ansi_nchar(o$right,  "width")
+  ncr <- ansi_nchar(o$right, "width")
 
   ## -- (ncl) -- (ncr) --
   if (ncl + ncr + 10 > o$width) return(rule_left(o))
 
   paste0(
     make_line(2, o$line, o$line_col),
-    " ", o$left, " ",
+    " ",
+    o$left,
+    " ",
     make_line(o$width - ncl - ncr - 8, o$line, o$line_col),
-    " ", o$right, " ",
+    " ",
+    o$right,
+    " ",
     make_line(2, o$line, o$line_col)
   )
 }

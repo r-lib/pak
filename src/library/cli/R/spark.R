@@ -1,4 +1,3 @@
-
 # from pillar
 
 #' Draw a sparkline bar graph with unicode block characters
@@ -62,7 +61,6 @@ print.cli_spark <- function(x, ...) {
 }
 
 spark_bar_chars <- function(x, bars = NULL) {
-
   if (is.null(bars)) {
     if (is_utf8_output()) {
       bars <- vapply(0x2581:0x2588, intToUtf8, character(1))

@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------
 
 #' cli progress handlers
@@ -88,7 +87,10 @@ cli_progress_select_handlers <- function(bar, .envir) {
   if (!is.null(onl)) return(bin[onl])
 
   hnd_imp <- bin[hnd]
-  hnd_able <- Filter(function(h) is.null(h$able) || h$able(bar, .envir), hnd_imp)
+  hnd_able <- Filter(
+    function(h) is.null(h$able) || h$able(bar, .envir),
+    hnd_imp
+  )
   if (length(hnd_able) > 1) hnd_able <- hnd_able[1]
 
   c(hnd_able, bin[frc])
@@ -104,7 +106,7 @@ builtin_handler_cli <- list(
       msg_failed = bar$format_failed %||% bar$format,
       .auto_close = FALSE,
       .envir = .envir,
-      )
+    )
     bar$last_shown <- bar$current
     bar$justadded <- TRUE
   },
@@ -122,8 +124,10 @@ builtin_handler_cli <- list(
     if (isTRUE(bar$added)) {
       if (bar$clear) {
         # Show the full bar non-dynamic ttys
-        if (!is_dynamic_tty() &&
-            !identical(bar$last_shown, bar$current)) {
+        if (
+          !is_dynamic_tty() &&
+            !identical(bar$last_shown, bar$current)
+        ) {
           cli_status_update(id = bar$cli_statusbar, bar$format, .envir = .envir)
         }
         cli_status_clear(bar$cli_statusbar, result = "clear", .envir = .envir)
@@ -182,8 +186,19 @@ builtin_handler_progressr <- list(
 # ------------------------------------------------------------------------
 
 logger_out <- function(bar, event) {
-  cat(sep = "", format_iso_8601(Sys.time()), " ", bar$id, " ",
-      bar$current, "/", bar$total, " ", event, "\n")
+  cat(
+    sep = "",
+    format_iso_8601(Sys.time()),
+    " ",
+    bar$id,
+    " ",
+    bar$current,
+    "/",
+    bar$total,
+    " ",
+    event,
+    "\n"
+  )
 }
 
 builtin_handler_logger <- list(

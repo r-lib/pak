@@ -9,32 +9,36 @@ setup_app <- function() {
 }
 
 load_packages <- function() {
-  tryCatch({
-    library(cli)
-    library(async)
-    library(docopt) },
+  tryCatch(
+    {
+      library(cli)
+      library(async)
+      library(docopt)
+    },
     error = function(e) {
-      cli_alert_danger("The {.pkg async} and {.pkg docopt} packages are needed!")
+      cli_alert_danger(
+        "The {.pkg async} and {.pkg docopt} packages are needed!"
+      )
       q(save = "no", status = 1)
-    })
+    }
+  )
 }
 
 up <- function(urls, timeout = 5) {
   load_packages()
   setup_app()
   chk_url <- async(function(url, ...) {
-    http_head(url, ...)$
-      then(function(res) {
-        if (res$status_code < 300) {
-          cli_alert_success("{.url {url}} ({res$times[['total']]}s)")
-        } else {
-          cli_alert_danger("{.url {url}} (HTTP {res$status_code})")
-        }
-      })$
-      catch(error = function(err) {
-        e <- if (grepl("timed out", err$message, fixed = TRUE)) "timed out" else "error"
-        cli_alert_danger("{.url {url}} ({e})")
-      })
+    http_head(url, ...)$then(function(res) {
+      if (res$status_code < 300) {
+        cli_alert_success("{.url {url}} ({res$times[['total']]}s)")
+      } else {
+        cli_alert_danger("{.url {url}} (HTTP {res$status_code})")
+      }
+    })$catch(error = function(err) {
+      e <- if (grepl("timed out", err$message, fixed = TRUE)) "timed out" else
+        "error"
+      cli_alert_danger("{.url {url}} ({e})")
+    })
   })
 
   invisible(synchronise(
@@ -43,7 +47,6 @@ up <- function(urls, timeout = 5) {
 }
 
 parse_arguments <- function() {
-
   "Usage:
   up.R [-t timeout] [URLS ...]
   up.R -h | --help
@@ -57,7 +60,7 @@ Check if web sites are up.
 
   docopt(doc)
 }
-  
+
 if (is.null(sys.calls())) {
   load_packages()
   opts <- parse_arguments()

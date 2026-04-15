@@ -1,4 +1,3 @@
-
 cli_server_default <- function(msg) {
   cli_server_default_safe(msg)
 }

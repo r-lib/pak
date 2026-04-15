@@ -1,4 +1,3 @@
-
 #' Auto-linking existing styles
 #'
 #' They keep formatting. It is not possible to use a different link text
@@ -37,22 +36,36 @@
 #' @noRd
 NULL
 
-make_link <- function(txt, type = c("email", "file", "fun", "help", "href",
-                                    "run", "topic", "url", "vignette")) {
+make_link <- function(
+  txt,
+  type = c(
+    "email",
+    "file",
+    "fun",
+    "help",
+    "href",
+    "run",
+    "topic",
+    "url",
+    "vignette"
+  )
+) {
   type <- match.arg(type)
 
   switch(
     type,
-    email    = make_link_email(txt),
-    file     = make_link_file(txt),
-    fun      = make_link_fun(txt),
-    help     = make_link_help(txt),
-    href     = make_link_href(txt),
-    run      = make_link_run(txt),
-    topic    = make_link_topic(txt),
-    url      = make_link_url(txt),
+    email = make_link_email(txt),
+    file = make_link_file(txt),
+    fun = make_link_fun(txt),
+    help = make_link_help(txt),
+    href = make_link_href(txt),
+    run = make_link_run(txt),
+    topic = make_link_topic(txt),
+    url = make_link_url(txt),
     vignette = make_link_vignette(txt),
-    throw(cli_error("Unknown hyperlink type: {.code {type}}, internal cli error")) # nocov
+    throw(cli_error(
+      "Unknown hyperlink type: {.code {type}}, internal cli error"
+    )) # nocov
   )
 }
 
@@ -104,7 +117,8 @@ construct_file_link <- function(params) {
   params$path <- path.expand(params$path)
 
   looks_absolute <- function(path) {
-    grepl("^/", params$path) || (is_windows() && grepl("^[a-zA-Z]:", params$path))
+    grepl("^/", params$path) ||
+      (is_windows() && grepl("^[a-zA-Z]:", params$path))
   }
   if (!looks_absolute(params$path)) {
     params$path <- file.path(getwd(), params$path)
@@ -129,11 +143,16 @@ interpolate_parts <- function(fmt, params) {
 # interpolate a part, if possible
 # if no placeholder for part, this is a no-op
 # if placeholder exists, but no value to fill, remove placeholder (and everything after it!)
-interpolate_part <- function(fmt, part = c("column", "line", "path"), value = NULL) {
+interpolate_part <- function(
+  fmt,
+  part = c("column", "line", "path"),
+  value = NULL
+) {
   part <- match.arg(part)
   re <- glue(
     "^(?<before>.*)(?<part>\\{<<<part>>>\\})(?<after>.*?)$",
-    .open = "<<<", .close = ">>>"
+    .open = "<<<",
+    .close = ">>>"
   )
   m <- re_match(fmt, re)
 
@@ -292,8 +311,15 @@ make_link_vignette <- function(txt) {
 
   sprt <- ansi_hyperlink_types()$vignette
   if (!sprt) {
-    vignette2 <- vcapply(vignette, function(x) format_inline("{.code vignette({x})}"))
-    return(ifelse(text == vignette, vignette2, paste0(text, " (", vignette2, ")")))
+    vignette2 <- vcapply(
+      vignette,
+      function(x) format_inline("{.code vignette({x})}")
+    )
+    return(ifelse(
+      text == vignette,
+      vignette2,
+      paste0(text, " (", vignette2, ")")
+    ))
   }
 
   fmt <- get_hyperlink_format("vignette")
@@ -328,7 +354,9 @@ make_link_vignette <- function(txt) {
 style_hyperlink <- function(text, url, params = NULL) {
   params <- if (length(params)) {
     paste(
-      names(params), "=", params,
+      names(params),
+      "=",
+      params,
       collapse = ":"
     )
   }
@@ -355,37 +383,51 @@ style_hyperlink <- function(text, url, params = NULL) {
 #' ansi_has_hyperlink_support()
 
 ansi_has_hyperlink_support <- function() {
-
   ## Hyperlinks forced?
   enabled <- getOption("cli.hyperlink", getOption("crayon.hyperlink"))
-  if (!is.null(enabled)) { return(isTRUE(enabled)) }
+  if (!is.null(enabled)) {
+    return(isTRUE(enabled))
+  }
 
   ## forced by environment variable
   enabled <- Sys.getenv("R_CLI_HYPERLINKS", "")
-  if (isTRUE(as.logical(enabled))){ return(TRUE) }
+  if (isTRUE(as.logical(enabled))) {
+    return(TRUE)
+  }
 
   ## If ANSI support is off, then this is off as well
   if (num_ansi_colors() == 1) return(FALSE)
 
   ## Are we in RStudio?
   rstudio <- rstudio_detect()
-  if (rstudio$type != "not_rstudio") { return(rstudio$hyperlink) }
+  if (rstudio$type != "not_rstudio") {
+    return(rstudio$hyperlink)
+  }
 
   ## Are we in a terminal? No?
-  if (!isatty(stdout())) { return(FALSE) }
+  if (!isatty(stdout())) {
+    return(FALSE)
+  }
 
   ## Are we in a windows terminal?
-  if (is_windows() && Sys.getenv("WT_SESSION") != "")  { return(TRUE) }
+  if (is_windows() && Sys.getenv("WT_SESSION") != "") {
+    return(TRUE)
+  }
 
   ## Better to avoid it in CIs
-  if (nzchar(Sys.getenv("CI")) ||
-      nzchar(Sys.getenv("TEAMCITY_VERSION"))) { return(FALSE) }
+  if (
+    nzchar(Sys.getenv("CI")) ||
+      nzchar(Sys.getenv("TEAMCITY_VERSION"))
+  ) {
+    return(FALSE)
+  }
 
   ## iTerm
   if (nzchar(TERM_PROGRAM <- Sys.getenv("TERM_PROGRAM"))) {
     version <- package_version(
       Sys.getenv("TERM_PROGRAM_VERSION"),
-      strict = FALSE)
+      strict = FALSE
+    )
 
     if (TERM_PROGRAM == "iTerm.app") {
       if (!is.na(version) && version >= "3.1") return(TRUE)
@@ -420,7 +462,6 @@ ansi_has_hyperlink_support <- function() {
 #' @export
 
 ansi_hyperlink_types <- function() {
-
   get_config <- function(x, default = NULL) {
     opt <- getOption(paste0("cli.", tolower(x)))
     if (!is.null(opt)) return(isTRUE(opt))
@@ -446,7 +487,6 @@ ansi_hyperlink_types <- function() {
       help = FALSE,
       vignette = FALSE
     )
-
   } else if (isTRUE(rs$hyperlink)) {
     list(
       href = TRUE,
@@ -454,7 +494,6 @@ ansi_hyperlink_types <- function() {
       help = structure(hlp, type = "rstudio"),
       vignette = structure(vgn, type = "rstudio")
     )
-
   } else {
     list(
       href = TRUE,

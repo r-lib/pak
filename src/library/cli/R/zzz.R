@@ -1,4 +1,3 @@
-
 #' ANSI colored text
 #'
 #' cli has a number of functions to color and style text at the command
@@ -94,143 +93,143 @@ NULL
 
 #' @export
 #' @name ansi-styles
-bg_black    <- create_ansi_style("bg_black")
+bg_black <- create_ansi_style("bg_black")
 #' @export
 #' @name ansi-styles
-bg_blue     <- create_ansi_style("bg_blue")
+bg_blue <- create_ansi_style("bg_blue")
 #' @export
 #' @name ansi-styles
-bg_cyan     <- create_ansi_style("bg_cyan")
+bg_cyan <- create_ansi_style("bg_cyan")
 #' @export
 #' @name ansi-styles
-bg_green    <- create_ansi_style("bg_green")
+bg_green <- create_ansi_style("bg_green")
 #' @export
 #' @name ansi-styles
-bg_magenta  <- create_ansi_style("bg_magenta")
+bg_magenta <- create_ansi_style("bg_magenta")
 #' @export
 #' @name ansi-styles
-bg_red      <- create_ansi_style("bg_red")
+bg_red <- create_ansi_style("bg_red")
 #' @export
 #' @name ansi-styles
-bg_white    <- create_ansi_style("bg_white")
+bg_white <- create_ansi_style("bg_white")
 #' @export
 #' @name ansi-styles
-bg_yellow   <- create_ansi_style("bg_yellow")
+bg_yellow <- create_ansi_style("bg_yellow")
 #' @export
 #' @name ansi-styles
 bg_none <- create_ansi_style("no_bg_color")
 
 #' @export
 #' @name ansi-styles
-bg_br_black    <- create_ansi_style("bg_br_black")
+bg_br_black <- create_ansi_style("bg_br_black")
 #' @export
 #' @name ansi-styles
-bg_br_blue     <- create_ansi_style("bg_br_blue")
+bg_br_blue <- create_ansi_style("bg_br_blue")
 #' @export
 #' @name ansi-styles
-bg_br_cyan     <- create_ansi_style("bg_br_cyan")
+bg_br_cyan <- create_ansi_style("bg_br_cyan")
 #' @export
 #' @name ansi-styles
-bg_br_green    <- create_ansi_style("bg_br_green")
+bg_br_green <- create_ansi_style("bg_br_green")
 #' @export
 #' @name ansi-styles
-bg_br_magenta  <- create_ansi_style("bg_br_magenta")
+bg_br_magenta <- create_ansi_style("bg_br_magenta")
 #' @export
 #' @name ansi-styles
-bg_br_red      <- create_ansi_style("bg_br_red")
+bg_br_red <- create_ansi_style("bg_br_red")
 #' @export
 #' @name ansi-styles
-bg_br_white    <- create_ansi_style("bg_br_white")
+bg_br_white <- create_ansi_style("bg_br_white")
 #' @export
 #' @name ansi-styles
-bg_br_yellow   <- create_ansi_style("bg_br_yellow")
+bg_br_yellow <- create_ansi_style("bg_br_yellow")
 
 #' @export
 #' @name ansi-styles
-col_black   <- create_ansi_style("black")
+col_black <- create_ansi_style("black")
 #' @export
 #' @name ansi-styles
-col_blue    <- create_ansi_style("blue")
+col_blue <- create_ansi_style("blue")
 #' @export
 #' @name ansi-styles
-col_cyan    <- create_ansi_style("cyan")
+col_cyan <- create_ansi_style("cyan")
 #' @export
 #' @name ansi-styles
-col_green   <- create_ansi_style("green")
+col_green <- create_ansi_style("green")
 #' @export
 #' @name ansi-styles
 col_magenta <- create_ansi_style("magenta")
 #' @export
 #' @name ansi-styles
-col_red     <- create_ansi_style("red")
+col_red <- create_ansi_style("red")
 #' @export
 #' @name ansi-styles
-col_white   <- create_ansi_style("white")
+col_white <- create_ansi_style("white")
 #' @export
 #' @name ansi-styles
-col_yellow  <- create_ansi_style("yellow")
+col_yellow <- create_ansi_style("yellow")
 #' @export
 #' @name ansi-styles
-col_grey    <- create_ansi_style("silver")
+col_grey <- create_ansi_style("silver")
 #' @export
 #' @name ansi-styles
-col_silver  <- create_ansi_style("silver")
+col_silver <- create_ansi_style("silver")
 #' @export
 #' @name ansi-styles
 col_none <- create_ansi_style("no_color")
 
 #' @export
 #' @name ansi-styles
-col_br_black   <- create_ansi_style("br_black")
+col_br_black <- create_ansi_style("br_black")
 #' @export
 #' @name ansi-styles
-col_br_blue    <- create_ansi_style("br_blue")
+col_br_blue <- create_ansi_style("br_blue")
 #' @export
 #' @name ansi-styles
-col_br_cyan    <- create_ansi_style("br_cyan")
+col_br_cyan <- create_ansi_style("br_cyan")
 #' @export
 #' @name ansi-styles
-col_br_green   <- create_ansi_style("br_green")
+col_br_green <- create_ansi_style("br_green")
 #' @export
 #' @name ansi-styles
 col_br_magenta <- create_ansi_style("br_magenta")
 #' @export
 #' @name ansi-styles
-col_br_red     <- create_ansi_style("br_red")
+col_br_red <- create_ansi_style("br_red")
 #' @export
 #' @name ansi-styles
-col_br_white   <- create_ansi_style("br_white")
+col_br_white <- create_ansi_style("br_white")
 #' @export
 #' @name ansi-styles
-col_br_yellow  <- create_ansi_style("br_yellow")
+col_br_yellow <- create_ansi_style("br_yellow")
 
 #' @export
 #' @name ansi-styles
-style_dim           <- create_ansi_style("blurred")
+style_dim <- create_ansi_style("blurred")
 #' @export
 #' @name ansi-styles
-style_blurred       <- create_ansi_style("blurred")
+style_blurred <- create_ansi_style("blurred")
 #' @export
 #' @name ansi-styles
-style_bold          <- create_ansi_style("bold")
+style_bold <- create_ansi_style("bold")
 #' @export
 #' @name ansi-styles
-style_hidden        <- create_ansi_style("hidden")
+style_hidden <- create_ansi_style("hidden")
 #' @export
 #' @name ansi-styles
-style_inverse       <- create_ansi_style("inverse")
+style_inverse <- create_ansi_style("inverse")
 #' @export
 #' @name ansi-styles
-style_italic        <- create_ansi_style("italic")
+style_italic <- create_ansi_style("italic")
 #' @export
 #' @name ansi-styles
-style_reset         <- create_ansi_style("reset")
+style_reset <- create_ansi_style("reset")
 #' @export
 #' @name ansi-styles
 style_strikethrough <- create_ansi_style("strikethrough")
 #' @export
 #' @name ansi-styles
-style_underline     <- create_ansi_style("underline")
+style_underline <- create_ansi_style("underline")
 
 #' @export
 #' @name ansi-styles

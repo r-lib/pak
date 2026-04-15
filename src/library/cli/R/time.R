@@ -1,6 +1,4 @@
-
 format_time <- local({
-
   parse_ms <- function(ms) {
     stopifnot(is.numeric(ms))
 
@@ -14,10 +12,9 @@ format_time <- local({
 
   first_positive <- function(x) which(x > 0)[1]
 
-  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+  trim <- function(x) gsub("^\\s+|\\s+$", "", x)
 
   pretty_ms <- function(ms, compact = FALSE) {
-
     stopifnot(is.numeric(ms))
 
     parsed <- t(parse_ms(ms))
@@ -35,11 +32,9 @@ format_time <- local({
       # handle NAs
       tmp[is.na(parsed2[idx])] <- NA_character_
       tmp
-
     } else {
-
       ## Exact for small ones
-      exact            <- paste0(ceiling(ms), "ms")
+      exact <- paste0(ceiling(ms), "ms")
       exact[is.na(ms)] <- NA_character_
 
       ## Approximate for others, in seconds
@@ -68,7 +63,6 @@ format_time <- local({
   }
 
   pretty_dt <- function(dt, compact = FALSE) {
-
     assert_diff_time(dt)
 
     units(dt) <- "secs"

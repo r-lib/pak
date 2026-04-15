@@ -1,5 +1,3 @@
-
-
 #' Draw a banner-like box in the console
 #'
 #' @details
@@ -121,13 +119,20 @@
 #'
 #' @export
 
-boxx <- function(label, header = "", footer = "",
-                 border_style = "single", padding = 1, margin = 0,
-                 float = c("left", "center", "right"),
-                 col = NULL, background_col = NULL, border_col = col,
-                 align = c("left", "center", "right"),
-                 width = console_width()) {
-
+boxx <- function(
+  label,
+  header = "",
+  footer = "",
+  border_style = "single",
+  padding = 1,
+  margin = 0,
+  float = c("left", "center", "right"),
+  col = NULL,
+  background_col = NULL,
+  border_col = col,
+  align = c("left", "center", "right"),
+  width = console_width()
+) {
   label <- apply_style(as.character(label), col)
   widest <- max(ansi_nchar(label, "width"), 0)
 
@@ -181,17 +186,27 @@ boxx <- function(label, header = "", footer = "",
   hdline <- paste0(header, strrep(chars$horizontal, content_width - hdw))
   top <- color_border(paste0(
     strrep("\n", margin[3]),
-    mar_left, chars$top_left, hdline, chars$top_right
+    mar_left,
+    chars$top_left,
+    hdline,
+    chars$top_right
   ))
   ftline <- paste0(strrep(chars$horizontal, content_width - ftw), footer)
   bottom <- color_border(paste0(
-    mar_left, chars$bottom_left, ftline, chars$bottom_right,
+    mar_left,
+    chars$bottom_left,
+    ftline,
+    chars$bottom_right,
     strrep("\n", margin[1])
   ))
   side <- color_border(chars$vertical)
 
-  middle <- paste0(mar_left, side,
-                   color_content(paste0(pad_left, label, pad_right)), side)
+  middle <- paste0(
+    mar_left,
+    side,
+    color_content(paste0(pad_left, label, pad_right)),
+    side
+  )
 
   box <- paste0(top, "\n", paste0(middle, collapse = "\n"), "\n", bottom)
 

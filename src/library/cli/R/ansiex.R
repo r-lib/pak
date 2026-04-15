@@ -123,9 +123,10 @@ ansi_strip <- function(string, sgr = TRUE, csi = TRUE, link = TRUE) {
 #' ansi_nchar(str)
 #' nchar(ansi_strip(str))
 
-ansi_nchar <- function(x,
-                       type = c("chars", "bytes", "width", "graphemes",
-                                "codepoints")) {
+ansi_nchar <- function(
+  x,
+  type = c("chars", "bytes", "width", "graphemes", "codepoints")
+) {
   type <- match.arg(type)
   if (type == "chars") type <- "graphemes"
   type <- match(type, c("graphemes", "bytes", "width", "codepoints"))
@@ -195,12 +196,16 @@ ansi_substr <- function(x, start, stop) {
   if (nastart || nastop) {
     throw(cli_error(
       "{.arg start} and {.arg stop} must not have {.code NA} values",
-      "i" = if (nastart) paste(
-              "{.arg start} has {sum(is.na(start))}",
-              "{.code NA} value{?s}, after coercion to integer"),
-      "i" = if (nastop) paste(
-              "{.arg stop} has {sum(is.na(stop))} {.code NA} value{?s},",
-              "after coercion to integer")
+      "i" = if (nastart)
+        paste(
+          "{.arg start} has {sum(is.na(start))}",
+          "{.code NA} value{?s}, after coercion to integer"
+        ),
+      "i" = if (nastop)
+        paste(
+          "{.arg stop} has {sum(is.na(stop))} {.code NA} value{?s},",
+          "after coercion to integer"
+        )
     ))
   }
   x <- enc2utf8(x)
@@ -303,7 +308,9 @@ ansi_substring <- function(text, first, last = 1000000L) {
 
 ansi_strsplit <- function(x, split, ...) {
   split <- try(as.character(split), silent = TRUE)
-  if (inherits(split, "try-error") || !is.character(split) || length(split) > 1L) {
+  if (
+    inherits(split, "try-error") || !is.character(split) || length(split) > 1L
+  ) {
     throw(cli_error(
       "{.arg split} must be character of length <= 1, or must coerce to that",
       i = "{.arg split} is (or was coerced to) {.type {split}}"
@@ -311,24 +318,25 @@ ansi_strsplit <- function(x, split, ...) {
   }
   if (!is.character(x)) x <- as.character(x)
   x <- enc2utf8(x)
-  if(!length(split)) split <- ""
+  if (!length(split)) split <- ""
   plain <- ansi_strip(x)
   splits <- re_table(split, plain, ...)
   chunks <- non_matching(splits, plain, empty = TRUE)
   # silently recycle `split`; doesn't matter currently since we don't support
   # split longer than 1, but might in future
-  split.r <- rep(split, length.out=length(x))
+  split.r <- rep(split, length.out = length(x))
   # Drop empty chunks to align with `substr` behavior
   chunks <- lapply(
     seq_along(chunks),
     function(i) {
       y <- chunks[[i]]
       # empty split means drop empty first match
-      if(nrow(y) && !nzchar(split.r[[i]]) && !utils::head(y, 1L)[, "length"]) {
-        y <- y[-1L, , drop=FALSE]
+      if (nrow(y) && !nzchar(split.r[[i]]) && !utils::head(y, 1L)[, "length"]) {
+        y <- y[-1L, , drop = FALSE]
       }
       # drop empty last matches
-      if(nrow(y) && !utils::tail(y, 1L)[, "length"]) y[-nrow(y), , drop=FALSE] else y
+      if (nrow(y) && !utils::tail(y, 1L)[, "length"])
+        y[-nrow(y), , drop = FALSE] else y
     }
   )
   zero.chunks <- !vapply(chunks, nrow, integer(1L))
@@ -337,7 +345,9 @@ ansi_strsplit <- function(x, split, ...) {
   res <- vector("list", length(chunks))
   res[zero.chunks] <- list(character(0L))
   res[!zero.chunks] <- mapply(
-    chunks[!zero.chunks], x[!zero.chunks], SIMPLIFY = FALSE,
+    chunks[!zero.chunks],
+    x[!zero.chunks],
+    SIMPLIFY = FALSE,
     FUN = function(tab, xx) ansi_substring(xx, tab[, "start"], tab[, "end"])
   )
   lapply(res, ansi_string)
@@ -383,12 +393,14 @@ ansi_strsplit <- function(x, split, ...) {
 #' @family ANSI string operations
 #' @export
 
-# TODO: show wide Unicode charadcters, once they work in asciicast
+# TODO: show wide Unicode characters, once they work in asciicast
 
-ansi_align <- function(text, width = console_width(),
-                      align = c("left", "center", "right"),
-                      type = "width") {
-
+ansi_align <- function(
+  text,
+  width = console_width(),
+  align = c("left", "center", "right"),
+  type = "width"
+) {
   align <- match.arg(align)
   text <- enc2utf8(text)
   nc <- ansi_nchar(text, type = type)
@@ -397,12 +409,12 @@ ansi_align <- function(text, width = console_width(),
 
   res <- if (align == "left") {
     paste0(text, make_space(width - nc))
-
   } else if (align == "center") {
-    paste0(make_space(ceiling((width - nc) / 2)),
-           text,
-           make_space(floor((width - nc) / 2)))
-
+    paste0(
+      make_space(ceiling((width - nc) / 2)),
+      text,
+      make_space(floor((width - nc) / 2))
+    )
   } else {
     paste0(make_space(width - nc), text)
   }
@@ -417,7 +429,7 @@ make_space <- function(num, filling = " ") {
   res
 }
 
-strrep <- function (x, times) {
+strrep <- function(x, times) {
   x = as.character(x)
   if (length(x) == 0L) return(x)
 
@@ -431,7 +443,8 @@ strrep <- function (x, times) {
         paste0(rep(x, times), collapse = "")
       }
     },
-    x, times,
+    x,
+    times,
     USE.NAMES = FALSE
   )
 }
@@ -454,7 +467,6 @@ strrep <- function (x, times) {
 #' ansi_trimws(col_red("   I am red   "))
 
 ansi_trimws <- function(x, which = c("both", "left", "right")) {
-
   if (!is.character(x)) x <- as.character(x)
   which <- match.arg(which)
   x <- enc2utf8(x)
@@ -511,17 +523,27 @@ ansi_trimws <- function(x, which = c("both", "left", "right")) {
 #' wrp <- ansi_strwrap(text, width = 40)
 #' cat(wrp, sep = "\n")
 
-ansi_strwrap <- function(x, width = console_width(), indent = 0,
-                         exdent = 0, simplify = TRUE) {
-
+ansi_strwrap <- function(
+  x,
+  width = console_width(),
+  indent = 0,
+  exdent = 0,
+  simplify = TRUE
+) {
   if (!is.character(x)) x <- as.character(x)
   x <- enc2utf8(x)
   if (length(x) == 0) {
     return(ansi_string(x))
   }
   if (length(x) > 1) {
-    wrp <- lapply(x, ansi_strwrap, width = width, indent = indent,
-                  exdent = exdent, simplify = FALSE)
+    wrp <- lapply(
+      x,
+      ansi_strwrap,
+      width = width,
+      indent = indent,
+      exdent = exdent,
+      simplify = FALSE
+    )
     if (simplify) wrp <- ansi_string(unlist(wrp))
     return(wrp)
   }
@@ -550,7 +572,7 @@ ansi_strwrap <- function(x, width = console_width(), indent = 0,
         xs <- xs[-1]
       }
       # At this point, we have as many marks as many newlines we need
-      # But (except for the begnning) we need one less empty lines than
+      # But (except for the beginning) we need one less empty lines than
       # newlines, because an empty line corresponds to two newlines at
       # the end of a non-empty line.
       del <- which(xs[-1] == mark & xs[-length(xs)] != mark) + 1L
@@ -563,7 +585,6 @@ ansi_strwrap <- function(x, width = console_width(), indent = 0,
     } else {
       x
     }
-
   }
 
   # First we need to remove the multiple spaces, to make it easier to
@@ -660,9 +681,11 @@ ansi_strwrap <- function(x, width = console_width(), indent = 0,
 #' text <- cli::col_red(cli:::lorem_ipsum())
 #' ansi_strtrim(c(text, "foobar"), 40)
 
-ansi_strtrim <- function(x, width = console_width(),
-                         ellipsis = symbol$ellipsis) {
-
+ansi_strtrim <- function(
+  x,
+  width = console_width(),
+  ellipsis = symbol$ellipsis
+) {
   if (width < 0) {
     throw(cli_error(
       "{.arg width} must be non-negative in {.fun cli::ansi_strtrim}."
@@ -752,11 +775,16 @@ ansi_strtrim <- function(x, width = console_width(),
 #' @family ANSI string operations
 #' @export
 
-ansi_columns <- function(text, width = console_width(), sep = " ",
-                         fill = c("rows", "cols"), max_cols = 4,
-                         align = c("left", "center", "right"),
-                         type = "width", ellipsis = symbol$ellipsis) {
-
+ansi_columns <- function(
+  text,
+  width = console_width(),
+  sep = " ",
+  fill = c("rows", "cols"),
+  max_cols = 4,
+  align = c("left", "center", "right"),
+  type = "width",
+  ellipsis = symbol$ellipsis
+) {
   fill <- match.arg(fill)
   align <- match.arg(align)
 
@@ -777,7 +805,7 @@ ansi_columns <- function(text, width = console_width(), sep = " ",
   text <- c(text, rep("", extra))
   tm <- matrix(text, byrow = fill == "rows", ncol = cols)
 
-  colwdh <- diff(c(0, round((width / cols)  * (1:cols))))
+  colwdh <- diff(c(0, round((width / cols) * (1:cols))))
   for (c in seq_len(ncol(tm))) {
     tm[, c] <- ansi_align(
       paste0(tm[, c], if (cols > 1) sep),
@@ -834,9 +862,9 @@ ansi_chartr <- function(old, new, x) {
 ansi_convert <- function(x, converter, ...) {
   x <- enc2utf8(x)
   ansi <- re_table(ansi_regex(), x)
-  text <- non_matching(ansi, x, empty=TRUE)
+  text <- non_matching(ansi, x, empty = TRUE)
   out <- mapply(x, text, USE.NAMES = FALSE, FUN = function(x1, t1) {
-    t1 <- t1[t1[,1] <= t1[,2], , drop = FALSE]
+    t1 <- t1[t1[, 1] <= t1[, 2], , drop = FALSE]
     for (i in seq_len(nrow(t1))) {
       substring(x1, t1[i, 1], t1[i, 2]) <-
         converter(x = substring(x1, t1[i, 1], t1[i, 2]), ...)
@@ -899,8 +927,8 @@ ansi_html <- function(x, escape_reserved = TRUE, csi = c("drop", "keep")) {
   x <- enc2utf8(x)
   if (escape_reserved) {
     x <- gsub_("&", "&amp;", x, fixed = TRUE, useBytes = TRUE)
-    x <- gsub_("<", "&lt;",  x, fixed = TRUE, useBytes = TRUE)
-    x <- gsub_(">", "&gt;",  x, fixed = TRUE, useBytes = TRUE)
+    x <- gsub_("<", "&lt;", x, fixed = TRUE, useBytes = TRUE)
+    x <- gsub_(">", "&gt;", x, fixed = TRUE, useBytes = TRUE)
   }
   .Call(clic_ansi_html, x, csi == "keep")
 }
@@ -935,19 +963,20 @@ ansi_html_style <- function(colors = TRUE, palette = NULL) {
   }
 
   stopifnot(
-    isTRUE(colors) || identical(colors, FALSE) ||
-      (is_count(colors) && colors %in% c(8,256)),
+    isTRUE(colors) ||
+      identical(colors, FALSE) ||
+      (is_count(colors) && colors %in% c(8, 256)),
     is_string(palette) || is.list(palette) && length(palette) == 16
   )
 
   ret <- list(
-    ".ansi-bold"       = "{ font-weight: bold;             }",
+    ".ansi-bold" = "{ font-weight: bold;             }",
     # .ansi-faint ???
-    ".ansi-italic"     = "{ font-style: italic;            }",
-    ".ansi-underline"  = "{ text-decoration: underline;    }",
-    ".ansi-blink"      = "{ text-decoration: blink;        }",
+    ".ansi-italic" = "{ font-style: italic;            }",
+    ".ansi-underline" = "{ text-decoration: underline;    }",
+    ".ansi-blink" = "{ text-decoration: blink;        }",
     # .ansi-inverse ???
-    ".ansi-hide"       = "{ visibility: hidden;            }",
+    ".ansi-hide" = "{ visibility: hidden;            }",
     ".ansi-crossedout" = "{ text-decoration: line-through; }",
     ".ansi-link:hover" = "{ text-decoration: underline;    }"
   )
@@ -994,7 +1023,10 @@ ansi_html_style <- function(colors = TRUE, palette = NULL) {
 }
 
 # This avoids duplication, but messes up the source ref of the function...
-formals(ansi_html_style)$palette <- c("vscode", setdiff(rownames(ansi_palettes), "vscode"))
+formals(ansi_html_style)$palette <- c(
+  "vscode",
+  setdiff(rownames(ansi_palettes), "vscode")
+)
 attr(body(ansi_html_style), "srcref") <- NULL
 attr(body(ansi_html_style), "wholeSrcref") <- NULL
 attr(body(ansi_html_style), "srcfile") <- NULL
@@ -1040,18 +1072,36 @@ print.cli_ansi_html_style <- function(x, ...) {
 #' ansi_grepl(red_needle, haystack)
 #' ansi_grepl(red_needle, green_haystack)
 
-ansi_grep <- function(pattern, x, ignore.case = FALSE, perl = FALSE,
-                      value = FALSE, ...) {
-
+ansi_grep <- function(
+  pattern,
+  x,
+  ignore.case = FALSE,
+  perl = FALSE,
+  value = FALSE,
+  ...
+) {
   # if value = FALSE, then we want to return the original values as
   # ansi strings, so we need to special case that
   if (value) {
-    idx <- ansi_grep(pattern, x, ignore.case = ignore.case, perl = perl,
-                     value = FALSE, ...)
+    idx <- ansi_grep(
+      pattern,
+      x,
+      ignore.case = ignore.case,
+      perl = perl,
+      value = FALSE,
+      ...
+    )
     ansi_string(x[idx])
   } else {
-    ansi_grep_internal(grep, pattern, x, ignore.case = ignore.case,
-                       perl = perl, value = value, ...)
+    ansi_grep_internal(
+      grep,
+      pattern,
+      x,
+      ignore.case = ignore.case,
+      perl = perl,
+      value = value,
+      ...
+    )
   }
 }
 
@@ -1070,7 +1120,7 @@ ansi_grep_internal <- function(fun, pattern, x, ...) {
 
 #' Like [base::nzchar()], but for ANSI strings
 #'
-#' @param x Charcater vector. Other objects are coarced using
+#' @param x Character vector. Other objects are coerced using
 #'   [base::as.character()].
 #' @param ... Passed to [base::nzchar()].
 #' @export

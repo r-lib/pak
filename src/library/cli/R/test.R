@@ -1,4 +1,3 @@
-
 #' Test cli output with testthat
 #'
 #' Use this function in your testthat test files, to test cli output.
@@ -74,57 +73,68 @@
 #'   }))
 #' })
 
-test_that_cli <- function(desc, code,
-                          configs = c("plain", "ansi", "unicode", "fancy"),
-                          links = NULL) {
+test_that_cli <- function(
+  desc,
+  code,
+  configs = c("plain", "ansi", "unicode", "fancy"),
+  links = NULL
+) {
   code <- substitute(code)
 
-  configs <- apply(expand.grid(configs, links %||% ""), 1, paste, collapse = "-")
+  configs <- apply(
+    expand.grid(configs, links %||% ""),
+    1,
+    paste,
+    collapse = "-"
+  )
   configs <- sub("-$", "", configs)
 
   doconfigs <- list(
-    list(id = "plain",   unicode = FALSE, num_colors =   1, links = FALSE),
-    list(id = "ansi",    unicode = FALSE, num_colors = 256, links = FALSE),
-    list(id = "unicode", unicode = TRUE,  num_colors =   1, links = FALSE),
-    list(id = "fancy",   unicode = TRUE,  num_colors = 256, links = FALSE),
+    list(id = "plain", unicode = FALSE, num_colors = 1, links = FALSE),
+    list(id = "ansi", unicode = FALSE, num_colors = 256, links = FALSE),
+    list(id = "unicode", unicode = TRUE, num_colors = 1, links = FALSE),
+    list(id = "fancy", unicode = TRUE, num_colors = 256, links = FALSE),
 
-    list(id = "plain-none",   unicode = FALSE, num_colors =   1, links = FALSE),
-    list(id = "ansi-none",    unicode = FALSE, num_colors = 256, links = FALSE),
-    list(id = "unicode-none", unicode = TRUE,  num_colors =   1, links = FALSE),
-    list(id = "fancy-none",   unicode = TRUE,  num_colors = 256, links = FALSE),
+    list(id = "plain-none", unicode = FALSE, num_colors = 1, links = FALSE),
+    list(id = "ansi-none", unicode = FALSE, num_colors = 256, links = FALSE),
+    list(id = "unicode-none", unicode = TRUE, num_colors = 1, links = FALSE),
+    list(id = "fancy-none", unicode = TRUE, num_colors = 256, links = FALSE),
 
-    list(id = "plain-all",   unicode = FALSE, num_colors =   1, links = TRUE),
-    list(id = "ansi-all",    unicode = FALSE, num_colors = 256, links = TRUE),
-    list(id = "unicode-all", unicode = TRUE,  num_colors =   1, links = TRUE),
-    list(id = "fancy-all",   unicode = TRUE,  num_colors = 256, links = TRUE)
+    list(id = "plain-all", unicode = FALSE, num_colors = 1, links = TRUE),
+    list(id = "ansi-all", unicode = FALSE, num_colors = 256, links = TRUE),
+    list(id = "unicode-all", unicode = TRUE, num_colors = 1, links = TRUE),
+    list(id = "fancy-all", unicode = TRUE, num_colors = 256, links = TRUE)
   )
 
   parent <- parent.frame()
   lapply(doconfigs, function(conf) {
-    if (!is.null(configs) && ! conf$id %in% configs) return()
-    code2 <- substitute({
-      testthat::local_reproducible_output(
-        crayon = num_colors > 1,
-        unicode = unicode
-      )
-      withr::local_options(
-        cli.hyperlink = links,
-        cli.hyperlink_help = links,
-        cli.hyperlink_run = links,
-        cli.hyperlink_vignette = links,
-        cli.hyperlink_file_url_format = NULL,
-        cli.hyperlink_run_url_format = NULL,
-        cli.hyperlink_help_url_format = NULL,
-        cli.hyperlink_vignette_url_format = NULL
-      )
-      withr::local_envvar(
-        R_CLI_HYPERLINK_FILE_URL_FORMAT = NA_character_,
-        R_CLI_HYPERLINK_RUN_URL_FORMAT = NA_character_,
-        R_CLI_HYPERLINK_HELP_URL_FORMAT = NA_character_,
-        R_CLI_HYPERLINK_VIGNETTE_URL_FORMAT = NA_character_
-      )
-      code_
-    }, c(conf, list(code_ = code)))
+    if (!is.null(configs) && !conf$id %in% configs) return()
+    code2 <- substitute(
+      {
+        testthat::local_reproducible_output(
+          crayon = num_colors > 1,
+          unicode = unicode
+        )
+        withr::local_options(
+          cli.hyperlink = links,
+          cli.hyperlink_help = links,
+          cli.hyperlink_run = links,
+          cli.hyperlink_vignette = links,
+          cli.hyperlink_file_url_format = NULL,
+          cli.hyperlink_run_url_format = NULL,
+          cli.hyperlink_help_url_format = NULL,
+          cli.hyperlink_vignette_url_format = NULL
+        )
+        withr::local_envvar(
+          R_CLI_HYPERLINK_FILE_URL_FORMAT = NA_character_,
+          R_CLI_HYPERLINK_RUN_URL_FORMAT = NA_character_,
+          R_CLI_HYPERLINK_HELP_URL_FORMAT = NA_character_,
+          R_CLI_HYPERLINK_VIGNETTE_URL_FORMAT = NA_character_
+        )
+        code_
+      },
+      c(conf, list(code_ = code))
+    )
     desc2 <- paste0(desc, " [", conf$id, "]")
     test <- substitute(
       testthat::test_that(desc, code),

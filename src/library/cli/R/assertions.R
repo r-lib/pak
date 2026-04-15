@@ -1,4 +1,3 @@
-
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
@@ -12,7 +11,9 @@ is_border_style <- function(x) {
 }
 
 is_padding_or_margin <- function(x) {
-  is.numeric(x) && length(x) %in% c(1, 4) && !anyNA(x) &&
+  is.numeric(x) &&
+    length(x) %in% c(1, 4) &&
+    !anyNA(x) &&
     all(as.integer(x) == x)
 }
 
@@ -21,8 +22,7 @@ is_col <- function(x) {
 }
 
 is_count <- function(x) {
-  is.numeric(x) && length(x) == 1 && !is.na(x) && as.integer(x) == x &&
-    x >= 0
+  is.numeric(x) && length(x) == 1 && !is.na(x) && as.integer(x) == x && x >= 0
 }
 
 is_tree_style <- function(x) {

@@ -1,4 +1,3 @@
-
 #' @export
 
 ticking <- function(cond, name = NULL, ..., .envir = parent.frame()) {

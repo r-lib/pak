@@ -1,4 +1,3 @@
-
 # keep encoding, even if useBytes = TRUE
 
 sub_ <- function(pattern, replacement, x, ...) {

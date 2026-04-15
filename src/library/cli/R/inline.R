@@ -1,8 +1,6 @@
-
 if (getRversion() >= "2.15.1") utils::globalVariables("app")
 
 inline_generic <- function(app, x, style) {
-
   if (is.character(x) && any(grepl("\n", x))) {
     if (getOption("cli.warn_inline_newlines", FALSE)) {
       warning("cli replaced newlines within {. ... } with spaces")
@@ -76,7 +74,7 @@ inline_collapse <- function(x, style = list()) {
 #'   ```
 #'   The `before` and `after`, etc. style attributes should not be applied
 #'   to `{n}`.
-#' * While making sure that the inlide style's non-interited style is
+#' * While making sure that the inline style's non-inherited style is
 #'   applied to brace expressions. I.e. in
 #'   ```r
 #'   cli_text("{.fun {x}}")
@@ -165,7 +163,6 @@ inline_transformer <- function(code, envir) {
     }
 
     out
-
   } else {
     # plain substitution
     expr <- parse(text = code, keep.source = FALSE)
@@ -203,8 +200,11 @@ inline_transformer <- function(code, envir) {
     }
 
     id <- clii__container_start(
-      app, "span", id = id,
-      class = paste(class, collapse = " "), theme = tid
+      app,
+      "span",
+      id = id,
+      class = paste(class, collapse = " "),
+      theme = tid
     )
     # We don't need to end the replacement container, that happens upstream.
     if (node$tag != "span") {
@@ -251,9 +251,19 @@ make_cmd_transformer <- function(values, .call = NULL) {
   # rxode2 has the other ones, and we should fix that in rxode2
   # the function calls are in the oolong packagee, need to fix this as well.
   exceptions <- c(
-    ".x", ".y", ".",
-    ".md", ".met", ".med", ".mul", ".muR", ".dir", ".muU",
-    ".sym_flip(bool_word)", ".sym_flip(bool_topic)", ".sym_flip(bool_wsi)"
+    ".x",
+    ".y",
+    ".",
+    ".md",
+    ".met",
+    ".med",
+    ".mul",
+    ".muR",
+    ".dir",
+    ".muU",
+    ".sym_flip(bool_word)",
+    ".sym_flip(bool_topic)",
+    ".sym_flip(bool_wsi)"
   )
 
   # it is not easy to do better than this, we would need to pass a call
@@ -267,8 +277,8 @@ make_cmd_transformer <- function(values, .call = NULL) {
     if (first_char == "?") {
       parse_plural(code, values)
 
-    # {.} cli style
-    } else if (first_char == "." && ! code %in% exceptions) {
+      # {.} cli style
+    } else if (first_char == "." && !code %in% exceptions) {
       m <- regexpr(inline_regex(), code, perl = TRUE)
       has_match <- m != -1
       if (!has_match) {
@@ -276,11 +286,15 @@ make_cmd_transformer <- function(values, .call = NULL) {
           call. = caller,
           "Invalid cli literal: {.code {{{abbrev(code, 10)}}}} starts with a dot.",
           "i" = "Interpreted literals must not start with a dot in cli >= 3.4.0.",
-          "i" = paste("{.code {{}}} expressions starting with a dot are",
-                      "now only used for cli styles."),
-          "i" = paste("To avoid this error, put a space character after",
-                      "the starting {.code {'{'}} or use parentheses:",
-                      "{.code {{({abbrev(code, 10)})}}}.")
+          "i" = paste(
+            "{.code {{}}} expressions starting with a dot are",
+            "now only used for cli styles."
+          ),
+          "i" = paste(
+            "To avoid this error, put a space character after",
+            "the starting {.code {'{'}} or use parentheses:",
+            "{.code {{({abbrev(code, 10)})}}}."
+          )
         ))
       }
 
@@ -298,7 +312,7 @@ make_cmd_transformer <- function(values, .call = NULL) {
       )
       paste0("<", values$marker, ".", funname, " ", out, values$marker, ">")
 
-    # {} plain substitution
+      # {} plain substitution
     } else {
       expr <- parse(text = code, keep.source = FALSE) %??%
         cli_error(
@@ -341,7 +355,7 @@ glue_cmd <- function(..., .envir, .call = sys.call(-1), .trim = TRUE) {
 
 glue_no_cmd <- function(...) {
   str <- paste0(unlist(list(...), use.names = FALSE), collapse = "")
-  values <-new.env(parent = emptyenv())
+  values <- new.env(parent = emptyenv())
   glue_delay(
     str = str,
     values = values

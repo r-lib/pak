@@ -1,8 +1,8 @@
-
-cliapp <- function(theme = getOption("cli.theme"),
-                   user_theme = getOption("cli.user_theme"),
-                   output = c("auto", "message", "stdout", "stderr")) {
-
+cliapp <- function(
+  theme = getOption("cli.theme"),
+  user_theme = getOption("cli.user_theme"),
+  output = c("auto", "message", "stdout", "stderr")
+) {
   app <- new_class(
     "cliapp",
 
@@ -12,52 +12,45 @@ cliapp <- function(theme = getOption("cli.theme"),
     ## Meta
     meta = function(...) {
       txt <- cli__fmt(list(...), collapse = TRUE, app = app)
-      clii__message(txt, appendLF = FALSE, output = app$output, signal = app$signal)
+      clii__message(
+        txt,
+        appendLF = FALSE,
+        output = app$output,
+        signal = app$signal
+      )
     },
 
     ## Themes
-    list_themes = function()
-      clii_list_themes(app),
-    add_theme = function(theme)
-      clii_add_theme(app, theme),
-    remove_theme = function(id)
-      clii_remove_theme(app, id),
+    list_themes = function() clii_list_themes(app),
+    add_theme = function(theme) clii_add_theme(app, theme),
+    remove_theme = function(id) clii_remove_theme(app, id),
 
     ## Close container(s)
-    end = function(id = NULL)
-      clii_end(app, id),
+    end = function(id = NULL) clii_end(app, id),
 
     ## Generic container
     div = function(id = NULL, class = NULL, theme = NULL)
       clii_div(app, id, class, theme),
 
     ## Paragraphs
-    par = function(id = NULL, class = NULL)
-      clii_par(app, id, class),
+    par = function(id = NULL, class = NULL) clii_par(app, id, class),
 
     ## Text, wrapped
-    text = function(text)
-      clii_text(app, text),
+    text = function(text) clii_text(app, text),
 
     ## Text, not wrapped
-    inline_text = function(text)
-      clii_inline_text(app, text),
+    inline_text = function(text) clii_inline_text(app, text),
 
     ## Text, not wrapped, verbatim
-    verbatim = function(...)
-      clii_verbatim(app, ...),
+    verbatim = function(...) clii_verbatim(app, ...),
 
     ## Markdow(ish) text, wrapped: emphasis, strong emphasis, links, code
-    md_text = function(...)
-      clii_md_text(app, ...),
+    md_text = function(...) clii_md_text(app, ...),
 
     ## Headings
-    h1 = function(text, id = NULL, class = NULL)
-      clii_h1(app, text, id, class),
-    h2 = function(text, id = NULL, class = NULL)
-      clii_h2(app, text, id, class),
-    h3 = function(text, id = NULL, class = NULL)
-      clii_h3(app, text, id, class),
+    h1 = function(text, id = NULL, class = NULL) clii_h1(app, text, id, class),
+    h2 = function(text, id = NULL, class = NULL) clii_h2(app, text, id, class),
+    h3 = function(text, id = NULL, class = NULL) clii_h3(app, text, id, class),
 
     ## Block quote
     blockquote = function(quote, citation = NULL, id, class = NULL)
@@ -68,8 +61,13 @@ cliapp <- function(theme = getOption("cli.theme"),
       clii_ul(app, items, id, class, .close),
     ol = function(items = NULL, id = NULL, class = NULL, .close = TRUE)
       clii_ol(app, items, id, class, .close),
-    dl = function(items = NULL, labels = NULL, id = NULL, class = NULL, .close = TRUE)
-      clii_dl(app, items, labels, id, class, .close),
+    dl = function(
+      items = NULL,
+      labels = NULL,
+      id = NULL,
+      class = NULL,
+      .close = TRUE
+    ) clii_dl(app, items, labels, id, class, .close),
     li = function(items = NULL, labels = NULL, id = NULL, class = NULL)
       clii_li(app, items, labels, id, class),
 
@@ -98,11 +96,31 @@ cliapp <- function(theme = getOption("cli.theme"),
       clii_rule(app, left, center, right, id),
 
     ## Status bar
-    status = function(id = NULL, msg, msg_done = NULL, msg_failed = NULL,
-                      keep = FALSE, auto_result = "clear", globalenv = FALSE)
-      clii_status(app, id, msg, msg_done, msg_failed, keep, auto_result, globalenv),
-    status_clear = function(id = NULL, result, msg_done = NULL, msg_failed = NULL)
-      clii_status_clear(app, id, result, msg_done, msg_failed),
+    status = function(
+      id = NULL,
+      msg,
+      msg_done = NULL,
+      msg_failed = NULL,
+      keep = FALSE,
+      auto_result = "clear",
+      globalenv = FALSE
+    )
+      clii_status(
+        app,
+        id,
+        msg,
+        msg_done,
+        msg_failed,
+        keep,
+        auto_result,
+        globalenv
+      ),
+    status_clear = function(
+      id = NULL,
+      result,
+      msg_done = NULL,
+      msg_failed = NULL
+    ) clii_status_clear(app, id, result, msg_done, msg_failed),
     status_update = function(id = NULL, msg, msg_done = NULL, msg_failed = NULL)
       clii_status_update(app, id, msg, msg_done, msg_failed),
 
@@ -115,15 +133,25 @@ cliapp <- function(theme = getOption("cli.theme"),
     margin = 0,
     output = NULL,
 
-    get_current_style = function()
-      utils::tail(app$styles, 1)[[1]],
+    get_current_style = function() utils::tail(app$styles, 1)[[1]],
 
-    xtext = function(text = NULL, .list = NULL, indent = 0, padding = 0, wrap = TRUE)
-      clii__xtext(app, text, .list = .list, indent = indent,
-                  padding = padding, wrap = wrap),
+    xtext = function(
+      text = NULL,
+      .list = NULL,
+      indent = 0,
+      padding = 0,
+      wrap = TRUE
+    )
+      clii__xtext(
+        app,
+        text,
+        .list = .list,
+        indent = indent,
+        padding = padding,
+        wrap = wrap
+      ),
 
-    vspace = function(n = 1)
-      clii__vspace(app, n),
+    vspace = function(n = 1) clii__vspace(app, n),
 
     inline = function(text = NULL, .list = NULL)
       clii__inline(app, text, .list = .list),
@@ -131,15 +159,13 @@ cliapp <- function(theme = getOption("cli.theme"),
     item_text = function(type, name, cnt_id, items = list(), .list = NULL)
       clii__item_text(app, type, name, cnt_id, items, .list = .list),
 
-    get_width = function(extra = 0)
-      clii__get_width(app, extra),
-    cat = function(lines)
-      clii__cat(app, lines),
+    get_width = function(extra = 0) clii__get_width(app, extra),
+    cat = function(lines) clii__cat(app, lines),
     cat_ln = function(lines, indent = 0, padding = 0)
       clii__cat_ln(app, lines, indent, padding)
   )
 
-  if (! inherits(output, "connection")) output <- match.arg(output)
+  if (!inherits(output, "connection")) output <- match.arg(output)
   app$new(theme, user_theme, output)
 
   app
@@ -247,8 +273,12 @@ clii_rule <- function(app, left, center, right, id) {
 ## Alerts -----------------------------------------------------------
 
 clii_alert <- function(app, type, text, id, class, wrap) {
-  clii__container_start(app, "div", id = id,
-                       class = paste(class, "alert", type))
+  clii__container_start(
+    app,
+    "div",
+    id = id,
+    class = paste(class, "alert", type)
+  )
   on.exit(clii__container_end(app, id), add = TRUE)
   if (wrap) {
     app$xtext(text)
@@ -269,7 +299,12 @@ clii_alert <- function(app, type, text, id, class, wrap) {
 ## Bullets -------------------------------------------------------------
 
 clii_bullets <- function(app, text, id, class) {
-  clii__container_start(app, "div", id = id, class = paste("memo bullets", class))
+  clii__container_start(
+    app,
+    "div",
+    id = id,
+    class = paste("memo bullets", class)
+  )
   on.exit(clii__container_end(app, id), add = TRUE)
 
   # Normalize names a bit, so we can use them as class names

@@ -96,6 +96,7 @@ SEXP clic_get_time(void) {
   return Rf_ScalarReal(ts);
 }
 
+#if (defined(R_VERSION) && R_VERSION < R_Version(4, 5, 0))
 SEXP clic__find_var(SEXP rho, SEXP symbol) {
   SEXP ret = Rf_findVarInFrame(rho, symbol);
   if (ret == R_UnboundValue) {
@@ -111,6 +112,25 @@ SEXP clic__find_var(SEXP rho, SEXP symbol) {
     return ret;
   }
 }
+#else
+SEXP clic__find_var(SEXP rho, SEXP symbol) {
+  Rboolean ex = R_existsVarInFrame(rho, symbol);
+  if (!ex) {
+    error("Cannot find variable `%s`.", CHAR(PRINTNAME(symbol)));
+  }
+
+  SEXP ret = R_getVar(symbol, rho, TRUE);
+  if (TYPEOF(ret) == PROMSXP) {
+    PROTECT(ret);
+    SEXP ret2 = Rf_eval(ret, rho);
+    UNPROTECT(1);
+    return(ret2);
+
+  } else {
+    return ret;
+  }
+}
+#endif
 
 static int cli__counter = 0;
 
@@ -204,7 +224,7 @@ SEXP cli_progress_bar(vint **ptr, double total, SEXP config) {
     Rf_defineVar(Rf_install("name"), config, bar);
 
   } else {
-    error("Unknown cli progress bar configuation, see manual.");
+    error("Unknown cli progress bar configuration, see manual.");
   }
 
   UNPROTECT(3);
@@ -332,9 +352,7 @@ void cli_progress_done(SEXP bar) {
 
 int cli_progress_num(void) {
   SEXP clienv = PROTECT(clic__find_var(cli_pkgenv, Rf_install("clienv")));
-  if (clienv == R_UnboundValue) error("Cannot find 'clienv'");
   SEXP bars = PROTECT(clic__find_var(clienv, Rf_install("progress")));
-  if (bars == R_UnboundValue) error("Cannot find 'clienv$progress'");
   UNPROTECT(2);
   return LENGTH(bars);
 }

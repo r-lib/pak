@@ -813,7 +813,7 @@ void cli_term_csi_dispatch(vtparse_t *vt, struct terminal *term,
 
 void cli_term_osc_end(struct terminal *term) {
   if (!term->osc) {
-    R_THROW_ERROR("Internal vt error, OSC buffer not alloaced");
+    R_THROW_ERROR("Internal vt error, OSC buffer not alloced");
   }
   if (term->oscptr == 3 && term->osc[0] == '8' && term->osc[1] == ';' &&
       term->osc[2] == ';') {
@@ -846,7 +846,7 @@ void cli_term_osc_end(struct terminal *term) {
 
 void cli_term_osc_put(struct terminal *term, CHARTYPE ch) {
   if (!term->osc) {
-    R_THROW_ERROR("Internal vt error, OSC buffer not alloaced");
+    R_THROW_ERROR("Internal vt error, OSC buffer not alloced");
   }
   if (term->oscptr == OSC_LEN) {
     R_THROW_ERROR("Internal vt error, OSC buffer is full");

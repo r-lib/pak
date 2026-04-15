@@ -6,19 +6,25 @@
 setup_app <- function() {
   theme <- list(
     "url" = list(color = "blue"),
-    ".pkg" = list(color = "orange"))
+    ".pkg" = list(color = "orange")
+  )
   start_app(theme = theme, output = "stdout")
 }
 
 load_packages <- function() {
-  tryCatch(suppressPackageStartupMessages({
-    library(cli)
-    library(pkgcache)
-    library(docopt) }),
+  tryCatch(
+    suppressPackageStartupMessages({
+      library(cli)
+      library(pkgcache)
+      library(docopt)
+    }),
     error = function(e) {
-      cli_alert_danger("The {.pkg pkgcache} and {.pkg docopt} packages are needed!")
+      cli_alert_danger(
+        "The {.pkg pkgcache} and {.pkg docopt} packages are needed!"
+      )
       q(save = "no", status = 1)
-    })
+    }
+  )
 }
 
 outdated <- function(lib = NULL, notcran = FALSE) {
@@ -35,7 +41,7 @@ outdated <- function(lib = NULL, notcran = FALSE) {
     pkg <- inst[i, "Package"]
     iver <- inst[i, "Version"]
 
-    if (! pkg %in% repo$package) {
+    if (!pkg %in% repo$package) {
       cli_alert_info("{.pkg {pkg}}: \tnot a CRAN/BioC package")
       next
     }
@@ -51,7 +57,8 @@ outdated <- function(lib = NULL, notcran = FALSE) {
     src <- if (any(newest$platform == "source")) "src" else ""
 
     cli_alert_danger(
-          "{.pkg {pkg}} \t{iver} {symbol$arrow_right} {mnver}  {emph ({bin} {src})}")
+      "{.pkg {pkg}} \t{iver} {symbol$arrow_right} {mnver}  {emph ({bin} {src})}"
+    )
   }
 }
 

@@ -1,4 +1,3 @@
-
 is_interactive <- function() {
   opt <- getOption("rlib_interactive")
   if (isTRUE(opt)) {
@@ -7,7 +6,9 @@ is_interactive <- function() {
     FALSE
   } else if (tolower(getOption("knitr.in.progress", "false")) == "true") {
     FALSE
-  } else if (tolower(getOption("rstudio.notebook.executing", "false")) == "true") {
+  } else if (
+    tolower(getOption("rstudio.notebook.executing", "false")) == "true"
+  ) {
     FALSE
   } else if (identical(Sys.getenv("TESTTHAT"), "true")) {
     FALSE
@@ -30,7 +31,8 @@ is_interactive <- function() {
 #' @export
 
 cli_output_connection <- function() {
-  if ((is_interactive() || rstudio_stdout()) && no_sink()) stdout() else stderr()
+  if ((is_interactive() || rstudio_stdout()) && no_sink()) stdout() else
+    stderr()
 }
 
 no_sink <- function() {
@@ -39,13 +41,14 @@ no_sink <- function() {
 
 rstudio_stdout <- function() {
   rstudio <- rstudio_detect()
-  rstudio$type %in% c(
-    "rstudio_console",
-    "rstudio_console_starting",
-    "rstudio_build_pane",
-    "rstudio_job",
-    "rstudio_render_pane"
-  )
+  rstudio$type %in%
+    c(
+      "rstudio_console",
+      "rstudio_console_starting",
+      "rstudio_build_pane",
+      "rstudio_job",
+      "rstudio_render_pane"
+    )
 }
 
 is_stdout <- function(stream) {
@@ -56,7 +59,7 @@ is_stderr <- function(stream) {
   identical(stream, stderr()) && sink.number("message") == 2
 }
 
-is_stdx <- function(stream){
+is_stdx <- function(stream) {
   is_stdout(stream) || is_stderr(stream)
 }
 
@@ -125,7 +128,6 @@ is_rkward_stdx <- function(stream) {
 #' is_dynamic_tty(stdout())
 
 is_dynamic_tty <- function(stream = "auto") {
-
   stream <- get_real_output(stream)
 
   ## Option?
@@ -172,7 +174,6 @@ ANSI_EL <- paste0(ANSI_ESC, "K")
 #' is_ansi_tty()
 
 is_ansi_tty <- function(stream = "auto") {
-
   stream <- get_real_output(stream)
 
   # Option takes precedence
@@ -246,10 +247,7 @@ set_embedded_utf8 <- function(value = TRUE) {
   .Call(clic_set_embedded_utf8, value)
 }
 
-r_utf8 <- function(func,
-                   args = list(),
-                   package = FALSE,
-                   timeout = 5000L) {
+r_utf8 <- function(func, args = list(), package = FALSE, timeout = 5000L) {
   out <- tempfile()
   on.exit(unlink(out), add = TRUE)
   opts <- callr::r_process_options(

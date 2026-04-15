@@ -27,9 +27,14 @@ cat_line <- function(..., col = NULL, background_col = NULL, file = stdout()) {
 
 #' @export
 #' @rdname cat_line
-cat_bullet <- function(..., col = NULL, background_col = NULL,
-                       bullet = "bullet", bullet_col = NULL,
-                       file = stdout()) {
+cat_bullet <- function(
+  ...,
+  col = NULL,
+  background_col = NULL,
+  bullet = "bullet",
+  bullet_col = NULL,
+  file = stdout()
+) {
   out <- apply_style(paste0(...), col)
   bullet <- apply_style(symbol[[bullet]], bullet_col)
 

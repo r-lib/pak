@@ -1,4 +1,3 @@
-
 #' Compare two character vectors elementwise
 #'
 #' Its printed output is similar to calling `diff -u` at the command
@@ -144,12 +143,12 @@ get_diff_chunks <- function(lcs, context = 3L) {
   }
 
   chunks <- data.frame(
-    op_begin   = integer(nchunks),    # first op in chunk
-    op_length  = integer(nchunks),    # number of operations in chunk
-    old_begin  = integer(nchunks),    # first line from `old` in chunk
-    old_length = integer(nchunks),    # number of lines from `old` in chunk
-    new_begin  = integer(nchunks),    # first line from `new` in chunk
-    new_length = integer(nchunks)     # number of lines from `new` in chunk
+    op_begin = integer(nchunks), # first op in chunk
+    op_length = integer(nchunks), # number of operations in chunk
+    old_begin = integer(nchunks), # first line from `old` in chunk
+    old_length = integer(nchunks), # number of lines from `old` in chunk
+    new_begin = integer(nchunks), # first line from `new` in chunk
+    new_length = integer(nchunks) # number of lines from `new` in chunk
   )
 
   if (nchunks == 0) return(chunks)
@@ -167,7 +166,7 @@ get_diff_chunks <- function(lcs, context = 3L) {
 
   # chunk starts at operation number sum(length) before it, plus 1, but
   # at the end we change this to include the context chunks are well
-  chunks$op_begin  <- c(0, cumsum(runs$lengths))[which(runs$values)] + 1
+  chunks$op_begin <- c(0, cumsum(runs$lengths))[which(runs$values)] + 1
   chunks$op_length <- runs$lengths[runs$values]
 
   # `old` positions are from `old_off`, but need to fix the boundaries
@@ -186,7 +185,7 @@ get_diff_chunks <- function(lcs, context = 3L) {
 
   # change to include context chunks
   if (context > 0) {
-    # calculae the end before updating the begin
+    # calculate the end before updating the begin
     op_end <- chunks$op_begin + chunks$op_length - 1 + 1
     op_end[op_end > nrow(lcs)] <- nrow(lcs)
     chunks$op_begin <- chunks$op_begin - 1
@@ -227,10 +226,8 @@ format_chunk <- function(x, chunks, num, context) {
         }
       }
       paste0(" ", x$old[off + 1:len])
-
     } else if (op == "delete") {
       col_blue(paste0("-", x$old[off + 1:len]))
-
     } else if (op == "insert") {
       col_green(paste0("+", x$new[off + 1:len]))
     }
@@ -265,10 +262,8 @@ format_diff_str_color <- function(x, ...) {
     len <- x$lcs$length[i]
     if (op == "match") {
       paste0(x$old[off + 1:len], collapse = "")
-
     } else if (op == "delete") {
       bg_blue(col_black(paste0(x$old[off + 1:len], collapse = "")))
-
     } else if (op == "insert") {
       bg_green(col_black(paste0(x$new[off + 1:len], collapse = "")))
     }
@@ -284,10 +279,8 @@ format_diff_str_nocolor <- function(x, ...) {
     len <- x$lcs$length[i]
     if (op == "match") {
       paste0(x$old[off + 1:len], collapse = "")
-
     } else if (op == "delete") {
       paste0(c("[-", x$old[off + 1:len], "-]"), collapse = "")
-
     } else if (op == "insert") {
       paste0(c("{+", x$new[off + 1:len], "+}"), collapse = "")
     }

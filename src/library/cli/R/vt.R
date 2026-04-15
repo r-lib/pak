@@ -1,4 +1,3 @@
-
 #' Simulate (a subset of) a VT-5xx ANSI terminal
 #'
 #' This is utility function that calculates the state of a VT-5xx screen
@@ -22,7 +21,7 @@
 #' - Unicode graphemes.
 #'
 #' @param output Character vector or raw vector. Character vectors are
-#' collapsed (without a separater), and converted to a raw vector using
+#' collapsed (without a separator), and converted to a raw vector using
 #' [base::charToRaw()].
 #' @param width Terminal width.
 #' @param height Terminal height.
@@ -30,7 +29,7 @@
 #' `attributes`.
 #'
 #' @note
-#' This function is experimental, and the virtual temrinal API will
+#' This function is experimental, and the virtual terminal API will
 #' likely change in future versions of cli.
 #'
 #' @export
@@ -68,9 +67,9 @@ vt_output <- function(output, width = 80L, height = 25L) {
       utf8_substr(line, s + 1, e)
     })
 
-    fg <- re_match(lgs$values, "fg:([0-9]+|#[0-9a-f]+);")[,1]
-    bg <- re_match(lgs$values, "bg:([0-9]+|#[0-9a-f]+);")[,1]
-    linkno <- as.integer(re_match(lgs$values, "link:([0-9]+);")[,1])
+    fg <- re_match(lgs$values, "fg:([0-9]+|#[0-9a-f]+);")[, 1]
+    bg <- re_match(lgs$values, "bg:([0-9]+|#[0-9a-f]+);")[, 1]
+    linkno <- as.integer(re_match(lgs$values, "link:([0-9]+);")[, 1])
     link <- links[linkno]
     link_params <- links_params[linkno]
 

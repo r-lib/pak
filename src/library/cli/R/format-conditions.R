@@ -1,4 +1,3 @@
-
 #' Format an error, warning or diagnostic message
 #'
 #' You can then throw this message with [stop()] or `rlang::abort()`.
@@ -32,8 +31,10 @@
 #' @export
 
 format_error <- function(message, .envir = parent.frame()) {
-  if (length(message) > 0 &&
-      (is.null(names(message)) || names(message)[1] == "")) {
+  if (
+    length(message) > 0 &&
+      (is.null(names(message)) || names(message)[1] == "")
+  ) {
     # The default theme will make this bold
     names(message)[1] <- "1"
   }
@@ -46,15 +47,19 @@ format_error <- function(message, .envir = parent.frame()) {
   oldopt <- options(
     cli.width = getOption("cli.condition_width") %||% getOption("cli.width")
   )
-  on.exit(options(oldopt), add =TRUE)
+  on.exit(options(oldopt), add = TRUE)
 
   # We need to create a frame here, so cli_div() is closed.
   # Cannot use local(), it does not work in snapshot tests, it potentially
   # has issues elsewhere as well.
-  formatted1 <- cli_fmt((function() {
-    cli_div(class = "cli_rlang cli_abort", theme = cnd_theme())
-    cli_bullets(message, .envir = .envir)
-  })(), collapse = TRUE, strip_newline = TRUE)
+  formatted1 <- cli_fmt(
+    (function() {
+      cli_div(class = "cli_rlang cli_abort", theme = cnd_theme())
+      cli_bullets(message, .envir = .envir)
+    })(),
+    collapse = TRUE,
+    strip_newline = TRUE
+  )
 
   # remove "Error: " that was only needed for the wrapping
   formatted1[1] <- sub("Error:[ ]?", "", formatted1[1])
@@ -66,8 +71,10 @@ format_error <- function(message, .envir = parent.frame()) {
 #' @export
 
 format_warning <- function(message, .envir = parent.frame()) {
-  if (length(message) > 0 &&
-      (is.null(names(message)) || names(message)[1] == "")) {
+  if (
+    length(message) > 0 &&
+      (is.null(names(message)) || names(message)[1] == "")
+  ) {
     # The default theme will make this bold
     names(message)[1] <- "1"
   }
@@ -77,10 +84,14 @@ format_warning <- function(message, .envir = parent.frame()) {
   )
   on.exit(options(oldopt), add = TRUE)
 
-  formatted1 <- cli_fmt((function() {
-    cli_div(class = "cli_rlang cli_warn", theme = cnd_theme())
-    cli_bullets(message, .envir = .envir)
-  })(), collapse = TRUE, strip_newline = TRUE)
+  formatted1 <- cli_fmt(
+    (function() {
+      cli_div(class = "cli_rlang cli_warn", theme = cnd_theme())
+      cli_bullets(message, .envir = .envir)
+    })(),
+    collapse = TRUE,
+    strip_newline = TRUE
+  )
 
   update_rstudio_color(formatted1)
 }
@@ -93,10 +104,14 @@ format_message <- function(message, .envir = parent.frame()) {
     cli.width = getOption("cli.condition_width") %||% getOption("cli.width")
   )
   on.exit(options(oldopt), add = TRUE)
-  formatted1 <- cli_fmt((function() {
-    cli_div(class = "cli_rlang cli_inform", theme = cnd_theme())
-    cli_bullets(message, .envir = .envir)
-  })(), collapse = TRUE, strip_newline = TRUE)
+  formatted1 <- cli_fmt(
+    (function() {
+      cli_div(class = "cli_rlang cli_inform", theme = cnd_theme())
+      cli_bullets(message, .envir = .envir)
+    })(),
+    collapse = TRUE,
+    strip_newline = TRUE
+  )
   update_rstudio_color(formatted1)
 }
 
@@ -122,13 +137,13 @@ get_rstudio_fg_color <- function() {
 get_rstudio_fg_color0 <- function() {
   rs <- rstudio_detect()
   oktypes <- c("rstudio_console", "rstudio_console_starting")
-  if (! rs$type %in% oktypes) return(NULL)
+  if (!rs$type %in% oktypes) return(NULL)
   if (rs$num_colors == 1) return(NULL)
   colstr <- get_rstudio_theme()$foreground
   if (is.null(colstr)) return(NULL)
   colstr0 <- substr(colstr, 5, nchar(colstr) - 1)
   rgbnum <- scan(text = colstr0, sep = ",", quiet = TRUE)
-  rgb <- grDevices::rgb(rgbnum[1]/255, rgbnum[2]/255, rgbnum[3]/255)
+  rgb <- grDevices::rgb(rgbnum[1] / 255, rgbnum[2] / 255, rgbnum[3] / 255)
   make_ansi_style(rgb)
 }
 

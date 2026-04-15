@@ -1,4 +1,3 @@
-
 #' Read a single keypress at the terminal
 #'
 #' It currently only works at Linux/Unix and OSX terminals,
@@ -65,12 +64,11 @@ has_keypress_support <- function() {
 
   if (rs$type != "not_rstudio") {
     rs$has_canonical_mode
-
   } else {
     isatty(stdin()) &&
       Sys.getenv("R_GUI_APP_VERSION") == "" &&
       .Platform$GUI != "Rgui" &&
-      ! identical(getOption("STERM"), "iESS") &&
+      !identical(getOption("STERM"), "iESS") &&
       Sys.getenv("EMACS") != "t" &&
       Sys.getenv("TERM") != "dumb"
   }

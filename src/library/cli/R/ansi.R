@@ -1,4 +1,3 @@
-
 # this is install time
 # nocov start
 
@@ -6,14 +5,16 @@ palette_idx <- function(id) {
   ifelse(
     id < 38,
     id - (30 - 1),
-  ifelse(
-    id < 48,
-    -(id - (40 - 1)),
-  ifelse(
-    id < 98,
-    id - (90 - 9),
-    -(id - (100 - 9))
-  )))
+    ifelse(
+      id < 48,
+      -(id - (40 - 1)),
+      ifelse(
+        id < 98,
+        id - (90 - 9),
+        -(id - (100 - 9))
+      )
+    )
+  )
 }
 
 palette_color <- function(x) {
@@ -68,17 +69,17 @@ ansi_builtin_styles <- list(
   bg_br_white = palette_color(list(107, 49)),
 
   # similar to reset, but only for a single property
-  no_bold          = list(c(0,     23, 24, 27, 28, 29, 39, 49), 22),
-  no_blurred       = list(c(0,     23, 24, 27, 28, 29, 39, 49), 22),
-  no_italic        = list(c(0, 22,     24, 27, 28, 29, 39, 49), 23),
-  no_underline     = list(c(0, 22, 23,     27, 28, 29, 39, 49), 24),
-  no_inverse       = list(c(0, 22, 23, 24,     28, 29, 39, 49), 27),
-  no_hidden        = list(c(0, 22, 23, 24, 27,     29, 39, 49), 28),
-  no_strikethrough = list(c(0, 22, 23, 24, 27, 28,     39, 49), 29),
-  none             = list(c(0, 22, 23, 24, 27, 28, 29,     49), 39),
-  no_color         = list(c(0, 22, 23, 24, 27, 28, 29,     49), 39),
-  bg_none          = list(c(0, 22, 23, 24, 27, 28, 29, 39    ), 49),
-  no_bg_color      = list(c(0, 22, 23, 24, 27, 28, 29, 39    ), 49)
+  no_bold = list(c(0, 23, 24, 27, 28, 29, 39, 49), 22),
+  no_blurred = list(c(0, 23, 24, 27, 28, 29, 39, 49), 22),
+  no_italic = list(c(0, 22, 24, 27, 28, 29, 39, 49), 23),
+  no_underline = list(c(0, 22, 23, 27, 28, 29, 39, 49), 24),
+  no_inverse = list(c(0, 22, 23, 24, 28, 29, 39, 49), 27),
+  no_hidden = list(c(0, 22, 23, 24, 27, 29, 39, 49), 28),
+  no_strikethrough = list(c(0, 22, 23, 24, 27, 28, 39, 49), 29),
+  none = list(c(0, 22, 23, 24, 27, 28, 29, 49), 39),
+  no_color = list(c(0, 22, 23, 24, 27, 28, 29, 49), 39),
+  bg_none = list(c(0, 22, 23, 24, 27, 28, 29, 39), 49),
+  no_bg_color = list(c(0, 22, 23, 24, 27, 28, 29, 39), 49)
 )
 
 # nocov end
@@ -126,23 +127,26 @@ create_ansi_style_tag <- function(name, open, close, palette = NULL) {
 }
 
 create_ansi_style_fun <- function(styles) {
-  fun <- eval(substitute(function(...) {
-    txt <- paste0(...)
-    nc <- num_ansi_colors()
-    if (nc > 1 && length(txt) > 0) {
-      mystyles <- .styles
-      for (st in rev(mystyles)) {
-        if (!is.null(st$palette)) st <- get_palette_color(st, nc)
-        txt <- paste0(
-          st$open,
-          gsub(st$close, st$open, txt, fixed = TRUE),
-          st$close
-        )
+  fun <- eval(substitute(
+    function(...) {
+      txt <- paste0(...)
+      nc <- num_ansi_colors()
+      if (nc > 1 && length(txt) > 0) {
+        mystyles <- .styles
+        for (st in rev(mystyles)) {
+          if (!is.null(st$palette)) st <- get_palette_color(st, nc)
+          txt <- paste0(
+            st$open,
+            gsub(st$close, st$open, txt, fixed = TRUE),
+            st$close
+          )
+        }
       }
-    }
-    class(txt) <- c("cli_ansi_string", "ansi_string", "character")
-    txt
-  }, list(.styles = styles)))
+      class(txt) <- c("cli_ansi_string", "ansi_string", "character")
+      txt
+    },
+    list(.styles = styles)
+  ))
 
   class(fun) <- c("cli_ansi_style", "ansi_style")
   attr(fun, "_styles") <- styles
@@ -220,9 +224,12 @@ print.cli_ansi_style <- function(x, ...) {
 #' orange("foobar")
 #' cat(orange("foobar"))
 
-make_ansi_style <- function(..., bg = FALSE, grey = FALSE,
-                            colors = num_ansi_colors()) {
-
+make_ansi_style <- function(
+  ...,
+  bg = FALSE,
+  grey = FALSE,
+  colors = num_ansi_colors()
+) {
   style <- list(...)[[1]]
   if (inherits(style, "cli_ansi_style")) return(style)
   if (inherits(style, "crayon")) {
@@ -234,13 +241,15 @@ make_ansi_style <- function(..., bg = FALSE, grey = FALSE,
   orig_style_name <- style_name <- names(args)[1]
 
   stop_if_not(
-    is.character(style) && length(style) == 1 ||
-    is_rgb_matrix(style) && ncol(style) == 1,
+    is.character(style) &&
+      length(style) == 1 ||
+      is_rgb_matrix(style) && ncol(style) == 1,
     message = c(
       "{.arg style} must be an ANSI style",
       "i" = paste(
         "an ANSI style is a character scalar (cli style name, RGB or R color",
-        "name), or a [3x1] or [4x1] numeric RGB matrix"),
+        "name), or a [3x1] or [4x1] numeric RGB matrix"
+      ),
       "i" = "{.arg style} is {.type {style}}"
     )
   )
@@ -255,11 +264,9 @@ make_ansi_style <- function(..., bg = FALSE, grey = FALSE,
     }
     if (is.null(style_name)) style_name <- style
     ansi_builtin_styles[[style]]
-
   } else if (is_r_color(style)) {
     if (is.null(style_name)) style_name <- style
     ansi_style_from_r_color(style, bg, colors, grey)
-
   } else if (is_rgb_matrix(style)) {
     if (is.null(style_name)) {
       style_name <- paste0(
@@ -268,7 +275,6 @@ make_ansi_style <- function(..., bg = FALSE, grey = FALSE,
       )
     }
     ansi_style_from_rgb(style, bg, colors, grey)
-
   } else {
     throw(cli_error(
       "Unknown style specification: {.val style}, it must be one of",
@@ -301,14 +307,16 @@ ansi_style_from_r_color <- function(color, bg, num_colors, grey) {
 
 ansi_style_8_from_rgb <- function(rgb, bg) {
   ansi_cols <- if (bg) ansi_bg_rgb else ansi_fg_rgb
-  dist <- colSums((ansi_cols - as.vector(rgb)) ^ 2 )
+  dist <- colSums((ansi_cols - as.vector(rgb))^2)
   builtin_name <- names(which.min(dist))[1]
   btn <- ansi_builtin_styles[[builtin_name]]
   list(open = ansi_style_str(btn[[1]]), close = ansi_style_str(btn[[2]]))
 }
 
 ansi_style_from_rgb <- function(rgb, bg, num_colors, grey) {
-  if (num_colors < 256) { return(ansi_style_8_from_rgb(rgb, bg)) }
+  if (num_colors < 256) {
+    return(ansi_style_8_from_rgb(rgb, bg))
+  }
   if (num_colors < truecolor || grey) return(ansi256(rgb, bg, grey))
   return(ansitrue(rgb, bg))
 }
@@ -343,7 +351,6 @@ ansi256 <- function(rgb, bg = FALSE, grey = FALSE) {
       open = codes[gray_index][ansi_scale(rgb[1], to = c(0, 23)) + 1],
       close = codes[reset_index]
     )
-
   } else {
     ## Not gray
     list(

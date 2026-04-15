@@ -1,4 +1,3 @@
-
 #' Detect the number of ANSI colors to use
 #'
 #' @description
@@ -145,9 +144,11 @@ num_ansi_colors <- function(stream = "auto") {
   # Windows Emacs? The top R process will have `--ess` in ESS, but the
   # subprocesses won't. (Without ESS subprocesses will also report 8L
   # colors, this is a problem, but we expect most people use ESS in Emacs.)
-  if (os_type() == "windows" &&
+  if (
+    os_type() == "windows" &&
       "--ess" %in% commandArgs() &&
-      is_emacs_with_color()) {
+      is_emacs_with_color()
+  ) {
     default <- get_default_number_of_colors()
     return(default %||% 8L)
   }
@@ -172,7 +173,6 @@ num_ansi_colors <- function(stream = "auto") {
 #' The terminal color detection algorithm:
 
 detect_tty_colors <- function() {
-
   default <- get_default_number_of_colors()
 
   #' 1. If the `COLORTERM` environment variable is set to `truecolor` or
@@ -201,8 +201,11 @@ detect_tty_colors <- function() {
   #'    can be used to override this.
 
   win10 <- win10_build()
-  if (os_type() == "windows" && win10 >= 10586 &&
-      rstudio_detect()$type == "rstudio_terminal") {
+  if (
+    os_type() == "windows" &&
+      win10 >= 10586 &&
+      rstudio_detect()$type == "rstudio_terminal"
+  ) {
     # this is rather weird, but echo turns on color support :D
     system2("cmd", c("/c", "echo 1 >NUL"))
     return(default %||% 8L)
@@ -225,13 +228,14 @@ detect_tty_colors <- function() {
   }
 
   if (os_type() == "windows") {
-
     #' 1. If we are on Windows, under ConEmu or cmder, or ANSICON is loaded,
     #'    then the value of `cli.default_num_colors`, or 8L if unset, is
     #'    returned.
 
-    if (Sys.getenv("ConEmuANSI") == "ON" ||
-        Sys.getenv("CMDER_ROOT") != "") {
+    if (
+      Sys.getenv("ConEmuANSI") == "ON" ||
+        Sys.getenv("CMDER_ROOT") != ""
+    ) {
       return(default %||% 8L)
     }
     if (Sys.getenv("ANSICON") != "") return(default %||% 8L)
@@ -251,7 +255,9 @@ detect_tty_colors <- function() {
   if (inherits(cols, "try-error") || !length(cols) || is.na(cols)) {
     return(guess_tty_colors())
   }
-  if (cols %in% c(-1, 0, 1)) { return(1) }
+  if (cols %in% c(-1, 0, 1)) {
+    return(1)
+  }
 
   #'    If the `TERM` environment variable is `xterm` and `tput`
   #'    returned 8L, we return 256L, because xterm compatible terminals
@@ -286,14 +292,16 @@ get_default_number_of_colors <- function() {
 
 guess_tty_colors <- function() {
   term <- Sys.getenv("TERM")
-  if (term == "dumb") return (1L)
+  if (term == "dumb") return(1L)
 
-  if (grepl(
-    "^screen|^xterm|^vt100|color|ansi|cygwin|linux",
-    term,
-    ignore.case = TRUE,
-    perl = TRUE
-  )) {
+  if (
+    grepl(
+      "^screen|^xterm|^vt100|color|ansi|cygwin|linux",
+      term,
+      ignore.case = TRUE,
+      perl = TRUE
+    )
+  ) {
     8L
   } else {
     1L
@@ -302,7 +310,8 @@ guess_tty_colors <- function() {
 
 is_emacs_with_color <- function() {
   (Sys.getenv("EMACS") != "" || Sys.getenv("INSIDE_EMACS") != "") &&
-    ! is.na(emacs_version()[1]) && emacs_version()[1] >= 23
+    !is.na(emacs_version()[1]) &&
+    emacs_version()[1] >= 23
 }
 
 emacs_version <- function() {

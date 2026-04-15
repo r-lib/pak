@@ -1,4 +1,3 @@
-
 #' @title Progress bar utility functions.
 #' @details `cli_progress_num()` returns the number of currently
 #' active progress bars. (These do not currently include the progress

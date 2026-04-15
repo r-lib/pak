@@ -1,4 +1,3 @@
-
 make_progress_bar <- function(percent, width = 30, style = list()) {
   complete_len <- round(width * percent)
 
@@ -19,16 +18,22 @@ default_progress_style <- function() {
     opu <- progress_style(getOption("cli.progress_bar_style_unicode"))
     list(
       complete = opu$complete %||% opt$complete %||% "\u25A0",
-      current = opu$current %||% opt$current %||% opu$complete %||%
-        opt$complete %||% "\u25A0",
+      current = opu$current %||%
+        opt$current %||%
+        opu$complete %||%
+        opt$complete %||%
+        "\u25A0",
       incomplete = opu$incomplete %||% opt$incomplete %||% "\u00a0"
     )
   } else {
     opa <- progress_style(getOption("cli.progress_bar_style_ascii"))
     list(
       complete = opa$complete %||% opt$complete %||% "=",
-      current = opa$current %||% opt$current %||% opa$complete %||%
-        opt$complete %||% ">",
+      current = opa$current %||%
+        opt$current %||%
+        opa$complete %||%
+        opt$complete %||%
+        ">",
       incomplete = opa$incomplete %||% opt$incomplete %||% "-"
     )
   }

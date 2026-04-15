@@ -1,4 +1,3 @@
-
 cliappenv <- new.env()
 cliappenv$stack <- list()
 cliappenv$pid <- Sys.getpid()
@@ -26,11 +25,13 @@ cliappenv$pid <- Sys.getpid()
 #'
 #' @export
 
-start_app <- function(theme = getOption("cli.theme"),
-                      output = c("auto", "message", "stdout", "stderr"),
-                      .auto_close = TRUE, .envir = parent.frame()) {
-
-  if (! inherits(output, "connection")) output <- match.arg(output)
+start_app <- function(
+  theme = getOption("cli.theme"),
+  output = c("auto", "message", "stdout", "stderr"),
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
+  if (!inherits(output, "connection")) output <- match.arg(output)
 
   app <- cliapp(
     theme = theme,
@@ -52,7 +53,6 @@ start_app <- function(theme = getOption("cli.theme"),
 stop_app <- function(app = NULL) {
   if (is.null(app)) {
     cliappenv$stack <- utils::head(cliappenv$stack, -1)
-
   } else {
     if (!inherits(app, "cliapp")) {
       throw(cli_error(
@@ -62,7 +62,7 @@ stop_app <- function(app = NULL) {
     }
     ndl <- format.default(app)
     nms <- vapply(cliappenv$stack, format.default, character(1))
-    if (! ndl %in% nms) {
+    if (!ndl %in% nms) {
       warning("No app to end")
       return()
     }

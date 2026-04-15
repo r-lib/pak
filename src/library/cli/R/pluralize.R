@@ -1,4 +1,3 @@
-
 #' About cli pluralization
 #'
 #' @name pluralization
@@ -10,10 +9,7 @@ make_quantity <- function(object) {
   val <- if (is.numeric(object)) {
     stopifnot(length(object) == 1)
 
-    if (is.finite(object))
-      as.integer(object)
-    else
-      object
+    if (is.finite(object)) as.integer(object) else object
   } else {
     length(object)
   }
@@ -93,10 +89,7 @@ process_plural <- function(qty, code) {
   if (length(parts) == 1) {
     if (is.finite(qty) & qty == 1) "" else parts[1]
   } else if (length(parts) == 2) {
-    if (is.finite(qty) & qty == 1)
-      parts[1]
-    else
-      parts[2]
+    if (is.finite(qty) & qty == 1) parts[1] else parts[2]
   } else if (length(parts) == 3) {
     if (is.finite(qty) & qty == 0) {
       parts[1]
@@ -176,9 +169,11 @@ post_process_plurals <- function(str, values) {
 #' nupd <- 3; ntotal <- 10
 #' cli_text("{nupd}/{ntotal} {qty(nupd)} file{?s} {?needs/need} updates")
 
-pluralize <- function(..., .envir = parent.frame(),
-                      .transformer = glue::identity_transformer) {
-
+pluralize <- function(
+  ...,
+  .envir = parent.frame(),
+  .transformer = glue::identity_transformer
+) {
   values <- new.env(parent = emptyenv())
   values$empty <- random_id()
   values$qty <- values$empty
@@ -196,7 +191,6 @@ pluralize <- function(..., .envir = parent.frame(),
       } else {
         return(process_plural(make_quantity(values$qty), text))
       }
-
     } else {
       values$num_subst <- values$num_subst + 1
       qty <- .transformer(text, envir)

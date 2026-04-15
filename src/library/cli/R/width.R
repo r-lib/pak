@@ -1,4 +1,3 @@
-
 #' Determine the width of the console
 #'
 #' It uses the `cli.width` option, if set. Otherwise it tries to
@@ -32,7 +31,7 @@
 #' console_width()
 
 console_width <- function() {
-  # cli.width option always takes priotity
+  # cli.width option always takes priority
   cwopt <- getOption("cli.width")
   if (!is.null(cwopt)) {
     if (!is.numeric(cwopt) || length(cwopt) != 1) {
@@ -68,21 +67,17 @@ console_width <- function() {
   if (rs$type == "not_rstudio") {
     # maybe a terminal?
     width <- terminal_width()
-
   } else if (rs$type == "rstudio_console_starting") {
     # there isn't much we can do here, options and env vars are not set
     width <- NULL
-
   } else if (rs$type == "rstudio_console") {
     # will just use getOption("width"), in case the user changed it,
     # and ignore the RSTUDIO_CONSOLE_WIDTH env var
     width <- NULL
-
   } else if (rs$type == "rstudio_build_pane") {
     # RStudio explicitly sets this for build pane processes
     # It is only good when the build starts, but we cannot do better
     width <- rs_console_width()
-
   } else if (rs$type == "rstudio_terminal") {
     # Can also be a subprocess of the terminal, with a pty,
     # but that's fine, the pty should have a width set up.
@@ -90,8 +85,8 @@ console_width <- function() {
     # because the user might have changed options("width") and the env
     # var is only good when the terminal starts, anyway.
     width <- terminal_width()
-
-  } else { # rstudio_subprocess
+  } else {
+    # rstudio_subprocess
     width <- NULL
   }
 

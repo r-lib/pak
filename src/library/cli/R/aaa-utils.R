@@ -1,4 +1,3 @@
-
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 new_class <- function(class_name, ...) {
@@ -32,13 +31,12 @@ is_latex_output <- function() {
   get("is_latex_output", asNamespace("knitr"))()
 }
 
-is_windows <-  function() {
+is_windows <- function() {
   .Platform$OS.type == "windows"
 }
 
 apply_style <- function(text, style, bg = FALSE) {
-  if (identical(text, ""))
-    return(text)
+  if (identical(text, "")) return(text)
 
   if (is.function(style)) {
     style(text)

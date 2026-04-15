@@ -1,4 +1,3 @@
-
 #' Compose multiple cli functions
 #'
 #' `cli()` will record all `cli_*` calls in `expr`, and emit them together
@@ -44,8 +43,12 @@ cli__rec <- function(expr) {
   cli_recorded[[id]]
 }
 
-cli__fmt <- function(record, collapse = FALSE, strip_newline = FALSE,
-                     app = NULL) {
+cli__fmt <- function(
+  record,
+  collapse = FALSE,
+  strip_newline = FALSE,
+  app = NULL
+) {
   app <- app %||% default_app() %||% start_app(.auto_close = FALSE)
 
   old <- app$output
@@ -112,8 +115,12 @@ cli_fmt <- function(expr, collapse = FALSE, strip_newline = FALSE) {
 #' @examples
 #' format_inline("A message for {.emph later}, thanks {.fn format_inline}.")
 
-format_inline <- function(..., .envir = parent.frame(), collapse = TRUE,
-                          keep_whitespace = TRUE) {
+format_inline <- function(
+  ...,
+  .envir = parent.frame(),
+  collapse = TRUE,
+  keep_whitespace = TRUE
+) {
   opts <- options(cli.width = Inf)
   on.exit(options(opts), add = TRUE)
   fun <- if (keep_whitespace) cli_inline else cli_text
@@ -206,7 +213,10 @@ format_inline <- function(..., .envir = parent.frame(), collapse = TRUE,
 #' @export
 
 cli_text <- function(..., .envir = parent.frame()) {
-  cli__message("text", list(text = glue_cmd(..., .envir = .envir, .call = sys.call())))
+  cli__message(
+    "text",
+    list(text = glue_cmd(..., .envir = .envir, .call = sys.call()))
+  )
 }
 
 cli_inline <- function(..., .envir = parent.frame()) {
@@ -355,10 +365,19 @@ cli_h3 <- function(text, id = NULL, class = NULL, .envir = parent.frame()) {
 #'
 #' @export
 
-cli_div <- function(id = NULL, class = NULL, theme = NULL,
-                    .auto_close = TRUE, .envir = parent.frame()) {
-  cli__message("div", list(id = id, class = class, theme = theme),
-               .auto_close = .auto_close, .envir = .envir)
+cli_div <- function(
+  id = NULL,
+  class = NULL,
+  theme = NULL,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
+  cli__message(
+    "div",
+    list(id = id, class = class, theme = theme),
+    .auto_close = .auto_close,
+    .envir = .envir
+  )
 }
 
 #' CLI paragraph
@@ -383,10 +402,18 @@ cli_div <- function(id = NULL, class = NULL, theme = NULL,
 #'
 #' @export
 
-cli_par <- function(id = NULL, class = NULL, .auto_close = TRUE,
-                    .envir = parent.frame()) {
-  cli__message("par", list(id = id, class = class),
-               .auto_close = .auto_close, .envir = .envir)
+cli_par <- function(
+  id = NULL,
+  class = NULL,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
+  cli__message(
+    "par",
+    list(id = id, class = class),
+    .auto_close = .auto_close,
+    .envir = .envir
+  )
 }
 
 #' Close a CLI container
@@ -500,10 +527,14 @@ cli_end <- function(id = NULL) {
 #' @family functions supporting inline markup
 #' @export
 
-
-cli_ul <- function(items = NULL, id = NULL, class = NULL,
-                   .close = TRUE, .auto_close = TRUE,
-                   .envir = parent.frame()) {
+cli_ul <- function(
+  items = NULL,
+  id = NULL,
+  class = NULL,
+  .close = TRUE,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
   cli__message(
     "ul",
     list(
@@ -512,7 +543,8 @@ cli_ul <- function(items = NULL, id = NULL, class = NULL,
       class = class,
       .close = .close
     ),
-    .auto_close = .auto_close, .envir = .envir
+    .auto_close = .auto_close,
+    .envir = .envir
   )
 }
 
@@ -567,9 +599,14 @@ cli_ul <- function(items = NULL, id = NULL, class = NULL,
 #' @family functions supporting inline markup
 #' @export
 
-cli_ol <- function(items = NULL, id = NULL, class = NULL,
-                   .close = TRUE, .auto_close = TRUE,
-                   .envir = parent.frame()) {
+cli_ol <- function(
+  items = NULL,
+  id = NULL,
+  class = NULL,
+  .close = TRUE,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
   cli__message(
     "ol",
     list(
@@ -578,7 +615,8 @@ cli_ol <- function(items = NULL, id = NULL, class = NULL,
       class = class,
       .close = .close
     ),
-    .auto_close = .auto_close, .envir = .envir
+    .auto_close = .auto_close,
+    .envir = .envir
   )
 }
 
@@ -619,9 +657,15 @@ cli_ol <- function(items = NULL, id = NULL, class = NULL,
 #' @family functions supporting inline markup
 #' @export
 
-cli_dl <- function(items = NULL, labels = names(items), id = NULL,
-                   class = NULL, .close = TRUE, .auto_close = TRUE,
-                   .envir = parent.frame()) {
+cli_dl <- function(
+  items = NULL,
+  labels = names(items),
+  id = NULL,
+  class = NULL,
+  .close = TRUE,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
   if (!is.null(items) && !is_named(items)) {
     throw(cli_error(
       "{.arg items} must be a named character vector",
@@ -634,11 +678,15 @@ cli_dl <- function(items = NULL, labels = names(items), id = NULL,
     list(
       items = lapply(items, glue_cmd, .envir = .envir, .call = sys.call()),
       labels = if (!is.null(labels)) {
-                 lapply(labels, glue_cmd, .envir = .envir, .call = sys.call())
-               },
+        lapply(labels, glue_cmd, .envir = .envir, .call = sys.call())
+      },
       id = id,
-      class = class, .close = .close),
-    .auto_close = .auto_close, .envir = .envir)
+      class = class,
+      .close = .close
+    ),
+    .auto_close = .auto_close,
+    .envir = .envir
+  )
 }
 
 #' CLI list item(s)
@@ -674,19 +722,27 @@ cli_dl <- function(items = NULL, labels = names(items), id = NULL,
 #' @family functions supporting inline markup
 #' @export
 
-cli_li <- function(items = NULL, labels = names(items), id = NULL,
-                   class = NULL, .auto_close = TRUE,
-                   .envir = parent.frame()) {
+cli_li <- function(
+  items = NULL,
+  labels = names(items),
+  id = NULL,
+  class = NULL,
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
   cli__message(
     "li",
     list(
       items = lapply(items, glue_cmd, .envir = .envir, .call = sys.call()),
       labels = if (!is.null(labels)) {
-                 lapply(labels, glue_cmd, .envir = .envir, .call = sys.call())
-               },
+        lapply(labels, glue_cmd, .envir = .envir, .call = sys.call())
+      },
       id = id,
-      class = class),
-    .auto_close = .auto_close, .envir = .envir)
+      class = class
+    ),
+    .auto_close = .auto_close,
+    .envir = .envir
+  )
 }
 
 #' CLI alerts
@@ -743,8 +799,13 @@ cli_li <- function(items = NULL, labels = names(items), id = NULL,
 #' @family functions supporting inline markup
 #' @export
 
-cli_alert <- function(text, id = NULL, class = NULL, wrap = FALSE,
-                      .envir = parent.frame()) {
+cli_alert <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  wrap = FALSE,
+  .envir = parent.frame()
+) {
   cli__message(
     "alert",
     list(
@@ -759,8 +820,13 @@ cli_alert <- function(text, id = NULL, class = NULL, wrap = FALSE,
 #' @rdname cli_alert
 #' @export
 
-cli_alert_success <- function(text, id = NULL, class = NULL, wrap = FALSE,
-                              .envir = parent.frame()) {
+cli_alert_success <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  wrap = FALSE,
+  .envir = parent.frame()
+) {
   cli__message(
     "alert_success",
     list(
@@ -775,8 +841,13 @@ cli_alert_success <- function(text, id = NULL, class = NULL, wrap = FALSE,
 #' @rdname cli_alert
 #' @export
 
-cli_alert_danger <- function(text, id = NULL, class = NULL, wrap = FALSE,
-                              .envir = parent.frame()) {
+cli_alert_danger <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  wrap = FALSE,
+  .envir = parent.frame()
+) {
   cli__message(
     "alert_danger",
     list(
@@ -791,8 +862,13 @@ cli_alert_danger <- function(text, id = NULL, class = NULL, wrap = FALSE,
 #' @rdname cli_alert
 #' @export
 
-cli_alert_warning <- function(text, id = NULL, class = NULL, wrap = FALSE,
-                               .envir = parent.frame()) {
+cli_alert_warning <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  wrap = FALSE,
+  .envir = parent.frame()
+) {
   cli__message(
     "alert_warning",
     list(
@@ -807,8 +883,13 @@ cli_alert_warning <- function(text, id = NULL, class = NULL, wrap = FALSE,
 #' @rdname cli_alert
 #' @export
 
-cli_alert_info <- function(text, id = NULL, class = NULL, wrap = FALSE,
-                            .envir = parent.frame()) {
+cli_alert_info <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  wrap = FALSE,
+  .envir = parent.frame()
+) {
   cli__message(
     "alert_info",
     list(
@@ -860,12 +941,22 @@ cli_alert_info <- function(text, id = NULL, class = NULL, wrap = FALSE,
 #' @family functions supporting inline markup
 #' @export
 
-cli_rule <- function(left = "", center = "", right = "", id = NULL,
-                     .envir = parent.frame()) {
-  cli__message("rule", list(left = glue_cmd(left, .envir = .envir, .call = sys.call()),
-                            center = glue_cmd(center, .envir = .envir, .call = sys.call()),
-                            right = glue_cmd(right, .envir = .envir, .call = sys.call()),
-                            id = id))
+cli_rule <- function(
+  left = "",
+  center = "",
+  right = "",
+  id = NULL,
+  .envir = parent.frame()
+) {
+  cli__message(
+    "rule",
+    list(
+      left = glue_cmd(left, .envir = .envir, .call = sys.call()),
+      center = glue_cmd(center, .envir = .envir, .call = sys.call()),
+      right = glue_cmd(right, .envir = .envir, .call = sys.call()),
+      id = id
+    )
+  )
 }
 
 #' CLI block quote
@@ -892,8 +983,13 @@ cli_rule <- function(left = "", center = "", right = "", id = NULL,
 #' @family functions supporting inline markup
 #' @export
 
-cli_blockquote <- function(quote, citation = NULL, id = NULL,
-                           class = NULL, .envir = parent.frame()) {
+cli_blockquote <- function(
+  quote,
+  citation = NULL,
+  id = NULL,
+  class = NULL,
+  .envir = parent.frame()
+) {
   cli__message(
     "blockquote",
     list(
@@ -941,8 +1037,13 @@ cli_blockquote <- function(quote, citation = NULL, id = NULL,
 #'
 #' @export
 
-cli_code <- function(lines = NULL, ..., language = "R",
-                     .auto_close = TRUE, .envir = environment()) {
+cli_code <- function(
+  lines = NULL,
+  ...,
+  language = "R",
+  .auto_close = TRUE,
+  .envir = environment()
+) {
   lines <- c(lines, unlist(list(...)))
   id <- cli_div(
     class = paste("code", language),
@@ -955,15 +1056,22 @@ cli_code <- function(lines = NULL, ..., language = "R",
 
 cli_recorded <- new.env(parent = emptyenv())
 
-cli__message <- function(type, args, .auto_close = TRUE, .envir = NULL,
-                         record = getOption("cli.record")) {
-
+cli__message <- function(
+  type,
+  args,
+  .auto_close = TRUE,
+  .envir = NULL,
+  record = getOption("cli.record")
+) {
   if ("id" %in% names(args) && is.null(args$id)) args$id <- new_uuid()
 
   if (.auto_close && !is.null(.envir) && !identical(.envir, .GlobalEnv)) {
     if (type == "status") {
-      defer(cli_status_clear(id = args$id, result = args$auto_result),
-            envir = .envir, priority = "first")
+      defer(
+        cli_status_clear(id = args$id, result = args$auto_result),
+        envir = .envir,
+        priority = "first"
+      )
     } else {
       defer(cli_end(id = args$id), envir = .envir, priority = "first")
     }
@@ -981,8 +1089,12 @@ cli__message <- function(type, args, .auto_close = TRUE, .envir = NULL,
 }
 
 cli__message_create <- function(type, args) {
-  cond <- list(message = paste("cli message", type),
-               type = type, args = args, pid = clienv$pid)
+  cond <- list(
+    message = paste("cli message", type),
+    type = type,
+    args = args,
+    pid = clienv$pid
+  )
 
   class(cond) <- c(
     getOption("cli.message_class"),
@@ -995,11 +1107,12 @@ cli__message_create <- function(type, args) {
 
 cli__message_emit <- function(cond) {
   withRestarts(
-  {
-    signalCondition(cond)
-    cli__default_handler(cond)
-  },
-  cli_message_handled = function() NULL)
+    {
+      signalCondition(cond)
+      cli__default_handler(cond)
+    },
+    cli_message_handled = function() NULL
+  )
 }
 
 cli__default_handler <- function(msg) {
