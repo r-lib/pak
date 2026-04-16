@@ -110,6 +110,19 @@
     {
       "packages": ["opencv-devel"],
       "pre_install": [
+        { "command": "dnf install -y epel-release" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["10"]
+        }
+      ]
+    },
+    {
+      "packages": ["opencv-devel"],
+      "pre_install": [
         { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" },
         { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
       ],
@@ -118,6 +131,19 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["opencv-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

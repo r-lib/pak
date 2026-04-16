@@ -34,7 +34,7 @@
         {
           "os": "linux",
           "distribution": "rockylinux",
-          "versions": ["9"]
+          "versions": ["9", "10"]
         }
       ]
     },
@@ -54,6 +54,7 @@
     {
       "packages": ["grpc-plugins"],
       "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" },
         { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
       ],
       "constraints": [
@@ -61,6 +62,20 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["grpc-plugins"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" },
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

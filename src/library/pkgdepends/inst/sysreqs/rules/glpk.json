@@ -61,7 +61,8 @@
         },
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         }
       ]
     },

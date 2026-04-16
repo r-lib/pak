@@ -69,6 +69,19 @@
       ]
     },
     {
+      "packages": ["libssh2-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
+        }
+      ]
+    },
+    {
       "packages": ["libopenssl-devel", "libssh2-devel"],
       "constraints": [
         {

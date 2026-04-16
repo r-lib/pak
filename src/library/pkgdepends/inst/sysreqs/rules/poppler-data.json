@@ -1,8 +1,8 @@
 {
-  "patterns": ["\\bopenmpi\\b", "\\bmpi\\b"],
+  "patterns": ["\\bpoppler-data\\b"],
   "dependencies": [
     {
-      "packages": ["libopenmpi-dev"],
+      "packages": ["poppler-data"],
       "constraints": [
         {
           "os": "linux",
@@ -15,21 +15,19 @@
       ]
     },
     {
-      "packages": ["openmpi-devel"],
+      "packages": ["poppler-data"],
       "constraints": [
         {
           "os": "linux",
-          "distribution": "redhat",
-          "versions": [ "7", "8", "9", "10" ]
-        },
-        {
-          "os": "linux",
-          "distribution": "centos",
-          "versions": [ "7", "8" ]
+          "distribution": "centos"
         },
         {
           "os": "linux",
           "distribution": "rockylinux"
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat"
         },
         {
           "os": "linux",
@@ -38,22 +36,7 @@
       ]
     },
     {
-      "packages": ["openmpi-1.10-devel"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": [ "6" ]
-        },
-        {
-          "os": "linux",
-          "distribution": "centos",
-          "versions": [ "6" ]
-        }
-      ]
-    },
-    {
-      "packages": ["openmpi-devel"],
+      "packages": ["poppler-data"],
       "constraints": [
         {
           "os": "linux",
@@ -66,7 +49,7 @@
       ]
     },
     {
-      "packages": ["openmpi-dev"],
+      "packages": ["poppler-data"],
       "constraints": [
         {
           "os": "linux",

@@ -46,7 +46,8 @@
       "constraints": [
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         },
         {
           "os": "linux",
@@ -56,6 +57,24 @@
         {
           "os": "linux",
           "distribution": "fedora"
+        }
+      ]
+    },
+    {
+      "post_install": [
+        { "command": "R CMD javareconf" }
+      ],
+      "packages": ["java-21-openjdk-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["10"]
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

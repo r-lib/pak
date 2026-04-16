@@ -1,0 +1,96 @@
+{
+  "patterns": ["\\bAbseil\\b"],
+  "dependencies": [
+    {
+      "packages": ["libabsl-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu",
+          "versions": ["22.04", "24.04"]
+        },
+        {
+          "os": "linux",
+          "distribution": "debian"
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-devel"],
+      "pre_install": [
+        {
+          "command": "dnf install -y epel-release"
+        }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos",
+          "versions": ["8"]
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux"
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "fedora"
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["8"]
+        }
+      ]
+    },
+    {
+      "packages": ["abseil-cpp-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine",
+          "versions": ["3.22", "3.23"]
+        }
+      ]
+    }
+  ]
+}

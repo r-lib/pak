@@ -1,8 +1,8 @@
 {
-  "patterns": ["\\bprotobuf-compiler\\b"],
+  "patterns": ["\\blibuv\\b"],
   "dependencies": [
     {
-      "packages": ["protobuf-compiler", "libprotoc-dev"],
+      "packages": ["libuv1-dev"],
       "constraints": [
         {
           "os": "linux",
@@ -15,32 +15,26 @@
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
-      "pre_install": [
-        {
-          "command": "yum install -y epel-release"
-        }
-      ],
+      "packages": ["libuv-devel"],
       "constraints": [
         {
           "os": "linux",
-          "distribution": "centos",
-          "versions": ["6"]
+          "distribution": "fedora"
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["10"]
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "centos",
-          "versions": ["7"]
-        }
-      ]
-    },
-    {
-      "packages": ["protobuf-compiler"],
+      "packages": ["libuv-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled powertools" }
@@ -59,16 +53,7 @@
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "fedora"
-        }
-      ]
-    },
-    {
-      "packages": ["protobuf-compiler"],
+      "packages": ["libuv-devel"],
       "pre_install": [
         { "command": "dnf install -y dnf-plugins-core" },
         { "command": "dnf config-manager --set-enabled crb" }
@@ -77,27 +62,25 @@
         {
           "os": "linux",
           "distribution": "rockylinux",
-          "versions": ["9", "10"]
+          "versions": ["9"]
         }
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
+      "packages": ["libuv-devel"],
       "pre_install": [
-        {
-          "command": "rpm -q epel-release || yum install -y https://archives.fedoraproject.org/pub/archive/epel/6/x86_64/epel-release-6-8.noarch.rpm"
-        }
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["6"]
+          "versions": ["8"]
         }
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
+      "packages": ["libuv-devel"],
       "pre_install": [
         { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
       ],
@@ -110,20 +93,7 @@
       ]
     },
     {
-      "packages": ["protobuf-compiler"],
-      "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms" }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["10"]
-        }
-      ]
-    },
-    {
-      "packages": ["protobuf-devel"],
+      "packages": ["libuv-devel"],
       "constraints": [
         {
           "os": "linux",
@@ -136,7 +106,7 @@
       ]
     },
     {
-      "packages": ["protobuf-c-compiler"],
+      "packages": ["libuv-dev"],
       "constraints": [
         {
           "os": "linux",

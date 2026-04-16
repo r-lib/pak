@@ -34,7 +34,7 @@
         {
           "os": "linux",
           "distribution": "rockylinux",
-          "versions": ["9"]
+          "versions": ["9", "10"]
         }
       ]
     },
@@ -61,6 +61,19 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["grpc-devel", "pkgconf"],
+      "pre_install": [
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

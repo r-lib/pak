@@ -51,7 +51,7 @@
         {
           "os": "linux",
           "distribution": "rockylinux",
-          "versions": ["9"]
+          "versions": ["9", "10"]
         }
       ]
     },
@@ -105,7 +105,7 @@
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["9"]
+          "versions": ["9", "10"]
         }
       ]
     },
@@ -132,7 +132,7 @@
       "pre_install": [
         { "command": "yum install -y which" },
         {
-          "command": "[ $(which google-chrome) ] || curl -fsSL -o /tmp/google-chrome.rpm https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-125.0.6422.141-1.x86_64.rpm"
+          "command": "[ $(which google-chrome) ] || curl -fsSL -o /tmp/google-chrome.rpm https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
         },
         {
           "command": "[ $(which google-chrome) ] || yum install -y /tmp/google-chrome.rpm"
@@ -144,7 +144,7 @@
         {
           "os": "linux",
           "distribution": "centos",
-          "versions": ["7", "8"]
+          "versions": ["8"]
         }
       ]
     }
