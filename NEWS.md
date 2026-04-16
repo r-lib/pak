@@ -1,5 +1,7 @@
 # pak (development version)
 
+* pak now works again with custom HTTPS certificates (#647, @tl-hbk).
+
 # pak 0.9.3
 
 * Setting `use_bioconductor = FALSE` (i.e. the `PKG_USE_BIOCONDUCTOR`
