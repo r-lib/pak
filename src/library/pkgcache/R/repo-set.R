@@ -406,7 +406,7 @@ next_day <- function(x) {
 #'   for details.
 #' * `MRAN@...` repository specifications now resolve to PPM, but note that
 #'   PPM snapshots are only available from 2017-10-10. See more about this
-#'   at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
+#'   at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager>.
 #' * All dates (or times) can be specified in the ISO 8601 format.
 #' * If PPM does not have a snapshot available for a date, the next
 #'   available date is used.
