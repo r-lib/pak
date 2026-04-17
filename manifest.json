@@ -1511,11 +1511,11 @@
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.6",
-          "pak.version": "0.9.3",
+          "pak.version": "0.9.4",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-09T12:03:19+00:00",
-          "size": 9087326,
-          "digest": "sha256:b0094a1e1777d39456133a17d3eb9b73bef5d14bd180b620d3442aaa376831a6"
+          "buildtime": "2026-04-17T06:15:03+00:00",
+          "size": 9111791,
+          "digest": "sha256:47be8a58f45b3f5b16061d9e2d58c9ce30a8c9f1dae867d6e49d56c74c3d3fc4"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
