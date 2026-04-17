@@ -2,6 +2,8 @@
 
 ## pak 0.9.4
 
+CRAN release: 2026-04-17
+
 - pak now works again with custom HTTPS certificates
   ([\#647](https://github.com/r-lib/pak/issues/647),
   [@tl-hbk](https://github.com/tl-hbk)).
