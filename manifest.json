@@ -1628,11 +1628,11 @@
         {
           "r.platform": "amd64-portbld-freebsd14.3",
           "r.version": "4.5",
-          "pak.version": "0.9.3",
+          "pak.version": "0.9.4",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-09T12:05:16+00:00",
-          "size": 6509278,
-          "digest": "sha256:5c888976f9b99e01bfba641cb3d3c994703c4ecf35bc3429983ab15165d08ebb"
+          "buildtime": "2026-04-17T06:20:06+00:00",
+          "size": 6530912,
+          "digest": "sha256:1abcf08ee8fae13f9f525f1e5e717aadfbd3b4d454aca28f63c9d68831478e0f"
         },
         {
           "r.platform": "aarch64-apple-darwin23",
