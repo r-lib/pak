@@ -99,12 +99,12 @@ Source:
 [`DESCRIPTION`](https://github.com/r-lib/pak/blob/main/DESCRIPTION)
 
 Csárdi G, Hester J (2026). *pak: Another Approach to Package
-Installation*. R package version 0.9.3.9000, <https://pak.r-lib.org/>.
+Installation*. R package version 0.9.4.9000, <https://pak.r-lib.org/>.
 
     @Manual{,
       title = {pak: Another Approach to Package Installation},
       author = {Gábor Csárdi and Jim Hester},
       year = {2026},
-      note = {R package version 0.9.3.9000},
+      note = {R package version 0.9.4.9000},
       url = {https://pak.r-lib.org/},
     }
