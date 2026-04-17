@@ -1322,11 +1322,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.9.3",
+          "pak.version": "0.9.4",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-09T12:13:24+00:00",
-          "size": 9940041,
-          "digest": "sha256:883f401ea022bb949ed3e36739c40c3301638801e50659f06d453f5ca02146f9"
+          "buildtime": "2026-04-17T06:24:29+00:00",
+          "size": 9958346,
+          "digest": "sha256:7a9f5e9eda2692cb474724b2b6674b9cb28bb872349508c94866b67aac8374fe"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
