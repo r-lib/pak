@@ -1,6 +1,14 @@
 # Changelog
 
+## pak 0.9.4
+
+- pak now works again with custom HTTPS certificates
+  ([\#647](https://github.com/r-lib/pak/issues/647),
+  [@tl-hbk](https://github.com/tl-hbk)).
+
 ## pak 0.9.3
+
+CRAN release: 2026-04-09
 
 - Setting `use_bioconductor = FALSE` (i.e. the `PKG_USE_BIOCONDUCTOR`
   env var, or the `pkg.use_bioconductor` option) now truly prevents any
@@ -215,7 +223,7 @@ CRAN release: 2023-08-29
   [`repo_resolve()`](https://pak.r-lib.org/reference/repo_add.md) the
   `MRAN@` prefix is now deprecated and resolves to PPM, because MRAN
   will be retired soon. See more at
-  <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
+  <https://posit.co/blog/migrating-from-mran-to-posit-package-manager>.
 
 - The metadata cache now has `SystemRequirements` information for
   Bioconductor packages.
