@@ -570,7 +570,7 @@ re_ppm_linux <- function() {
   paste0(
     "^",
     "(?<base>.*/)",
-    "(?<repo>cran|all)/",
+    "(?<repo>[^/]+)/",
     "__linux__/",
     "(?<distro>[a-zA-Z0-9]+)/",
     "(?<version>latest|[-0-9]+)",
