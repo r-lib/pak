@@ -1350,7 +1350,7 @@ pkgplan_install_plan <- function(self, private, downloads) {
     !sol$type %in% c("cran", "bioc", "standard") &
     private$config$get("build-vignettes")
 
-  sol$library <- private$config$get("library")
+  sol$library <- private$config$get("library")[[1L]]
   sol$binary <- binary
   sol$direct <- direct
   if (has_deps) {
