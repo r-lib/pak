@@ -466,11 +466,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.6",
-          "pak.version": "0.9.2.9000",
+          "pak.version": "0.9.4.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-03-26T06:50:33+00:00",
-          "size": 9981447,
-          "digest": "sha256:3779bc90cdf14dc197ff47144197c06300ebbcd759b46ba5404bf07ca54c54b7"
+          "buildtime": "2026-04-25T07:03:25+00:00",
+          "size": 10001531,
+          "digest": "sha256:28b5a09fe9c94af5f68b69c03d7cf907c995da67cf1a1c0b44f923f6e8dfa4f1"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.2",
