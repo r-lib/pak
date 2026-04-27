@@ -48,8 +48,8 @@ local_dev_deps_explain(deps, root = ".", upgrade = TRUE, dependencies = TRUE)
 
 Other local package trees:
 [`local_deps()`](https://pak.r-lib.org/dev/reference/local_deps.md),
+[`local_install()`](https://pak.r-lib.org/dev/reference/local_install.md),
 [`local_install_deps()`](https://pak.r-lib.org/dev/reference/local_install_deps.md),
 [`local_install_dev_deps()`](https://pak.r-lib.org/dev/reference/local_install_dev_deps.md),
-[`local_install()`](https://pak.r-lib.org/dev/reference/local_install.md),
 [`local_package_trees`](https://pak.r-lib.org/dev/reference/local_package_trees.md),
 [`pak()`](https://pak.r-lib.org/dev/reference/pak.md)

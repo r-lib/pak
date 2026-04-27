@@ -43,11 +43,11 @@ lockfile_create(
 
 - lib:
 
-  Package library to install the packages to. Note that *all* dependent
-  packages will be installed here, even if they are already installed in
-  another library. The only exceptions are base and recommended packages
-  installed in `.Library`. These are not duplicated in `lib`, unless a
-  newer version of a recommended package is needed.
+  Character vector of library paths, or `NULL`. Used when resolving
+  package dependencies: packages already installed in any of these paths
+  are considered satisfied. If `NULL` (the default), an empty temporary
+  library is used, so all dependencies are resolved from scratch
+  regardless of what is currently installed.
 
 - upgrade:
 
@@ -55,7 +55,7 @@ lockfile_create(
   you the latest version(s) of `pkg`. It will only upgrade dependent
   packages if `pkg`, or one of their dependencies explicitly require a
   higher version than what you currently have. It will also prefer a
-  binary package over to source package, even it the binary package is
+  binary package over to source package, even if the binary package is
   older.
 
   When `upgrade = TRUE`, pak will ensure that you have the latest

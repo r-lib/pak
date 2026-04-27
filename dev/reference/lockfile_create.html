@@ -75,12 +75,11 @@ in general,</p></li>
 
 
 <dt id="arg-lib">lib<a class="anchor" aria-label="anchor" href="#arg-lib"></a></dt>
-<dd><p>Package library to install the packages to. Note that <em>all</em>
-dependent packages will be installed here, even if they are
-already installed in another library. The only exceptions are base
-and recommended packages installed in <code>.Library</code>. These are not
-duplicated in <code>lib</code>, unless a newer version of a recommended package
-is needed.</p></dd>
+<dd><p>Character vector of library paths, or <code>NULL</code>. Used when
+resolving package dependencies: packages already installed in any of
+these paths are considered satisfied. If <code>NULL</code> (the default), an
+empty temporary library is used, so all dependencies are resolved
+from scratch regardless of what is currently installed.</p></dd>
 
 
 <dt id="arg-upgrade">upgrade<a class="anchor" aria-label="anchor" href="#arg-upgrade"></a></dt>
@@ -88,7 +87,7 @@ is needed.</p></dd>
 of work to give you the latest version(s) of <code>pkg</code>. It will only upgrade
 dependent packages if <code>pkg</code>, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
+prefer a binary package over to source package, even if the binary
 package is older.</p>
 <p>When <code>upgrade = TRUE</code>, pak will ensure that you have the latest
 version(s) of <code>pkg</code> and all their dependencies.</p></dd>

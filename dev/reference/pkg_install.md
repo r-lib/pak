@@ -38,11 +38,20 @@ pkg_install(
 
 - lib:
 
-  Package library to install the packages to. Note that *all* dependent
-  packages will be installed here, even if they are already installed in
-  another library. The only exceptions are base and recommended packages
-  installed in `.Library`. These are not duplicated in `lib`, unless a
-  newer version of a recommended package is needed.
+  Character vector of library paths to consider when creating the
+  installation plan.
+
+  - The first library path is the target where packages will be
+    installed.
+
+  - Additional library paths, if provided, are visible to the solver as
+    candidates for satisfying dependency requirements. If a needed
+    package is found here at an acceptable version, it won't be
+    re-installed in `lib[1]`.
+
+  - Base and recommended packages in `.Library` are always considered,
+    i.e. a recommended package is only duplicated in `lib[1]` if a newer
+    version is required.
 
 - upgrade:
 
@@ -50,7 +59,7 @@ pkg_install(
   you the latest version(s) of `pkg`. It will only upgrade dependent
   packages if `pkg`, or one of their dependencies explicitly require a
   higher version than what you currently have. It will also prefer a
-  binary package over to source package, even it the binary package is
+  binary package over to source package, even if the binary package is
   older.
 
   When `upgrade = TRUE`, pak will ensure that you have the latest
@@ -222,8 +231,8 @@ solver](https://pak.r-lib.org/dev/reference/pak_solver.md).
 Other package functions:
 [`lib_status()`](https://pak.r-lib.org/dev/reference/lib_status.md),
 [`pak()`](https://pak.r-lib.org/dev/reference/pak.md),
-[`pkg_deps_tree()`](https://pak.r-lib.org/dev/reference/pkg_deps_tree.md),
 [`pkg_deps()`](https://pak.r-lib.org/dev/reference/pkg_deps.md),
+[`pkg_deps_tree()`](https://pak.r-lib.org/dev/reference/pkg_deps_tree.md),
 [`pkg_download()`](https://pak.r-lib.org/dev/reference/pkg_download.md),
 [`pkg_remove()`](https://pak.r-lib.org/dev/reference/pkg_remove.md),
 [`pkg_status()`](https://pak.r-lib.org/dev/reference/pkg_status.md),

@@ -23,9 +23,9 @@ if the package itself is loaded via some other means, e.g.
 ## See also
 
 Other local package trees:
-[`local_deps_explain()`](https://pak.r-lib.org/dev/reference/local_deps_explain.md),
 [`local_deps()`](https://pak.r-lib.org/dev/reference/local_deps.md),
+[`local_deps_explain()`](https://pak.r-lib.org/dev/reference/local_deps_explain.md),
+[`local_install()`](https://pak.r-lib.org/dev/reference/local_install.md),
 [`local_install_deps()`](https://pak.r-lib.org/dev/reference/local_install_deps.md),
 [`local_install_dev_deps()`](https://pak.r-lib.org/dev/reference/local_install_dev_deps.md),
-[`local_install()`](https://pak.r-lib.org/dev/reference/local_install.md),
 [`pak()`](https://pak.r-lib.org/dev/reference/pak.md)
