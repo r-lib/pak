@@ -1286,11 +1286,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.0",
-          "pak.version": "0.9.4",
+          "pak.version": "0.9.5",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-17T07:23:37+00:00",
-          "size": 10093805,
-          "digest": "sha256:6b91af5efe74bf8d03a125351aa65241cfd11799b7e61be480476a610b8bec67"
+          "buildtime": "2026-04-27T11:17:22+00:00",
+          "size": 10093726,
+          "digest": "sha256:da26ba18c3c53167e41d3d1bec9560ae6af0cde3f6f79ca8166c201b90d5b4d8"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
