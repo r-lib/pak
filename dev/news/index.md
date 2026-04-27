@@ -2,6 +2,18 @@
 
 ## pak (development version)
 
+## pak 0.9.5
+
+CRAN release: 2026-04-27
+
+- Vector valued library path now works correctly in
+  [`lockfile_create()`](https://pak.r-lib.org/dev/reference/lockfile_create.md)
+  ([\#864](https://github.com/r-lib/pak/issues/864),
+  [\#868](https://github.com/r-lib/pak/issues/868)).
+
+- pak now handles better PPM binaries on private PPM instances
+  ([\#863](https://github.com/r-lib/pak/issues/863)).
+
 ## pak 0.9.4
 
 CRAN release: 2026-04-17
