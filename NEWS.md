@@ -1,4 +1,4 @@
-# pak (development version)
+# pak 0.9.5
 
 * Vector valued library path now works correctly in `lockfile_create()`
   (#864, #868).
