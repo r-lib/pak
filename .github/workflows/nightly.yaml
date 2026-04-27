@@ -120,6 +120,7 @@ jobs:
         sudo rig add 4.2 --arch x86_64
         sudo rig add 4.3 --arch x86_64
         sudo rig add 4.4 --arch x86_64
+        sudo rig add 4.5 --arch x86_64
         sudo rig add release --arch x86_64
         sudo rig add devel --arch x86_64
         rig default release
