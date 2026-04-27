@@ -33,8 +33,8 @@ packages, just one.
 \seealso{
 Other package functions: 
 \code{\link{lib_status}()},
-\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},
@@ -42,11 +42,11 @@ Other package functions:
 \code{\link{pkg_sysreqs}()}
 
 Other local package trees: 
-\code{\link{local_deps_explain}()},
 \code{\link{local_deps}()},
+\code{\link{local_deps_explain}()},
+\code{\link{local_install}()},
 \code{\link{local_install_deps}()},
 \code{\link{local_install_dev_deps}()},
-\code{\link{local_install}()},
 \code{\link{local_package_trees}}
 }
 \concept{local package trees}

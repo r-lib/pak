@@ -15,18 +15,24 @@ local_install_dev_deps(
 \arguments{
 \item{root}{Path to the package tree.}
 
-\item{lib}{Package library to install the packages to. Note that \emph{all}
-dependent packages will be installed here, even if they are
-already installed in another library. The only exceptions are base
-and recommended packages installed in \code{.Library}. These are not
-duplicated in \code{lib}, unless a newer version of a recommended package
-is needed.}
+\item{lib}{Character vector of library paths to consider when creating the
+installation plan.
+\itemize{
+\item The first library path is the target where packages will be installed.
+\item Additional library paths, if provided, are visible to the solver as
+candidates for satisfying dependency requirements. If a needed package is
+found here at an acceptable version, it won't be re-installed in
+\code{lib[1]}.
+\item Base and recommended packages in \code{.Library} are always considered, i.e.
+a recommended package is only duplicated in \code{lib[1]} if a newer version
+is required.
+}}
 
 \item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
 of work to give you the latest version(s) of \code{pkg}. It will only upgrade
 dependent packages if \code{pkg}, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
+prefer a binary package over to source package, even if the binary
 package is older.
 
 When \code{upgrade = TRUE}, pak will ensure that you have the latest
@@ -56,10 +62,10 @@ dependencies as well, specified in the \code{Suggests} field of
 }
 \seealso{
 Other local package trees: 
-\code{\link{local_deps_explain}()},
 \code{\link{local_deps}()},
-\code{\link{local_install_deps}()},
+\code{\link{local_deps_explain}()},
 \code{\link{local_install}()},
+\code{\link{local_install_deps}()},
 \code{\link{local_package_trees}},
 \code{\link{pak}()}
 }
