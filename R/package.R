@@ -12,12 +12,16 @@
 #'   - `.`: package in the current working directory.
 #'
 #'   See "[Package sources]" for more details.
-#' @param lib Package library to install the packages to. Note that _all_
-#'   dependent packages will be installed here, even if they are
-#'   already installed in another library. The only exceptions are base
-#'   and recommended packages installed in `.Library`. These are not
-#'   duplicated in `lib`, unless a newer version of a recommended package
-#'   is needed.
+#' @param lib Character vector of library paths to consider when creating the
+#'   installation plan.
+#'   - The first library path is the target where packages will be installed.
+#'   - Additional library paths, if provided, are visible to the solver as
+#'     candidates for satisfying dependency requirements. If a needed package is
+#'     found here at an acceptable version, it won't be re-installed in
+#'     `lib[1]`.
+#'   - Base and recommended packages in `.Library` are always considered, i.e.
+#'     a recommended package is only duplicated in `lib[1]` if a newer version
+#'     is required.
 #' @param upgrade When `FALSE`, the default, pak does the minimum amount
 #'   of work to give you the latest version(s) of `pkg`. It will only upgrade
 #'   dependent packages if `pkg`, or one of their dependencies explicitly

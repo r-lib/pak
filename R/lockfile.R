@@ -15,6 +15,11 @@
 #' for caching systems.
 #'
 #' @param lockfile Path to the lock file.
+#' @param lib Character vector of library paths, or `NULL`. Used when
+#'   resolving package dependencies: packages already installed in any of
+#'   these paths are considered satisfied. If `NULL` (the default), an
+#'   empty temporary library is used, so all dependencies are resolved
+#'   from scratch regardless of what is currently installed.
 #' @inheritParams pkg_install
 #'
 #' @family lock files
