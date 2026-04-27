@@ -1664,11 +1664,11 @@
         {
           "r.platform": "x86_64-unknown-openbsd7.8",
           "r.version": "4.5",
-          "pak.version": "0.9.4",
+          "pak.version": "0.9.5",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-17T07:16:38+00:00",
-          "size": 6562745,
-          "digest": "sha256:737def0111b4a1b7f14420605ec12e5dc96981683f8b4b06ec9fd6fbfb43f816"
+          "buildtime": "2026-04-27T11:18:42+00:00",
+          "size": 6563609,
+          "digest": "sha256:b8e3e851f496f9ff9f0e7ab8dc663bc7c5271de5112e79598b7564a37edfdcbe"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
