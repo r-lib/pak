@@ -1331,11 +1331,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
-          "pak.version": "0.9.4",
+          "pak.version": "0.9.5",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-17T07:26:21+00:00",
-          "size": 9960577,
-          "digest": "sha256:0773ad86ab7e1e45921f030a114482c6b4d7614750bbb6f93d7db0998b650f72"
+          "buildtime": "2026-04-27T11:24:04+00:00",
+          "size": 9960639,
+          "digest": "sha256:cc6bd63dc9fff1f8e03b401bf3cab9f22f1230c4820a1335673e67fa68519af0"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
