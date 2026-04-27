@@ -9,7 +9,7 @@ without installing the package tree itself."><script src="https://cdn.jsdelivr.n
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ without installing the package tree itself."><script src="https://cdn.jsdelivr.n
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Install the dependencies of a package tree</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.9.4/R/local.R" class="external-link"><code>R/local.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/local.R" class="external-link"><code>R/local.R</code></a></small>
       <div class="d-none name"><code>local_install_deps.Rd</code></div>
     </div>
 
@@ -62,12 +62,16 @@ without installing the package tree itself.</p>
 
 
 <dt id="arg-lib">lib<a class="anchor" aria-label="anchor" href="#arg-lib"></a></dt>
-<dd><p>Package library to install the packages to. Note that <em>all</em>
-dependent packages will be installed here, even if they are
-already installed in another library. The only exceptions are base
-and recommended packages installed in <code>.Library</code>. These are not
-duplicated in <code>lib</code>, unless a newer version of a recommended package
-is needed.</p></dd>
+<dd><p>Character vector of library paths to consider when creating the
+installation plan.</p><ul><li><p>The first library path is the target where packages will be installed.</p></li>
+<li><p>Additional library paths, if provided, are visible to the solver as
+candidates for satisfying dependency requirements. If a needed package is
+found here at an acceptable version, it won't be re-installed in
+<code>lib[1]</code>.</p></li>
+<li><p>Base and recommended packages in <code>.Library</code> are always considered, i.e.
+a recommended package is only duplicated in <code>lib[1]</code> if a newer version
+is required.</p></li>
+</ul></dd>
 
 
 <dt id="arg-upgrade">upgrade<a class="anchor" aria-label="anchor" href="#arg-upgrade"></a></dt>
@@ -75,7 +79,7 @@ is needed.</p></dd>
 of work to give you the latest version(s) of <code>pkg</code>. It will only upgrade
 dependent packages if <code>pkg</code>, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
+prefer a binary package over to source package, even if the binary
 package is older.</p>
 <p>When <code>upgrade = TRUE</code>, pak will ensure that you have the latest
 version(s) of <code>pkg</code> and all their dependencies.</p></dd>
@@ -112,10 +116,10 @@ use <code><a href="local_install_dev_deps.html">local_install_dev_deps()</a></co
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other local package trees:
-<code><a href="local_deps_explain.html">local_deps_explain()</a></code>,
 <code><a href="local_deps.html">local_deps()</a></code>,
-<code><a href="local_install_dev_deps.html">local_install_dev_deps()</a></code>,
+<code><a href="local_deps_explain.html">local_deps_explain()</a></code>,
 <code><a href="local_install.html">local_install()</a></code>,
+<code><a href="local_install_dev_deps.html">local_install_dev_deps()</a></code>,
 <code><a href="local_package_trees.html">local_package_trees</a></code>,
 <code><a href="pak.html">pak()</a></code></p></div>
     </div>

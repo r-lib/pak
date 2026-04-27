@@ -43,8 +43,8 @@ This is a convenience function:
 
 Other package functions:
 [`lib_status()`](https://pak.r-lib.org/reference/lib_status.md),
-[`pkg_deps_tree()`](https://pak.r-lib.org/reference/pkg_deps_tree.md),
 [`pkg_deps()`](https://pak.r-lib.org/reference/pkg_deps.md),
+[`pkg_deps_tree()`](https://pak.r-lib.org/reference/pkg_deps_tree.md),
 [`pkg_download()`](https://pak.r-lib.org/reference/pkg_download.md),
 [`pkg_install()`](https://pak.r-lib.org/reference/pkg_install.md),
 [`pkg_remove()`](https://pak.r-lib.org/reference/pkg_remove.md),
@@ -52,9 +52,9 @@ Other package functions:
 [`pkg_sysreqs()`](https://pak.r-lib.org/reference/pkg_sysreqs.md)
 
 Other local package trees:
-[`local_deps_explain()`](https://pak.r-lib.org/reference/local_deps_explain.md),
 [`local_deps()`](https://pak.r-lib.org/reference/local_deps.md),
+[`local_deps_explain()`](https://pak.r-lib.org/reference/local_deps_explain.md),
+[`local_install()`](https://pak.r-lib.org/reference/local_install.md),
 [`local_install_deps()`](https://pak.r-lib.org/reference/local_install_deps.md),
 [`local_install_dev_deps()`](https://pak.r-lib.org/reference/local_install_dev_deps.md),
-[`local_install()`](https://pak.r-lib.org/reference/local_install.md),
 [`local_package_trees`](https://pak.r-lib.org/reference/local_package_trees.md)

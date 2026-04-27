@@ -21,7 +21,7 @@ lockfile_install(lockfile = "pkg.lock", lib = .libPaths()[1], update = TRUE)
 
 - update:
 
-  Whether to online install the packages that either not installed in
+  Whether to only install the packages that either not installed in
   `lib`, or a different version is installed for them.
 
 ## See also

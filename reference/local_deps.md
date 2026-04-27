@@ -51,8 +51,8 @@ dependency tree.
 
 Other local package trees:
 [`local_deps_explain()`](https://pak.r-lib.org/reference/local_deps_explain.md),
+[`local_install()`](https://pak.r-lib.org/reference/local_install.md),
 [`local_install_deps()`](https://pak.r-lib.org/reference/local_install_deps.md),
 [`local_install_dev_deps()`](https://pak.r-lib.org/reference/local_install_dev_deps.md),
-[`local_install()`](https://pak.r-lib.org/reference/local_install.md),
 [`local_package_trees`](https://pak.r-lib.org/reference/local_package_trees.md),
 [`pak()`](https://pak.r-lib.org/reference/pak.md)

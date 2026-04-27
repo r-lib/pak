@@ -215,8 +215,8 @@ currently:
 Other package functions:
 [`lib_status()`](https://pak.r-lib.org/reference/lib_status.md),
 [`pak()`](https://pak.r-lib.org/reference/pak.md),
-[`pkg_deps_tree()`](https://pak.r-lib.org/reference/pkg_deps_tree.md),
 [`pkg_deps()`](https://pak.r-lib.org/reference/pkg_deps.md),
+[`pkg_deps_tree()`](https://pak.r-lib.org/reference/pkg_deps_tree.md),
 [`pkg_install()`](https://pak.r-lib.org/reference/pkg_install.md),
 [`pkg_remove()`](https://pak.r-lib.org/reference/pkg_remove.md),
 [`pkg_status()`](https://pak.r-lib.org/reference/pkg_status.md),

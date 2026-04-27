@@ -23,11 +23,20 @@ local_install_deps(
 
 - lib:
 
-  Package library to install the packages to. Note that *all* dependent
-  packages will be installed here, even if they are already installed in
-  another library. The only exceptions are base and recommended packages
-  installed in `.Library`. These are not duplicated in `lib`, unless a
-  newer version of a recommended package is needed.
+  Character vector of library paths to consider when creating the
+  installation plan.
+
+  - The first library path is the target where packages will be
+    installed.
+
+  - Additional library paths, if provided, are visible to the solver as
+    candidates for satisfying dependency requirements. If a needed
+    package is found here at an acceptable version, it won't be
+    re-installed in `lib[1]`.
+
+  - Base and recommended packages in `.Library` are always considered,
+    i.e. a recommended package is only duplicated in `lib[1]` if a newer
+    version is required.
 
 - upgrade:
 
@@ -35,7 +44,7 @@ local_install_deps(
   you the latest version(s) of `pkg`. It will only upgrade dependent
   packages if `pkg`, or one of their dependencies explicitly require a
   higher version than what you currently have. It will also prefer a
-  binary package over to source package, even it the binary package is
+  binary package over to source package, even if the binary package is
   older.
 
   When `upgrade = TRUE`, pak will ensure that you have the latest
@@ -78,9 +87,9 @@ use
 ## See also
 
 Other local package trees:
-[`local_deps_explain()`](https://pak.r-lib.org/reference/local_deps_explain.md),
 [`local_deps()`](https://pak.r-lib.org/reference/local_deps.md),
-[`local_install_dev_deps()`](https://pak.r-lib.org/reference/local_install_dev_deps.md),
+[`local_deps_explain()`](https://pak.r-lib.org/reference/local_deps_explain.md),
 [`local_install()`](https://pak.r-lib.org/reference/local_install.md),
+[`local_install_dev_deps()`](https://pak.r-lib.org/reference/local_install_dev_deps.md),
 [`local_package_trees`](https://pak.r-lib.org/reference/local_package_trees.md),
 [`pak()`](https://pak.r-lib.org/reference/pak.md)
