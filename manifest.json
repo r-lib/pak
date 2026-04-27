@@ -1678,6 +1678,15 @@
           "buildtime": "2026-04-17T07:19:17+00:00",
           "size": 9998773,
           "digest": "sha256:6910c12af52430fa4077ba10a1cbf20bb4e81d98b8f680b6e6b77ca9de9244c2"
+        },
+        {
+          "r.platform": "x86_64--netbsd",
+          "r.version": "4.5",
+          "pak.version": "0.9.5",
+          "pak.revision": "TODO",
+          "buildtime": "2026-04-27T11:24:08+00:00",
+          "size": 6448205,
+          "digest": "sha256:0f024b5964780370771d61c0dfd6249c0559853f1d7a60df2768992a037ac4e2"
         }
       ]
     }
