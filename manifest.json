@@ -457,11 +457,11 @@
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
           "r.version": "4.4",
-          "pak.version": "0.9.4.9000",
+          "pak.version": "0.9.5.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T08:00:32+00:00",
-          "size": 6497097,
-          "digest": "sha256:43e1b27de2b148cc81c0774c6e38d094ae3cc6f2f15dbf2b68931edd228a11dc"
+          "buildtime": "2026-04-28T07:59:12+00:00",
+          "size": 6497115,
+          "digest": "sha256:1a7f8b281371d07cbf76bcb69a1afcb0a7ea134e83a536cacc2ffc91af7a2534"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
