@@ -583,11 +583,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.7",
-          "pak.version": "0.9.4.9000",
+          "pak.version": "0.9.5.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T08:07:45+00:00",
-          "size": 10000682,
-          "digest": "sha256:98f9a5841f108f4187c2188f210f9a1a660a78f260440598865b5f19e8da7f55"
+          "buildtime": "2026-04-28T07:59:27+00:00",
+          "size": 10000431,
+          "digest": "sha256:c5e4f1ba11388272afc24fab8087084367ef40bb1c4745bc4003a28466569704"
         },
         {
           "r.platform": "x86_64--netbsd",
