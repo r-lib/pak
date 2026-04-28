@@ -511,11 +511,11 @@
         {
           "r.platform": "amd64-portbld-freebsd13.5",
           "r.version": "4.5",
-          "pak.version": "0.9.4.9000",
+          "pak.version": "0.9.5.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T07:58:28+00:00",
-          "size": 6544138,
-          "digest": "sha256:6f3af589706eb7e33b393d2e34d1a6718656b9d2ea842d16f4733dcbf2acd611"
+          "buildtime": "2026-04-28T07:58:38+00:00",
+          "size": 6544147,
+          "digest": "sha256:91d097bdd67270e655709a4f47369eb9aef9f260d5cd57d6db9b576c234974f6"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
