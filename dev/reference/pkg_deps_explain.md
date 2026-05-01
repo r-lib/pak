@@ -74,6 +74,7 @@ How does dplyr depend on rlang?
 
     pkg_deps_explain("dplyr", "rlang")
 
+
     #> v Updated metadata database: 5.09 MB in 12 files.
     #> v Updating metadata database ... done
     #> dplyr -> lifecycle -> rlang
@@ -100,6 +101,7 @@ How does dplyr depend on rlang?
 How does the GH version of usethis depend on cli and ps?
 
     pkg_deps_explain("r-lib/usethis", c("cli", "ps"))
+
 
     #> usethis -> cli
     #> usethis -> desc -> cli

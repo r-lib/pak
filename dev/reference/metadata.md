@@ -96,6 +96,7 @@ The current metadata DB:
 
     meta_list()
 
+
     #> v Loading metadata database ... done
     #> # A data frame: 45,279 × 32
     #>    package version depends sugge…¹ license imports linki…² archs enhan…³
@@ -122,6 +123,7 @@ Selected packages only:
 
     meta_list(pkg = c("shiny", "htmlwidgets"))
 
+
     #>   package  version depends sugge…¹ license imports linki…² archs enhan…³
     #> * <chr>    <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <chr> <chr>
     #> 1 htmlwid… 1.5.4   NA      "knitr… MIT + … "grDev… NA      NA    shiny …
@@ -141,12 +143,14 @@ Update the metadata DB
 
     meta_update()
 
+
     #> v Updated metadata database: 1.23 MB in 1 file.
     #> v Updating metadata database ... done
 
 Delete the metadata DB
 
     meta_clean()
+
 
     #> i Cleaning up cache directory /Users/gaborcsardi/Library/Caches/org.R-pr
     #> oject.R/R/pkgcache/_metadata.                                           

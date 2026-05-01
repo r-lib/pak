@@ -97,6 +97,7 @@ package(s).
 
     pkg_install("dplyr")
 
+
     #>
     #> → Will install 5 packages.
     #> → All 5 packages (2.14 MB) are cached.
@@ -118,6 +119,7 @@ Upgrade dplyr and all its dependencies:
 
     pkg_install("dplyr", upgrade = TRUE)
 
+
     #>
     #> → Will update 1 package.
     #> → The package (742.51 kB) is cached.
@@ -131,6 +133,7 @@ Upgrade dplyr and all its dependencies:
 Install the development version of dplyr:
 
     pkg_install("tidyverse/dplyr")
+
 
     #> v Loading metadata database ... done
     #>
@@ -179,6 +182,7 @@ Switch back to the CRAN version. This will be fast because pak will have
 cached the prior install.
 
     pkg_install("dplyr")
+
 
     #> v Updated metadata database: 2.43 MB in 6 files.
     #> v Updating metadata database ... done

@@ -30,6 +30,7 @@ to list all platforms that support system requirements:
 
     pak::sysreqs_platforms()
 
+
     ## # A data frame: 10 × 7
     ##    name        os    distribution version update_command install_command
     ##    <chr>       <chr> <chr>        <chr>   <chr>          <chr>
@@ -51,6 +52,7 @@ to see if your system is supported:
 
     pak::sysreqs_is_supported()
 
+
     ## [1] TRUE
 
 This vignette was built on Ubuntu 22.04.2 LTS, which is a platform pak
@@ -63,6 +65,7 @@ will look up system requirements, and install the missing ones. Here is
 an example:
 
     pak::pkg_install("RPostgres")
+
 
     ## v Loading metadata database ... done
     ##
@@ -129,6 +132,7 @@ not have the required system package installed for RPostgres. If you are
 installing a source R package, the installation already fails:
 
     pak::pkg_install("RPostgres?source")
+
 
     ## + plogr       0.2.0
     ## x Missing 1 system package. You'll probably need to install it
@@ -206,6 +210,7 @@ then loading the package fails:
     pak::pkg_install("RPostgres")
     library(RPostgres)
 
+
     ## → Will install 17 packages.
     ## → All 17 packages (0 B) are cached.
     ## + DBI          1.1.3
@@ -266,6 +271,7 @@ dependencies, and only reports the latter:
 
     pak::pkg_sysreqs(c("curl", "xml2", "devtools", "CHRONOS"))
 
+
     ## v Loading metadata database ... done
     ## ── Install scripts ───────────────────────────────────── Ubuntu 22.04 ──
     ## apt-get -y update
@@ -314,6 +320,7 @@ function lists all system requirements pak knows about.
 
     pak::sysreqs_db_list()
 
+
     ## # A data frame: 106 × 5
     ##    name       patterns  packages  pre_install post_install
     ##    <chr>      <list>    <list>    <list>      <list>
@@ -336,6 +343,7 @@ requirements:
     sq <- pak::sysreqs_db_match("Needs libcurl and also Java.")
     sq
 
+
     ## [[1]]
     ## # A data frame: 2 × 5
     ##   spec                         sysreq  packages pre_install post_install
@@ -345,6 +353,7 @@ requirements:
     ##
 
     sq[[1]]$packages
+
 
     ## [[1]]
     ## [1] "default-jdk"
@@ -358,6 +367,7 @@ You can also use it to query system requirements for other platforms:
     sqrhel9 <- pak::sysreqs_db_match("Needs libcurl and also Java.", "redhat-9")
     sqrhel9
 
+
     ## [[1]]
     ## # A data frame: 2 × 5
     ##   spec                         sysreq  packages pre_install post_install
@@ -367,6 +377,7 @@ You can also use it to query system requirements for other platforms:
     ##
 
     sqrhel9[[1]]$packages
+
 
     ## [[1]]
     ## [1] "java-11-openjdk-devel"
@@ -380,6 +391,7 @@ is a cross-platform way of listing all installed system packages and
 capabilities:
 
     pak::sysreqs_list_system_packages()
+
 
     ## # A data frame: 433 × 4
     ##    status package         version         provides
@@ -401,6 +413,7 @@ is a handy function that checks if all system requirements are installed
 for some or all R packages that are installed in your library:
 
     pak::sysreqs_check_installed()
+
 
     ## system package       installed required by
     ## --------------       --        -----------

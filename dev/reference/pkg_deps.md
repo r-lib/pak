@@ -148,6 +148,7 @@ currently:
 
     pkg_deps("dplyr")
 
+
     #> # A data frame: 16 × 32
     #>    ref       type  direct direc…¹ status package version license needs…²
     #>    <chr>     <chr> <lgl>  <lgl>   <chr>  <chr>   <chr>   <chr>   <lgl>
@@ -178,6 +179,7 @@ currently:
 For a package on GitHub:
 
     pkg_deps("r-lib/callr")
+
 
     #> # A data frame: 4 × 32
     #>   ref        type  direct direc…¹ status package version license needs…²

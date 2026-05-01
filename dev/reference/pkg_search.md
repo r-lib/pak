@@ -42,6 +42,7 @@ Simple search
 
     pkg_search("survival")
 
+
     #>
     #> 1 survival 3.4.0 -- by Terry M Therneau, 4 months ago
     #>   Survival Analysis
@@ -79,6 +80,7 @@ See the underlying data frame
 
     psro <- pkg_search("ropensci")
     psro[]
+
 
     #> # A data frame: 10 × 15
     #>    score package    version    title descr…¹ date                maint…²

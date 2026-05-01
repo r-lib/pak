@@ -97,6 +97,7 @@ adds a couple.
 
     lib_status(.Library)
 
+
     #> # A data frame: 31 × 31
     #>    library   package version prior…¹ title license sugge…² built depends
     #>    <chr>     <chr>   <chr>   <chr>   <chr> <chr>   <chr>   <chr> <chr>

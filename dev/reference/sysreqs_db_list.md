@@ -51,7 +51,7 @@ Other system requirements functions:
 
 ``` r
 sysreqs_db_list(sysreqs_platform = "ubuntu-22.04")
-#> # A data frame: 131 × 5
+#> # A data frame: 135 × 5
 #>    name       patterns  packages  pre_install post_install
 #>    <chr>      <list>    <list>    <list>      <list>      
 #>  1 Abseil     <chr [1]> <chr [1]> <NULL>      <NULL>      
@@ -64,5 +64,5 @@ sysreqs_db_list(sysreqs_platform = "ubuntu-22.04")
 #>  8 boost      <chr [1]> <chr [1]> <NULL>      <NULL>      
 #>  9 bowtie2    <chr [1]> <chr [1]> <NULL>      <NULL>      
 #> 10 bwidget    <chr [1]> <chr [1]> <NULL>      <NULL>      
-#> # ℹ 121 more rows
+#> # ℹ 125 more rows
 ```

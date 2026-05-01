@@ -23,6 +23,7 @@ entries of the `DESCRIPTION` files in the released package versions.
 
     pkg_history("ggplot2")
 
+
     #> # A data frame: 44 × 30
     #>    Package Type    Title    Version Date  Author Maint…¹ Descr…² License
     #>  * <chr>   <chr>   <chr>    <chr>   <chr> <chr>  <chr>   <chr>   <chr>

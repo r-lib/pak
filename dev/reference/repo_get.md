@@ -64,6 +64,7 @@ repo_get(r_version = getRversion(), bioc = NULL, cran_mirror = NULL)
 
     repo_get()
 
+
     #> # A data frame: 6 × 5
     #>   name          url                         type  r_version bioc_version
     #> * <chr>         <chr>                       <chr> <chr>     <chr>

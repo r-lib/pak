@@ -18,6 +18,7 @@ repositories that corresponds to the current R version.
 
     pak::pkg_install("tidyverse/tibble")
 
+
     #>
     #> → Will update 2 packages.
     #> → All 2 packages (0 B) are cached.
@@ -45,6 +46,7 @@ Use the `user/repo` form. You can specify a branch or tag:
       "url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz"
     )
 
+
     #>
     #> → Will install 1 package.
     #> → Will update 1 package.
@@ -67,6 +69,7 @@ The URL may point to an R package file, made with `R CMD build`, or a
 
     pak::pkg_install("tibble")
 
+
     #>
     #> → Will update 1 package.
     #> → The package (724.32 kB) is cached.
@@ -82,6 +85,7 @@ automatically updates the package.
 
     pak::pkg_install("tibble", upgrade = TRUE)
 
+
     #>
     #> i No downloads are needed
     #> v 1 pkg + 10 deps: kept 11 [278ms]
@@ -94,6 +98,7 @@ if necessary.
 Add `?reinstall` to the package name or package reference in general:
 
     pak::pkg_install("tibble?reinstall")
+
 
     #>
     #> → Will install 1 package.
@@ -108,6 +113,7 @@ Add `?reinstall` to the package name or package reference in general:
 ### Dependencies of a CRAN or Bioconductor package
 
     pak::pkg_deps("tibble")
+
 
     #> # A data frame: 11 × 32
     #>    ref       type  direct direc…¹ status package version license needs…²
@@ -136,6 +142,7 @@ The results are returned in a data frame.
 ### Dependency tree of a CRAN / Bioconductor package
 
     pak::pkg_deps_tree("tibble")
+
 
     #> tibble 3.1.8 ✨
     #> ├─fansi 1.0.3 ✨
@@ -167,6 +174,7 @@ The results are also silently returned in a data frame.
 ### Dependency tree of a package on GitHub
 
     pak::pkg_deps_tree("tidyverse/tibble")
+
 
     #> tidyverse/tibble 3.1.8.9002 ✨👷🏼🔧 
     #> ├─fansi 1.0.3 ✨
@@ -201,6 +209,7 @@ forms.
 
     pak::local_deps_tree("tibble")
 
+
     #> local::tibble 3.1.8 ✨👷🏻‍♀️🔧    
     #> ├─fansi 1.0.3 ✨
     #> ├─lifecycle 1.0.3 ✨
@@ -234,6 +243,7 @@ How does tibble depend on rlang?
 
     pak::pkg_deps_explain("tibble", "rlang")
 
+
     #> tibble -> lifecycle -> rlang
     #> tibble -> pillar -> lifecycle -> rlang
     #> tibble -> pillar -> rlang
@@ -252,6 +262,7 @@ Use can also use the `user/repo` form for packages from GitHub,
 
     pak::local_install_deps()
 
+
     #> v Loading metadata database ... done
     #>
     #> → The package (0 B) is cached.
@@ -261,6 +272,7 @@ Use can also use the `user/repo` form for packages from GitHub,
 ### Install local package
 
     pak::local_install()
+
 
     #>
     #> → Will update 1 package.
@@ -278,6 +290,7 @@ Use can also use the `user/repo` form for packages from GitHub,
 ### Install all dependencies of local package
 
     pak::local_install_dev_deps()
+
 
     #>
     #> → Will install 86 packages.
@@ -482,6 +495,7 @@ Installs development and optional dependencies as well.
 
     pak::repo_get()
 
+
     #> # A data frame: 5 × 5
     #>   name          url                                type  r_ver…¹ bioc_…²
     #> * <chr>         <chr>                              <chr> <chr>   <chr>
@@ -500,6 +514,7 @@ automatically.
     pak::repo_add(rhub = 'https://r-hub.r-universe.dev')
     pak::repo_get()
 
+
     #> # A data frame: 6 × 5
     #>   name          url                                type  r_ver…¹ bioc_…²
     #> * <chr>         <chr>                              <chr> <chr>   <chr>
@@ -515,6 +530,7 @@ automatically.
 
     options(repos = getOption("repos")["CRAN"])
     pak::repo_get()
+
 
     #> # A data frame: 5 × 5
     #>   name          url                                type  r_ver…¹ bioc_…²
@@ -534,6 +550,7 @@ completely, then pak keeps only CRAN and (by default) Bioconductor.
     pak::repo_add(CRAN = "RSPM@2022-06-30")
     pak::repo_get()
 
+
     #> # A data frame: 5 × 5
     #>   name          url                                type  r_ver…¹ bioc_…²
     #> * <chr>         <chr>                              <chr> <chr>   <chr>
@@ -552,6 +569,7 @@ a default CRAN repository.
 
     pak::repo_add(CRAN = "MRAN@2022-06-30")
     pak::repo_get()
+
 
     #> # A data frame: 5 × 5
     #>   name          url                                type  r_ver…¹ bioc_…²
@@ -574,6 +592,7 @@ By default pak caches both metadata and downloaded packages.
 ### Inspect metadata cache
 
     pak::meta_list()
+
 
     #> v Updated metadata database: 4.55 MB in 4 files.
     #> v Updating metadata database ... done
@@ -608,12 +627,14 @@ force an update manually:
 
     pak::meta_update()
 
+
     #> v Updating metadata database ... done
 
 ### Clean metadata cache
 
     pak::meta_clean(force = TRUE)
     pak::meta_summary()
+
 
     #> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/_metad
     #> ata"
@@ -638,6 +659,7 @@ Downloaded packages are also cached.
 
     pak::cache_list()
 
+
     #> # A data frame: 480 × 11
     #>    fullpath       path  package url   etag  sha256 version platf…¹ built
     #>    <chr>          <chr> <chr>   <chr> <chr> <chr>  <chr>   <chr>   <int>
@@ -658,6 +680,7 @@ Downloaded packages are also cached.
 
     pak::cache_summary()
 
+
     #> $cachepath
     #> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"
     #>
@@ -677,6 +700,7 @@ Downloaded packages are also cached.
 ### List packages in a library
 
     pak::lib_status(Sys.getenv("R_LIBS_USER"))
+
 
     #> # A data frame: 701 × 39
     #>    library   package title version depends repos…¹ license needs…² built

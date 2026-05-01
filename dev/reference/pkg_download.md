@@ -184,9 +184,11 @@ currently:
 
     dl <- pkg_download("forcats")
 
+
     #> i No downloads are needed, 2 pkgs (641.53 kB) are cached
 
     dl
+
 
     #> # A data frame: 2 × 35
     #>   ref     type     direct direc…¹ status package version license needs…²
@@ -203,10 +205,12 @@ currently:
 
     dl$fulltarget
 
+
     #> [1] "./bin/macosx/big-sur-arm64/contrib/4.2/forcats_0.5.2.tgz"
     #> [2] "./src/contrib/forcats_0.5.2.tar.gz"
 
     pkg_download("r-lib/pak", platforms = "source")
+
 
     #> i No downloads are needed, 1 pkg is cached
 

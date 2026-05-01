@@ -100,6 +100,7 @@ adds a couple.
 
     pkg_status("MASS")
 
+
     #> # A data frame: 2 × 39
     #>   library    package title version depends repos…¹ license needs…² built
     #> * <chr>      <chr>   <chr> <chr>   <chr>   <chr>   <chr>   <lgl>   <chr>

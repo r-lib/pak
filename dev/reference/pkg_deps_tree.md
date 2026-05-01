@@ -60,6 +60,7 @@ invisibly.
 
     pkg_deps_tree("dplyr")
 
+
     #> dplyr 1.0.10 ✨
     #> ├─generics 0.1.3 ✨
     #> ├─glue 1.6.2 ✨
@@ -102,6 +103,7 @@ invisibly.
     #> Key:  ✨ new
 
     pkg_deps_tree("r-lib/usethis")
+
 
     #> r-lib/usethis 2.1.6.9000 ✨👷🏼🔧 
     #> ├─cli 3.4.1 ✨
