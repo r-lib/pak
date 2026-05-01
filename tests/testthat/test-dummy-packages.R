@@ -26,30 +26,41 @@ test_that("cross-compilation dummies cover all embedded package imports", {
 
   # Check every embedded library package
   library_pkgs <- basename(list.dirs(
-    file.path(src_dir, "library"), full.names = TRUE, recursive = FALSE
+    file.path(src_dir, "library"),
+    full.names = TRUE,
+    recursive = FALSE
   ))
 
   missing <- character()
   for (pkg in library_pkgs) {
     desc_file <- file.path(src_dir, "library", pkg, "DESCRIPTION")
-    if (!file.exists(desc_file)) next
+    if (!file.exists(desc_file)) {
+      next
+    }
 
     dcf <- read.dcf(desc_file, fields = "Imports")
     imports_raw <- dcf[1, "Imports"]
-    if (is.na(imports_raw)) next
+    if (is.na(imports_raw)) {
+      next
+    }
 
     imports <- trimws(strsplit(imports_raw, ",")[[1]])
     imports <- sub("\\s*\\(.*\\)$", "", imports)
 
     for (imp in imports) {
-      if (imp %in% base_pkgs) next
-      if (imp %in% available) next
+      if (imp %in% base_pkgs) {
+        next
+      }
+      if (imp %in% available) {
+        next
+      }
       missing <- c(missing, paste0(pkg, " -> ", imp))
     }
   }
 
   expect_equal(
-    missing, character(),
+    missing,
+    character(),
     info = paste(
       "These imports are not satisfied during cross-compilation.",
       "Add a dummy in src/dummy/<pkg>/ (DESCRIPTION + empty NAMESPACE),",
