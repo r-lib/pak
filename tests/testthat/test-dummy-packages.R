@@ -1,4 +1,5 @@
 test_that("cross-compilation dummies cover all embedded package imports", {
+  skip_on_cran()
   src_dir <- file.path(testthat::test_path(), "..", "..", "src")
   skip_if_not(
     file.exists(file.path(src_dir, "install-embedded.R")),
