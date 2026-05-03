@@ -104,7 +104,7 @@ jobs:
 
     - name: Install rig
       run: |
-        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0-beta2/rig-0.8.0-beta2-macOS-arm64.pkg
+        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0/rig-0.8.0-macOS-x86_64.pkg
         sudo installer -pkg rig*.pkg -target /
 
     - uses: r-hub/actions/setup-r-sysreqs@main
@@ -161,7 +161,7 @@ jobs:
 
     - name: Install rig
       run: |
-        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0-beta2/rig-0.8.0-beta2-macOS-arm64.pkg
+        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0/rig-0.8.0-macOS-arm64.pkg
         sudo installer -pkg rig*.pkg -target /
 
     - uses: r-hub/actions/setup-r-sysreqs@main
@@ -231,7 +231,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.7.1/rig-windows-0.7.1.exe -OutFile rig-install.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.8.0/rig-windows-0.8.0.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install skopeo
