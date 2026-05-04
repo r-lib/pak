@@ -817,7 +817,9 @@ create_pak_repo <- local({
     # Currently aarch64 R builds have pkgType source or windows.binary.clang-aarch64
     "win.binary/mingw32/aarch64/src/contrib" = "../../../../../mingw32/aarch64",
     "source/mingw32/aarch64/src/contrib" = "../../../../../mingw32/aarch64",
-    "windows.binary.clang-aarch64/mingw32/aarch32/src/contrib" = "../../../../../mingw32/aarch64",
+    "windows.binary.clang-aarch64/mingw32/aarch64/src/contrib" = "../../../../../mingw32/aarch64",
+    "windows.binary.clang-aarch64/mingw32/aarch64/bin/windows/clang-aarch64/contrib/4.6" = "../../../../../../../../mingw32/aarch64",
+    "windows.binary.clang-aarch64/mingw32/aarch64/bin/windows/clang-aarch64/contrib/4.7" = "../../../../../../../../mingw32/aarch64",
 
     "mac.binary.big-sur-arm64/darwin20/aarch64/src/contrib" = "../../../../../darwin20/aarch64",
     "mac.binary.sonoma-arm64/darwin23/aarch64/src/contrib" = "../../../../../darwin23/aarch64",
