@@ -1,3 +1,2 @@
 #!/bin/sh
-rm -f src/Makevars configure.log get-curl-linux.sh
-rm -Rf .deps autobrew
+rm -f src/Makevars configure.log

@@ -1,4 +1,4 @@
-RWINLIB = ../.deps/libcurl
+RWINLIB = ../windows/libcurl
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
 PKG_LIBS = \
@@ -9,13 +9,13 @@ PKG_LIBS = \
 PKG_CPPFLAGS= \
 	-I$(RWINLIB)/include -DCURL_STATICLIB -DSTRICT_R_HEADERS -DR_NO_REMAP
 
-all: $(SHLIB) cleanup
+all: clean winlibs
 
-# Needed for parallel make
-$(OBJECTS): | $(RWINLIB)
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
 
-$(RWINLIB):
-	@"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+winlibs: clean
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+	echo '#include <curl/curl.h>' | $(CC) $(PKG_CPPFLAGS) -std=gnu99 -E -xc - | grep "^[ \t]*CURLOPT_.*," | sed s/,// > ../tools/option_table.txt
 
-cleanup: $(SHLIB)
-	@rm -Rf $(RWINLIB)
+.PHONY: all winlibs clean

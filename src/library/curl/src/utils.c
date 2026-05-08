@@ -1,19 +1,6 @@
 #include "curl-common.h"
 #include <stdint.h> /* SIZE_MAX */
 
-#ifdef _WIN32
-#include <Rembedded.h>
-void send_r_interrupt(void) {
-  UserBreak = 1;
-  R_CheckUserInterrupt();
-}
-#else
-#include <Rinterface.h>
-void send_r_interrupt(void) {
-  Rf_onintr();
-}
-#endif
-
 CURL* get_handle(SEXP ptr){
   return get_ref(ptr)->handle;
 }
@@ -50,47 +37,54 @@ void reset_errbuf(reference *ref){
   memset(ref->errbuf, 0, CURL_ERROR_SIZE);
 }
 
-void assert_message(CURLcode res, const char *str){
-  if(res == CURLE_OK)
-    return;
-  if(res == CURLE_ABORTED_BY_CALLBACK)
-    send_r_interrupt();
-  if(str == NULL)
-    str = curl_easy_strerror(res);
-  SEXP code = PROTECT(Rf_ScalarInteger(res));
-  SEXP message = PROTECT(make_string(str));
-  SEXP expr = PROTECT(Rf_install("raise_libcurl_error"));
-  SEXP call = PROTECT(Rf_lang3(expr, code, message));
-  SEXP env = PROTECT(R_FindNamespace(Rf_mkString("curl")));
-  Rf_eval(call, env);
-  UNPROTECT(5); //never happens
+void assert(CURLcode res){
+  if(res != CURLE_OK)
+    Rf_error("%s", curl_easy_strerror(res));
 }
 
-void raise_libcurl_error(CURLcode res, reference *ref, SEXP error_cb){
-  if(res == CURLE_OK)
-    return;
-  if(res == CURLE_ABORTED_BY_CALLBACK)
-    send_r_interrupt();
-  const char *source_url = NULL;
-  curl_easy_getinfo(ref->handle, CURLINFO_EFFECTIVE_URL, &source_url);
-  SEXP url = PROTECT(make_string(source_url));
-  SEXP code = PROTECT(Rf_ScalarInteger(res));
-  SEXP message = PROTECT(make_string(curl_easy_strerror(res)));
-  SEXP errbuf = PROTECT(make_string(ref->errbuf));
-  SEXP expr = PROTECT(Rf_install("raise_libcurl_error"));
-  SEXP call = PROTECT(Rf_lang6(expr, code, message, errbuf, url, error_cb));
-  SEXP env = PROTECT(R_FindNamespace(Rf_mkString("curl")));
-  Rf_eval(call, env);
-  UNPROTECT(7); //happens for non-throwing error_cb()
+static char * parse_host(const char * input){
+  static char buf[8000] = {0};
+  char *url = buf;
+  strncpy(url, input, 7999);
+
+  char *ptr = NULL;
+  if((ptr = strstr(url, "://")))
+    url = ptr + 3;
+  if((ptr = strchr(url, '/')))
+    *ptr = 0;
+  if((ptr = strchr(url, '#')))
+    *ptr = 0;
+  if((ptr = strchr(url, '?')))
+    *ptr = 0;
+  if((ptr = strchr(url, '@')))
+    url = ptr + 1;
+  return url;
 }
 
 void assert_status(CURLcode res, reference *ref){
-  raise_libcurl_error(res, ref, R_NilValue);
+  // Customize better error message for timeoutsS
+  if(res == CURLE_OPERATION_TIMEDOUT || res == CURLE_SSL_CACERT){
+    const char *url = NULL;
+    if(curl_easy_getinfo(ref->handle, CURLINFO_EFFECTIVE_URL, &url) == CURLE_OK){
+      Rf_error("%s: [%s] %s", curl_easy_strerror(res), parse_host(url), ref->errbuf);
+    }
+  }
+  if(res != CURLE_OK)
+    Rf_error("%s", strlen(ref->errbuf) ? ref->errbuf : curl_easy_strerror(res));
 }
 
 void massert(CURLMcode res){
   if(res != CURLM_OK)
     Rf_error("%s", curl_multi_strerror(res));
+}
+
+void stop_for_status(CURL *http_handle){
+  long status = 0;
+  assert(curl_easy_getinfo(http_handle, CURLINFO_RESPONSE_CODE, &status));
+
+  /* check http status code. Not sure what this does for ftp. */
+  if(status >= 300)
+    Rf_error("HTTP error %ld.", status);
 }
 
 /* make sure to call curl_slist_free_all on this object */

@@ -1,30 +1,30 @@
 #' Send email
 #'
-#' Use the curl SMTP client to send an email. The `message` argument must be
-#' properly formatted [RFC2822](https://www.rfc-editor.org/rfc/rfc2822) email message with From/To/Subject headers and CRLF
+#' Use the curl SMTP client to send an email. The \code{message} argument must be
+#' properly formatted \href{https://www.rfc-editor.org/rfc/rfc2822}{RFC2822} email message with From/To/Subject headers and CRLF
 #' line breaks.
 #'
 #' @section Specifying the server, port, and protocol:
 #'
-#' The `smtp_server` argument takes a hostname, or an SMTP URL:
+#' The \code{smtp_server} argument takes a hostname, or an SMTP URL:
 #'
 #' \itemize{
-#'   \item `mail.example.com` - hostname only
-#'   \item `mail.example.com:587` - hostname and port
-#'   \item `smtp://mail.example.com` - protocol and hostname
-#'   \item `smtp://mail.example.com:587` - full SMTP URL
-#'   \item `smtps://mail.example.com:465` - full SMTPS URL
+#'   \item \code{mail.example.com} - hostname only
+#'   \item \code{mail.example.com:587} - hostname and port
+#'   \item \code{smtp://mail.example.com} - protocol and hostname
+#'   \item \code{smtp://mail.example.com:587} - full SMTP URL
+#'   \item \code{smtps://mail.example.com:465} - full SMTPS URL
 #' }
 #'
-#' By default, the port will be 25, unless `smtps://` is specified--then
+#' By default, the port will be 25, unless \code{smtps://} is specified--then
 #' the default will be 465 instead.
 #'
 #' For internet SMTP servers you probably need to pass a
-#' [username](https://curl.se/libcurl/c/CURLOPT_USERNAME.html) and
-#' [passwords](https://curl.se/libcurl/c/CURLOPT_PASSWORD.html) option.
+#' \href{https://curl.se/libcurl/c/CURLOPT_USERNAME.html}{username} and
+#' \href{https://curl.se/libcurl/c/CURLOPT_PASSWORD.html}{passwords} option.
 #' For some servers you also need to pass a string with
-#' [login_options](https://curl.se/libcurl/c/CURLOPT_LOGIN_OPTIONS.html)
-#' for example `login_options="AUTH=NTLM"`.
+#' \href{https://curl.se/libcurl/c/CURLOPT_LOGIN_OPTIONS.html}{login_options}
+#' for example \code{login_options="AUTH=NTLM"}.
 #'
 #' @section Encrypting connections via SMTPS or STARTTLS:
 #'
@@ -34,31 +34,31 @@
 #' secure TLS connection using the STARTTLS command. It is important to know
 #' which method your server expects.
 #'
-#' If your smtp server listens on port 465, then use a  `smtps://hostname:465`
-#' URL. The SMTPS protocol *guarantees* that TLS will be used to protect
+#' If your smtp server listens on port 465, then use a  \code{smtps://hostname:465}
+#' URL. The SMTPS protocol \emph{guarantees} that TLS will be used to protect
 #' all communications from the start.
 #'
-#' If your email server listens on port 25 or 587, use an `smtp://` URL in
-#' combination with the  `use_ssl` parameter to control if the connection
-#' should be upgraded with STARTTLS. The default value `"try"` will
-#' *opportunistically* try to upgrade to a secure connection if the server
+#' If your email server listens on port 25 or 587, use an \code{smtp://} URL in
+#' combination with the  \code{use_ssl} parameter to control if the connection
+#' should be upgraded with STARTTLS. The default value \code{"try"} will
+#' \emph{opportunistically} try to upgrade to a secure connection if the server
 #' supports it, and proceed as normal otherwise.
 #'
 #' @export
 #' @param mail_rcpt one or more recipient email addresses. Do not include names,
-#' these go into the `message` headers.
+#' these go into the \code{message} headers.
 #' @param mail_from email address of the sender.
 #' @param message either a string or connection with (properly formatted) email
 #' message, including sender/recipient/subject headers. See example.
 #' @param smtp_server hostname or address of the SMTP server, or, an
-#' `smtp://` or `smtps://` URL. See "Specifying the server, port,
+#' \code{smtp://} or \code{smtps://} URL. See "Specifying the server, port,
 #' and protocol" below.
 #' @param use_ssl Request to upgrade the connection to SSL using the STARTTLS command,
-#' see [CURLOPT_USE_SSL](https://curl.se/libcurl/c/CURLOPT_USE_SSL.html)
+#' see \href{https://curl.se/libcurl/c/CURLOPT_USE_SSL.html}{CURLOPT_USE_SSL}
 #' for details. Default will try to SSL, proceed as normal otherwise.
 #' @param verbose print output
-#' @param ... other options passed to [handle_setopt()]. In most cases
-#' you will need to set a `username` and `password` or `login_options`
+#' @param ... other options passed to \code{\link{handle_setopt}}. In most cases
+#' you will need to set a \code{username} and \code{password} or \code{login_options}
 #' to authenticate with the SMTP server, see details.
 #' @examples \dontrun{# Set sender and recipients (email addresses only)
 #' recipients <- readline("Enter your email address to receive test: ")

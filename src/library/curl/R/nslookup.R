@@ -1,22 +1,22 @@
 #' Lookup a hostname
 #'
-#' The `nslookup` function is similar to `nsl` but works on all platforms
+#' The \code{nslookup} function is similar to \code{nsl} but works on all platforms
 #' and can resolve ipv6 addresses if supported by the OS. Default behavior raises an
 #' error if lookup fails.
 #'
-#' The `has_internet` function tests for internet connectivity by performing a
+#' The \code{has_internet} function tests for internet connectivity by performing a
 #' dns lookup. If a proxy server is detected, it will also check for connectivity by
 #' connecting via the proxy.
 #'
 #' @export
 #' @param host a string with a hostname
-#' @param error raise an error for failed DNS lookup. Otherwise returns `NULL`.
+#' @param error raise an error for failed DNS lookup. Otherwise returns \code{NULL}.
 #' @param ipv4_only always return ipv4 address. Set to `FALSE` to allow for ipv6 as well.
 #' @param multiple returns multiple ip addresses if possible
 #' @rdname nslookup
 #' @useDynLib curl R_nslookup
 #' @examples # Should always work if we are online
-#' nslookup("www.google.com")
+#' nslookup("www.r-project.org")
 #'
 #' # If your OS supports IPv6
 #' nslookup("ipv6.test-ipv6.com", ipv4_only = FALSE, error = FALSE)
@@ -46,10 +46,6 @@ has_internet <- local({
     # Method 1: try DNS lookup. May resolve to 8.8.8.8 or 8.8.4.4
     ip_addr <- nslookup('dns.google.com', multiple = TRUE, error = FALSE, ipv4_only = TRUE)
     if(any(c("8.8.4.4", "8.8.8.8") %in% ip_addr))
-      return(TRUE)
-
-    ip_addr <- nslookup('time.cloudflare.com', multiple = TRUE, error = FALSE, ipv4_only = TRUE)
-    if(any(c("162.159.200.1", "162.159.200.123") %in% ip_addr))
       return(TRUE)
 
     # Method 2: look for a proxy server
