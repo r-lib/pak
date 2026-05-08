@@ -84,7 +84,7 @@ ppm_sso_app <- function(
       envir = app$locals$challenges,
       inherits = FALSE
     )
-    actual <- ppm_sso_base64url_encode(openssl::sha256(charToRaw(verifier)))
+    actual <- ppm_sso_base64url_encode(ppm_sso_sha256_raw(verifier))
     if (!identical(expected, actual)) {
       return(res$set_status(400L)$send_json(
         auto_unbox = TRUE,

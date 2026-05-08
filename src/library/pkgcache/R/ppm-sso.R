@@ -263,18 +263,26 @@ ppm_sso_write_token_to_file <- function(token) {
 }
 
 ppm_sso_base64url_encode <- function(x) {
-  encoded <- openssl::base64_encode(x)
+  encoded <- processx::base64_encode(x)
   # Make it URL-safe
   gsub("\\+", "-", gsub("\\/", "_", gsub("=+$", "", encoded)))
 }
 
+ppm_sso_hex_to_raw <- function(s) {
+  n <- nchar(s)
+  as.raw(strtoi(substring(s, seq(1L, n, 2L), seq(2L, n, 2L)), 16L))
+}
+
+ppm_sso_sha256_raw <- function(x) {
+  ppm_sso_hex_to_raw(cli::hash_sha256(x))
+}
+
 ppm_sso_new_pkce_verifier <- function() {
-  ppm_sso_base64url_encode(openssl::rand_bytes(32))
+  ppm_sso_base64url_encode(.Call(pkgcache_rand_bytes, 32L))
 }
 
 ppm_sso_new_pkce_challenge <- function(verifier) {
-  hash <- openssl::sha256(charToRaw(verifier))
-  ppm_sso_base64url_encode(hash)
+  ppm_sso_base64url_encode(ppm_sso_sha256_raw(verifier))
 }
 
 ppm_sso_complete_device_auth = function(

@@ -12,3 +12,5 @@ SEXP pkgcache_parse_descriptions(SEXP paths, SEXP lowercase);
 SEXP pkgcache_parse_packages_raw(SEXP raw);
 
 SEXP pkgcache_graphics_api_version(void);
+
+SEXP pkgcache_rand_bytes(SEXP n);

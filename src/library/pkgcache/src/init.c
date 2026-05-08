@@ -30,6 +30,8 @@ static const R_CallMethodDef callMethods[]  = {
   REG(pkgcache_parse_packages_raw,    1),
   REG(pkgcache_graphics_api_version,  0),
 
+  REG(pkgcache_rand_bytes,            1),
+
   REG(pkgcache__gcov_flush,           0),
   { NULL, NULL, 0 }
 };
