@@ -74,9 +74,6 @@ BugReports: https://github.com/r-lib/pak/issues
 Depends:
     R (>= 3.5)
 Imports:
-    RcppTOML,
-    openssl,
-    httr2,
     tools,
     utils
 Suggests:
@@ -88,8 +85,10 @@ Suggests:
     filelock (>= 1.0.2),
     gitcreds,
     glue (>= 1.6.2),
+    httr2,
     jsonlite (>= 1.8.0),
     keyring (>= 1.4.0),
+    openssl,
     pingr,
     pkgbuild (>= 1.4.2),
     pkgcache (>= 2.2.4),
@@ -98,6 +97,7 @@ Suggests:
     pkgsearch (>= 3.1.0),
     processx (>= 3.8.1),
     ps (>= 1.6.0),
+    RcppTOML,
     rstudioapi,
     testthat (>= 3.2.0),
     webfakes,
