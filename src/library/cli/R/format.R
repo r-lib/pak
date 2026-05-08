@@ -1,4 +1,3 @@
-
 #' Format a value for printing
 #'
 #' This function can be used directly, or via the `{.val ...}` inline

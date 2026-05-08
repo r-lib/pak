@@ -1,9 +1,16 @@
-
 call_if_fun <- function(x) {
   if (is.function(x)) x() else x
 }
 
-clii__xtext <- function(app, text, .list, indent, padding, ln = TRUE, wrap = TRUE) {
+clii__xtext <- function(
+  app,
+  text,
+  .list,
+  indent,
+  padding,
+  ln = TRUE,
+  wrap = TRUE
+) {
   style <- app$get_current_style()
   text <- app$inline(text, .list = .list)
   exdent <- style$`text-exdent` %||% 0L
@@ -39,7 +46,12 @@ clii__get_width <- function(app, extra) {
 }
 
 clii__cat <- function(app, lines) {
-  clii__message(lines, appendLF = FALSE, output = app$output, signal = app$signal)
+  clii__message(
+    lines,
+    appendLF = FALSE,
+    output = app$output,
+    signal = app$signal
+  )
 }
 
 clii__cat_ln <- function(app, lines, indent, padding) {
@@ -57,7 +69,7 @@ clii__cat_ln <- function(app, lines, indent, padding) {
   ## indent or negative indent
   if (length(lines)) {
     if (indent < 0) {
-      lines[1] <- dedent(lines[1], - indent)
+      lines[1] <- dedent(lines[1], -indent)
     } else if (indent > 0) {
       lines[1] <- paste0(strrep(" ", indent), lines[1])
     }
@@ -79,7 +91,12 @@ clii__vspace <- function(app, n) {
     sp <- strrep("\n", n - app$margin)
     signal <- !identical(app$signal, FALSE)
     if (signal && length(app$status_bar)) clii__clear_status_bar(app)
-    clii__message(sp, appendLF = FALSE, output = app$output, signal = app$signal)
+    clii__message(
+      sp,
+      appendLF = FALSE,
+      output = app$output,
+      signal = app$signal
+    )
     app$margin <- n
     if (signal && length(app$status_bar)) {
       app$cat(paste0(app$status_bar[[1]]$content, "\r"))
@@ -88,7 +105,7 @@ clii__vspace <- function(app, n) {
 }
 
 get_real_output <- function(output) {
-  if (! inherits(output, "connection")) {
+  if (!inherits(output, "connection")) {
     output <- switch(
       output,
       "auto" = cli_output_connection(),
@@ -100,9 +117,13 @@ get_real_output <- function(output) {
   output
 }
 
-clii__message <- function(..., domain = NA, appendLF = TRUE,
-                          output = stderr(), signal = TRUE) {
-
+clii__message <- function(
+  ...,
+  domain = NA,
+  appendLF = TRUE,
+  output = stderr(),
+  signal = TRUE
+) {
   msg <- .makeMessage(..., domain = domain, appendLF = appendLF)
   output <- get_real_output(output)
 
@@ -111,7 +132,6 @@ clii__message <- function(..., domain = NA, appendLF = TRUE,
 
   if (identical(signal, FALSE)) {
     safe_cat0(msg, file = output)
-
   } else {
     withRestarts(muffleMessage = function() NULL, {
       cond <- simpleMessage(msg)

@@ -99,7 +99,7 @@ void R_init_processx(DllInfo *dll) {
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
-  cleancall_fns_dot_call = Rf_findVar(Rf_install(".Call"), R_BaseEnv);
+  cleancall_init();
 #ifdef _WIN32
   R_init_processx_win();
 #else

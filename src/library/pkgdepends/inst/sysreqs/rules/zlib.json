@@ -23,15 +23,32 @@
           },
           {
             "os": "linux",
-            "distribution": "rockylinux"
+            "distribution": "rockylinux",
+            "versions": ["9"]
           },
           {
             "os": "linux",
-            "distribution": "redhat"
+            "distribution": "redhat",
+            "versions": ["7", "8", "9"]
           },
           {
             "os": "linux",
             "distribution": "fedora"
+          }
+        ]
+      },
+      {
+        "packages": ["zlib-ng-compat-devel"],
+        "constraints": [
+          {
+            "os": "linux",
+            "distribution": "rockylinux",
+            "versions": ["10"]
+          },
+          {
+            "os": "linux",
+            "distribution": "redhat",
+            "versions": ["10"]
           }
         ]
       },

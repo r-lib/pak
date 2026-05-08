@@ -1,4 +1,3 @@
-
 #' Add a progress bar to a mapping function or for loop
 #'
 #' @description
@@ -97,17 +96,26 @@
 #' @family functions supporting inline markup
 #' @export
 
-cli_progress_along <- function(x,
-                       name = NULL,
-                       total = length(x),
-                       ...,
-                       .envir = parent.frame()) {
-
-  name; total; .envir; list(...)
+cli_progress_along <- function(
+  x,
+  name = NULL,
+  total = length(x),
+  ...,
+  .envir = parent.frame()
+) {
+  name
+  total
+  .envir
+  list(...)
 
   if (getRversion() < "3.5.0") return(seq_along(x))
-  id <- cli_progress_bar(name = name, total = total, ...,
-                         .auto_close = FALSE, .envir = .envir)
+  id <- cli_progress_bar(
+    name = name,
+    total = total,
+    ...,
+    .auto_close = FALSE,
+    .envir = .envir
+  )
   closeenv <- sys.frame(-1)
   if (format(closeenv) != clienv$globalenv) {
     defer(
@@ -121,36 +129,42 @@ cli_progress_along <- function(x,
 }
 
 progress_altrep_update <- function(pb) {
-  tryCatch({
-    cli_tick_reset()
-    caller <- pb$caller
-    pb$tick <- pb$tick + 1L
+  tryCatch(
+    {
+      cli_tick_reset()
+      caller <- pb$caller
+      pb$tick <- pb$tick + 1L
 
-    if (is.null(pb$format)) {
-      pb$format <- pb__default_format(pb$type, pb$total)
-    }
-
-    opt <- options(cli__pb = pb)
-    on.exit(options(opt), add = TRUE)
-
-    handlers <- cli_progress_select_handlers(pb, caller)
-    if (is.null(pb$added)) {
-      pb$added <- TRUE
-      for (h in handlers) {
-        if ("add" %in% names(h)) h$add(pb, .envir = caller)
+      if (is.null(pb$format)) {
+        pb$format <- pb__default_format(pb$type, pb$total)
       }
-    } else {
-      for (h in handlers) {
-        if ("set" %in% names(h)) h$set(pb, .envir = caller)
+
+      opt <- options(cli__pb = pb)
+      on.exit(options(opt), add = TRUE)
+
+      handlers <- cli_progress_select_handlers(pb, caller)
+      if (is.null(pb$added)) {
+        pb$added <- TRUE
+        for (h in handlers) {
+          if ("add" %in% names(h)) h$add(pb, .envir = caller)
+        }
+      } else {
+        for (h in handlers) {
+          if ("set" %in% names(h)) h$set(pb, .envir = caller)
+        }
       }
+    },
+    error = function(err) {
+      if (!isTRUE(pb$warned)) {
+        warning(
+          "cli progress bar update failed: ",
+          conditionMessage(err),
+          immediate. = TRUE
+        )
+      }
+      pb$warned <- TRUE
     }
-  }, error = function(err) {
-    if (!isTRUE(pb$warned)) {
-      warning("cli progress bar update failed: ", conditionMessage(err),
-              immediate. = TRUE)
-    }
-    pb$warned <- TRUE
-  })
+  )
 
   NULL
 }

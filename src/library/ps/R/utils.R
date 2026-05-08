@@ -1,5 +1,4 @@
-
-`%||%` <-  function(l, r) if (is.null(l)) r else l
+`%||%` <- function(l, r) if (is.null(l)) r else l
 
 `%&&%` <- function(l, r) if (is.null(l)) NULL else r
 
@@ -44,7 +43,7 @@ str_strip <- function(x) {
 }
 
 str_tail <- function(x, num) {
-  nc  <- nchar(x)
+  nc <- nchar(x)
   substr(x, pmax(nc - num + 1, 1), nc)
 }
 
@@ -92,10 +91,10 @@ zombie <- function() {
     pid <- .Call(psp__zombie)
     ps <- ps_handle(pid)
     timeout <- Sys.time() + 5
-    while (ps_status(ps) != "zombie" && Sys.time() < timeout)  {
+    while (ps_status(ps) != "zombie" && Sys.time() < timeout) {
       Sys.sleep(0.05)
     }
-    if (ps_status(ps) == "zombie")  pid else stop("Cannot create zombie")
+    if (ps_status(ps) == "zombie") pid else stop("Cannot create zombie")
   }
 }
 
@@ -108,9 +107,13 @@ caps <- function(x) {
 }
 
 assert_string <- function(x) {
-  if (is.character(x) && length(x) == 1 && !is.na(x)) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a string (character scalar)"))
+  if (is.character(x) && length(x) == 1 && !is.na(x)) {
+    return()
+  }
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " is not a string (character scalar)"
+  ))
 }
 
 assert_integer <- function(x) {
@@ -118,53 +121,76 @@ assert_integer <- function(x) {
     suppressWarnings(as.integer(x)),
     error = function(e) x
   )
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a scalar integer"))
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) {
+    return(x)
+  }
+  stop(ps__invalid_argument(match.call()$x, " is not a scalar integer"))
 }
 
 assert_character <- function(x) {
-  if (is.character(x)) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not of type character"))
+  if (is.character(x)) {
+    return()
+  }
+  stop(ps__invalid_argument(match.call()$x, " is not of type character"))
 }
 
 assert_pid <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
-  if (is.numeric(x) && length(x) == 1 && !is.na(x) &&
-      as.integer(x) == x) {
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) {
+    return(x)
+  }
+  if (is.numeric(x) && length(x) == 1 && !is.na(x) && as.integer(x) == x) {
     return(as.integer(x))
   }
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a process id (integer scalar)"))
+  if (
+    is.character(x) &&
+      length(x) == 1 &&
+      !is.na(x) &&
+      grepl("^[A-Za-z][A-Za-z0-9]{11}$", x)
+  ) {
+    return(x)
+  }
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " is not a process id (integer scalar) or process string (from `ps_string()`)"
+  ))
 }
 
 assert_grace <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x) && x >= 0) return(x)
+  if (is.integer(x) && length(x) == 1 && !is.na(x) && x >= 0) {
+    return(x)
+  }
   if (is.numeric(x) && length(x) == 1 && !is.na(x) && x >= 0) {
     xi <- as.integer(x)
     # if x is non-zero, then return non-zero
-    if (xi == 0 && x > 0) return(1)
+    if (xi == 0 && x > 0) {
+      return(1)
+    }
     return(as.integer(x))
   }
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a non-negative integer"))
+  stop(ps__invalid_argument(match.call()$x, " is not a non-negative integer"))
 }
 
 assert_time <- function(x) {
-  if (inherits(x, "POSIXct")) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " must be a time stamp (POSIXt)"))
+  if (inherits(x, "POSIXct")) {
+    return()
+  }
+  stop(ps__invalid_argument(match.call()$x, " must be a time stamp (POSIXt)"))
 }
 
 assert_ps_handle <- function(x) {
-  if (inherits(x, "ps_handle")) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " must be a process handle (ps_handle)"))
+  if (inherits(x, "ps_handle")) {
+    return()
+  }
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " must be a process handle (ps_handle)"
+  ))
 }
 
 assert_ps_handle_list <- function(x) {
-  if (all(map_lgl(x, inherits, "ps_handle"))) return()
+  if (all(map_lgl(x, inherits, "ps_handle"))) {
+    return()
+  }
   stop(ps__invalid_argument(
     match.call()$x,
     " must be a process handle (ps_handle) or a list of process handles"
@@ -182,41 +208,49 @@ assert_ps_handle_or_handle_list <- function(p) {
 }
 
 assert_flag <- function(x) {
-  if (is.logical(x) && length(x) == 1 && !is.na(x)) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a flag (logical scalar)"))
+  if (is.logical(x) && length(x) == 1 && !is.na(x)) {
+    return()
+  }
+  stop(ps__invalid_argument(match.call()$x, " is not a flag (logical scalar)"))
 }
 
 assert_signal <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x) &&
-      x %in% unlist(signals())) return()
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a signal number (see ?signals())"))
+  if (
+    is.integer(x) && length(x) == 1 && !is.na(x) && x %in% unlist(signals())
+  ) {
+    return()
+  }
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " is not a signal number (see ?signals())"
+  ))
 }
 
 assert_nice_value <- function(x) {
   if (ps_os_type()[["POSIX"]]) {
-    if (is.integer(x) && length(x) == 1 && !is.na(x) && x <= 20) return()
-    stop(ps__invalid_argument(match.call()$x,
-                              " is not a valid priority value"))
+    if (is.integer(x) && length(x) == 1 && !is.na(x) && x <= 20) {
+      return()
+    }
+    stop(ps__invalid_argument(match.call()$x, " is not a valid priority value"))
   } else {
     match.arg(x, ps_windows_nice_values())
   }
 }
 
 realpath <- function(x) {
-  if (ps_os_type()[["WINDOWS"]])
-    .Call(psw__realpath, x)
-  else
-    normalizePath(x)
+  if (ps_os_type()[["WINDOWS"]]) .Call(psw__realpath, x) else normalizePath(x)
 }
 
 get_tool <- function(prog) {
-  if (ps_os_type()[["WINDOWS"]]) prog <- paste0(prog, ".exe")
+  if (ps_os_type()[["WINDOWS"]]) {
+    prog <- paste0(prog, ".exe")
+  }
   exe <- system.file(package = "ps", "bin", .Platform$r_arch, prog)
   if (exe == "") {
     pkgpath <- system.file(package = "ps")
-    if (basename(pkgpath) == "inst") pkgpath <- dirname(pkgpath)
+    if (basename(pkgpath) == "inst") {
+      pkgpath <- dirname(pkgpath)
+    }
     exe <- file.path(pkgpath, "src", prog)
     if (!file.exists(exe)) return("")
   }

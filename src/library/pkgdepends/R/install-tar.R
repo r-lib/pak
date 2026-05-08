@@ -69,7 +69,9 @@ make_untar_process <- function(
 need_internal_tar <- local({
   internal <- NULL
   function() {
-    if (!is.null(internal)) return(internal)
+    if (!is.null(internal)) {
+      return(internal)
+    }
 
     mkdirp(tmp <- tempfile())
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
@@ -81,7 +83,9 @@ need_internal_tar <- local({
         internal <<- TRUE
       }
     )
-    if (!is.null(internal)) return(internal)
+    if (!is.null(internal)) {
+      return(internal)
+    }
 
     p$wait(timeout = 2000)
     p$kill()
@@ -277,7 +281,9 @@ detect_package_archive_type <- function(file) {
 }
 
 is_gzip <- function(buf) {
-  if (!is.raw(buf)) buf <- readBin(buf, what = "raw", n = 3)
+  if (!is.raw(buf)) {
+    buf <- readBin(buf, what = "raw", n = 3)
+  }
   length(buf) >= 3 &&
     buf[1] == 0x1f &&
     buf[2] == 0x8b &&
@@ -285,7 +291,9 @@ is_gzip <- function(buf) {
 }
 
 is_bzip2 <- function(buf) {
-  if (!is.raw(buf)) buf <- readBin(buf, what = "raw", n = 3)
+  if (!is.raw(buf)) {
+    buf <- readBin(buf, what = "raw", n = 3)
+  }
   length(buf) >= 3 &&
     buf[1] == 0x42 &&
     buf[2] == 0x5a &&
@@ -293,7 +301,9 @@ is_bzip2 <- function(buf) {
 }
 
 is_xz <- function(buf) {
-  if (!is.raw(buf)) buf <- readBin(buf, what = "raw", n = 6)
+  if (!is.raw(buf)) {
+    buf <- readBin(buf, what = "raw", n = 6)
+  }
   length(buf) >= 6 &&
     buf[1] == 0xFD &&
     buf[2] == 0x37 &&
@@ -304,7 +314,9 @@ is_xz <- function(buf) {
 }
 
 is_zip <- function(buf) {
-  if (!is.raw(buf)) buf <- readBin(buf, what = "raw", n = 4)
+  if (!is.raw(buf)) {
+    buf <- readBin(buf, what = "raw", n = 4)
+  }
   length(buf) >= 4 &&
     buf[1] == 0x50 &&
     buf[2] == 0x4b &&

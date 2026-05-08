@@ -103,7 +103,9 @@ res_df_must_have <- local({
 #' @param entries List of entries to add.
 
 res_add_df_entries <- function(df, entries) {
-  if (!is.data.frame(entries)) entries <- res_one_row_df(entries)
+  if (!is.data.frame(entries)) {
+    entries <- res_one_row_df(entries)
+  }
   entries <- res_add_defaults(entries)
   ret <- as_data_frame(rbind(df, entries))[names(df)]
   direct <- ret$package[ret$direct]
@@ -154,7 +156,9 @@ res_add_defaults <- function(df) {
   df[names(def)] <- def
   df <- df[, names(all_types)]
 
-  if ("filesize" %in% names(df)) df$filesize <- as.integer(df$filesize)
+  if ("filesize" %in% names(df)) {
+    df$filesize <- as.integer(df$filesize)
+  }
 
   ent_types <- vcapply(df, typeof)
   exp_types <- all_types[names(df)]

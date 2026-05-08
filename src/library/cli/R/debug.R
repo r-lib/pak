@@ -1,4 +1,3 @@
-
 #' Debug cli internals
 #'
 #' Return the current state of a cli app. It includes the currently
@@ -43,10 +42,10 @@ cli_debug_doc <- function(app = default_app() %||% start_app()) {
 
   df <- data.frame(
     stringsAsFactors = FALSE,
-    tag    = tgs,
-    id     = ids,
-    class  = cls,
-    theme  = I(as.list(thm)),
+    tag = tgs,
+    id = ids,
+    class = cls,
+    theme = I(as.list(thm)),
     styles = I(as.list(unname(app$styles)))
   )
 
@@ -58,14 +57,17 @@ cli_debug_doc <- function(app = default_app() %||% start_app()) {
 
 format.cli_doc <- function(x, ...) {
   nz <- nrow(x) > 0
-  c("<cli document>",
+  c(
+    "<cli document>",
     paste0(
       if (nz) "<",
       x$tag,
-      if (nz) " id=\"", x$id, if (nz) "\"",
-      ifelse (x$class == "", "", paste0(" class=\"", x$class, "\"")),
+      if (nz) " id=\"",
+      x$id,
+      if (nz) "\"",
+      ifelse(x$class == "", "", paste0(" class=\"", x$class, "\"")),
       if (nz) ">",
-      ifelse (vlapply(x$theme, is.null), "", " +theme")
+      ifelse(vlapply(x$theme, is.null), "", " +theme")
     )
   )
 }

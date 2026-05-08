@@ -104,8 +104,8 @@ jobs:
 
     - name: Install rig
       run: |
-        brew tap r-lib/rig
-        brew install r-lib/rig/rig
+        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0/rig-0.8.0-macOS-x86_64.pkg
+        sudo installer -pkg rig*.pkg -target /
 
     - uses: r-hub/actions/setup-r-sysreqs@main
       with:
@@ -120,6 +120,7 @@ jobs:
         sudo rig add 4.2 --arch x86_64
         sudo rig add 4.3 --arch x86_64
         sudo rig add 4.4 --arch x86_64
+        sudo rig add 4.5 --arch x86_64
         sudo rig add release --arch x86_64
         sudo rig add devel --arch x86_64
         rig default release
@@ -148,7 +149,7 @@ jobs:
     if: ${{ github.event.inputs.macos-arm64 == '' || github.event.inputs.macos-arm64 == 'yes' }}
     name: macos arm64
     env:
-      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64 4.5-arm64 4.6-arm64"
+      RVERSIONS: "4.1-arm64 4.2-arm64 4.3-arm64 4.4-arm64 4.5-arm64 4.6 4.7"
       RVERSION_DEFAULT: "4.5-arm64"
 
     steps:
@@ -160,8 +161,8 @@ jobs:
 
     - name: Install rig
       run: |
-        brew tap r-lib/rig
-        brew install r-lib/rig/rig
+        curl -LO https://github.com/r-lib/rig/releases/download/v0.8.0/rig-0.8.0-macOS-arm64.pkg
+        sudo installer -pkg rig*.pkg -target /
 
     - uses: r-hub/actions/setup-r-sysreqs@main
       with:
@@ -173,6 +174,7 @@ jobs:
         sudo rig add 4.2
         sudo rig add 4.3
         sudo rig add 4.4
+        sudo rig add 4.5
         sudo rig add release
         sudo rig add devel
         rig default release
@@ -229,7 +231,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.7.1/rig-windows-0.7.1.exe -OutFile rig-install.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.8.0/rig-windows-0.8.0.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install skopeo
@@ -354,9 +356,8 @@ jobs:
           - { os: 'freebsd', release: '15.0' }
           - { os: 'freebsd', release: '14.2' }
           - { os: 'freebsd', release: '13.4' }
-          - { os: 'openbsd', release: '7.6' }
-          - { os: 'openbsd', release: '7.5' }
-          - { os: 'openbsd', release: '7.4' }
+          - { os: 'openbsd', release: '7.8' }
+          - { os: 'openbsd', release: '7.7' }
           - { os: 'netbsd' }
           - { os: 'dragonflybsd' }
 

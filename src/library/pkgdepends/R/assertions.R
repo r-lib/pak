@@ -18,8 +18,37 @@ is_character <- function(x) {
   }
 }
 
+is_non_empty_character <- function(x) {
+  if (!is.character(x)) {
+    structure(
+      FALSE,
+      msg = "{.arg {(.arg)}} must be a non-empty character vector without {.code NA},
+             but it is {.type {x}}",
+      env = environment()
+    )
+  } else if (anyNA(x)) {
+    structure(
+      FALSE,
+      msg = "{.arg {(.arg)}} must be a non-empty character vector without {.code NA},
+             but it has {sum(is.na(x))} {.code NA} value{?s}.",
+      env = environment()
+    )
+  } else if (length(x) == 0) {
+    structure(
+      FALSE,
+      msg = "{.arg {(.arg)}} must be a non-empty character vector without {.code NA},
+             but it is empty.",
+      env = environment()
+    )
+  } else {
+    TRUE
+  }
+}
+
 is_string <- function(x) {
-  if (is.character(x) && length(x) == 1 && !is.na(x)) return(TRUE)
+  if (is.character(x) && length(x) == 1 && !is.na(x)) {
+    return(TRUE)
+  }
   if (is.character(x) && length(x) == 1 && is.na(x)) {
     structure(
       FALSE,
@@ -37,7 +66,9 @@ is_string <- function(x) {
 }
 
 is_optional_string <- function(x) {
-  if (is.null(x) || is_string(x)) return(TRUE)
+  if (is.null(x) || is_string(x)) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "{.arg {(.arg)}} must be a path (character scalar),
@@ -47,7 +78,9 @@ is_optional_string <- function(x) {
 }
 
 is_flag <- function(x) {
-  if (is.logical(x) && length(x) == 1 && !is.na(x)) return(TRUE)
+  if (is.logical(x) && length(x) == 1 && !is.na(x)) {
+    return(TRUE)
+  }
   if (is.logical(x) && length(x) == 1 && is.na(x)) {
     structure(
       FALSE,
@@ -67,7 +100,9 @@ is_flag <- function(x) {
 ## To be refined
 
 is_path <- function(x) {
-  if (is_string(x)) return(TRUE)
+  if (is_string(x)) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "{.arg {(.arg)}} must be a path (character scalar),
@@ -77,7 +112,9 @@ is_path <- function(x) {
 }
 
 is_optional_path <- function(x) {
-  if (is_optional_string(x)) return(TRUE)
+  if (is_optional_string(x)) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "{.arg {(.arg)}} must be a path (character scalar) or {.code NULL},
@@ -87,7 +124,9 @@ is_optional_path <- function(x) {
 }
 
 all_named <- function(x) {
-  if (length(names(x)) == length(x) && all(names(x) != "")) return(TRUE)
+  if (length(names(x)) == length(x) && all(names(x) != "")) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "All elements in {.arg {(.arg)}} must be named.",
@@ -202,7 +241,9 @@ is_r_version_list <- function(x) {
 }
 
 is_difftime <- function(x) {
-  if (inherits(x, "difftime")) return(TRUE)
+  if (inherits(x, "difftime")) {
+    return(TRUE)
+  }
   structure(
     FALSE,
     msg = "{.arg {(.arg)}} must be a {.cls difftime} object, but it is

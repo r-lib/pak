@@ -23,15 +23,43 @@
         },
         {
           "os": "linux",
-          "distribution": "rockylinux"
+          "distribution": "rockylinux",
+          "versions": ["9"]
         },
         {
           "os": "linux",
-          "distribution": "redhat"
+          "distribution": "redhat",
+          "versions": ["7", "8", "9"]
         },
         {
           "os": "linux",
           "distribution": "fedora"
+        }
+      ]
+    },
+    {
+      "packages": ["gtk2-devel"],
+      "pre_install": [
+        { "command": "dnf install -y epel-release" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["10"]
+        }
+      ]
+    },
+    {
+      "packages": ["gtk2-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

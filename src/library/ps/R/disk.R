@@ -1,4 +1,3 @@
-
 #' List all mounted partitions
 #'
 #' The output is similar the Unix `mount` and `df` commands.
@@ -26,7 +25,9 @@ ps_disk_partitions <- function(all = FALSE) {
     options = vapply(l, "[[", character(1), 4)
   )
 
-  if (!all) d <- ps__disk_partitions_filter(d)
+  if (!all) {
+    d <- ps__disk_partitions_filter(d)
+  }
 
   d
 }
@@ -42,7 +43,6 @@ ps__disk_partitions_filter <- function(pt) {
     ok <- pt$device != "none" & file.exists(pt$device) & pt$fstype %in% goodfs
     ok <- ok | pt$device %in% c("overlay", "grpcfuse")
     pt <- pt[ok, , drop = FALSE]
-
   } else if (os == "MACOS") {
     ok <- substr(pt$device, 1, 1) == "/" & file.exists(pt$device)
     pt <- pt[ok, , drop = FALSE]
@@ -69,7 +69,6 @@ ps__disk_partitions_filter <- function(pt) {
 #' @export
 #' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
 #' ps_disk_usage()
-
 
 ps_disk_usage <- function(paths = ps_disk_partitions()$mountpoint) {
   assert_character(paths)
@@ -104,7 +103,7 @@ ps__disk_usage_format_posix <- function(paths, l) {
     total <- fs[[5]] * fs[[1]]
     avail_to_root <- fs[[6]] * fs[[1]]
     avail = fs[[7]] * fs[[1]]
-    used  <-  total - avail_to_root
+    used <- total - avail_to_root
     total_user <- used + avail
     usage_percent <- used / total_user
     list(total = total, used = used, free = avail, percent = usage_percent)
@@ -176,7 +175,7 @@ ps__disk_io_counters_windows <- function() {
     busy_time = NA
   )
 
-  disk_info[disk_info$name != "",]
+  disk_info[disk_info$name != "", ]
 }
 
 ps__disk_io_counters_macos <- function() {
@@ -338,7 +337,10 @@ ps_fs_info <- function(paths = "/") {
   # this should not happen in practice, but just in case
   if (ps_os_type()[["LINUX"]] && any(is.na(df$type))) {
     miss <- which(is.na(df$type))
-    df$type[miss] <- linux_fs_types$name[match(df$type_code[miss], linux_fs_types$id)]
+    df$type[miss] <- linux_fs_types$name[match(
+      df$type_code[miss],
+      linux_fs_types$id
+    )]
   }
 
   df

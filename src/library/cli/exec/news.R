@@ -4,41 +4,46 @@ setup_app <- function() {
   theme <- list(
     "url" = list(color = "blue"),
     ".pkg" = list(color = "orange"),
-    "it" = list("margin-bottom" = 1))
+    "it" = list("margin-bottom" = 1)
+  )
   start_app(theme = theme, output = "stdout")
 }
 
 load_packages <- function() {
-  tryCatch({
-    library(cli)
-    library(httr)
-    library(jsonlite)
-    library(prettyunits)
-    library(glue)
-    library(parsedate)
-    library(docopt) },
+  tryCatch(
+    {
+      library(cli)
+      library(httr)
+      library(jsonlite)
+      library(prettyunits)
+      library(glue)
+      library(parsedate)
+      library(docopt)
+    },
     error = function(e) {
       cli_alert_danger(
-            "The {.pkg glue}, {.pkg httr}, {.pkg jsonlite}, {.pkg prettyunits},",
-            " {.pkg parsedate} and {.pkg docopt} packages are needed!")
+        "The {.pkg glue}, {.pkg httr}, {.pkg jsonlite}, {.pkg prettyunits},",
+        " {.pkg parsedate} and {.pkg docopt} packages are needed!"
+      )
       q(save = "no", status = 1)
-    })
+    }
+  )
 }
 
-news <- function(n = 10, day = FALSE, week = FALSE, since = NULL,
-                 reverse = FALSE) {
-
+news <- function(
+  n = 10,
+  day = FALSE,
+  week = FALSE,
+  since = NULL,
+  reverse = FALSE
+) {
   load_packages()
   setup_app()
-  
-  result <- if (day)
-    news_day()
-  else if (week)
-    news_week()
-  else if (!is.null(since))
-    news_since(since)
-  else
-    news_n(as.numeric(n))
+
+  result <- if (day) news_day() else if (week) news_week() else if (
+    !is.null(since)
+  )
+    news_since(since) else news_n(as.numeric(n))
 
   if (reverse) result <- rev(result)
 
@@ -47,13 +52,13 @@ news <- function(n = 10, day = FALSE, week = FALSE, since = NULL,
 }
 
 news_day <- function() {
-  date <- format_iso_8601(Sys.time() - as.difftime(1, units="days"))
+  date <- format_iso_8601(Sys.time() - as.difftime(1, units = "days"))
   ep <- glue("/-/pkgreleases?descending=true&endkey=%22{date}%22")
   do_query(ep)
 }
 
 news_week <- function() {
-  date <- format_iso_8601(Sys.time() - as.difftime(7, units="days"))
+  date <- format_iso_8601(Sys.time() - as.difftime(7, units = "days"))
   ep <- glue("/-/pkgreleases?descending=true&endkey=%22{date}%22")
   do_query(ep)
 }
@@ -84,7 +89,6 @@ format_results <- function(results) {
 }
 
 parse_arguments <- function() {
-
   "Usage:
   news.R [-r | --reverse] [-n num ]
   news.R [-r | --reverse] --day | --week | --since date
@@ -93,7 +97,7 @@ parse_arguments <- function() {
 Options:
   -n num        Show the last 'n' releases [default: 10].
   --day         Show releases in the last 24 hours
-  --week        Show relaases in the last 7 * 24 hours
+  --week        Show releases in the last 7 * 24 hours
   --since date  Show releases since 'date'
   -r --reverse  Reverse the order, show older on top
   -h --help     Print this help message
@@ -109,8 +113,10 @@ format_result <- function(result) {
   ago <- vague_dt(Sys.time() - parse_iso_8601(result$date))
   url <- paste0("https://r-pkg.org/pkg/", pkg$Package)
   cli_li()
-  cli_text("{.pkg {pkg$Package}} {pkg$Version} --
-           {ago} by {.emph {pkg$Maintainer}}")
+  cli_text(
+    "{.pkg {pkg$Package}} {pkg$Version} --
+           {ago} by {.emph {pkg$Maintainer}}"
+  )
   cli_text("{pkg$Title}")
   cli_text("{.url {url}}")
 }

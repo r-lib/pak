@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------
 
 #' @title Progress bar variables
@@ -687,18 +686,19 @@ var_helper2 <- function(expr, clear = TRUE, delay = 0, ...) {
 
 # TODO: examples
 
-cli_progress_demo <- function(name = NULL, status = NULL,
-                              type = c("iterator", "tasks",
-                                       "download", "custom"),
-                              total = NA,
-                              .envir = parent.frame(),
-                              ...,
-                              at = if (is_interactive()) NULL else 50,
-                              show_after = 0,
-                              live = NULL,
-                              delay = 0,
-                              start = as.difftime(5, units = "secs")) {
-
+cli_progress_demo <- function(
+  name = NULL,
+  status = NULL,
+  type = c("iterator", "tasks", "download", "custom"),
+  total = NA,
+  .envir = parent.frame(),
+  ...,
+  at = if (is_interactive()) NULL else 50,
+  show_after = 0,
+  live = NULL,
+  delay = 0,
+  start = as.difftime(5, units = "secs")
+) {
   opt <- options(cli.progress_show_after = show_after)
   on.exit(options(opt), add = TRUE)
 
@@ -731,21 +731,24 @@ cli_progress_demo <- function(name = NULL, status = NULL,
   on.exit(close(output), add = TRUE)
   size <- 0L
 
-  withCallingHandlers({
-    for (crnt in at) {
-      cli_progress_update(set = crnt, id = id, force = TRUE, .envir = .envir)
-      if (delay > 0) Sys.sleep(delay)
+  withCallingHandlers(
+    {
+      for (crnt in at) {
+        cli_progress_update(set = crnt, id = id, force = TRUE, .envir = .envir)
+        if (delay > 0) Sys.sleep(delay)
+      }
+      if (last) {
+        cli_progress_done(id = id, .envir = .envir)
+      } else {
+        suppressMessages(cli_progress_done(id = id, .envir = .envir))
+      }
+    },
+    cliMessage = function(msg) {
+      cat(file = output, msg$message)
+      size <<- size + nchar(msg$message, type = "bytes")
+      if (!live) invokeRestart("muffleMessage")
     }
-    if (last) {
-      cli_progress_done(id = id, .envir = .envir)
-    } else {
-      suppressMessages(cli_progress_done(id = id, .envir = .envir))
-    }
-  }, cliMessage = function(msg) {
-    cat(file = output, msg$message)
-    size <<- size + nchar(msg$message, type = "bytes")
-    if (!live) invokeRestart("muffleMessage")
-  })
+  )
 
   lines <- readChar(output, size, useBytes = TRUE)
   lines <- sub_("^\r\r*", "", lines, useBytes = TRUE)

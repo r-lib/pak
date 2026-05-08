@@ -60,7 +60,13 @@ tojson <- local({
         row <- as.list(x[i, ])
         row <- filter(row, function(v) !(is.atomic(v) && is.na(v)))
         row[] <- lapply(row, function(v) {
-          if (is.atomic(v)) unbox(v) else if (is.list(v)) v[[1]] else v
+          if (is.atomic(v)) {
+            unbox(v)
+          } else if (is.list(v)) {
+            v[[1]]
+          } else {
+            v
+          }
         })
         j_list(row, opts)
       })

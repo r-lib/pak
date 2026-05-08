@@ -1,4 +1,3 @@
-
 #' Update the status bar (superseded)
 #'
 #' @description
@@ -50,12 +49,15 @@
 #' @family functions supporting inline markup
 #' @export
 
-cli_status <- function(msg, msg_done = paste(msg, "... done"),
-                       msg_failed = paste(msg, "... failed"),
-                       .keep = FALSE, .auto_close = TRUE,
-                       .envir = parent.frame(),
-                       .auto_result = c("clear", "done", "failed", "auto")) {
-
+cli_status <- function(
+  msg,
+  msg_done = paste(msg, "... done"),
+  msg_failed = paste(msg, "... failed"),
+  .keep = FALSE,
+  .auto_close = TRUE,
+  .envir = parent.frame(),
+  .auto_result = c("clear", "done", "failed", "auto")
+) {
   id <- new_uuid()
   cli__message(
     "status",
@@ -103,17 +105,21 @@ cli_status <- function(msg, msg_done = paste(msg, "... done"),
 #'   functions, for a superior API.
 #' @export
 
-cli_status_clear <- function(id = NULL, result = c("clear", "done", "failed"),
-                             msg_done = NULL, msg_failed = NULL,
-                             .envir = parent.frame()) {
-
+cli_status_clear <- function(
+  id = NULL,
+  result = c("clear", "done", "failed"),
+  msg_done = NULL,
+  msg_failed = NULL,
+  .envir = parent.frame()
+) {
   cli__message(
     "status_clear",
     list(
       id = id %||% NA_character_,
       result = match.arg(result[1], c("clear", "done", "failed", "auto")),
       msg_done = if (!is.null(msg_done)) glue_cmd(msg_done, .envir = .envir),
-      msg_failed = if (!is.null(msg_failed)) glue_cmd(msg_failed, .envir = .envir)
+      msg_failed = if (!is.null(msg_failed))
+        glue_cmd(msg_failed, .envir = .envir)
     )
   )
 }
@@ -145,14 +151,20 @@ cli_status_clear <- function(id = NULL, result = c("clear", "done", "failed"),
 #' @family functions supporting inline markup
 #' @export
 
-cli_status_update <- function(id = NULL, msg = NULL, msg_done = NULL,
-                              msg_failed = NULL, .envir = parent.frame()) {
+cli_status_update <- function(
+  id = NULL,
+  msg = NULL,
+  msg_done = NULL,
+  msg_failed = NULL,
+  .envir = parent.frame()
+) {
   cli__message(
     "status_update",
     list(
       msg = if (!is.null(msg)) glue_cmd(msg, .envir = .envir),
       msg_done = if (!is.null(msg_done)) glue_cmd(msg_done, .envir = .envir),
-      msg_failed = if (!is.null(msg_failed)) glue_cmd(msg_failed, .envir = .envir),
+      msg_failed = if (!is.null(msg_failed))
+        glue_cmd(msg_failed, .envir = .envir),
       id = id %||% NA_character_
     )
   )
@@ -224,14 +236,17 @@ cli_status_update <- function(id = NULL, msg = NULL, msg_done = NULL,
 #' }
 #' fun2()
 
-cli_process_start <- function(msg, msg_done = paste(msg, "... done"),
-                              msg_failed = paste(msg, "... failed"),
-                              on_exit = c("auto", "failed", "done"),
-                              msg_class = "alert-info",
-                              done_class = "alert-success",
-                              failed_class = "alert-danger",
-                              .auto_close = TRUE, .envir = parent.frame()) {
-
+cli_process_start <- function(
+  msg,
+  msg_done = paste(msg, "... done"),
+  msg_failed = paste(msg, "... failed"),
+  on_exit = c("auto", "failed", "done"),
+  msg_class = "alert-info",
+  done_class = "alert-success",
+  failed_class = "alert-danger",
+  .auto_close = TRUE,
+  .envir = parent.frame()
+) {
   # Force the defaults, because we might modify msg
   msg_done
   msg_failed
@@ -246,8 +261,14 @@ cli_process_start <- function(msg, msg_done = paste(msg, "... done"),
     msg_failed <- paste0("{.", failed_class, " ", msg_failed, "}")
   }
 
-  cli_status(msg, msg_done, msg_failed, .auto_close = .auto_close,
-             .envir = .envir, .auto_result = match.arg(on_exit))
+  cli_status(
+    msg,
+    msg_done,
+    msg_failed,
+    .auto_close = .auto_close,
+    .envir = .envir,
+    .auto_result = match.arg(on_exit)
+  )
 }
 
 #' @param id Id of the status bar container to clear. If `id` is not the id
@@ -258,10 +279,12 @@ cli_process_start <- function(msg, msg_done = paste(msg, "... done"),
 #' @rdname cli_process_start
 #' @export
 
-cli_process_done <- function(id = NULL, msg_done = NULL,
-                             .envir = parent.frame(),
-                             done_class = "alert-success") {
-
+cli_process_done <- function(
+  id = NULL,
+  msg_done = NULL,
+  .envir = parent.frame(),
+  done_class = "alert-success"
+) {
   if (!is.null(msg_done) && length(done_class) > 0 && done_class != "") {
     msg_done <- paste0("{.", done_class, " ", msg_done, "}")
   }
@@ -271,11 +294,14 @@ cli_process_done <- function(id = NULL, msg_done = NULL,
 #' @rdname cli_process_start
 #' @export
 
-cli_process_failed <- function(id = NULL, msg = NULL, msg_failed = NULL,
-                               .envir = parent.frame(),
-                               failed_class = "alert-danger") {
-  if (!is.null(msg_failed) && length(failed_class) > 0 &&
-      failed_class != "") {
+cli_process_failed <- function(
+  id = NULL,
+  msg = NULL,
+  msg_failed = NULL,
+  .envir = parent.frame(),
+  failed_class = "alert-danger"
+) {
+  if (!is.null(msg_failed) && length(failed_class) > 0 && failed_class != "") {
     msg_failed <- paste0("{.", failed_class, " ", msg_failed, "}")
   }
   cli_status_clear(
@@ -288,9 +314,16 @@ cli_process_failed <- function(id = NULL, msg = NULL, msg_failed = NULL,
 
 # -----------------------------------------------------------------------
 
-clii_status <- function(app, id, msg, msg_done, msg_failed, keep,
-                        auto_result, globalenv) {
-
+clii_status <- function(
+  app,
+  id,
+  msg,
+  msg_done,
+  msg_failed,
+  keep,
+  auto_result,
+  globalenv
+) {
   app$status_bar[[id]] <- list(
     content = "",
     msg_done = msg_done,
@@ -310,7 +343,7 @@ clii_status_clear <- function(app, id, result, msg_done, msg_failed) {
 
   ## If no active status bar, then ignore
   if (is.null(id) || is.na(id)) return(invisible())
-  if (! id %in% names(app$status_bar)) return(invisible())
+  if (!id %in% names(app$status_bar)) return(invisible())
 
   if (result == "auto") {
     r1 <- random_marker
@@ -336,7 +369,6 @@ clii_status_clear <- function(app, id, result, msg_done, msg_failed) {
     if (app$status_bar[[id]]$keep) {
       ## Keep? Just emit it
       app$cat("\n")
-
     } else {
       ## Not keep? Remove it
       clii__clear_status_bar(app)
@@ -344,14 +376,12 @@ clii_status_clear <- function(app, id, result, msg_done, msg_failed) {
     if (isTRUE(getOption("cli.hide_cursor", TRUE))) {
       ansi_show_cursor(app$output)
     }
-
   } else {
     if (app$status_bar[[id]]$keep) {
       ## Keep?
       clii__clear_status_bar(app)
       app$cat(paste0(app$status_bar[[id]]$content, "\n"))
       app$cat(paste0(app$status_bar[[1]]$content, "\r"))
-
     } else {
       ## Not keep? Nothing to output
     }
@@ -394,7 +424,8 @@ clii_status_update <- function(app, id, msg, msg_done, msg_failed) {
   app$status_bar[[id]]$content <- content
   app$status_bar <- c(
     app$status_bar[id],
-    app$status_bar[setdiff(names(app$status_bar), id)])
+    app$status_bar[setdiff(names(app$status_bar), id)]
+  )
 
   ## New content, if it is an ANSI terminal we'll overwrite and clear
   ## until the end of the line. Otherwise we add some space characters

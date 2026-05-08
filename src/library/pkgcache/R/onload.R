@@ -133,7 +133,17 @@ pkgenv$r_versions <- list(
   list(version = "4.2.1", date = "2022-06-23T07:05:33.441356Z"),
   list(version = "4.2.2", date = "2022-10-31T08:05:54.268400Z"),
   list(version = "4.2.3", date = "2023-03-15T08:06:01.008593Z"),
-  list(version = "4.3.0", date = "2023-04-21T07:06:14.217164Z")
+  list(version = "4.3.0", date = "2023-04-21T07:06:14.217164Z"),
+  list(version = "4.3.1", date = "2023-06-16T07:06:07.136907Z"),
+  list(version = "4.3.2", date = "2023-10-31T08:07:42.870278Z"),
+  list(version = "4.3.3", date = "2024-02-29T08:07:53.267099Z"),
+  list(version = "4.4.0", date = "2024-04-24T04:07:56.437077Z"),
+  list(version = "4.4.1", date = "2024-06-14T07:08:17.306650Z"),
+  list(version = "4.4.2", date = "2024-10-31T08:09:02.717743Z"),
+  list(version = "4.4.3", date = "2025-02-28T08:08:59.188927Z"),
+  list(version = "4.5.0", date = "2025-04-11T08:51:39.256539Z"),
+  list(version = "4.5.1", date = "2025-06-13T07:12:01.900745Z"),
+  list(version = "4.5.1", date = "2025-10-31T08:13:34.137531Z")
 )
 
 canonicalize_ppm_platforms <- function(distros) {
@@ -220,6 +230,7 @@ pkgenv$ppm_distros_cached <-
  centos7                 linux   centos7        centos       7         TRUE
  centos8                 linux   centos8        centos       8         TRUE
  rhel9                   linux   rhel9          rockylinux   9         TRUE
+ rhel10                  linux   rhel10         rockylinux   10        TRUE
  opensuse15              linux   opensuse15     opensuse     15        TRUE
  opensuse152             linux   opensuse152    opensuse     15.2      TRUE
  opensuse153             linux   opensuse153    opensuse     15.3      TRUE
@@ -230,6 +241,7 @@ pkgenv$ppm_distros_cached <-
  rhel7                   linux   centos7        redhat       7         TRUE
  rhel8                   linux   centos8        redhat       8         TRUE
 \"rhel9 (unused alias)\" linux   rhel9          redhat       9         TRUE
+\"rhel10 (unused alias)\" linux  rhel10         redhat       10        TRUE
  sles12                  linux   opensuse42     sle          12.3      TRUE
  sles15                  linux   opensuse15     sle          15        TRUE
  sles152                 linux   opensuse152    sle          15.2      TRUE
@@ -245,6 +257,7 @@ pkgenv$ppm_distros_cached <-
  buster                  linux   buster         debian       10        FALSE
  bullseye                linux   bullseye       debian       11        TRUE
  bookworm                linux   bookworm       debian       12        TRUE
+ trixie                  linux   trixie         debian       13        TRUE
  windows                 windows \"\"           windows      all       TRUE
  macos                   macos   \"\"           macos        all       TRUE
  manylinux_2_28         linux    manylinux_2_28 centos       8         TRUE

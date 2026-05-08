@@ -3,7 +3,9 @@ snapshot <- function(x, width = Inf, ...) {
 }
 
 snapshot.default <- function(x, width = Inf, ...) {
-  if (width == Inf) width <- 10000
+  if (width == Inf) {
+    width <- 10000
+  }
   print(x, width = width, ...)
 }
 
@@ -66,12 +68,16 @@ format.remote_ref <- function(x, ...) {
 }
 
 format.pkg_metadata <- function(x, ...) {
-  if (length(x) == 0) return("-")
+  if (length(x) == 0) {
+    return("-")
+  }
   paste0(names(x), ": ", vcapply(x, format), collapse = "; ")
 }
 
 format_error <- function(x, ...) {
-  if (length(x) == 0) return("-")
+  if (length(x) == 0) {
+    return("-")
+  }
   paste0(
     "<",
     paste0(class(x), collapse = "/"),

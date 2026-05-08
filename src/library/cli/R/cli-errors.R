@@ -1,6 +1,10 @@
-
-cli_error <- function(..., .data = NULL, .class = NULL, .envir = parent.frame(),
-                      call. = TRUE) {
+cli_error <- function(
+  ...,
+  .data = NULL,
+  .class = NULL,
+  .envir = parent.frame(),
+  call. = TRUE
+) {
   .hide_from_trace <- TRUE
   cnd <- new_error(
     call. = call.,
@@ -18,8 +22,12 @@ cli_error <- function(..., .data = NULL, .class = NULL, .envir = parent.frame(),
   cnd
 }
 
-stop_if_not <- function(message, ..., .envir = parent.frame(),
-                        call. = sys.call(-1)) {
+stop_if_not <- function(
+  message,
+  ...,
+  .envir = parent.frame(),
+  call. = sys.call(-1)
+) {
   conds <- list(...)
   for (cond in conds) {
     if (!cond) {

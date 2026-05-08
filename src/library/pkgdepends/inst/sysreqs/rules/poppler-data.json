@@ -1,0 +1,61 @@
+{
+  "patterns": ["\\bpoppler-data\\b"],
+  "dependencies": [
+    {
+      "packages": ["poppler-data"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu"
+        },
+        {
+          "os": "linux",
+          "distribution": "debian"
+        }
+      ]
+    },
+    {
+      "packages": ["poppler-data"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos"
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux"
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat"
+        },
+        {
+          "os": "linux",
+          "distribution": "fedora"
+        }
+      ]
+    },
+    {
+      "packages": ["poppler-data"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "opensuse"
+        },
+        {
+          "os": "linux",
+          "distribution": "sle"
+        }
+      ]
+    },
+    {
+      "packages": ["poppler-data"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "alpine"
+        }
+      ]
+    }
+  ]
+}

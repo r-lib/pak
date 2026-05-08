@@ -206,8 +206,9 @@ list_symbols <- function() {
   chars <- rpad(paste0(symbol, "\t", names(symbol)), 25)
   if (length(chars) %% 2) chars <- c(chars, "")
   chars <- paste(
-  sep = "   ",
-  chars[1:(length(chars)/2)],
-  chars[(length(chars)/2 + 1):length(chars)])
+    sep = "   ",
+    chars[1:(length(chars) / 2)],
+    chars[(length(chars) / 2 + 1):length(chars)]
+  )
   cat(chars, sep = "\n")
 }

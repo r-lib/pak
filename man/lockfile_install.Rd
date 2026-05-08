@@ -11,7 +11,7 @@ lockfile_install(lockfile = "pkg.lock", lib = .libPaths()[1], update = TRUE)
 
 \item{lib}{Library to carry out the installation on.}
 
-\item{update}{Whether to online install the packages that
+\item{update}{Whether to only install the packages that
 either not installed in \code{lib}, or a different version is installed
 for them.}
 }

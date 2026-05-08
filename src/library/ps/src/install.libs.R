@@ -1,9 +1,8 @@
-
 progs <- if (WINDOWS) {
-           c("px.exe", "interrupt.exe")
-         } else {
-           "px"
-         }
+  c("px.exe", "interrupt.exe")
+} else {
+  "px"
+}
 
 dest <- file.path(R_PACKAGE_DIR, paste0("bin", R_ARCH))
 dir.create(dest, recursive = TRUE, showWarnings = FALSE)

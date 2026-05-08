@@ -1,4 +1,3 @@
-
 #' Signal an error, warning or message with a cli formatted
 #' message
 #'
@@ -36,11 +35,13 @@
 #' @family functions supporting inline markup
 #' @export
 
-cli_abort <- function(message,
-                      ...,
-                      call = .envir,
-                      .envir = parent.frame(),
-                      .frame = .envir) {
+cli_abort <- function(
+  message,
+  ...,
+  call = .envir,
+  .envir = parent.frame(),
+  .frame = .envir
+) {
   message[] <- vcapply(message, format_inline, .envir = .envir)
   rlang::abort(
     message,

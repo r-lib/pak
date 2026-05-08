@@ -2,7 +2,12 @@
   "patterns": ["\\brust\\b", "\\brustc\\b", "\\bcargo\\b"],
   "dependencies": [
     {
-      "packages": ["rustc", "cargo"],
+      "pre_install": [
+        {
+          "command": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --no-modify-path -y"
+        }
+      ],
+      "packages": [],
       "constraints": [
         {
           "os": "linux",
@@ -11,84 +16,31 @@
         {
           "os": "linux",
           "distribution": "debian"
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "pre_install": [
-        {
-          "command": "yum install -y epel-release"
-        }
-      ],
-      "constraints": [
+        },
         {
           "os": "linux",
-          "distribution": "centos",
-          "versions": ["7"]
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "pre_install": [
-        {
-          "command": "dnf install -y epel-release"
-        }
-      ],
-      "constraints": [
+          "distribution": "centos"
+        },
         {
           "os": "linux",
-          "distribution": "centos",
-          "versions": ["8"]
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "pre_install": [
-        {
-          "command": "rpm -q epel-release || yum install -y https://archives.fedoraproject.org/pub/archive/epel/7/x86_64/Packages/e/epel-release-7-14.noarch.rpm"
-        }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["7"]
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "constraints": [
+          "distribution": "redhat"
+        },
         {
           "os": "linux",
           "distribution": "rockylinux"
         },
         {
           "os": "linux",
-          "distribution": "redhat",
-          "versions": ["8", "9"]
+          "distribution": "fedora"
         },
         {
           "os": "linux",
-          "distribution": "fedora"
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "constraints": [
+          "distribution": "opensuse"
+        },
         {
           "os": "linux",
-          "distribution": "opensuse"
-        }
-      ]
-    },
-    {
-      "packages": ["rust", "cargo"],
-      "constraints": [
+          "distribution": "sle"
+        },
         {
           "os": "linux",
           "distribution": "alpine"

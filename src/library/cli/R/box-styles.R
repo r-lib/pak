@@ -1,14 +1,12 @@
-
 box_styles <- function() {
-
   styles <- list(
     single = list(
-      top_left     = "\u250c",
-      top_right    = "\u2510",
+      top_left = "\u250c",
+      top_right = "\u2510",
       bottom_right = "\u2518",
-      bottom_left  = "\u2514",
-      vertical    = "\u2502",
-      horizontal  = "\u2500"
+      bottom_left = "\u2514",
+      vertical = "\u2502",
+      horizontal = "\u2500"
     ),
     double = list(
       top_left = "\u2554",
@@ -18,7 +16,7 @@ box_styles <- function() {
       vertical = "\u2551",
       horizontal = "\u2550"
     ),
-    round= list(
+    round = list(
       top_left = "\u256d",
       top_right = "\u256e",
       bottom_right = "\u256f",

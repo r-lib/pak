@@ -1,17 +1,19 @@
-
 add_child <- function(x, tag, ...) {
   push(x, list(tag = tag, ...))
 }
 
-clii__container_start <- function(app, tag, class = NULL,
-                                  id = NULL, theme = NULL) {
-
+clii__container_start <- function(
+  app,
+  tag,
+  class = NULL,
+  id = NULL,
+  theme = NULL
+) {
   id <- id %||% new_uuid()
   if (!length(class)) class <- ""
   class <- setdiff(unique(strsplit(class, " ", fixed = TRUE)[[1]]), "")
 
-  app$doc <- add_child(app$doc, tag, id = id, class = class,
-                           theme = theme)
+  app$doc <- add_child(app$doc, tag, id = id, class = class, theme = theme)
 
   ## Go over all themes, and collect the selectors that match the
   ## current element
@@ -54,10 +56,10 @@ clii__container_end <- function(app, id) {
   }
 
   ## ids to remove
-  del_ids <- unlist(lapply(utils::tail(app$doc, - (wh - 1L)), "[[", "id"))
+  del_ids <- unlist(lapply(utils::tail(app$doc, -(wh - 1L)), "[[", "id"))
 
   ## themes to remove
-  del_thm <- unlist(lapply(utils::tail(app$doc, - (wh - 1L)), "[[", "theme"))
+  del_thm <- unlist(lapply(utils::tail(app$doc, -(wh - 1L)), "[[", "theme"))
 
   ## Remove the whole subtree of 'cnt'
   app$doc <- utils::head(app$doc, wh - 1L)
@@ -103,19 +105,28 @@ clii_par <- function(app, id, class) {
 
 clii_ul <- function(app, items, id, class, .close) {
   id <- clii__container_start(app, "ul", id = id, class = class)
-  if (length(items)) { app$li(items); if (.close) app$end(id) }
+  if (length(items)) {
+    app$li(items)
+    if (.close) app$end(id)
+  }
   invisible(id)
 }
 
 clii_ol <- function(app, items, id, class, .close) {
   id <- clii__container_start(app, "ol", id = id, class = class)
-  if (length(items)) { app$li(items); if (.close) app$end(id) }
+  if (length(items)) {
+    app$li(items)
+    if (.close) app$end(id)
+  }
   invisible(id)
 }
 
 clii_dl <- function(app, items, labels, id, class, .close) {
   id <- clii__container_start(app, "dl", id = id, class = class)
-  if (length(items)) { app$li(items, labels); if (.close) app$end(id) }
+  if (length(items)) {
+    app$li(items, labels)
+    if (.close) app$end(id)
+  }
   invisible(id)
 }
 
@@ -124,13 +135,15 @@ clii_li <- function(app, items, labels, id, class) {
 
   ## check the last active list container
   last <- length(app$doc)
-  while (! app$doc[[last]]$tag %in% c("ul", "ol", "dl", "body")) {
+  while (!app$doc[[last]]$tag %in% c("ul", "ol", "dl", "body")) {
     last <- last - 1L
   }
 
   ## if not the last container, close the ones below it
-  if (app$doc[[last]]$tag != "body" &&
-      last != length(app$doc)) {
+  if (
+    app$doc[[last]]$tag != "body" &&
+      last != length(app$doc)
+  ) {
     app$end(app$doc[[last + 1L]]$id)
   }
 
@@ -158,7 +171,6 @@ clii_li <- function(app, items, labels, id, class) {
 }
 
 clii__item_text <- function(app, type, name, cnt_id, text, .list) {
-
   style <- app$get_current_style()
   cnt_style <- app$styles[[cnt_id]]
 
@@ -179,7 +191,7 @@ clii__item_text <- function(app, type, name, cnt_id, text, .list) {
 
   app$xtext(
     .list = c(list(head), list(text), .list),
-    indent = - (style$`padding-left` %||% 0),
+    indent = -(style$`padding-left` %||% 0),
     padding = (cnt_style$`padding-left` %||% 0)
   )
 }

@@ -1,5 +1,28 @@
 # pak (development version)
 
+# pak 0.9.5
+
+* Vector valued library path now works correctly in `lockfile_create()`
+  (#864, #868).
+
+* pak now handles better PPM binaries on private PPM instances (#863).
+
+# pak 0.9.4
+
+* pak now works again with custom HTTPS certificates (#647, @tl-hbk).
+
+# pak 0.9.3
+
+* Setting `use_bioconductor = FALSE` (i.e. the `PKG_USE_BIOCONDUCTOR`
+  env var, or the `pkg.use_bioconductor` option) now truly prevents
+  any network contact with Bioconductor.
+
+* pak now supports macOS binaries on R 4.6.x and later.
+
+* pak can now consider installed packages in mutliple
+  libraries, when installing packages. Pass a character vector
+  of library path as the `lib` argument of `pkg_install()`.
+
 # pak 0.9.2
 
 * No user visible changes.
@@ -156,7 +179,7 @@ No changes.
 
 * In `repo_add()` and `repo_resolve()` the `MRAN@` prefix is now deprecated
   and resolves to PPM, because MRAN will be retired soon. See more at
-  <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
+  <https://posit.co/blog/migrating-from-mran-to-posit-package-manager>.
 
 * The metadata cache now has `SystemRequirements` information for Bioconductor
   packages.

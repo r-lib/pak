@@ -61,6 +61,19 @@
     {
       "packages": ["netcdf-devel"],
       "pre_install": [
+        { "command": "dnf install -y epel-release" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["9", "10"]
+        }
+      ]
+    },
+    {
+      "packages": ["netcdf-devel"],
+      "pre_install": [
         {
           "command": "rpm -q epel-release || yum install -y https://archives.fedoraproject.org/pub/archive/epel/6/x86_64/epel-release-6-8.noarch.rpm"
         }
@@ -98,6 +111,19 @@
           "os": "linux",
           "distribution": "redhat",
           "versions": ["9"]
+        }
+      ]
+    },
+    {
+      "packages": ["netcdf-devel"],
+      "pre_install": [
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["10"]
         }
       ]
     },

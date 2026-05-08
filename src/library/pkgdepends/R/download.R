@@ -18,7 +18,9 @@
 NULL
 
 pkgplan_download_resolution <- function(self, private) {
-  if (is.null(private$resolution)) self$resolve()
+  if (is.null(private$resolution)) {
+    self$resolve()
+  }
   if (private$dirty) {
     throw(pkg_error(
       "Package list has changed, you need to call the {.code $resolve()}
@@ -34,7 +36,9 @@ pkgplan_download_resolution <- function(self, private) {
 pkgplan_async_download_resolution <- function(self, private) {
   self
   private
-  if (is.null(private$resolution)) self$resolve()
+  if (is.null(private$resolution)) {
+    self$resolve()
+  }
   if (private$dirty) {
     throw(pkg_error(
       "Package list has changed, you need to call the {.code $resolve()}
@@ -54,7 +58,9 @@ pkgplan_async_download_resolution <- function(self, private) {
 }
 
 pkgplan_download_solution <- function(self, private) {
-  if (is.null(private$solution)) self$solve()
+  if (is.null(private$solution)) {
+    self$solve()
+  }
   if (private$dirty) {
     throw(pkg_error(
       "Package list has changed, you need to call the {.code $resolve()}
@@ -68,7 +74,9 @@ pkgplan_download_solution <- function(self, private) {
 }
 
 pkgplan_async_download_solution <- function(self, private) {
-  if (is.null(private$solution)) self$solve()
+  if (is.null(private$solution)) {
+    self$solve()
+  }
   if (private$dirty) {
     throw(pkg_error(
       "Package list has changed, you need to call the {.code $resolve()}
@@ -200,8 +208,9 @@ download_remote <- function(
     }
 
     dlres <- res
-    if (!grepl("^Had", s) && !identical(s, "Got") && !identical(s, "Current"))
+    if (!grepl("^Had", s) && !identical(s, "Got") && !identical(s, "Current")) {
       s <- "Got"
+    }
     if (grepl("^Had-binary-", s)) {
       dlres$used_cached_binary <- TRUE
       s <- "Had"
@@ -360,12 +369,16 @@ download_ping_if_no_sha <- function(
 }
 
 pkgplan_get_resolution_download <- function(self, private) {
-  if (is.null(private$downloads)) stop("No downloads")
+  if (is.null(private$downloads)) {
+    stop("No downloads")
+  }
   private$downloads
 }
 
 pkgplan_get_solution_download <- function(self, private) {
-  if (is.null(private$solution_downloads)) stop("No downloads")
+  if (is.null(private$solution_downloads)) {
+    stop("No downloads")
+  }
   private$solution_downloads
 }
 

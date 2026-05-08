@@ -58,7 +58,7 @@ warn_for_loaded_packages_emit <- function(pkgs) {
 # -- Windows ---------------------------------------------------------
 
 warn_for_loaded_packages_win <- function(pkgs, lib, loaded, pid = NULL) {
-  locked <- get_locked_libs(lib, pkgs)
+  locked <- get_locked_libs(lib[1], pkgs)
   current <- loaded_status_current(pkgs, loaded, locked, pid = pid)
   others <- loaded_status_others(locked, pid = pid)
   status <- list(

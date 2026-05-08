@@ -53,8 +53,8 @@ Status of packages in a library
 \seealso{
 Other package functions: 
 \code{\link{pak}()},
-\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_deps}()},
+\code{\link{pkg_deps_tree}()},
 \code{\link{pkg_download}()},
 \code{\link{pkg_install}()},
 \code{\link{pkg_remove}()},

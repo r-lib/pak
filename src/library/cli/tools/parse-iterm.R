@@ -1,4 +1,3 @@
-
 parse_iterm <- function(path) {
   doc <- xml2::read_xml(path)
   elm <- xml2::xml_find_first(doc, "/plist/dict")
@@ -15,7 +14,7 @@ parse_iterm <- function(path) {
       xml2::xml_find_all(v, "key"),
       xml2::xml_text
     )
-    if (! "Color Space" %in% vks) stop("Unknown color space")
+    if (!"Color Space" %in% vks) stop("Unknown color space")
     chd <- xml2::xml_children(v)
     csp <- xml2::xml_text(
       chd[[which(vks == "Color Space") * 2]]
@@ -31,22 +30,22 @@ parse_iterm <- function(path) {
   data.frame(
     stringsAsFactors = FALSE,
     row.names = paste0("iterm-", rn),
-    black    = get("Ansi 0 Color"),
-    red      = get("Ansi 1 Color"),
-    green    = get("Ansi 2 Color"),
-    yellow   = get("Ansi 3 Color"),
-    blue     = get("Ansi 4 Color"),
-    magenta  = get("Ansi 5 Color"),
-    cyan     = get("Ansi 6 Color"),
-    white    = get("Ansi 7 Color"),
-    bblack   = get("Ansi 8 Color"),
-    bred     = get("Ansi 9 Color"),
-    bgreen   = get("Ansi 10 Color"),
-    byellow  = get("Ansi 11 Color"),
-    bblue    = get("Ansi 12 Color"),
+    black = get("Ansi 0 Color"),
+    red = get("Ansi 1 Color"),
+    green = get("Ansi 2 Color"),
+    yellow = get("Ansi 3 Color"),
+    blue = get("Ansi 4 Color"),
+    magenta = get("Ansi 5 Color"),
+    cyan = get("Ansi 6 Color"),
+    white = get("Ansi 7 Color"),
+    bblack = get("Ansi 8 Color"),
+    bred = get("Ansi 9 Color"),
+    bgreen = get("Ansi 10 Color"),
+    byellow = get("Ansi 11 Color"),
+    bblue = get("Ansi 12 Color"),
     bmagenta = get("Ansi 13 Color"),
-    bcyan    = get("Ansi 14 Color"),
-    bwhite   = get("Ansi 15 Color")
+    bcyan = get("Ansi 14 Color"),
+    bwhite = get("Ansi 15 Color")
   )
 }
 

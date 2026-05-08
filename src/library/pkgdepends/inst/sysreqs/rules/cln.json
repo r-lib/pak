@@ -1,0 +1,28 @@
+{
+  "patterns": ["\\bcln\\b", "\\bCLN\\b", "\\blibcln-dev\\b"],
+  "dependencies": [
+    {
+      "packages": ["libcln-dev"],
+      "constraints": [
+        { "os": "linux", "distribution": "ubuntu" },
+        { "os": "linux", "distribution": "debian" }
+      ]
+    },
+    {
+      "packages": ["cln-devel"],
+      "constraints": [
+        { "os": "linux", "distribution": "fedora" },
+        { "os": "linux", "distribution": "redhat" }
+      ]
+    },
+    {
+      "packages": ["cln-devel"],
+      "constraints": [
+        { "os": "linux", "distribution": "opensuse" },
+        { "os": "linux", "distribution": "sle" }
+      ]
+    }
+  ]
+}
+
+

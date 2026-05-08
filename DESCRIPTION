@@ -1,6 +1,6 @@
 Package: pak
 Title: Another Approach to Package Installation
-Version: 0.9.2.9000
+Version: 0.9.5.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Jim", "Hester", role = "aut"),
@@ -128,7 +128,7 @@ Config/Needs/website:
     roxygen2,
     tidyverse/tidytemplate
 Config/Needs/deploy:
-    cli@3.6.2,
+    cli,
     curl,
     desc,
     gitcreds,
@@ -139,4 +139,4 @@ Config/Needs/deploy:
 Config/testthat/edition: 3
 Config/usethis/last-upkeep: 2025-05-13
 Encoding: UTF-8
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.3

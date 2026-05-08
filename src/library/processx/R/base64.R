@@ -1,4 +1,3 @@
-
 #' Base64 Encoding and Decoding
 #'
 #' @param x Raw vector to encode / decode.

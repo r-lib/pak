@@ -195,9 +195,15 @@ ghcr_canonize_arch <- function(platform) {
 
 ghcr_canonize_os <- function(platform) {
   os <- strsplit(platform, "-", fixed = TRUE)[[1]][3]
-  if (substr(os, 1, 6) == "darwin") os <- "darwin"
-  if (substr(os, 1, 5) == "mingw") os <- "windows"
-  if (substr(os, 1, 7) == "solaris") os <- "solaris"
+  if (substr(os, 1, 6) == "darwin") {
+    os <- "darwin"
+  }
+  if (substr(os, 1, 5) == "mingw") {
+    os <- "windows"
+  }
+  if (substr(os, 1, 7) == "solaris") {
+    os <- "solaris"
+  }
   os
 }
 
@@ -297,9 +303,15 @@ write_files <- function(txts, paths) {
 
 find_skopeo <- function() {
   path <- Sys.which("skopeo")
-  if (path != "") return(path)
-  if (file.exists(cand <- "/usr/local/bin/skopeo")) return(cand)
-  if (file.exists(cand <- "/opt/homebrew/bin/skopeo")) return(cand)
+  if (path != "") {
+    return(path)
+  }
+  if (file.exists(cand <- "/usr/local/bin/skopeo")) {
+    return(cand)
+  }
+  if (file.exists(cand <- "/opt/homebrew/bin/skopeo")) {
+    return(cand)
+  }
   throw(pkg_error("Need skopeo to push packages."))
 }
 
@@ -307,7 +319,9 @@ skopeo_version <- function() {
   skopeo <- find_skopeo()
   out <- processx::run(skopeo, "--version")
   re_ver <- "[ ]([0-9]+[.][0-9]+[.][0-9]+)"
-  if (!grepl(re_ver, out$stdout)) stop("Cannot determine skopeo version")
+  if (!grepl(re_ver, out$stdout)) {
+    stop("Cannot determine skopeo version")
+  }
   mch <- regexpr(re_ver, out$stdout, perl = TRUE)
   beg <- attr(mch, "capture.start")[1]
   end <- beg + attr(mch, "capture.length")[1] - 1L

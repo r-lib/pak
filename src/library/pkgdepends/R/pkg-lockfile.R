@@ -58,7 +58,7 @@ pkg_installation_plan <- R6::R6Class(
       config = list(),
       remote_types = NULL
     ) {
-      assert_that(is_path(config$library))
+      assert_that(is_character(config$library))
       private$library <- config$library
       config$goal <- "install"
       private$plan <- pkg_plan$new(
@@ -162,8 +162,9 @@ pkg_installation_plan <- R6::R6Class(
         if (!has_dls) "(use `$download()` to download packages)",
         if (has_dls) "(use `$get_downloads()` to get download data)",
         if (has_dls) "(use `$get_install_plan()` to get the installation plan)",
-        if (has_sys)
-          "(use `$install_sysreqs()` to install system requirements)",
+        if (has_sys) {
+          "(use `$install_sysreqs()` to install system requirements)"
+        },
         if (has_dls) "(use `$install()` to install the packages)"
       )
     }

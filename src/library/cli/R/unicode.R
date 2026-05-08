@@ -1,4 +1,3 @@
-
 #' Working around the bad Unicode character widths
 #'
 #' R 3.6.2 and also the coming 3.6.3 and 4.0.0 versions use the Unicode 8

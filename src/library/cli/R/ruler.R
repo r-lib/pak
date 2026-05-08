@@ -1,4 +1,3 @@
-
 #' Print the helpful ruler to the screen
 #'
 #' @export

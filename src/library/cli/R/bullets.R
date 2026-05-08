@@ -1,4 +1,3 @@
-
 #' List of items
 #'
 #' It is often useful to print out a list of items, tasks a function or
@@ -50,8 +49,12 @@
 #' @family functions supporting inline markup
 #' @export
 
-cli_bullets <- function(text, id = NULL, class = NULL,
-                     .envir = parent.frame()) {
+cli_bullets <- function(
+  text,
+  id = NULL,
+  class = NULL,
+  .envir = parent.frame()
+) {
   cli__message(
     "bullets",
     list(

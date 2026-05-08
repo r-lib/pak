@@ -105,11 +105,17 @@ forbidden_package_names <- function() {
 pnc_valid <- function(name) {
   ans <- TRUE
   rx <- paste0("^", pkg_rx()$pkg_name, "$")
-  if (!grepl(rx, name)) ans <- FALSE
+  if (!grepl(rx, name)) {
+    ans <- FALSE
+  }
   # This is not needed currently. But just in case character ranges will
   # accept non-ascii characters on some platforms, we keep it.
-  if (ans && any(charToRaw(name) > 127)) ans <- FALSE
-  if (ans && name %in% forbidden_package_names()) ans <- FALSE
+  if (ans && any(charToRaw(name) > 127)) {
+    ans <- FALSE
+  }
+  if (ans && name %in% forbidden_package_names()) {
+    ans <- FALSE
+  }
   add_class(ans, "pkg_name_check_valid")
 }
 
@@ -149,7 +155,9 @@ async_cranlike_check <- function(name) {
     if (!is.na(mch)) {
       ret$package <- data$pkgs$package[mch]
       type <- data$pkgs$type[mch]
-      if (type == "cran") ret$cran <- FALSE
+      if (type == "cran") {
+        ret$cran <- FALSE
+      }
       if (type == "bioc") ret$bioc <- FALSE
     }
     ret
@@ -324,7 +332,9 @@ format.pkg_name_check_wikipedia <- function(x, limit = 6, ...) {
   hdr <- cli::col_green("Wikipedia")
   ftr <- cli::col_blue(x$url)
   alg <- cli::ansi_align(wrp, width = cw - 4)
-  if (length(alg) > limit) alg <- c(alg[1:limit], cli::symbol$ellipsis)
+  if (length(alg) > limit) {
+    alg <- c(alg[1:limit], cli::symbol$ellipsis)
+  }
   cli::boxx(
     alg,
     padding = c(0, 1, 0, 1),
@@ -396,7 +406,9 @@ format.pkg_name_check_wiktionary <- function(x, limit = 6, ...) {
   cw <- cli::console_width()
   wrp <- cli::ansi_strwrap(txt, width = cw - 4)
   wrp <- wrp[cli::ansi_strip(wrp) != ""]
-  if (length(wrp) > limit) wrp <- c(wrp[1:limit], cli::symbol$ellipsis)
+  if (length(wrp) > limit) {
+    wrp <- c(wrp[1:limit], cli::symbol$ellipsis)
+  }
   hdr <- cli::col_green("Wiktionary")
   ftr <- cli::col_blue(x$url)
   alg <- cli::ansi_align(wrp, width = cw - 4)
@@ -412,7 +424,9 @@ format.pkg_name_check_wiktionary <- function(x, limit = 6, ...) {
 clean_wiktionary_text <- function(x) {
   langs <- strsplit(x, "\n== ", fixed = TRUE)[[1]][-1]
   eng <- grep("^English", langs, value = TRUE)
-  if (length(eng) == 0) return("No English definition found")
+  if (length(eng) == 0) {
+    return("No English definition found")
+  }
   eng2 <- sub("^English ==", "", eng)
   # remove pronunciation
   eng3 <- sub("\n=== Pronunciation ===\n+[^=]*\n+===", "\n===", eng2)
@@ -526,7 +540,9 @@ print.pkg_name_check_sentiment <- function(x, ...) {
 #' @export
 
 format.pkg_name_check_sentiment <- function(x, ...) {
-  if (is.na(x)) x <- 0
+  if (is.na(x)) {
+    x <- 0
+  }
   str <- sentiment_string(x)
   txt <- paste0("Sentiment: ", str, cli::col_silver(paste0(" (", x, ")")))
   cw <- cli::console_width()
@@ -590,7 +606,9 @@ format.pkg_name_check_urban <- function(x, limit = 6, ...) {
   wrp <- cli::ansi_strwrap(txt, width = cw - 4)
   hdr <- cli::col_green("Urban dictionary")
   alg <- cli::ansi_align(wrp, width = cw - 4)
-  if (length(alg) > limit) alg <- c(alg[1:limit], cli::symbol$ellipsis)
+  if (length(alg) > limit) {
+    alg <- c(alg[1:limit], cli::symbol$ellipsis)
+  }
   cli::boxx(
     alg,
     padding = c(0, 1, 0, 1),
@@ -610,12 +628,16 @@ async_pnc_bioc <- function(name) {
   # A removed package? Although maybe this is OK?
   removed <- pnc_bioc_removed()
   mch <- match(tolower(name), tolower(removed))
-  if (!is.na(mch)) return(pnc_bioc_false(removed[mch]))
+  if (!is.na(mch)) {
+    return(pnc_bioc_false(removed[mch]))
+  }
 
   # An annotatation package?
   ann <- pnc_bioc_old_annotation()
   mch <- match(tolower(name), tolower(ann))
-  if (!is.na(mch)) return(pnc_bioc_false(ann[mch]))
+  if (!is.na(mch)) {
+    return(pnc_bioc_false(ann[mch]))
+  }
 
   # Need to query
   async_pnc_bioc_web(name)

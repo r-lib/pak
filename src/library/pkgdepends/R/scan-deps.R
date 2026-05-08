@@ -444,8 +444,7 @@ scan_pat_deps_do_ragg_hits <- function(hits, path) {
   for (wc in wcodes) {
     expr <- parse(text = hits$code[wc], keep.source = FALSE)
     matched <- match.call(
-      function(...) {
-      },
+      function(...) {},
       expr,
       expand.dots = FALSE
     )
@@ -480,36 +479,28 @@ scan_pat_deps_do_db_hits <- function(hits, path) {
 }
 
 # nocov start
-prot_xfun_pkg_attach <- function(..., install, message) {
-}
-prot_xfun_pkg_attach2 <- function(...) {
-}
+prot_xfun_pkg_attach <- function(..., install, message) {}
+prot_xfun_pkg_attach2 <- function(...) {}
 prot_pacman_p_load <- function(
   ...,
   char,
   install,
   update,
   character.only
-) {
-}
+) {}
 prot_modules_import <- function(
   from,
   ...,
   attach = TRUE,
   where = parent.frame()
-) {
-}
+) {}
 prot_modules_module <- function(
-  expr = {
-  },
+  expr = {},
   topEncl = NULL,
   envir = parent.frame()
-) {
-}
-prot_import_from <- function(.from, ..., .character_only = FALSE) {
-}
-prot_import_here <- function(.from, ..., .character_only = FALSE) {
-}
+) {}
+prot_import_from <- function(.from, ..., .character_only = FALSE) {}
+prot_import_here <- function(.from, ..., .character_only = FALSE) {}
 prot_import_into <- function(
   .into,
   ...,
@@ -521,28 +512,22 @@ prot_import_into <- function(
   .chdir = TRUE,
   .character_only = FALSE,
   .S3 = FALSE
-) {
-}
-prot_box_use <- function(...) {
-}
+) {}
+prot_box_use <- function(...) {}
 prot_targets_tar_option_set <- function(
   tidy_eval = NULL,
   packages = NULL,
   ...
-) {
-}
+) {}
 prot_glue_glue <- function(
   ...,
   .sep = "",
   .envir = parent.frame(),
   .open = "{",
   .close = "}"
-) {
-}
-prot_ggplot2_ggsave <- function(filename, ...) {
-}
-prot_parsnip_set_engine <- function(object, engine, ...) {
-}
+) {}
+prot_ggplot2_ggsave <- function(filename, ...) {}
+prot_parsnip_set_engine <- function(object, engine, ...) {}
 prot_r6_r6class <- function(
   classname = NULL,
   public = list(),
@@ -550,19 +535,15 @@ prot_r6_r6class <- function(
   active = NULL,
   inherit = NULL,
   ...
-) {
-}
-prot_testthat_test_package <- function(package, reporter = NULL, ...) {
-}
+) {}
+prot_testthat_test_package <- function(package, reporter = NULL, ...) {}
 prot_testthat_test_dir <- function(
   path,
   filter = NULL,
   reporter = NULL,
   ...
-) {
-}
-prot_testthat_test_file <- function(path, reporter = NULL, ...) {
-}
+) {}
+prot_testthat_test_file <- function(path, reporter = NULL, ...) {}
 # nocov end
 
 safe_parse_pkg_from_call <- function(ns, fn, code) {
@@ -630,7 +611,9 @@ parse_pkg_from_call <- function(ns, fn, code) {
 }
 
 parse_pkg_from_call_library <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "base") return(NULL)
+  if (!is.na(ns) && ns != "base") {
+    return(NULL)
+  }
   pkg <- matched[["package"]]
   if (is.character(pkg) && length(pkg) == 1) {
     return(pkg)
@@ -645,7 +628,9 @@ parse_pkg_from_call_library <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_loadnamespace <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "base") return(NULL)
+  if (!is.na(ns) && ns != "base") {
+    return(NULL)
+  }
   pkg <- matched[["package"]]
   if (is.character(pkg) && length(pkg) == 1) {
     return(pkg)
@@ -654,17 +639,23 @@ parse_pkg_from_call_loadnamespace <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_xfun <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "xfun") return(NULL)
+  if (!is.na(ns) && ns != "xfun") {
+    return(NULL)
+  }
   pkgs <- unlist(lapply(
     matched[["..."]],
     function(x) if (is.character(x)) x
   ))
-  if (length(pkgs) > 0) return(pkgs)
+  if (length(pkgs) > 0) {
+    return(pkgs)
+  }
   NULL
 }
 
 parse_pkg_from_call_pacman <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "pacman") return(NULL)
+  if (!is.na(ns) && ns != "pacman") {
+    return(NULL)
+  }
   # list of characters and symbols
   pkgs <- as.list(matched[["..."]])
 
@@ -681,31 +672,43 @@ parse_pkg_from_call_pacman <- function(ns, fn, matched) {
     pkgs <- pkgs[vlapply(pkgs, function(x) is.symbol(x) || is.character(x))]
   }
   pkgs <- vcapply(pkgs, as.character)
-  if (length(pkgs) > 0) return(pkgs)
+  if (length(pkgs) > 0) {
+    return(pkgs)
+  }
   NULL
 }
 
 parse_pkg_from_call_modules_import <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "modules") return(NULL)
+  if (!is.na(ns) && ns != "modules") {
+    return(NULL)
+  }
   pkgs <- as.character(matched[["from"]])
-  if (length(pkgs) > 0) return(pkgs)
+  if (length(pkgs) > 0) {
+    return(pkgs)
+  }
   NULL
 }
 
 parse_pkg_from_call_modules_module <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "modules") return(NULL)
+  if (!is.na(ns) && ns != "modules") {
+    return(NULL)
+  }
   expr <- as.character(matched[["expr"]])
   hits <- code_query(expr, q_module_import())[["matched_captures"]]
   code <- hits$code[hits$name == "dep-code"]
   pkgs <- lapply(seq_along(code), function(i) {
     safe_parse_pkg_from_call(ns, "import", code[i])
   })
-  if (length(pkgs) > 0) return(unlist(pkgs))
+  if (length(pkgs) > 0) {
+    return(unlist(pkgs))
+  }
   NULL
 }
 
 parse_pkg_from_call_import <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "import") return(NULL)
+  if (!is.na(ns) && ns != "import") {
+    return(NULL)
+  }
   from <- matched[[".from"]]
   if (is.symbol(from)) {
     if (!identical(matched[[".character_only"]], TRUE)) {
@@ -726,7 +729,9 @@ parse_pkg_from_call_import <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_box <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "box") return(NULL)
+  if (!is.na(ns) && ns != "box") {
+    return(NULL)
+  }
   args <- as.list(matched[["..."]])
   pkgs <- na.omit(vcapply(args, function(arg) {
     if (!is.symbol(arg) && identical(arg[[1]], quote(`/`))) {
@@ -747,12 +752,16 @@ parse_pkg_from_call_box <- function(ns, fn, matched) {
     name
   }))
 
-  if (length(pkgs) > 0) return(pkgs)
+  if (length(pkgs) > 0) {
+    return(pkgs)
+  }
   NULL
 }
 
 parse_pkg_from_call_targets <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "targets") return(NULL)
+  if (!is.na(ns) && ns != "targets") {
+    return(NULL)
+  }
   pkgs <- matched[["packages"]]
   pkgs <- dependencies_eval(pkgs)
   if (is.character(pkgs) && length(pkgs) > 0) {
@@ -799,7 +808,9 @@ dependencies_eval <- function(expr) {
 }
 
 parse_pkg_from_call_glue <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "glue") return(NULL)
+  if (!is.na(ns) && ns != "glue") {
+    return(NULL)
+  }
   args <- as.list(matched[["..."]])
   nm <- names(args) %||% rep.int("", length(args))
   str <- args[!nzchar(nm) & vlapply(args, is.character)]
@@ -826,7 +837,9 @@ parse_pkg_from_call_glue <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_ggplot2 <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "ggplot2") return(NULL)
+  if (!is.na(ns) && ns != "ggplot2") {
+    return(NULL)
+  }
   fn <- matched[["filename"]]
   if (!is.character(fn)) {
     return(NULL)
@@ -840,7 +853,9 @@ parse_pkg_from_call_ggplot2 <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_parsnip <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "parsnip") return(NULL)
+  if (!is.na(ns) && ns != "parsnip") {
+    return(NULL)
+  }
   engine <- matched[["engine"]]
   if (!is.character(engine) || length(engine) != 1L) {
     return(NULL)
@@ -873,7 +888,9 @@ parse_pkg_from_call_parsnip <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_testthat_r6class <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "R6") return(NULL)
+  if (!is.na(ns) && ns != "R6") {
+    return(NULL)
+  }
   inherit <- matched[["inherit"]]
   if (
     identical(inherit, quote(JunitReporter)) ||
@@ -885,7 +902,9 @@ parse_pkg_from_call_testthat_r6class <- function(ns, fn, matched) {
 }
 
 parse_pkg_from_call_testthat_test <- function(ns, fn, matched) {
-  if (!is.na(ns) && ns != "testthat") return(NULL)
+  if (!is.na(ns) && ns != "testthat") {
+    return(NULL)
+  }
   reporter <- matched[["reporter"]]
   if (
     identical(reporter, "Junit") ||
@@ -1080,7 +1099,9 @@ scan_path_deps_do_header_pkgstr_hits <- function(code, hits, path) {
       error = function(...) NA_character_
     )
   })
-  if (all(is.na(pkg))) return(NULL)
+  if (all(is.na(pkg))) {
+    return(NULL)
+  }
   hits <- hits[!is.na(pkg), ]
   pkg <- na.omit(pkg)
   scan_deps_df(
@@ -1129,7 +1150,9 @@ yaml_parse_scalar <- function(x) {
 # -------------------------------------------------------------------------
 
 scan_path_deps_do_dsc <- function(code, path) {
-  if (is.raw(code)) code <- rawToChar(code)
+  if (is.raw(code)) {
+    code <- rawToChar(code)
+  }
   dsc <- desc::desc(text = code)
   deps <- resolve_ref_deps(
     dsc$get_deps(),
@@ -1341,10 +1364,11 @@ scan_path_deps_do_rnw_parse_chunk_header <- function(header) {
 
   idx <- which(names(res) == "")
   j <- NULL
-  for (i in idx)
+  for (i in idx) {
     if (identical(res[[i]], alist(,)[[1]])) {
       j <- c(j, i)
     }
+  }
   if (length(j)) {
     res[j] <- NULL
   }

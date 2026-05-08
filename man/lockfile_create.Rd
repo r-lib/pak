@@ -27,18 +27,17 @@ See "\link{Package sources}" for more details.}
 
 \item{lockfile}{Path to the lock file.}
 
-\item{lib}{Package library to install the packages to. Note that \emph{all}
-dependent packages will be installed here, even if they are
-already installed in another library. The only exceptions are base
-and recommended packages installed in \code{.Library}. These are not
-duplicated in \code{lib}, unless a newer version of a recommended package
-is needed.}
+\item{lib}{Character vector of library paths, or \code{NULL}. Used when
+resolving package dependencies: packages already installed in any of
+these paths are considered satisfied. If \code{NULL} (the default), an
+empty temporary library is used, so all dependencies are resolved
+from scratch regardless of what is currently installed.}
 
 \item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
 of work to give you the latest version(s) of \code{pkg}. It will only upgrade
 dependent packages if \code{pkg}, or one of their dependencies explicitly
 require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even it the binary
+prefer a binary package over to source package, even if the binary
 package is older.
 
 When \code{upgrade = TRUE}, pak will ensure that you have the latest

@@ -67,7 +67,9 @@ deps_from_desc <- function(deps, last) {
 parse_all_deps <- function(deps) {
   deps <- na.omit(deps)
   res <- do.call(rbind, parse_deps(deps, names(deps)))
-  if (is.null(res)) res <- parse_deps("", "")[[1]]
+  if (is.null(res)) {
+    res <- parse_deps("", "")[[1]]
+  }
   res$ref <- res$package
   res[, c("ref", setdiff(names(res), "ref"))]
 }

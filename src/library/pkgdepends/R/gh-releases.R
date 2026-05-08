@@ -236,7 +236,9 @@ ghr <- local({
           "Must specify exactly of {.arg data} and {.arg file} for POST requests."
         ))
       }
-      if (is.null(data)) data <- readBin(file, "raw", file.size(file))
+      if (is.null(data)) {
+        data <- readBin(file, "raw", file.size(file))
+      }
       http_post(url, data, headers = headers)
     } else if (method == "DELETE") {
       http_delete(url, headers = headers)

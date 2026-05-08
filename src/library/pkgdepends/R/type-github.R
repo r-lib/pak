@@ -221,8 +221,9 @@ satisfy_remote_github <- function(resolution, candidate, config, ...) {
   }
 
   ## 3. other refs are also good, as long as they have the same sha
-  sha1 <- (if (is.list(candidate$extra[[1]]))
-    candidate$extra[[1]][["remotesha"]]) %||%
+  sha1 <- (if (is.list(candidate$extra[[1]])) {
+    candidate$extra[[1]][["remotesha"]]
+  }) %||%
     NA_character_
   sha2 <- resolution$extra[[1]][["remotesha"]] %||% NA_character_
   ok <- is_string(sha1) && is_string(sha2) && same_sha(sha1, sha2)
@@ -264,12 +265,15 @@ type_github_get_headers <- function() {
   if (Sys.getenv("CI", "") != "") {
     token <- Sys.getenv("CI_GITHUB_TOKEN", NA_character_)
   }
-  if (is.na(token))
+  if (is.na(token)) {
     token <- tryCatch(
       gitcreds_get()$password,
       error = function(e) NA_character_
     )
-  if (is.na(token)) token <- type_github_builtin_token()
+  }
+  if (is.na(token)) {
+    token <- type_github_builtin_token()
+  }
   headers <- c(headers, c("Authorization" = paste("token", token)))
 
   headers <- c(headers, c("User-Agent" = "r-lib/pak"))

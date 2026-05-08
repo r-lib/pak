@@ -570,7 +570,7 @@ re_ppm_linux <- function() {
   paste0(
     "^",
     "(?<base>.*/)",
-    "(?<repo>cran|all)/",
+    "(?<repo>[^/]+)/",
     "__linux__/",
     "(?<distro>[a-zA-Z0-9]+)/",
     "(?<version>latest|[-0-9]+)",
@@ -1040,7 +1040,7 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
 cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {
   repos[["CRAN"]] <- cran_mirror
   repos <- unlist(repos)
-  bioc_names <- bioconductor$get_repos()
+  bioc_names <- if (bioc) bioconductor$get_repos() else character(0L)
   res <- data_frame(
     name = names(repos),
     url = unname(repos),

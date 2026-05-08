@@ -3,7 +3,8 @@
 setup_app <- function() {
   theme <- list(
     "url" = list(color = "blue"),
-    ".pkg" = list(color = "orange"))
+    ".pkg" = list(color = "orange")
+  )
   start_app(theme = theme, output = "stdout")
 }
 
@@ -15,7 +16,8 @@ load_packages <- function() {
     library(prettyunits)
     error = function(e) {
       cli_alert_danger(
-            "The {.pkg pkgsearch}, {.pkg prettyunits} and {.pkg docopt} packages are needed!")
+        "The {.pkg pkgsearch}, {.pkg prettyunits} and {.pkg docopt} packages are needed!"
+      )
       q(save = "no", status = 1)
     }
   })
@@ -49,14 +51,16 @@ format_result <- function(obj, from, size) {
   cli_div(theme = list(ul = list("list-style-type" = "")))
   cli_ol()
 
-  lapply(seq_len(nrow(obj)), function(i) format_hit(obj[i,]))
+  lapply(seq_len(nrow(obj)), function(i) format_hit(obj[i, ]))
 }
 
 format_hit <- function(hit) {
   ago <- vague_dt(Sys.time() - hit$date)
   cli_li()
-  cli_text("{.pkg {hit$package}} {hit$version}  --
-          {.emph {hit$title}}")
+  cli_text(
+    "{.pkg {hit$package}} {hit$version}  --
+          {.emph {hit$title}}"
+  )
   cli_par()
   cli_text(hit$description)
   cli_text("{.emph {ago} by {hit$maintainer_name}}")
@@ -79,7 +83,9 @@ Seach for CRAN packages on r-pkg.org
 if (is.null(sys.calls())) {
   load_packages()
   opts <- parse_arguments()
-  search(opts$term,
-         from = as.numeric(opts$f %||% 1),
-         size = as.numeric(opts$n %||% 5))
+  search(
+    opts$term,
+    from = as.numeric(opts$f %||% 1),
+    size = as.numeric(opts$n %||% 5)
+  )
 }

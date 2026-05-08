@@ -8,12 +8,12 @@ production_deploy_root: webadmin@master.bioconductor.org:/extra/www/bioc
 staging_dir: /loc/www/bioconductor-test-new
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-release_version: "3.21"
+release_version: "3.22"
 r_version_associated_with_release: "4.5.0"
-r_version_associated_with_devel: "4.5.0"
+r_version_associated_with_devel: "4.6.0"
 
 ## CHANGE THIS WHEN WE RELEASE A VERSION:
-devel_version: "3.22"
+devel_version: "3.23"
 
 ## CHANGE THIS WHEN WE ADD A VERSION:
 ## This is the list of all versions for which we want to generate "new" 
@@ -24,8 +24,8 @@ devel_version: "3.22"
 ## let the no-longer-release version build one last time so package
 ## landing pages won't say "release version"):
 versions:
-- "3.21"
 - "3.22"
+- "3.23"
 
 ## CHANGE THIS (i.e., uncomment) as various parts of the new devel version 
 ## become available. set to "[]" if none are available.
@@ -37,20 +37,21 @@ devel_repos:
 
 ## CHANGE this when the build machines change:
 ## also, don't include machines that are not building yet (comment them out)
-active_devel_builders:
-  linux: "nebbiolo2"
-  windows: "palomino8"
-#  mac_monterey: "lconway"
 active_release_builders:
+  linux: "nebbiolo2"
+  mac_monterey: "lconway"
+  mac_ventura: "kjohnson3"
+#  windows: "palomino8"
+active_devel_builders:
   linux: "nebbiolo1"
-  windows: "palomino7"
+#  windows: "palomino7"
 #  mac_monterey: "merida1"
 
 ## CHANGE this when the single package builder builds
 ## on a newer version of bioc
 single_package_builder:
-  bioc_version: "3.21"
-  r_version: "4.5"
+  bioc_version: "3.23"
+  r_version: "4.6"
 
 rss_hub_url: "https://pubsubhubbub.appspot.com/"
 ## CHANGE these as AMI IDS change
@@ -164,6 +165,7 @@ r_ver_for_bioc_ver:
   "3.20": "4.4"
   "3.21": "4.5"
   "3.22": "4.5"
+  "3.23": "4.6"
 # UPDATE THIS when we release a version
 release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milestones
   "1.0": "1/5/2001"
@@ -213,6 +215,7 @@ release_dates: # old info from http://en.wikipedia.org/wiki/Bioconductor#Milesto
   "3.19": "05/01/2024"
   "3.20": "10/30/2024"
   "3.21": "04/16/2025"
+  "3.22": "10/30/2025"
 release_last_built_dates:
   '2.0': 09/12/2007
   '2.1': 04/09/2008
@@ -250,6 +253,7 @@ release_last_built_dates:
   '3.18': 04/17/2024
   '3.19': 10/18/2024
   '3.20': 04/02/2025
+  '3.21': 10/16/2025
 mirrors:
  - 0-Bioconductor:
    - institution: Bioconductor, automatic redirection to servers worldwide

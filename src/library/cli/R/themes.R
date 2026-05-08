@@ -1,4 +1,3 @@
-
 #' List the currently active themes
 #'
 #' If there is no active app, then it calls [start_app()].
@@ -32,7 +31,7 @@ clii_add_theme <- function(app, theme) {
 }
 
 clii_remove_theme <- function(app, id) {
-  if (! id %in% names(app$themes)) return(invisible(FALSE))
+  if (!id %in% names(app$themes)) return(invisible(FALSE))
   app$themes[[id]] <- NULL
   invisible(TRUE)
 }
@@ -73,8 +72,8 @@ clii_remove_theme <- function(app, id) {
 #' cli_par(class = "code R")
 #' cli_verbatim(
 #'   '# window functions are useful for grouped mutates',
-#'   'mtcars %>%',
-#'   '  group_by(cyl) %>%',
+#'   'mtcars |>',
+#'   '  group_by(cyl) |>',
 #'   '  mutate(rank = min_rank(desc(mpg)))')
 #' ```
 #'
@@ -88,7 +87,6 @@ clii_remove_theme <- function(app, id) {
 #' @export
 
 builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
-
   dark <- detect_dark_theme(dark)
 
   list(
@@ -103,16 +101,19 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
       "font-weight" = "bold",
       "margin-top" = 1,
       "margin-bottom" = 0,
-      fmt = function(x) cli::rule(x, line_col = "cyan")),
+      fmt = function(x) cli::rule(x, line_col = "cyan")
+    ),
     h2 = list(
       "font-weight" = "bold",
       "margin-top" = 1,
       "margin-bottom" = 1,
-      fmt = function(x) paste0(symbol$line, symbol$line, " ", x, " ",
-                               symbol$line, symbol$line)),
+      fmt = function(x)
+        paste0(symbol$line, symbol$line, " ", x, " ", symbol$line, symbol$line)
+    ),
     h3 = list(
       "margin-top" = 1,
-      fmt = function(x) paste0(symbol$line, symbol$line, " ", x, " ")),
+      fmt = function(x) paste0(symbol$line, symbol$line, " ", x, " ")
+    ),
 
     ".alert" = list(
       before = function() paste0(symbol$arrow_right, " ")
@@ -156,8 +157,7 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
       "text-exdent" = 2,
       before = function(x) paste0(symbol$arrow_right, " ")
     ),
-    ".bullets .bullet-1" = list(
-    ),
+    ".bullets .bullet-1" = list(),
 
     par = list("margin-top" = 0, "margin-bottom" = 1),
     ul = list(
@@ -179,11 +179,15 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
     "ol ol li" = list("margin-left" = 2),
     "ol dl li" = list("margin-left" = 2),
 
-    blockquote = list("padding-left" = 4L, "padding-right" = 10L,
-                      "font-style" = "italic", "margin-top" = 1L,
-                      "margin-bottom" = 1L,
-                      before = function() symbol$dquote_left,
-                      after = function() symbol$dquote_right),
+    blockquote = list(
+      "padding-left" = 4L,
+      "padding-right" = 10L,
+      "font-style" = "italic",
+      "margin-top" = 1L,
+      "margin-bottom" = 1L,
+      before = function() symbol$dquote_left,
+      after = function() symbol$dquote_right
+    ),
     "blockquote cite" = list(
       before = function() paste0(symbol$em_dash, " "),
       "font-style" = "italic",
@@ -197,7 +201,7 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
     span.strong = list("font-weight" = "bold"),
     span.code = theme_code_tick(dark),
 
-    span.q   = list(fmt = quote_weird_name2),
+    span.q = list(fmt = quote_weird_name2),
     span.pkg = list(color = "blue"),
     span.fn = theme_function(dark),
     span.fun = theme_function(dark),
@@ -212,8 +216,10 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
       fmt = quote_weird_name
     ),
     span.url = list(
-      before = "<", after = ">",
-      color = "blue", "font-style" = "italic",
+      before = "<",
+      after = ">",
+      color = "blue",
+      "font-style" = "italic",
       transform = function(x) make_link(x, type = "url")
     ),
     span.href = list(
@@ -252,7 +258,13 @@ builtin_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
       transform = function(x) format_inline(typename(x))
     ),
     span.or = list("vec-sep2" = " or ", "vec-last" = ", or "),
-    span.timestamp = list(before = "[", after = "]", color = "grey")
+    span.timestamp = list(before = "[", after = "]", color = "grey"),
+    span.bytes = list(
+      transform = function(x) format_bytes$pretty_bytes(as.numeric(x))
+    ),
+    span.num = list(
+      transform = function(x) format_num$pretty_num(as.numeric(x))
+    )
   )
 }
 
@@ -309,19 +321,22 @@ theme_progress_bar <- function(x, app, style) {
 }
 
 detect_dark_theme <- function(dark) {
-  tryCatch({
-    if (dark == "auto") {
-      dark <- if (Sys.getenv("RSTUDIO", "0") == "1") {
-        get_rstudio_theme()$dark
-      } else if (is_iterm()) {
-        is_iterm_dark()
-      } else if (is_emacs()) {
-        Sys.getenv("ESS_BACKGROUND_MODE", "light") == "dark"
-      } else {
-        FALSE
+  tryCatch(
+    {
+      if (dark == "auto") {
+        dark <- if (Sys.getenv("RSTUDIO", "0") == "1") {
+          get_rstudio_theme()$dark
+        } else if (is_iterm()) {
+          is_iterm_dark()
+        } else if (is_emacs()) {
+          Sys.getenv("ESS_BACKGROUND_MODE", "light") == "dark"
+        } else {
+          FALSE
+        }
       }
-    }
-  }, error = function(e) FALSE)
+    },
+    error = function(e) FALSE
+  )
 
   isTRUE(dark)
 }
@@ -403,8 +418,8 @@ create_formatter <- function(x) {
   is_color <- "color" %in% names(x)
   is_bg_color <- "background-color" %in% names(x)
 
-  if (!is_bold && !is_italic && !is_underline && !is_color
-      && !is_bg_color) return(x)
+  if (!is_bold && !is_italic && !is_underline && !is_color && !is_bg_color)
+    return(x)
 
   if (is_color && is.null(x[["color"]])) {
     x[["color"]] <- "none"
@@ -451,13 +466,24 @@ merge_embedded_styles <- function(old, new) {
   prefix <- paste0(old$prefix, new$prefix)
   postfix <- paste0(new$postfix, old$postfix)
 
-  map <- utils::modifyList(old$`class-map` %||% list(), new$`class-map` %||% list())
+  map <- utils::modifyList(
+    old$`class-map` %||% list(),
+    new$`class-map` %||% list()
+  )
 
   start <- new$start %||% 1L
 
   mrg <- utils::modifyList(old, new)
-  mrg[c("margin-top", "margin-bottom", "margin-left", "margin-right",
-        "start", "class-map", "prefix", "postfix")] <-
+  mrg[c(
+    "margin-top",
+    "margin-bottom",
+    "margin-left",
+    "margin-right",
+    "start",
+    "class-map",
+    "prefix",
+    "postfix"
+  )] <-
     list(top, bottom, left, right, start, map, prefix, postfix)
 
   ## Formatter needs to be re-generated
@@ -490,7 +516,6 @@ parse_selector <- function(x) {
 }
 
 parse_selector_node <- function(x) {
-
   parse_ids <- function(y) {
     r <- strsplit(y, "#", fixed = TRUE)[[1]]
     if (length(r) > 1) r[-1] <- paste0("#", r[-1])
@@ -505,9 +530,11 @@ parse_selector_node <- function(x) {
   m_cls <- grepl("^\\.", parts)
   m_ids <- grepl("^#", parts)
 
-  list(tag = as.character(unique(parts[!m_cls & !m_ids])),
-       class = str_tail(unique(parts[m_cls])),
-       id = str_tail(unique(parts[m_ids])))
+  list(
+    tag = as.character(unique(parts[!m_cls & !m_ids])),
+    class = str_tail(unique(parts[m_cls])),
+    id = str_tail(unique(parts[m_ids]))
+  )
 }
 
 #' Match a selector node to a container
@@ -554,7 +581,7 @@ match_selector <- function(sels, cnts) {
   # Last selector must match the last container
   if (sptr == 0 || sptr > cptr) return(FALSE)
   match <- match_selector_node(sels[[sptr]], cnts[[cptr]])
-  if (!match) return (FALSE)
+  if (!match) return(FALSE)
 
   # Plus the rest should match somehow
   sptr <- sptr - 1L

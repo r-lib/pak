@@ -1,4 +1,3 @@
-
 #' Statistics about system memory usage
 #'
 #' @return Named list. All numbers are in bytes:
@@ -40,19 +39,24 @@ ps_system_memory <- function() {
     l$used <- l$active + l$wired
     l$free <- l$free - l$speculative
     l$percent <- (l$total - l$avail) / l$total * 100
-    l[c("total", "avail", "percent", "used", "free",
-        "active", "inactive", "wired")]
-
+    l[c(
+      "total",
+      "avail",
+      "percent",
+      "used",
+      "free",
+      "active",
+      "inactive",
+      "wired"
+    )]
   } else if (os == "LINUX") {
     ps__system_memory_linux()
-
   } else if (os == "WINDOWS") {
     l <- .Call(ps__system_memory)[c("total", "avail")]
     l$free <- l$avail
     l$used <- l$total - l$avail
     l$percent <- (l$total - l$avail) * 100 / l$total
     l[c("total", "avail", "percent", "used", "free")]
-
   } else {
     stop("ps is not supported in this platform")
   }
@@ -78,7 +82,9 @@ ps__system_memory_linux <- function() {
     inactive <-
       mems[["inact_dirty"]] + mems[["inact_clean"]] + mems[["inact_laundry"]]
   }
-  if (length(inactive) == 0) inactive <- NA_real_
+  if (length(inactive) == 0) {
+    inactive <- NA_real_
+  }
 
   slab <- mems[["slab"]] %||% 0
 
@@ -96,13 +102,25 @@ ps__system_memory_linux <- function() {
   # values will be dramatically distorted over those of the host.
   # https://gitlab.com/procps-ng/procps/blob/
   #     24fd2605c51fccc375ab0287cec33aa767f06718/proc/sysinfo.c#L764
-  if (!is.na(avail) && avail > total) avail <- free
+  if (!is.na(avail) && avail > total) {
+    avail <- free
+  }
 
   percent <- (total - avail) / total * 100
 
-  list(total = total, avail = avail, percent = percent, used = used,
-       free = free, active = active, inactive = inactive, buffers = buffers,
-       cached = cached, shared = shared, slab = slab)
+  list(
+    total = total,
+    avail = avail,
+    percent = percent,
+    used = used,
+    free = free,
+    active = active,
+    inactive = inactive,
+    buffers = buffers,
+    cached = cached,
+    shared = shared,
+    slab = slab
+  )
 }
 
 #' System swap memory statistics
@@ -131,16 +149,20 @@ ps_system_swap <- function() {
     l[c("total", "used", "free", "percent", "sin", "sout")]
   } else if (os == "LINUX") {
     ps__system_swap_linux()
-
   } else if (os == "WINDOWS") {
     l <- .Call(ps__system_memory)
     total <- l[[3]]
     free <- l[[4]]
     used <- total - free
     percent <- used / total
-    list(total = total, used = used, free = free,
-         percent = percent, sin = NA_real_, sout = NA_real_)
-
+    list(
+      total = total,
+      used = used,
+      free = free,
+      percent = percent,
+      sin = NA_real_,
+      sout = NA_real_
+    )
   } else {
     stop("ps is not supported in this platform")
   }
@@ -159,14 +181,22 @@ ps__system_swap_linux <- function() {
   percent <- used / total * 100
   sin <- sout <- 0
 
-  tryCatch({
-    tab2 <- read.table("/proc/vmstat", header = FALSE)
-    vms <- structure(as.list(tab2[[2]] * 4 * 1024), names = tab2[[1]])
-    sin <- vms[["pswpin"]] %||% 0
-    sout <- vms[["pswpout"]] %||% 0
-    }, error = function(e) NULL
+  tryCatch(
+    {
+      tab2 <- read.table("/proc/vmstat", header = FALSE)
+      vms <- structure(as.list(tab2[[2]] * 4 * 1024), names = tab2[[1]])
+      sin <- vms[["pswpin"]] %||% 0
+      sout <- vms[["pswpout"]] %||% 0
+    },
+    error = function(e) NULL
   )
 
-  list(total = total, used = used, free = free, percent = percent,
-       sin = sin, sout = sout)
+  list(
+    total = total,
+    used = used,
+    free = free,
+    percent = percent,
+    sin = sin,
+    sout = sout
+  )
 }

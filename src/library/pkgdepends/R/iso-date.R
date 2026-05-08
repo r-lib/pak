@@ -10,7 +10,9 @@ ymd <- function(x) as.POSIXct(x, format = "%Y %m %d", tz = "UTC")
 yj <- function(x) as.POSIXct(x, format = "%Y %j", tz = "UTC")
 
 parse_iso_8601 <- function(dates, default_tz = "UTC") {
-  if (default_tz == "") default_tz <- Sys.timezone()
+  if (default_tz == "") {
+    default_tz <- Sys.timezone()
+  }
   dates <- as.character(dates)
   match <- re_match(dates, iso_regex)
   matching <- !is.na(match$.match)

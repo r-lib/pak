@@ -63,6 +63,20 @@ type_installed_rx <- function() {
 }
 
 make_installed_cache <- function(library, packages = NULL, priority = NULL) {
+  if (length(library) == 0) {
+    return(NULL)
+  }
+  installed <- make_installed_cache1(library[1], packages, priority)
+  for (lib in library[-1]) {
+    installed <- merge_installed_caches(
+      installed,
+      make_installed_cache1(lib, packages, priority)
+    )
+  }
+  installed
+}
+
+make_installed_cache1 <- function(library, packages = NULL, priority = NULL) {
   inst <- pkgcache::parse_installed(
     library = library,
     priority = priority,

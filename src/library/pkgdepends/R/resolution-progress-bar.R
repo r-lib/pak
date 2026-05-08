@@ -24,7 +24,9 @@ res__create_progress_bar <- function(self, private) {
   self
   private
 
-  if (!should_show_progress_bar()) return()
+  if (!should_show_progress_bar()) {
+    return()
+  }
 
   bar <- new.env(parent = emptyenv())
   bar$spinner <- cli::get_spinner()
@@ -46,10 +48,14 @@ res__create_progress_bar <- function(self, private) {
 
 res__show_progress_bar <- function(self, private) {
   # Maybe progress is off
-  if (is.null(private$bar)) return()
+  if (is.null(private$bar)) {
+    return()
+  }
 
   # This can be called _after_ the resolution is over
-  if (is.null(private$bar$status)) return()
+  if (is.null(private$bar$status)) {
+    return()
+  }
 
   deps <- nrow(private$state)
   direct <- sum(private$state$direct)
@@ -112,7 +118,9 @@ make_progress_spinner <- function(self, private) {
 
 make_trailing_progress_msg <- function(self, private) {
   ongoing <- private$state[is.na(private$state$status), ]
-  if (nrow(ongoing) == 0) return("Done")
+  if (nrow(ongoing) == 0) {
+    return("Done")
+  }
 
   types <- vcapply(ongoing$remote, "[[", "type")
   remote <- if (all(types %in% c("cran", "bioc", "standard"))) {
@@ -132,7 +140,9 @@ make_trailing_progress_msg <- function(self, private) {
 }
 
 res__done_progress_bar <- function(self, private) {
-  if (is.null(private$bar)) return()
+  if (is.null(private$bar)) {
+    return()
+  }
   cli::cli_status_clear(private$bar$status, result = "clear")
   private$bar <- NULL
 }

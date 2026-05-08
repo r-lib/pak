@@ -30,31 +30,13 @@ test_that("Old URL", {
       textConnection(
         "
       pkg_type                 rver
-      mac.binary.big-sur-arm64 4.1.2
-      mac.binary.big-sur-arm64 4.2.3
-      mac.binary.big-sur-arm64 4.3.1
-      mac.binary.big-sur-arm64 4.4.0
-      mac.binary.el-capitan    3.5.3
-      mac.binary.el-capitan    3.6.3
-      mac.binary               4.0.5
-      mac.binary               4.1.2
-      mac.binary               4.2.3
-      mac.binary               4.3.1
-      mac.binary               4.4.0
-      win.binary               3.5.3
-      win.binary               3.6.3
-      win.binary               4.0.5
-      win.binary               4.1.2
-      win.binary               4.2.3
-      win.binary               4.3.1
-      win.binary               4.4.0
-      source                   3.5.3
-      source                   3.6.3
-      source                   4.0.5
+      mac.binary.big-sur-arm64 4.5.3
+      win.binary               4.5.3
       source                   4.1.2
       source                   4.2.3
       source                   4.3.1
-      source                   4.4.0
+      source                   4.4.3
+      source                   4.5.3
     "
       )
     )
@@ -87,33 +69,16 @@ test_that("New URL", {
       textConnection(
         "
       pkg_type                 os           arch    rver  branch
-      source                   linux-gnu    x86_64  3.5.3 all
-      source                   linux-gnu    x86_64  3.6.3 all
-      source                   linux-gnu    x86_64  4.0.5 all
-      source                   linux-gnu    x86_64  4.1.2 all
+      source                   linux-gnu    x86_64  4.1.3 all
       source                   linux-gnu    x86_64  4.2.3 all
-      source                   linux-gnu    x86_64  4.3.1 all
-      source                   linux-gnu    x86_64  4.4.0 all
-      source                   linux-musl   x86_64  4.1.2 all
-      source                   linux-gnu    aarch64 4.1.2 devel
-      win.binary               mingw32      x86_64  3.5.3 all
-      win.binary               mingw32      x86_64  3.6.3 all
-      win.binary               mingw32      x86_64  4.0.5 all
+      source                   linux-gnu    x86_64  4.3.3 all
+      source                   linux-gnu    x86_64  4.4.3 all
+      source                   linux-gnu    x86_64  4.5.3 all
+      source                   linux-musl   x86_64  4.5.3 all
+      source                   linux-gnu    aarch64 4.5.3 all
       win.binary               mingw32      x86_64  4.1.2 all
-      win.binary               mingw32      x86_64  4.2.3 all
-      win.binary               mingw32      x86_64  4.3.1 all
-      win.binary               mingw32      x86_64  4.4.0 all
-      mac.binary.el-capitan    darwin15.6.0 x86_64  3.5.3 all
-      mac.binary.el-capitan    darwin15.6.0 x86_64  3.6.3 all
-      mac.binary               darwin17.0   x86_64  4.0.5 all
-      mac.binary               darwin17.0   x86_64  4.1.2 all
-      mac.binary               darwin17.0   x86_64  4.2.3 all
-      mac.binary               darwin17.0   x86_64  4.3.1 all
-      mac.binary               darwin17.0   x86_64  4.4.0 all
-      mac.binary.big-sur-arm64 darwin20     aarch64 4.1.2 all
-      mac.binary.big-sur-arm64 darwin20     aarch64 4.2.3 all
-      mac.binary.big-sur-arm64 darwin20     aarch64 4.3.1 all
-      mac.binary.big-sur-arm64 darwin20     aarch64 4.4.0 all
+      win.binary               mingw32      x86_64  4.5.3 all
+      mac.binary.big-sur-arm64 darwin20     aarch64 4.5.3 all
     "
       )
     )

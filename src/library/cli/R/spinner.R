@@ -1,4 +1,3 @@
-
 ## See tools/spinners.R for how the RDS file is created
 
 #' Character vector to put a spinner on the screen
@@ -57,7 +56,8 @@ get_spinner <- function(which = NULL) {
     which <- list(
       name = which,
       interval = spinners$interval[[row]],
-      frames = spinners$frames[[row]])
+      frames = spinners$frames[[row]]
+    )
   }
 
   if (!is.character(which$frames)) {
@@ -164,13 +164,16 @@ list_spinners <- function() {
 #' @family spinners
 #' @export
 
-make_spinner <- function(which = NULL, stream = "auto", template = "{spin}",
-                         static = c("dots", "print", "print_line",
-                                    "silent")) {
-
+make_spinner <- function(
+  which = NULL,
+  stream = "auto",
+  template = "{spin}",
+  static = c("dots", "print", "print_line", "silent")
+) {
   stopifnot(
     inherits(stream, "connection") || is_string(stream),
-    is_string(template))
+    is_string(template)
+  )
 
   c_stream <- get_real_output(stream)
   c_spinner <- get_spinner(which)
@@ -211,8 +214,12 @@ make_spinner <- function(which = NULL, stream = "auto", template = "{spin}",
     c_res$spin <- function(template = NULL) {
       if (!is.null(template)) c_template <<- template
       if (throttle()) return()
-      line <- sub("{spin}", c_spinner$frames[[c_state]], c_template,
-                  fixed = TRUE)
+      line <- sub(
+        "{spin}",
+        c_spinner$frames[[c_state]],
+        c_template,
+        fixed = TRUE
+      )
       line_width <- ansi_nchar(line)
       if (is_ansi_tty(c_stream)) {
         cat("\r", line, ANSI_EL, sep = "", file = c_stream)
@@ -230,7 +237,6 @@ make_spinner <- function(which = NULL, stream = "auto", template = "{spin}",
       c_width <<- line_width
       inc()
     }
-
   } else {
     if (c_static == "dots") {
       c_res$spin <- function(template = NULL) {
@@ -249,8 +255,12 @@ make_spinner <- function(which = NULL, stream = "auto", template = "{spin}",
       c_res$spin <- function(template = NULL) {
         if (!is.null(template)) c_template <<- template
         if (throttle()) return()
-        line <- sub("{spin}", c_spinner$frames[[c_state]], c_template,
-                    fixed = TRUE)
+        line <- sub(
+          "{spin}",
+          c_spinner$frames[[c_state]],
+          c_template,
+          fixed = TRUE
+        )
         cat(line, file = c_stream)
         inc()
       }
@@ -258,8 +268,12 @@ make_spinner <- function(which = NULL, stream = "auto", template = "{spin}",
       c_res$spin <- function(template = NULL) {
         if (!is.null(template)) c_template <<- template
         if (throttle()) return()
-        line <- sub("{spin}", c_spinner$frames[[c_state]], c_template,
-                    fixed = TRUE)
+        line <- sub(
+          "{spin}",
+          c_spinner$frames[[c_state]],
+          c_template,
+          fixed = TRUE
+        )
         cat(line, "\n", sep = "", file = c_stream)
         inc()
       }
@@ -342,7 +356,7 @@ demo_spinners_terminal <- function(ticks = 100 * 3000) {
   spin_width <- viapply(frames, function(x) max(nchar(x, type = "width")))
   name_width <- nchar(names, type = "width")
   col_width <- spin_width + max(name_width) + 3
-  col1_width <- max(col_width[1:(length(col_width)/2)])
+  col1_width <- max(col_width[1:(length(col_width) / 2)])
 
   frames <- mapply(
     frames,
@@ -368,10 +382,9 @@ demo_spinners_terminal <- function(ticks = 100 * 3000) {
     cat(sp2, sep = "\n")
     up(length(sp2))
     took <- Sys.time() - tic
-    togo <- as.difftime(1/1000, units = "secs") - took
+    togo <- as.difftime(1 / 1000, units = "secs") - took
     if (togo > 0) Sys.sleep(togo)
   }
-
 }
 
 ## nocov end

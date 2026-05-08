@@ -15,10 +15,10 @@ options(cli.progress_handlers_only = c("shiny", "logger"))
 server <- function(input, output) {
   output$plot <- renderPlot({
     input$goPlot # Re-run when button is clicked
-    
+
     # Create 0-row data frame which will be used to store data
     dat <- data.frame(x = numeric(0), y = numeric(0))
-    
+
     # Number of times we'll go through the loop
     n <- 10
 

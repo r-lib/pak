@@ -96,7 +96,9 @@ satisfy_remote_standard <- function(resolution, candidate, config, ...) {
   if (resolution$direct) {
     if (candidate$type == "installed") {
       type <- candidate$extra[[1]][["repotype"]] %||% "unknown"
-      if (is.na(type)) type <- "unknown"
+      if (is.na(type)) {
+        type <- "unknown"
+      }
       remotetype <- candidate$extra[[1]][["remotetype"]] %||% "unknown"
       if (is.na(remotetype)) remotetype <- "unknown"
     } else {
@@ -116,7 +118,9 @@ satisfy_remote_standard <- function(resolution, candidate, config, ...) {
 
   ## 3. version requirements must be satisfied
   version <- tryCatch(resolution$remote[[1]]$version, error = function(e) "")
-  if (version == "") return(TRUE)
+  if (version == "") {
+    return(TRUE)
+  }
 
   if (
     !version_satisfies(
@@ -156,14 +160,21 @@ installedok_remote_standard_platform <- function(
   config,
   ...
 ) {
-  if (identical(installed[["platform"]], solution[["platform"]])) return(TRUE)
-  if (identical(installed[["platform"]], "*")) return(TRUE)
-  if (identical(installed$remotepkgplatform, solution$platform)) return(TRUE)
+  if (identical(installed[["platform"]], solution[["platform"]])) {
+    return(TRUE)
+  }
+  if (identical(installed[["platform"]], "*")) {
+    return(TRUE)
+  }
+  if (identical(installed$remotepkgplatform, solution$platform)) {
+    return(TRUE)
+  }
   if (
     is_string(solution$platform) &&
       is_string(installed$platform) &&
       startsWith(solution$platform, installed$platform)
-  )
+  ) {
     return(TRUE)
+  }
   FALSE
 }

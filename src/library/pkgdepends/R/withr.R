@@ -108,8 +108,12 @@ withr_set_envvar <- function(envs, action = "replace") {
       envs[both_set] <- paste(old[both_set], envs[both_set])
     }
   }
-  if (any(set)) do.call("Sys.setenv", as.list(envs[set]))
-  if (any(!set)) Sys.unsetenv(names(envs)[!set])
+  if (any(set)) {
+    do.call("Sys.setenv", as.list(envs[set]))
+  }
+  if (any(!set)) {
+    Sys.unsetenv(names(envs)[!set])
+  }
   invisible(old)
 }
 

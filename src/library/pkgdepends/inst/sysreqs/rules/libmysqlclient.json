@@ -45,7 +45,7 @@
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["7", "8"]
+          "versions": ["7", "8", "10"]
         },
         {
           "os": "linux",
@@ -54,7 +54,7 @@
         {
           "os": "linux",
           "distribution": "rockylinux",
-          "versions": ["8"]
+          "versions": ["8", "10"]
         }
       ]
     },

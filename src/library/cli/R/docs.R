@@ -1,4 +1,3 @@
-
 #' Frequently Asked Questions
 #'
 #' @name faq

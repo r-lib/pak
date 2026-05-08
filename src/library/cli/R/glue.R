@@ -1,4 +1,3 @@
-
 # Compared to glue::glue(), these are fixed:
 # - .sep = ""
 # - .trim = TRUE
@@ -9,10 +8,15 @@
 # we also don't allow passing in data as arguments, and `text` is
 # a single argument, no need to `paste()` etc.
 
-glue <- function(text, .envir = parent.frame(),
-                 .transformer = identity_transformer,
-                 .open = "{", .close = "}", .cli = FALSE, .trim = TRUE) {
-
+glue <- function(
+  text,
+  .envir = parent.frame(),
+  .transformer = identity_transformer,
+  .open = "{",
+  .close = "}",
+  .cli = FALSE,
+  .trim = TRUE
+) {
   text <- paste0(text, collapse = "")
 
   if (length(text) < 1L) {
@@ -113,22 +117,33 @@ drop_null <- function(x) {
 #' # head style
 #' ansi_collapse(letters, trunc = 5, style = "head")
 
-ansi_collapse <- function(x, sep = ", ", sep2 = sub("^,", "", last), last = ", and ",
-                          trunc = Inf, width = Inf, ellipsis = symbol$ellipsis,
-                          style = c("both-ends", "head")) {
-
+ansi_collapse <- function(
+  x,
+  sep = ", ",
+  sep2 = sub("^,", "", last),
+  last = ", and ",
+  trunc = Inf,
+  width = Inf,
+  ellipsis = symbol$ellipsis,
+  style = c("both-ends", "head")
+) {
   style <- match.arg(style)
   switch(
     style,
     "both-ends" = collapse_both_ends(
-      x, sep, sep2, last, trunc, width, ellipsis
+      x,
+      sep,
+      sep2,
+      last,
+      trunc,
+      width,
+      ellipsis
     ),
     "head" = collapse_head(x, sep, sep2, last, trunc, width, ellipsis)
   )
 }
 
 collapse_head_notrim <- function(x, trunc, sep, sep2, last, ellipsis) {
-
   lnx <- length(x)
 
   if (lnx == 1L) return(x)
@@ -151,7 +166,6 @@ collapse_head_notrim <- function(x, trunc, sep, sep2, last, ellipsis) {
 }
 
 collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
-
   trunc <- max(trunc, 1L)
   x <- as.character(x)
   lnx <- length(x)
@@ -174,19 +188,19 @@ collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
   if (tcd) x <- x[1:trunc]
 
   # then we calculate the width w/o trimming
-  wx    <- ansi_nchar(x)
-  wsep  <- ansi_nchar(sep, "width")
+  wx <- ansi_nchar(x)
+  wsep <- ansi_nchar(sep, "width")
   wsep2 <- ansi_nchar(sep2, "width")
   wlast <- ansi_nchar(last, "width")
-  well  <- ansi_nchar(ellipsis, "width")
+  well <- ansi_nchar(ellipsis, "width")
   if (!tcd) {
     # x[1]
     # x[1] and x[2]
     # x[1], x[2], and x[3]
-    nsep  <- if (lnx > 2L) lnx - 2L else 0L
+    nsep <- if (lnx > 2L) lnx - 2L else 0L
     nsep2 <- if (lnx == 2L) 1L else 0L
     nlast <- if (lnx > 2L) 1L else 0L
-    wtot  <- sum(wx) + nsep * wsep + nsep2 * wsep2 + nlast * wlast
+    wtot <- sum(wx) + nsep * wsep + nsep2 * wsep2 + nlast * wlast
     if (wtot <= width) {
       if (lnx == 1L) {
         return(x)
@@ -200,7 +214,6 @@ collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
         ))
       }
     }
-
   } else {
     # x[1], x[2], x[trunc], ...
     wtot <- sum(wx) + trunc * wsep + well
@@ -244,7 +257,6 @@ collapse_head <- function(x, sep, sep2, last, trunc, width, ellipsis) {
 }
 
 collapse_both_ends <- function(x, sep, sep2, last, trunc, width, ellipsis) {
-
   if (width != Inf) {
     warning(format_warning(c(
       "!" = "finite {.arg width} is not implemented in {.fun cli::ansi_collapse}.",

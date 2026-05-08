@@ -1,0 +1,28 @@
+{
+  "patterns": ["\\bginac\\b", "\\bGiNaC\\b", "\\blibginac-dev\\b"],
+  "dependencies": [
+    {
+      "packages": ["libginac-dev"],
+      "constraints": [
+        { "os": "linux", "distribution": "ubuntu" },
+        { "os": "linux", "distribution": "debian" }
+      ]
+    },
+    {
+      "packages": ["ginac-devel"],
+      "constraints": [
+        { "os": "linux", "distribution": "fedora" },
+        { "os": "linux", "distribution": "redhat" }
+      ]
+    },
+    {
+      "packages": ["ginac-devel"],
+      "constraints": [
+        { "os": "linux", "distribution": "opensuse" },
+        { "os": "linux", "distribution": "sle" }
+      ]
+    }
+  ]
+}
+
+

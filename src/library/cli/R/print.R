@@ -1,4 +1,3 @@
-
 #' Create a format method for an object using cli tools
 #'
 #' This method can be typically used in `format()` S3 methods. Then the
@@ -58,7 +57,6 @@
 #' options(opt)  # <- restore theme
 
 cli_format_method <- function(expr, theme = getOption("cli.theme")) {
-
   # This is not needed for cli, but needed for sink() and crayon
   nc <- num_ansi_colors()
   opts <- options(

@@ -1,4 +1,3 @@
-
 #' @title About inline markup in the semantic cli
 #'
 #' @description
@@ -423,7 +422,7 @@ NULL
 #'
 #' # Note: hyperlinks are currently experimental
 #'
-#' The details of the styles that create hyperlinks will prrobably change
+#' The details of the styles that create hyperlinks will probably change
 #' in the near future, based on user feedback.
 #'
 #' # About the links in this manual page
@@ -541,7 +540,7 @@ NULL
 #'
 #' The `.file` style now automatically creates a `file:` hyperlink.
 #' Because `file:` hyperlinks must contain an absolute path, cli tries to
-#' convert relative paths, and paths starting with `~` to aboslute path.
+#' convert relative paths, and paths starting with `~` to absolute path.
 #'
 #' ```{asciicast links-file-1}
 #' cli_text("... edit your {.file ~/.Rprofile} file.")

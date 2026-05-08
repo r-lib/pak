@@ -224,7 +224,9 @@ async_git_list_files_process <- function(packfile, ref, sha, url) {
   tree <- commit[["tree"]]
 
   process_tree <- function(i) {
-    if (done[i]) return()
+    if (done[i]) {
+      return()
+    }
     done[i] <<- TRUE
     tr <- trees[[i]]$object
     for (l in seq_len(nrow(tr))) {
@@ -235,7 +237,9 @@ async_git_list_files_process <- function(packfile, ref, sha, url) {
       idx <<- idx + 1L
       if (tr$type[l] == "tree") {
         tidx <- which(tr$hash[l] == names(trees))[1]
-        if (is.na(tidx)) next # nocov
+        if (is.na(tidx)) {
+          next
+        } # nocov
         wd <<- c(wd, tr$path[l])
         process_tree(tidx)
         wd <<- utils::head(wd, -1)
@@ -576,7 +580,9 @@ unpack_packfile_repo <- function(parsed, output, url) {
   mkdirp(output)
 
   process_tree <- function(i) {
-    if (done[i]) return()
+    if (done[i]) {
+      return()
+    }
     done[i] <<- TRUE
     tr <- trees[[i]]$object
     for (l in seq_len(nrow(tr))) {
@@ -620,7 +626,9 @@ unpack_packfile_repo <- function(parsed, output, url) {
     )
   }
 
-  for (i in seq_along(trees)) process_tree(i)
+  for (i in seq_along(trees)) {
+    process_tree(i)
+  }
 
   invisible()
 }
@@ -645,7 +653,9 @@ git_ua <- function() {
 
 raw_as_utf8 <- function(x) {
   if (is.raw(x)) {
-    if (any(x == 0x0)) return(NA_character_)
+    if (any(x == 0x0)) {
+      return(NA_character_)
+    }
     if (length(x) > 0 && x[[length(x)]] == 0x0a) {
       x <- x[1:(length(x) - 1)]
     }
@@ -1532,8 +1542,7 @@ parse_size <- function(x, idx) {
   list(size = size, idx = idx)
 }
 
-parse_ofs_size <- function(x, idx) {
-}
+parse_ofs_size <- function(x, idx) {}
 
 parse_delta_size <- function(x, idx) {
   c <- as.integer(x[idx])
@@ -1604,7 +1613,9 @@ parse_delta_offset <- function(x, idx) {
   }
 
   # exception for easily including a block
-  if (size == 0L) size <- 0x10000
+  if (size == 0L) {
+    size <- 0x10000
+  }
 
   list(offset = offset, size = size, idx = idx)
 }

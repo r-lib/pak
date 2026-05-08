@@ -189,7 +189,9 @@ gitcreds <- local({
     check_for_git()
     out <- git_run(c("config", "--get-all", "credential.helper"))
     clear <- rev(which(out == ""))
-    if (length(clear)) out <- out[-(1:clear[1])]
+    if (length(clear)) {
+      out <- out[-(1:clear[1])]
+    }
     out
   }
 
@@ -230,7 +232,9 @@ gitcreds <- local({
     }
     if (val == "FAIL" || grepl("^FAIL:", val)) {
       class <- strsplit(val, ":", fixed = TRUE)[[1]][2]
-      if (is.na(class)) class <- "gitcreds_no_credentials"
+      if (is.na(class)) {
+        class <- "gitcreds_no_credentials"
+      }
       throw(new_error(class))
     }
 
@@ -440,8 +444,12 @@ gitcreds <- local({
     repeat {
       ch <- utils::menu(title = "-> What would you like to do?", choices)
 
-      if (ch == 1) return(FALSE)
-      if (ch == 2) return(TRUE)
+      if (ch == 1) {
+        return(FALSE)
+      }
+      if (ch == 2) {
+        return(TRUE)
+      }
 
       msg("\nCurrent password: ", current$password, "\n\n")
     }
@@ -532,7 +540,9 @@ gitcreds <- local({
   }
 
   gitcreds_username_for_url <- function(url) {
-    if (is.null(url)) return(NULL)
+    if (is.null(url)) {
+      return(NULL)
+    }
     tryCatch(
       git_run(c(
         "config",
@@ -593,10 +603,14 @@ gitcreds <- local({
   }
 
   new_error <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
-    if (message == "") message <- gitcred_errors()[[class]]
+    if (message == "") {
+      message <- gitcred_errors()[[class]]
+    }
     message <- .makeMessage(message, domain = domain)
     cond <- list(message = message, ...)
-    if (call.) cond$call <- sys.call(-1)
+    if (call.) {
+      cond$call <- sys.call(-1)
+    }
     class(cond) <- c(class, "gitcreds_error", "error", "condition")
     cond
   }
@@ -614,10 +628,14 @@ gitcreds <- local({
     call. = TRUE,
     domain = NULL
   ) {
-    if (message == "") message <- gitcred_errors()[[class]]
+    if (message == "") {
+      message <- gitcred_errors()[[class]]
+    }
     message <- .makeMessage(message, domain = domain)
     cond <- list(message = message, ...)
-    if (call.) cond$call <- sys.call(-1)
+    if (call.) {
+      cond$call <- sys.call(-1)
+    }
     class(cond) <- c(class, "gitcreds_warning", "warning", "condition")
     cond
   }

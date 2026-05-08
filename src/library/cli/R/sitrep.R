@@ -1,4 +1,3 @@
-
 #' cli situation report
 #'
 #' Contains currently:
@@ -28,8 +27,10 @@ cli_sitrep <- function() {
       console_utf8 = l10n_info()$`UTF-8`,
       latex_active = is_latex_output(),
       num_colors = num_ansi_colors(),
-      console_width = console_width()),
-    class = "cli_sitrep")
+      console_width = console_width()
+    ),
+    class = "cli_sitrep"
+  )
 }
 
 #' @export
@@ -51,7 +52,7 @@ get_active_symbol_set <- function() {
 
 format.cli_sitrep <- function(x, ...) {
   fmt_names <- format(names(x))
-  fmt_vals  <- vapply(x, format, character(1))
+  fmt_vals <- vapply(x, format, character(1))
   paste0("- ", fmt_names, " : ", fmt_vals)
 }
 

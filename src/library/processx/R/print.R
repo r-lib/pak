@@ -1,6 +1,4 @@
-
 process_format <- function(self, private) {
-
   state <- if (self$is_alive()) {
     pid <- self$get_pid()
     paste0("running, pid ", paste(pid, collapse = ", "), ".")
@@ -10,7 +8,9 @@ process_format <- function(self, private) {
 
   paste0(
     "PROCESS ",
-    "'", private$get_short_name(), "', ",
+    "'",
+    private$get_short_name(),
+    "', ",
     state,
     "\n"
   )

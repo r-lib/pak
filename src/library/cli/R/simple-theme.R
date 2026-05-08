@@ -1,4 +1,3 @@
-
 #' A simple CLI theme
 #'
 #' To use this theme, you can set it as the `cli.theme` option.
@@ -49,8 +48,8 @@
 #' cli_par(class = "code R")
 #' cli_verbatim(
 #'   '# window functions are useful for grouped mutates',
-#'   'mtcars %>%',
-#'   '  group_by(cyl) %>%',
+#'   'mtcars |>',
+#'   '  group_by(cyl) |>',
 #'   '  mutate(rank = min_rank(desc(mpg)))')
 #'
 #' cli_end(show)
@@ -65,7 +64,6 @@
 #' @export
 
 simple_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
-
   dark <- detect_dark_theme(dark)
 
   list(
@@ -73,18 +71,22 @@ simple_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
       "margin-top" = 1,
       "margin-bottom" = 0,
       color = "cyan",
-      fmt = function(x) cli::rule(x, line_col = "cyan")),
+      fmt = function(x) cli::rule(x, line_col = "cyan")
+    ),
 
     h2 = list(
       "margin-top" = 1,
       "margin-bottom" = 0,
       color = "cyan",
-      fmt = function(x) paste0(symbol$line, " ", x, " ", symbol$line, symbol$line)),
+      fmt = function(x)
+        paste0(symbol$line, " ", x, " ", symbol$line, symbol$line)
+    ),
 
     h3 = list(
       "margin-top" = 1,
       "margin-bottom" = 0,
-      color = "cyan"),
+      color = "cyan"
+    ),
 
     par = list("margin-top" = 0, "margin-bottom" = 1),
 
@@ -108,11 +110,13 @@ simple_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
     ),
 
     ".alert-start" = list(
-      before = function() paste0(symbol$arrow_right, " ")),
+      before = function() paste0(symbol$arrow_right, " ")
+    ),
 
     span.pkg = list(
       color = "blue",
-      "font-weight" = "bold"),
+      "font-weight" = "bold"
+    ),
     span.version = list(color = "blue"),
 
     span.emph = simple_theme_emph(),
@@ -121,15 +125,21 @@ simple_theme <- function(dark = getOption("cli.theme_dark", "auto")) {
     span.fun = utils::modifyList(simple_theme_code(dark), list(after = "()")),
     span.fn = utils::modifyList(simple_theme_code(dark), list(after = "()")),
     span.arg = simple_theme_code(dark),
-    span.kbd = utils::modifyList(simple_theme_code(dark),
-                          list(before = "<", after = ">")),
-    span.key = utils::modifyList(simple_theme_code(dark),
-                          list(before = "<", after = ">")),
+    span.kbd = utils::modifyList(
+      simple_theme_code(dark),
+      list(before = "<", after = ">")
+    ),
+    span.key = utils::modifyList(
+      simple_theme_code(dark),
+      list(before = "<", after = ">")
+    ),
     span.file = simple_theme_file(),
     span.path = simple_theme_file(),
     span.email = simple_theme_url(),
-    span.url = utils::modifyList(simple_theme_url(),
-                          list(before = "<", after = ">")),
+    span.url = utils::modifyList(
+      simple_theme_url(),
+      list(before = "<", after = ">")
+    ),
     span.var = simple_theme_code(dark),
     span.envvar = simple_theme_code(dark),
 
@@ -148,7 +158,7 @@ simple_theme_url <- function() {
 simple_theme_code <- function(dark) {
   if (dark) {
     list("background-color" = "#232323", color = "#f0f0f0")
-  } else{
+  } else {
     list("background-color" = "#f8f8f8", color = "#202020")
   }
 }
@@ -180,7 +190,8 @@ is_iterm_dark <- function() {
   if (is.null(clienv[["is_iterm_dark"]])) {
     clienv$is_iterm_dark <-
       tryCatch(
-        error = function(x) FALSE, {
+        error = function(x) FALSE,
+        {
           osa <- '
             tell application "iTerm2"
               tell current session of current window
@@ -196,7 +207,8 @@ is_iterm_dark <- function() {
           ))
           nums <- scan(text = gsub(",", "", out, fixed = TRUE), quiet = TRUE)
           mean(nums) < 20000
-        })
+        }
+      )
   }
   clienv[["is_iterm_dark"]]
 }

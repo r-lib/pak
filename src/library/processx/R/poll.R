@@ -1,4 +1,3 @@
-
 #' Poll for process I/O or termination
 #'
 #' Wait until one of the specified connections or processes produce
@@ -102,5 +101,6 @@ poll <- function(processes, ms) {
 curl_fds <- function(fds) {
   structure(
     list(fds$reads, fds$writes, fds$exceptions),
-    class = "processx_curl_fds")
+    class = "processx_curl_fds"
+  )
 }

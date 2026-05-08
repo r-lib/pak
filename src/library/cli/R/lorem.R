@@ -1,4 +1,3 @@
-
 lorem_words <- c(
   "ad",
   "adipisicing",
@@ -64,8 +63,11 @@ lorem_words <- c(
   "voluptate"
 )
 
-lorem_ipsum <- function(paragraphs = 1, par_sentence_range = 5:10,
-                        sentence_word_range = 5:15) {
+lorem_ipsum <- function(
+  paragraphs = 1,
+  par_sentence_range = 5:10,
+  sentence_word_range = 5:15
+) {
   vcapply(
     1:paragraphs,
     function(x, ...) lorem_paragraph(...),

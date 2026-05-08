@@ -257,7 +257,9 @@ read_packages_file <- function(
 #' @importFrom utils read.csv
 
 read_metadata_file <- function(path) {
-  if (is.na(path)) return(NULL)
+  if (is.na(path)) {
+    return(NULL)
+  }
   on.exit(tryCatch(close(con), error = function(x) NULL), add = TRUE)
   tryCatch(
     suppressWarnings({
@@ -339,7 +341,9 @@ packages_make_target <- function(
   file,
   path
 ) {
-  if (!length(platform)) return(character())
+  if (!length(platform)) {
+    return(character())
+  }
   platform <- rep_len(platform, length(package))
 
   assert_that(
@@ -410,7 +414,9 @@ packages_make_sources <- function(
     is.null(downloadurl) || is.character(downloadurl)
   )
 
-  if (!length(package)) return(list())
+  if (!length(package)) {
+    return(list())
+  }
   platform <- rep_len(platform, length(package))
 
   result <- replicate(length(package), NULL)
@@ -428,7 +434,7 @@ packages_make_sources <- function(
     version,
     ".tar.gz"
   )
-  macurl <- paste0("https://mac.r-project.org/", target)
+  macurl <- paste0("https://mac.cran.dev/", target)
 
   os <- parse_platform(platform)$os
   macbin <- type == "cran" & !is.na(os) & grepl("^darwin", os)

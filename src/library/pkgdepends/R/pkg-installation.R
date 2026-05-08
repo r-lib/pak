@@ -99,8 +99,8 @@ pkg_installation_proposal <- R6::R6Class(
     ) {
       config$goal <- "install"
       policy <- match.arg(policy)
-      assert_that(is_path(config$library))
-      private$library <- config$library
+      assert_that(is_character(config$library))
+      private$library <- config$library[1]
       private$policy <- policy
       private$plan <- pkg_plan$new(
         refs,
@@ -474,9 +474,13 @@ pkg_installation_proposal <- R6::R6Class(
 
     install_sysreqs = function() {
       config <- get_private(private$plan)$config
-      if (!config$get("sysreqs")) return()
+      if (!config$get("sysreqs")) {
+        return()
+      }
       srq <- self$get_solution()$data$sysreqs_packages
-      if (is.null(srq)) return(invisible()) # nocov
+      if (is.null(srq)) {
+        return(invisible())
+      } # nocov
       cmds <- sysreqs2_scripts(
         srq,
         sysreqs_platform = config$get("sysreqs_platform"),
@@ -536,8 +540,9 @@ pkg_installation_proposal <- R6::R6Class(
         if (has_dls) "+ has downloads",
         if (dls_err) "x has download errors",
         if (!has_sol) "(use `$solve()` to solve dependencies)",
-        if (has_sol && !sol_err && !has_dls)
-          "(use `$download()` to download packages)",
+        if (has_sol && !sol_err && !has_dls) {
+          "(use `$download()` to download packages)"
+        },
         if (has_sol) "(use `$show_solution()` to see the packages to install",
         if (has_sol) "(use `$get_solution()` to see the full solution results)",
         if (has_sol && !sol_err) "(use `$draw()` to draw the dependency tree)",

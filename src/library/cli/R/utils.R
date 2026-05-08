@@ -1,4 +1,3 @@
-
 is_yes <- function(x) {
   tolower(x) %in% c("true", "yes", "y", "t", "1")
 }
@@ -19,7 +18,7 @@ cli_escape <- function(x) {
 
 # missing from older R
 
-isFALSE <- function (x) {
+isFALSE <- function(x) {
   is.logical(x) && length(x) == 1L && !is.na(x) && !x
 }
 

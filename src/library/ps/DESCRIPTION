@@ -1,12 +1,13 @@
 Package: ps
 Title: List, Query, Manipulate System Processes
-Version: 1.9.1
+Version: 1.9.2
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
     person("Giampaolo", "Rodola'", role = "aut"),
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
   )
 Description: List, query and manipulate all system processes, on
     'Windows', 'Linux' and 'macOS'.
@@ -20,15 +21,16 @@ Suggests: callr, covr, curl, pillar, pingr, processx (>= 3.1.0), R6,
 Biarch: true
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
+Config/usethis/last-upkeep: 2025-04-28
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2025-04-12 09:23:06 UTC; gaborcsardi
+Packaged: 2026-03-31 13:10:00 UTC; gaborcsardi
 Author: Jay Loden [aut],
   Dave Daeschler [aut],
   Giampaolo Rodola' [aut],
   Gábor Csárdi [aut, cre],
-  Posit Software, PBC [cph, fnd]
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-04-12 09:50:01 UTC
+Date/Publication: 2026-03-31 14:40:02 UTC

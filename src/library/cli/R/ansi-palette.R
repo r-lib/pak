@@ -1,4 +1,3 @@
-
 get_palette_color <- function(style, colors = num_ansi_colors()) {
   opt <- getOption("cli.palette")
   if (is.null(opt) || colors < 256) return(style)
@@ -9,7 +8,7 @@ palette_cache <- new.env(parent = emptyenv())
 
 cache_palette_color <- function(pal, idx, colors = num_ansi_colors()) {
   if (is_string(pal)) {
-    if (! pal %in% rownames(ansi_palettes)) {
+    if (!pal %in% rownames(ansi_palettes)) {
       opt <- options(cli.palette = NULL)
       defer(options(opt))
       throw(cli_error(
@@ -54,7 +53,7 @@ cache_palette_color <- function(pal, idx, colors = num_ansi_colors()) {
 #' @export
 #' @rdname ansi_palettes
 
-truecolor <- as.integer(256 ^ 3)
+truecolor <- as.integer(256^3)
 
 #' ANSI colors palettes
 #'
@@ -174,8 +173,11 @@ attr(ansi_palettes, "info") <-
 #' @export
 #' @rdname ansi_palettes
 
-ansi_palette_show <- function(palette = NULL, colors = num_ansi_colors(),
-                              rows = 4) {
+ansi_palette_show <- function(
+  palette = NULL,
+  colors = num_ansi_colors(),
+  rows = 4
+) {
   opts <- options(
     cli.palette = palette %||% getOption("cli.palette"),
     cli.num_colors = colors

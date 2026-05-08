@@ -1,13 +1,14 @@
 Package: cli
 Title: Helpers for Developing Command Line Interfaces
-Version: 3.6.5
+Version: 3.6.6
 Authors@R: c(
     person("Gábor", "Csárdi", , "gabor@posit.co", role = c("aut", "cre")),
     person("Hadley", "Wickham", role = "ctb"),
     person("Kirill", "Müller", role = "ctb"),
     person("Salim", "Brüggemann", , "salim-b@pm.me", role = "ctb",
            comment = c(ORCID = "0000-0002-5329-5987")),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
   )
 Description: A suite of tools to build attractive command line interfaces
     ('CLIs'), from semantic elements: headings, lists, alerts, paragraphs,
@@ -28,15 +29,16 @@ Config/Needs/website: r-lib/asciicast, bench, brio, cpp11, decor, desc,
         fansi, prettyunits, sessioninfo, tidyverse/tidytemplate,
         usethis, vctrs
 Config/testthat/edition: 3
+Config/usethis/last-upkeep: 2025-04-25
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.2.9000
 NeedsCompilation: yes
-Packaged: 2025-04-22 12:00:18 UTC; gaborcsardi
+Packaged: 2026-04-08 18:14:45 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Hadley Wickham [ctb],
   Kirill Müller [ctb],
-  Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),
-  Posit Software, PBC [cph, fnd]
+  Salim Brüggemann [ctb] (ORCID: <https://orcid.org/0000-0002-5329-5987>),
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <gabor@posit.co>
 Repository: CRAN
-Date/Publication: 2025-04-23 13:50:02 UTC
+Date/Publication: 2026-04-09 09:50:18 UTC

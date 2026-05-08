@@ -1,9 +1,7 @@
-
-
 #' Create a process handle
 #'
-#' @param pid Process id. Integer scalar. `NULL` means the current R
-#'   process.
+#' @param pid A process id (integer scalar) or process string (from
+#'   `ps_string()`). `NULL` means the current R process.
 #' @param time Start time of the process. Usually `NULL` and ps will query
 #'   the start time.
 #' @return `ps_handle()` returns a process handle (class `ps_handle`).
@@ -15,8 +13,15 @@
 #' p
 
 ps_handle <- function(pid = NULL, time = NULL) {
-  if (!is.null(pid)) pid <- assert_pid(pid)
-  if (!is.null(time)) assert_time(time)
+  if (!is.null(pid)) {
+    pid <- assert_pid(pid)
+  }
+  if (is.character(pid)) {
+    return(ps__str_decode(pid))
+  }
+  if (!is.null(time)) {
+    assert_time(time)
+  }
   .Call(psll_handle, pid, time)
 }
 
@@ -25,8 +30,14 @@ ps_handle <- function(pid = NULL, time = NULL) {
 
 as.character.ps_handle <- function(x, ...) {
   pieces <- .Call(psll_format, x)
-  paste0("<ps::ps_handle> PID=", pieces[[2]], ", NAME=", pieces[[1]],
-         ", AT=", format_unix_time(pieces[[3]]))
+  paste0(
+    "<ps::ps_handle> PID=",
+    pieces[[2]],
+    ", NAME=",
+    pieces[[1]],
+    ", AT=",
+    format_unix_time(pieces[[3]])
+  )
 }
 
 #' @param x Process handle.
@@ -42,8 +53,8 @@ format.ps_handle <- function(x, ...) {
 #' @rdname ps_handle
 #' @export
 
-print.ps_handle <- function(x, ...)  {
-  cat(format(x, ...),  "\n", sep = "")
+print.ps_handle <- function(x, ...) {
+  cat(format(x, ...), "\n", sep = "")
   invisible(x)
 }
 
@@ -188,8 +199,11 @@ ps_name <- function(p = ps_handle()) {
       exname <- basename(cmdline[1])
       if (str_starts_with(exname, n)) {
         n <- exname
-      } else if (grepl("qemu", exname) && length(cmdline) >= 2 &&
-                 str_starts_with(exname2 <- basename(cmdline[2]), n)) {
+      } else if (
+        grepl("qemu", exname) &&
+          length(cmdline) >= 2 &&
+          str_starts_with(exname2 <- basename(cmdline[2]), n)
+      ) {
         n <- exname2
       }
     }
@@ -302,8 +316,11 @@ ps_cmdline <- function(p = ps_handle()) {
 ps_status <- function(p = ps_handle()) {
   assert_ps_handle(p)
   ret <- .Call(psll_status, p)
-  if (is.na(ret) && ps_os_type()[["MACOS"]] &&
-      !isTRUE(getOption("ps.no_external_ps"))) {
+  if (
+    is.na(ret) &&
+      ps_os_type()[["MACOS"]] &&
+      !isTRUE(getOption("ps.no_external_ps"))
+  ) {
     ret <- ps_status_macos_ps(ps_pid(p))
   }
   ret
@@ -633,11 +650,9 @@ ps_memory_full_info <- function(p = ps_handle()) {
     info[["uss"]] <- match("\nPrivate.*:\\s+(\\d+)")
     info[["pss"]] <- match("\nPss:\\s+(\\d+)")
     info[["swap"]] <- match("\nSwap:\\s+(\\d+)")
-
   } else if (type[["MACOS"]]) {
     info[["uss"]] <- .Call(psll_memory_uss, p)
-
-    } else if (type[["WINDOWS"]]) {
+  } else if (type[["WINDOWS"]]) {
     info[["uss"]] <- .Call(psll_memory_uss, p)
   }
   info
@@ -839,16 +854,19 @@ ps_kill <- function(p = ps_handle(), grace = 200) {
   grace <- assert_grace(grace)
   if (ps_os_type()[["WINDOWS"]]) {
     res <- lapply(p, function(pp) {
-      tryCatch({
-        if (ps_is_running(pp)) {
-          .Call(psll_kill, pp, 0L)
-          "killed"
-        } else {
-          "dead"
+      tryCatch(
+        {
+          if (ps_is_running(pp)) {
+            .Call(psll_kill, pp, 0L)
+            "killed"
+          } else {
+            "dead"
+          }
+        },
+        error = function(e) {
+          if (inherits(e, "no_such_process")) "dead" else e
         }
-      }, error = function(e) {
-        if (inherits(e, "no_such_process")) "dead" else e
-      })
+      )
     })
   } else {
     res <- call_with_cleanup(psll_kill, p, grace)
@@ -884,34 +902,41 @@ ps_children <- function(p = ps_handle(), recursive = FALSE) {
   if (!recursive) {
     for (i in seq_len(nrow(map))) {
       if (map$ppid[i] == mypid) {
-        tryCatch({
-          child  <- ps_handle(map$pid[i])
-          if (mytime <= ps_create_time(child)) {
-            ret <- c(ret, child)
-          } },
+        tryCatch(
+          {
+            child <- ps_handle(map$pid[i])
+            if (mytime <= ps_create_time(child)) {
+              ret <- c(ret, child)
+            }
+          },
           no_such_process = function(e) NULL,
-          zombie_process = function(e) NULL)
+          zombie_process = function(e) NULL
+        )
       }
     }
-
   } else {
     seen <- integer()
     stack <- mypid
     while (length(stack)) {
       pid <- tail(stack, 1)
       stack <- head(stack, -1)
-      if (pid %in% seen) next           # nocov (happens _very_ rarely)
+      if (pid %in% seen) {
+        next
+      } # nocov (happens _very_ rarely)
       seen <- c(seen, pid)
-      child_pids <- map[ map[,2] ==  pid, 1]
+      child_pids <- map[map[, 2] == pid, 1]
       for (child_pid in child_pids) {
-        tryCatch({
-          child <- ps_handle(child_pid)
-          if (mytime <= ps_create_time(child)) {
-            ret <- c(ret, child)
-            stack <- c(stack, child_pid)
-          } },
+        tryCatch(
+          {
+            child <- ps_handle(child_pid)
+            if (mytime <= ps_create_time(child)) {
+              ret <- c(ret, child)
+              stack <- c(stack, child_pid)
+            }
+          },
           no_such_process = function(e) NULL,
-          zombie_process = function(e) NULL)
+          zombie_process = function(e) NULL
+        )
       }
     }
   }
@@ -946,7 +971,9 @@ ps_descent <- function(p = ps_handle()) {
   branch_pids <- integer()
   current <- p
   current_pid <- ps_pid(p)
-  if (windows) current_time <- ps_create_time(p)
+  if (windows) {
+    current_time <- ps_create_time(p)
+  }
 
   while (TRUE) {
     branch <- c(branch, list(current))
@@ -954,17 +981,23 @@ ps_descent <- function(p = ps_handle()) {
     parent <- fallback(ps_parent(current), NULL)
 
     # Might fail on Windows, if the process does not exist
-    if (is.null(parent)) break;
+    if (is.null(parent)) {
+      break
+    }
 
     # If the parent pid is the same, we stop.
     # Also, Windows might have loops
     parent_pid <- ps_pid(parent)
-    if (parent_pid %in% branch_pids) break;
+    if (parent_pid %in% branch_pids) {
+      break
+    }
 
     # Need to check for pid reuse on Windows
     if (windows) {
       parent_time <- ps_create_time(parent)
-      if (current_time <= parent_time) break
+      if (current_time <= parent_time) {
+        break
+      }
       current_time <- parent_time
     }
 
@@ -979,7 +1012,8 @@ ps_ppid_map <- function() {
   pids <- ps_pids()
 
   processes <- not_null(lapply(pids, function(p) {
-    tryCatch(ps_handle(p), error = function(e) NULL) }))
+    tryCatch(ps_handle(p), error = function(e) NULL)
+  }))
 
   pids <- map_int(processes, ps_pid)
   ppids <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
@@ -1050,7 +1084,8 @@ ps_open_files <- function(p = ps_handle()) {
 
   d <- data_frame(
     fd = vapply(l, "[[", integer(1), 2),
-    path = vapply(l, "[[", character(1), 1))
+    path = vapply(l, "[[", character(1), 1)
+  )
 
   d
 }
@@ -1086,22 +1121,31 @@ ps_open_files <- function(p = ps_handle()) {
 
 ps_connections <- function(p = ps_handle()) {
   assert_ps_handle(p)
-  if (ps_os_type()[["LINUX"]]) return(psl_connections(p))
+  if (ps_os_type()[["LINUX"]]) {
+    return(psl_connections(p))
+  }
 
   l <- not_null(.Call(psll_connections, p))
 
   d <- data_frame(
     fd = vapply(l, "[[", integer(1), 1),
-    family = match_names(ps_env$constants$address_families,
-                       vapply(l, "[[", integer(1), 2)),
-    type = match_names(ps_env$constants$socket_types,
-                       vapply(l, "[[", integer(1), 3)),
+    family = match_names(
+      ps_env$constants$address_families,
+      vapply(l, "[[", integer(1), 2)
+    ),
+    type = match_names(
+      ps_env$constants$socket_types,
+      vapply(l, "[[", integer(1), 3)
+    ),
     laddr = vapply(l, "[[", character(1), 4),
     lport = vapply(l, "[[", integer(1), 5),
     raddr = vapply(l, "[[", character(1), 6),
     rport = vapply(l, "[[", integer(1), 7),
-    state = match_names(ps_env$constants$tcp_statuses,
-                        vapply(l, "[[", integer(1), 8)))
+    state = match_names(
+      ps_env$constants$tcp_statuses,
+      vapply(l, "[[", integer(1), 8)
+    )
+  )
 
   d$laddr[d$laddr == ""] <- NA_character_
   d$raddr[d$raddr == ""] <- NA_character_
@@ -1127,14 +1171,17 @@ ps_interrupt <- function(p = ps_handle(), ctrl_c = TRUE) {
   p <- assert_ps_handle_or_handle_list(p)
   assert_flag(ctrl_c)
   res <- lapply(p, function(pp) {
-    tryCatch({
-      if (ps_os_type()[["WINDOWS"]]) {
-        interrupt <- get_tool("interrupt")
-        .Call(psll_interrupt, pp, ctrl_c, interrupt)
-      } else {
-        .Call(psll_interrupt, pp, ctrl_c, NULL)
-      }
-    }, error = function(e) e)
+    tryCatch(
+      {
+        if (ps_os_type()[["WINDOWS"]]) {
+          interrupt <- get_tool("interrupt")
+          .Call(psll_interrupt, pp, ctrl_c, interrupt)
+        } else {
+          .Call(psll_interrupt, pp, ctrl_c, NULL)
+        }
+      },
+      error = function(e) e
+    )
   })
   process_signal_result(p, res, "Failed to interrupt")
 }
@@ -1145,12 +1192,7 @@ ps_interrupt <- function(p = ps_handle(), ctrl_c = TRUE) {
 #' @rdname ps_get_nice
 
 ps_windows_nice_values <- function() {
- c("realtime",
-   "high",
-   "above_normal",
-   "normal",
-   "idle",
-   "below_normal")
+  c("realtime", "high", "above_normal", "normal", "idle", "below_normal")
 }
 
 #' Get or set the priority of a process
