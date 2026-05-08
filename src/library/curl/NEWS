@@ -1,3 +1,76 @@
+7.1.0
+ - Everything now works out of the box under emscripten (webR) by automatically
+   bootstrapping a ws gateway.
+ - Increase max size of string returned by ie_proxy_info() to 65536
+ - Fix a unit test for libcurl 8.20
+
+7.0.0
+ - Major cleanup: packge now requires libcurl >= 7.73. Removed all conditioning
+   and fallbacks for older libcurl versions (#413).
+ - Removed the fallback ADA parser and unconditinoally use the curl URL parser.
+ - Removed the legacy type-checking code as we can unconditionally use the easy-
+   option API.
+ - Support option('netrc') to match base R >= 4.6.0.
+ - Setting any value in curl_modify_url() to NA or "" will now unset it.
+
+6.4.0
+ - Vendor a static libcurl on RHEL/CentOS/Rocky 7 and 8 because stock version is
+   too old now to support most functionality.
+ - curl_modify_url() and curl_parse_url() now force uppercase percentage codes
+   for url-encoding to match curl_escape()
+ - Error messages are now printed with a linebreak in between.
+ - Better documentation for handle_setform() and handle_getdata()
+
+6.3.0
+ - New function curl_modify_url()
+ - MacOS/Windows: update to libcurl 8.14.1
+ - MacOS: our static build of libcurl now links to the MacOS native LibreSSL
+   and nghttp in order to use the same keychain certificates as native curl.
+
+6.2.3
+ - Non blocking connections now wait for 10ms before returning no data to prevent
+   busy waiting when readBin is called in a loop. See #399
+ - Fix a flaky unit test
+
+6.2.2
+ - Fix a unit test for libcurl 8.13.0
+ - Cleanup build
+
+6.2.1
+ - Workaround for change of behavior in libcurl 8.12.0
+ - The multi-run fail callback argument now has a curl-error class
+ - Fixed a slowness in curl_echo() due to threading problem in httpuv
+
+6.2.0
+ - MacOS: we have temporarily switched to a static build of libcurl 8.11.1 until
+   apple updates their very buggy libcurl (#376)
+ - Fix LTO error for R_multi_setopt
+ - Fix parsing of #fragment links in curl_parse() (#366)
+
+6.1.0
+ - Fix a rchk bug
+ - Enable CURLOPT_PIPEWAIT by default to prefer multiplex when possible
+ - Enable setting max_streams in multi_set(), default to 10
+ - Allow open(curl::curl()) to be interrupted
+ - Interrupting a download no longer causes an error (#365)
+
+6.0.1
+ - Fix a build issue with libcurl 8.11.0
+ - Support multi_fdset() for connection objects (#355)
+
+6.0.0
+ - New curl_parse_url() function to expose curl URL parsing interface.
+ - Errors now have classes and more detailed messages
+ - Do not use shared connection pool for FTP requests (works around bug in
+   libcurl < 8.8.0)
+ - Properly clean handle when open() fails for a curl() connection
+ - Parameter 'timeout' renamed to 'multi-timeout' in multi_download()
+ - Default behavior is now to error if a download is stalled for 600 seconds
+ - The MacOS binary packages now require at least libcurl 7.80 which is included
+   with all current MacOS versions (13+) as well as recent patch releases for
+   legacy MacOS versions (11.7 and 12.7).
+ - Windows: update to libcurl 8.10.1
+
 5.2.3
  - Remove some CMD check verbosity per new CRAN rules
  - New maintainer email address

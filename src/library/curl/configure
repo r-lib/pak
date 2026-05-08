@@ -1,5 +1,5 @@
 #!/bin/sh
-# Anticonf (tm) script by Jeroen Ooms (2022)
+# Anticonf (tm) script by Jeroen Ooms (2025)
 # This script will query 'pkg-config' for the required cflags and ldflags.
 # If pkg-config is unavailable or does not find the library, try setting
 # INCLUDE_DIR and LIB_DIR manually via e.g:
@@ -9,14 +9,21 @@
 PKG_CONFIG_NAME="libcurl"
 PKG_DEB_NAME="libcurl4-openssl-dev"
 PKG_RPM_NAME="libcurl-devel"
+PKG_APK_NAME="curl-dev"
 PKG_TEST_HEADER="<curl/curl.h>"
 PKG_LIBS="-lcurl"
 PKG_CFLAGS=""
 
-# export PKG_CONFIG_PATH="/usr/local/opt/curl/lib/pkgconfig"
+#export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig"
+
+# (Jan 2025) MacOS ships a very buggy libcurl 8.7.1 so we avoid this until apple updates it
+# See: https://github.com/jeroen/curl/issues/376
+if [ `uname` = "Darwin" ]; then
+MINVERSION="--atleast-version=8.8.0"
+fi
 
 # Use pkg-config if available
-pkg-config --version >/dev/null 2>&1
+pkg-config ${PKG_CONFIG_NAME} ${MINVERSION} 2>/dev/null
 if [ $? -eq 0 ]; then
   PKGCONFIG_CFLAGS=`pkg-config --cflags ${PKG_CONFIG_NAME}`
   case "$PKGCONFIG_CFLAGS" in
@@ -26,7 +33,11 @@ if [ $? -eq 0 ]; then
 fi
 
 # Note that cflags may be empty in case of success
-if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]; then
+if [ "$CURL_CFLAGS" ] || [ "$CURL_LIBS" ]; then
+  echo "Found CURL_CFLAGS and/or CURL_LIBS!"
+  PKG_CFLAGS="$CURL_CFLAGS"
+  PKG_LIBS="$CURL_LIBS"
+elif [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]; then
   echo "Found INCLUDE_DIR and/or LIB_DIR!"
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
   PKG_LIBS="-L$LIB_DIR $PKG_LIBS"
@@ -34,6 +45,10 @@ elif [ "$PKGCONFIG_CFLAGS" ] || [ "$PKGCONFIG_LIBS" ]; then
   echo "Found pkg-config cflags and libs!"
   PKG_CFLAGS=${PKGCONFIG_CFLAGS}
   PKG_LIBS=${PKGCONFIG_LIBS}
+elif [ `uname` = "Darwin" ]; then
+  # Temporary fix for: https://github.com/jeroen/curl/issues/376
+  curl -sfL "https://autobrew.github.io/scripts/libcurl-macos" > autobrew
+  . ./autobrew
 fi
 
 # Find compiler
@@ -54,6 +69,7 @@ if [ $? -ne 0 ]; then
   echo "Configuration failed because $PKG_CONFIG_NAME was not found. Try installing:"
   echo " * deb: $PKG_DEB_NAME (Debian, Ubuntu, etc)"
   echo " * rpm: $PKG_RPM_NAME (Fedora, CentOS, RHEL)"
+  echo " * apk: $PKG_APK_NAME (Alpine)"
   echo "If $PKG_CONFIG_NAME is already installed, check that 'pkg-config' is in your"
   echo "PATH and PKG_CONFIG_PATH contains a $PKG_CONFIG_NAME.pc file. If pkg-config"
   echo "is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:"
@@ -64,21 +80,26 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Disable purling on oldrel due to https://github.com/yihui/knitr/issues/2338
-if [ `uname` = "Darwin" ] && [ "${R_VERSION}" = "4.3.3" ]; then
-  for file in vignettes/*.Rmd; do
-    sed -i '' '/```/,$d' $file || true
-    touch inst/doc/*  || true
-  done
+# Test minimum version
+${CC} -E ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} tools/version.c >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+
+# On curl < 7.73 (RHEL-8 / Ubuntu 20.04) enable the static library
+if [ `uname` = "Linux" ]; then
+  echo "Local libcurl is too old. Downloading a static libcurl for legacy Linux..."
+  echo "For alternative solutions see: https://github.com/jeroen/curl/issues/416"
+  curl -sOL "https://github.com/jeroen/curl/releases/download/libcurl-8.14.1/get-curl-linux.sh" && . ./get-curl-linux.sh
+fi
+
+# MacOS 13 CRAN builder has MacOS 11.3 SDK
+# Also for people compiling from source on MacOS 11
+if [ `uname` = "Darwin" ] && [ -z "$BREWDIR" ] && ${R_HOME}/bin/Rscript --vanilla tools/testversion.R "7.80"; then
+  PKG_CFLAGS="$PKG_CFLAGS -DENABLE_MACOS_POLYFILL"
+fi
 fi
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
-
-# Extract curlopt symbols
-echo '#include <curl/curl.h>' | ${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E -xc - \
-  | grep "^[ \t]*CURLOPT_.*," | sed s/,// | sed 's/__attribute__[(][(].*[)][)] =/=/' \
-  > tools/option_table.txt
 
 # Success
 exit 0

@@ -65,10 +65,6 @@ curl_echo <- function(handle, port = find_port(), progress = interactive(), file
   # Workaround bug in httpuv on windows that keeps protecting handler until next startServer()
   on.exit(rm(handle), add = TRUE)
 
-  # Workaround for weird threading issue on Linux
-  # See: https://github.com/jeroen/curl/issues/327
-  wait <- ifelse(isTRUE(grepl('linux', R.version$platform)), 0.001, 0)
-
   # Post data from curl
   xfer <- function(down, up){
     if(progress){
@@ -79,7 +75,6 @@ curl_echo <- function(handle, port = find_port(), progress = interactive(), file
                     as.integer(100 * up[2] / up[1])), file = stderr())
       }
     }
-    later::run_now(wait)
     TRUE
   }
   handle_setopt(handle, connecttimeout = 2, xferinfofunction = xfer, noprogress = FALSE, forbid_reuse = TRUE)
@@ -90,11 +85,16 @@ curl_echo <- function(handle, port = find_port(), progress = interactive(), file
     host <- sub("https?://([^/]+).*", "\\1", input_url)
     #hostname <- gsub(":[0-9]+$", "", host)
     #handle_setopt(handle, port = port, resolve = paste0(hostname, ":", port, ':127.0.0.1'))
-    handle_setopt(handle, httpheader = c(paste0("Host:", host), handle_getheaders(handle)))
+    request_headers <- handle_getheaders(handle)
+    if(!any(grepl("^Host:", request_headers, ignore.case = TRUE))){
+      request_headers <- c(paste("Host:", host), request_headers)
+    }
+    handle_setopt(handle, httpheader = request_headers)
   } else {
     target_url <- paste0("http://127.0.0.1:", port)
   }
-  curl_fetch_memory(target_url, handle = handle)
+  handle_setopt(handle, url = target_url)
+  curl_dryrun(handle)
   output$url <- input_url
   if(progress) cat("\n", file = stderr())
   return(output)
@@ -137,4 +137,13 @@ find_port <- function(range = NULL){
     range <- sample(1024:49151)
   range <- as.integer(range)
   .Call(R_findport, range)
+}
+
+#' @useDynLib curl R_curl_dryrun
+curl_dryrun <- function(handle){
+  .Call(R_curl_dryrun, handle)
+}
+
+later_wrapper <- function(){
+  later::run_now()
 }

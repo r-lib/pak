@@ -18,8 +18,8 @@ curl_version <- function(){
 #' Parse date/time
 #'
 #' Can be used to parse dates appearing in http response headers such
-#' as \code{Expires} or \code{Last-Modified}. Automatically recognizes
-#' most common formats. If the format is known, \code{\link{strptime}}
+#' as `Expires` or `Last-Modified`. Automatically recognizes
+#' most common formats. If the format is known, [strptime()]
 #' might be easier.
 #'
 #' @param datestring a string consisting of a timestamp
@@ -47,5 +47,34 @@ trimws <- function(x) {
 }
 
 is_string <- function(x){
-  is.character(x) && length(x)
+  is.character(x) && length(x) && nchar(x)
+}
+
+# Callback for typed libcurl errors
+raise_libcurl_error <- function(errnum, message, errbuf = NULL, source_url = NULL, error_cb = NULL){
+  error_code <- libcurl_error_codes[errnum]
+  if(is.na(error_code))
+    error_code <- NULL #future proof new error codes
+  if(is_string(source_url)){
+    host <- try_parse_url(source_url)$host
+    if(is_string(host))
+      message <- sprintf('%s [%s]', message, host)
+  }
+  if(is_string(errbuf)){
+    message <- sprintf('%s:\n%s', message, errbuf)
+  }
+  if(is.function(error_cb)){
+    if(length(formals(error_cb)) > 0){
+      error_cb(structure(message, class = c(error_code, "curl_error", "character")))
+    } else {
+      error_cb()
+    }
+  } else {
+    cl <- sys.call(-1)
+    e <- structure(
+      class = c(error_code, "curl_error", "error", "condition"),
+      list(message = message, call = cl)
+    )
+    stop(e)
+  }
 }

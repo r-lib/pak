@@ -1,30 +1,41 @@
 #' Fetch the contents of a URL
 #'
 #' Low-level bindings to write data from a URL into memory, disk or a callback
-#' function. These are mainly intended for \code{httr}, most users will be better
-#' off using the \code{\link{curl}} or \code{\link{curl_download}} function, or the
-#' http specific wrappers in the \code{httr} package.
+#' function.
 #'
-#' The curl_fetch functions automatically raise an error upon protocol problems
-#' (network, disk, ssl) but do not implement application logic. For example for
-#' you need to check the status code of http requests yourself in the response,
+#' The `curl_fetch_*()` functions automatically raise an error upon protocol problems
+#' (network, disk, TLS, etc.) but do not implement application logic. For example,
+#' you need to check the status code of HTTP requests in the response by yourself,
 #' and deal with it accordingly.
 #'
-#' Both \code{curl_fetch_memory} and \code{curl_fetch_disk} have a blocking and
+#' Both `curl_fetch_memory()` and `curl_fetch_disk` have a blocking and a
 #' non-blocking C implementation. The latter is slightly slower but allows for
 #' interrupting the download prematurely (using e.g. CTRL+C or ESC). Interrupting
 #' is enabled when R runs in interactive mode or when
-#' \code{getOption("curl_interrupt") == TRUE}.
+#' `getOption("curl_interrupt") == TRUE`.
 #'
-#' The \code{curl_fetch_multi} function is the asynchronous equivalent of
-#' \code{curl_fetch_memory}. It wraps \code{multi_add} to schedule requests which
-#' are executed concurrently when calling \code{multi_run}. For each successful
-#' request the \code{done} callback is triggered with response data. For failed
-#' requests (when \code{curl_fetch_memory} would raise an error), the \code{fail}
-#' function is triggered with the error message.
+#' The `curl_fetch_multi()` function is the asynchronous equivalent of
+#' `curl_fetch_memory()`. It wraps [`multi_add()`][multi_add] to
+#' schedule requests which are executed concurrently when calling
+#' [`multi_run()`][multi_run]\code{}. For each successful request, the
+#' `done` callback is triggered with response data. For failed requests
+#' (when `curl_fetch_memory()` would raise an error), the `fail` function
+#' is triggered with the error message.
+#'
+#' After a request has been performed, metadata from the request can be read
+#' from the handle object using `handle_data()` (this same information also gets
+#' returned by `curl_fetch_memory()` directly). It includes things like:
+#'  - Final URL (after redirects)
+#'  - HTTP status code
+#'  - Content-type
+#'  - Response headers
+#'  - Timings
+#'  - Http-version
+#' This data remains available in the handle until it is either re-used for a
+#' new request, or `handle_reset()` is called.
 #'
 #' @param url A character string naming the URL of a resource to be downloaded.
-#' @param handle a curl handle object
+#' @param handle A curl handle object.
 #' @export
 #' @rdname curl_fetch
 #' @useDynLib curl R_curl_fetch_memory
@@ -117,4 +128,14 @@ curl_fetch_multi <- function(url, done = NULL, fail = NULL, pool = NULL,
 curl_fetch_echo <- function(url, handle = new_handle()){
   handle_setopt(handle, url = enc2utf8(url))
   curl_echo(handle)
+}
+
+#' @export
+#' @rdname curl_fetch
+#' @useDynLib curl R_get_handle_response
+handle_data <- function(handle){
+  stopifnot(inherits(handle, "curl_handle"))
+  out <- .Call(R_get_handle_response, handle)
+  out$content = NULL
+  out
 }
