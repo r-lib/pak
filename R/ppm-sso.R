@@ -281,7 +281,7 @@ ppm_sso_complete_device_auth = function(
       }
       # For "authorization_pending" or "slow_down", just wait and retry.
     } else {
-      httr2::resp_raise_for_status(resp) # Raise for other unexpected errors
+      httr2::resp_check_status(resp)
     }
 
     Sys.sleep(interval)
