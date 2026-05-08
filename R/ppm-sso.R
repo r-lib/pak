@@ -29,7 +29,10 @@ ppm_sso_init <- function(url = NULL) {
   ppm_sso_data$viable <- TRUE
 }
 
-ppm_sso_login <- function(service) {
+ppm_sso_login <- function(service = NULL) {
+  service <- service %||%
+    ppm_sso_data$ppm_url %||%
+    Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
   if (!ppm_sso_data$viable) {
     ppm_sso_init()
   }
