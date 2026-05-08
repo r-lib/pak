@@ -225,6 +225,15 @@ embed <- local({
     )
 
     lib <- lib_dir()
+
+    if (grepl("@", pkg)) {
+      pkgsplit <- strsplit(pkg, "@")[[1]]
+      pkg <- pkgsplit[1]
+      ref <- pkgsplit[2]
+    } else {
+      ref <- "main"
+    }
+
     pkg_name <- sub("^.*/", "", pkg)
     if (mode == "add") {
       if (file.exists(file.path(lib, pkg_name))) {
@@ -236,8 +245,9 @@ embed <- local({
     on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
     if (grepl("/", pkg)) {
       url <- sprintf(
-        "https://github.com/%s/archive/refs/heads/main.tar.gz",
-        pkg
+        "https://github.com/%s/archive/refs/heads/%s.tar.gz",
+        pkg,
+        ref
       )
       path1 <- file.path(tmp, paste0(pkg_name, ".tar.gz"))
       download.file(url, path1)
