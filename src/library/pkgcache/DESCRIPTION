@@ -13,11 +13,11 @@ License: MIT + file LICENSE
 URL: https://r-lib.github.io/pkgcache/,
         https://github.com/r-lib/pkgcache
 BugReports: https://github.com/r-lib/pkgcache/issues
-Depends: R (>= 4.1.0)
+Depends: R (>= 3.4)
 Imports: callr (>= 2.0.4.9000), cli (>= 3.2.0), curl (>= 3.2),
         filelock, jsonlite, processx (>= 3.3.0.9001), R6, tools, utils
-Suggests: covr, debugme, desc, fs, httr2, keyring, openssl, pillar,
-        pingr, RcppTOML, rprojroot, sessioninfo, spelling, testthat (>=
+Suggests: covr, debugme, desc, fs, keyring, openssl, pillar, pingr,
+        RcppTOML, rprojroot, sessioninfo, spelling, testthat (>=
         3.2.0), webfakes (>= 1.1.5), withr, zip
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
@@ -27,7 +27,7 @@ Language: en-US
 Roxygen: list(markdown = TRUE, r6 = FALSE)
 RoxygenNote: 7.3.2.9000
 NeedsCompilation: yes
-Packaged: 2026-05-08 11:38:13 UTC; gaborcsardi
+Packaged: 2026-05-08 12:30:29 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

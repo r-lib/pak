@@ -2,6 +2,29 @@ ppm_sso_data <- new.env(parent = emptyenv())
 ppm_sso_data$name <- "ppm"
 ppm_sso_data$viable <- FALSE
 
+ppm_sso_post_form <- function(url, payload) {
+  payload <- payload[!vapply(payload, is.null, logical(1))]
+  body <- paste(
+    paste0(
+      curl::curl_escape(names(payload)),
+      "=",
+      curl::curl_escape(unlist(payload, use.names = FALSE))
+    ),
+    collapse = "&"
+  )
+  h <- curl::new_handle()
+  curl::handle_setheaders(
+    h,
+    "Content-Type" = "application/x-www-form-urlencoded"
+  )
+  curl::handle_setopt(h, post = TRUE, postfields = body)
+  resp <- curl::curl_fetch_memory(url, handle = h)
+  list(
+    status = resp$status_code,
+    body = jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
+  )
+}
+
 ppm_sso_init <- function(url = NULL) {
   url <- url %||% Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
   if (!is_string(url)) {
@@ -82,13 +105,10 @@ ppm_sso_get_existing_token <- function() {
 }
 
 ppm_sso_can_authenticate <- function(token) {
-  req <- httr2::request(ppm_sso_data$ppm_url) |>
-    httr2::req_auth_bearer_token(token) |>
-    httr2::req_error(is_error = function(resp) FALSE) # Handle errors manually
-
-  resp <- httr2::req_perform(req)
-
-  status <- httr2::resp_status(resp)
+  h <- curl::new_handle()
+  curl::handle_setheaders(h, "Authorization" = paste("Bearer", token))
+  resp <- curl::curl_fetch_memory(ppm_sso_data$ppm_url, handle = h)
+  status <- resp$status_code
   status < 500 && status != 401 && status != 403
 }
 
@@ -118,10 +138,15 @@ ppm_sso_device_flow <- function() {
     code_challenge_method = "S256",
     code_challenge = challenge
   )
-  init_resp_body <- httr2::request(init_url) |>
-    httr2::req_body_form(!!!payload) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
+  init_resp <- ppm_sso_post_form(init_url, payload)
+  if (init_resp$status >= 400) {
+    stop(
+      "Failed to initiate device authorization (HTTP ",
+      init_resp$status,
+      ")."
+    )
+  }
+  init_resp_body <- init_resp$body
 
   display_uri <- init_resp_body$verification_uri_complete %||%
     init_resp_body$verification_uri
@@ -160,11 +185,16 @@ ppm_sso_identity_to_ppm_token <- function(identity_token) {
     subject_token_type = "urn:ietf:params:oauth:token-type:id_token"
   )
 
-  resp <- httr2::request(url) |>
-    httr2::req_body_form(!!!payload) |>
-    httr2::req_perform()
+  resp <- ppm_sso_post_form(url, payload)
+  if (resp$status >= 400) {
+    stop(
+      "Failed to exchange identity token for PPM token (HTTP ",
+      resp$status,
+      ")."
+    )
+  }
 
-  token_data <- httr2::resp_body_json(resp)
+  token_data <- resp$body
   if (is.null(token_data$access_token)) {
     stop("Failed to exchange identity token for PPM token.")
   }
@@ -261,18 +291,13 @@ ppm_sso_complete_device_auth = function(
   )
 
   while (as.numeric(Sys.time() - start_time) < expires_in) {
-    resp <- httr2::request(url) |>
-      httr2::req_body_form(!!!payload) |>
-      httr2::req_error(is_error = \(resp) FALSE) |> # Handle errors manually
-      httr2::req_perform()
-
-    status <- httr2::resp_status(resp)
+    resp <- ppm_sso_post_form(url, payload)
+    status <- resp$status
 
     if (status == 200) {
-      return(httr2::resp_body_json(resp))
+      return(resp$body)
     } else if (status == 400) {
-      error_data <- httr2::resp_body_json(resp)
-      error_code <- error_data$error
+      error_code <- resp$body$error
       if (error_code == "access_denied") {
         stop("Access denied by user.")
       }
@@ -281,7 +306,7 @@ ppm_sso_complete_device_auth = function(
       }
       # For "authorization_pending" or "slow_down", just wait and retry.
     } else {
-      httr2::resp_check_status(resp)
+      stop("Device authorization failed (HTTP ", status, ").")
     }
 
     Sys.sleep(interval)
@@ -289,158 +314,3 @@ ppm_sso_complete_device_auth = function(
 
   stop("Device authorization timed out.")
 }
-
-# nocov start
-
-# Fake PPM server that proxies to Auth0, for testing ppm_sso_device_flow().
-# Auth0 device flow does not use PKCE, so we verify the PKCE challenge
-# locally and forward only the device_code to Auth0's /oauth/token.
-ppm_sso_fake_app <- function(
-  auth0_domain,
-  client_id,
-  audience = NULL,
-  scope = "openid profile email"
-) {
-  app <- webfakes::new_app()
-
-  app$use("logger" = webfakes::mw_log())
-  app$use("urlencoded body parser" = webfakes::mw_urlencoded())
-  app$use("json body parser" = webfakes::mw_json())
-
-  app$locals$challenges <- new.env(parent = emptyenv())
-  app$locals$auth0_domain <- auth0_domain
-  app$locals$client_id <- client_id
-  app$locals$audience <- audience
-  app$locals$scope <- scope
-
-  # Bearer-token check used by ppm_sso_can_authenticate(): any token passes.
-  app$get("/", function(req, res) {
-    res$set_status(200L)$send("ok")
-  })
-
-  app$post("/__api__/device", function(req, res) {
-    challenge <- req$form$code_challenge
-    method <- req$form$code_challenge_method %||% "S256"
-    if (!identical(method, "S256")) {
-      return(res$set_status(400L)$send_json(
-        auto_unbox = TRUE,
-        list(error = "unsupported_challenge_method")
-      ))
-    }
-
-    payload <- list(
-      client_id = app$locals$client_id,
-      scope = app$locals$scope
-    )
-    if (!is.null(app$locals$audience)) {
-      payload$audience <- app$locals$audience
-    }
-
-    upstream <- httr2::request(
-      paste0("https://", app$locals$auth0_domain, "/oauth/device/code")
-    ) |>
-      httr2::req_body_form(!!!payload) |>
-      httr2::req_error(is_error = function(r) FALSE) |>
-      httr2::req_perform()
-
-    body <- httr2::resp_body_json(upstream)
-    if (httr2::resp_status(upstream) >= 400L) {
-      return(res$set_status(httr2::resp_status(upstream))$send_json(
-        auto_unbox = TRUE,
-        body
-      ))
-    }
-
-    assign(body$device_code, challenge, envir = app$locals$challenges)
-
-    res$send_json(
-      auto_unbox = TRUE,
-      list(
-        device_code = body$device_code,
-        user_code = body$user_code,
-        verification_uri = body$verification_uri,
-        verification_uri_complete = body$verification_uri_complete,
-        expires_in = body$expires_in,
-        interval = body$interval %||% 5L
-      )
-    )
-  })
-
-  app$post("/__api__/device_access", function(req, res) {
-    device_code <- req$form$device_code
-    verifier <- req$form$code_verifier
-
-    if (!exists(device_code, envir = app$locals$challenges, inherits = FALSE)) {
-      return(res$set_status(400L)$send_json(
-        auto_unbox = TRUE,
-        list(error = "expired_token")
-      ))
-    }
-    expected <- get(
-      device_code,
-      envir = app$locals$challenges,
-      inherits = FALSE
-    )
-    actual <- ppm_sso_base64url_encode(openssl::sha256(charToRaw(verifier)))
-    if (!identical(expected, actual)) {
-      return(res$set_status(400L)$send_json(
-        auto_unbox = TRUE,
-        list(error = "invalid_grant")
-      ))
-    }
-
-    upstream <- httr2::request(
-      paste0("https://", app$locals$auth0_domain, "/oauth/token")
-    ) |>
-      httr2::req_body_form(
-        grant_type = "urn:ietf:params:oauth:grant-type:device_code",
-        device_code = device_code,
-        client_id = app$locals$client_id
-      ) |>
-      httr2::req_error(is_error = function(r) FALSE) |>
-      httr2::req_perform()
-
-    body <- httr2::resp_body_json(upstream)
-    if (httr2::resp_status(upstream) == 200L) {
-      rm(list = device_code, envir = app$locals$challenges)
-      return(res$send_json(
-        auto_unbox = TRUE,
-        list(id_token = body$id_token)
-      ))
-    }
-
-    # Auth0 returns 403 for authorization_pending / slow_down; the PPM client
-    # only treats 400 as a soft pending state, so translate the status.
-    res$set_status(400L)$send_json(
-      auto_unbox = TRUE,
-      list(error = body$error %||% "unknown_error")
-    )
-  })
-
-  # Trivial token exchange: echo subject_token back as access_token.
-  app$post("/__api__/token", function(req, res) {
-    if (
-      !identical(
-        req$form$grant_type,
-        "urn:ietf:params:oauth:grant-type:token-exchange"
-      )
-    ) {
-      return(res$set_status(400L)$send_json(
-        auto_unbox = TRUE,
-        list(error = "unsupported_grant_type")
-      ))
-    }
-    res$send_json(
-      auto_unbox = TRUE,
-      list(
-        access_token = req$form$subject_token,
-        token_type = "Bearer",
-        issued_token_type = "urn:ietf:params:oauth:token-type:access_token"
-      )
-    )
-  })
-
-  app
-}
-
-# nocov end
