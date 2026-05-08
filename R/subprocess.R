@@ -74,10 +74,12 @@ remote <- function(func, args = list()) {
   opts <- options()
   extraopts <- c("Ncpus", "BioC_mirror")
   pkg_options <- opts[
-    grepl("^pkg[.]", names(opts)) | grepl("^async_http_", names(opts)) | names(opts) %in% extraopts
+    grepl("^pkg[.]", names(opts)) |
+      grepl("^async_http_", names(opts)) |
+      names(opts) %in% extraopts
   ]
   envs <- Sys.getenv()
-  extraenvs <- c("R_BIOC_VERSION", "PATH")
+  extraenvs <- c("R_BIOC_VERSION", "PATH", "PACKAGEMANAGER_ADDRESS")
   if (any(grepl("@", subst_args[["__repos__"]]))) {
     extraenvs <- c(extraenvs, envs[grep("^https?://", names(envs))])
   }
