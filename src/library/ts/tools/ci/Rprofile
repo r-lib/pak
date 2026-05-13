@@ -1,0 +1,7 @@
+if (getRversion() <= "3.5.100") {
+  options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2023-10-05"))
+} else if (getRversion() <= "3.6.100") {
+  options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2024-05-25"))
+} else if (getRversion() <= "4.0.100") {
+  options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2025-11-13"))
+}

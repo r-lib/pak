@@ -1,0 +1,138 @@
+```{asciicast}
+#| include: FALSE
+pkgload::load_all()
+```
+
+### Create a tstoml object
+
+Create a tstoml object from a string:
+
+```{asciicast}
+#| results: hide
+txt <- r"(
+# This is a TOML document
+
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00
+
+[database]
+enabled = true
+ports = [ 8000, 8001, 8002 ]
+data = [ ["delta", "phi"], [3.14] ]
+temp_targets = { cpu = 79.5, case = 72.0 }
+
+[servers]
+
+[servers.alpha]
+ip = "10.0.0.1"
+role = "frontend"
+
+[servers.beta]
+ip = "10.0.0.2"
+role = "backend"
+)"
+toml <- ts_parse_toml(text = txt)
+```
+
+Pretty print a tstoml object:
+
+```{asciicast}
+#| label: print-toml
+toml
+```
+
+### Select elements in a tstoml object
+
+```{asciicast}
+#| label: select-table
+ts_tree_select(toml, "owner")
+```
+
+Select element(s) inside elements:
+
+```{asciicast}
+#| label: select-select
+ts_tree_select(toml, "owner", "name")
+```
+
+Select element(s) of an array:
+
+```{asciicast}
+#| label: select-array
+ts_tree_select(toml, "database", "ports", 1:2)
+```
+
+Select multiple keys from a table:
+
+```{asciicast}
+#| label: select-multiple
+ts_tree_select(toml, "owner", c("name", "dob"))
+```
+
+### Delete elements
+
+Delete selected elements:
+
+```{asciicast}
+#| label: delete-elements
+ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
+```
+
+### Insert elements
+
+Insert a key-value pair into the document:
+
+```{asciicast}
+#| label: insert-pair-document
+ts_tree_insert(toml, key = "new_key", "new_value")
+```
+
+Insert a key-value pair into a table:
+```{asciicast}
+#| label: insert-pair-table
+ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
+```
+
+Insert an element into an array:
+```{asciicast}
+#| label: insert-element-array
+ts_tree_select(toml, "database", "ports") |>
+  ts_tree_insert(10000L) |>
+  print(n = 100)
+```
+
+Insert a new table into the document:
+```{asciicast}
+#| label: insert-table-document
+ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
+  print(n = 100)
+```
+
+Insert a new array of tables into the document:
+```{asciicast}
+#| label: insert-aot-document
+ts_tree_insert(toml, key = "new_aot",
+  list(list(x = 1), list(x = 2))) |>
+  print(n = 100)
+```
+
+### Update elements
+
+Update an existing element:
+
+```{asciicast}
+#| label: update-element
+ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
+```
+
+Update multiple elements at once:
+
+```{asciicast}
+#| label: update-multiple
+ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
+  ts_tree_update("192.168.1.23") |>
+  print(n = 100)
+```
