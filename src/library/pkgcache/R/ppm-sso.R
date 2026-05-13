@@ -429,7 +429,7 @@ ppm_sso_device_flow_message <- function(ppm_url, init_result) {
   if (interactive()) {
     readline("Press ENTER to open in browser...")
     utils::browseURL(init_result$display_uri)
-  } else if (Sys.getenv("R_PKG_PKG_WORKER") == "true") {
+  } else if (isTRUE(getOption("pak.is_worker"))) {
     # called from pak, make the UI slightly nicer.
     # unfortunately we cannot interact with the user here
     utils::browseURL(init_result$display_uri)

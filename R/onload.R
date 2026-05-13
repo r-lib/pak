@@ -19,6 +19,7 @@ pkg_data <- new.env(parent = emptyenv())
     # We don't use the env vars that cli supports, on purpose, because
     # they are inherited in the subprocess of the subprocess
     options(
+      pak.is_worker = TRUE,
       cli.num_colors = as.numeric(Sys.getenv("R_PKG_NUM_COLORS", "1")),
       rlib_interactive = (Sys.getenv("R_PKG_INTERACTIVE") == "TRUE"),
       cli.dynamic = (Sys.getenv("R_PKG_DYNAMIC_TTY") == "TRUE")
