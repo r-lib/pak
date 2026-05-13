@@ -19,8 +19,7 @@ create_progress_bar <- function(data) {
   bar$data$current <- NA_integer_
 
   bar$timer <- async_timer$new(1 / 10, function() show_progress_bar(bar))
-  bar$timer$listen_on("error", function(...) {
-  })
+  bar$timer$listen_on("error", function(...) {})
 
   bar
 }

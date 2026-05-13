@@ -176,7 +176,7 @@ repo_auth_headers <- function(
   # - host URL w/o username
   # We try each with and without a keyring username
   urls <- unique(unlist(
-    parsed_url[c("repouserurl", "repourl", "hostuserurl", "hosturl")]
+    parsed_url[c("repouserurl", "repourl", "hostuserurl", "hosturl", "host")]
   ))
 
   if (use_cache) {
@@ -480,7 +480,17 @@ repo_auth_sso <- function(repourl, username) {
     return(NULL)
   }
 
-  token <- try_catch_null(ppm_sso_login(service = repourl))
-
+  token <- tryCatch(
+    ppm_sso_auth(repourl),
+    error = function(e) {
+      cli::cli_alert_warning(
+        "PPM SSO authentication failed for repo {.url {repourl}}: {conditionMessage(e)}"
+      )
+      cli::cli_alert_info(
+        "Try calling {.code ppm_sso_login()} directly."
+      )
+      NULL
+    }
+  )
   token
 }

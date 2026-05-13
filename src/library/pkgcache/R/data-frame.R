@@ -2,7 +2,9 @@ find_in_data_frame <- function(df, ..., .list = NULL) {
   cols <- drop_nulls(c(list(...), .list))
   idx <- seq_len(nrow(df))
   for (i in seq_along(cols)) {
-    if (length(idx) == 0) break
+    if (length(idx) == 0) {
+      break
+    }
     n <- names(cols)[i]
     idx <- idx[df[[n]][idx] %in% cols[[i]]]
   }

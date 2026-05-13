@@ -2,6 +2,10 @@ repoman_data <- new.env(parent = emptyenv())
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
+`%&&%` <- function(l, r) if (is.null(l)) NULL else r
+
+isFALSE <- function(x) is.logical(x) && length(x) == 1L && !is.na(x) && !x
+
 vcapply <- function(X, FUN, ...) {
   vapply(X, FUN, FUN.VALUE = character(1), ...)
 }
@@ -22,10 +26,16 @@ vdapply <- function(X, FUN, ...) {
 
 mapx <- function(...) {
   args <- list(...)
-  if (length(args) == 0) stop("No arguments to `mapx()`")
+  if (length(args) == 0) {
+    stop("No arguments to `mapx()`")
+  }
   fun <- args[[length(args)]]
-  if (!is.function(fun)) stop("Last `mapx()` argument not a function")
-  if (length(args) == 1) stop("No data to `mapx()`")
+  if (!is.function(fun)) {
+    stop("Last `mapx()` argument not a function")
+  }
+  if (length(args) == 1) {
+    stop("No data to `mapx()`")
+  }
   data <- args[-length(args)]
 
   lens <- setdiff(unique(viapply(data, length)), 1L)
@@ -167,7 +177,9 @@ file.size <- function(...) {
 
 msg_wrap <- function(..., .space = TRUE) {
   ret <- paste(strwrap(paste0(...)), collapse = "\n")
-  if (.space) ret <- paste0("\n", ret, "\n")
+  if (.space) {
+    ret <- paste0("\n", ret, "\n")
+  }
   ret
 }
 

@@ -113,7 +113,7 @@ Config/needs/dependencies:
     keyring,
     lpSolve,
     pkgbuild,
-    pkgcache,
+    r-lib/pkgcache@feature/ppm-sso,
     pkgdepends,
     pkgsearch,
     processx,

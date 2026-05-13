@@ -1,6 +1,326 @@
-ppm_sso_data <- new.env(parent = emptyenv())
-ppm_sso_data$name <- "ppm"
-ppm_sso_data$viable <- FALSE
+#' Posit Package Manager single sign-on (SSO) authentication
+#'
+#' @details
+#' `ppm_sso_login()` initiates the SSO login process. You should be
+#' prompted to log in via your browser, and the obtained token will be
+#' cached for future use.
+#'
+#' ## Set up SSO authentication:
+#' - Set the `PACKAGEMANAGER_ADDRESS` environment variable to the URL of
+#'   your RStudio Package Manager instance. For example, add this line to
+#'   your `.Renviron` file:
+#'   ```
+#'   PACKAGEMANAGER_ADDRESS=https://<ppm-url>
+#'   ```
+#'   Alternatively, you can also set it in your shell profile on Unix,
+#'   or in the System or User environment variables on Windows.
+#' - Set `options(repos)` to include a repository from your Package Manager
+#'   instance. Include `__token__` as the username in the URL. For example:
+#'   ```
+#'   options(repos = c(
+#'     PPM = "https://__token__@<ppm-url>/<repo-path>",
+#'     getOption("repos")
+#'   ))
+#'   ```
+#' - Call [repo_get()] to trigger authentication and caching of the token.
+#'   You should be prompted to log in via your browser, and the obtained
+#'   token will be cached for future use. Call [ppm_sso_status()] to check
+#'   the status of your authentication, including the path of the cached
+#'   token and its expiration time.
+#' - Alternatively, you can call `ppm_sso_login()` directly to trigger
+#'   the login process directly.
+#'
+#' @return `ppm_sso_login()` returns the obtained token invisibly.
+#'
+#' @seealso <https://docs.posit.co/rspm/admin/authentication/>
+#' @export
+
+ppm_sso_login <- function() {
+  ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
+
+  identity_token <- ppm_sso_get_identity_token_from_file() %||%
+    ppm_sso_device_flow(ppm_url)
+  ppm_token <- ppm_sso_identity_to_ppm_token(ppm_url, identity_token)
+  ppm_sso_write_token_to_file(ppm_url, ppm_token)
+
+  invisible(ppm_token)
+}
+
+#' @rdname ppm_sso_login
+#' @details
+#' `ppm_sso_logout()` removes the cached token, effectively logging you
+#' out. If there is no cached token, it does nothing.
+#' @return `ppm_sso_logout()` does not return anything.
+#' @export
+
+ppm_sso_logout <- function() {
+  ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
+
+  # remove from cache if there
+  try_catch_null(suppressWarnings(rm(
+    list = ppm_url,
+    envir = pkgenv$ppm_sso_cache,
+    inherits = FALSE
+  )))
+  parsed <- parse_url(ppm_url)
+  try_catch_null(suppressWarnings(rm(
+    list = parsed$host,
+    envir = pkgenv$credentials,
+    inherits = FALSE
+  )))
+
+  token_file_path <- ppm_sso_token_path()
+  if (!file.exists(token_file_path)) {
+    return(invisible())
+  }
+  tokens <- try_catch_null({
+    tokens <- suppressWarnings(tstoml::ts_read_toml(token_file_path))
+    urls <- ts::ts_tree_unserialize(
+      ts::ts_tree_select(tokens, list("connections", TRUE, "address"))
+    )
+    idx <- which(urls == ppm_url)[1]
+    tokens
+  })
+
+  if (is.na(idx)) {
+    return(invisible())
+  }
+
+  tokens <- ts::ts_tree_delete(
+    ts::ts_tree_select(tokens, list("connections", idx))
+  )
+
+  ts::ts_tree_write(tokens, token_file_path)
+
+  invisible()
+}
+
+#' @rdname ppm_sso_login
+#' @param connect If `TRUE`, also checks if the token is valid by making a test
+#'   request to the Package Manager instance. This requires an active internet
+#'   connection and may take a few seconds. If `FALSE`, only checks if a
+#'   token is cached and not expired.
+#' @details
+#' `ppm_sso_status()` checks the status of your authentication, including
+#' the path of the cached token and its expiration time.
+#' @export
+
+ppm_sso_status <- function(connect = FALSE) {
+  ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
+  ppm_sso_check_url(ppm_url)
+  token <- ppm_sso_get_cached_token(ppm_url, alive = TRUE) %||%
+    ppm_sso_get_existing_token(ppm_url, valid = FALSE)
+
+  jwt <- token %&&% jwt_split(token)
+  iat <- .POSIXct(jwt$payload$iat %||% NA_real_)
+  exp <- .POSIXct(jwt$payload$exp %||% NA_real_)
+  now <- Sys.time()
+  auth <- if (connect) {
+    token %&&%
+      try_catch_null(ppm_sso_can_authenticate(ppm_url, token)) %||%
+      FALSE
+  } else {
+    NA
+  }
+
+  structure(
+    list(
+      ppm_url = ppm_url,
+      token_file = ppm_sso_token_path(),
+      token = token %||% NA_character_,
+      valid = auth,
+      issuer = jwt$payload$iss %||% NA_character_,
+      subject = jwt$payload$sub %||% NA_character_,
+      audience = jwt$payload$aud %||% NA_character_,
+      issued_at = iat,
+      expires_at = exp,
+      expired = exp < now,
+      expires_in = if (!is.na(exp) && now < exp) {
+        exp - now
+      } else {
+        as.difftime(NA_real_, units = "secs")
+      }
+    ),
+    class = "ppm_sso_status"
+  )
+}
+
+jwt_split <- function(jwt) {
+  input <- strsplit(jwt, ".", fixed = TRUE)[[1]]
+  stopifnot(length(input) %in% c(2, 3))
+  header <- jsonlite::fromJSON(rawToChar(ppm_sso_base64url_decode(input[1])))
+  if (length(header$typ)) {
+    stopifnot(toupper(header$typ) == "JWT")
+  }
+  if (is.na(input[3])) {
+    input[3] = ""
+  }
+  sig <- ppm_sso_base64url_decode(input[3])
+  payload <- jsonlite::fromJSON(rawToChar(ppm_sso_base64url_decode(input[2])))
+  data <- charToRaw(paste(input[1:2], collapse = "."))
+  if (!grepl("^none|EdDSA|[HRE]S(256|384|512)$", header$alg)) {
+    stop("Invalid algorithm: ", header$alg)
+  }
+  if (grepl(".S\\d\\d\\d", header$alg)) {
+    type <- match.arg(substring(header$alg, 1, 1), c("HMAC", "RSA", "ECDSA"))
+    keysize <- as.numeric(substring(header$alg, 3))
+  } else {
+    type <- header$alg
+    keysize = NULL
+  }
+  list(
+    type = type,
+    keysize = keysize,
+    data = data,
+    sig = sig,
+    payload = payload,
+    header = header
+  )
+}
+
+#' @export
+
+print.ppm_sso_status <- function(x, ...) {
+  writeLines(format(x, ...))
+  invisible(x)
+}
+
+#' @export
+
+format.ppm_sso_status <- function(x, ...) {
+  token <- if (!is.na(x$token)) {
+    paste0(
+      substr(x$token, 1, 3),
+      "...",
+      substr(x$token, nchar(x$token) - 3, nchar(x$token))
+    )
+  } else {
+    NA_character_
+  }
+  key <- function(x) {
+    cli::col_cyan(x)
+  }
+  url <- function(x) {
+    if (!is.na(x) && startsWith(x, "http")) {
+      cli::style_hyperlink(x, x)
+    } else {
+      x
+    }
+  }
+  tick <- function(x, invert = FALSE) {
+    txt <- if (isTRUE(x)) {
+      "yes"
+    } else if (isFALSE(x)) {
+      "no"
+    } else {
+      "?"
+    }
+    if (invert) {
+      x <- !x
+    }
+    if (isTRUE(x)) {
+      cli::col_green(txt)
+    } else if (isFALSE(x)) {
+      cli::col_magenta(txt)
+    } else {
+      txt
+    }
+  }
+  ein <- if (is.na(x$expires_in)) "-" else format_time$pretty_dt(x$expires_in)
+  c(
+    cli::rule("PPM SSO Status"),
+    paste(key("PPM URL:    "), url(x$ppm_url)),
+    paste(key("Token file: "), x$token_file),
+    paste(key("Token:      "), token),
+    paste(key("Valid:      "), tick(x$valid)),
+    paste(key("Issuer:     "), url(x$issuer)),
+    paste(key("Subject:    "), x$subject),
+    paste(key("Audience:   "), x$audience),
+    paste(key("Issued at:  "), x$issued_at),
+    paste(key("Expires at: "), x$expires_at),
+    paste(key("Expired:    "), tick(x$expired, invert = TRUE)),
+    paste(key("Expires in: "), ein),
+    NULL
+  )
+}
+
+
+ppm_sso_check_url <- function(ppm_url) {
+  if (is.na(ppm_url)) {
+    stop(
+      "Please set the PACKAGEMANAGER_ADDRESS environment variable to ",
+      "the URL of your RStudio Package Manager instance."
+    )
+  }
+
+  if (is.na(parse_url(ppm_url)$host)) {
+    stop(
+      "The PACKAGEMANAGER_ADDRESS environment variable must be a valid URL, ",
+      "but got: ",
+      ppm_url
+    )
+  }
+}
+
+ppm_sso_auth <- function(repo) {
+  ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
+  parsed <- tryCatch(
+    parse_url(repo),
+    error = function(e) {
+      stop("Failed to parse repository URL: ", repo)
+    }
+  )
+  repo_host <- paste0(parsed$protocol, "://", parsed$host)
+  if (repo_host != ppm_url) {
+    stop(
+      "The repository URL (",
+      repo_host,
+      ") does not match the configured ",
+      "Package Manager URL (",
+      ppm_url,
+      ")."
+    )
+  }
+
+  token <- ppm_sso_get_cached_token(ppm_url, alive = TRUE) %||%
+    ppm_sso_get_existing_token(ppm_url, valid = TRUE) %||%
+    ppm_sso_login()
+
+  pkgenv$ppm_sso_cache[[ppm_url]] <- token
+
+  token
+}
+
+ppm_sso_get_cached_token <- function(ppm_url, alive = TRUE) {
+  token <- pkgenv$ppm_sso_cache[[ppm_url]]
+
+  # no token in cache
+  if (is.null(token)) {
+    return(NULL)
+  }
+
+  # no need to test if token is live
+  if (!alive) {
+    return(token)
+  }
+
+  # no expiration date
+  jwt <- jwt_split(token)
+  exp <- jwt$payload$exp
+  if (is.null(exp)) {
+    return(token)
+  }
+
+  # check if token is still valid
+  if (.POSIXct(exp) > Sys.time()) {
+    return(token)
+  }
+
+  # not valid any more, remove from cache
+  pkgenv$ppm_sso_cache[[ppm_url]] <- NULL
+
+  NULL
+}
 
 ppm_sso_post_form <- function(url, payload) {
   payload <- payload[!vapply(payload, is.null, logical(1))]
@@ -25,91 +345,27 @@ ppm_sso_post_form <- function(url, payload) {
   )
 }
 
-ppm_sso_init <- function(url = NULL) {
-  url <- url %||% Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
-  if (!is_string(url)) {
-    stop(
-      "Please set the PACKAGEMANAGER_ADDRESS environment variable to ",
-      "the URL of your RStudio Package Manager instance."
-    )
-  }
-
-  parsed_url <- regmatches(
-    url,
-    regexec("^(?:https?://)?([^/]+)", url)
-  )[[1]]
-  if (length(parsed_url) < 2) {
-    stop("Invalid Package Manager URL: ", url)
-  }
-
-  ppm_sso_data$ppm_url <- url
-  ppm_sso_data$service_name <- parsed_url[2]
-  ppm_sso_data$token_file_path <- file.path(
+ppm_sso_token_path <- function() {
+  file.path(
     path.expand("~"),
     ".ppm",
     "tokens.toml"
   )
-  ppm_sso_data$viable <- TRUE
 }
 
-ppm_sso_login <- function(service = NULL) {
-  service <- service %||%
-    ppm_sso_data$ppm_url %||%
-    Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
-  if (!ppm_sso_data$viable) {
-    ppm_sso_init()
-  }
-
-  if (!ppm_are_requirements_valid(service)) {
-    stop(
-      "Package Manager SSO is not properly configured. Please ensure that ",
-      "the PACKAGEMANAGER_ADDRESS environment variable is set to the URL of ",
-      "your Posit Package Manager instance."
-    )
-  }
-
-  existing_token <- ppm_sso_get_existing_token()
-  if (!is.null(existing_token) && ppm_sso_can_authenticate(existing_token)) {
-    return(existing_token)
-  }
-
-  identity_token <- ppm_sso_get_identity_token_from_file() %||%
-    ppm_sso_device_flow()
-  ppm_token <- ppm_sso_identity_to_ppm_token(identity_token)
-  ppm_sso_write_token_to_file(ppm_token)
-
-  ppm_token
-}
-
-ppm_are_requirements_valid <- function(service) {
-  is_string(ppm_sso_data$ppm_url) && startsWith(service, ppm_sso_data$ppm_url)
-}
-
-ppm_sso_get_existing_token <- function() {
-  if (!file.exists(ppm_sso_data$token_file_path)) {
-    return(NULL)
-  }
-  tryCatch(
-    {
-      tokens_data <- RcppTOML::parseTOML(ppm_sso_data$token_file_path)
-      for (conn in tokens_data$connection) {
-        if (identical(conn$url, ppm_sso_data$ppm_url)) {
-          return(conn$token)
+ppm_sso_get_existing_token <- function(ppm_url, valid = TRUE) {
+  path <- ppm_sso_token_path()
+  try_catch_null({
+    ts_tokens <- suppressWarnings(tstoml::ts_read_toml(path))
+    for (conn in ts_tokens[[list("connections", TRUE)]]) {
+      if (identical(conn$address, ppm_url)) {
+        if (valid && !ppm_sso_can_authenticate(ppm_url, conn$token)) {
+          return(NULL)
         }
+        return(conn$token)
       }
-    },
-    error = function(e) {
-      NULL
     }
-  )
-}
-
-ppm_sso_can_authenticate <- function(token) {
-  h <- curl::new_handle()
-  curl::handle_setheaders(h, "Authorization" = paste("Bearer", token))
-  resp <- curl::curl_fetch_memory(ppm_sso_data$ppm_url, handle = h)
-  status <- resp$status_code
-  status < 500 && status != 401 && status != 403
+  })
 }
 
 ppm_sso_get_identity_token_from_file <- function() {
@@ -117,23 +373,17 @@ ppm_sso_get_identity_token_from_file <- function() {
   if (is.na(token_file)) {
     return(NULL)
   }
-
-  tryCatch(
-    {
-      trimws(readLines(token_file, n = 1, warn = FALSE))
-    },
-    error = function(e) {
-      NULL
-    }
-  )
+  try_catch_null({
+    trimws(readLines(token_file, n = 1, warn = FALSE))
+  })
 }
 
-ppm_sso_device_flow <- function() {
+ppm_sso_device_flow <- function(ppm_url) {
   verifier <- ppm_sso_new_pkce_verifier()
   challenge <- ppm_sso_new_pkce_challenge(verifier)
 
   # 1. Initiate Device Auth
-  init_url <- paste0(ppm_sso_data$ppm_url, "/__api__/device")
+  init_url <- paste0(ppm_url, "/__api__/device")
   payload <- list(
     code_challenge_method = "S256",
     code_challenge = challenge
@@ -154,16 +404,19 @@ ppm_sso_device_flow <- function() {
     stop("No verification URI found in device auth response.")
   }
 
-  message("\nPlease open the following URL in your browser:")
-  message(paste("  ", display_uri))
-  message("\nAnd enter the following code when prompted:")
-  message(paste("  ", init_resp_body$user_code))
-  message("\nWaiting for authorization...")
-
-  try(utils::browseURL(display_uri), silent = TRUE)
+  cli::cli_rule("PPM SSO Login")
+  cli::cli_text("Login at {.url {display_uri}}")
+  cli::cli_text(
+    "and enter code {.emph {cli::col_magenta(init_resp_body$user_code)}} when prompted."
+  )
+  if (interactive()) {
+    readline("Press ENTER to open in browser...")
+    utils::browseURL(display_uri)
+  }
 
   # 2. Poll for token
   token_resp_body <- ppm_sso_complete_device_auth(
+    ppm_url,
     init_resp_body$device_code,
     verifier,
     init_resp_body$interval %||% 5,
@@ -177,8 +430,16 @@ ppm_sso_device_flow <- function() {
   token_resp_body$id_token
 }
 
-ppm_sso_identity_to_ppm_token <- function(identity_token) {
-  url <- paste0(ppm_sso_data$ppm_url, "/__api__/token")
+ppm_sso_can_authenticate <- function(ppm_url, token) {
+  h <- curl::new_handle()
+  curl::handle_setheaders(h, "Authorization" = paste("Bearer", token))
+  resp <- curl::curl_fetch_memory(ppm_url, handle = h)
+  status <- resp$status_code
+  status < 500 && status != 401 && status != 403
+}
+
+ppm_sso_identity_to_ppm_token <- function(ppm_url, identity_token) {
+  url <- paste0(ppm_url, "/__api__/token")
   payload <- list(
     grant_type = "urn:ietf:params:oauth:grant-type:token-exchange",
     subject_token = identity_token,
@@ -202,64 +463,54 @@ ppm_sso_identity_to_ppm_token <- function(identity_token) {
   token_data$access_token
 }
 
-ppm_sso_write_token_to_file <- function(token) {
-  dir.create(
-    dirname(ppm_sso_data$token_file_path),
-    showWarnings = FALSE,
-    recursive = TRUE
-  )
-
-  new_connection <- list(
-    url = ppm_sso_data$ppm_url,
+ppm_sso_write_token_to_file <- function(ppm_url, token) {
+  # this is more difficult than it should be because TOML is unable
+  # to represent an empty array of tables
+  token_file_path <- ppm_sso_token_path()
+  mkdirp(dirname(token_file_path))
+  new_conn <- list(
+    address = ppm_url,
     token = token,
-    method = "sso"
+    auth_type = "sso"
   )
 
-  existing_data <- if (file.exists(ppm_sso_data$token_file_path)) {
-    tryCatch(
-      RcppTOML::parseTOML(ppm_sso_data$token_file_path),
-      error = function(e) {
-        list(connection = list())
-      }
+  tokens <- try_catch_null({
+    tokens <- suppressWarnings(tstoml::ts_read_toml(token_file_path))
+    urls <- ts::ts_tree_unserialize(
+      ts::ts_tree_select(tokens, list("connections", TRUE, "address"))
+    )
+    idx <- which(urls == ppm_url)[1]
+    tokens
+  })
+
+  if (is.null(tokens)) {
+    tokens <- tstoml::ts_parse_toml("")
+    tokens <- ts::ts_tree_insert(tokens, key = "connections", list(new_conn))
+  } else if (!is.na(idx)) {
+    tokens <- ts::ts_tree_update(
+      ts::ts_tree_select(tokens, list("connections", idx, "token")),
+      new_conn$token
     )
   } else {
-    list(connection = list())
-  }
-
-  # Find and update existing entry or add a new one
-  found <- FALSE
-  if (
-    !is.null(existing_data$connection) && length(existing_data$connection) > 0
-  ) {
-    for (i in seq_along(existing_data$connection)) {
-      if (identical(existing_data$connection[[i]]$url, ppm_sso_data$ppm_url)) {
-        existing_data$connection[[i]] <- new_connection
-        found <- TRUE
-        break
-      }
-    }
-  }
-
-  if (!found) {
-    existing_data$connection <- c(
-      existing_data$connection,
-      list(new_connection)
+    tokens <- ts::ts_tree_insert(
+      ts::ts_tree_select(tokens, "connections"),
+      list(new_conn)
     )
   }
 
-  # Manually construct TOML output
-  output_lines <- c()
-  for (conn in existing_data$connection) {
-    output_lines <- c(
-      output_lines,
-      "[[connection]]",
-      paste0("url = \"", conn$url, "\""),
-      paste0("token = \"", conn$token, "\""),
-      paste0("method = \"", conn$method, "\""),
-      ""
-    )
-  }
-  writeLines(output_lines, ppm_sso_data$token_file_path)
+  bytes <- as.raw(tokens)
+  file.create(token_file_path)
+  Sys.chmod(token_file_path, "600")
+  writeBin(bytes, token_file_path)
+}
+
+ppm_sso_base64url_decode <- function(x) {
+  # Add padding if missing
+  padding_needed <- (4 - nchar(x) %% 4) %% 4
+  x <- paste0(x, strrep("=", padding_needed))
+  # Replace URL-safe characters
+  x <- gsub("-", "+", gsub("_", "/", x))
+  processx::base64_decode(x)
 }
 
 ppm_sso_base64url_encode <- function(x) {
@@ -286,38 +537,56 @@ ppm_sso_new_pkce_challenge <- function(verifier) {
 }
 
 ppm_sso_complete_device_auth = function(
+  ppm_url,
   device_code,
   verifier,
   interval,
   expires_in
 ) {
-  url <- paste0(ppm_sso_data$ppm_url, "/__api__/device_access")
+  url <- paste0(ppm_url, "/__api__/device_access")
   start_time <- Sys.time()
   payload <- list(
     device_code = device_code,
     code_verifier = verifier
   )
 
+  cli::cli_progress_bar(
+    format = "{cli::pb_spin} Waiting for browser."
+  )
   while (as.numeric(Sys.time() - start_time) < expires_in) {
     resp <- ppm_sso_post_form(url, payload)
     status <- resp$status
 
     if (status == 200) {
+      cli::cli_progress_done()
+      cli::cli_alert_success("Authorization successful.")
       return(resp$body)
     } else if (status == 400) {
       error_code <- resp$body$error
       if (error_code == "access_denied") {
+        cli::cli_progress_done()
+        cli::cli_alert_danger("Authorization denied by user.")
         stop("Access denied by user.")
       }
       if (error_code == "expired_token") {
+        cli::cli_progress_done()
+        cli::cli_alert_danger("Device authorization request expired.")
         stop("Device authorization request expired.")
       }
       # For "authorization_pending" or "slow_down", just wait and retry.
     } else {
-      stop("Device authorization failed (HTTP ", status, ").")
+      cli::cli_progress_done()
+      cli::cli_alert_danger(
+        "Device authorization failed (HTTP {status})."
+      )
+      stop("Device authorization failed.")
     }
 
-    Sys.sleep(interval)
+    deadline <- Sys.time() + interval
+    while (Sys.time() < deadline) {
+      Sys.sleep(.1)
+      cli::cli_progress_update()
+    }
   }
 
   stop("Device authorization timed out.")

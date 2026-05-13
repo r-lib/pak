@@ -179,7 +179,7 @@ cranlike_metadata_cache <- R6Class(
       cran_mirror = default_cran_mirror(),
       repos = getOption("repos"),
       update_after = as.difftime(7, units = "days")
-    )
+    ) {
       cmc_init(
         self,
         private,
@@ -191,21 +191,27 @@ cranlike_metadata_cache <- R6Class(
         cran_mirror,
         repos,
         update_after
-      ),
+      )
+    },
 
-    deps = function(packages, dependencies = NA, recursive = TRUE)
-      synchronise(self$async_deps(packages, dependencies, recursive)),
-    async_deps = function(packages, dependencies = NA, recursive = TRUE)
-      cmc_async_deps(self, private, packages, dependencies, recursive),
+    deps = function(packages, dependencies = NA, recursive = TRUE) {
+      synchronise(self$async_deps(packages, dependencies, recursive))
+    },
+    async_deps = function(packages, dependencies = NA, recursive = TRUE) {
+      cmc_async_deps(self, private, packages, dependencies, recursive)
+    },
 
-    revdeps = function(packages, dependencies = NA, recursive = TRUE)
-      synchronise(self$async_revdeps(packages, dependencies, recursive)),
-    async_revdeps = function(packages, dependencies = NA, recursive = TRUE)
-      cmc_async_revdeps(self, private, packages, dependencies, recursive),
+    revdeps = function(packages, dependencies = NA, recursive = TRUE) {
+      synchronise(self$async_revdeps(packages, dependencies, recursive))
+    },
+    async_revdeps = function(packages, dependencies = NA, recursive = TRUE) {
+      cmc_async_revdeps(self, private, packages, dependencies, recursive)
+    },
 
     list = function(packages = NULL) synchronise(self$async_list(packages)),
-    async_list = function(packages = NULL)
-      cmc_async_list(self, private, packages),
+    async_list = function(packages = NULL) {
+      cmc_async_list(self, private, packages)
+    },
 
     update = function() synchronise(self$async_update()),
     async_update = function() cmc_async_update(self, private),
@@ -219,32 +225,42 @@ cranlike_metadata_cache <- R6Class(
   ),
 
   private = list(
-    get_cache_files = function(which = c("primary", "replica"))
-      cmc__get_cache_files(self, private, match.arg(which)),
+    get_cache_files = function(which = c("primary", "replica")) {
+      cmc__get_cache_files(self, private, match.arg(which))
+    },
 
-    async_ensure_cache = function(max_age = private$update_after)
-      cmc__async_ensure_cache(self, private, max_age),
+    async_ensure_cache = function(max_age = private$update_after) {
+      cmc__async_ensure_cache(self, private, max_age)
+    },
 
-    get_current_data = function(max_age)
-      cmc__get_current_data(self, private, max_age),
-    get_memory_cache = function(max_age)
-      cmc__get_memory_cache(self, private, max_age),
-    load_replica_rds = function(max_age)
-      cmc__load_replica_rds(self, private, max_age),
-    load_primary_rds = function(max_age)
-      cmc__load_primary_rds(self, private, max_age),
-    load_primary_pkgs = function(max_age)
-      cmc__load_primary_pkgs(self, private, max_age),
+    get_current_data = function(max_age) {
+      cmc__get_current_data(self, private, max_age)
+    },
+    get_memory_cache = function(max_age) {
+      cmc__get_memory_cache(self, private, max_age)
+    },
+    load_replica_rds = function(max_age) {
+      cmc__load_replica_rds(self, private, max_age)
+    },
+    load_primary_rds = function(max_age) {
+      cmc__load_primary_rds(self, private, max_age)
+    },
+    load_primary_pkgs = function(max_age) {
+      cmc__load_primary_pkgs(self, private, max_age)
+    },
 
     update_replica_pkgs = function() cmc__update_replica_pkgs(self, private),
-    update_replica_rds = function(alert = TRUE)
-      cmc__update_replica_rds(self, private, alert),
-    update_primary = function(rds = TRUE, packages = TRUE, lock = TRUE)
-      cmc__update_primary(self, private, rds, packages, lock),
+    update_replica_rds = function(alert = TRUE) {
+      cmc__update_replica_rds(self, private, alert)
+    },
+    update_primary = function(rds = TRUE, packages = TRUE, lock = TRUE) {
+      cmc__update_primary(self, private, rds, packages, lock)
+    },
     update_memory_cache = function() cmc__update_memory_cache(self, private),
 
-    copy_to_replica = function(rds = TRUE, pkgs = FALSE, etags = FALSE)
-      cmc__copy_to_replica(self, private, rds, pkgs, etags),
+    copy_to_replica = function(rds = TRUE, pkgs = FALSE, etags = FALSE) {
+      cmc__copy_to_replica(self, private, rds, pkgs, etags)
+    },
 
     ## We use this to make sure that different versions of pkgcache can
     ## share the same metadata cache directory. It is used to calculate
@@ -345,7 +361,9 @@ cmc_async_list <- function(self, private, packages) {
 cmc_async_update <- function(self, private) {
   self
   private
-  if (!is.null(private$update_deferred)) return(private$update_deferred)
+  if (!is.null(private$update_deferred)) {
+    return(private$update_deferred)
+  }
 
   private$update_deferred <- async(private$update_replica_pkgs)()$then(
     function() private$update_replica_rds()
@@ -358,8 +376,12 @@ cmc_async_check_update <- function(self, private) {
   self
   private
 
-  if (!is.null(private$update_deferred)) return(private$update_deferred)
-  if (!is.null(private$chk_update_deferred)) return(private$chk_update_deferred)
+  if (!is.null(private$update_deferred)) {
+    return(private$update_deferred)
+  }
+  if (!is.null(private$chk_update_deferred)) {
+    return(private$chk_update_deferred)
+  }
 
   private$chk_update_deferred <- async(private$update_replica_pkgs)()$then(
     function(ret) {
@@ -540,7 +562,9 @@ ppm_binary_url <- function(urls, r_version) {
 
   # If multiple R versions are requested, then we give up, and pretend
   # that PPM binaries are source packages
-  if (length(r_version) != 1) return(res)
+  if (length(r_version) != 1) {
+    return(res)
+  }
 
   # http://rspm.infra/all/__linux__/bionic/latest ->
   # http://rspm.infra/all/latest/bin/linux/4.2-bionic/contrib/4.2/PACKAGES
@@ -615,7 +639,9 @@ cmc__async_ensure_cache <- function(self, private, max_age) {
 
 cmc__get_current_data <- function(self, private, max_age) {
   "!!DEBUG Get current data?"
-  if (is.null(private$data)) stop("No data loaded")
+  if (is.null(private$data)) {
+    stop("No data loaded")
+  }
   if (
     is.null(private$data_time) ||
       Sys.time() - private$data_time > max_age
@@ -634,7 +660,9 @@ cmc__get_memory_cache <- function(self, private, max_age) {
   "!!DEBUG Get from memory cache?"
   rds <- private$get_cache_files("primary")$rds
   hit <- cmc__data[[rds]]
-  if (is.null(hit)) stop("Not in the memory cache")
+  if (is.null(hit)) {
+    stop("Not in the memory cache")
+  }
   if (is.null(hit$data_time) || Sys.time() - hit$data_time > max_age) {
     stop("Memory cache outdated")
   }
@@ -660,10 +688,14 @@ cmc__get_memory_cache <- function(self, private, max_age) {
 cmc__load_replica_rds <- function(self, private, max_age) {
   "!!DEBUG Load replica RDS?"
   rds <- private$get_cache_files("replica")$rds
-  if (!file.exists(rds)) stop("No replica RDS file in cache")
+  if (!file.exists(rds)) {
+    stop("No replica RDS file in cache")
+  }
 
   time <- file_get_time(rds)
-  if (Sys.time() - time > max_age) stop("Replica RDS cache file outdated")
+  if (Sys.time() - time > max_age) {
+    stop("Replica RDS cache file outdated")
+  }
 
   sts <- cli::cli_process_start("Loading metadata database")
   private$data <- readRDS(rds)
@@ -692,12 +724,18 @@ cmc__load_primary_rds <- function(self, private, max_age) {
 
   mkdirp(dirname(pri_files$lock))
   l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
-  if (is.null(l)) stop("Cannot acquire lock to copy RDS")
+  if (is.null(l)) {
+    stop("Cannot acquire lock to copy RDS")
+  }
   on.exit(filelock::unlock(l), add = TRUE)
 
-  if (!file.exists(pri_files$rds)) stop("No primary RDS file in cache")
+  if (!file.exists(pri_files$rds)) {
+    stop("No primary RDS file in cache")
+  }
   time <- file_get_time(pri_files$rds)
-  if (Sys.time() - time > max_age) stop("Primary RDS cache file outdated")
+  if (Sys.time() - time > max_age) {
+    stop("Primary RDS cache file outdated")
+  }
 
   ## Metadata files might be missing or outdated, that's ok (?)
   pkgs_times <- file_get_time(pri_files$pkgs$path)
@@ -741,7 +779,9 @@ cmc__load_primary_pkgs <- function(self, private, max_age) {
   ## Lock
   mkdirp(dirname(pri_files$lock))
   l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
-  if (is.null(l)) stop("Cannot acquire lock to copy PACKAGES files")
+  if (is.null(l)) {
+    stop("Cannot acquire lock to copy PACKAGES files")
+  }
   on.exit(filelock::unlock(l), add = TRUE)
 
   ## Check if PACKAGES exist and current. It is OK if metadata is missing
@@ -819,11 +859,17 @@ cmc__update_replica_pkgs <- function(self, private) {
 
 missing_pkgs_note <- function(pkgs, result) {
   bad <- vlapply(result[seq_len(nrow(pkgs))], inherits, "error")
-  if (!any(bad)) return()
+  if (!any(bad)) {
+    return()
+  }
 
   repo_name <- function(type, url) {
-    if (type == "cran") return("CRAN")
-    if (type == "bioc") return("Bioconductor")
+    if (type == "cran") {
+      return("CRAN")
+    }
+    if (type == "bioc") {
+      return("Bioconductor")
+    }
     sub("^https?://([^/]*).*$", "\\1", url)
   }
 
@@ -857,7 +903,9 @@ missing_pkgs_note <- function(pkgs, result) {
 
 cmc__update_replica_rds <- function(self, private, alert) {
   "!!DEBUG Update replica RDS"
-  if (alert) sts <- cli::cli_process_start("Updating metadata database")
+  if (alert) {
+    sts <- cli::cli_process_start("Updating metadata database")
+  }
   rep_files <- private$get_cache_files("replica")
 
   data_list <- lapply_rows(
@@ -880,7 +928,9 @@ cmc__update_replica_rds <- function(self, private, alert) {
 
   data_list <- data_list[!vlapply(data_list, is.null)]
 
-  if (length(data_list) == 0) stop("No metadata available")
+  if (length(data_list) == 0) {
+    stop("No metadata available")
+  }
 
   private$data <- merge_packages_data(.list = data_list)
   save_rds(private$data, rep_files$rds)
@@ -889,7 +939,9 @@ cmc__update_replica_rds <- function(self, private, alert) {
 
   private$update_memory_cache()
 
-  if (alert) cli::cli_process_done(sts)
+  if (alert) {
+    cli::cli_process_done(sts)
+  }
   private$data
 }
 
@@ -905,7 +957,9 @@ cmc__update_replica_rds <- function(self, private, alert) {
 
 cmc__update_primary <- function(self, private, rds, packages, lock) {
   "!!DEBUG Updata primary cache"
-  if (!rds && !packages) return()
+  if (!rds && !packages) {
+    return()
+  }
 
   pri_files <- private$get_cache_files("primary")
   rep_files <- private$get_cache_files("replica")
@@ -913,7 +967,9 @@ cmc__update_primary <- function(self, private, rds, packages, lock) {
   if (lock) {
     mkdirp(dirname(pri_files$lock))
     l <- filelock::lock(pri_files$lock, exclusive = TRUE, private$lock_timeout)
-    if (is.null(l)) stop("Cannot acquire lock to update primary cache")
+    if (is.null(l)) {
+      stop("Cannot acquire lock to update primary cache")
+    }
     on.exit(filelock::unlock(l), add = TRUE)
   }
 
@@ -954,7 +1010,9 @@ cmc__copy_to_replica <- function(self, private, rds, pkgs, etags) {
 
   mkdirp(dirname(pri_files$lock))
   l <- filelock::lock(pri_files$lock, exclusive = FALSE, private$lock_timeout)
-  if (is.null(l)) stop("Cannot acquire lock to copy primary cache")
+  if (is.null(l)) {
+    stop("Cannot acquire lock to copy primary cache")
+  }
   on.exit(filelock::unlock(l), add = TRUE)
 
   if (rds) {
@@ -995,9 +1053,13 @@ extract_deps <- function(pkgs, packages, dependencies, recursive) {
       pkgs$deps$package[pkgs$deps$upstream %in% new & pkgs$deps$type %in% dep],
       packages
     )
-    if (!length(new)) break
+    if (!length(new)) {
+      break
+    }
     packages <- c(packages, new)
-    if (!recursive) break
+    if (!recursive) {
+      break
+    }
     dep <- tolower(realdep$indirect)
   }
 
@@ -1021,9 +1083,13 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
       pkgs$deps$upstream[pkgs$deps$ref %in% new & pkgs$deps$type %in% dep],
       packages
     )
-    if (!length(new)) break
+    if (!length(new)) {
+      break
+    }
     packages <- c(packages, new)
-    if (!recursive) break
+    if (!recursive) {
+      break
+    }
     dep <- tolower(realdep$indirect)
   }
 

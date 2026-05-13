@@ -122,6 +122,7 @@ bioconductor <- local({
     "4.2" = package_version("3.16"),
     "4.3" = package_version("3.18"),
     "4.4" = package_version("3.20"),
+    "4.5" = package_version("3.22"),
     NULL
     # Do not include R 4.5 <-> Bioc 3.21, because R 4.5 will use
     # Bioc 3.22 eventually.
@@ -152,7 +153,9 @@ bioconductor <- local({
         http_url <- sub("^https", "http", config_url())
         new <- tryCatch(read_url(http_url), error = function(x) x)
       }
-      if (inherits(new, "error")) stop(new)
+      if (inherits(new, "error")) {
+        stop(new)
+      }
       yaml_config <<- new
     }
 
@@ -160,7 +163,9 @@ bioconductor <- local({
   }
 
   set_yaml_config <- function(text) {
-    if (length(text) == 1) text <- strsplit(text, "\n", fixed = TRUE)[[1]]
+    if (length(text) == 1) {
+      text <- strsplit(text, "\n", fixed = TRUE)[[1]]
+    }
     yaml_config <<- text
   }
 
@@ -230,7 +235,9 @@ bioconductor <- local({
     forget = FALSE
   ) {
     minor <- as.character(get_minor_r_version(r_version))
-    if (minor %in% names(builtin_map)) return(builtin_map[[minor]])
+    if (minor %in% names(builtin_map)) {
+      return(builtin_map[[minor]])
+    }
 
     # If we are not in the map, then we need to look this up in
     # YAML data. It is possible that the current R version matches multiple
@@ -251,7 +258,9 @@ bioconductor <- local({
         mine <- rev(mine)[1]
       }
     }
-    if (!is.na(mine)) return(map$bioc_version[mine])
+    if (!is.na(mine)) {
+      return(map$bioc_version[mine])
+    }
 
     # If it is not even in the YAML, then it must be some very old
     # or very new version. If old, we fail. If new, we assume bioc-devel.
@@ -281,8 +290,9 @@ bioconductor <- local({
       BioCsoft = "{mirror}/packages/{bv}/bioc",
       BioCann = "{mirror}/packages/{bv}/data/annotation",
       BioCexp = "{mirror}/packages/{bv}/data/experiment",
-      BioCworkflows = if (bioc_version >= "3.7")
-        "{mirror}/packages/{bv}/workflows",
+      BioCworkflows = if (bioc_version >= "3.7") {
+        "{mirror}/packages/{bv}/workflows"
+      },
       BioCextra = if (bioc_version <= "3.5") "{mirror}/packages/{bv}/extra",
       BioCbooks = if (bioc_version >= "3.12") "{mirror}/packages/{bv}/books"
     )

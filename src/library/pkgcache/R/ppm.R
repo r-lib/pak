@@ -244,7 +244,9 @@ ppm_has_binaries <- function() {
     current$cpu == "x86_64" &&
     (current$os == "mingw32" || grepl("linux", current$os))
 
-  if (!binaries) return(FALSE)
+  if (!binaries) {
+    return(FALSE)
+  }
 
   current_rver <- get_minor_r_version(getRversion())
   synchronise(async_get_ppm_status(
@@ -274,7 +276,9 @@ ppm_has_binaries <- function() {
 
 ppm_match_platform <- function(distros, plt) {
   which(vlapply(distros$platforms, function(dplts) {
-    if (plt %in% dplts) return(TRUE)
+    if (plt %in% dplts) {
+      return(TRUE)
+    }
     res <- grep("^/.*/$", dplts, value = TRUE)
     any(vlapply(res, function(re) {
       re <- sub("/$", "$", sub("^/", "^", re))

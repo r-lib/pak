@@ -162,7 +162,9 @@ summary.pkgcache_repo_status <- function(object, ...) {
   ssm <- data_frame(repository = unique(key))
 
   pls <- unique(object$platform)
-  for (pl in pls) ssm[[pl]] <- TRUE
+  for (pl in pls) {
+    ssm[[pl]] <- TRUE
+  }
   ssm$ping <- NA_real_
 
   for (i in seq_len(nrow(ssm))) {

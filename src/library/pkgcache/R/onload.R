@@ -1,6 +1,7 @@
 ## nocov start
 
 pkgenv <- new.env(parent = emptyenv())
+pkgenv$ppm_sso_cache <- new.env(parent = emptyenv())
 
 pkgenv$r_versions <- list(
   list(version = "0.60", date = "1997-12-04T08:47:58.000000Z"),
@@ -254,6 +255,7 @@ pkgenv$ppm_distros_cached <-
  focal                   linux   focal          ubuntu       20.04     TRUE
  jammy                   linux   jammy          ubuntu       22.04     TRUE
  noble                   linux   noble          ubuntu       24.04     TRUE
+ resolute                linux   resolute       ubuntu       26.04     TRUE
  buster                  linux   buster         debian       10        FALSE
  bullseye                linux   bullseye       debian       11        TRUE
  bookworm                linux   bookworm       debian       12        TRUE

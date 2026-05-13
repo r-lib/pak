@@ -57,9 +57,13 @@ remove_quotes <- function(x) {
 
 parse_os_release <- function(lines) {
   id <- grep("^ID=", lines, value = TRUE)[1]
-  if (is.na(id)) return(unknown_dist())
+  if (is.na(id)) {
+    return(unknown_dist())
+  }
   id <- trimws(sub("^ID=(.*)$", "\\1", id, perl = TRUE))
-  if (is_quoted(id)) id <- remove_quotes(id)
+  if (is_quoted(id)) {
+    id <- remove_quotes(id)
+  }
 
   ver <- grep("^VERSION_ID=", lines, value = TRUE)[1]
   if (!is.na(ver)) {
@@ -71,7 +75,9 @@ parse_os_release <- function(lines) {
     stringsAsFactors = FALSE,
     distribution = id
   )
-  if (!is.na(ver)) out$release <- ver
+  if (!is.na(ver)) {
+    out$release <- ver
+  }
 
   if (is.na(ver) && id == "debian") {
     pn <- grep("^PRETTY_NAME=", lines, value = TRUE)[1]
@@ -86,7 +92,9 @@ parse_os_release <- function(lines) {
 parse_redhat_release <- function(lines) {
   pcs <- strsplit(lines[1], " ", fixed = TRUE)[[1]]
   id <- tolower(pcs[1])
-  if (id == "" || is.na(id)) return(unknown_dist())
+  if (id == "" || is.na(id)) {
+    return(unknown_dist())
+  }
 
   wver <- grepl("^[-\\.0-9]+$", pcs)
 
@@ -94,7 +102,9 @@ parse_redhat_release <- function(lines) {
     stringsAsFactors = FALSE,
     distribution = id
   )
-  if (any(wver)) out$release <- pcs[wver][1]
+  if (any(wver)) {
+    out$release <- pcs[wver][1]
+  }
 
   out
 }

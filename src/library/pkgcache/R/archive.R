@@ -101,7 +101,7 @@ cran_archive_cache <- R6Class(
       replica_path = tempfile(),
       cran_mirror = default_cran_mirror(),
       update_after = as.difftime(7, units = "days")
-    )
+    ) {
       cac_init(
         self,
         private,
@@ -109,17 +109,20 @@ cran_archive_cache <- R6Class(
         replica_path,
         cran_mirror,
         update_after
-      ),
+      )
+    },
 
-    list = function(packages = NULL, update_after = NULL)
-      synchronise(self$async_list(packages, update_after)),
-    async_list = function(packages = NULL, update_after = NULL)
+    list = function(packages = NULL, update_after = NULL) {
+      synchronise(self$async_list(packages, update_after))
+    },
+    async_list = function(packages = NULL, update_after = NULL) {
       cac_async_list(
         self,
         private,
         packages,
         update_after %||% private$update_after
-      ),
+      )
+    },
 
     update = function() synchronise(self$async_update()),
     async_update = function() cac_async_update(self, private),
@@ -136,25 +139,31 @@ cran_archive_cache <- R6Class(
     get_hash = function() {
       cli::hash_obj_md5(list(private$cran_mirror, private$cache_version))
     },
-    get_cache_file = function(which = c("primary", "replica"))
-      cac__get_cache_file(self, private, match.arg(which)),
+    get_cache_file = function(which = c("primary", "replica")) {
+      cac__get_cache_file(self, private, match.arg(which))
+    },
 
-    async_ensure_cache = function(max_age = private$update_after)
-      cac__async_ensure_cache(self, private, max_age),
+    async_ensure_cache = function(max_age = private$update_after) {
+      cac__async_ensure_cache(self, private, max_age)
+    },
 
-    get_current_data = function(max_age)
-      cac__get_current_data(self, private, max_age),
-    get_memory_cache = function(max_age)
-      cac__get_memory_cache(self, private, max_age),
+    get_current_data = function(max_age) {
+      cac__get_current_data(self, private, max_age)
+    },
+    get_memory_cache = function(max_age) {
+      cac__get_memory_cache(self, private, max_age)
+    },
     load_replica = function(max_age) cac__load_replica(self, private, max_age),
     load_primary = function(max_age) cac__load_primary(self, private, max_age),
 
     update_memory_cache = function() cac__update_memory_cache(self, private),
     update_replica = function() cac__update_replica(self, private),
-    update_primary = function(lock = TRUE)
-      cac__update_primary(self, private, lock),
-    convert_archive_file = function(raw, out)
-      cac__convert_archive_file(self, private, raw, out),
+    update_primary = function(lock = TRUE) {
+      cac__update_primary(self, private, lock)
+    },
+    convert_archive_file = function(raw, out) {
+      cac__convert_archive_file(self, private, raw, out)
+    },
 
     cache_version = "1",
 
@@ -220,8 +229,12 @@ cac_async_check_update <- function(self, private) {
   self
   private
 
-  if (!is.null(private$update_deferred)) return(private$update_deferred) # nocov
-  if (!is.null(private$chk_update_deferred)) return(private$chk_update_deferred) # nocov
+  if (!is.null(private$update_deferred)) {
+    return(private$update_deferred)
+  } # nocov
+  if (!is.null(private$chk_update_deferred)) {
+    return(private$chk_update_deferred)
+  } # nocov
 
   private$chk_update_deferred <- async(private$update_replica)()$then(function(
     ret
@@ -297,7 +310,9 @@ cac__async_ensure_cache <- function(self, private, max_age) {
 }
 
 cac__get_current_data <- function(self, private, max_age) {
-  if (is.null(private$data)) stop("No data loaded")
+  if (is.null(private$data)) {
+    stop("No data loaded")
+  }
   if (
     is.null(private$data_time) ||
       Sys.time() - private$data_time > max_age
@@ -311,7 +326,9 @@ cac__get_memory_cache <- function(self, private, max_age) {
   rds <- private$get_cache_file("primary")
   hash <- private$get_hash()
   hit <- cmc__data[[hash]]
-  if (is.null(hit)) stop("Not in memory cache")
+  if (is.null(hit)) {
+    stop("Not in memory cache")
+  }
   if (is.null(hit$data_time) || Sys.time() - hit$data_time > max_age) {
     stop("Memory cache outdated")
   }
@@ -322,10 +339,14 @@ cac__get_memory_cache <- function(self, private, max_age) {
 
 cac__load_replica <- function(self, private, max_age) {
   rds <- private$get_cache_file("replica")
-  if (!file.exists(rds)) stop("No replica RDS in cache")
+  if (!file.exists(rds)) {
+    stop("No replica RDS in cache")
+  }
 
   time <- file_get_time(rds)
-  if (Sys.time() - time > max_age) stop("Replica RDS file outdated")
+  if (Sys.time() - time > max_age) {
+    stop("Replica RDS file outdated")
+  }
 
   private$data <- readRDS(rds)
   private$data_time <- time
@@ -340,12 +361,18 @@ cac__load_primary <- function(self, private, max_age) {
   pri_lock <- paste0(pri_file, "-lock")
   mkdirp(dirname(pri_lock))
   l <- filelock::lock(pri_lock, exclusive = FALSE, private$lock_timeout)
-  if (is.null(l)) stop("Cannot acquire lock to copy RDS")
+  if (is.null(l)) {
+    stop("Cannot acquire lock to copy RDS")
+  }
   on.exit(filelock::unlock(l), add = TRUE)
 
-  if (!file.exists(pri_file)) stop("No primary RDS file in cache")
+  if (!file.exists(pri_file)) {
+    stop("No primary RDS file in cache")
+  }
   time <- file_get_time(pri_file)
-  if (Sys.time() - time > max_age) stop("Primary RDS cache file outdated")
+  if (Sys.time() - time > max_age) {
+    stop("Primary RDS cache file outdated")
+  }
 
   file_copy_with_time(pri_file, rep_file)
 
@@ -434,7 +461,9 @@ cac__update_primary <- function(self, private, lock) {
     pri_lock <- paste0(pri_file, "-lock")
     mkdirp(dirname(pri_lock))
     l <- filelock::lock(pri_lock, exclusive = FALSE, private$lock_timeout)
-    if (is.null(l)) stop("Cannot acquire lock to copy RDS")
+    if (is.null(l)) {
+      stop("Cannot acquire lock to copy RDS")
+    }
     on.exit(filelock::unlock(l), add = TRUE)
   }
 
