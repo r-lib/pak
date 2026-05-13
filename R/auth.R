@@ -9,6 +9,8 @@
 #'
 #' ```{r child = "man/chunks/auth.Rmd"}
 #' ```
+#'
+#' @seealso [repo_auth()], [ppm_sso_login()].
 NULL
 
 #' Query or set repository password in the system credential store
