@@ -1,10 +1,6 @@
 #' Posit Package Manager single sign-on (SSO) authentication
 #'
 #' @details
-#' `ppm_sso_login()` initiates the SSO login process. You should be
-#' prompted to log in via your browser, and the obtained token will be
-#' cached for future use.
-#'
 #' ## Set up SSO authentication:
 #' - Set the `PACKAGEMANAGER_ADDRESS` environment variable to the URL of
 #'   your RStudio Package Manager instance. For example, add this line to
@@ -22,6 +18,8 @@
 #'     getOption("repos")
 #'   ))
 #'   ```
+#'   You probably want to add this to your `.Rprofile` file, so that it is
+#'   set in every R session.
 #' - Call [repo_get()] to trigger authentication and caching of the token.
 #'   You should be prompted to log in via your browser, and the obtained
 #'   token will be cached for future use. Call [ppm_sso_status()] to check
@@ -30,10 +28,24 @@
 #' - Alternatively, you can call `ppm_sso_login()` directly to trigger
 #'   the login process directly.
 #'
+#' `ppm_sso_login()` initiates the SSO login process. You should be
+#' prompted to log in via your browser, and the obtained token will be
+#' cached for future use.
+#'
 #' @return `ppm_sso_login()` returns the obtained token invisibly.
 #'
 #' @seealso <https://docs.posit.co/rspm/admin/authentication/>
 #' @export
+#' @examplesIf FALSE
+#' Sys.setenv(PACKAGEMANAGER_ADDRESS = "https://<ppm-url>")
+#' options(repos = c(
+#'   PPM = "https://__token__@<ppm-url>/<repo-path>",
+#'   getOption("repos")
+#' ))
+#' ppm_sso_login()
+#' ppm_sso_status()
+#' ppm_sso_status(connect = TRUE)
+#' ppm_sso_logout()
 
 ppm_sso_login <- function() {
   ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
@@ -103,6 +115,25 @@ ppm_sso_logout <- function() {
 #' @details
 #' `ppm_sso_status()` checks the status of your authentication, including
 #' the path of the cached token and its expiration time.
+#' @return `ppm_sso_status()` returns a list with the following components:
+#' - `ppm_url`: The URL of the Package Manager instance.
+#' - `token_file`: The path of the cached token file.
+#' - `token`: The cached token (partially masked for display) or `NA` if
+#'   no token is found locally.
+#' - `valid`: `TRUE` if the token is valid (only if `connect = TRUE`),
+#'   `FALSE` if invalid, or `NA` if not checked.
+#' - `issuer`: The issuer of the token, or `NA` if not available.
+#' - `subject`: The subject of the token, or `NA` if not available.
+#' - `audience`: The audience of the token, or `NA` if not available.
+#' - `issued_at`: The issue time of the token as a POSIXct object, or `NA`
+#'   if not available.
+#' - `expires_at`: The expiration time of the token as a POSIXct object,
+#'   or `NA`  if not available.
+#' - `expired`: `TRUE` if the token is expired, `FALSE` if not expired,
+#'   or `NA` if expiration time is not available.
+#' - `expires_in`: The time until expiration as a difftime object, or
+#'   `NA` if expiration time is not available or the token is already
+#'   expired.
 #' @export
 
 ppm_sso_status <- function(connect = FALSE) {
@@ -507,6 +538,8 @@ ppm_sso_write_token_to_file <- function(ppm_url, token) {
       ts::ts_tree_select(tokens, list("connections", idx, "token")),
       new_conn$token
     )
+  } else if (length(urls) == 0) {
+    tokens <- ts::ts_tree_insert(tokens, key = "connections", list(new_conn))
   } else {
     tokens <- ts::ts_tree_insert(
       ts::ts_tree_select(tokens, "connections"),
