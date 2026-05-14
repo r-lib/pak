@@ -73,7 +73,7 @@ You probably want to add this to your \code{.Rprofile} file, so that it is
 set in every R session.
 \item Call \code{\link[=repo_get]{repo_get()}} to trigger authentication and caching of the token.
 You should be prompted to log in via your browser, and the obtained
-token will be cached for future use. Call \code{\link[pkgcache:ppm_sso_login]{pkgcache::ppm_sso_status()}} to check
+token will be cached for future use. Call \code{ppm_sso_status()} to check
 the status of your authentication, including the path of the cached
 token and its expiration time.
 \item Alternatively, you can call \code{ppm_sso_login()} directly to trigger

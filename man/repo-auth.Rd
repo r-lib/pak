@@ -11,11 +11,17 @@ repositories.
 
 \subsection{Introduction}{
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{-------------------------------------------------------------------------
+\if{text}{
+  Note: the configuration of PPM SSO authentication is described in the
+  Posit Package Manager SSO authentication section below.
+}\if{html}{\out{
+<blockquote>
 Note: the configuration of PPM SSO authentication is described in the
-[Posit Package Manager SSO authentication section below](#ppm-sso-auth).
--------------------------------------------------------------------------
-}\if{html}{\out{</div>}}
+<a href="#ppm-sso-auth">Posit Package Manager SSO authentication section
+below</a>.
+</blockquote>
+}}
+
 
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the \code{repos} option with
@@ -305,9 +311,11 @@ x Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
 
 E.g. here \code{meta_update()} outputs an authentication message, but
 \code{meta_list()} does not.
+
+\if{html}{\out{<a name = "ppm-sso-auth">}}\if{html}{\out{</a>}}
 }
 
-\subsection{Posit Package Manager SSO authentication {#ppm-sso-auth}}{
+\subsection{Posit Package Manager SSO authentication}{
 \enumerate{
 \item To set up PPM SSO authentication, set the \code{PACKAGEMANAGER_ADDRESS}
 environment variable to the URL of your RStudio Package Manager instance.
@@ -335,7 +343,7 @@ in every R session.
 \enumerate{
 \item Call \code{\link[=repo_get]{repo_get()}} to trigger authentication and caching of the token.
 You should be prompted to log in via your browser, and the obtained
-token will be cached for future use. Call \code{\link[pkgcache:ppm_sso_login]{pkgcache::ppm_sso_status()}} to check
+token will be cached for future use. Call \code{ppm_sso_status()} to check
 the status of your authentication, including the path of the cached
 token and its expiration time.
 }

@@ -22,7 +22,7 @@
 #'   set in every R session.
 #' - Call [repo_get()] to trigger authentication and caching of the token.
 #'   You should be prompted to log in via your browser, and the obtained
-#'   token will be cached for future use. Call [ppm_sso_status()] to check
+#'   token will be cached for future use. Call `ppm_sso_status()` to check
 #'   the status of your authentication, including the path of the cached
 #'   token and its expiration time.
 #' - Alternatively, you can call `ppm_sso_login()` directly to trigger
@@ -51,7 +51,7 @@
 ppm_sso_login <- function() {
   res <- remote(
     function() {
-      pkgcache::ppm_sso_login()
+      asNamespace("pkgcache")$ppm_sso_login()
     },
     list()
   )
@@ -68,7 +68,7 @@ ppm_sso_login <- function() {
 ppm_sso_logout <- function() {
   res <- remote(
     function() {
-      pkgcache::ppm_sso_logout()
+      asNamespace("pkgcache")$ppm_sso_logout()
     },
     list()
   )
@@ -106,7 +106,7 @@ ppm_sso_logout <- function() {
 ppm_sso_status <- function(connect = FALSE) {
   remote(
     function(connect) {
-      ret <- pkgcache::ppm_sso_status(connect)
+      ret <- asNamespace("pkgcache")$ppm_sso_status(connect)
       asNamespace("pak")$pak_preformat(ret)
     },
     list(connect)
