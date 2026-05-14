@@ -16,6 +16,8 @@ deploy:
 	git config --global --add safe.directory `pwd`
 	git config --global user.email csardi.gabor@gmail.com
 	git config --global user.name "Gabor Csardi"
+	@git config --global http.https://github.com/.extraheader \
+	  "AUTHORIZATION: bearer $$PAK_GHCR_TOKEN"
 	R CMD INSTALL .
 	R -q -e 'library(pak)'
 	R -q --no-save -e \
