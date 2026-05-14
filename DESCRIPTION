@@ -128,7 +128,7 @@ Config/Needs/website:
     tidyverse/tidytemplate
 Config/Needs/deploy:
     cli (>= 3.2.0),
-    curl,
+    curl@5.2.3,
     desc,
     gitcreds,
     glue@1.6.2,
