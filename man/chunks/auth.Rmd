@@ -3,12 +3,16 @@
 
 ## Introduction
 
-```
--------------------------------------------------------------------------
+\if{text}{
+  Note: the configuration of PPM SSO authentication is described in the
+  Posit Package Manager SSO authentication section below.
+}
+
+<blockquote>
 Note: the configuration of PPM SSO authentication is described in the
-[Posit Package Manager SSO authentication section below](#ppm-sso-auth).
--------------------------------------------------------------------------
-```
+<a href="#ppm-sso-auth">Posit Package Manager SSO authentication section
+below</a>.
+</blockquote>
 
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the `repos` option with
@@ -234,7 +238,8 @@ meta_list()
 E.g. here `meta_update()` outputs an authentication message, but
 `meta_list()` does not.
 
-## Posit Package Manager SSO authentication {#ppm-sso-auth}
+<a name = "ppm-sso-auth"></a>
+## Posit Package Manager SSO authentication
 
 1. To set up PPM SSO authentication, set the `PACKAGEMANAGER_ADDRESS`
 environment variable to the URL of your RStudio Package Manager instance.
