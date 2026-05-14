@@ -12,7 +12,7 @@ Description: Common tree-sitter parsing tools for R. It is meant to be
     used by other packages that specialize in particular languages and
     file formats.
 License: MIT + file LICENSE
-Depends: R (>= 4.1.0)
+Depends: R (>= 3.5.0)
 Imports: cli, utils
 Suggests: magrittr, pillar, testthat (>= 3.0.0), tsjsonc, tstoml, withr
 Remotes: gaborcsardi/tsjsonc, gaborcsardi/tstoml

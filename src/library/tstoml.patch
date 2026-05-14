@@ -1,0 +1,13 @@
+diff --git a/src/library/tstoml/DESCRIPTION b/src/library/tstoml/DESCRIPTION
+index 6077efda4..5166d1de4 100644
+--- a/src/library/tstoml/DESCRIPTION
++++ b/src/library/tstoml/DESCRIPTION
+@@ -13,7 +13,7 @@ License: MIT + file LICENSE
+ Encoding: UTF-8
+ Roxygen: list(markdown = TRUE)
+ RoxygenNote: 7.3.3
+-Depends: R (>= 4.1.0)
++Depends: R (>= 3.5.0)
+ Imports: ts
+ Suggests: asciicast, hms, pillar, testthat (>= 3.0.0), withr
+ Remotes: gaborcsardi/ts
