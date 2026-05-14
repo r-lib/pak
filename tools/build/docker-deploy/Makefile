@@ -16,8 +16,12 @@ deploy:
 	git config --global --add safe.directory `pwd`
 	git config --global user.email csardi.gabor@gmail.com
 	git config --global user.name "Gabor Csardi"
-	@git config --global http.https://github.com/.extraheader \
-	  "AUTHORIZATION: bearer $$PAK_GHCR_TOKEN"
+	@test -n "$$PAK_GHCR_TOKEN" \
+	  && echo "PAK_GHCR_TOKEN length: $${#PAK_GHCR_TOKEN}" \
+	  || (echo "ERROR: PAK_GHCR_TOKEN is empty in container" && exit 1)
+	@git config --global \
+	  url."https://x-access-token:$$PAK_GHCR_TOKEN@github.com/".insteadOf \
+	  "https://github.com/"
 	R CMD INSTALL .
 	R -q -e 'library(pak)'
 	R -q --no-save -e \
