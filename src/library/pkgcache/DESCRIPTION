@@ -15,19 +15,21 @@ URL: https://r-lib.github.io/pkgcache/,
 BugReports: https://github.com/r-lib/pkgcache/issues
 Depends: R (>= 3.4)
 Imports: callr (>= 2.0.4.9000), cli (>= 3.2.0), curl (>= 3.2),
-        filelock, jsonlite, processx (>= 3.3.0.9001), R6, tools, utils
+        filelock, jsonlite, processx (>= 3.3.0.9001), R6, tools, ts,
+        tstoml, utils
 Suggests: covr, debugme, desc, fs, keyring, pillar, pingr, rprojroot,
         sessioninfo, spelling, testthat (>= 3.2.0), webfakes (>=
         1.1.5), withr, zip
+Remotes: r-lib/ts, gaborcsardi/tstoml
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
 Config/usethis/last-upkeep: 2025-04-30
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE, r6 = FALSE)
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.3
 NeedsCompilation: yes
-Packaged: 2026-04-22 20:18:20 UTC; gaborcsardi
+Packaged: 2026-05-13 12:32:46 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

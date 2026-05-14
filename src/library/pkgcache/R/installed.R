@@ -23,7 +23,9 @@ parse_description <- function(path) {
 }
 
 fix_encodings <- function(lst, col = "Encoding") {
-  if (!col %in% names(lst)) return(lst)
+  if (!col %in% names(lst)) {
+    return(lst)
+  }
   utf8 <- which(!is.na(lst[[col]]) & lst[[col]] == "UTF-8")
   other <- which(!is.na(lst[[col]]) & lst[[col]] != "UTf-8")
   unq <- unique(lst[[col]][other])
@@ -148,16 +150,18 @@ guess_packages_type <- function(path) {
       buf[1] == 0x1f &&
       buf[2] == 0x8b &&
       buf[3] == 0x08
-  )
+  ) {
     return("gzip")
+  }
 
   if (
     length(buf) >= 3 &&
       buf[1] == 0x42 &&
       buf[2] == 0x5a &&
       buf[3] == 0x68
-  )
+  ) {
     return("bzip2")
+  }
 
   if (
     length(buf) >= 6 &&
@@ -167,15 +171,17 @@ guess_packages_type <- function(path) {
       buf[4] == 0x58 &&
       buf[5] == 0x5A &&
       buf[6] == 0x00
-  )
+  ) {
     return("xz")
+  }
 
   if (
     length(buf) >= 2 &&
       buf[1] %in% as.raw(c(0x58, 0x41, 0x42)) &&
       buf[2] == 0x0a
-  )
+  ) {
     return("rds")
+  }
 
   "uncompressed"
 }
@@ -336,7 +342,9 @@ parse_installed <- function(
     tbl <- tbl[keep, ]
   }
 
-  if (reencode) tbl <- fix_encodings(tbl)
+  if (reencode) {
+    tbl <- fix_encodings(tbl)
+  }
 
   tbl
 }

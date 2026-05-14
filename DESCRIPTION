@@ -113,11 +113,13 @@ Config/needs/dependencies:
     keyring,
     lpSolve,
     pkgbuild,
-    pkgcache,
-    pkgdepends,
+    r-lib/pkgcache@feature/ppm-sso,
+    r-lib/pkgdepends,
     pkgsearch,
     processx,
     ps,
+    r-lib/ts,
+    gaborcsardi/tstoml,
     yaml
 Config/Needs/website:
     r-lib/asciicast,

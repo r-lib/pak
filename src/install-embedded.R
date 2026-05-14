@@ -82,7 +82,10 @@ install_order <- function() {
     "jsonlite",
     "lpSolve",
     "ps",
+    "ts",
     "zip",
+    # ts
+    "tstoml",
     # ps, R6
     "processx",
     # processx, R6
@@ -91,7 +94,7 @@ install_order <- function() {
     "desc",
     # callr, cli, desc, processx, R6
     "pkgbuild",
-    # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6
+    # callr, cli, curl, filelock, jsonlite, prettyunis, processx, R6, ts, tstoml
     "pkgcache",
     # curl, jsonlite
     "pkgsearch",

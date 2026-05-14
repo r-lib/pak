@@ -83,7 +83,9 @@ repo_auth <- function(
     url <- res$url[w]
     if (check_credentials) {
       cred <- repo_auth_headers(url, warn = FALSE)
-      if (is.null(cred)) next
+      if (is.null(cred)) {
+        next
+      }
       res$username[w] <- cred$username
       res$has_password[w] <- cred$found
       res$auth_domains[w] <- list(cred$auth_domains)
@@ -174,7 +176,7 @@ repo_auth_headers <- function(
   # - host URL w/o username
   # We try each with and without a keyring username
   urls <- unique(unlist(
-    parsed_url[c("repouserurl", "repourl", "hostuserurl", "hosturl")]
+    parsed_url[c("repouserurl", "repourl", "hostuserurl", "hosturl", "host")]
   ))
 
   if (use_cache) {
@@ -197,10 +199,18 @@ repo_auth_headers <- function(
     error = NULL
   )
 
-  pwd <- repo_auth_netrc(parsed_url$host, parsed_url$username)
+  pwd <- repo_auth_sso(parsed_url$repourl, parsed_url$username)
   if (!is.null(pwd)) {
     res$auth_domain <- parsed_url$host
-    res$source <- paste0(".netrc")
+    res$source <- "SSO"
+  }
+
+  if (is.null(pwd)) {
+    pwd <- repo_auth_netrc(parsed_url$host, parsed_url$username)
+    if (!is.null(pwd)) {
+      res$auth_domain <- parsed_url$host
+      res$source <- paste0(".netrc")
+    }
   }
 
   if (is.null(pwd) && !requireNamespace("keyring", quietly = TRUE)) {
@@ -315,7 +325,9 @@ parse_url_basic_auth <- function(url) {
 
 add_auth_status <- function(repos) {
   maybe_has_auth <- grepl("^https?://[^/]*@", repos$url)
-  if (!any(maybe_has_auth)) return(repos)
+  if (!any(maybe_has_auth)) {
+    return(repos)
+  }
 
   key <- random_key()
   on.exit(clear_auth_cache(key), add = TRUE)
@@ -326,7 +338,9 @@ add_auth_status <- function(repos) {
   for (w in which(maybe_has_auth)) {
     url <- repos$url[w]
     creds <- repo_auth_headers(url, warn = FALSE)
-    if (is.null(creds)) next
+    if (is.null(creds)) {
+      next
+    }
     repos$username[w] <- creds$username
     repos$has_password[w] <- creds$found
   }
@@ -342,7 +356,9 @@ repo_auth_netrc <- function(host, username) {
       netrc_path <- path.expand("~/_netrc")
     }
   }
-  if (!file.exists(netrc_path)) return(NULL)
+  if (!file.exists(netrc_path)) {
+    return(NULL)
+  }
 
   # netrc files do not allow port numbers
   host <- sub(":[0-9]+$", "", host)
@@ -452,4 +468,29 @@ repo_auth_netrc <- function(host, username) {
   }
 
   NULL
+}
+
+repo_auth_sso <- function(repourl, username) {
+  ppm_url <- Sys.getenv("PACKAGEMANAGER_ADDRESS", NA_character_)
+  if (is.na(ppm_url)) {
+    return(NULL)
+  }
+
+  if (!startsWith(repourl, ppm_url)) {
+    return(NULL)
+  }
+
+  token <- tryCatch(
+    ppm_sso_auth(repourl),
+    error = function(e) {
+      cli::cli_alert_warning(
+        "PPM SSO authentication failed for repo {.url {repourl}}: {conditionMessage(e)}"
+      )
+      cli::cli_alert_info(
+        "Try calling {.code ppm_sso_login()} directly."
+      )
+      NULL
+    }
+  )
+  token
 }

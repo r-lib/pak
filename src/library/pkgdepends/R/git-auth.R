@@ -335,7 +335,7 @@ gitcreds <- local({
   #' Run a `git credential` command
   #'
   #' @details
-  #' We set the [gitcreds_env()] environment variables, to avoid dialog boxes
+  #' We set the `gitcreds_env()` environment variables, to avoid dialog boxes
   #' from some credential helpers and also validation that potentiall needs
   #' an internet connection.
   #'
@@ -347,7 +347,7 @@ gitcreds <- local({
   #' @return Standard output, line by line.
   #'
   #' @noRd
-  #' @seealso [git_run()].
+  #' @seealso `git_run()`.
 
   gitcreds_run <- function(command, input, args = character()) {
     env <- gitcreds_env()
@@ -380,7 +380,7 @@ gitcreds <- local({
   #' * `stderr`: the standard error of the command, line by line.
   #'
   #' @param args Command line arguments.
-  #' @param input The standard input (the `input` argument of [system2()].
+  #' @param input The standard input (the `input` argument of `system2()`.
   #' @noRd
   #' @return Standard output, line by line.
 
@@ -429,7 +429,7 @@ gitcreds <- local({
   #' credentials. `TRUE` for replacing/deleting them.
   #'
   #' @noRd
-  #' @seealso [gitcreds_set()].
+  #' @seealso `gitcreds_set()`.
 
   ack <- function(url, current, what = "Replace") {
     msg("\n-> Your current credentials for ", squote(url), ":\n")
@@ -777,7 +777,7 @@ gitcreds <- local({
 
   `%||%` <- function(l, r) if (is.null(l)) r else l
 
-  #' Like [message()], but print to standard output in interactive
+  #' Like `message()`, but print to standard output in interactive
   #' sessions
   #'
   #' To avoid red output in RStudio, RGui, and R.app.
@@ -856,7 +856,7 @@ gitcreds <- local({
   #' Read all of a file
   #'
   #' @param path File to read.
-  #' @param ... Passed to [readChar()].
+  #' @param ... Passed to `readChar()`.
   #' @noRd
   #' @return String.
 

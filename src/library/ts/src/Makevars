@@ -1,0 +1,28 @@
+PKG_CPPFLAGS = \
+        -I./tree-sitter/lib/include \
+        -I./tree-sitter/lib/src \
+
+tree-sitter-files = \
+        tree-sitter/lib/src/lib.o
+
+lib-files = \
+        init.o tree-sitter.o cleancall.o glue.o
+
+PKG_LIBS = -L. tree-sitter.a
+
+OBJECTS =  $(lib-files)
+
+all: $(SHLIB) mrproper
+
+$(SHLIB): tree-sitter.a
+
+tree-sitter.a: $(tree-sitter-files)
+	$(AR) rs tree-sitter.a $^
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS)
+
+mrproper: $(SHLIB)
+	@rm -rf *.a
+
+.PHONY: all clean

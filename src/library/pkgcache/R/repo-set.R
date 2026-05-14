@@ -92,13 +92,15 @@ repo_resolve <- function(spec, username = NULL) {
 
 repo_add <- function(..., .list = NULL, username = NULL) {
   repo_add_internal(..., .list = .list, username = username)
-  invisible(suppressMessages(repo_get()))
+  invisible(repo_get())
 }
 
 repo_add_internal <- function(..., .list = NULL, username = NULL) {
   new <- c(list(...), .list)
 
-  if (length(new) == 0) return(invisible(repo_get()))
+  if (length(new) == 0) {
+    return(invisible(repo_get()))
+  }
 
   toadd <- unlist(mapply(
     repo_sugar,
@@ -187,17 +189,23 @@ repo_sugar <- function(x, nm, username = NULL) {
 }
 
 repo_sugar_url <- function(x, nm) {
-  if (is.null(nm) || nm == "") nm <- "EXTRA"
+  if (is.null(nm) || nm == "") {
+    nm <- "EXTRA"
+  }
   structure(x, names = nm)
 }
 
 repo_sugar_path <- function(x, nm) {
-  if (is.null(nm) || nm == "") nm <- "LOCAL"
+  if (is.null(nm) || nm == "") {
+    nm <- "LOCAL"
+  }
   structure(x, names = nm)
 }
 
 repo_sugar_mran <- function(x, nm) {
-  if (is.null(nm) || nm == "") nm <- "CRAN"
+  if (is.null(nm) || nm == "") {
+    nm <- "CRAN"
+  }
   date <- parse_spec(sub("^MRAN@", "", x))
   if (date < "2017-10-10") {
     stop("PPM snapshots go back to 2017-10-10 only")
@@ -211,7 +219,9 @@ repo_sugar_mran <- function(x, nm) {
 }
 
 repo_sugar_ppm <- function(x, nm) {
-  if (is.null(nm) || nm == "") nm <- "CRAN"
+  if (is.null(nm) || nm == "") {
+    nm <- "CRAN"
+  }
   x <- sub("^PPM@", "", x)
   x <- sub("^RSPM@", "", x)
   date <- parse_spec(x)
@@ -406,7 +416,7 @@ next_day <- function(x) {
 #'   for details.
 #' * `MRAN@...` repository specifications now resolve to PPM, but note that
 #'   PPM snapshots are only available from 2017-10-10. See more about this
-#'   at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager/>.
+#'   at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager>.
 #' * All dates (or times) can be specified in the ISO 8601 format.
 #' * If PPM does not have a snapshot available for a date, the next
 #'   available date is used.

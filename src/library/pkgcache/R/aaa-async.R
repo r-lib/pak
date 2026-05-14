@@ -22,7 +22,9 @@
 
 async <- function(fun) {
   fun <- as.function(fun)
-  if (is_async(fun)) return(fun)
+  if (is_async(fun)) {
+    return(fun)
+  }
 
   async_fun <- fun
   body(async_fun) <- bquote({
@@ -339,7 +341,9 @@ get_default_event_loop <- function() {
 
 push_event_loop <- function() {
   num_loops <- length(async_env$loops)
-  if (num_loops > 0) async_env$loops[[num_loops]]$suspend()
+  if (num_loops > 0) {
+    async_env$loops[[num_loops]]$suspend()
+  }
   new_el <- event_loop$new()
   async_env$loops <- c(async_env$loops, list(new_el))
   new_el
@@ -453,7 +457,9 @@ NULL
 
 async_next <- function(el = NULL) {
   el <- el %||% find_sync_frame()$new_el
-  if (is.null(el)) stop("No async context")
+  if (is.null(el)) {
+    stop("No async context")
+  }
   ## TODO: some visual indication that something has happened?
   if (!el$run("once")) message("[ASYNC] async phase complete")
 }
@@ -466,7 +472,9 @@ async_next <- function(el = NULL) {
 
 async_step <- function() {
   el <- find_sync_frame()$new_el
-  if (is.null(el)) stop("No async context")
+  if (is.null(el)) {
+    stop("No async context")
+  }
   ## TODO: some visual indication that something has happened?
   old <- options(async_debug_steps = TRUE)
   on.exit(options(old))
@@ -492,7 +500,9 @@ async_step_back <- function() {
 
 async_list <- function(def = NULL) {
   def <- def %||% find_sync_frame()$res
-  if (is.null(def)) stop("No async context")
+  if (is.null(def)) {
+    stop("No async context")
+  }
   info <- list()
   find_parents <- function(def) {
     info <<- c(info, list(get_private(def)$get_info()))
@@ -520,7 +530,9 @@ async_tree <- function(def = NULL) {
 
 async_debug <- function(id, action = TRUE, parent = TRUE) {
   def <- find_deferred(id)
-  if (is.null(def)) stop("Cannot find deferred `", id, "`")
+  if (is.null(def)) {
+    stop("Cannot find deferred `", id, "`")
+  }
   prv <- get_private(def)
 
   if (prv$state != "pending") {
@@ -563,11 +575,17 @@ async_debug <- function(id, action = TRUE, parent = TRUE) {
 
 async_wait_for <- function(id) {
   el <- find_sync_frame()$new_el
-  if (is.null(el)) stop("No async context")
+  if (is.null(el)) {
+    stop("No async context")
+  }
   def <- find_deferred(id)
-  if (is.null(def)) stop("Cannot find deferred `", id, "`")
+  if (is.null(def)) {
+    stop("Cannot find deferred `", id, "`")
+  }
   priv <- get_private(def)
-  while (priv$state == "pending") el$run("once")
+  while (priv$state == "pending") {
+    el$run("once")
+  }
   message("[ASYNC] ", id, "  resolved")
 }
 
@@ -684,9 +702,13 @@ find_async_data_frame <- function() {
 
 find_deferred <- function(id, def = NULL) {
   def <- def %||% find_sync_frame()$res
-  if (is.null(def)) stop("No async context")
+  if (is.null(def)) {
+    stop("No async context")
+  }
   search_parents <- function(def) {
-    if (get_private(def)$id == id) return(def)
+    if (get_private(def)$id == id) {
+      return(def)
+    }
     prn <- get_private(def)$parents
     for (p in lapply(prn, search_parents)) {
       if (!is.null(p)) return(p)
@@ -1132,7 +1154,7 @@ deferred <- R6Class(
       type = NULL,
       call = sys.call(-1),
       event_emitter = NULL
-    )
+    ) {
       async_def_init(
         self,
         private,
@@ -1145,7 +1167,8 @@ deferred <- R6Class(
         type,
         call,
         event_emitter
-      ),
+      )
+    },
     then = function(on_fulfilled) def_then(self, private, on_fulfilled),
     catch = function(...) def_catch(self, private, ...),
     finally = function(on_finally) def_finally(self, private, on_finally),
@@ -1185,14 +1208,17 @@ deferred <- R6Class(
     reject = function(reason) def__reject(self, private, reason),
     progress = function(data) def__progress(self, private, data),
 
-    make_error_object = function(err)
-      def__make_error_object(self, private, err),
+    make_error_object = function(err) {
+      def__make_error_object(self, private, err)
+    },
 
-    maybe_cancel_parents = function(reason)
-      def__maybe_cancel_parents(self, private, reason),
+    maybe_cancel_parents = function(reason) {
+      def__maybe_cancel_parents(self, private, reason)
+    },
     add_as_parent = function(child) def__add_as_parent(self, private, child),
-    update_parent = function(old, new)
-      def__update_parent(self, private, old, new),
+    update_parent = function(old, new) {
+      def__update_parent(self, private, old, new)
+    },
 
     get_info = function() def__get_info(self, private)
   )
@@ -1240,7 +1266,9 @@ async_def_init <- function(
 }
 
 def__run_action <- function(self, private) {
-  if (private$running) return()
+  if (private$running) {
+    return()
+  }
   action <- private$action
   private$running <- TRUE
   private$action <- NULL
@@ -1261,7 +1289,9 @@ def__run_action <- function(self, private) {
 
     private$event_loop$add_next_tick(
       function() {
-        if (isTRUE(getOption("async_debug_steps", FALSE))) debug1(action)
+        if (isTRUE(getOption("async_debug_steps", FALSE))) {
+          debug1(action)
+        }
         `__async_data__` <- list(private$id, "action", self, skip = 2L)
         do.call(action, args)
       },
@@ -1275,8 +1305,11 @@ def__run_action <- function(self, private) {
     prt_priv <- get_private(prt)
     if (prt_priv$state != "pending") {
       def__call_then(
-        if (prt_priv$state == "fulfilled") "parent_resolve" else
-          "parent_reject",
+        if (prt_priv$state == "fulfilled") {
+          "parent_resolve"
+        } else {
+          "parent_reject"
+        },
         self,
         prt_priv$value
       )
@@ -1337,7 +1370,9 @@ def_finally <- function(self, private, on_finally) {
 }
 
 def_cancel <- function(self, private, reason) {
-  if (private$state != "pending") return()
+  if (private$state != "pending") {
+    return()
+  }
   cancel_cond <- structure(
     list(message = reason %||% "Deferred computation cancelled", call = NULL),
     class = c("async_cancelled", "error", "condition")
@@ -1352,8 +1387,12 @@ def__null <- function(self, private) {
 }
 
 def__resolve <- function(self, private, value) {
-  if (private$cancelled) return()
-  if (private$state != "pending") return()
+  if (private$cancelled) {
+    return()
+  }
+  if (private$state != "pending") {
+    return()
+  }
 
   if (is_deferred(value)) {
     private$parent_resolve <- def__make_parent_resolve(NULL)
@@ -1460,8 +1499,12 @@ def__make_parent_reject_catch <- function(handlers) {
 }
 
 def__reject <- function(self, private, reason) {
-  if (private$cancelled) return()
-  if (private$state != "pending") return()
+  if (private$cancelled) {
+    return()
+  }
+  if (private$state != "pending") {
+    return()
+  }
 
   ## 'reason' cannot be a deferred here
 
@@ -1483,11 +1526,17 @@ def__reject <- function(self, private, reason) {
 
 def__maybe_cancel_parents <- function(self, private, reason) {
   for (parent in private$parents) {
-    if (is.null(parent)) next
+    if (is.null(parent)) {
+      next
+    }
 
     parent_priv <- get_private(parent)
-    if (parent_priv$state != "pending") next
-    if (parent_priv$shared) next
+    if (parent_priv$state != "pending") {
+      next
+    }
+    if (parent_priv$shared) {
+      next
+    }
     parent$cancel(reason)
   }
 }
@@ -1495,8 +1544,12 @@ def__maybe_cancel_parents <- function(self, private, reason) {
 def__call_then <- function(which, x, value) {
   force(value)
   private <- get_private(x)
-  if (!private$running) return()
-  if (private$state != "pending") return()
+  if (!private$running) {
+    return()
+  }
+  if (private$state != "pending") {
+    return()
+  }
 
   cb <- private[[which]]
   private$event_loop$add_next_tick(
@@ -1527,7 +1580,9 @@ def__add_as_parent <- function(self, private, child) {
 
   private$children <- c(private$children, child)
 
-  if (get_private(child)$running) private$run_action()
+  if (get_private(child)$running) {
+    private$run_action()
+  }
   if (private$state == "pending") {
     ## Nothing to do
   } else if (private$state == "fulfilled") {
@@ -1549,8 +1604,12 @@ def__update_parent <- function(self, private, old, new) {
 }
 
 def__progress <- function(self, private, data) {
-  if (private$state != "pending") return()
-  if (is.null(private$progress_callback)) return()
+  if (private$state != "pending") {
+    return()
+  }
+  if (is.null(private$progress_callback)) {
+    return()
+  }
   private$progress_callback(data)
 }
 
@@ -1767,34 +1826,48 @@ event_loop <- R6Class(
       file = NULL,
       progress = NULL,
       data = NULL
-    ) el_add_http(self, private, handle, callback, file, progress, data),
-    http_setopt = function(total_con = NULL, host_con = NULL, multiplex = NULL)
-      el_http_setopt(self, private, total_con, host_con, multiplex),
+    ) {
+      el_add_http(self, private, handle, callback, file, progress, data)
+    },
+    http_setopt = function(
+      total_con = NULL,
+      host_con = NULL,
+      multiplex = NULL
+    ) {
+      el_http_setopt(self, private, total_con, host_con, multiplex)
+    },
 
-    add_process = function(conns, callback, data)
-      el_add_process(self, private, conns, callback, data),
-    add_r_process = function(conns, callback, data)
-      el_add_r_process(self, private, conns, callback, data),
-    add_pool_task = function(callback, data)
-      el_add_pool_task(self, private, callback, data),
-    add_delayed = function(delay, func, callback, rep = FALSE)
-      el_add_delayed(self, private, delay, func, callback, rep),
-    add_next_tick = function(func, callback, data = NULL)
-      el_add_next_tick(self, private, func, callback, data),
+    add_process = function(conns, callback, data) {
+      el_add_process(self, private, conns, callback, data)
+    },
+    add_r_process = function(conns, callback, data) {
+      el_add_r_process(self, private, conns, callback, data)
+    },
+    add_pool_task = function(callback, data) {
+      el_add_pool_task(self, private, callback, data)
+    },
+    add_delayed = function(delay, func, callback, rep = FALSE) {
+      el_add_delayed(self, private, delay, func, callback, rep)
+    },
+    add_next_tick = function(func, callback, data = NULL) {
+      el_add_next_tick(self, private, func, callback, data)
+    },
 
     cancel = function(id) el_cancel(self, private, id),
     cancel_all = function() el_cancel_all(self, private),
 
-    run = function(mode = c("default", "nowait", "once"))
-      el_run(self, private, mode = match.arg(mode)),
+    run = function(mode = c("default", "nowait", "once")) {
+      el_run(self, private, mode = match.arg(mode))
+    },
 
     suspend = function() el_suspend(self, private),
     wakeup = function() el_wakeup(self, private)
   ),
 
   private = list(
-    create_task = function(callback, ..., id = NULL, type = "foobar")
-      el__create_task(self, private, callback, ..., id = id, type = type),
+    create_task = function(callback, ..., id = NULL, type = "foobar") {
+      el__create_task(self, private, callback, ..., id = id, type = type)
+    },
     ensure_pool = function() el__ensure_pool(self, private),
     get_poll_timeout = function() el__get_poll_timeout(self, private),
     run_pending = function() el__run_pending(self, private),
@@ -1839,7 +1912,9 @@ el_add_http <- function(self, private, handle, callback, progress, file, data) {
     type = "http"
   )
   private$ensure_pool()
-  if (!is.null(outfile)) cat("", file = outfile)
+  if (!is.null(outfile)) {
+    cat("", file = outfile)
+  }
 
   content <- NULL
 
@@ -1994,7 +2069,9 @@ el_run <- function(self, private, mode) {
   ## because some time we might switch to that.
 
   alive <- private$is_alive()
-  if (!alive) private$update_time()
+  if (!alive) {
+    private$update_time()
+  }
 
   while (alive && !private$stop_flag) {
     private$update_time()
@@ -2229,8 +2306,12 @@ el__create_task <- function(self, private, callback, data, ..., id, type) {
 el__ensure_pool <- function(self, private) {
   getopt <- function(nm) {
     anm <- paste0("async_http_", nm)
-    if (!is.null(v <- getOption(anm))) return(v)
-    if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return(v)
+    if (!is.null(v <- getOption(anm))) {
+      return(v)
+    }
+    if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) {
+      return(v)
+    }
     NULL
   }
   if (is.null(private$pool)) {
@@ -2249,9 +2330,15 @@ el__ensure_pool <- function(self, private) {
 
 el_http_setopt <- function(self, private, total_con, host_con, multiplex) {
   private$ensure_pool()
-  if (!is.null(total_con)) private$http_opts$total_con <- total_con
-  if (!is.null(host_con)) private$http_opts$host_con <- host_con
-  if (!is.null(multiplex)) private$http_opts$multiplex <- multiplex
+  if (!is.null(total_con)) {
+    private$http_opts$total_con <- total_con
+  }
+  if (!is.null(host_con)) {
+    private$http_opts$host_con <- host_con
+  }
+  if (!is.null(multiplex)) {
+    private$http_opts$multiplex <- multiplex
+  }
   curl::multi_set(
     pool = private$pool,
     total_con = private$http_opts$total_con,
@@ -2401,24 +2488,29 @@ event_emitter <- R6Class(
   public = list(
     initialize = function(async = TRUE) ee_init(self, private, async),
 
-    listen_on = function(event, callback)
-      ee_listen_on(self, private, event, callback),
+    listen_on = function(event, callback) {
+      ee_listen_on(self, private, event, callback)
+    },
 
-    listen_off = function(event, callback)
-      ee_listen_off(self, private, event, callback),
+    listen_off = function(event, callback) {
+      ee_listen_off(self, private, event, callback)
+    },
 
-    listen_once = function(event, callback)
-      ee_listen_once(self, private, event, callback),
+    listen_once = function(event, callback) {
+      ee_listen_once(self, private, event, callback)
+    },
 
     emit = function(event, ...) ee_emit(self, private, event, ...),
 
     get_event_names = function() ee_get_event_names(self, private),
 
-    get_listener_count = function(event)
-      ee_get_listener_count(self, private, event),
+    get_listener_count = function(event) {
+      ee_get_listener_count(self, private, event)
+    },
 
-    remove_all_listeners = function(event)
+    remove_all_listeners = function(event) {
       ee_remove_all_listeners(self, private, event)
+    }
   ),
 
   private = list(
@@ -2426,8 +2518,9 @@ event_emitter <- R6Class(
     async = NULL,
 
     cleanup_events = function() ee__cleanup_events(self, private),
-    error_callback = function(err, res)
+    error_callback = function(err, res) {
       ee__error_callback(self, private, err, res)
+    }
   )
 )
 
@@ -2468,7 +2561,9 @@ ee_emit <- function(self, private, event, ...) {
   list(...)
   tocall <- private$lsts[[event]]
   once <- vlapply(tocall, "[[", "once")
-  if (any(once)) private$lsts[[event]] <- tocall[!once]
+  if (any(once)) {
+    private$lsts[[event]] <- tocall[!once]
+  }
 
   ## a for loop is not good here, because it does not create
   ## a closure for lst
@@ -2514,13 +2609,19 @@ ee__cleanup_events <- function(self, private) {
 }
 
 ee__error_callback <- function(self, private, err, res) {
-  if (is.null(err)) return()
+  if (is.null(err)) {
+    return()
+  }
   tocall <- private$lsts[["error"]]
   once <- vlapply(tocall, "[[", "once")
-  if (any(once)) private$lsts[["error"]] <- tocall[!once]
+  if (any(once)) {
+    private$lsts[["error"]] <- tocall[!once]
+  }
 
   if (length(tocall)) {
-    for (lst in tocall) lst$cb(err)
+    for (lst in tocall) {
+      lst$cb(err)
+    }
   } else {
     stop(err)
   }
@@ -3012,7 +3113,9 @@ http_post <- function(
   if (!is.null(data_file)) {
     data <- readBin(data_file, "raw", file.size(data_file))
   }
-  if (!is.null(data) && !is.raw(data)) data <- charToRaw(data)
+  if (!is.null(data) && !is.raw(data)) {
+    data <- charToRaw(data)
+  }
   options <- get_default_curl_options(options)
 
   make_deferred_http(
@@ -3066,9 +3169,13 @@ http_delete <- mark_as_async(http_delete)
 
 get_default_curl_options <- function(options) {
   getopt <- function(nm) {
-    if (!is.null(v <- options[[nm]])) return(v)
+    if (!is.null(v <- options[[nm]])) {
+      return(v)
+    }
     anm <- paste0("async_http_", nm)
-    if (!is.null(v <- getOption(anm))) return(v)
+    if (!is.null(v <- getOption(anm))) {
+      return(v)
+    }
     if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return(v)
   }
   modifyList(
@@ -3156,8 +3263,12 @@ make_deferred_http <- function(cb, file) {
 #' }
 
 http_stop_for_status <- function(resp) {
-  if (!is.integer(resp$status_code)) stop("Not an HTTP response")
-  if (resp$status_code < 400) return(invisible(resp))
+  if (!is.integer(resp$status_code)) {
+    stop("Not an HTTP response")
+  }
+  if (resp$status_code < 400) {
+    return(invisible(resp))
+  }
   stop(http_error(resp))
 }
 
@@ -3805,11 +3916,15 @@ async_retryable <- function(task, times) {
 
 async_sequence <- function(..., .list = NULL) {
   funcs <- c(list(...), .list)
-  if (length(funcs) == 0) stop("Function list empty in `async_sequence`")
+  if (length(funcs) == 0) {
+    stop("Function list empty in `async_sequence`")
+  }
 
   function(...) {
     dx <- async(funcs[[1]])(...)
-    for (i in seq_along(funcs)[-1]) dx <- dx$then(funcs[[i]])
+    for (i in seq_along(funcs)[-1]) {
+      dx <- dx$then(funcs[[i]])
+    }
     dx
   }
 }
@@ -3891,7 +4006,9 @@ synchronise <- function(expr) {
 
   res <- expr
 
-  if (!is_deferred(res)) return(res)
+  if (!is_deferred(res)) {
+    return(res)
+  }
 
   ## We need an extra final promise that cannot be replaced,
   ## so priv stays the same.
@@ -3909,8 +4026,12 @@ synchronise <- function(expr) {
   priv$null()
   priv$run_action()
 
-  if (isTRUE(getOption("async_debug"))) start_browser()
-  while (priv$state == "pending") new_el$run("once")
+  if (isTRUE(getOption("async_debug"))) {
+    start_browser()
+  }
+  while (priv$state == "pending") {
+    new_el$run("once")
+  }
 
   if (priv$state == "fulfilled") priv$value else stop(priv$value)
 }
@@ -3984,7 +4105,9 @@ run_event_loop <- function(expr) {
 }
 
 distill_error <- function(err) {
-  if (is.null(err$aframe)) return(err)
+  if (is.null(err$aframe)) {
+    return(err)
+  }
   err$aframe <- list(
     frame = err$aframe$frame,
     deferred = err$aframe$data[[1]],
@@ -4214,8 +4337,9 @@ async_timer <- R6Class(
   "async_timer",
   inherit = event_emitter,
   public = list(
-    initialize = function(delay, callback)
-      async_timer_init(self, private, super, delay, callback),
+    initialize = function(delay, callback) {
+      async_timer_init(self, private, super, delay, callback)
+    },
     cancel = function() async_timer_cancel(self, private)
   ),
 
@@ -4290,7 +4414,9 @@ async_try_each <- function(..., .list = list()) {
     call = sys.call(),
     action = function(resolve) {
       nx <<- length(defs)
-      if (nx == 0) resolve(NULL)
+      if (nx == 0) {
+        resolve(NULL)
+      }
       wh <<- 1L
       defs[[wh]]$then(self)
     },
@@ -4414,7 +4540,9 @@ call_with_callback <- function(func, callback, info = NULL) {
         recerror <<- e
         recerror$aframe <<- recerror$aframe %||% find_async_data_frame()
         recerror$calls <<- recerror$calls %||% sys.calls()
-        if (is.null(recerror[["call"]])) recerror[["call"]] <<- sys.call()
+        if (is.null(recerror[["call"]])) {
+          recerror[["call"]] <<- sys.call()
+        }
         recerror$parents <<- recerror$parents %||% sys.parents()
         recerror[names(info)] <<- info
         handler <- getOption("async.error")
@@ -4471,7 +4599,9 @@ file_size <- function(...) {
 }
 
 read_all <- function(filename, encoding) {
-  if (is.null(filename)) return(NULL)
+  if (is.null(filename)) {
+    return(NULL)
+  }
   r <- readBin(filename, what = raw(0), n = file_size(filename))
   s <- rawToChar(r)
   Encoding(s) <- encoding
@@ -4739,21 +4869,24 @@ NULL
 worker_pool <- R6Class(
   public = list(
     initialize = function() wp_init(self, private),
-    add_task = function(func, args, id, event_loop)
-      wp_add_task(self, private, func, args, id, event_loop),
+    add_task = function(func, args, id, event_loop) {
+      wp_add_task(self, private, func, args, id, event_loop)
+    },
     get_fds = function() wp_get_fds(self, private),
     get_pids = function() wp_get_pids(self, private),
     get_poll_connections = function() wp_get_poll_connections(self, private),
-    notify_event = function(pids, event_loop)
-      wp_notify_event(self, private, pids, event_loop),
+    notify_event = function(pids, event_loop) {
+      wp_notify_event(self, private, pids, event_loop)
+    },
     start_workers = function() wp_start_workers(self, private),
     kill_workers = function() wp_kill_workers(self, private),
     cancel_task = function(id) wp_cancel_task(self, private, id),
     cancel_all_tasks = function() wp_cancel_all_tasks(self, private),
     get_result = function(id) wp_get_result(self, private, id),
     list_workers = function() wp_list_workers(self, private),
-    list_tasks = function(event_loop = NULL, status = NULL)
+    list_tasks = function(event_loop = NULL, status = NULL) {
       wp_list_tasks(self, private, event_loop, status)
+    }
   ),
 
   private = list(
@@ -4775,7 +4908,9 @@ wp_start_workers <- function(self, private) {
   num <- worker_pool_size()
 
   ## See if we need to start more
-  if (NROW(private$workers) >= num) return(invisible())
+  if (NROW(private$workers) >= num) {
+    return(invisible())
+  }
 
   ## Yeah, start some more
   to_start <- num - NROW(private$workers)
@@ -4842,11 +4977,17 @@ wp_notify_event <- function(self, private, pids, event_loop) {
   which <- match(pids, private$workers$pid)
   for (w in which) {
     msg <- private$workers$session[[w]]$read()
-    if (is.null(msg)) next
+    if (is.null(msg)) {
+      next
+    }
     if (msg$code == 200 || (msg$code >= 500 && msg$code < 600)) {
-      if (msg$code >= 500 && msg$code < 600) dead <- c(dead, w)
+      if (msg$code >= 500 && msg$code < 600) {
+        dead <- c(dead, w)
+      }
       wt <- match(private$workers$task[[w]], private$tasks$id)
-      if (is.na(wt)) stop("Internal error, no such task")
+      if (is.na(wt)) {
+        stop("Internal error, no such task")
+      }
       private$tasks$result[[wt]] <- msg
       private$tasks$status[[wt]] <- "done"
       private$workers$task[[w]] <- NA_character_
@@ -4876,7 +5017,9 @@ wp_kill_workers <- function(self, private) {
 
 wp_cancel_task <- function(self, private, id) {
   wt <- match(id, private$tasks$id)
-  if (is.na(wt)) stop("Unknown task")
+  if (is.na(wt)) {
+    stop("Unknown task")
+  }
 
   if (private$tasks$status[[wt]] == "running") {
     wk <- match(id, private$workers$task)
@@ -4892,9 +5035,13 @@ wp_cancel_all_tasks <- function(self, private) {
 
 wp_get_result <- function(self, private, id) {
   wt <- match(id, private$tasks$id)
-  if (is.na(wt)) stop("Unknown task")
+  if (is.na(wt)) {
+    stop("Unknown task")
+  }
 
-  if (private$tasks$status[[wt]] != "done") stop("Task not done yet")
+  if (private$tasks$status[[wt]] != "done") {
+    stop("Task not done yet")
+  }
   result <- private$tasks$result[[wt]]
   private$tasks <- private$tasks[-wt, ]
   result
@@ -4907,8 +5054,12 @@ wp_list_workers <- function(self, private) {
 wp_list_tasks <- function(self, private, event_loop, status) {
   dont_show <- c("func", "args", "result")
   ret <- private$tasks
-  if (!is.null(event_loop)) ret <- ret[ret$event_loop %in% event_loop, ]
-  if (!is.null(status)) ret <- ret[ret$status %in% status, ]
+  if (!is.null(event_loop)) {
+    ret <- ret[ret$event_loop %in% event_loop, ]
+  }
+  if (!is.null(status)) {
+    ret <- ret[ret$status %in% status, ]
+  }
   ret[, setdiff(colnames(private$tasks), dont_show)]
 }
 
@@ -4918,7 +5069,9 @@ wp_list_tasks <- function(self, private, event_loop, status) {
 
 wp__try_start <- function(self, private) {
   sts <- vcapply(private$workers$session, function(x) x$get_state())
-  if (all(sts != "idle")) return()
+  if (all(sts != "idle")) {
+    return()
+  }
   can_work <- sts == "idle"
 
   can_run <- private$tasks$status == "waiting"
@@ -4971,7 +5124,9 @@ wp__try_start <- function(self, private) {
 
 wp__interrupt_worker <- function(self, private, pid) {
   ww <- match(pid, private$workers$pid)
-  if (is.na(ww)) stop("Unknown task in interrupt_worker() method")
+  if (is.na(ww)) {
+    stop("Unknown task in interrupt_worker() method")
+  }
 
   kill <- FALSE
   sess <- private$workers$session[[ww]]

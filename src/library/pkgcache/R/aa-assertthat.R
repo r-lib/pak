@@ -1,6 +1,8 @@
 assert_that <- function(..., env = parent.frame(), msg = NULL) {
   res <- see_if(..., env = env, msg = msg)
-  if (res) return(TRUE)
+  if (res) {
+    return(TRUE)
+  }
 
   throw(new_assert_error(attr(res, "msg")))
 }
@@ -27,7 +29,9 @@ see_if <- function(..., env = parent.frame(), msg = NULL) {
 
     # Failed, so figure out message to produce
     if (!res) {
-      if (is.null(msg)) msg <- get_message(res, assertion, env)
+      if (is.null(msg)) {
+        msg <- get_message(res, assertion, env)
+      }
       return(structure(FALSE, msg = msg))
     }
   }
@@ -36,12 +40,14 @@ see_if <- function(..., env = parent.frame(), msg = NULL) {
 }
 
 check_result <- function(x) {
-  if (!is.logical(x))
+  if (!is.logical(x)) {
     throw(new_assert_error(
       "assert_that: assertion must return a logical value"
     ))
-  if (any(is.na(x)))
+  }
+  if (any(is.na(x))) {
     throw(new_assert_error("assert_that: missing values present in assertion"))
+  }
   if (length(x) != 1) {
     throw(new_assert_error("assert_that: length of assertion is not 1"))
   }
@@ -57,7 +63,9 @@ get_message <- function(res, call, env = parent.frame()) {
   }
 
   f <- eval(call[[1]], env)
-  if (!is.primitive(f)) call <- match.call(f, call)
+  if (!is.primitive(f)) {
+    call <- match.call(f, call)
+  }
   fname <- deparse(call[[1]])
 
   fail <- on_failure(f) %||% base_fs[[fname]] %||% fail_default

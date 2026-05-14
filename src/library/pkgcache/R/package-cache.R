@@ -158,7 +158,9 @@ package_cache <- R6Class(
 
       # updates for unexpected PPM binaries and sources
       # need to update 'path', 'platform', 'sha256'
-      if (is.list(.headers)) .headers <- .headers[[1]]
+      if (is.list(.headers)) {
+        .headers <- .headers[[1]]
+      }
       .headers <- tolower(.headers)
       if ("x-repository-type: rspm" %in% .headers) {
         fields <- update_fields_for_ppm_download(path, extra, .headers)
@@ -341,8 +343,9 @@ package_cache <- R6Class(
       on_progress
       http_headers
       async_constant()$then(
-        function()
+        function() {
           self$copy_to(target, url = urls[1], path = path, ..., .list = .list)
+        }
       )$then(function(res) {
         if (!nrow(res)) {
           ## Not in the cache, download and add it
@@ -469,7 +472,9 @@ create_empty_db_file_if_needed <- function(path) {
   mkdirp(path)
 
   dbfile <- get_db_file(path)
-  if (file.exists(dbfile)) return()
+  if (file.exists(dbfile)) {
+    return()
+  }
 
   lockfile <- get_lock_file(path)
 
@@ -495,18 +500,24 @@ make_empty_db_data_frame <- function() {
 update_fields_for_ppm_download <- function(path, extra, headers) {
   res <- list(path = path, extra = extra)
   pkg_type <- grep("^x-package-type:", headers, value = TRUE)[1]
-  if (is.na(pkg_type)) return(res)
+  if (is.na(pkg_type)) {
+    return(res)
+  }
   pkg_type <- sub("^x-package-type: ?", "", pkg_type)
 
   if (pkg_type == "binary") {
     # Got a binary package, check what kind
     bin_tag <- grep("x-package-binary-tag:", headers, value = TRUE)[1]
-    if (is.na(bin_tag)) return(res)
+    if (is.na(bin_tag)) {
+      return(res)
+    }
     bin_tag <- sub("x-package-binary-tag: ?", "", bin_tag)
     synchronise(async_get_ppm_status())
     rver <- strsplit(bin_tag, "-")[[1]][[1]]
     binurl <- strsplit(bin_tag, "-")[[1]][[2]]
-    if (!binurl %in% pkgenv$ppm_distros$binary_url) return(res)
+    if (!binurl %in% pkgenv$ppm_distros$binary_url) {
+      return(res)
+    }
 
     # fix platform if neeeded
     if (!is.null(extra$platform) && extra$platform == "source") {

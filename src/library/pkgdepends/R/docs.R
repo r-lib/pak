@@ -71,8 +71,8 @@ generate_config_docs <- function() {
   alldocs
 }
 
-doc_share_rmd <- function(rmd, rds) {
-  md <- sub("[.]Rmd$", ".md", rmd)
+doc_share_rmd <- function(rmd, rds, md = NULL) {
+  md <- md %||% sub("[.]Rmd$", ".md", rmd)
   if (md == rmd) {
     stop("Docs Rmd file must have extension `.Rmd`")
   }

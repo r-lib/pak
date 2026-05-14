@@ -44,6 +44,8 @@
 ^src/library/curl/tools/option_table[.]txt$
 ^src/library/jsonlite/src/yajl/libstatyajl[.]a$
 ^src/library/pkgdepends/man/macros/eval2[.]Rd$
+^src/library/ts/man/macros/eval2[.]Rd$
+^src/library/tstoml/man/macros/eval2[.]Rd$
 ^src/library/processx/src/supervisor/supervisor$
 ^src/library/processx/src/tools/px$
 ^src/library/processx/src/tools/sock$

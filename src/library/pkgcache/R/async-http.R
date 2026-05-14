@@ -17,9 +17,13 @@ default_http_version <- function() {
 
 update_async_timeouts <- function(options) {
   getopt <- function(nm) {
-    if (!is.null(v <- options[[nm]])) return(v)
+    if (!is.null(v <- options[[nm]])) {
+      return(v)
+    }
     anm <- paste0("pkgcache_", nm)
-    if (!is.null(v <- getOption(anm))) return(v)
+    if (!is.null(v <- getOption(anm))) {
+      return(v)
+    }
     if (!is.na(v <- Sys.getenv(toupper(anm), NA_character_))) return(v)
   }
   utils::modifyList(

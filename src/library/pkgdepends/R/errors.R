@@ -167,13 +167,13 @@ err <- local({
   #'
   #' @noRd
   #' @param ... Parts of the error message, they will be converted to
-  #'   character and then concatenated, like in [stop()].
+  #'   character and then concatenated, like in `stop()`.
   #' @param call. A call object to include in the condition, or `TRUE`
-  #'   or `NULL`, meaning that [throw()] should add a call object
+  #'   or `NULL`, meaning that `throw()` should add a call object
   #'   automatically. If `FALSE`, then no call is added.
   #' @param srcref Alternative source reference object to use instead of
   #'   the one of `call.`.
-  #' @param domain Translation domain, see [stop()]. We set this to
+  #' @param domain Translation domain, see `stop()`. We set this to
   #'   `NA` by default, which means that no translation occurs. This
   #'   has the benefit that the error message is not re-encoded into
   #'   the native locale.
@@ -193,10 +193,10 @@ err <- local({
   #' It also adds the `rlib_error` class.
   #'
   #' @noRd
-  #' @param ... Passed to [new_cond()].
-  #' @param call. Passed to [new_cond()].
-  #' @param srcref Passed tp [new_cond()].
-  #' @param domain Passed to [new_cond()].
+  #' @param ... Passed to `new_cond()`.
+  #' @param call. Passed to `new_cond()`.
+  #' @param srcref Passed tp `new_cond()`.
+  #' @param domain Passed to `new_cond()`.
   #' @return Error condition object with classes `rlib_error`, `error`
   #'   and `condition`.
 
@@ -210,13 +210,13 @@ err <- local({
 
   #' Throw a condition
   #'
-  #' If the condition is an error, it will also call [stop()], after
+  #' If the condition is an error, it will also call `stop()`, after
   #' signalling the condition first. This means that if the condition is
-  #' caught by an exiting handler, then [stop()] is not called.
+  #' caught by an exiting handler, then `stop()` is not called.
   #'
   #' @noRd
   #' @param cond Condition object to throw. If it is an error condition,
-  #'   then it calls [stop()].
+  #'   then it calls `stop()`.
   #' @param parent Parent condition.
   #' @param frame The throwing context. Can be used to hide frames from
   #'   the backtrace.
@@ -340,7 +340,7 @@ err <- local({
   #' @noRd
   #' @param expr Expression to evaluate.
   #' @param err Error object or message to use for the child error.
-  #' @param call Call to use in the re-thrown error. See [throw()].
+  #' @param call Call to use in the re-thrown error. See `throw()`.
 
   chain_error <- function(expr, err, call = sys.call(-1), srcref = NULL) {
     .hide_from_trace <- 1
@@ -371,8 +371,8 @@ err <- local({
   #' adds the `c_error` class.
   #'
   #' @noRd
-  #' @param .NAME Compiled function to call, see [.Call()].
-  #' @param ... Function arguments, see [.Call()].
+  #' @param .NAME Compiled function to call, see `.Call()`.
+  #' @param ... Function arguments, see `.Call()`.
   #' @return Result of the call.
 
   chain_call <- function(.NAME, ...) {
@@ -406,14 +406,14 @@ err <- local({
 
   #' Version of entrace_call that supports cleancall
   #'
-  #' This function is the same as [entrace_call()], except that it
-  #' uses cleancall's [.Call()] wrapper, to enable resource cleanup.
+  #' This function is the same as `entrace_call()`, except that it
+  #' uses cleancall's `.Call()` wrapper, to enable resource cleanup.
   #' See https://github.com/r-lib/cleancall#readme for more about
   #' resource cleanup.
   #'
   #' @noRd
-  #' @param .NAME Compiled function to call, see [.Call()].
-  #' @param ... Function arguments, see [.Call()].
+  #' @param .NAME Compiled function to call, see `.Call()`.
+  #' @param ... Function arguments, see `.Call()`.
   #' @return Result of the call.
 
   chain_clean_call <- function(.NAME, ...) {
@@ -447,7 +447,7 @@ err <- local({
 
   #' Create a traceback
   #'
-  #' [throw()] calls this function automatically if an error is not caught,
+  #' `throw()` calls this function automatically if an error is not caught,
   #' so there is currently not much use to call it directly.
   #'
   #' @param cond Condition to add the trace to
