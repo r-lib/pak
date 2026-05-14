@@ -274,6 +274,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.7' }
           - { r: '4.6' }
           - { r: '4.5' }
           - { r: '4.4' }
@@ -309,6 +310,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { r: '4.7' }
           - { r: '4.6' }
           - { r: '4.5' }
           - { r: '4.4' }
