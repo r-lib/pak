@@ -49,12 +49,13 @@
 #' ppm_sso_logout()
 
 ppm_sso_login <- function() {
-  remote(
+  res <- remote(
     function() {
       pkgcache::ppm_sso_login()
     },
     list()
   )
+  invisible(res)
 }
 
 #' @rdname ppm_sso_login
@@ -65,12 +66,13 @@ ppm_sso_login <- function() {
 #' @export
 
 ppm_sso_logout <- function() {
-  remote(
+  res <- remote(
     function() {
       pkgcache::ppm_sso_logout()
     },
     list()
   )
+  invisible(res)
 }
 
 #' @rdname ppm_sso_login
