@@ -116,8 +116,7 @@ Columns:
 
 - `ref`: package reference.
 
-- `remote`: the parsed `remote_ref` objects, see `parse_pkg_refs()`.
-  This is a list column.
+- `remote`: the parsed `remote_ref` objects.
 
 - `repodir`: the directory where this package should be in a CRAN-like
   repository.

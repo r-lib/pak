@@ -4,6 +4,12 @@ repositories.
 Configuring authenticated repositories
 
 
+
+Note: the configuration of PPM SSO authentication is described in the
+Posit Package Manager SSO authentication section
+below.
+
+
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the repos option with
 base::options() as usual, or you can use repo_add().
@@ -274,12 +280,56 @@ meta_list()
 
 E.g. here meta_update() outputs an authentication message, but
 meta_list() does not.
+
+
+
+
+Posit Package Manager SSO authentication
+
+
+To set up PPM SSO authentication, set the PACKAGEMANAGER_ADDRESS
+environment variable to the URL of your RStudio Package Manager instance.
+For example, add this line to your .Renviron file:
+
+
+PACKAGEMANAGER_ADDRESS=https://&amp;lt;ppm-url&amp;gt;
+
+Alternatively, you can also set it in your shell profile on Unix,
+or in the System or User environment variables on Windows.
+Set options(repos) to include a repository from your Package Manager
+instance. Include __token__ as the username in the URL. For example:
+
+
+options(repos = c(
+  PPM = &quot;https://__token__@&amp;lt;ppm-url&amp;gt;/&amp;lt;repo-path&amp;gt;&quot;,
+  getOption(&quot;repos&quot;)
+))
+
+You probably want to add this to your .Rprofile file, so that it is set
+in every R session.
+Call repo_get() to trigger authentication and caching of the token.
+You should be prompted to log in via your browser, and the obtained
+token will be cached for future use. Call ppm_sso_status() to check
+the status of your authentication, including the path of the cached
+token and its expiration time.
+
+
+Alternatively, you can call ppm_sso_login() directly to trigger
+the login process directly.
+See also the Authentication chapter of the
+Posit Package Manager Documentation.
 
 "><meta property="og:description" content="pak supports HTTP basic authentication when interacting with CRAN-like
 repositories.
 Configuring authenticated repositories
 
 
+
+Note: the configuration of PPM SSO authentication is described in the
+Posit Package Manager SSO authentication section
+below.
+
+
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the repos option with
 base::options() as usual, or you can use repo_add().
@@ -550,6 +600,44 @@ meta_list()
 
 E.g. here meta_update() outputs an authentication message, but
 meta_list() does not.
+
+
+
+
+Posit Package Manager SSO authentication
+
+
+To set up PPM SSO authentication, set the PACKAGEMANAGER_ADDRESS
+environment variable to the URL of your RStudio Package Manager instance.
+For example, add this line to your .Renviron file:
+
+
+PACKAGEMANAGER_ADDRESS=https://&amp;lt;ppm-url&amp;gt;
+
+Alternatively, you can also set it in your shell profile on Unix,
+or in the System or User environment variables on Windows.
+Set options(repos) to include a repository from your Package Manager
+instance. Include __token__ as the username in the URL. For example:
+
+
+options(repos = c(
+  PPM = &quot;https://__token__@&amp;lt;ppm-url&amp;gt;/&amp;lt;repo-path&amp;gt;&quot;,
+  getOption(&quot;repos&quot;)
+))
+
+You probably want to add this to your .Rprofile file, so that it is set
+in every R session.
+Call repo_get() to trigger authentication and caching of the token.
+You should be prompted to log in via your browser, and the obtained
+token will be cached for future use. Call ppm_sso_status() to check
+the status of your authentication, including the path of the cached
+token and its expiration time.
+
+
+Alternatively, you can call ppm_sso_login() directly to trigger
+the login process directly.
+See also the Authentication chapter of the
+Posit Package Manager Documentation.
 
 "><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="/pak.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
@@ -592,6 +680,12 @@ meta_list() does not.
 repositories.</p><div class="section">
 <h3 id="configuring-authenticated-repositories">Configuring authenticated repositories<a class="anchor" aria-label="anchor" href="#configuring-authenticated-repositories"></a></h3>
 
+
+<p></p><blockquote>
+Note: the configuration of PPM SSO authentication is described in the
+<a href="#ppm-sso-auth">Posit Package Manager SSO authentication section
+below</a>.
+</blockquote>
 
 <p>To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the <code>repos</code> option with
@@ -845,6 +939,33 @@ x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, ke
 <span><span class="co">#&gt; #   built &lt;chr&gt;, published &lt;dttm&gt;, deps &lt;list&gt;, path &lt;chr&gt;</span></span></code></pre><p></p></div>
 <p>E.g. here <code><a href="metadata.html">meta_update()</a></code> outputs an authentication message, but
 <code><a href="metadata.html">meta_list()</a></code> does not.</p>
+<p><a id="ppm-sso-auth"></a></p>
+</div>
+
+<div class="section">
+<h3 id="posit-package-manager-sso-authentication">Posit Package Manager SSO authentication<a class="anchor" aria-label="anchor" href="#posit-package-manager-sso-authentication"></a></h3>
+
+<ol><li><p>To set up PPM SSO authentication, set the <code>PACKAGEMANAGER_ADDRESS</code>
+environment variable to the URL of your RStudio Package Manager instance.
+For example, add this line to your <code>.Renviron</code> file:</p></li>
+</ol><p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>PACKAGEMANAGER_ADDRESS<span class="ot">=</span>https<span class="sc">:</span><span class="er">//&lt;</span>ppm<span class="sc">-</span>url<span class="sc">&gt;</span></span></code></pre><p></p></div>
+<p>Alternatively, you can also set it in your shell profile on Unix,
+or in the System or User environment variables on Windows.</p><ol><li><p>Set <code>options(repos)</code> to include a repository from your Package Manager
+instance. Include <code>__token__</code> as the username in the URL. For example:</p></li>
+</ol><p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos =</span> <span class="fu">c</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">PPM =</span> <span class="st">"https://__token__@&lt;ppm-url&gt;/&lt;repo-path&gt;"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">getOption</span>(<span class="st">"repos"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>))</span></code></pre><p></p></div>
+<p>You probably want to add this to your <code>.Rprofile</code> file, so that it is set
+in every R session.</p><ol><li><p>Call <code><a href="repo_get.html">repo_get()</a></code> to trigger authentication and caching of the token.
+You should be prompted to log in via your browser, and the obtained
+token will be cached for future use. Call <code><a href="ppm_sso_login.html">ppm_sso_status()</a></code> to check
+the status of your authentication, including the path of the cached
+token and its expiration time.</p></li>
+</ol><p>Alternatively, you can call <code><a href="ppm_sso_login.html">ppm_sso_login()</a></code> directly to trigger
+the login process directly.</p>
+<p>See also the <a href="https://docs.posit.co/rspm/admin/authentication/" class="external-link">Authentication chapter</a> of the
+Posit Package Manager Documentation.</p>
 </div>
 
     </div>
@@ -852,7 +973,8 @@ x Did not find credentials for repo &lt;http://username@127.0.0.1:59571/&gt;, ke
 
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Other authenticated repositories:
+    <div class="dont-index"><p><code><a href="repo_auth.html">repo_auth()</a></code>, <code><a href="ppm_sso_login.html">ppm_sso_login()</a></code>.</p>
+<p>Other authenticated repositories:
 <code><a href="repo_auth.html">repo_auth()</a></code>,
 <code><a href="repo_auth_key_get.html">repo_auth_key_get()</a></code></p></div>
     </div>

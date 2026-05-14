@@ -5,6 +5,10 @@ repositories.
 
 ### Configuring authenticated repositories
 
+> Note: the configuration of PPM SSO authentication is described in the
+> [Posit Package Manager SSO authentication section
+> below](#ppm-sso-auth).
+
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the `repos` option with
 [`base::options()`](https://rdrr.io/r/base/options.html) as usual, or
@@ -297,7 +301,49 @@ outputs an authentication message, but
 [`meta_list()`](https://pak.r-lib.org/dev/reference/metadata.md) does
 not.
 
+### Posit Package Manager SSO authentication
+
+1.  To set up PPM SSO authentication, set the `PACKAGEMANAGER_ADDRESS`
+    environment variable to the URL of your RStudio Package Manager
+    instance. For example, add this line to your `.Renviron` file:
+
+    PACKAGEMANAGER_ADDRESS=https://<ppm-url>
+
+Alternatively, you can also set it in your shell profile on Unix, or in
+the System or User environment variables on Windows.
+
+1.  Set `options(repos)` to include a repository from your Package
+    Manager instance. Include `__token__` as the username in the URL.
+    For example:
+
+    options(repos = c(
+      PPM = "https://__token__@<ppm-url>/<repo-path>",
+      getOption("repos")
+    ))
+
+You probably want to add this to your `.Rprofile` file, so that it is
+set in every R session.
+
+1.  Call [`repo_get()`](https://pak.r-lib.org/dev/reference/repo_get.md)
+    to trigger authentication and caching of the token. You should be
+    prompted to log in via your browser, and the obtained token will be
+    cached for future use. Call
+    [`ppm_sso_status()`](https://pak.r-lib.org/dev/reference/ppm_sso_login.md)
+    to check the status of your authentication, including the path of
+    the cached token and its expiration time.
+
+Alternatively, you can call
+[`ppm_sso_login()`](https://pak.r-lib.org/dev/reference/ppm_sso_login.md)
+directly to trigger the login process directly.
+
+See also the [Authentication
+chapter](https://docs.posit.co/rspm/admin/authentication/) of the Posit
+Package Manager Documentation.
+
 ## See also
+
+[`repo_auth()`](https://pak.r-lib.org/dev/reference/repo_auth.md),
+[`ppm_sso_login()`](https://pak.r-lib.org/dev/reference/ppm_sso_login.md).
 
 Other authenticated repositories:
 [`repo_auth()`](https://pak.r-lib.org/dev/reference/repo_auth.md),
