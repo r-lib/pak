@@ -43,7 +43,8 @@ export PKGFILES := $(patsubst %,lib/%/pak_$(PAKVERSION).zip,$(RVERSIONS))
 deploy:
 	@echo "----- DEPLOYING packages -----------------------------------"
 	@echo $(PKGFILES)
-	R_LIBS=$(RLIB) $(R) -q -e "pak::pkg_install('deps::$(PKGROOT)', dependencies = 'Config/Needs/deploy')"
+	R_LIBS=$(RLIB) $(R) -q -e \
+		"options(repos = c(CRAN = 'https://cloud.r-project.org')); pak::pkg_install('deps::$(PKGROOT)', dependencies = 'Config/Needs/deploy')"
 	R_LIBS=$(RLIB) $(R) -q -e \
 		"pak:::push_packages(strsplit(Sys.getenv('PKGFILES'), ' ')[[1]])"
 
