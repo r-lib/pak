@@ -44,6 +44,8 @@ deploy:
 	@echo "----- DEPLOYING packages -----------------------------------"
 	@echo $(PKGFILES)
 	R_LIBS=$(RLIB) $(R) -q -e \
+		"install.packages('$(PKGROOT)/src/library/curl', type = 'source', repos = NULL)"
+	R_LIBS=$(RLIB) $(R) -q -e \
 		"options(repos = c(CRAN = 'https://cloud.r-project.org')); pak::pkg_install('deps::$(PKGROOT)', dependencies = 'Config/Needs/deploy')"
 	R_LIBS=$(RLIB) $(R) -q -e \
 		"pak:::push_packages(strsplit(Sys.getenv('PKGFILES'), ' ')[[1]])"
