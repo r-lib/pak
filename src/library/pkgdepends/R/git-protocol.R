@@ -675,7 +675,7 @@ raw_as_utf8 <- function(x) {
 #'   git protocol docs for what these are.
 #' * `data`: for `data-pkt` lines this is a raw vector of the data.
 #' * `text`: for `data-pkt` lines that are text, this is the text of the
-#'   data. We use [raw_as_utf8()] to convert raw data to text, and sometimes
+#'   data. We use `raw_as_utf8()` to convert raw data to text, and sometimes
 #'   it might interpret binary data as text, especially if the data is
 #'   short. So this field is for convenience only.
 #'
@@ -815,7 +815,7 @@ git_create_message_v1 <- function(args = character(), caps = character()) {
 #'
 #' @inheritParams git_list_refs
 #' @inheritParams git_create_message_v2
-#' @return Response from git, already parsed with [git_parse_message()].
+#' @return Response from git, already parsed with `git_parse_message()`.
 #'
 #' @noRd
 
@@ -927,7 +927,7 @@ pkt_line <- function(payload, ...) {
 #' queries.
 #'
 #' @inheritParams git_list_refs
-#' @return Same as [git_list_refs()].
+#' @return Same as `git_list_refs()`.
 #' @noRd
 
 git_list_refs_v1 <- function(url) {
@@ -953,7 +953,7 @@ async_git_list_refs_v1 <- function(url) {
 #'
 #' @param response Response from git, as returned by `async::http_get()`, which
 #'   is the same as the object from `curl::curl_fetch_memory()`.
-#' @return Same as [git_list_refs()].
+#' @return Same as `git_list_refs()`.
 #' @noRd
 
 git_list_refs_v1_process <- function(response, url) {
@@ -1057,7 +1057,7 @@ git_parse_pkt_line_refs <- function(lines, url) {
 #' interested in a subset of refs.
 #'
 #' @inheritParams git_list_refs
-#' @return Same as [git_list_refs()].
+#' @return Same as `git_list_refs()`.
 #' @noRd
 
 git_list_refs_v2 <- function(url, prefixes = character()) {
@@ -1184,7 +1184,7 @@ check_initial_response <- function(psd, url) {
 #' @param reply The parsed message from the server.
 #' @param caps Capabilities that are passed in from the response to
 #'   the initial client request.
-#' @return Same as [git_list_refs()].
+#' @return Same as `git_list_refs()`.
 #' @noRd
 
 async_git_list_refs_v2_process_3 <- function(reply, caps, url) {
@@ -1218,7 +1218,7 @@ async_git_list_refs_v2_process_3 <- function(reply, caps, url) {
 #'   * `type`: `commit`, `tree`, `blob` or `tag`.
 #'   * `object`: the contents of the object. For `commit` the commit
 #'     data and message in a string. For `tree` a data frame, as returned
-#'     from [parse_tree()]. For `blob` and `tag` a raw vector.
+#'     from `parse_tree()`. For `blob` and `tag` a raw vector.
 #'   * `size`: unpacked size.
 #'   * `packed_size`: packed size (size header not included).
 #'

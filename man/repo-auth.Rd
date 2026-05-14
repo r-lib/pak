@@ -309,7 +309,7 @@ x Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
 E.g. here \code{meta_update()} outputs an authentication message, but
 \code{meta_list()} does not.
 
-\if{html}{\out{<a name = "ppm-sso-auth">}}\if{html}{\out{</a>}}
+\if{html}{\out{<a id="ppm-sso-auth">}}\if{html}{\out{</a>}}
 }
 
 \subsection{Posit Package Manager SSO authentication}{

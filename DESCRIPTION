@@ -114,7 +114,7 @@ Config/needs/dependencies:
     lpSolve,
     pkgbuild,
     r-lib/pkgcache@feature/ppm-sso,
-    pkgdepends,
+    r-lib/pkgdepends,
     pkgsearch,
     processx,
     ps,
