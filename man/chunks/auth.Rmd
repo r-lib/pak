@@ -1,8 +1,6 @@
 
 ## Configuring authenticated repositories
 
-## Introduction
-
 \if{text}{
   Note: the configuration of PPM SSO authentication is described in the
   Posit Package Manager SSO authentication section below.
@@ -238,7 +236,7 @@ meta_list()
 E.g. here `meta_update()` outputs an authentication message, but
 `meta_list()` does not.
 
-<a name = "ppm-sso-auth"></a>
+<a id="ppm-sso-auth"></a>
 ## Posit Package Manager SSO authentication
 
 1. To set up PPM SSO authentication, set the `PACKAGEMANAGER_ADDRESS`
@@ -264,7 +262,7 @@ in every R session.
 
 3. Call [repo_get()] to trigger authentication and caching of the token.
 You should be prompted to log in via your browser, and the obtained
-token will be cached for future use. Call [ppm_sso_status()] to check
+token will be cached for future use. Call `ppm_sso_status()` to check
 the status of your authentication, including the path of the cached
 token and its expiration time.
 

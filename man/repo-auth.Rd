@@ -7,9 +7,6 @@
 pak supports HTTP basic authentication when interacting with CRAN-like
 repositories.
 \subsection{Configuring authenticated repositories}{
-}
-
-\subsection{Introduction}{
 
 \if{text}{
   Note: the configuration of PPM SSO authentication is described in the
