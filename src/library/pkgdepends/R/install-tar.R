@@ -203,7 +203,6 @@ r_untar_process <- R6::R6Class(
         files = files,
         exdir = exdir,
         restore_times = restore_times,
-        tar = tar,
         post_process = post_process
       )
 
@@ -211,8 +210,8 @@ r_untar_process <- R6::R6Class(
         stdout = stdout,
         stderr = stderr
       )
+      # nocov start
       process_options$func <- function(options) {
-        # nocov start
         ret <- utils::untar(
           tarfile = options$tarfile,
           files = options$files,
@@ -224,8 +223,8 @@ r_untar_process <- R6::R6Class(
         )
 
         if (!is.null(options$post_process)) options$post_process() else ret
-        # nocov end
       }
+      # nocov end
       process_options$args <- list(options = options)
       super$initialize(process_options)
     }

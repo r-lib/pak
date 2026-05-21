@@ -4,7 +4,6 @@ pkg_plan <- R6::R6Class(
     initialize = function(
       refs,
       config = list(),
-      library = NULL,
       remote_types = NULL,
       lockfile = NULL
     ) {
@@ -13,7 +12,6 @@ pkg_plan <- R6::R6Class(
         private,
         refs,
         config,
-        library,
         remote_types,
         lockfile
       )
@@ -138,7 +136,6 @@ pkgplan_init <- function(
   private,
   refs,
   config,
-  library,
   remote_types,
   lockfile
 ) {
@@ -148,25 +145,23 @@ pkgplan_init <- function(
       private,
       lockfile,
       config,
-      library,
       remote_types
     ))
   }
 
-  assert_that(
-    is_character(refs),
-    is.null(library) || is_non_empty_character(library)
-  )
+  assert_that(is_character(refs))
 
   private$refs <- refs
   private$remotes <- parse_pkg_refs(refs)
   private$config <- current_config()$update(config)
-  private$config$set("library", library)
   private$remote_types <- remote_types %||% default_remote_types()
 
+  library <- private$config$get("library")
+  assert_that(is.null(library) || is_non_empty_character(library))
   if (!is.null(library)) {
     mkdirp(library[1], msg = "Creating library directory")
     library[1] <- normalizePath(library[1])
+    private$config$set("library", library)
   }
   mkdirp(private$download_cache <- private$config$get("cache_dir"))
 
@@ -202,21 +197,19 @@ pkgplan_init_lockfile <- function(
   private,
   lockfile,
   config,
-  library,
   remote_types
 ) {
-  assert_that(
-    is_path(lockfile),
-    is_optional_path(library)
-  )
+  assert_that(is_path(lockfile))
 
   private$config <- current_config()$update(config)
-  private$config$set("library", library)
   private$remote_types <- remote_types %||% default_remote_types()
 
+  library <- private$config$get("library")
+  assert_that(is_optional_path(library))
   if (!is.null(library)) {
     mkdirp(library[1], msg = "Creating library directory")
     library[1] <- normalizePath(library[1])
+    private$config$set("library", library)
   }
   mkdirp(private$download_cache <- private$config$get("cache_dir"))
 

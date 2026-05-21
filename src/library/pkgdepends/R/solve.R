@@ -519,7 +519,20 @@ pkgplan_i_lp_satisfy_direct <- function(lp) {
       }
     }
   }
-  direct <- setdiff(which(lp$pkgs$direct), lp$ruled_out)
+  ## Skip ruled-out direct refs only when another non-ruled-out direct ref
+  ## of the same package will enforce the satisfaction constraint. If all
+  ## direct refs for a package are ruled out, we still need to run satisfy
+  ## so unrelated candidates (e.g. an installed package from a different
+  ## source) cannot silently satisfy the request.
+  direct_all <- which(lp$pkgs$direct)
+  direct_ok <- setdiff(direct_all, lp$ruled_out)
+  pkgs_with_ok <- unique(lp$pkgs$package[direct_ok])
+  direct <- c(
+    direct_ok,
+    setdiff(direct_all, direct_ok)[
+      !lp$pkgs$package[setdiff(direct_all, direct_ok)] %in% pkgs_with_ok
+    ]
+  )
   lapply(direct, satisfy)
 
   lp

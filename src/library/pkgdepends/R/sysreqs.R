@@ -197,7 +197,9 @@ sysreqs_install_plan <- function(refs, upgrade = TRUE, config = list()) {
   res
 }
 
-sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
+sysreqs_check_installed <- function(packages = NULL, library = NULL) {
+  config <- current_config()
+  library <- library %||% config$get("library")
   data <- synchronize(when_all(
     sysreqs2_async_update_metadata(),
     async_system_list_packages(),
@@ -283,7 +285,9 @@ print.pkg_sysreqs_check_result <- function(x, ...) {
   NextMethod("[")
 }
 
-sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
+sysreqs_fix_installed <- function(packages = NULL, library = NULL) {
+  config <- current_config()
+  library <- library %||% config$get("library")
   chk <- sysreqs_check_installed(packages = packages, library = library)
   if (nrow(chk) == 0) {
     cli::cli_alert("No system requirements.")
@@ -293,7 +297,6 @@ sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
     cli::cli_alert_info(
       "Need to install {sum(!chk$installed)} system package{?s}."
     )
-    config <- current_config()
     cmds <- sysreqs2_scripts(
       attr(chk, "sysreqs_records"),
       sysreqs_platform = config$get("sysreqs_platform"),

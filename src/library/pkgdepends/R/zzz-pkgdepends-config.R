@@ -38,6 +38,14 @@ env_decode_difftime <- function(x, name, ...) {
   ))
 }
 
+default_library <- function(config) {
+  lp <- .libPaths()
+  if (config$get("ignore_dev_library")) {
+    lp <- lp[basename(lp) != "__dev_lib__"]
+  }
+  lp[1L]
+}
+
 default_sysreqs_platform <- function() {
   pkgcache::current_r_platform()
 }
@@ -135,6 +143,13 @@ pkgdepends_config <- sort_by_name(list(
   ),
 
   # -----------------------------------------------------------------------
+  ignore_dev_library = list(
+    type = "flag",
+    default = TRUE,
+    docs = "Whether to ignore library directories called `__dev_lib__`."
+  ),
+
+  # -----------------------------------------------------------------------
   include_linkingto = list(
     type = "flag",
     default = FALSE,
@@ -147,6 +162,7 @@ pkgdepends_config <- sort_by_name(list(
   # -----------------------------------------------------------------------
   library = list(
     type = "character_or_null",
+    default = function(config) default_library(config),
     docs = "Package library to install packages to. It is also used for
        already installed packages when considering dependencies in
        [dependency lookup][pkg_deps] or

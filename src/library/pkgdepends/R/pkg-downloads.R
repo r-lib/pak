@@ -65,7 +65,9 @@ pkg_download_proposal <- R6::R6Class(
     #' ```
 
     initialize = function(refs, config = list(), remote_types = NULL) {
-      private$plan <- pkg_plan$new(refs, config, library = NULL, remote_types)
+      config$library <- tempfile()
+      dir.create(config$library)
+      private$plan <- pkg_plan$new(refs, config, remote_types)
       invisible(self)
     },
 

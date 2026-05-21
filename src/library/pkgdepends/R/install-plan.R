@@ -62,7 +62,7 @@ NULL
 
 install_package_plan <- function(
   plan,
-  lib = .libPaths()[[1]],
+  lib = NULL,
   num_workers = 1,
   cache = NULL
 ) {
@@ -70,6 +70,8 @@ install_package_plan <- function(
   cli::ansi_hide_cursor()
   on.exit(cli::ansi_show_cursor())
 
+  config <- current_config()
+  lib <- lib %||% config$get("library")
   lib <- lib[1]
 
   cli::cli_div(

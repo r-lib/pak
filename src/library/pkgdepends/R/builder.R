@@ -19,10 +19,12 @@
 
 pkg_build <- function(
   pkg,
-  library = .libPaths()[1],
+  library = NULL,
   flavor = Sys.getenv("PKG_BUILD_FLAVOR"),
   build_number = 1L
 ) {
+  config <- current_config()
+  library <- library %||% config$get("library")
   pkgdir <- file.path(library, pkg)
   if (!dir.exists(pkgdir)) {
     throw(pkg_error(

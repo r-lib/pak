@@ -77,6 +77,7 @@ pkgplan_async_download_solution <- function(self, private) {
   if (is.null(private$solution)) {
     self$solve()
   }
+  self$stop_for_solve_error()
   if (private$dirty) {
     throw(pkg_error(
       "Package list has changed, you need to call the {.code $resolve()}

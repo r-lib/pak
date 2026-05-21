@@ -209,7 +209,9 @@ merge_installed_caches <- function(c1, c2) {
 #'
 #' @export
 
-lib_status <- function(library = .libPaths()[1], packages = NULL) {
+lib_status <- function(library = NULL, packages = NULL) {
+  config <- current_config()
+  library <- library %||% config$get("library")
   st <- make_installed_cache(library, packages)$pkgs
   st$library <- if (nrow(st) > 0) library else character()
   st <- st[, c("library", setdiff(colnames(st), "library")), drop = FALSE]

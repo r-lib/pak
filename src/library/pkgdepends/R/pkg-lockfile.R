@@ -1,7 +1,6 @@
 #' @param lockfile Path to the lock file to use.
 #' @param config Configuration options, a named list. See
-#'  ['Configuration'][pkgdepends-config]. If it does not include `library`, then
-#'  `.libPaths()[1]` is added as `library`.
+#'  ['Configuration'][pkgdepends-config].
 #' @param ... Additional arguments, passed to
 #'   [`pkg_installation_plan$new()`](#method-new).
 #' @return `new_pkg_installation_plan()` returns a `pkg_installation_plan`
@@ -15,7 +14,7 @@ new_pkg_installation_plan <- function(
   config = list(),
   ...
 ) {
-  config$library <- config$library %||% .libPaths()[[1]]
+  config$library <- config$library %||% current_config()$get("library")
   pkg_installation_plan$new(lockfile, config = config, ...)
 }
 
@@ -64,7 +63,6 @@ pkg_installation_plan <- R6::R6Class(
       private$plan <- pkg_plan$new(
         lockfile = lockfile,
         config = config,
-        library = config$library,
         remote_types = remote_types
       )
     },

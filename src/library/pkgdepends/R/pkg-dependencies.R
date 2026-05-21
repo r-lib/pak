@@ -71,13 +71,13 @@ pkg_deps <- R6::R6Class(
     ) {
       private$library <- tempfile()
       config$sysreqs_lookup_system <- FALSE
+      config$library <- private$library
       policy <- match.arg(policy)
       private$policy <- policy
       dir.create(private$library)
       private$plan <- pkg_plan$new(
         refs,
         config,
-        library = private$library,
         remote_types
       )
     },
@@ -236,6 +236,24 @@ pkg_deps <- R6::R6Class(
     get_solution = function() private$plan$get_solution(),
 
     #' @description
+    #' Show the solution of the package dependencies. This is a formatted
+    #' list of packages that will be installed.
+    #'
+    #' @param key Whether to print the key for the symbols used in the
+    #'   output. Default is `FALSE`.
+    #'
+    #' @return
+    #' The solution object, invisibly.
+    #'
+    #' @examplesIf pkgdepends:::is_online()
+    #' # Method show_solution()
+    #' pd <- new_pkg_deps("pkgload")
+    #' pd$solve()
+    #' pd$show_solution()
+
+    show_solution = function(key = FALSE) private$plan$show_solution(key),
+
+    #' @description
     #' Error if the dependency solver failed to find a consistent set of
     #' packages that can be installed together.
     #'
@@ -304,7 +322,7 @@ pkg_deps <- R6::R6Class(
         if (!has_res) "(use `$resolve()` to resolve dependencies)",
         if (has_res) "(use `$get_resolution()` to see resolution results)",
         if (!has_sol) "(use `$solve()` to solve dependencies)",
-        if (has_sol) "(use `$show_solution()` to see the dependencies",
+        if (has_sol) "(use `$show_solution()` to see the dependencies)",
         if (has_sol) "(use `$get_solution()` to see the full solution results)",
         if (has_sol && !sol_err) "(use `$draw()` to draw the dependency tree)"
       )

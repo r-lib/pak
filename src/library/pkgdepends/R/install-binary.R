@@ -129,7 +129,7 @@ add_metadata <- function(pkg_path, metadata) {
 
 make_install_process <- function(
   filename,
-  lib = .libPaths()[[1L]],
+  lib = NULL,
   metadata = NULL
 ) {
   filename
@@ -137,6 +137,8 @@ make_install_process <- function(
   metadata
 
   now <- Sys.time()
+
+  lib <- lib %||% current_config()$get("library")
 
   type <- detect_package_archive_type(filename)
   if (type == "unknown") {

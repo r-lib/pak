@@ -1,8 +1,7 @@
 #' @param refs Package names or references. See
 #'   ['Package references'][pkg_refs] for the syntax.
 #' @param config Configuration options, a named list. See
-#'  ['Configuration'][pkgdepends-config]. If it does not include `library`, then
-#'  `.libPaths()[1]` is added as `library`.
+#'  ['Configuration'][pkgdepends-config].
 #' @param ... Additional arguments, passed to
 #'   [`pkg_installation_proposal$new()`](#method-new).
 #' @return `new_pkg_installation_proposal()` returns a new
@@ -12,7 +11,7 @@
 #' @rdname pkg_installation_proposal
 
 new_pkg_installation_proposal <- function(refs, config = list(), ...) {
-  config$library <- config$library %||% .libPaths()[[1]]
+  config$library <- config$library %||% current_config()$get("library")
   config$library <- path_norm(config$library)
   pkg_installation_proposal$new(refs, config = config, ...)
 }
@@ -105,7 +104,6 @@ pkg_installation_proposal <- R6::R6Class(
       private$plan <- pkg_plan$new(
         refs,
         config = config,
-        library = config$library,
         remote_types = remote_types
       )
     },
