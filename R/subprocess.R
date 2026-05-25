@@ -47,6 +47,7 @@ remote <- function(func, args = list()) {
       pkg.show_progress = is_verbose()
     )
   )
+  # nocov start
   body(func2) <- substitute(
     {
       withCallingHandlers(
@@ -70,6 +71,7 @@ remote <- function(func, args = list()) {
     },
     subst_args
   )
+  # nocov end
 
   opts <- options()
   extraopts <- c("Ncpus", "BioC_mirror")
@@ -85,6 +87,7 @@ remote <- function(func, args = list()) {
   }
   pkg_envs <- envs[grepl("^PKG_", names(envs)) | names(envs) %in% extraenvs]
   rs$run(
+    # nocov start
     function(wd, new_opts, new_envs) {
       setwd(wd)
       opts <- options()
@@ -102,6 +105,7 @@ remote <- function(func, args = list()) {
       Sys.unsetenv(old_envs)
       if (length(new_envs)) do.call("Sys.setenv", as.list(new_envs))
     },
+    # nocov end
     list(wd = getwd(), new_opts = pkg_options, new_envs = pkg_envs)
   )
 
