@@ -4,7 +4,7 @@
 \alias{pkg_remove}
 \title{Remove installed packages}
 \usage{
-pkg_remove(pkg, lib = .libPaths()[[1L]])
+pkg_remove(pkg, lib = NULL)
 }
 \arguments{
 \item{pkg}{A character vector of packages to remove.}

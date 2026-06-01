@@ -359,3 +359,7 @@ rbind_expand <- function(..., .list = list()) {
 cisort <- function(x) {
   x[order(tolower(x))]
 }
+
+is_pak <- function() {
+  TRUE
+}

@@ -4,7 +4,7 @@
 \alias{lockfile_install}
 \title{Install packages based on a lock file}
 \usage{
-lockfile_install(lockfile = "pkg.lock", lib = .libPaths()[1], update = TRUE)
+lockfile_install(lockfile = "pkg.lock", lib = NULL, update = TRUE)
 }
 \arguments{
 \item{lockfile}{Path to the lock file.}

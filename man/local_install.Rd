@@ -6,7 +6,7 @@
 \usage{
 local_install(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = NA
