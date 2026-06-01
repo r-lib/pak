@@ -143,8 +143,8 @@ repo_get()
 }
 
 \seealso{
-Other repository functions: 
-\code{\link{repo_get}()},
-\code{\link{repo_status}()}
+Other repository functions:
+\code{\link[=repo_get]{repo_get()}},
+\code{\link[=repo_status]{repo_status()}}
 }
 \concept{repository functions}

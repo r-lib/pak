@@ -29,7 +29,7 @@ proxy to CRAN. This is how to run the proxy in a subprocess:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo <- webfakes::new_app_process(pak:::auth_proxy_app())
 repo$url()
-#> [1] "http://127.0.0.1:59571/"
+#> [1] "http://127.0.0.1:56629/"
 }\if{html}{\out{</div>}}
 
 (This needs the webfakes and callr packages.)
@@ -40,17 +40,17 @@ replace the default CRAN repository with the proxy, so we name it \code{CRAN}:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(CRAN = repo$url(), username = "username")
 repo_get()
-#> x Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+#> ✖ Did not find credentials for repo <http://username@127.0.0.1:56629/>, keyring
 #> lookup failed (macos backend).
 #> # A data frame: 6 x 7
 #>   name          url           type  r_version bioc_version username has_password
 #> * <chr>         <chr>         <chr> <chr>     <chr>        <chr>    <lgl>       
 #> 1 CRAN          http://usern~ cran  *         <NA>         username FALSE       
-#> 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
-#> 3 BioCann       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
-#> 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
-#> 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         <NA>     NA          
-#> 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         <NA>     NA
+#> 2 BioCsoft      https://bioc~ bioc  4.6.0     3.23         <NA>     NA          
+#> 3 BioCann       https://bioc~ bioc  4.6.0     3.23         <NA>     NA          
+#> 4 BioCexp       https://bioc~ bioc  4.6.0     3.23         <NA>     NA          
+#> 5 BioCworkflows https://bioc~ bioc  4.6.0     3.23         <NA>     NA          
+#> 6 BioCbooks     https://bioc~ bioc  4.6.0     3.23         <NA>     NA
 }\if{html}{\out{</div>}}
 
 Note that the output includes a \code{username} and a \code{has_password} column.
@@ -355,8 +355,8 @@ Posit Package Manager Documentation.
 \seealso{
 \code{\link[=repo_auth]{repo_auth()}}, \code{\link[=ppm_sso_login]{ppm_sso_login()}}.
 
-Other authenticated repositories: 
-\code{\link{repo_auth}()},
-\code{\link{repo_auth_key_get}()}
+Other authenticated repositories:
+\code{\link[=repo_auth]{repo_auth()}},
+\code{\link[=repo_auth_key_get]{repo_auth_key_get()}}
 }
 \concept{authenticated repositories}

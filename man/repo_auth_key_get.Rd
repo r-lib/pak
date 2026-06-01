@@ -44,8 +44,8 @@ function in each session. You typically don't need to do that if you
 are using the native Windows, macOS or Linux (Secret Service) backends.
 }
 \seealso{
-Other authenticated repositories: 
+Other authenticated repositories:
 \code{\link{Authenticated repositories}},
-\code{\link{repo_auth}()}
+\code{\link[=repo_auth]{repo_auth()}}
 }
 \concept{authenticated repositories}

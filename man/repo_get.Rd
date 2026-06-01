@@ -64,8 +64,8 @@ Bioconductor repositories. See the \code{cran_mirror} and \code{bioc} arguments.
 }
 
 \seealso{
-Other repository functions: 
-\code{\link{repo_add}()},
-\code{\link{repo_status}()}
+Other repository functions:
+\code{\link[=repo_add]{repo_add()}},
+\code{\link[=repo_status]{repo_status()}}
 }
 \concept{repository functions}

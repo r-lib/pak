@@ -73,12 +73,12 @@ builds might have the same platform string, unfortunately.)
 }
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 system_r_platform()
 system_r_platform_data()
 \dontshow{\}) # examplesIf}
 }
 \seealso{
 These function call \code{\link[pkgcache:current_r_platform]{pkgcache::current_r_platform()}} and
-\code{\link[pkgcache:current_r_platform]{pkgcache::current_r_platform_data()}}.
+\code{\link[pkgcache:current_r_platform_data]{pkgcache::current_r_platform_data()}}.
 }

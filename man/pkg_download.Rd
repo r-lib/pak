@@ -103,14 +103,14 @@ TODO: explain result
 }
 
 \seealso{
-Other package functions: 
-\code{\link{lib_status}()},
-\code{\link{pak}()},
-\code{\link{pkg_deps}()},
-\code{\link{pkg_deps_tree}()},
-\code{\link{pkg_install}()},
-\code{\link{pkg_remove}()},
-\code{\link{pkg_status}()},
-\code{\link{pkg_sysreqs}()}
+Other package functions:
+\code{\link[=lib_status]{lib_status()}},
+\code{\link[=pak]{pak()}},
+\code{\link[=pkg_deps]{pkg_deps()}},
+\code{\link[=pkg_deps_tree]{pkg_deps_tree()}},
+\code{\link[=pkg_install]{pkg_install()}},
+\code{\link[=pkg_remove]{pkg_remove()}},
+\code{\link[=pkg_status]{pkg_status()}},
+\code{\link[=pkg_sysreqs]{pkg_sysreqs()}}
 }
 \concept{package functions}

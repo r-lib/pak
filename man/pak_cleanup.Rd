@@ -26,7 +26,7 @@ in non-interactive mode, you have to specify \code{force = TRUE}.}
 Clean up pak caches
 }
 \seealso{
-Other pak housekeeping: 
-\code{\link{pak_sitrep}()}
+Other pak housekeeping:
+\code{\link[=pak_sitrep]{pak_sitrep()}}
 }
 \concept{pak housekeeping}

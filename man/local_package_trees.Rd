@@ -21,12 +21,12 @@ if the package itself is loaded via some other means, e.g.
 \code{devtools::load_all()}, for development.
 }
 \seealso{
-Other local package trees: 
-\code{\link{local_deps}()},
-\code{\link{local_deps_explain}()},
-\code{\link{local_install}()},
-\code{\link{local_install_deps}()},
-\code{\link{local_install_dev_deps}()},
-\code{\link{pak}()}
+Other local package trees:
+\code{\link[=local_deps]{local_deps()}},
+\code{\link[=local_deps_explain]{local_deps_explain()}},
+\code{\link[=local_install]{local_install()}},
+\code{\link[=local_install_deps]{local_install_deps()}},
+\code{\link[=local_install_dev_deps]{local_install_dev_deps()}},
+\code{\link[=pak]{pak()}}
 }
 \concept{local package trees}

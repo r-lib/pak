@@ -31,22 +31,22 @@ packages, just one.
 }
 }
 \seealso{
-Other package functions: 
-\code{\link{lib_status}()},
-\code{\link{pkg_deps}()},
-\code{\link{pkg_deps_tree}()},
-\code{\link{pkg_download}()},
-\code{\link{pkg_install}()},
-\code{\link{pkg_remove}()},
-\code{\link{pkg_status}()},
-\code{\link{pkg_sysreqs}()}
+Other package functions:
+\code{\link[=lib_status]{lib_status()}},
+\code{\link[=pkg_deps]{pkg_deps()}},
+\code{\link[=pkg_deps_tree]{pkg_deps_tree()}},
+\code{\link[=pkg_download]{pkg_download()}},
+\code{\link[=pkg_install]{pkg_install()}},
+\code{\link[=pkg_remove]{pkg_remove()}},
+\code{\link[=pkg_status]{pkg_status()}},
+\code{\link[=pkg_sysreqs]{pkg_sysreqs()}}
 
-Other local package trees: 
-\code{\link{local_deps}()},
-\code{\link{local_deps_explain}()},
-\code{\link{local_install}()},
-\code{\link{local_install_deps}()},
-\code{\link{local_install_dev_deps}()},
+Other local package trees:
+\code{\link[=local_deps]{local_deps()}},
+\code{\link[=local_deps_explain]{local_deps_explain()}},
+\code{\link[=local_install]{local_install()}},
+\code{\link[=local_install_deps]{local_install_deps()}},
+\code{\link[=local_install_dev_deps]{local_install_dev_deps()}},
 \code{\link{local_package_trees}}
 }
 \concept{local package trees}

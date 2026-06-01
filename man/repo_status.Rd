@@ -146,8 +146,8 @@ summary of the data, and it returns its result invisibly.
 }
 
 \seealso{
-Other repository functions: 
-\code{\link{repo_add}()},
-\code{\link{repo_get}()}
+Other repository functions:
+\code{\link[=repo_add]{repo_add()}},
+\code{\link[=repo_get]{repo_get()}}
 }
 \concept{repository functions}

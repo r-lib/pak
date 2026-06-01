@@ -38,7 +38,7 @@ uses the public PPM instance at \verb{https://packagemanager.posit.co}, with
 the \code{cran} repository.
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 ppm_repo_url()
 \dontshow{\}) # examplesIf}
 }
@@ -49,10 +49,10 @@ article at \url{https://r-lib.github.io/pkgcache/}.
 \code{\link[=repo_resolve]{repo_resolve()}} and \code{\link[=repo_add]{repo_add()}} to find and configure PPM
 snapshots.
 
-Other PPM functions: 
-\code{\link{ppm_has_binaries}()},
-\code{\link{ppm_platforms}()},
-\code{\link{ppm_r_versions}()},
-\code{\link{ppm_snapshots}()}
+Other PPM functions:
+\code{\link[=ppm_has_binaries]{ppm_has_binaries()}},
+\code{\link[=ppm_platforms]{ppm_platforms()}},
+\code{\link[=ppm_r_versions]{ppm_r_versions()}},
+\code{\link[=ppm_snapshots]{ppm_snapshots()}}
 }
 \concept{PPM functions}

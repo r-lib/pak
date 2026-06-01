@@ -29,18 +29,18 @@ outdated. (I.e. older than allowed in the \code{metadata_update_after}
 \eval{man_config_link("configuration option")}.
 }
 \examples{
-\dontshow{if (Sys.getenv("IN_PKGDOWN") == "true") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (Sys.getenv("IN_PKGDOWN") == "true") withAutoprint(\{ # examplesIf}
 sysreqs_db_list(sysreqs_platform = "ubuntu-22.04")
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other system requirements functions: 
-\code{\link{pkg_sysreqs}()},
-\code{\link{sysreqs_check_installed}()},
-\code{\link{sysreqs_db_match}()},
-\code{\link{sysreqs_db_update}()},
-\code{\link{sysreqs_is_supported}()},
-\code{\link{sysreqs_list_system_packages}()},
-\code{\link{sysreqs_platforms}()}
+Other system requirements functions:
+\code{\link[=pkg_sysreqs]{pkg_sysreqs()}},
+\code{\link[=sysreqs_check_installed]{sysreqs_check_installed()}},
+\code{\link[=sysreqs_db_match]{sysreqs_db_match()}},
+\code{\link[=sysreqs_db_update]{sysreqs_db_update()}},
+\code{\link[=sysreqs_is_supported]{sysreqs_is_supported()}},
+\code{\link[=sysreqs_list_system_packages]{sysreqs_list_system_packages()}},
+\code{\link[=sysreqs_platforms]{sysreqs_platforms()}}
 }
 \concept{system requirements functions}

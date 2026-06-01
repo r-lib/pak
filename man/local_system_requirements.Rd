@@ -84,10 +84,10 @@ requirements for the queried operating system.
 (and their dependencies).
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 local_system_requirements("ubuntu", "20.04")
 \dontshow{\}) # examplesIf}
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 pkg_system_requirements("pak", "ubuntu", "20.04")
 pkg_system_requirements("pak", "redhat", "7")
 pkg_system_requirements("config", "ubuntu", "20.04") # no sys reqs

@@ -84,24 +84,24 @@ after the package installation for this system requirement.
 Calculate system requirements of one of more packages
 }
 \seealso{
-Other package functions: 
-\code{\link{lib_status}()},
-\code{\link{pak}()},
-\code{\link{pkg_deps}()},
-\code{\link{pkg_deps_tree}()},
-\code{\link{pkg_download}()},
-\code{\link{pkg_install}()},
-\code{\link{pkg_remove}()},
-\code{\link{pkg_status}()}
+Other package functions:
+\code{\link[=lib_status]{lib_status()}},
+\code{\link[=pak]{pak()}},
+\code{\link[=pkg_deps]{pkg_deps()}},
+\code{\link[=pkg_deps_tree]{pkg_deps_tree()}},
+\code{\link[=pkg_download]{pkg_download()}},
+\code{\link[=pkg_install]{pkg_install()}},
+\code{\link[=pkg_remove]{pkg_remove()}},
+\code{\link[=pkg_status]{pkg_status()}}
 
-Other system requirements functions: 
-\code{\link{sysreqs_check_installed}()},
-\code{\link{sysreqs_db_list}()},
-\code{\link{sysreqs_db_match}()},
-\code{\link{sysreqs_db_update}()},
-\code{\link{sysreqs_is_supported}()},
-\code{\link{sysreqs_list_system_packages}()},
-\code{\link{sysreqs_platforms}()}
+Other system requirements functions:
+\code{\link[=sysreqs_check_installed]{sysreqs_check_installed()}},
+\code{\link[=sysreqs_db_list]{sysreqs_db_list()}},
+\code{\link[=sysreqs_db_match]{sysreqs_db_match()}},
+\code{\link[=sysreqs_db_update]{sysreqs_db_update()}},
+\code{\link[=sysreqs_is_supported]{sysreqs_is_supported()}},
+\code{\link[=sysreqs_list_system_packages]{sysreqs_list_system_packages()}},
+\code{\link[=sysreqs_platforms]{sysreqs_platforms()}}
 }
 \concept{package functions}
 \concept{system requirements functions}

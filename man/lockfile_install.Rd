@@ -19,7 +19,7 @@ for them.}
 Install a lock file that was created with \code{\link[=lockfile_create]{lockfile_create()}}.
 }
 \seealso{
-Other lock files: 
-\code{\link{lockfile_create}()}
+Other lock files:
+\code{\link[=lockfile_create]{lockfile_create()}}
 }
 \concept{lock files}

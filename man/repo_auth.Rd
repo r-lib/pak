@@ -135,8 +135,8 @@ repositories.
 \seealso{
 \link{Authenticated repositories}.
 
-Other authenticated repositories: 
+Other authenticated repositories:
 \code{\link{Authenticated repositories}},
-\code{\link{repo_auth_key_get}()}
+\code{\link[=repo_auth_key_get]{repo_auth_key_get()}}
 }
 \concept{authenticated repositories}

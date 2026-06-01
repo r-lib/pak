@@ -22,7 +22,7 @@ platform, see \code{\link[=ppm_snapshots]{ppm_snapshots()}}.
 List all platforms supported by Posit Package Manager (PPM)
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 ppm_platforms()
 \dontshow{\}) # examplesIf}
 }
@@ -30,10 +30,10 @@ ppm_platforms()
 The 'pkgcache and Posit Package Manager on Linux'
 article at \url{https://r-lib.github.io/pkgcache/}.
 
-Other PPM functions: 
-\code{\link{ppm_has_binaries}()},
-\code{\link{ppm_r_versions}()},
-\code{\link{ppm_repo_url}()},
-\code{\link{ppm_snapshots}()}
+Other PPM functions:
+\code{\link[=ppm_has_binaries]{ppm_has_binaries()}},
+\code{\link[=ppm_r_versions]{ppm_r_versions()}},
+\code{\link[=ppm_repo_url]{ppm_repo_url()}},
+\code{\link[=ppm_snapshots]{ppm_snapshots()}}
 }
 \concept{PPM functions}

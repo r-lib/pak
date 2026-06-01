@@ -43,7 +43,7 @@ It prints
 }
 
 \seealso{
-Other pak housekeeping: 
-\code{\link{pak_cleanup}()}
+Other pak housekeeping:
+\code{\link[=pak_cleanup]{pak_cleanup()}}
 }
 \concept{pak housekeeping}

@@ -14,13 +14,13 @@ If the the cached copy is recent, then no update is attempted. See the
 \code{metadata_update_after} \eval{man_config_link("configuration option")}.
 }
 \seealso{
-Other system requirements functions: 
-\code{\link{pkg_sysreqs}()},
-\code{\link{sysreqs_check_installed}()},
-\code{\link{sysreqs_db_list}()},
-\code{\link{sysreqs_db_match}()},
-\code{\link{sysreqs_is_supported}()},
-\code{\link{sysreqs_list_system_packages}()},
-\code{\link{sysreqs_platforms}()}
+Other system requirements functions:
+\code{\link[=pkg_sysreqs]{pkg_sysreqs()}},
+\code{\link[=sysreqs_check_installed]{sysreqs_check_installed()}},
+\code{\link[=sysreqs_db_list]{sysreqs_db_list()}},
+\code{\link[=sysreqs_db_match]{sysreqs_db_match()}},
+\code{\link[=sysreqs_is_supported]{sysreqs_is_supported()}},
+\code{\link[=sysreqs_list_system_packages]{sysreqs_list_system_packages()}},
+\code{\link[=sysreqs_platforms]{sysreqs_platforms()}}
 }
 \concept{system requirements functions}

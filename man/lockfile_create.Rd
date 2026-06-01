@@ -72,7 +72,7 @@ facilitate caching. The (hash of the) lock file provides a good key
 for caching systems.
 }
 \seealso{
-Other lock files: 
-\code{\link{lockfile_install}()}
+Other lock files:
+\code{\link[=lockfile_install]{lockfile_install()}}
 }
 \concept{lock files}

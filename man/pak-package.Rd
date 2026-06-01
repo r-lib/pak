@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Gábor Csárdi \email{csardi.gabor@gmail.com}
   \item Jim Hester
 }
 

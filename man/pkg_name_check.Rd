@@ -11,12 +11,14 @@ pkg_name_check(name, dictionaries = NULL)
 
 \item{dictionaries}{Character vector, the dictionaries to query.
 Available dictionaries:
-* \code{wikipedia}
-* \code{wiktionary},
-* \code{sentiment} (\url{https://github.com/fnielsen/afinn}),
-* \code{urban} (Urban Dictionary).
+\itemize{
+\item \code{wikipedia}
+\item \code{wiktionary},
+\item \code{sentiment} (\url{https://github.com/fnielsen/afinn}),
+\item \code{urban} (Urban Dictionary).
 If \code{NULL} (by default), the Urban Dictionary is omitted, as it
-is often offensive.}
+is often offensive.
+}}
 }
 \value{
 \code{pkg_name_check} object with a custom print method.
