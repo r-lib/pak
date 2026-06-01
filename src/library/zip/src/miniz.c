@@ -159,7 +159,9 @@ void mz_free(void *p)
 
 void *miniz_def_alloc_func(void *opaque, size_t items, size_t size)
 {
-    (void)opaque, (void)items, (void)size;
+    (void)opaque;
+    if (items && size > (~(size_t)0) / items)
+        return NULL;
     return MZ_MALLOC(items * size);
 }
 void miniz_def_free_func(void *opaque, void *address)
