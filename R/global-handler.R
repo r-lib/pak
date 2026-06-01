@@ -46,7 +46,7 @@ handle_package_not_found <- function(err) {
   }
 
   pkg <- err$package
-  lib <- err$lib.loc %||% .libPaths()[1]
+  lib <- lib_default(libpath = err$lib.loc)
 
   can_cont <- !is.null(findRestart("retry_loadNamespace"))
 
@@ -81,7 +81,7 @@ handle_package_not_found <- function(err) {
   }
 
   cli$cli_rule("start installation")
-  pkg_install(pkg, lib = lib[1])
+  pkg_install(pkg, lib = lib)
   cli$cli_rule("end installation")
   cli$cli_text()
 

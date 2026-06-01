@@ -32,6 +32,7 @@ lockfile_create <- function(
   upgrade = FALSE,
   dependencies = NA
 ) {
+  lib <- lib %||% lib_default()
   ret <- remote(
     function(...) {
       get("lockfile_create_internal", asNamespace("pak"))(...)
@@ -92,10 +93,11 @@ lockfile_create_internal <- function(
 
 lockfile_install <- function(
   lockfile = "pkg.lock",
-  lib = .libPaths()[1],
+  lib = NULL,
   update = TRUE
 ) {
   start <- Sys.time()
+  lib <- lib %||% lib_default()
   mkdirp(lib)
   ret <- remote(
     function(...) {

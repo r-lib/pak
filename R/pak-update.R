@@ -82,7 +82,11 @@ pak_update <- function(
   repo <- pak_repo()
 
   if (!is.null(.getNamespace("pak")$.__DEVTOOLS__)) {
-    lib <- .libPaths()[1]
+    # drop dev-libs, we don't want to call lib_default() because
+    # that calls the subprocess, and we want to handle a broken pak
+    libs <- .libPaths()
+    libs <- libs[basename(libs) != "__dev_lib__"]
+    lib <- libs[1]
     warning(
       "`load_all()`-d pak package, updating in default library at\n  ",
       "`",

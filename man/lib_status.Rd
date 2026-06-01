@@ -5,9 +5,9 @@
 \alias{pkg_list}
 \title{Status of packages in a library}
 \usage{
-lib_status(lib = .libPaths()[1])
+lib_status(lib = NULL)
 
-pkg_list(lib = .libPaths()[1])
+pkg_list(lib = NULL)
 }
 \arguments{
 \item{lib}{Path to library.}

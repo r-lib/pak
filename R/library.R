@@ -12,7 +12,8 @@
 #' lib_status(.Library)
 #' ```
 
-lib_status <- function(lib = .libPaths()[1]) {
+lib_status <- function(lib = NULL) {
+  lib <- lib %||% lib_default()
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$lib_status_internal(...),
@@ -35,4 +36,13 @@ lib_status <- function(lib = .libPaths()[1]) {
 
 lib_status_internal <- function(lib) {
   pkgdepends::lib_status(lib)
+}
+
+lib_default <- function(libpath = NULL) {
+  if (!is.null(libpath)) {
+    old <- .libPaths()
+    on.exit(.libPaths(old), add = TRUE)
+    .libPaths(libpath)
+  }
+  current_config()$get("library")
 }

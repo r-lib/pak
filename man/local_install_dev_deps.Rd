@@ -6,7 +6,7 @@
 \usage{
 local_install_dev_deps(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = TRUE

@@ -40,8 +40,9 @@ sysreqs_db_list <- function(sysreqs_platform = NULL) {
   )
 }
 
-sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
+sysreqs_check_installed <- function(packages = NULL, library = NULL) {
   load_extra("pillar")
+  library <- library %||% lib_default()
   remote(
     function(...) {
       ret <- pkgdepends::sysreqs_check_installed(...)
@@ -51,8 +52,9 @@ sysreqs_check_installed <- function(packages = NULL, library = .libPaths()[1]) {
   )
 }
 
-sysreqs_fix_installed <- function(packages = NULL, library = .libPaths()[1]) {
+sysreqs_fix_installed <- function(packages = NULL, library = NULL) {
   load_extra("pillar")
+  library <- library %||% lib_default()
   invisible(remote(
     function(...) {
       ret <- pkgdepends::sysreqs_fix_installed(...)

@@ -4,7 +4,7 @@
 \alias{pkg_status}
 \title{Display installed locations of a package}
 \usage{
-pkg_status(pkg, lib = .libPaths())
+pkg_status(pkg, lib = NULL)
 }
 \arguments{
 \item{pkg}{Name of one or more installed packages to display status for.}

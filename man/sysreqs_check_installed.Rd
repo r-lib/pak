@@ -5,8 +5,8 @@
 \alias{sysreqs_fix_installed}
 \title{Check if installed packages have all their system requirements}
 \usage{
-sysreqs_check_installed(packages = NULL, library = .libPaths()[1])
-sysreqs_fix_installed(packages = NULL, library = .libPaths()[1])
+sysreqs_check_installed(packages = NULL, library = NULL)
+sysreqs_fix_installed(packages = NULL, library = NULL)
 }
 \arguments{
 \item{packages}{If not \code{NULL}, then only these packages are checked.

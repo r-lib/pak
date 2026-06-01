@@ -21,6 +21,9 @@ print_install_details <- function(prop, lib, loaded) {
 
   cli::cli_verbatim(" ")
 
+  lib <- prop$get_config()$get("library")
+  cli::cli_alert("Package library at {.path {lib}}.")
+
   if (n_newly) {
     cli::cli_alert("Will {.emph install} {n_newly} package{?s}.")
   }

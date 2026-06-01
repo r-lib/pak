@@ -33,13 +33,14 @@ NULL
 
 local_install <- function(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = NA
 ) {
   start <- Sys.time()
 
+  lib <- lib %||% lib_default()
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
     list(
@@ -100,12 +101,14 @@ local_install_make_plan <- function(
 
 local_install_deps <- function(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = NA
 ) {
   start <- Sys.time()
+
+  lib <- lib %||% lib_default()
 
   status <- remote(
     function(...) get("local_install_make_plan", asNamespace("pak"))(...),
@@ -149,12 +152,14 @@ local_install_deps <- function(
 
 local_install_dev_deps <- function(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = TRUE
 ) {
   start <- Sys.time()
+
+  lib <- lib %||% lib_default()
 
   status <- remote(
     function(...) {

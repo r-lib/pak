@@ -73,13 +73,14 @@
 
 pkg_install <- function(
   pkg,
-  lib = .libPaths()[[1L]],
+  lib = NULL,
   upgrade = FALSE,
   ask = interactive(),
   dependencies = NA
 ) {
   start <- Sys.time()
 
+  lib <- lib %||% lib_default()
   status <- remote(
     function(...) get("pkg_install_make_plan", asNamespace("pak"))(...),
     list(
@@ -171,9 +172,10 @@ pkg_install_do_plan <- function(proposal) {
 #' pkg_status("MASS")
 #' ```
 
-pkg_status <- function(pkg, lib = .libPaths()) {
+pkg_status <- function(pkg, lib = NULL) {
   stopifnot(length(pkg == 1) && is.character(pkg))
 
+  lib <- lib %||% lib_default()
   load_extra("pillar")
   remote(
     function(...) asNamespace("pak")$pkg_status_internal(...),
@@ -181,7 +183,8 @@ pkg_status <- function(pkg, lib = .libPaths()) {
   )
 }
 
-pkg_status_internal <- function(pkg, lib = .libPaths()) {
+pkg_status_internal <- function(pkg, lib = NULL) {
+  lib <- lib %||% lib_default()
   st <- lapply(lib, pkgdepends::lib_status, packages = pkg)
   do.call("rbind_expand", st)
 }
@@ -194,7 +197,8 @@ pkg_status_internal <- function(pkg, lib = .libPaths()) {
 #' @export
 #' @family package functions
 
-pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
+pkg_remove <- function(pkg, lib = NULL) {
+  lib <- lib %||% lib_default()
   remote(
     function(...) {
       get("pkg_remove_internal", asNamespace("pak"))(...)
@@ -204,8 +208,9 @@ pkg_remove <- function(pkg, lib = .libPaths()[[1L]]) {
   invisible()
 }
 
-pkg_remove_internal <- function(pkg, lib) {
+pkg_remove_internal <- function(pkg, lib = NULL) {
   pr <- pkgdepends::parse_pkg_ref(pkg)
+  lib <- lib %||% lib_default()
   suppressMessages(utils::remove.packages(pr$package, lib))
   invisible(pr)
 }
@@ -309,7 +314,8 @@ pkg_deps_tree_internal <- function(pkg, upgrade, dependencies = NA) {
 #' @family package functions
 #' @export
 
-pkg_list <- function(lib = .libPaths()[1]) {
+pkg_list <- function(lib = NULL) {
+  lib <- lib %||% lib_default()
   lib_status(lib)
 }
 
