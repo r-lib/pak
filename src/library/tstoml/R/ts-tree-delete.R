@@ -26,7 +26,7 @@
 #'   [package]
 #'   name = 'tstoml'
 #'   version = '0.1.0'
-#' ") |> ts::ts_tree_format()
+#' ") |> tsitter::ts_tree_format()
 #' toml |> ts_tree_delete()
 #' ```
 #'
@@ -37,7 +37,7 @@
 #'   [package]
 #'   name = 'tstoml'
 #'   version = '0.1.0'
-#' ") |> ts::ts_tree_format()
+#' ") |> tsitter::ts_tree_format()
 #' toml |> ts_tree_select("nothere") |> ts_tree_delete()
 #' ```
 #'
@@ -49,7 +49,7 @@
 #'   [package]
 #'   name = 'tstoml' # inline comment
 #'   version = '0.1.0'
-#' ") |> ts::ts_tree_format()
+#' ") |> tsitter::ts_tree_format()
 #' toml
 #' ```
 #'
@@ -68,7 +68,7 @@
 #' @export
 #' @keywords internal
 #' @examples
-#' library(ts)
+#' library(tsitter)
 #' toml <- ts_parse_toml(text = toml_example_text())
 #' toml
 #'

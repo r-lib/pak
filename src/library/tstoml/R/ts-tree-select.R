@@ -191,24 +191,24 @@ get_dom_subtree <- function(tree, id, with_root = FALSE) {
 #' @usage
 #' \method{ts_tree_select}{ts_tree_toml}(tree, ..., refine = FALSE)
 #' @param tree
-#' \eval{ts:::doc_insert("ts::ts_tree_select_param_tree", "tstoml")}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_tree", "tstoml")}
 #' @param ...
-#' \eval{ts:::doc_insert("ts::ts_tree_select_param_dots", "tstoml")}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_dots", "tstoml")}
 #' @param refine
-#' \eval{ts:::doc_insert("ts::ts_tree_select_param_refine", "tstoml")}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_refine", "tstoml")}
 #' @return
-#' \eval{ts:::doc_insert("ts::ts_tree_select_return", "tstoml")}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_return", "tstoml")}
 #'
 #' @description
-#' \eval{ts:::doc_insert("ts::ts_tree_select_description", "tstoml")}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_description", "tstoml")}
 #'
-#' This is the S3 method of the [ts::ts_tree_select()] generic,
+#' This is the S3 method of the [tsitter::ts_tree_select()] generic,
 #' for [tstoml] objects.
 #'
 #' @details
-#' \eval{ts:::doc_insert("ts::ts_tree_select_details", "tstoml")}
-#' \eval{ts:::doc_insert("tstoml::ts_tree_select_examples", "tstoml")}
-#' \eval{ts:::doc_extra()}
+#' \eval{tsitter:::doc_insert("tsitter::ts_tree_select_details", "tstoml")}
+#' \eval{tsitter:::doc_insert("tstoml::ts_tree_select_examples", "tstoml")}
+#' \eval{tsitter:::doc_extra()}
 #' @export
 
 ts_tree_select.ts_tree_toml <- function(tree, ..., refine = FALSE) {

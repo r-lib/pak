@@ -75,13 +75,18 @@
 #' * 2024-06-20 Need to import `utils::download.file()`.
 #' * 2024-11-07 Update version mapping for R 4.4 -> Bioc 3.20.
 #' * 2025-04-30 Reformat code with air.
+#' * 2026-06-01 For the currently running R version, use
+#'              `utils:::.BioC_version_associated_with_R_version_default`
+#'              instead of downloading the config YAML. On download
+#'              failure, error with advice to opt out of Bioconductor or
+#'              set `R_BIOC_VERSION`.
+#' * 2026-06-01 Use `download_file()` (async-http) instead of
+#'              `utils::download.file()`.
 #'
 #' @name bioconductor
 #' @keywords internal
 #' @noRd
 NULL
-
-#' @importFrom utils download.file
 
 bioconductor <- local({
   # -------------------------------------------------------------------
@@ -124,8 +129,8 @@ bioconductor <- local({
     "4.4" = package_version("3.20"),
     "4.5" = package_version("3.22"),
     NULL
-    # Do not include R 4.5 <-> Bioc 3.21, because R 4.5 will use
-    # Bioc 3.22 eventually.
+    # Do not include R 4.6 <-> Bioc 3.23, because R 4.6 will use
+    # Bioc 3.24 eventually.
   )
 
   # -------------------------------------------------------------------
@@ -234,16 +239,36 @@ bioconductor <- local({
     r_version = getRversion(),
     forget = FALSE
   ) {
+    # We know this from the built-in map
     minor <- as.character(get_minor_r_version(r_version))
     if (minor %in% names(builtin_map)) {
       return(builtin_map[[minor]])
     }
 
-    # If we are not in the map, then we need to look this up in
-    # YAML data. It is possible that the current R version matches multiple
-    # Bioc versions. Then we choose the latest released version. If none
-    # of them were released (e.g. they are 'devel' and 'future'), then
-    # we'll use the 'devel' version.
+    # Otherwise look up from base R, if we are running the same version
+    if (minor == as.character(get_minor_r_version(getRversion()))) {
+      bv <- asNamespace("utils")$.BioC_version_associated_with_R_version_default
+      if (!is.null(bv) && length(bv) == 1 && nzchar(bv)) {
+        return(package_version(as.character(bv)))
+      }
+    }
+
+    # Otherwise get the bioc config.yaml file
+    bioc_version <- tryCatch(
+      get_matching_bioc_version_from_yaml(minor, forget = forget),
+      error = function(err) err
+    )
+    if (inherits(bioc_version, "error")) {
+      stop(bioc_version_error(r_version, bioc_version))
+    }
+    bioc_version
+  }
+
+  get_matching_bioc_version_from_yaml <- function(minor, forget = FALSE) {
+    # It is possible that the current R version matches multiple Bioc
+    # versions. Then we choose the latest released version. If none of
+    # them were released (e.g. they are 'devel' and 'future'), then we'll
+    # use the 'devel' version.
 
     map <- get_version_map(forget = forget)
     mine <- which(package_version(minor) == map$r_version)
@@ -312,10 +337,25 @@ bioconductor <- local({
   # -------------------------------------------------------------------
   # Internals
 
+  bioc_version_error <- function(r_version, err) {
+    paste0(
+      "Could not determine the Bioconductor version for R ",
+      as.character(r_version),
+      ", failed to download the Bioconductor `config.yaml` file from `",
+      config_url(),
+      "` (",
+      conditionMessage(err),
+      "). To work around this, either disable Bioconductor (e.g. set ",
+      "the PKG_USE_BIOCONDUCTOR=FALSE environment variable), or set the
+      `R_BIOC_VERSION` environment variable to the Bioconductor version
+      to use, e.g. `R_BIOC_VERSION=\"3.22\"`."
+    )
+  }
+
   read_url <- function(url) {
     tmp <- tempfile()
     on.exit(unlink(tmp), add = TRUE)
-    suppressWarnings(download.file(url, tmp, quiet = TRUE))
+    synchronise(download_file(url, tmp))
     if (!file.exists(tmp) || file.info(tmp)$size == 0) {
       stop("Failed to download `", url, "`")
     }

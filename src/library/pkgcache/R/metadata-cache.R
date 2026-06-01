@@ -23,7 +23,7 @@ cmc__data <- new.env(parent = emptyenv())
 #' cmc <- cranlike_metadata_cache$new(
 #'   primary_path = NULL, replica_path = tempfile(),
 #'   platforms = default_platforms(), r_version = getRversion(),
-#'   bioc = TRUE, cran_mirror = default_cran_mirror(),
+#'   bioc = NULL, cran_mirror = default_cran_mirror(),
 #'   repos = getOption("repos"),
 #'   update_after = as.difftime(7, units = "days"))
 #'
@@ -53,7 +53,10 @@ cmc__data <- new.env(parent = emptyenv())
 #'   within the session temporary directory.
 #' * `platforms`: see [default_platforms()] for possible values.
 #' * `r_version`: R version to create the cache for.
-#' * `bioc`: Whether to include BioConductor packages.
+#' * `bioc`: Whether to include BioConductor packages. By default it is
+#'   taken from the `pkg.use_bioconductor` option, or if that is unset, the
+#'   `PKG_USE_BIOCONDUCTOR` environment variable is used. Otherwise it
+#'   defaults to `TRUE`.
 #' * `cran_mirror`: CRAN mirror to use, this takes precedence over `repos`.
 #' * `repos`: Repositories to use.
 #' * `update_after`: `difftime` object. Automatically update the cache if
@@ -175,11 +178,14 @@ cranlike_metadata_cache <- R6Class(
       replica_path = tempfile(),
       platforms = default_platforms(),
       r_version = getRversion(),
-      bioc = TRUE,
+      bioc = NULL,
       cran_mirror = default_cran_mirror(),
       repos = getOption("repos"),
       update_after = as.difftime(7, units = "days")
     ) {
+      if (is.null(bioc)) {
+        bioc <- default_use_bioconductor()
+      }
       cmc_init(
         self,
         private,
@@ -1101,6 +1107,33 @@ extract_revdeps <- function(pkgs, packages, dependencies, recursive) {
   attr(res, "unknown") <- setdiff(packages, c(res$package, base))
 
   res
+}
+
+default_use_bioconductor <- function() {
+  opt <- getOption("pkg.use_bioconductor")
+  if (!is.null(opt)) {
+    if (!is_flag(opt)) {
+      stop("The `pkg.use_bioconductor` option must be a boolean flag.")
+    }
+    return(opt)
+  }
+  env <- Sys.getenv("PKG_USE_BIOCONDUCTOR", "")
+  if (env != "") {
+    if (tolower(env) %in% c("yes", "true", "1", "on")) {
+      return(TRUE)
+    }
+    if (tolower(env) %in% c("no", "false", "0", "off")) {
+      return(FALSE)
+    }
+    stop(
+      "The `PKG_USE_BIOCONDUCTOR` environment variable must be ",
+      "interpretable as a boolean (e.g. \"true\" or \"false\"), but it ",
+      "is \"",
+      env,
+      "\"."
+    )
+  }
+  TRUE
 }
 
 cmc__get_repos <- function(repos, bioc, cran_mirror, r_version, auth = TRUE) {

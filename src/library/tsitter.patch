@@ -1,0 +1,13 @@
+diff --git a/src/library/tsitter/DESCRIPTION b/src/library/tsitter/DESCRIPTION
+index c863be4f7..1ff0d34ec 100644
+--- a/src/library/tsitter/DESCRIPTION
++++ b/src/library/tsitter/DESCRIPTION
+@@ -12,7 +12,7 @@ Description: Common tree-sitter parsing tools for R. It is meant to be
+     used by other packages that specialize in particular languages and
+     file formats.
+ License: MIT + file LICENSE
+-Depends: R (>= 4.1.0)
++Depends: R (>= 3.5.0)
+ Imports: cli, utils
+ Suggests: magrittr, pillar, testthat (>= 3.0.0), tsjsonc, tstoml, withr
+ Remotes: gaborcsardi/tsjsonc, gaborcsardi/tstoml

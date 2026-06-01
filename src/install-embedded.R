@@ -82,9 +82,9 @@ install_order <- function() {
     "jsonlite",
     "lpSolve",
     "ps",
-    "ts",
+    "tsitter",
     "zip",
-    # ts
+    # tsitter
     "tstoml",
     # ps, R6
     "processx",

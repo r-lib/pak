@@ -1,7 +1,7 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @import ts
+#' @import tsitter
 NULL
 
 ## usethis namespace: start

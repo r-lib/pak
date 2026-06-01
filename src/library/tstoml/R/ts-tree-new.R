@@ -3,7 +3,7 @@
 #' @ts ts_tree_new_examples TOML examples
 #'
 #' ```{asciicast}
-#' toml <- ts::ts_tree_new(
+#' toml <- tsitter::ts_tree_new(
 #'   tstoml::ts_language_toml(),
 #'   text = "[table]\nkey = \"value\""
 #' )

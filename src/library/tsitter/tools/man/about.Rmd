@@ -1,0 +1,203 @@
+```{asciicast, load}
+#| include: FALSE
+library(tsitter)
+```
+
+In this document I show examples with the `tsjsonc` package.
+
+### Create a tree-sitter tree
+
+Create a ts_tree (ts_tree_jsonc) object from a string:
+
+```{asciicast, data}
+#| results: "hide"
+txt <- r"(
+// this is a comment
+{
+  "a": {
+    "a1": [1, 2, 3],
+    // comment
+    "a2": "string"
+  },
+  "b": [
+    {
+      "b11": true,
+      "b12": false
+    },
+    {
+      "b21": false,
+      "b22": false
+    }
+  ]
+}
+)"
+
+json <- tsjsonc::ts_parse_jsonc(txt)
+```
+
+Pretty print a ts_tree object:
+
+```{asciicast}
+#| label: print-json
+json
+```
+
+### Select nodes of a tree
+
+Selecting nodes is the basis of editing and querying tree-sitter trees.
+
+Select element by objects key:
+
+```{asciicast}
+#| label: select-key
+ts_tree_select(json, "a")
+```
+
+Select element inside element:
+
+```{asciicast}
+#| label: select-select
+ts_tree_select(json, "a", "a1")
+```
+
+Select element(s) of an array:
+
+```{asciicast}
+#| label: select-array
+ts_tree_select(json, "a", "a1", 1:2)
+```
+
+Select multiple keys from an object:
+
+```{asciicast}
+#| label: select-multiple
+ts_tree_select(json, "a", c("a1", "a2"))
+```
+
+Select nodes that match a tree-sitter query:
+
+```{asciicast}
+#| label: select-query
+json |> ts_tree_select(query = "((pair value: (false) @val))")
+```
+
+### Delete elements
+
+Delete selected elements:
+
+```{asciicast}
+#| label: delete
+ts_tree_select(json, "a", "a1") |> ts_tree_delete()
+```
+
+### Insert elements
+
+Insert element into an array:
+
+```{asciicast}
+#| label: insert-array
+ts_tree_select(json, "a", "a1") |> ts_tree_insert(at = 2, "new")
+```
+
+Inserting into an array reformats the array.
+
+Insert element into an object, at the specified key:
+
+```{asciicast}
+#| label: insert-object
+ts_tree_select(json, "a") |>
+  ts_tree_insert(key = "a0", at = 0, list("new", "element"))
+```
+
+### Update elements
+
+Update existing element:
+
+```{asciicast}
+#| label: update
+ts_tree_select(json, "a", c("a1", "a2")) |> ts_tree_update("new value")
+```
+
+Inserts the element if some parents are missing:
+
+```{asciicast}
+#| label: update-insert
+json <- ts_parse_jsonc(text = "{ \"a\": { \"b\": true } }")
+json
+```
+
+```{asciicast}
+#| label: update-insert-2
+ts_tree_select(json, "a", "x", "y") |> ts_tree_update(list(1,2,3))
+```
+
+### Write out a document
+
+Use `stdout()` to write it to the screen instread of a file:
+
+```{asciicast}
+#| label: write
+json |> ts_tree_write(stdout())
+```
+
+### Formatting
+
+Format the whole document:
+
+```{asciicast}
+#| label: format
+json |> ts_tree_format()
+```
+
+Format part of the document:
+
+```{asciicast}
+#| label: format-part
+json |> ts_tree_select("a") |>
+  ts_tree_format(options = list(format = "compact"))
+```
+
+### Unserializing
+
+Unserialize a whole document:
+
+```{asciicast}
+#| label: unserialize
+json |> ts_tree_unserialize()
+```
+
+Note that `ts_tree_unserialize()` always returns a list, the first element
+of the list is the unserialized document.
+
+Unserialize part(s) of the document:
+```{asciicast}
+#| label: unserialize-part
+json |> ts_tree_select("b") |> ts_tree_unserialize()
+```
+
+Again, `ts_tree_unserialize()` returns a list, with one element for each
+selected node.
+
+### Exploring a tree-sitter tree
+
+It is often useful to explore the structure of a (JSONC) tree-sitter tree,
+to help writing the right selection or tree-sitter queries.
+
+Print the annotated syntax tree:
+```{asciicast}
+#| label: syntax-tree
+ts_tree_ast(json)
+```
+
+Print the document object model:
+```{asciicast}
+#| label: document-model
+ts_tree_dom(json)
+```
+
+Print the structural summary of a tree:
+```{asciicast}
+#| label: structure
+#| asciicast_rows: 7
+ts_tree_sexpr(json)
+```

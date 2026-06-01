@@ -87,8 +87,8 @@ ppm_sso_logout <- function() {
   }
   tokens <- try_catch_null({
     tokens <- suppressWarnings(tstoml::ts_read_toml(token_file_path))
-    urls <- ts::ts_tree_unserialize(
-      ts::ts_tree_select(tokens, list("connections", TRUE, "address"))
+    urls <- tsitter::ts_tree_unserialize(
+      tsitter::ts_tree_select(tokens, list("connections", TRUE, "address"))
     )
     idx <- which(urls == ppm_url)[1]
     tokens
@@ -98,11 +98,11 @@ ppm_sso_logout <- function() {
     return(invisible())
   }
 
-  tokens <- ts::ts_tree_delete(
-    ts::ts_tree_select(tokens, list("connections", idx))
+  tokens <- tsitter::ts_tree_delete(
+    tsitter::ts_tree_select(tokens, list("connections", idx))
   )
 
-  ts::ts_tree_write(tokens, token_file_path)
+  tsitter::ts_tree_write(tokens, token_file_path)
 
   invisible()
 }
@@ -457,7 +457,7 @@ ppm_sso_device_flow_message <- function(ppm_url, init_result) {
     "and enter code {.emph {cli::col_magenta(init_result$user_code)}}
      when prompted."
   )
-  if (interactive()) {
+  if (is_interactive()) {
     readline("Press ENTER to open in browser...")
     utils::browseURL(init_result$display_uri)
   } else if (isTRUE(getOption("pak.is_worker"))) {
@@ -523,8 +523,8 @@ ppm_sso_write_token_to_file <- function(ppm_url, token) {
 
   tokens <- try_catch_null({
     tokens <- suppressWarnings(tstoml::ts_read_toml(token_file_path))
-    urls <- ts::ts_tree_unserialize(
-      ts::ts_tree_select(tokens, list("connections", TRUE, "address"))
+    urls <- tsitter::ts_tree_unserialize(
+      tsitter::ts_tree_select(tokens, list("connections", TRUE, "address"))
     )
     idx <- which(urls == ppm_url)[1]
     tokens
@@ -532,17 +532,25 @@ ppm_sso_write_token_to_file <- function(ppm_url, token) {
 
   if (is.null(tokens)) {
     tokens <- tstoml::ts_parse_toml("")
-    tokens <- ts::ts_tree_insert(tokens, key = "connections", list(new_conn))
+    tokens <- tsitter::ts_tree_insert(
+      tokens,
+      key = "connections",
+      list(new_conn)
+    )
   } else if (!is.na(idx)) {
-    tokens <- ts::ts_tree_update(
-      ts::ts_tree_select(tokens, list("connections", idx, "token")),
+    tokens <- tsitter::ts_tree_update(
+      tsitter::ts_tree_select(tokens, list("connections", idx, "token")),
       new_conn$token
     )
   } else if (length(urls) == 0) {
-    tokens <- ts::ts_tree_insert(tokens, key = "connections", list(new_conn))
+    tokens <- tsitter::ts_tree_insert(
+      tokens,
+      key = "connections",
+      list(new_conn)
+    )
   } else {
-    tokens <- ts::ts_tree_insert(
-      ts::ts_tree_select(tokens, "connections"),
+    tokens <- tsitter::ts_tree_insert(
+      tsitter::ts_tree_select(tokens, "connections"),
       list(new_conn)
     )
   }

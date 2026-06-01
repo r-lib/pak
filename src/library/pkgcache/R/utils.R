@@ -254,3 +254,13 @@ is_rcmd_check <- function() {
 random_key <- function() {
   basename(tempfile())
 }
+
+is_interactive <- function() {
+  if (isTRUE(getOption("rlib.interactive"))) {
+    TRUE
+  } else if (isFALSE(getOption("rlib.interactive"))) {
+    FALSE
+  } else {
+    interactive()
+  }
+}

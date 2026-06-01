@@ -1,0 +1,33 @@
+Package: tsitter
+Title: Tree-Sitter Parsing Tools
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com",
+        role = c("aut", "cre")),
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+        comment = c(ROR = "03wc8by49")),
+    person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C library")
+  )
+Description: Common tree-sitter parsing tools for R. It is meant to be
+    used by other packages that specialize in particular languages and
+    file formats.
+License: MIT + file LICENSE
+Depends: R (>= 3.5.0)
+Imports: cli, utils
+Suggests: magrittr, pillar, testthat (>= 3.0.0), tsjsonc, tstoml, withr
+Remotes: gaborcsardi/tsjsonc, gaborcsardi/tstoml
+Additional_repositories:
+        https://github.com/r-lib/tsitter/releases/download
+Encoding: UTF-8
+URL: https://github.com/r-lib/tsitter, https://r-lib.github.io/tsitter/
+BugReports: https://github.com/r-lib/tsitter/issues
+Config/testthat/edition: 3
+Config/Needs/website: r-lib/asciicast, tidyverse/tidytemplate
+Biarch: true
+Config/roxygen2/version: 8.0.0
+NeedsCompilation: yes
+Packaged: 2026-06-01 13:32:34 UTC; gaborcsardi
+Author: Gábor Csárdi [aut, cre],
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>),
+  Tree-sitter authors [cph] (Tree-sitter C library)
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

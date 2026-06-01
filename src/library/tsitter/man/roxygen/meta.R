@@ -7,9 +7,11 @@ asciicast::init_knitr_engine(
   echo_input = FALSE,
   timeout = as.integer(Sys.getenv("ASCIICAST_TIMEOUT", 10)),
   startup = quote({
-    options(cli.num_colors = 256)
     library(tsitter)
-    library(tstoml)
+    loadNamespace("pillar")
+    options(width = 70)
+    options(cli.width = 70)
+    options(cli.num_colors = 256)
   })
 )
 
@@ -22,7 +24,7 @@ knitr::opts_chunk$set(
   error = FALSE
 )
 
-Sys.setenv("R_TS_PACKAGE" = "tstoml")
+Sys.unsetenv("R_TS_PACKAGE")
 tsitter:::ts_roclet_register()
 
 list(
