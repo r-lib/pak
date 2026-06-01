@@ -21,7 +21,7 @@ subprocess:
 
     repo <- webfakes::new_app_process(pak:::auth_proxy_app())
     repo$url()
-    #> [1] "http://127.0.0.1:59571/"
+    #> [1] "http://127.0.0.1:56629/"
 
 (This needs the webfakes and callr packages.)
 
@@ -32,17 +32,17 @@ proxy, so we name it `CRAN`:
 
     repo_add(CRAN = repo$url(), username = "username")
     repo_get()
-    #> x Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+    #> ✖ Did not find credentials for repo <http://username@127.0.0.1:56629/>, keyring
     #> lookup failed (macos backend).
     #> # A data frame: 6 x 7
     #>   name          url           type  r_version bioc_version username has_password
     #> * <chr>         <chr>         <chr> <chr>     <chr>        <chr>    <lgl>
     #> 1 CRAN          http://usern~ cran  *         <NA>         username FALSE
-    #> 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 3 BioCann       https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         <NA>     NA
+    #> 2 BioCsoft      https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 3 BioCann       https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 4 BioCexp       https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 5 BioCworkflows https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 6 BioCbooks     https://bioc~ bioc  4.6.0     3.23         <NA>     NA
 
 Note that the output includes a `username` and a `has_password` column.
 These are only present if at least one configured repository needs

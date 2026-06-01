@@ -18,10 +18,15 @@ pkg_name_check(name, dictionaries = NULL)
 - dictionaries:
 
   Character vector, the dictionaries to query. Available dictionaries:
-  \* `wikipedia` \* `wiktionary`, \* `sentiment`
-  (<https://github.com/fnielsen/afinn>), \* `urban` (Urban Dictionary).
-  If `NULL` (by default), the Urban Dictionary is omitted, as it is
-  often offensive.
+
+  - `wikipedia`
+
+  - `wiktionary`,
+
+  - `sentiment` (<https://github.com/fnielsen/afinn>),
+
+  - `urban` (Urban Dictionary). If `NULL` (by default), the Urban
+    Dictionary is omitted, as it is often offensive.
 
 ## Value
 
