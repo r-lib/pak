@@ -135,6 +135,8 @@ Config/Needs/deploy:
     gaborcsardi/jsonlite,
     processx,
     R6@2.5.1
+Remotes:
+    r-lib/pkgcache@feature/ppm-sso
 Config/testthat/edition: 3
 Config/usethis/last-upkeep: 2025-05-13
 Encoding: UTF-8
