@@ -10,7 +10,7 @@ dependencies as well, specified in the `Suggests` field of
 ``` r
 local_install_dev_deps(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = TRUE

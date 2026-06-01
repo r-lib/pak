@@ -8,7 +8,7 @@ package library.
 ``` r
 pkg_install(
   pkg,
-  lib = .libPaths()[[1L]],
+  lib = NULL,
   upgrade = FALSE,
   ask = interactive(),
   dependencies = NA

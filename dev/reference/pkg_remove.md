@@ -5,7 +5,7 @@ Remove installed packages
 ## Usage
 
 ``` r
-pkg_remove(pkg, lib = .libPaths()[[1L]])
+pkg_remove(pkg, lib = NULL)
 ```
 
 ## Arguments

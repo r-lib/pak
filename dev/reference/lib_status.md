@@ -5,9 +5,9 @@ Status of packages in a library
 ## Usage
 
 ``` r
-lib_status(lib = .libPaths()[1])
+lib_status(lib = NULL)
 
-pkg_list(lib = .libPaths()[1])
+pkg_list(lib = NULL)
 ```
 
 ## Arguments

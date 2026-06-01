@@ -5,7 +5,7 @@ Display installed locations of a package
 ## Usage
 
 ``` r
-pkg_status(pkg, lib = .libPaths())
+pkg_status(pkg, lib = NULL)
 ```
 
 ## Arguments
