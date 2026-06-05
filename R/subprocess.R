@@ -81,7 +81,12 @@ remote <- function(func, args = list()) {
       names(opts) %in% extraopts
   ]
   envs <- Sys.getenv()
-  extraenvs <- c("R_BIOC_VERSION", "PATH", "PACKAGEMANAGER_ADDRESS")
+  extraenvs <- c(
+    "R_BIOC_VERSION",
+    "PATH",
+    "PACKAGEMANAGER_ADDRESS",
+    "PACKAGEMANAGER_SSO_TOKEN_FILE"
+  )
   if (any(grepl("@", subst_args[["__repos__"]]))) {
     extraenvs <- c(extraenvs, envs[grep("^https?://", names(envs))])
   }
