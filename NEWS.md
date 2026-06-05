@@ -1,5 +1,7 @@
 # pak (development version)
 
+* pak now supports Posit Package Manager's Sigle Sign-On authentication.
+
 # pak 0.9.5
 
 * Vector valued library path now works correctly in `lockfile_create()`
