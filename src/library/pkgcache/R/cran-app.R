@@ -9,6 +9,7 @@ make_dummy_package <- function(data, path) {
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
   withr::local_dir(tmp)
   mkdirp(package)
+  mkdirp(file.path(package, "R"))
   file.create(file.path(package, "NAMESPACE"))
   write.dcf(data, file.path(package, "DESCRIPTION"))
   suppressMessages(utils::capture.output(
