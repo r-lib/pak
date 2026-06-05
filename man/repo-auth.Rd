@@ -40,7 +40,7 @@ replace the default CRAN repository with the proxy, so we name it \code{CRAN}:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(CRAN = repo$url(), username = "username")
 repo_get()
-#> ✖ Did not find credentials for repo <http://username@127.0.0.1:56629/>, keyring
+#> x Did not find credentials for repo <http://username@127.0.0.1:56629/>, keyring
 #> lookup failed (macos backend).
 #> # A data frame: 6 x 7
 #>   name          url           type  r_version bioc_version username has_password
