@@ -25,7 +25,7 @@ of the proxy is &quot;username&quot; and the default password is &quot;token&quo
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:56629/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:56629/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -345,7 +345,7 @@ of the proxy is &quot;username&quot; and the default password is &quot;token&quo
 replace the default CRAN repository with the proxy, so we name it CRAN:
 repo_add(CRAN = repo$url(), username = &quot;username&quot;)
 repo_get()
-#&amp;gt; ✖ Did not find credentials for repo &amp;lt;http://username@127.0.0.1:56629/&amp;gt;, keyring
+#&amp;gt; x Did not find credentials for repo &amp;lt;http://username@127.0.0.1:56629/&amp;gt;, keyring
 #&amp;gt; lookup failed (macos backend).
 #&amp;gt; # A data frame: 6 x 7
 #&amp;gt;   name          url           type  r_version bioc_version username has_password
@@ -701,7 +701,7 @@ of the proxy is <code>"username"</code> and the default password is <code>"token
 replace the default CRAN repository with the proxy, so we name it <code>CRAN</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/repo_add.html">repo_add</a></span><span class="op">(</span>CRAN <span class="op">=</span> <span class="va">repo</span><span class="op">$</span><span class="fu">url</span><span class="op">(</span><span class="op">)</span>, username <span class="op">=</span> <span class="st">"username"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/repo_get.html">repo_get</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Did not find credentials for repo &lt;http://username@127.0.0.1:56629/&gt;, keyring</span></span>
+<span><span class="co">#&gt; x Did not find credentials for repo &lt;http://username@127.0.0.1:56629/&gt;, keyring</span></span>
 <span><span class="co">#&gt; lookup failed (macos backend).</span></span>
 <span><span class="co">#&gt; # A data frame: 6 x 7</span></span>
 <span><span class="co">#&gt;   name          url           type  r_version bioc_version username has_password</span></span>
