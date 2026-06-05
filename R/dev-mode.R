@@ -16,5 +16,9 @@ create_dev_lib <- function() {
   on.exit(setwd(wd), add = TRUE)
   setwd(dirname(inst_script))
 
-  system2(rscript, c("--vanilla", "install-embedded.R", "--load-all", lib))
+  qtype <- if (.Platform$OS.type == "windows") "cmd" else "sh"
+  system2(
+    rscript,
+    c("--vanilla", "install-embedded.R", "--load-all", shQuote(lib, qtype))
+  )
 }
