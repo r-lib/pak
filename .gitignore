@@ -25,13 +25,16 @@
 /src/Makevars
 *.o
 *.so
+*.dll
+*.exe
 *.DSYM
 /src/library/curl/configure.log
 /src/library/curl/src/Makevars
 /src/library/curl/tools/option_table.txt
+/src/library/curl/windows
 /src/library/jsonlite/src/yajl/libstatyajl.a
 /src/library/pkgdepends/man/macros/eval2.Rd
-/src/library/ts/man/macros/eval2.Rd
+/src/library/tsitter/man/macros/eval2.Rd
 /src/library/tstoml/man/macros/eval2.Rd
 /src/library/processx/src/supervisor/supervisor
 /src/library/processx/src/supervisor/supervisor.dSYM/
