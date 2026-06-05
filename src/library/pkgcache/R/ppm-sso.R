@@ -382,10 +382,13 @@ ppm_sso_post_form <- function(url, payload) {
 }
 
 ppm_sso_token_path <- function() {
-  file.path(
-    path.expand("~"),
-    ".ppm",
-    "tokens.toml"
+  Sys.getenv(
+    "PACKAGEMANAGER_SSO_TOKEN_FILE",
+    file.path(
+      path.expand("~"),
+      ".ppm",
+      "tokens.toml"
+    )
   )
 }
 

@@ -7,7 +7,8 @@ ppm_sso_auth0_app <- function(
   auth0_domain,
   client_id,
   audience = NULL,
-  scope = "openid profile email"
+  scope = "openid profile email",
+  redirect_url = "https://packagemanager.posit.co"
 ) {
   app <- webfakes::new_app()
 
@@ -140,10 +141,21 @@ ppm_sso_auth0_app <- function(
     )
   })
 
+  # Everything we don't handle locally (package metadata, downloads, etc.)
+  # is proxied to the real PPM via a redirect, preserving path and query.
+  # 307 keeps the method and body intact for non-GET requests.
+  app$all(webfakes::new_regexp("^/.*$"), function(req, res) {
+    target <- paste0(redirect_url, req$path)
+    if (nzchar(req$query_string)) {
+      target <- paste0(target, "?", req$query_string)
+    }
+    res$redirect(target, 307L)
+  })
+
   app
 }
 
-ppm_sso_app <- function() {
+ppm_sso_app <- function(redirect_url = "https://packagemanager.posit.co") {
   app <- webfakes::new_app()
 
   app$use("logger" = webfakes::mw_log())
@@ -239,6 +251,17 @@ ppm_sso_app <- function() {
         issued_token_type = "urn:ietf:params:oauth:token-type:access_token"
       )
     )
+  })
+
+  # Everything we don't handle locally (package metadata, downloads, etc.)
+  # is proxied to the real PPM via a redirect, preserving path and query.
+  # 307 keeps the method and body intact for non-GET requests.
+  app$all(webfakes::new_regexp("^/.*$"), function(req, res) {
+    target <- paste0(redirect_url, req$path)
+    if (nzchar(req$query_string)) {
+      target <- paste0(target, "?", req$query_string)
+    }
+    res$redirect(target, 307L)
   })
 
   app
