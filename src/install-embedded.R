@@ -281,6 +281,20 @@ parse_platforms <- function(args) {
 }
 
 install_embedded_main <- function() {
+  # this is needed on CRAN's windows, because the PATH in the registry
+  # has some junk entries, and these make installation fail
+  path <- Sys.getenv("PATH")
+  if (.Platform$OS.type == "windows" && grepl("rapp-bin-", path)) {
+    path2 <- grep(
+      "rapp-bin-",
+      strsplit(path, ";")[[1]],
+      value = TRUE,
+      invert = TRUE
+    )
+    path2 <- gsub("/", "\\\\", path2)
+    Sys.setenv(PATH = paste(path2, collapse = ";"))
+  }
+
   unlink("DONE")
   # Parse platforms
   pl <- parse_platforms(commandArgs(TRUE))
