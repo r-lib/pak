@@ -324,9 +324,10 @@ install_embedded_main <- function() {
     # Current is Linux x86_64, target is Linux aarch64
     Sys.setenv(CROSS_COMPILING = "yes")
     Sys.setenv(R_TARGET_PLATFORM = pl$target)
-  } else if (Sys.getenv("EMSCRIPTEN") != "") {
-    # Emscripten sets EMCC, but we want to be able to set it ourselves too
+  } else if (grepl("wasm32-.*-emscripten", pl$target)) {
+    # WASM
     Sys.setenv(CROSS_COMPILING = "yes")
+    Sys.setenv(R_TARGET_PLATFORM = pl$target)
   } else {
     # Not cross compiling or cross compiling handled externally
   }
