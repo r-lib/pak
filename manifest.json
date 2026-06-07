@@ -1583,11 +1583,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.6",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:17:38+00:00",
-          "size": 10096973,
-          "digest": "sha256:50805a324f11ba058dcf1f8d75da71abee197c376c46e88fab620e31e630ca87"
+          "buildtime": "2026-06-07T12:08:24+00:00",
+          "size": 10579847,
+          "digest": "sha256:6d06bdf9f133f99372197ec2a8f4fbd046880c8fd5e7ca15d8c0d8ba5500b712"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
