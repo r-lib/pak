@@ -1727,11 +1727,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.7",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:24:16+00:00",
-          "size": 10000793,
-          "digest": "sha256:6a63062f7cffcf87cd7f6fa679345f20095e0efd095c3ec7bd65e70c89c68659"
+          "buildtime": "2026-06-07T12:15:24+00:00",
+          "size": 10543766,
+          "digest": "sha256:3f791950ba9966ffe6bde98b43f55277fc95680b08edac6298920a63350b249c"
         },
         {
           "r.platform": "x86_64--netbsd",
