@@ -1718,11 +1718,11 @@
         {
           "r.platform": "x86_64-unknown-openbsd7.8",
           "r.version": "4.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:18:42+00:00",
-          "size": 6563609,
-          "digest": "sha256:b8e3e851f496f9ff9f0e7ab8dc663bc7c5271de5112e79598b7564a37edfdcbe"
+          "buildtime": "2026-06-07T12:09:12+00:00",
+          "size": 7061092,
+          "digest": "sha256:bcb908dc7a68cad522266671801369fdd22dda7618aa395342cf9b8d2fdff2d9"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
