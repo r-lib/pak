@@ -1277,11 +1277,11 @@
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:28:21+00:00",
-          "size": 9488239,
-          "digest": "sha256:53f9be9fdca72dd4a7bc2210a3b72ee86e08bfce483c7d1cf593d670549c5fc6"
+          "buildtime": "2026-06-07T12:18:40+00:00",
+          "size": 9971625,
+          "digest": "sha256:eead026d59f787b91a11af882c78bbed3c400a58b35b392b4e482c727b134277"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
