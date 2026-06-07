@@ -56,6 +56,7 @@ package cache.
 
     cache_summary()
 
+
     #> $cachepath
     #> [1] "/Users/gaborcsardi/Library/Caches/org.R-project.R/R/pkgcache/pkg"
     #>
@@ -67,6 +68,7 @@ package cache.
     #>
 
     cache_list()
+
 
     #> # A data frame: 483 × 11
     #>    fullpath       path  package url   etag  sha256 version platf…¹ built
@@ -86,6 +88,7 @@ package cache.
 
     cache_list(package = "recipes")
 
+
     #> # A data frame: 1 × 11
     #>   fullp…¹ path  package url   etag  sha256 version platf…² built vigne…³
     #>   <chr>   <chr> <chr>   <chr> <chr> <chr>  <chr>   <chr>   <int>   <int>
@@ -94,6 +97,7 @@ package cache.
     #> #   names ¹​fullpath, ²​platform, ³​vignettes
 
     cache_list(platform = "source")
+
 
     #> # A data frame: 69 × 11
     #>    fullpath       path  package url   etag  sha256 version platf…¹ built

@@ -5,9 +5,9 @@ Status of packages in a library
 ## Usage
 
 ``` r
-lib_status(lib = .libPaths()[1])
+lib_status(lib = NULL)
 
-pkg_list(lib = .libPaths()[1])
+pkg_list(lib = NULL)
 ```
 
 ## Arguments
@@ -96,6 +96,7 @@ adds a couple.
 ## Examples
 
     lib_status(.Library)
+
 
     #> # A data frame: 31 × 31
     #>    library   package version prior…¹ title license sugge…² built depends

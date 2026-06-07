@@ -5,7 +5,7 @@ Display installed locations of a package
 ## Usage
 
 ``` r
-pkg_status(pkg, lib = .libPaths())
+pkg_status(pkg, lib = NULL)
 ```
 
 ## Arguments
@@ -99,6 +99,7 @@ adds a couple.
 ## Examples
 
     pkg_status("MASS")
+
 
     #> # A data frame: 2 × 39
     #>   library    package title version depends repos…¹ license needs…² built

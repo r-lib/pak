@@ -6,7 +6,7 @@ Install a lock file that was created with
 ## Usage
 
 ``` r
-lockfile_install(lockfile = "pkg.lock", lib = .libPaths()[1], update = TRUE)
+lockfile_install(lockfile = "pkg.lock", lib = NULL, update = TRUE)
 ```
 
 ## Arguments

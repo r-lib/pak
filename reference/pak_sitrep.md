@@ -22,6 +22,7 @@ pak_sitrep()
 
     pak_sitrep()
 
+
     #>  compatible)
     #> - pak repository: - (local install?)
     #> * Optional packages installed:

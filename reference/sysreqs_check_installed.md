@@ -8,8 +8,8 @@ packages (or a subset of packages) are installed.
 ## Usage
 
 ``` r
-sysreqs_check_installed(packages = NULL, library = .libPaths()[1])
-sysreqs_fix_installed(packages = NULL, library = .libPaths()[1])
+sysreqs_check_installed(packages = NULL, library = NULL)
+sysreqs_fix_installed(packages = NULL, library = NULL)
 ```
 
 ## Arguments

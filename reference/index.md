@@ -116,6 +116,10 @@
   Returns the current Posit Package Manager (PPM) repository URL
 - [`ppm_snapshots()`](https://pak.r-lib.org/reference/ppm_snapshots.md)
   : List all available Posit Package Manager (PPM) snapshots
+- [`ppm_sso_login()`](https://pak.r-lib.org/reference/ppm_sso_login.md)
+  [`ppm_sso_logout()`](https://pak.r-lib.org/reference/ppm_sso_login.md)
+  [`ppm_sso_status()`](https://pak.r-lib.org/reference/ppm_sso_login.md)
+  : Posit Package Manager single sign-on (SSO) authentication
 - [`repo_add()`](https://pak.r-lib.org/reference/repo_add.md)
   [`repo_resolve()`](https://pak.r-lib.org/reference/repo_add.md) : Add
   a new CRAN-like repository

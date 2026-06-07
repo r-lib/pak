@@ -8,7 +8,7 @@ file), without installing the package tree itself.
 ``` r
 local_install_deps(
   root = ".",
-  lib = .libPaths()[1],
+  lib = NULL,
   upgrade = TRUE,
   ask = interactive(),
   dependencies = NA

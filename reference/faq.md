@@ -13,6 +13,7 @@ it, or use the `?reinstall` parameter:
 
     pak::pkg_install("tibble")
 
+
     #>
     #> → Will install 13 packages.
     #> → All 13 packages (7.68 MB) are cached.
@@ -48,6 +49,7 @@ it, or use the `?reinstall` parameter:
 
     pak::pkg_install("tibble?reinstall")
 
+
     #>
     #> → Will install 1 package.
     #> → The package (724.32 kB) is cached.
@@ -81,6 +83,7 @@ parameter:
 
     pak::pkg_install("tibble?source")
 
+
     #>
     #> → Will install 1 package.
     #> → The package (672.34 kB) is cached.
@@ -101,6 +104,7 @@ could write:
 
     pak::pkg_install(c("tibble", "cli=?source"))
 
+
     #>
     #> → Will install 1 package.
     #> → The package (540.04 kB) is cached.
@@ -117,6 +121,7 @@ could write:
       c("tibble", "DiagrammeR=?ignore", "formattable=?ignore"),
       dependencies = TRUE
     )
+
 
     #>
     #> i No downloads are needed

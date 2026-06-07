@@ -208,9 +208,6 @@ Examples:
     forecast@last
     forecast@current
 
-Note: pak currently parses the version specification part (everything
-after `@`), but does not use it.
-
 ##### Bioconductor packages (`bioc::`)
 
 A package from Bioconductor. The syntax is the same as for CRAN

@@ -99,6 +99,7 @@ summary of the data, and it returns its result invisibly.
 
     repo_status()
 
+
     #> # A data frame: 12 × 10
     #>    name    url   type  bioc_version platform path  r_version ok     ping
     #>    <chr>   <chr> <chr> <chr>        <chr>    <chr> <chr>     <lgl> <dbl>
@@ -120,6 +121,7 @@ summary of the data, and it returns its result invisibly.
       platforms = c("windows", "macos"),
       r_version = c("4.0", "4.1")
     )
+
 
     #> # A data frame: 18 × 10
     #>    name   url   type  bioc_version platform r_version path  ok      ping
@@ -145,6 +147,7 @@ summary of the data, and it returns its result invisibly.
     #> # i 1 more variable: error <list>
 
     repo_ping()
+
 
     #> Repository summary:                   source aarch64-apple-darwin20          
     #> CRAN          @ cloud.r-project.org     v              v              (63ms )

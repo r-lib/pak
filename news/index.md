@@ -1,6 +1,14 @@
 # Changelog
 
+## pak 0.10.0
+
+CRAN release: 2026-06-07
+
+- pak now supports Posit Package Manager’s Sigle Sign-On authentication.
+
 ## pak 0.9.5
+
+CRAN release: 2026-04-27
 
 - Vector valued library path now works correctly in
   [`lockfile_create()`](https://pak.r-lib.org/reference/lockfile_create.md)

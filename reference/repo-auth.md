@@ -5,6 +5,10 @@ repositories.
 
 ### Configuring authenticated repositories
 
+> Note: the configuration of PPM SSO authentication is described in the
+> [Posit Package Manager SSO authentication section
+> below](#ppm-sso-auth).
+
 To use authentication you need to include a user name in the repository
 URL. You can set the repository URL in the `repos` option with
 [`base::options()`](https://rdrr.io/r/base/options.html) as usual, or
@@ -16,7 +20,7 @@ subprocess:
 
     repo <- webfakes::new_app_process(pak:::auth_proxy_app())
     repo$url()
-    #> [1] "http://127.0.0.1:59571/"
+    #> [1] "http://127.0.0.1:56629/"
 
 (This needs the webfakes and callr packages.)
 
@@ -27,17 +31,17 @@ proxy, so we name it `CRAN`:
 
     repo_add(CRAN = repo$url(), username = "username")
     repo_get()
-    #> x Did not find credentials for repo <http://username@127.0.0.1:59571/>, keyring
+    #> x Did not find credentials for repo <http://username@127.0.0.1:56629/>, keyring
     #> lookup failed (macos backend).
     #> # A data frame: 6 x 7
     #>   name          url           type  r_version bioc_version username has_password
     #> * <chr>         <chr>         <chr> <chr>     <chr>        <chr>    <lgl>
     #> 1 CRAN          http://usern~ cran  *         <NA>         username FALSE
-    #> 2 BioCsoft      https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 3 BioCann       https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 4 BioCexp       https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 5 BioCworkflows https://bioc~ bioc  4.4.2     3.20         <NA>     NA
-    #> 6 BioCbooks     https://bioc~ bioc  4.4.2     3.20         <NA>     NA
+    #> 2 BioCsoft      https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 3 BioCann       https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 4 BioCexp       https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 5 BioCworkflows https://bioc~ bioc  4.6.0     3.23         <NA>     NA
+    #> 6 BioCbooks     https://bioc~ bioc  4.6.0     3.23         <NA>     NA
 
 Note that the output includes a `username` and a `has_password` column.
 These are only present if at least one configured repository needs
@@ -293,7 +297,49 @@ E.g. here [`meta_update()`](https://pak.r-lib.org/reference/metadata.md)
 outputs an authentication message, but
 [`meta_list()`](https://pak.r-lib.org/reference/metadata.md) does not.
 
+### Posit Package Manager SSO authentication
+
+1.  To set up PPM SSO authentication, set the `PACKAGEMANAGER_ADDRESS`
+    environment variable to the URL of your RStudio Package Manager
+    instance. For example, add this line to your `.Renviron` file:
+
+    PACKAGEMANAGER_ADDRESS=https://<ppm-url>
+
+Alternatively, you can also set it in your shell profile on Unix, or in
+the System or User environment variables on Windows.
+
+1.  Set `options(repos)` to include a repository from your Package
+    Manager instance. Include `__token__` as the username in the URL.
+    For example:
+
+    options(repos = c(
+      PPM = "https://__token__@<ppm-url>/<repo-path>",
+      getOption("repos")
+    ))
+
+You probably want to add this to your `.Rprofile` file, so that it is
+set in every R session.
+
+1.  Call [`repo_get()`](https://pak.r-lib.org/reference/repo_get.md) to
+    trigger authentication and caching of the token. You should be
+    prompted to log in via your browser, and the obtained token will be
+    cached for future use. Call
+    [`ppm_sso_status()`](https://pak.r-lib.org/reference/ppm_sso_login.md)
+    to check the status of your authentication, including the path of
+    the cached token and its expiration time.
+
+Alternatively, you can call
+[`ppm_sso_login()`](https://pak.r-lib.org/reference/ppm_sso_login.md)
+directly to trigger the login process directly.
+
+See also the [Authentication
+chapter](https://docs.posit.co/rspm/admin/authentication/) of the Posit
+Package Manager Documentation.
+
 ## See also
+
+[`repo_auth()`](https://pak.r-lib.org/reference/repo_auth.md),
+[`ppm_sso_login()`](https://pak.r-lib.org/reference/ppm_sso_login.md).
 
 Other authenticated repositories:
 [`repo_auth()`](https://pak.r-lib.org/reference/repo_auth.md),

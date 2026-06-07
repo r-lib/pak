@@ -115,6 +115,7 @@ Notes:
     repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
     repo_get()
 
+
     #> # A data frame: 7 × 5
     #>   name          url                         type  r_version bioc_version
     #> * <chr>         <chr>                       <chr> <chr>     <chr>
@@ -128,15 +129,18 @@ Notes:
 
     repo_resolve("PPM@2020-01-21")
 
+
     #>                                              CRAN
     #> "https://packagemanager.posit.co/cran/2020-01-21"
 
     repo_resolve("PPM@dplyr-1.0.0")
 
+
     #>                                              CRAN
     #> "https://packagemanager.posit.co/cran/2020-05-30"
 
     repo_resolve("PPM@R-4.0.0")
+
 
     #>                                              CRAN
     #> "https://packagemanager.posit.co/cran/2020-04-25"

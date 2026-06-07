@@ -56,6 +56,10 @@ Some examples:
   within that directory are updated. If a submodule appears in
   `.Rbuildignore`, then it is skipped.
 
+- ‘ignore_dev_library’: (Env var: `PKG_IGNORE_DEV_LIBRARY`, option:
+  `pkg.ignore_dev_library`.) Whether to ignore library directories
+  called `__dev_lib__`.
+
 - ‘include_linkingto’: (Env var: `PKG_INCLUDE_LINKINGTO`, option:
   `pkg.include_linkingto`.) Whether to always include `LinkingTo`
   dependencies in the solution of and installation, even if they are

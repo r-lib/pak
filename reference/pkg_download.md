@@ -116,8 +116,7 @@ Columns:
 
 - `ref`: package reference.
 
-- `remote`: the parsed `remote_ref` objects, see `parse_pkg_refs()`.
-  This is a list column.
+- `remote`: the parsed `remote_ref` objects.
 
 - `repodir`: the directory where this package should be in a CRAN-like
   repository.
@@ -184,9 +183,11 @@ currently:
 
     dl <- pkg_download("forcats")
 
+
     #> i No downloads are needed, 2 pkgs (641.53 kB) are cached
 
     dl
+
 
     #> # A data frame: 2 × 35
     #>   ref     type     direct direc…¹ status package version license needs…²
@@ -203,10 +204,12 @@ currently:
 
     dl$fulltarget
 
+
     #> [1] "./bin/macosx/big-sur-arm64/contrib/4.2/forcats_0.5.2.tgz"
     #> [2] "./src/contrib/forcats_0.5.2.tar.gz"
 
     pkg_download("r-lib/pak", platforms = "source")
+
 
     #> i No downloads are needed, 1 pkg is cached
 

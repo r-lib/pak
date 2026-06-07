@@ -97,8 +97,7 @@ the following columns.
 
 - `ref`: package reference.
 
-- `remote`: the parsed `remote_ref` objects, see `parse_pkg_refs()`.
-  This is a list column.
+- `remote`: the parsed `remote_ref` objects.
 
 - `repodir`: the directory where this package should be in a CRAN-like
   repository.
@@ -148,6 +147,7 @@ currently:
 
     pkg_deps("dplyr")
 
+
     #> # A data frame: 16 × 32
     #>    ref       type  direct direc…¹ status package version license needs…²
     #>    <chr>     <chr> <lgl>  <lgl>   <chr>  <chr>   <chr>   <chr>   <lgl>
@@ -178,6 +178,7 @@ currently:
 For a package on GitHub:
 
     pkg_deps("r-lib/callr")
+
 
     #> # A data frame: 4 × 32
     #>   ref        type  direct direc…¹ status package version license needs…²

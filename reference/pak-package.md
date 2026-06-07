@@ -24,6 +24,8 @@ Useful links:
 
 Authors:
 
+- Gábor Csárdi <csardi.gabor@gmail.com>
+
 - Jim Hester
 
 Other contributors:
