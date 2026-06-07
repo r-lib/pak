@@ -1673,11 +1673,11 @@
         {
           "r.platform": "amd64-portbld-freebsd13.5",
           "r.version": "4.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:17:10+00:00",
-          "size": 6542106,
-          "digest": "sha256:94417a8fd37db10baf3b56cdc7d47b2f915c667ea359f96046d7c0847dc9383e"
+          "buildtime": "2026-06-07T12:06:54+00:00",
+          "size": 7032571,
+          "digest": "sha256:c110de38184ce1749fda1965a95627d2f0a0dd7b055618d8e0a1fe075a02206f"
         },
         {
           "r.platform": "amd64-portbld-freebsd15.0",
