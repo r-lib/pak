@@ -1,3 +1,5 @@
+# pak (development version)
+
 # pak 0.10.0
 
 * pak now supports Posit Package Manager's Sigle Sign-On authentication.
