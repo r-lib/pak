@@ -1322,11 +1322,11 @@
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:16:25+00:00",
-          "size": 10063523,
-          "digest": "sha256:56baaea41112209af9642e20ba06fff6c96faf3e34ea9355daf12036ab7f233a"
+          "buildtime": "2026-06-07T13:35:28+00:00",
+          "size": 10534800,
+          "digest": "sha256:a6223196c789fc610f9a505d53961de7828a3e41d43214c9d4aff330dfe68d4a"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
