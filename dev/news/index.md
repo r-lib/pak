@@ -2,6 +2,10 @@
 
 ## pak (development version)
 
+## pak 0.10.0
+
+CRAN release: 2026-06-07
+
 - pak now supports Posit Package Manager’s Sigle Sign-On authentication.
 
 ## pak 0.9.5
