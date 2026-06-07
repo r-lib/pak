@@ -1466,11 +1466,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:17:50+00:00",
-          "size": 10092031,
-          "digest": "sha256:2e690958866232b88a01d10b6d0611ee0e61243d02c200c98363cc408d07a164"
+          "buildtime": "2026-06-07T12:08:13+00:00",
+          "size": 10575808,
+          "digest": "sha256:7c14ea13bdacce9cef62d6922e73351e1c4b8998022f46182111c80e84213cd8"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
