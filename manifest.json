@@ -1421,11 +1421,11 @@
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.4",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:26:34+00:00",
-          "size": 10087008,
-          "digest": "sha256:91b93a5e92badb293bde0c5bdb225aa389c51376fa85ec5c929465b18e6f3dda"
+          "buildtime": "2026-06-07T12:28:59+00:00",
+          "size": 10577038,
+          "digest": "sha256:f9d0b48eab211233856ef39bb2bc3e922532ada2de2ad7b49b29094f6ab776bc"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
