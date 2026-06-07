@@ -1736,11 +1736,11 @@
         {
           "r.platform": "x86_64--netbsd",
           "r.version": "4.5",
-          "pak.version": "0.9.5",
+          "pak.version": "0.10.0",
           "pak.revision": "TODO",
-          "buildtime": "2026-04-27T11:24:08+00:00",
-          "size": 6448205,
-          "digest": "sha256:0f024b5964780370771d61c0dfd6249c0559853f1d7a60df2768992a037ac4e2"
+          "buildtime": "2026-06-07T12:06:24+00:00",
+          "size": 6931125,
+          "digest": "sha256:0380ba9a0a9de38904fb7908258c3c5033df574ed9fc473d7f3ead76b85ff99f"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
