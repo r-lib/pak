@@ -565,11 +565,11 @@
         {
           "r.platform": "x86_64-unknown-openbsd7.8",
           "r.version": "4.5",
-          "pak.version": "0.9.5.9000",
+          "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-07T08:42:04+00:00",
-          "size": 7064089,
-          "digest": "sha256:eedd17ba103a43d17048f82aba5d199a9526faa49677e214c2e080e132cead6b"
+          "buildtime": "2026-06-08T10:11:14+00:00",
+          "size": 7062849,
+          "digest": "sha256:e75177d4a651d612fd407893986a0a7ba5411692dbca8a79990d03f600dc9633"
         },
         {
           "r.platform": "aarch64-apple-darwin23",
