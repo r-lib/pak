@@ -106,11 +106,11 @@
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
-          "pak.version": "0.9.5.9000",
+          "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-07T08:44:56+00:00",
-          "size": 10490086,
-          "digest": "sha256:3f49d727f7364a7793f55f8912318fbdec445bb00011791756b407e46278426c"
+          "buildtime": "2026-06-08T10:22:37+00:00",
+          "size": 10490020,
+          "digest": "sha256:e653c60e76c171b829a33dd8f85dbce642deca95ef98306e0086c44c4bd84772"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
