@@ -27,45 +27,45 @@
           "r.version": "4.0",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:20:20+00:00",
-          "size": 6959582,
-          "digest": "sha256:d4cea5fd75f22306385a48272106dfe30f77990195647f60416e7536e200844e"
+          "buildtime": "2026-06-10T09:36:43+00:00",
+          "size": 6959871,
+          "digest": "sha256:b4beea0780c87ff04f1df7e8ae223434732ee70094e96c7245226e0caa53bdfe"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.1",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:27:44+00:00",
-          "size": 6961565,
-          "digest": "sha256:c0dfbf9764911cf1ad3cb635e537689d5a69646a195c1f08bfb5fb846316bdc9"
+          "buildtime": "2026-06-10T09:43:06+00:00",
+          "size": 6959206,
+          "digest": "sha256:690a95689eeb764c1bc5ffcf6cd428da7a24a0180d511a2432a48b051c4ae46a"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.2",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:34:49+00:00",
-          "size": 6950854,
-          "digest": "sha256:330ce2665bd83cc64cf4082700ea209afd46991fce7eccf0686286844c49dd36"
+          "buildtime": "2026-06-10T09:50:52+00:00",
+          "size": 6951693,
+          "digest": "sha256:730e20883369436b77baf6e74140d8465d3d20818df7de1185bba046871494bd"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.5",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:05:49+00:00",
-          "size": 6916270,
-          "digest": "sha256:b0f6bae052d32f3fcde4d5c53bcc98711ae900c9a40c7ab0e9252226f668ba19"
+          "buildtime": "2026-06-10T09:21:52+00:00",
+          "size": 6918371,
+          "digest": "sha256:13dd41ec45e489a750d66b355691fd8809cb4d8dca40f8138e3325bb44a16075"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.6",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:13:07+00:00",
-          "size": 6966976,
-          "digest": "sha256:249dedac8a90d0ab3b4fb2b16bbb217573b72ed21269690db32f4d627cba6bf4"
+          "buildtime": "2026-06-10T09:29:08+00:00",
+          "size": 6966445,
+          "digest": "sha256:e91cb754917c0f2fd9809a1a21af3f54d1fd1c1e5393589aadffa2405d3ead9f"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
@@ -279,18 +279,18 @@
           "r.version": "4.3",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:43:13+00:00",
-          "size": 6953865,
-          "digest": "sha256:d9bdd7f543c8f95d4947e6b053353a08c24258d7c41c9cde61e65f49598ff84f"
+          "buildtime": "2026-06-10T09:58:21+00:00",
+          "size": 6953623,
+          "digest": "sha256:90b256c49439514cb30b7810ad71273564aa6908817748d28d032e1df5eb21a7"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.4",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:52:08+00:00",
-          "size": 6957920,
-          "digest": "sha256:b165b275a3f0fa7fa6318ab377820cd2f09434f502cd47ab5ae39f6024164d6e"
+          "buildtime": "2026-06-10T10:05:28+00:00",
+          "size": 6957291,
+          "digest": "sha256:5319546f6bc03cd5ba9795eefedbd6351af19f20a68e801e3f6509826cd859fe"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
@@ -315,9 +315,9 @@
           "r.version": "4.5",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T09:59:58+00:00",
-          "size": 6947919,
-          "digest": "sha256:945942884483e9a508d2c6c57669d23ac96cde27624d35e32fa616dd7255516d"
+          "buildtime": "2026-06-10T10:12:38+00:00",
+          "size": 6946703,
+          "digest": "sha256:36982d88b79e977bfcc374cf7747d68830d86e3534e08469defa104cb5aab802"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
@@ -432,9 +432,9 @@
           "r.version": "4.6",
           "pak.version": "0.10.0.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-06-09T10:08:28+00:00",
-          "size": 6942644,
-          "digest": "sha256:9c4abeb2aa6cb0f351f0a10be6e270f7ee427af3c5eb40921215ab6fa23bb3d6"
+          "buildtime": "2026-06-10T10:19:44+00:00",
+          "size": 6942792,
+          "digest": "sha256:d6170209216ab7bdf729395bdf1e63e976e4d65e53fbe08c9e307f9650fff224"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
