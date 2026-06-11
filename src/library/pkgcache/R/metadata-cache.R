@@ -602,7 +602,7 @@ re_ppm_linux <- function() {
     "(?<base>.*/)",
     "(?<repo>[^/]+)/",
     "__linux__/",
-    "(?<distro>[a-zA-Z0-9]+)/",
+    "(?<distro>[a-zA-Z0-9_]+)/",
     "(?<version>latest|[-0-9]+)",
     "$"
   )
