@@ -301,20 +301,40 @@ resolve_installed <- function(cache, remotes, direct, dependencies) {
     "repotype",
     "sysreqs"
   )
-  res <- pkgs[pkgs$package %in% packages, cols]
-  repotype <- pkgs$repotype[pkgs$package %in% packages]
+  # Some (or all) of the requested packages might not be in the installed
+  # package cache, e.g. if the cache is empty. We resolve the ones we have,
+  # and mark the rest as failed, instead of crashing in
+  # `get_installed_metadata()` on a `NULL` `res` (#462).
+  sel <- if (is.null(pkgs)) logical() else pkgs$package %in% packages
 
-  res$direct <- direct
-  res$metadata <- get_installed_metadata(res)
-  res$deps <- lapply(res$deps, function(x) x[x$type %in% dependencies, ])
-  # this might include extra rows from recommended packages
-  idx <- match(res$ref, refs)
-  res$params <- replicate(nrow(res), character())
-  res$params[!is.na(idx)] <- params[na.omit(idx)]
+  res <- NULL
+  if (any(sel)) {
+    res <- pkgs[sel, cols]
+    res$direct <- direct
+    res$metadata <- get_installed_metadata(res)
+    res$deps <- lapply(res$deps, function(x) x[x$type %in% dependencies, ])
+    # this might include extra rows from recommended packages
+    idx <- match(res$ref, refs)
+    res$params <- replicate(nrow(res), character())
+    res$params[!is.na(idx)] <- params[na.omit(idx)]
 
-  extracols <- c("repotype", grep("^remote", names(pkgs), value = TRUE))
-  extra <- pkgs[pkgs$package %in% packages, extracols, drop = FALSE]
-  res$extra <- lapply(seq_len(nrow(res)), function(i) extra[i, , drop = FALSE])
+    extracols <- c("repotype", grep("^remote", names(pkgs), value = TRUE))
+    extra <- pkgs[sel, extracols, drop = FALSE]
+    res$extra <- lapply(seq_len(nrow(res)), function(i) extra[i, , drop = FALSE])
+  }
+
+  missing <- if (is.null(pkgs)) packages else setdiff(packages, pkgs$package)
+  if (length(missing)) {
+    bad <- packages %in% missing
+    failed <- make_failed_resolution(refs[bad], "installed", direct)
+    # `make_failed_resolution()` cannot recover the package name from an
+    # `installed::<library>/<package>` ref, so we set it explicitly.
+    failed$package <- packages[bad]
+    failed <- res_add_defaults(failed)
+    ## This is added later, see the same dance in `resolve_from_metadata()`
+    failed <- failed[names(failed) != "dep_types"]
+    res <- if (is.null(res)) failed else rbind_expand(res, failed)
+  }
 
   attr(res, "unknown_deps") <-
     setdiff(unique(unlist(lapply(res$deps, "[[", "package"))), "R")

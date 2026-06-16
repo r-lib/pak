@@ -240,16 +240,21 @@ res_init <- function(self, private, config, cache, library, remote_types) {
       wh <- which(id == private$state$async_id)
       private$state$status[wh] <- "FAILED"
       rec <- private$state[wh, ]
-      fail_val <- list(
+      # `wh` may match multiple state rows, because indirect dependencies
+      # are resolved in batches that share a single `async_id` (see
+      # `res__resolve_delayed()`). Emit one failed entry per ref, so the
+      # underlying error is surfaced instead of an `nrow(out) == 1` failure
+      # in `res_one_row_df()` (#462).
+      fail_val <- data_frame(
         ref = rec$ref,
-        type = rec$remote[[1]]$type,
-        package = rec$remote[[1]]$package %|z|% NA_character_,
+        type = vcapply(rec$remote, "[[", "type"),
+        package = vcapply(rec$remote, function(r) r$package %|z|% NA_character_),
         version = NA_character_,
-        sources = NA_character_,
+        sources = replicate(nrow(rec), NA_character_, simplify = FALSE),
         direct = rec$direct,
         status = "FAILED",
         remote = rec$remote,
-        error = list(value)
+        error = replicate(nrow(rec), value, simplify = FALSE)
       )
       private$set_result(wh, fail_val)
       private$try_finish(resolve)

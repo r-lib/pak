@@ -57,6 +57,7 @@ make_dummy_zip <- function(commit) {
 re_gh_auth <- function() {
   paste0(
     "^token (gh[pousr]_[A-Za-z0-9_]{36,251}|",
+    "github_pat_[A-Za-z0-9_]{1,}|",
     "[[:xdigit:]]{40})$"
   )
 }
