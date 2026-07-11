@@ -400,9 +400,10 @@ jobs:
 
     steps:
 
-    - name: Update Ubuntu package db
+    - name: Update Ubuntu package db, install pak dependencies
       run: |
         sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev
 
     - name: Install skopeo
       run: |
