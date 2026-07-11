@@ -3165,6 +3165,16 @@ http_delete <- function(
 
 http_delete <- mark_as_async(http_delete)
 
+default_http_version <- function() {
+  # We default to HTTP/1.1 on every platform, because HTTP/2 has caused a
+  # number of transport-level failures (connection resets, `GOAWAY` frames,
+  # etc.) with various libcurl and server combinations, see e.g.
+  # https://github.com/r-lib/pak/issues/358
+  # https://github.com/r-lib/actions/issues/483
+  # https://github.com/r-lib/actions/issues/1091
+  2L # HTTP/1.1
+}
+
 #' @importFrom utils modifyList
 
 get_default_curl_options <- function(options) {
@@ -3185,6 +3195,9 @@ get_default_curl_options <- function(options) {
       connecttimeout = as.integer(getopt("connecttimeout") %||% 300),
       low_speed_time = as.integer(getopt("low_speed_time") %||% 0),
       low_speed_limit = as.integer(getopt("low_speed_limit") %||% 0),
+      http_version = as.integer(
+        getopt("http_version") %||% default_http_version()
+      ),
       cainfo = getopt("cainfo")
     ))
   )

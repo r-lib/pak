@@ -184,7 +184,7 @@ jwt_split <- function(jwt) {
     stopifnot(toupper(header$typ) == "JWT")
   }
   if (is.na(input[3])) {
-    input[3] = ""
+    input[3] <- ""
   }
   sig <- ppm_sso_base64url_decode(input[3])
   payload <- jsonlite::fromJSON(rawToChar(ppm_sso_base64url_decode(input[2])))
@@ -197,7 +197,7 @@ jwt_split <- function(jwt) {
     keysize <- as.numeric(substring(header$alg, 3))
   } else {
     type <- header$alg
-    keysize = NULL
+    keysize <- NULL
   }
   list(
     type = type,
