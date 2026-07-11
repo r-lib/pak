@@ -60,7 +60,7 @@ static inline void clic__buffer_push_str(struct cli_buffer *buf,
                                          const char *str) {
   size_t len = strlen(str);
   clic__buffer_checklen(buf, len);
-  strcpy(buf->ptr, str);
+  memcpy(buf->ptr, str, len);
   buf->ptr += len;
 }
 
