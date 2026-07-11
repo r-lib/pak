@@ -98,7 +98,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -130,7 +130,7 @@ jobs:
         cd tools/build/macos && make build
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-macos-x86_64
         path: tools/build/macos/lib/*/pak_*.tgz
@@ -149,7 +149,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -178,7 +178,7 @@ jobs:
         cd tools/build/macos && make build
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-macos-arm64
         path: tools/build/macos/lib/*/pak_*.tgz
@@ -209,7 +209,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -236,7 +236,7 @@ jobs:
         cd tools/build/windows && make build
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-windows-${{ matrix.config.r }}
         path: tools/build/windows/lib/*/pak_*.zip
@@ -269,7 +269,7 @@ jobs:
       uses: docker/setup-buildx-action@v4
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -280,7 +280,7 @@ jobs:
         RVERSIONS: ${{ matrix.config.r }}
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-linux-${{ matrix.config.r }}
         path: tools/build/linux/out/*/pak_*.tar.gz
@@ -316,7 +316,7 @@ jobs:
       uses: docker/setup-buildx-action@v4
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -327,7 +327,7 @@ jobs:
         RVERSIONS: ${{ matrix.config.r }}
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-linux-arm64-${{ matrix.config.r }}
         path: tools/build/linux/out-aarch64/*/pak_*.tar.gz
@@ -355,7 +355,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -382,7 +382,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Upload package artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pkg-bsd-${{ matrix.config.os }}-${{ matrix.config.release || 'latest' }}
         path: pak_*.tar.gz
@@ -415,7 +415,7 @@ jobs:
         git config --global user.email "gaborcsardi@users.noreply.github.com"
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
 
@@ -438,7 +438,7 @@ jobs:
       shell: Rscript {0}
 
     - name: Download package artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         path: dist
         pattern: pkg-*
@@ -474,7 +474,7 @@ jobs:
         sudo apt-get update
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 10
         persist-credentials: false
