@@ -91,10 +91,23 @@ jobs:
   macos:
     runs-on: macos-latest
     if: ${{ github.event.inputs.macos == '' || github.event.inputs.macos == 'yes' }}
-    name: macOS x86_64
-    env:
-      RVERSIONS: "3.5 3.6 4.0 4.1 4.2 4.3-x86_64 4.4-x86_64 4.5-x86_64 4.6-x86_64"
-      RVERSION_DEFAULT: "4.5-x86_64"
+    name: macOS x86_64 R ${{ matrix.config.rver }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { rig: '3.5',     rver: '3.5' }
+          - { rig: '3.6',     rver: '3.6' }
+          - { rig: '4.0',     rver: '4.0' }
+          - { rig: '4.1',     rver: '4.1' }
+          - { rig: '4.2',     rver: '4.2' }
+          - { rig: '4.3',     rver: '4.3-x86_64' }
+          - { rig: '4.4',     rver: '4.4-x86_64' }
+          - { rig: '4.5',     rver: '4.5-x86_64' }
+          - { rig: 'release', rver: '4.6-x86_64' }
+          - { rig: 'devel',   rver: '4.7-x86_64' }
+
     steps:
 
     - name: Checkout
@@ -113,26 +126,19 @@ jobs:
 
     - name: Install R
       run: |
-        sudo rig add 3.5 --arch x86_64
-        sudo rig add 3.6 --arch x86_64
-        sudo rig add 4.0 --arch x86_64
-        sudo rig add 4.1 --arch x86_64
-        sudo rig add 4.2 --arch x86_64
-        sudo rig add 4.3 --arch x86_64
-        sudo rig add 4.4 --arch x86_64
-        sudo rig add 4.5 --arch x86_64
-        sudo rig add release --arch x86_64
-        sudo rig add devel --arch x86_64
-        rig default release
+        sudo rig add ${{ matrix.config.rig }} --arch x86_64
+        rig default ${{ matrix.config.rver }}
 
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
+      env:
+        RVERSIONS: ${{ matrix.config.rver }}
 
     - name: Upload package artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: pkg-macos-x86_64
+        name: pkg-macos-x86_64-${{ matrix.config.rver }}
         path: tools/build/macos/lib/*/pak_*.tgz
         if-no-files-found: error
 
