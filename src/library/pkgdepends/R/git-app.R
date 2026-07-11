@@ -14,6 +14,12 @@ git_app <- function(
   reg.finalizer(app, function(app0) unlink(app$locals$git_config), TRUE)
   writeLines(
     c(
+      # The repository is unpacked into a temporary directory, which may be
+      # owned by a different user than the one running `git http-backend`
+      # (e.g. in CI or containers). Without this git aborts every request with
+      # "detected dubious ownership", returning HTTP 500.
+      "[safe]",
+      "\tdirectory = *",
       "[uploadpack]",
       paste0("\tallowFilter = ", if (isTRUE(filter)) "true" else "false")
     ),
@@ -147,6 +153,7 @@ parse_status <- function(x) {
   if (is.na(status)) {
     stop("Invalid status from git cgi: ", x)
   }
+  status
 }
 
 read_bin <- function(path) {
