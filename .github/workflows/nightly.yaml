@@ -125,22 +125,16 @@ jobs:
         sudo rig add devel --arch x86_64
         rig default release
 
-    - name: Install skopeo
-      run: |
-        brew install skopeo
-        brew link skopeo
-        skopeo --version
-
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
 
-    - name: Deploy packages
-      run: |
-        cd tools/build/macos && make deploy
-      env:
-        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-macos-x86_64
+        path: tools/build/macos/lib/*/pak_*.tgz
+        if-no-files-found: error
 
   # -----------------------------------------------------------------------
 
@@ -179,22 +173,16 @@ jobs:
         sudo rig add devel
         rig default release
 
-    - name: Install skopeo
-      run: |
-        brew install skopeo
-        brew link skopeo
-        skopeo --version
-
     - name: Build pak binaries
       run: |
         cd tools/build/macos && make build
 
-    - name: Deploy packages
-      run: |
-        cd tools/build/macos && make deploy
-      env:
-        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-macos-arm64
+        path: tools/build/macos/lib/*/pak_*.tgz
+        if-no-files-found: error
 
   # ------------------------------------------------------------------------
 
@@ -235,17 +223,6 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.8.0/rig-windows-0.8.0.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
-    - name: Install skopeo
-      run: |
-        Invoke-WebRequest -Uri https://github.com/gaborcsardi/skopeo/releases/download/v1.6.0/skopeo-1.6.0.zip -OutFile skopeo.zip
-        New-Item "C:\Tools" -Force -ItemType Directory
-        Expand-Archive skopeo.zip -DestinationPath C:\Tools
-        echo "C:\Tools\skopeo" | Out-File -Append -FilePath $env:GITHUB_PATH
-
-    - name: Test skopeo
-      run: |
-        skopeo --version
-
     # no P3M, because a pak bug fails to install glue@1.6.2 from PPM
     - name: Install R and RTools
       run: |
@@ -258,13 +235,12 @@ jobs:
       run: |
         cd tools/build/windows && make build
 
-    - name: Deploy packages
-      run: |
-        cd tools/build/windows && make deploy
-      env:
-        PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        TAR: internal
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-windows-${{ matrix.config.r }}
+        path: tools/build/windows/lib/*/pak_*.zip
+        if-no-files-found: error
 
   # -----------------------------------------------------------------------
   linux:
@@ -289,17 +265,26 @@ jobs:
 
     steps:
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
     - name: Checkout
       uses: actions/checkout@v6
       with:
         fetch-depth: 10
 
-    - name: Build and push
+    - name: Build
       run: |
         cd tools/build/linux && make
       env:
         RVERSIONS: ${{ matrix.config.r }}
-        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-linux-${{ matrix.config.r }}
+        path: tools/build/linux/out/*/pak_*.tar.gz
+        if-no-files-found: error
 
   # ------------------------------------------------------------------------
 
@@ -335,12 +320,18 @@ jobs:
       with:
         fetch-depth: 10
 
-    - name: Build and push
+    - name: Build
       run: |
         cd tools/build/linux && make aarch64
       env:
         RVERSIONS: ${{ matrix.config.r }}
-        GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
+
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-linux-arm64-${{ matrix.config.r }}
+        path: tools/build/linux/out-aarch64/*/pak_*.tar.gz
+        if-no-files-found: error
 
   # ------------------------------------------------------------------------
 
@@ -390,20 +381,91 @@ jobs:
         install.packages(".", repos = NULL, type = "source", INSTALL_opts = "--build")
       shell: Rscript {0}
 
-    - name: Deploy pak binary
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-bsd-${{ matrix.config.os }}-${{ matrix.config.release || 'latest' }}
+        path: pak_*.tar.gz
+        if-no-files-found: error
+
+  # ------------------------------------------------------------------------
+
+  push:
+    runs-on: ubuntu-latest
+    needs: [ macos, windows, linux, macos-arm64, linux-arm64, bsd ]
+    if: always()
+    concurrency:
+      group: pak-push
+      queue: max
+
+    steps:
+
+    - name: Update Ubuntu package db
       run: |
-        make -f tools/build/docker-deploy/Makefile
+        sudo apt-get update
+
+    - name: Install skopeo
+      run: |
+        sudo apt-get install -y skopeo
+        skopeo --version
+
+    - name: git config
+      run: |
+        git config --global user.name "GHA nightly build"
+        git config --global user.email "gaborcsardi@users.noreply.github.com"
+
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 10
+
+    - name: Install R
+      uses: r-lib/actions/setup-r@v2
+
+    - name: Create user library
+      run: |
+        dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
+      shell: Rscript {0}
+
+    - name: Install local pak tree
+      run: R CMD INSTALL .
+      env:
+        PAK_BUNDLE: false
+
+    - name: Install deploy dependencies
+      run: |
+        pak::pkg_install("deps::.", dependencies = "Config/Needs/deploy")
+      shell: Rscript {0}
+
+    - name: Download package artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dist
+        pattern: pkg-*
+
+    - name: Push packages to ghcr.io
+      run: |
+        files <- list.files(
+          "dist",
+          pattern = "[.](tgz|zip|tar[.]gz)$",
+          recursive = TRUE,
+          full.names = TRUE
+        )
+        cat("Pushing", length(files), "package file(s):\n")
+        cat(files, sep = "\n")
+        cat("\n")
+        pak:::push_packages(normalizePath(files))
+      shell: Rscript {0}
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      shell: bash
 
   # ------------------------------------------------------------------------
 
   deploy:
     runs-on: ubuntu-latest
     if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && always() }}
-    needs: [ macos, windows, linux, macos-arm64, linux-arm64, bsd ]
+    needs: [ push ]
 
     steps:
 

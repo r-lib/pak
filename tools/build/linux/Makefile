@@ -23,16 +23,21 @@ aarch64: $(DONE_AARCH64)
 
 build: $(DONE)
 
+# The built binary package is exported to out-aarch64/$*/pak_*.tar.gz (resp.
+# out/$*/pak_*.tar.gz), a separate deploy job pushes it to ghcr.io.
+
 R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker build --platform linux/amd64 -f Dockerfile-aarch64 --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="${GHCR_TOKEN}" .
+	docker buildx build --platform linux/amd64 -f Dockerfile-aarch64 \
+		--build-arg R_MAJOR=$* \
+		--target export --output type=local,dest=out-aarch64/$* .
 	touch $@
 
 R-%.done: libs.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker build --platform linux/amd64 -f Dockerfile --build-arg R_MAJOR=$* \
-		--build-arg TOKEN="${GHCR_TOKEN}" .
+	docker buildx build --platform linux/amd64 -f Dockerfile \
+		--build-arg R_MAJOR=$* \
+		--target export --output type=local,dest=out/$* .
 	touch $@
 
 # ------------------------------------------------------------------------

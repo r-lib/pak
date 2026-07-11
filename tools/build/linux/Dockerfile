@@ -3,12 +3,10 @@
 ARG R_MAJOR=4.1
 
 FROM ghcr.io/r-lib/pak-libs:latest AS libs
-FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR}
+FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} AS build
 COPY --from=libs /usr/local /usr/local
 USER root
 WORKDIR /root
-
-ARG TOKEN=dummy
 
 # -------------------------------------------------------------------------
 # set up static compilation
@@ -50,19 +48,12 @@ RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
 
 # Build binary package ----------------------------------------------------
 
-# We use the pak build that we just installed.
+# We use the pak build that we just installed. This writes the binary
+# package to /tmp/pak_*.tar.gz.
 
 RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
-# Install skopeo ----------------------------------------------------------
-
-RUN apk add skopeo
-
 # Test --------------------------------------------------------------------
-
-# TODO: have a proper test suite here.
-
-# Deploy ------------------------------------------------------------------
 
 # This also serves as a minimal test suite that we can download and
 # install real packages, with the new build.
@@ -70,25 +61,11 @@ RUN apk add skopeo
 RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
     "desc", "jsonlite"))'
 
-RUN apk add git
-RUN git config --global user.email "csardi.gabor@gmail.com"
-RUN git config --global user.name "Gabor Csardi"
-RUN git config --global credential.helper cache
+# Export ------------------------------------------------------------------
 
-# `push_packages() only works from within the pak git repo, because it
-# checks out the `packaged` branch in another subtree.
+# The built binary package is exported from this stage with
+# `docker buildx build --target export --output type=local,dest=...`.
+# Pushing to ghcr.io happens later, in a separate deploy job.
 
-ENV GITHUB_PAT=${TOKEN}
-RUN git clone --depth 1 https://github.com/r-lib/pak.git
-
-# This has to be in one step, because the cache credential helper is
-# very ephemeral.
-RUN cd pak && R -q -e '                                          \
-    gitcreds::gitcreds_approve(list(                             \
-      url = "https://github.com",                                \
-      username = "PersonalAccessToken",                          \
-      password = Sys.getenv("GITHUB_PAT")                        \
-    ));                                                          \
-    pak:::push_packages(                                         \
-      dir("/tmp/", pattern = "pak_.*.tar.gz", full.names=TRUE)   \
-    )'
+FROM scratch AS export
+COPY --from=build /tmp/pak_*.tar.gz /

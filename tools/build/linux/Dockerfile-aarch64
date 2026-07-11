@@ -73,8 +73,6 @@ RUN sed -i 's/basename[(][)]/basename(char*)/' \
 
 # =========================================================================
 
-ARG TOKEN=dummy
-
 # set up static cross compilation for R -----------------------------------
 
 RUN apk add --arch aarch64 --root $AARCH64_ROOT linux-headers
@@ -139,40 +137,18 @@ RUN apk add gcc musl-dev
 # qemu is slow, so give plenty of time for the pak subprocess to start
 ENV PKG_SUBPROCESS_TIMEOUT=1200000
 RUN R -q -e 'pak::pkg_install("cran/filelock")'
+RUN touch /tmp/tested
 
 # =========================================================================
 
-# The COPY will force `docker build` to run the tests, before this stage
+# Export ------------------------------------------------------------------
 
-FROM runtime
-COPY --from=test /tmp/dummy* /tmp/
+# The built binary package (in the `runtime` stage) is exported with
+# `docker buildx build --target export --output type=local,dest=...`.
+# Copying the marker from the `test` stage forces the tests to run before
+# the package is exported. Pushing to ghcr.io happens later, in a separate
+# deploy job.
 
-# Install skopeo ----------------------------------------------------------
-
-RUN apk add skopeo
-
-# Deploy ------------------------------------------------------------------
-
-RUN apk add git
-RUN git config --global user.email "csardi.gabor@gmail.com"
-RUN git config --global user.name "Gabor Csardi"
-RUN git config --global credential.helper cache
-
-# `push_packages() only works from within the pak git repo, because it
-# checks out the `packaged` branch in another subtree.
-
-ENV GITHUB_PAT=${TOKEN}
-RUN git clone --depth 1 https://github.com/r-lib/pak.git
-
-# This uses the native pak, but that's the same, we just installed it.
-# This has to be in one step, because the cache credential helper is
-# very ephemeral.
-RUN cd pak && R -q -e '                                          \
-    gitcreds::gitcreds_approve(list(                             \
-      url = "https://github.com",                                \
-      username = "PersonalAccessToken",                          \
-      password = Sys.getenv("GITHUB_PAT")                        \
-    ));                                                          \
-    pak:::push_packages(                                         \
-      dir("/tmp/", pattern = "pak_.*.tar.gz", full.names=TRUE)   \
-    )'
+FROM scratch AS export
+COPY --from=test /tmp/tested /tested
+COPY --from=runtime /tmp/pak_*.tar.gz /
