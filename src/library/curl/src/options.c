@@ -1,7 +1,6 @@
 #include "curl-common.h"
 
 SEXP R_option_types(void){
-#ifdef HAS_CURL_EASY_OPTION
   int len = 0;
   const struct curl_easyoption *o = NULL;
   while((o = curl_easy_option_next(o))){
@@ -32,7 +31,4 @@ SEXP R_option_types(void){
   SET_STRING_ELT(listnms, 2, Rf_mkChar("type"));
   UNPROTECT(5);
   return out;
-#else
-  return R_NilValue;
-#endif
 }

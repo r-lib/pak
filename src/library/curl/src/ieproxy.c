@@ -125,20 +125,20 @@ SEXP R_get_proxy_for_url(SEXP target_url, SEXP auto_detect, SEXP autoproxy_url){
   }
 
   //store output data
-  char buffer[500];
+  char buffer[65536];
   SEXP vec = PROTECT(Rf_allocVector(VECSXP, 3));
   SET_VECTOR_ELT(vec, 0, Rf_ScalarLogical(
       ProxyInfo.dwAccessType == WINHTTP_ACCESS_TYPE_NAMED_PROXY ||
       ProxyInfo.dwAccessType == WINHTTP_ACCESS_TYPE_DEFAULT_PROXY));
 
   if(ProxyInfo.lpszProxy != NULL) {
-    wcstombs(buffer, ProxyInfo.lpszProxy, 500);
+    wcstombs(buffer, ProxyInfo.lpszProxy, 65536);
     SET_VECTOR_ELT(vec, 1, Rf_mkString(buffer));
     GlobalFree((void*) ProxyInfo.lpszProxy);
   }
 
   if(ProxyInfo.lpszProxyBypass != NULL) {
-    wcstombs(buffer, ProxyInfo.lpszProxyBypass, 500);
+    wcstombs(buffer, ProxyInfo.lpszProxyBypass, 65536);
     SET_VECTOR_ELT(vec, 2, Rf_mkString(buffer));
     GlobalFree((void*) ProxyInfo.lpszProxyBypass );
   }

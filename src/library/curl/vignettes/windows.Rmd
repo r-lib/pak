@@ -46,13 +46,13 @@ Have a look at `curl::curl_version()` to see which ssl backends are available an
 ```r
 curl::curl_version()
 #> $version
-#> [1] "7.64.1"
+#> [1] "8.8.0"
+#> 
+#> $headers
+#> [1] "8.8.0"
 #> 
 #> $ssl_version
-#> [1] "(OpenSSL/1.1.1a) Schannel"
-#> 
-#> $libz_version
-#> [1] "1.2.8"
+#> [1] "(OpenSSL/3.3.0) Schannel"
 #> ...
 ```
 
@@ -67,8 +67,8 @@ write('CURL_SSL_BACKEND=openssl', file = "~/.Renviron", append = TRUE)
 Now if you restart R, the default back-end should have changed:
 
 ```r
-> curl::curl_version()$ssl_version
-[1] "OpenSSL/1.1.1m (Schannel)"
+curl::curl_version()$ssl_version
+#> [1] "OpenSSL/3.3.0 (Schannel)"
 ```
 
 Optionally, you can also set `CURL_CA_BUNDLE` in your `~/.Renviron` to use a custom trust bundle. If `CURL_CA_BUNDLE` is not set, we use the Windows cert store. When using Schannel, no trust bundle can be specified because we always use the certificates from the native Windows cert store. 
