@@ -8,27 +8,23 @@
 # x86_64 binaries and on an aarch64 machine to build aarch64 binaries.
 # There is no cross-compilation.
 #
-# RVERSIONS is interpreted differently by the two flavors:
-# - `musl`  uses the r-minimal image tags, i.e. major versions, e.g. `4.5`.
-# - `glibc` uses the https://github.com/r-hub/R release tags, i.e. full
-#    patch versions, e.g. `4.5.3`, or `devel` / `next`.
-#
 # To build some musl binaries:
 # ```
-# RVERSIONS="4.4 4.5" make musl
+# RVERSIONS_MUSL="4.4 4.5" make musl
 # ```
 #
 # To build some glibc binaries:
 # ```
-# RVERSIONS="4.4.3 4.5.3" make glibc
+# RVERSIONS_GLIBC="4.4.3 4.5.3" make glibc
 # ```
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= 3.6 4.0 4.1 4.2 4.3 4.4 4.5 4.6
+RVERSIONS_MUSL ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4 4.5 4.6 4.7
+RVERSIONS_GLIBC ?= 3.5.3 3.6.3 4.0.5 4.1.3 4.2.3 4.3.3 4.4.3 4.5.3 4.6.1 devel
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
-DONE_MUSL=$(patsubst %,R-%-musl.done,$(RVERSIONS))
-DONE_GLIBC=$(patsubst %,R-%-glibc.done,$(RVERSIONS))
+DONE_MUSL=$(patsubst %,R-%-musl.done,$(RVERSIONS_MUSL))
+DONE_GLIBC=$(patsubst %,R-%-glibc.done,$(RVERSIONS_GLIBC))
 
 all: musl glibc
 
@@ -36,21 +32,21 @@ musl: $(DONE_MUSL)
 
 glibc: $(DONE_GLIBC)
 
-# The built binary package is exported to out-musl/$*/pak_*.tar.gz (resp.
-# out-glibc/$*/pak_*.tar.gz), a separate deploy job pushes it to ghcr.io.
+# The built binary package is exported to out/$*/pak_*.tar.gz, a separate
+# deploy job pushes it to ghcr.io.
 
 R-%-musl.done: libs-musl.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker buildx build -f Dockerfile-musl \
 		--build-arg R_MAJOR=$* \
-		--target export --output type=local,dest=out-musl/$* .
+		--target export --output type=local,dest=out .
 	touch $@
 
 R-%-glibc.done: libs-glibc.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker buildx build -f Dockerfile-glibc \
 		--build-arg R_VERSION=$* \
-		--target export --output type=local,dest=out-glibc/$* .
+		--target export --output type=local,dest=out .
 	touch $@
 
 # ------------------------------------------------------------------------
@@ -93,6 +89,6 @@ pak_$(PAKVERSION).tar.gz:
 # ------------------------------------------------------------------------
 
 clean:
-	rm -rf *.tar.gz *.done out-musl out-glibc
+	rm -rf *.tar.gz *.done out
 
 .PHONY: all musl glibc libs-musl libs-glibc clean
