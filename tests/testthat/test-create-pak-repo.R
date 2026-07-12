@@ -110,3 +110,95 @@ test_that("add_repo_links", {
     expect_equal(pkgs[, "Depends"], tsts2$result[i])
   }
 })
+
+test_that("add_repo_links, devel serves separate glibc and musl builds", {
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+  dir.create(tmp <- tempfile())
+  setwd(tmp)
+
+  add_repo_links <- import_from("create_pak_repo", "add_repo_links")
+  mkdirp <- import_from("create_pak_repo", "mkdirp")
+
+  # For `devel`, `linux-gnu` and `linux-musl` are two real, distinct trees.
+  plt <- rbind(
+    c("linux-gnu", "x86_64"),
+    c("linux-gnu", "aarch64"),
+    c("linux-musl", "x86_64"),
+    c("linux-musl", "aarch64")
+  )
+
+  mkdirp(paste0("p/pak/devel/", plt[, 1], "/", plt[, 2]))
+
+  for (i in seq_len(nrow(plt))) {
+    path <- file.path("p/pak/devel", plt[i, 1], plt[i, 2], "PACKAGES")
+    writeLines(
+      path,
+      text = c(
+        "Package: pak",
+        "Version: 1.0.0",
+        paste0("Depends: ", plt[i, 1], "/", plt[i, 2])
+      )
+    )
+  }
+
+  add_repo_links("p/pak", "devel")
+
+  # ----------------------------------------------------------------------
+  # new repo form: pkgtype/os/arch. glibc and musl get their own build,
+  # everything else (bare linux, uncommon libcs) falls back to glibc.
+
+  tsts <- read.table(
+    stringsAsFactors = FALSE,
+    header = TRUE,
+    textConnection(
+      "
+    pkg_type  os              arch    rver result
+    source    linux-gnu       x86_64  4.1  linux-gnu/x86_64
+    source    linux-musl      x86_64  4.1  linux-musl/x86_64
+    source    linux-gnu       aarch64 4.1  linux-gnu/aarch64
+    source    linux-musl      aarch64 4.1  linux-musl/aarch64
+    source    linux           x86_64  4.1  linux-gnu/x86_64
+    source    linux-uclibc    x86_64  4.1  linux-gnu/x86_64
+    source    linux-dietlibc  x86_64  4.1  linux-gnu/x86_64
+    source    linux-unknown   x86_64  4.1  linux-gnu/x86_64
+    source    linux           aarch64 4.1  linux-gnu/aarch64
+    # Linux, unsupported arch
+    source    linux-gnu       s390x   4.1  NA
+  "
+    )
+  )
+
+  pref <- if (.Platform$OS.type == "windows") "file:///" else "file://"
+  base <- paste0(pref, normalizePath("p/pak/devel"))
+  repo <- paste0(base, "/", tsts$pkg_type, "/", tsts$os, "/", tsts$arch)
+  for (i in seq_len(nrow(tsts))) {
+    curl <- utils::contrib.url(repo[i], tsts$pkg_type[i])
+    curl <- sub("[0-9]+[.][0-9]+$", tsts$rver[i], curl)
+    pkgs <- suppressWarnings(tryCatch(
+      if (getRversion() >= "3.5.0") {
+        utils::available.packages(curl, ignore_repo_cache = TRUE)
+      } else {
+        utils::available.packages(curl)
+      },
+      error = function(err) NULL
+    ))
+    if (is.na(tsts$result[i])) {
+      expect_null(pkgs)
+    } else {
+      expect_equal(pkgs[, "Depends"], tsts$result[i])
+    }
+  }
+
+  # ----------------------------------------------------------------------
+  # old, libc-agnostic form also falls back to glibc
+
+  curl <- utils::contrib.url(base, "source")
+  curl <- sub("[0-9]+[.][0-9]+$", "4.1", curl)
+  if (getRversion() >= "3.5.0") {
+    pkgs <- utils::available.packages(curl, ignore_repo_cache = TRUE)
+  } else {
+    pkgs <- utils::available.packages(curl)
+  }
+  expect_equal(pkgs[, "Depends"], "linux-gnu/x86_64")
+})

@@ -1,23 +1,9 @@
 detect_platform <- function() {
-  me <- list(
+  list(
     os = R.Version()$os,
     arch = R.Version()$arch,
     rver = get_minor_r_version(getRversion())
   )
-
-  if (
-    me$os %in%
-      c(
-        "linux-dietlibc",
-        "linux-gnu",
-        "linux-musl",
-        "linux-uclibc",
-        "linux-unknown"
-      )
-  ) {
-    me$os <- "linux"
-  }
-  me
 }
 
 pak_stream <- function(stream) {
@@ -102,11 +88,12 @@ pak_update <- function(
   meta <- pak_repo_metadata(repo)
 
   me <- detect_platform()
-  cand <- which(
-    meta$OS == me$os &
-      meta$Arch == me$arch &
-      meta$RVersion == me$rver
-  )
+  base_ok <- meta$Arch == me$arch & meta$RVersion == me$rver
+  # Prefer an exact libc match (`devel` has `linux-gnu` / `linux-musl`)
+  cand <- which(base_ok & meta$OS == me$os)
+  if (length(cand) == 0 && startsWith(me$os, "linux")) {
+    cand <- which(base_ok & meta$OS == "linux")
+  }
 
   if (length(cand) == 0) {
     pak_update_unsupported_platform(stream, me, meta)
@@ -125,7 +112,7 @@ pak_update <- function(
     return(invisible())
   }
 
-  url <- paste0(repo, me$os, "/", me$arch, "/", meta$File[cand])
+  url <- paste0(repo, meta$OS[cand], "/", me$arch, "/", meta$File[cand])
   tgt <- file.path(tempdir(), meta$File[cand])
   utils::download.file(url, tgt, mode = "wb")
 

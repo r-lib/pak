@@ -1,0 +1,85 @@
+# ghcr.io/r-lib/pak-libs-musl:latest
+
+# Compile a static libcurl and its dependencies (OpenSSL and zlib) and
+# install them into /usr/local/, so the pak-building Dockerfile
+# (Dockerfile-musl) can build on this container by copying over /usr/local/.
+#
+# We compile these from source (rather than using Alpine's packages) because
+# Alpine's static libraries are not built with -fPIC, so they cannot be
+# linked into pak's shared objects.
+#
+# /usr/local/ ends up containing ONLY static (.a) libraries (plus headers
+# and pkg-config files), so that anything linking against it picks the
+# static archives, not shared libraries.
+#
+# This builds natively, so it works on both x86_64 and aarch64, just build
+# it on the appropriate machine.
+
+# Keep this Alpine release in sync with the one r-minimal uses.
+FROM alpine:3.22 AS build
+
+WORKDIR /root
+
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf make perl \
+    wget ca-certificates tar
+
+# zlib --------------------------------------------------------------------
+
+RUN wget https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
+RUN tar xzf zlib-*.tar.gz && rm zlib-*.tar.gz
+RUN cd zlib-* &&                                                     \
+    CFLAGS=-fPIC ./configure --static --prefix=/usr/local &&         \
+    make &&                                                          \
+    make install
+
+# openssl -----------------------------------------------------------------
+
+RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz
+RUN tar xzf openssl-3.5.7.tar.gz && rm openssl-3.5.7.tar.gz
+RUN cd openssl-* &&                                                  \
+    CFLAGS="-fPIC" ./config -fPIC no-shared --prefix=/usr/local &&   \
+    make &&                                                          \
+    make install_sw
+
+# OpenSSL may install its libraries and pkg-config files into lib64; move
+# them next to zlib and libcurl so a single /usr/local/lib is enough.
+
+RUN if [ -d /usr/local/lib64 ]; then                                 \
+      cp -a /usr/local/lib64/*.a /usr/local/lib/ &&                  \
+      mkdir -p /usr/local/lib/pkgconfig &&                           \
+      cp -a /usr/local/lib64/pkgconfig/* /usr/local/lib/pkgconfig/;  \
+    fi
+
+# libcurl -----------------------------------------------------------------
+
+RUN wget https://github.com/curl/curl/releases/download/curl-8_21_0/curl-8.21.0.tar.gz
+RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
+RUN cd curl-* &&                                                     \
+    CFLAGS="-fPIC" CPPFLAGS="-I/usr/local/include"                   \
+    LDFLAGS="-L/usr/local/lib"                                       \
+    ./configure --prefix=/usr/local                                 \
+      --enable-static --disable-shared --with-openssl=/usr/local     \
+      --with-zlib=/usr/local --without-libpsl --without-brotli &&    \
+    make &&                                                          \
+    make install
+
+# We only need the static libraries, headers and pkg-config files, not the
+# curl/openssl command line tools.
+
+RUN rm -rf /usr/local/bin
+
+# =========================================================================
+# We don't need to keep the build tools, so copy the results to a clean
+# image.
+
+FROM alpine:3.22
+COPY --from=build /usr/local /usr/local/
+
+# Some of this info is shown on the GH packages pages
+
+LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
+LABEL org.opencontainers.image.description="This image builds and contains \
+    static libraries for libcurl and its dependencies, for musl. See \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs-musl \
+    for details."
+LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"
