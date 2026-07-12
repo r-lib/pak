@@ -35,46 +35,31 @@ glibc: $(DONE_GLIBC)
 # The built binary package is exported to out/$*/pak_*.tar.gz, a separate
 # deploy job pushes it to ghcr.io.
 
-R-%-musl.done: libs-musl.done pak_$(PAKVERSION).tar.gz
+R-%-musl.done: pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker buildx build -f Dockerfile-musl \
+		--pull \
 		--build-arg R_MAJOR=$* \
 		--target export --output type=local,dest=out .
 	touch $@
 
-R-%-glibc.done: libs-glibc.done pak_$(PAKVERSION).tar.gz
+R-%-glibc.done: pak_$(PAKVERSION).tar.gz
 	rm -f $@
 	docker buildx build -f Dockerfile-glibc \
+		--pull \
 		--build-arg R_VERSION=$* \
 		--target export --output type=local,dest=out .
 	touch $@
 
 # ------------------------------------------------------------------------
 
-# The static libraries (libcurl, OpenSSL, zlib, ...) are collected once into
-# a local image per flavor and reused across all R versions. Once these
-# images are published, the `.done` rules can `docker pull` them instead of
-# rebuilding.
-
 libs-musl:
 	docker build -t ghcr.io/r-lib/pak-libs-musl:latest \
 		-f Dockerfile-libs-musl .
 
-libs-musl.done:
-	rm -f $@
-	docker build -t ghcr.io/r-lib/pak-libs-musl:latest \
-		-f Dockerfile-libs-musl .
-	touch $@
-
 libs-glibc:
 	docker build -t ghcr.io/r-lib/pak-libs-glibc:latest \
 		-f Dockerfile-libs-glibc .
-
-libs-glibc.done:
-	rm -f $@
-	docker build -t ghcr.io/r-lib/pak-libs-glibc:latest \
-		-f Dockerfile-libs-glibc .
-	touch $@
 
 pak_$(PAKVERSION).tar.gz:
 	@if command -v RR >/dev/null; then \
