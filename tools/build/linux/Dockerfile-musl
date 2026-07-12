@@ -4,10 +4,10 @@
 # aarch64, just build it on the appropriate machine. r-minimal is a
 # multi-arch image, so it works on both architectures out of the box.
 #
-# We link libcurl, OpenSSL and zlib statically (they only exist as static
-# libraries in /usr/local, copied from the pak-libs-musl image), but link
-# libc, libgcc and libstdc++ dynamically, because they are available on all
-# distros. Hence no Makevars is needed for static linking.
+# We link libcurl, OpenSSL and their dependencies statically (they exist
+# only as static libraries in /usr/local, copied from the pak-libs-musl
+# image), but link libc, libgcc and libstdc++ dynamically, because they are
+# available on all distros.
 
 ARG R_MAJOR=4.1
 
@@ -17,12 +17,26 @@ COPY --from=libs /usr/local /usr/local
 USER root
 WORKDIR /root
 
-# system requirements -----------------------------------------------------
+# system requirements ------------------------------------------------------
 
 RUN apk add linux-headers bash gcc musl-dev g++ pkgconf patchelf \
     coreutils findutils
 
-# Build binary package ----------------------------------------------------
+# set up static linking of libcurl -----------------------------------------
+
+# The bundled curl R package finds libcurl via pkg-config. We point it at
+# /usr/local and install a pkg-config wrapper that always resolves the full
+# (static) dependency chain. /usr/local/lib holds only static (.a)
+# libraries, so libcurl and its dependencies are linked statically, while
+# libc, libgcc and libstdc++ stay dynamic.
+
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+RUN for w in pkg-config pkgconf; do \
+      printf '#!/bin/sh\nexec /usr/bin/pkgconf --static "$@"\n' > /usr/local/bin/$w; \
+      chmod +x /usr/local/bin/$w; \
+    done
+
+# Build binary package -----------------------------------------------------
 
 # needed for C23, which is the default on R-devel
 RUN sed -i 's/basename[(][)]/basename(char*)/' /usr/include/string.h
@@ -30,7 +44,7 @@ RUN sed -i 's/basename[(][)]/basename(char*)/' /usr/include/string.h
 COPY pak_*.tar.gz /root/
 RUN PROCESSX_UNLINK_R=true R CMD INSTALL pak_*.tar.gz
 
-# Minimize library --------------------------------------------------------
+# Minimize library ---------------------------------------------------------
 
 ENV PAKROOT=/usr/local/lib/R/library/pak
 
@@ -42,20 +56,20 @@ RUN rm -rf ${PAKROOT}/library/_cache && \
     rm -rf ${PAKROOT}/library/*/doc &&  \
     find ${PAKROOT}/library -name "*.so" | xargs strip -x
 
-# Embed CA certs ----------------------------------------------------------
+# Embed CA certs -----------------------------------------------------------
 
 # We use the pak build that we just installed.
 
 RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
 
-# Build binary package ----------------------------------------------------
+# Build binary package -----------------------------------------------------
 
 # We use the pak build that we just installed. This writes the binary
 # package to /tmp/pak_*.tar.gz.
 
 RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
-# Test --------------------------------------------------------------------
+# Test ---------------------------------------------------------------------
 
 # This also serves as a minimal test suite that we can download and
 # install real packages, with the new build.
@@ -63,7 +77,27 @@ RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
     "desc", "jsonlite"))'
 
-# Tag the artifact --------------------------------------------------------
+# Check dynamic linking ----------------------------------------------------
+
+# The .so files of the installed pak must only link libc and libgcc
+# dynamically; everything else (libcurl, OpenSSL, zlib, ...) must
+# be linked statically. Fail the build if any .so has an unexpected NEEDED
+# entry. On musl libc is a single library (libc.musl-<arch>.so.1).
+
+RUN set -eu; \
+    allow='^(libc\.musl|ld-musl|libgcc_s\.so)'; \
+    status=0; \
+    for so in $(find ${PAKROOT}/library -name "*.so"); do \
+      for need in $(patchelf --print-needed "$so"); do \
+        if ! echo "$need" | grep -Eq "$allow"; then \
+          echo "ERROR: $so links $need dynamically"; \
+          status=1; \
+        fi; \
+      done; \
+    done; \
+    exit $status
+
+# Tag the artifact ---------------------------------------------------------
 
 # build_pak_binary_linux() strips the libc suffix from the platform string,
 # so we re-insert it here to tell the musl and glibc binaries apart. The
@@ -73,7 +107,7 @@ RUN for f in /tmp/pak_*.tar.gz; do \
       mv "$f" "$(echo "$f" | sed 's/[.]tar[.]gz$/-musl.tar.gz/')"; \
     done
 
-# Export ------------------------------------------------------------------
+# Export -------------------------------------------------------------------
 
 # The built binary package is exported from this stage with
 # `docker buildx build --target export --output type=local,dest=...`.

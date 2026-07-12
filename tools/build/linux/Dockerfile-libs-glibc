@@ -18,13 +18,8 @@ USER root
 WORKDIR /root
 ENV TZ=UTC
 
-# Ubuntu 18.04 is EOL, so its archive metadata is no longer signed with a
-# key in this image's (frozen) keyring, and apt fails with "At least one
-# invalid signature was encountered". The packages themselves are still
-# served, so mark the repositories trusted to skip signature verification.
-RUN sed -i 's|^deb |deb [trusted=yes] |' /etc/apt/sources.list && \
-    apt-get -o Acquire::AllowInsecureRepositories=true update && \
-    apt-get install -y --allow-unauthenticated \
+RUN apt-get update && \
+    apt-get install -y \
       build-essential g++ curl perl pkg-config
 
 # zlib --------------------------------------------------------------------
@@ -38,8 +33,8 @@ RUN cd zlib-* &&                                                     \
 
 # openssl -----------------------------------------------------------------
 
-RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.4.1/openssl-3.4.1.tar.gz
-RUN tar xzf openssl-3.4.1.tar.gz && rm openssl-3.4.1.tar.gz
+RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz
+RUN tar xzf openssl-3.5.7.tar.gz && rm openssl-3.5.7.tar.gz
 RUN cd openssl-* &&                                                  \
     CFLAGS="-fPIC" ./config -fPIC no-shared --prefix=/opt/r-lib &&   \
     make &&                                                          \
@@ -58,10 +53,11 @@ RUN if [ -d /opt/r-lib/lib64 ]; then                                 \
 
 # libcurl -----------------------------------------------------------------
 
-RUN curl -LO https://curl.haxx.se/download/curl-8.11.0.tar.gz
+RUN curl -LO https://github.com/curl/curl/releases/download/curl-8_21_0/curl-8.21.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
 RUN cd curl-* &&                                                     \
-    CPPFLAGS="-I/opt/r-lib/include" LDFLAGS="-L/opt/r-lib/lib"        \
+    CFLAGS="-fPIC" CPPFLAGS="-I/opt/r-lib/include"                    \
+    LDFLAGS="-L/opt/r-lib/lib"                                        \
     ./configure --prefix=/opt/r-lib                                  \
       --enable-static --disable-shared --with-openssl=/opt/r-lib      \
       --with-zlib=/opt/r-lib --without-libpsl --without-brotli &&    \

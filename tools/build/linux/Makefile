@@ -51,9 +51,10 @@ R-%-glibc.done: libs-glibc.done pak_$(PAKVERSION).tar.gz
 
 # ------------------------------------------------------------------------
 
-# The static libraries (libcurl, OpenSSL, zlib) are built once into a local
-# image and reused across all R versions. Once these images are published,
-# the `.done` rules can `docker pull` them instead of rebuilding.
+# The static libraries (libcurl, OpenSSL, zlib, ...) are collected once into
+# a local image per flavor and reused across all R versions. Once these
+# images are published, the `.done` rules can `docker pull` them instead of
+# rebuilding.
 
 libs-musl:
 	docker build -t ghcr.io/r-lib/pak-libs-musl:latest \

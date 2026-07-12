@@ -27,14 +27,9 @@ COPY --from=libs /opt/r-lib /opt/r-lib
 
 # system requirements -----------------------------------------------------
 
-# Ubuntu 18.04 is EOL, so its archive metadata is no longer signed with a
-# key in this image's (frozen) keyring, and apt fails with "At least one
-# invalid signature was encountered". The packages themselves are still
-# served, so mark the repositories trusted to skip signature verification.
-RUN sed -i 's|^deb |deb [trusted=yes] |' /etc/apt/sources.list && \
-    apt-get -o Acquire::AllowInsecureRepositories=true update && \
-    apt-get install -y --allow-unauthenticated \
-      build-essential g++ gfortran curl pkg-config patchelf ca-certificates
+RUN apt-get update && \
+    apt-get install -y \
+      build-essential g++ curl perl pkg-config patchelf
 
 # Install R ---------------------------------------------------------------
 
@@ -100,6 +95,28 @@ RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 RUN R -q -e 'pak::pak_sitrep()'
 RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
     "desc", "jsonlite"))'
+
+# Check dynamic linking ---------------------------------------------------
+
+# The .so files of the installed pak must only link libc and libgcc
+# dynamically; everything else (libcurl, OpenSSL, zlib, ...) must
+# be linked statically. Fail the build if any .so has an unexpected NEEDED
+# entry. On glibc the libc family is libc/libm/libdl/libpthread/librt/
+# libresolv, plus the dynamic loader (ld-linux-*), which is a NEEDED entry
+# on aarch64.
+
+RUN set -eu; \
+    allow='^(libc|libm|libdl|libpthread|librt|libresolv|libgcc_s|ld-linux)'; \
+    status=0; \
+    for so in $(find ${PAKROOT}/library -name "*.so"); do \
+      for need in $(patchelf --print-needed "$so"); do \
+        if ! echo "$need" | grep -Eq "$allow"; then \
+          echo "ERROR: $so links $need dynamically"; \
+          status=1; \
+        fi; \
+      done; \
+    done; \
+    exit $status
 
 # Tag the artifact --------------------------------------------------------
 

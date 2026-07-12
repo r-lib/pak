@@ -1,63 +1,85 @@
 # ghcr.io/r-lib/pak-libs-musl:latest
 
-# Compile a static libcurl (and its dependencies) and install it into
-# /usr/local/. Dockerfiles can then build on this container by copying
-# over /usr/local/.
+# Compile a static libcurl and its dependencies (OpenSSL and zlib) and
+# install them into /usr/local/, so the pak-building Dockerfile
+# (Dockerfile-musl) can build on this container by copying over /usr/local/.
+#
+# We compile these from source (rather than using Alpine's packages) because
+# Alpine's static libraries are not built with -fPIC, so they cannot be
+# linked into pak's shared objects.
+#
+# /usr/local/ ends up containing ONLY static (.a) libraries (plus headers
+# and pkg-config files), so that anything linking against it picks the
+# static archives, not shared libraries.
 #
 # This builds natively, so it works on both x86_64 and aarch64, just build
 # it on the appropriate machine.
 
-FROM alpine:3.19 AS build
+# Keep this Alpine release in sync with the one r-minimal uses.
+FROM alpine:3.22 AS build
 
 WORKDIR /root
 
-RUN apk add linux-headers bash gcc musl-dev g++ pkgconf make
+RUN apk add linux-headers bash gcc musl-dev g++ pkgconf make perl \
+    wget ca-certificates tar
 
 # zlib --------------------------------------------------------------------
 
-RUN wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz
+RUN wget https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
 RUN tar xzf zlib-*.tar.gz && rm zlib-*.tar.gz
 RUN cd zlib-* &&                                                     \
-    CFLAGS=-fPIC ./configure --static &&                             \
+    CFLAGS=-fPIC ./configure --static --prefix=/usr/local &&         \
     make &&                                                          \
     make install
 
 # openssl -----------------------------------------------------------------
 
-RUN wget https://www.openssl.org/source/openssl-1.1.1m.tar.gz
-RUN tar xzf openssl-*.tar.gz && rm openssl-*.tar.gz
-RUN apk add perl linux-headers
+RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz
+RUN tar xzf openssl-3.5.7.tar.gz && rm openssl-3.5.7.tar.gz
 RUN cd openssl-* &&                                                  \
-    CFLAGS="-fPIC -static -U__GNUC__" ./config -fPIC no-shared &&    \
+    CFLAGS="-fPIC" ./config -fPIC no-shared --prefix=/usr/local &&   \
     make &&                                                          \
-    make install_sw &&                                               \
-    rm -rf /usr/local/bin/openssl                                    \
-       /usr/local/share/{man/doc}
+    make install_sw
 
-# libcurl now -------------------------------------------------------------
+# OpenSSL may install its libraries and pkg-config files into lib64; move
+# them next to zlib and libcurl so a single /usr/local/lib is enough.
 
-RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz
+RUN if [ -d /usr/local/lib64 ]; then                                 \
+      cp -a /usr/local/lib64/*.a /usr/local/lib/ &&                  \
+      mkdir -p /usr/local/lib/pkgconfig &&                           \
+      cp -a /usr/local/lib64/pkgconfig/* /usr/local/lib/pkgconfig/;  \
+    fi
+
+# libcurl -----------------------------------------------------------------
+
+RUN wget https://github.com/curl/curl/releases/download/curl-8_21_0/curl-8.21.0.tar.gz
 RUN tar xzf curl-*.tar.gz && rm curl-*.tar.gz
-RUN apk add pkgconfig
-RUN cd curl-* && \
-    ./configure --enable-static --disable-shared;                    \
+RUN cd curl-* &&                                                     \
+    CFLAGS="-fPIC" CPPFLAGS="-I/usr/local/include"                   \
+    LDFLAGS="-L/usr/local/lib"                                       \
+    ./configure --prefix=/usr/local                                 \
+      --enable-static --disable-shared --with-openssl=/usr/local     \
+      --with-zlib=/usr/local --without-libpsl --without-brotli &&    \
     make &&                                                          \
-    make install &&                                                  \
-    rm -rf /usr/local/bin/curl                                       \
-       /usr/local/share/{man/doc}
+    make install
+
+# We only need the static libraries, headers and pkg-config files, not the
+# curl/openssl command line tools.
+
+RUN rm -rf /usr/local/bin
 
 # =========================================================================
-# We don't need to keep the compilation artifacts, so copy the results
-# to a clean image
+# We don't need to keep the build tools, so copy the results to a clean
+# image.
 
-FROM alpine:3.19
+FROM alpine:3.22
 COPY --from=build /usr/local /usr/local/
 
 # Some of this info is shown on the GH packages pages
 
 LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
 LABEL org.opencontainers.image.description="This image builds and contains \
-    static libraries for libcurl and its dependencies. See \
+    static libraries for libcurl and its dependencies, for musl. See \
     https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs-musl \
     for details."
 LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"
