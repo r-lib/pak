@@ -1,0 +1,116 @@
+# Build a Linux binary package for glibc-based distros.
+#
+# We build on Ubuntu 18.04 (bionic) so the resulting pak binary is portable
+# to any glibc >= 2.27. This builds natively, so the same Dockerfile works
+# on both x86_64 and aarch64, just build it on the appropriate machine.
+#
+# We link libcurl, OpenSSL and zlib statically (they only exist as static
+# libraries in /opt/r-lib, copied from the pak-libs-glibc image), but link
+# libc, libgcc and libstdc++ dynamically, because they are available on all
+# distros. Hence no Makevars is needed for static linking; we only need to
+# make the bundled curl R package link the static libraries.
+
+# R_VERSION is a full patch version (e.g. 4.5.3), or `devel` / `next`. It is
+# used to download the matching R build from https://github.com/r-hub/R.
+ARG R_VERSION=4.5.3
+
+FROM ghcr.io/r-lib/pak-libs-glibc:latest AS libs
+
+FROM ubuntu:18.04 AS build
+ARG R_VERSION
+USER root
+WORKDIR /root
+ENV TZ=UTC
+
+# The static libcurl, OpenSSL and zlib.
+COPY --from=libs /opt/r-lib /opt/r-lib
+
+# system requirements -----------------------------------------------------
+
+RUN apt-get update && \
+    apt-get install -y build-essential g++ gfortran curl pkg-config \
+    patchelf ca-certificates
+
+# Install R ---------------------------------------------------------------
+
+# We use the glibc R builds from https://github.com/r-hub/R, which are built
+# on bionic as well. They install into /opt/R/${R_VERSION}-glibc.
+
+RUN ARCH="$(dpkg --print-architecture)" && \
+    curl -LO https://github.com/r-hub/R/releases/download/v${R_VERSION}/r-${R_VERSION}-glibc_1_${ARCH}.deb && \
+    (dpkg -i r-${R_VERSION}-glibc_1_${ARCH}.deb || apt-get -f -y install) && \
+    rm r-${R_VERSION}-glibc_1_${ARCH}.deb && \
+    ln -sf /opt/R/${R_VERSION}-glibc/bin/R /usr/local/bin/R && \
+    ln -sf /opt/R/${R_VERSION}-glibc/bin/Rscript /usr/local/bin/Rscript
+
+# set up static linking of libcurl ----------------------------------------
+
+# The bundled curl R package finds libcurl via pkg-config. We point it at
+# /opt/r-lib and install a pkg-config wrapper that always resolves the full
+# (static) dependency chain, so libcurl is linked together with its static
+# OpenSSL and zlib dependencies. Only static (.a) libraries exist in
+# /opt/r-lib, so there is nothing to link dynamically.
+
+ENV PKG_CONFIG_PATH=/opt/r-lib/lib/pkgconfig
+RUN printf '#!/bin/sh\nexec /usr/bin/pkg-config --static "$@"\n' \
+      > /usr/local/bin/pkg-config && \
+    chmod +x /usr/local/bin/pkg-config
+
+# Build binary package ----------------------------------------------------
+
+COPY pak_*.tar.gz /root/
+RUN PROCESSX_UNLINK_R=true R CMD INSTALL pak_*.tar.gz
+
+# Minimize library --------------------------------------------------------
+
+ENV PAKROOT=/opt/R/${R_VERSION}-glibc/lib/R/library/pak
+
+# R packages do not link libR.so on Linux, but remove it just in case.
+RUN find ${PAKROOT}/library -name "*.so" | \
+    xargs patchelf --remove-needed libR.so
+
+RUN rm -rf ${PAKROOT}/library/_cache && \
+    rm -rf ${PAKROOT}/library/*/help && \
+    rm -rf ${PAKROOT}/library/*/doc &&  \
+    find ${PAKROOT}/library -name "*.so" | xargs strip -x
+
+# Embed CA certs ----------------------------------------------------------
+
+# We use the pak build that we just installed.
+
+RUN R -q -e 'pak:::embed_ca_certs(lib = .libPaths()[1])'
+
+# Build binary package ----------------------------------------------------
+
+# We use the pak build that we just installed. This writes the binary
+# package to /tmp/pak_*.tar.gz.
+
+RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
+
+# Test --------------------------------------------------------------------
+
+# This also serves as a minimal test suite that we can download and
+# install real packages, with the new build.
+
+RUN R -q -e 'pak::pak_sitrep()'
+RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
+    "desc", "jsonlite"))'
+
+# Tag the artifact --------------------------------------------------------
+
+# build_pak_binary_linux() strips the libc suffix from the platform string,
+# so we re-insert it here to tell the musl and glibc binaries apart. The
+# file name ends in `...-linux.tar.gz`, so this yields `...-linux-glibc.tar.gz`.
+
+RUN for f in /tmp/pak_*.tar.gz; do \
+      mv "$f" "$(echo "$f" | sed 's/[.]tar[.]gz$/-glibc.tar.gz/')"; \
+    done
+
+# Export ------------------------------------------------------------------
+
+# The built binary package is exported from this stage with
+# `docker buildx build --target export --output type=local,dest=...`.
+# Pushing to ghcr.io happens later, in a separate deploy job.
+
+FROM scratch AS export
+COPY --from=build /tmp/pak_*.tar.gz /

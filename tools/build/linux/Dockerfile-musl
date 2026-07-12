@@ -1,19 +1,21 @@
-# Build a static Linux x86_64 binary package
+# Build a Linux binary package for musl-based distros.
+#
+# This builds natively, so the same Dockerfile works on both x86_64 and
+# aarch64, just build it on the appropriate machine. r-minimal is a
+# multi-arch image, so it works on both architectures out of the box.
+#
+# We link libcurl, OpenSSL and zlib statically (they only exist as static
+# libraries in /usr/local, copied from the pak-libs-musl image), but link
+# libc, libgcc and libstdc++ dynamically, because they are available on all
+# distros. Hence no Makevars is needed for static linking.
 
 ARG R_MAJOR=4.1
 
-FROM ghcr.io/r-lib/pak-libs:latest AS libs
+FROM ghcr.io/r-lib/pak-libs-musl:latest AS libs
 FROM ghcr.io/r-hub/r-minimal/r-minimal:${R_MAJOR} AS build
 COPY --from=libs /usr/local /usr/local
 USER root
 WORKDIR /root
-
-# -------------------------------------------------------------------------
-# set up static compilation
-# -------------------------------------------------------------------------
-
-RUN mkdir -p /root/.R
-COPY Makevars-x86_64 /root/.R/Makevars
 
 # system requirements -----------------------------------------------------
 
@@ -60,6 +62,16 @@ RUN R -q -e 'pak:::build_pak_binary_linux(lib = .libPaths()[1])'
 
 RUN R -q -e 'pak::pkg_install(c("R6@2.5.1", "glue@1.6.2", "gitcreds", "processx", "digest", \
     "desc", "jsonlite"))'
+
+# Tag the artifact --------------------------------------------------------
+
+# build_pak_binary_linux() strips the libc suffix from the platform string,
+# so we re-insert it here to tell the musl and glibc binaries apart. The
+# file name ends in `...-linux.tar.gz`, so this yields `...-linux-musl.tar.gz`.
+
+RUN for f in /tmp/pak_*.tar.gz; do \
+      mv "$f" "$(echo "$f" | sed 's/[.]tar[.]gz$/-musl.tar.gz/')"; \
+    done
 
 # Export ------------------------------------------------------------------
 

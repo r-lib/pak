@@ -1,2 +1,0 @@
-PKG_LIBS+=-static-libgcc /usr/lib/libc.a
-CFLAGS+=-static-libgcc -static

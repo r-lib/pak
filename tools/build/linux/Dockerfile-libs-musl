@@ -1,8 +1,11 @@
-# ghcr.io/r-lib/pak-libs:latest
+# ghcr.io/r-lib/pak-libs-musl:latest
 
 # Compile a static libcurl (and its dependencies) and install it into
 # /usr/local/. Dockerfiles can then build on this container by copying
 # over /usr/local/.
+#
+# This builds natively, so it works on both x86_64 and aarch64, just build
+# it on the appropriate machine.
 
 FROM alpine:3.19 AS build
 
@@ -55,6 +58,6 @@ COPY --from=build /usr/local /usr/local/
 LABEL org.opencontainers.image.source="https://github.com/r-lib/pak"
 LABEL org.opencontainers.image.description="This image builds and contains \
     static libraries for libcurl and its dependencies. See \
-    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs \
+    https://github.com/r-lib/pak/blob/main/tools/build/linux/Dockerfile-libs-musl \
     for details."
 LABEL org.opencontainers.image.authors="https://github.com/gaborcsardi"

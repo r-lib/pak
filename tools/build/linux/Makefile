@@ -1,67 +1,82 @@
-# Build static pak binary package on Linux, x86_64 and aarch64
-
-# To build some R versions, on x86_64:
+# Build the Linux binary pak packages.
+#
+# We build two flavors:
+# - `musl`  on Alpine,       for musl-based distros,
+# - `glibc` on Ubuntu 18.04, for glibc-based distros (glibc >= 2.27).
+#
+# Both are built natively, so run `make` on an x86_64 machine to build
+# x86_64 binaries and on an aarch64 machine to build aarch64 binaries.
+# There is no cross-compilation.
+#
+# RVERSIONS is interpreted differently by the two flavors:
+# - `musl`  uses the r-minimal image tags, i.e. major versions, e.g. `4.5`.
+# - `glibc` uses the https://github.com/r-hub/R release tags, i.e. full
+#    patch versions, e.g. `4.5.3`, or `devel` / `next`.
+#
+# To build some musl binaries:
 # ```
-# RVERSIONS="4.3 4.4" make
+# RVERSIONS="4.4 4.5" make musl
 # ```
 #
-# To do the same for aarch64:
+# To build some glibc binaries:
 # ```
-# RVERSIONS=4.3 4.4" make aarch64
+# RVERSIONS="4.4.3 4.5.3" make glibc
 # ```
 
 # ------------------------------------------------------------------------
 
-RVERSIONS ?= 3.5 3.6 4.0 4.1 4.2 4.3 4.4 4.5 4.6
+RVERSIONS ?= 3.6 4.0 4.1 4.2 4.3 4.4 4.5 4.6
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
-DONE=$(patsubst %,R-%.done,$(RVERSIONS))
-DONE_AARCH64=$(patsubst %,R-%-aarch64.done,$(RVERSIONS))
+DONE_MUSL=$(patsubst %,R-%-musl.done,$(RVERSIONS))
+DONE_GLIBC=$(patsubst %,R-%-glibc.done,$(RVERSIONS))
 
-all: build
+all: musl glibc
 
-aarch64: $(DONE_AARCH64)
+musl: $(DONE_MUSL)
 
-build: $(DONE)
+glibc: $(DONE_GLIBC)
 
-# The built binary package is exported to out-aarch64/$*/pak_*.tar.gz (resp.
-# out/$*/pak_*.tar.gz), a separate deploy job pushes it to ghcr.io.
+# The built binary package is exported to out-musl/$*/pak_*.tar.gz (resp.
+# out-glibc/$*/pak_*.tar.gz), a separate deploy job pushes it to ghcr.io.
 
-R-%-aarch64.done: libs-aarch64.done pak_$(PAKVERSION).tar.gz
+R-%-musl.done: libs-musl.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker buildx build --platform linux/amd64 -f Dockerfile-aarch64 \
+	docker buildx build -f Dockerfile-musl \
 		--build-arg R_MAJOR=$* \
-		--target export --output type=local,dest=out-aarch64/$* .
+		--target export --output type=local,dest=out-musl/$* .
 	touch $@
 
-R-%.done: libs.done pak_$(PAKVERSION).tar.gz
+R-%-glibc.done: libs-glibc.done pak_$(PAKVERSION).tar.gz
 	rm -f $@
-	docker buildx build --platform linux/amd64 -f Dockerfile \
-		--build-arg R_MAJOR=$* \
-		--target export --output type=local,dest=out/$* .
+	docker buildx build -f Dockerfile-glibc \
+		--build-arg R_VERSION=$* \
+		--target export --output type=local,dest=out-glibc/$* .
 	touch $@
 
 # ------------------------------------------------------------------------
 
-cross-aarch64:
-	docker build -t ghcr.io/r-lib/pak-cross-aarch64:latest \
-		-f Dockerfile-cross-aarch64 .
+# The static libraries (libcurl, OpenSSL, zlib) are built once into a local
+# image and reused across all R versions. Once these images are published,
+# the `.done` rules can `docker pull` them instead of rebuilding.
 
-libs:
-	docker build -t ghcr.io/r-lib/pak-libs:latest \
-		-f Dockerfile-libs .
+libs-musl:
+	docker build -t ghcr.io/r-lib/pak-libs-musl:latest \
+		-f Dockerfile-libs-musl .
 
-libs.done:
+libs-musl.done:
 	rm -f $@
-	docker pull ghcr.io/r-lib/pak-libs:latest
+	docker build -t ghcr.io/r-lib/pak-libs-musl:latest \
+		-f Dockerfile-libs-musl .
 	touch $@
 
-libs-aarch64:
-	docker build -t ghcr.io/r-lib/pak-libs-aarch64:latest \
-		-f Dockerfile-libs-aarch64 .
+libs-glibc:
+	docker build -t ghcr.io/r-lib/pak-libs-glibc:latest \
+		-f Dockerfile-libs-glibc .
 
-libs-aarch64.done:
+libs-glibc.done:
 	rm -f $@
-	docker pull ghcr.io/r-lib/pak-libs-aarch64:latest
+	docker build -t ghcr.io/r-lib/pak-libs-glibc:latest \
+		-f Dockerfile-libs-glibc .
 	touch $@
 
 pak_$(PAKVERSION).tar.gz:
@@ -78,6 +93,6 @@ pak_$(PAKVERSION).tar.gz:
 # ------------------------------------------------------------------------
 
 clean:
-	rm -rf *.tar.gz
+	rm -rf *.tar.gz *.done out-musl out-glibc
 
-.PHONY: all build clean cross-aarch64 libs libs-aarch64 push rcmdbuild
+.PHONY: all musl glibc libs-musl libs-glibc clean
