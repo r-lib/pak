@@ -603,6 +603,7 @@ github_query <- function(
     "/graphql"
   ),
   headers = character(),
+  retry = http_retry_post(),
   ...
 ) {
   query
@@ -618,7 +619,7 @@ github_query <- function(
   resp <- NULL
   obj <- NULL
 
-  http_post(url, data = data, headers = headers, ...)$catch(
+  http_post(url, data = data, headers = headers, retry = retry, ...)$catch(
     error = function(err) throw(new_github_offline_error(), parent = err)
   )$then(function(res) {
     resp <<- res

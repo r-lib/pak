@@ -246,7 +246,7 @@ async_wikipedia_get_query <- function(terms) {
     "https://en.wikipedia.org/w/api.php"
   )
   data <- make_wikipedia_data(terms)
-  http_post(url, data = data)
+  http_post(url, data = data, retry = http_retry_post())
 }
 
 make_wikipedia_data <- function(terms, intro = TRUE) {
@@ -369,7 +369,7 @@ async_wiktionary_get_query <- function(terms) {
     "https://en.wiktionary.org/w/api.php"
   )
   data <- make_wikipedia_data(terms, intro = FALSE)
-  http_post(url, data = data)
+  http_post(url, data = data, retry = http_retry_post())
 }
 
 wiktionary_get_process <- function(terms, resp) {

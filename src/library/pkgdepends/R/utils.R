@@ -319,6 +319,37 @@ http_post <- function(...) {
   asNamespace("pkgcache")$http_post(...)
 }
 
+http_retry_post <- function() {
+  retry <- pkg_http_retry_config()
+  if (isFALSE(retry)) {
+    return(FALSE)
+  }
+  spec <- if (is.list(retry)) {
+    retry
+  } else if (is.numeric(retry) && length(retry) == 1L) {
+    list(limit = retry)
+  } else {
+    list()
+  }
+  spec$methods <- "POST"
+  spec
+}
+
+pkg_http_retry_config <- function() {
+  opt <- getOption("pkg_http_retry")
+  if (!is.null(opt)) {
+    return(opt)
+  }
+  env <- Sys.getenv("PKG_HTTP_RETRY", NA_character_)
+  if (!is.na(env)) {
+    if (tolower(env) %in% c("true", "false")) {
+      return(as.logical(env))
+    }
+    return(as.integer(env))
+  }
+  TRUE
+}
+
 http_delete <- function(...) {
   asNamespace("pkgcache")$http_delete(...)
 }
