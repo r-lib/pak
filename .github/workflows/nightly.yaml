@@ -348,7 +348,14 @@ jobs:
   push:
     runs-on: ubuntu-latest
     needs: [ macos, windows, linux, macos-arm64, bsd ]
-    if: always()
+    if: |
+      always() && (
+        needs.macos.result != 'skipped' ||
+        needs.windows.result != 'skipped' ||
+        needs.linux.result != 'skipped' ||
+        needs.macos-arm64.result != 'skipped' ||
+        needs.bsd.result != 'skipped'
+      )
     concurrency:
       group: pak-push
       queue: max
@@ -407,10 +414,14 @@ jobs:
           recursive = TRUE,
           full.names = TRUE
         )
-        cat("Pushing", length(files), "package file(s):\n")
-        cat(files, sep = "\n")
-        cat("\n")
-        pak:::push_packages(normalizePath(files))
+        if (length(files) == 0) {
+          cat("No package files to push, skipping.\n")
+        } else {
+          cat("Pushing", length(files), "package file(s):\n")
+          cat(files, sep = "\n")
+          cat("\n")
+          pak:::push_packages(normalizePath(files))
+        }
       shell: Rscript {0}
       env:
         PAK_GHCR_TOKEN: ${{ secrets.PAK_GHCR_TOKEN }}
