@@ -504,7 +504,11 @@ pkgplan_i_lp_satisfy_direct <- function(lp) {
   satisfy <- function(wh) {
     pkgname <- lp$pkgs$package[[wh]]
     res <- lp$pkgs[wh, ]
-    others <- setdiff(which(lp$pkgs$package == pkgname), wh)
+    ## Ruled-out candidates (e.g. failed resolutions, which have an `NA`
+    ## version) are already constrained to zero, so there is no need to add
+    ## a satisfy constraint for them. Skipping them also avoids running
+    ## `satisfies_remote()` on candidates with missing version info.
+    others <- setdiff(which(lp$pkgs$package == pkgname), c(wh, lp$ruled_out))
     for (o in others) {
       res2 <- lp$pkgs[o, ]
       if (!isTRUE(satisfies_remote(res, res2))) {

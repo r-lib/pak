@@ -237,6 +237,11 @@ config <- local({
 
     rec <- env$data[[name]]
 
+    # forwarded entries are documentation-only, they have no value here
+    if (isTRUE(rec$forwarded)) {
+      return(list("forwarded", NULL))
+    }
+
     # was explicitly set?
     if (!is.null(rec$value)) {
       return(list("set", rec$value))
@@ -413,6 +418,60 @@ config <- local({
     }
 
     # --------------------------------------------------------------------
+    #' ## `conf$add_forwarded()`: add a forwarded (documentation-only) entry
+    #'
+    #' A forwarded entry is not read or used by the package itself. It is
+    #' handled elsewhere, e.g. by another package that actually makes the
+    #' request the entry configures. Adding it to the configuration only
+    #' serves documentation and discoverability: it appears in `$list()`
+    #' and when printing the configuration, but it cannot be queried with
+    #' `$get()` or changed with `$set()`.
+    #'
+    #' ### Usage
+    #'
+    #' ```r
+    #' conf$add_forwarded(name, option = NULL, envvar = NULL)
+    #' ```
+    #'
+    #' ### Arguments
+    #'
+    #' * `name`: name of the entry.
+    #' * `option`: name of the R option that configures the entry. If `NULL`,
+    #'   then it is derived from the prefix and `name`, the same way as for
+    #'   regular entries.
+    #' * `envvar`: name of the environment variable that configures the entry.
+    #'   If `NULL`, then it is derived from the prefix and `name`, the same
+    #'   way as for regular entries.
+    #'
+    #' ### Value
+    #'
+    #' The configuration, invisibly.
+
+    env$add_forwarded <- function(name, option = NULL, envvar = NULL) {
+      assert_that(
+        is_config_name(name),
+        is_optional_string(option),
+        is_optional_string(envvar)
+      )
+      name <- standard_name(name)
+
+      if (name %in% names(env$data)) {
+        throw(pkg_error(
+          "There is already a config entry called {.code {name}}."
+        ))
+      }
+
+      env$data[[name]] <- list(
+        forwarded = TRUE,
+        option = option %||% paste0(env$prefix, name),
+        envvar = envvar %||%
+          toupper(chartr(".", "_", paste0(env$prefix, name))),
+        value = NULL
+      )
+      invisible(env)
+    }
+
+    # --------------------------------------------------------------------
     #' ## `conf$get()`: query the value of a configuration entry
     #'
     #' ### Usage
@@ -449,7 +508,16 @@ config <- local({
     #'   function, that is called before returning.
 
     env$get <- function(name) {
-      get_internal(env, name)[[2]]
+      res <- get_internal(env, name)
+      if (identical(res[[1]], "forwarded")) {
+        throw(pkg_error(
+          "Cannot query forwarded config entry {.code {standard_name(name)}}
+           with {.code $get()}.",
+          i = "It is a documentation-only entry, handled elsewhere, e.g. by
+               another package."
+        ))
+      }
+      res[[2]]
     }
 
     # --------------------------------------------------------------------
@@ -482,6 +550,13 @@ config <- local({
         throw(pkg_error(
           "Cannot set unknown config entry: {.code {name}}.",
           i = "See `$list()` for the list of all config entries."
+        ))
+      }
+      if (isTRUE(env$data[[name]]$forwarded)) {
+        throw(pkg_error(
+          "Cannot set forwarded config entry {.code {name}}.",
+          i = "It is a documentation-only entry, handled elsewhere, e.g. by
+               another package."
         ))
       }
       if (!is.null(chk <- env$data[[name]]$check)) {
@@ -712,7 +787,12 @@ config <- local({
     for (i in seq_along(all)) {
       cat0("## ", names(all)[i], "\n")
       cat0("<", all[[i]][[1]], ">\n")
-      print(all[[i]][[2]])
+      if (identical(all[[i]][[1]], "forwarded")) {
+        rec <- x$data[[names(all)[i]]]
+        cat0("option: ", rec$option, ", envvar: ", rec$envvar, "\n")
+      } else {
+        print(all[[i]][[2]])
+      }
       cat0("\n")
     }
     invisible(x)

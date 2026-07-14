@@ -43,15 +43,24 @@ roxy_to_rd <- function(text) {
 }
 
 generate_config_docs <- function() {
-  # for the dynamic help in pak
-  config <- Filter(function(x) !is.null(x$docs), pkgdepends_config)
-  nms <- names(config)
-  dcs <- lapply(config, function(x) x[["docs_pak"]] %||% x[["docs"]])
-  inc <- vlapply(config, function(x) x$pak %||% TRUE)
-  nms <- nms[inc]
-  dcs <- dcs[inc]
+  documented <- Filter(function(x) !is.null(x$docs), pkgdepends_config)
+  forwarded <- Filter(function(x) isTRUE(x$forwarded), documented)
+  config <- Filter(function(x) !isTRUE(x$forwarded), documented)
 
-  rd <- lapply(dcs, roxy_to_rd)
+  # for the dynamic help in pak. Forwarded entries are included too, but
+  # since they do not follow the `pkg.` / `PKG_` naming convention, we
+  # attach their actual option and environment variable names as attributes,
+  # so that pak can pick them up instead of deriving them from the name.
+  pakcfg <- Filter(function(x) x$pak %||% TRUE, documented)
+  rd <- map_named(pakcfg, function(name, entry) {
+    out <- roxy_to_rd(entry[["docs_pak"]] %||% entry[["docs"]])
+    if (isTRUE(entry$forwarded)) {
+      attr(out, "option") <- entry$option %||% paste0("pkg.", name)
+      attr(out, "envvar") <- entry$envvar %||%
+        toupper(chartr(".", "_", paste0("pkg_", name)))
+    }
+    out
+  })
   outp <- paste(utils::capture.output(print(rd)), collapse = "\n")
   mdfile <- "tools/doc/pak-config-docs.md"
   oldp <- read_char(mdfile)
@@ -66,8 +75,33 @@ generate_config_docs <- function() {
   items <- map_named(config, function(name, entry) {
     paste0("* `", name, "`: ", entry$docs)
   })
-
   alldocs <- paste(items, collapse = "\n")
+
+  # Forwarded entries are documented in their own section, with their
+  # actual option and environment variable names, as they do not follow
+  # the `pkg.` / `PKG_` naming convention of the regular entries.
+  if (length(forwarded)) {
+    fitems <- map_named(forwarded, function(name, entry) {
+      option <- entry$option %||% paste0("pkg.", name)
+      envvar <- entry$envvar %||% toupper(paste0("PKG_", name))
+      paste0(
+        "* `", option, "` option, `", envvar,
+        "` environment variable: ", entry$docs
+      )
+    })
+    alldocs <- paste0(
+      alldocs,
+      "\n\n# Forwarded configuration\n\n",
+      "The following entries are not used directly, they are ",
+      "handled by other packages that perform the corresponding requests. ",
+      "They are set via R options and environment variables, but, unlike ",
+      "the entries above, they cannot be set via the `config` argument, and ",
+      "their option and environment variable names may differ from the ",
+      "`pkg.` and `PKG_` naming convention.\n\n",
+      paste(fitems, collapse = "\n")
+    )
+  }
+
   alldocs
 }
 

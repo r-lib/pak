@@ -143,6 +143,17 @@ pkgdepends_config <- sort_by_name(list(
   ),
 
   # -----------------------------------------------------------------------
+  http_retry = list(
+    forwarded = TRUE,
+    option = "pkg_http_retry",
+    envvar = "PKG_HTTP_RETRY",
+    docs = "Whether to retry failed HTTP requests. It can be `TRUE` to retry
+       with the default settings, or `FALSE` to never retry. Defaults to
+       `TRUE`. This entry is handled by pkgcache, which performs all HTTP
+       requests."
+  ),
+
+  # -----------------------------------------------------------------------
   ignore_dev_library = list(
     type = "flag",
     default = TRUE,
@@ -408,14 +419,18 @@ current_config <- function() {
   conf$add_type("difftime", is_difftime, env_decode_difftime)
 
   map_named(pkgdepends_config, function(name, entry) {
-    type <- entry$type %||% "character"
-    conf$add(
-      name,
-      type,
-      default = entry$default,
-      check = entry$check %||% type,
-      env_decode = entry$env_decode %||% type
-    )
+    if (isTRUE(entry$forwarded)) {
+      conf$add_forwarded(name, option = entry$option, envvar = entry$envvar)
+    } else {
+      type <- entry$type %||% "character"
+      conf$add(
+        name,
+        type,
+        default = entry$default,
+        check = entry$check %||% type,
+        env_decode = entry$env_decode %||% type
+      )
+    }
   })
 
   conf$lock()
