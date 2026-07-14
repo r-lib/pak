@@ -87,6 +87,10 @@ affects <code>git::</code> and <code>gitlab::</code> package sources only.
 If the R package is in a subdirectory then only the submodules
 within that directory are updated. If a submodule appears in
 <code>.Rbuildignore</code>, then it is skipped.</p></li>
+<li><p>‘http_retry’: (Env var: <code>PKG_HTTP_RETRY</code>, option: <code>pkg_http_retry</code>.) Whether to retry failed HTTP requests. It can be <code>TRUE</code> to retry
+with the default settings, or <code>FALSE</code> to never retry. Defaults to
+<code>TRUE</code>. This entry is handled by pkgcache, which performs all HTTP
+requests.</p></li>
 <li><p>‘ignore_dev_library’: (Env var: <code>PKG_IGNORE_DEV_LIBRARY</code>, option: <code>pkg.ignore_dev_library</code>.) Whether to ignore library directories called <code>__dev_lib__</code>.</p></li>
 <li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
 of and installation, even if they are needed because the packages

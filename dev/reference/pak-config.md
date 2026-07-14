@@ -57,6 +57,11 @@ Some examples:
   within that directory are updated. If a submodule appears in
   `.Rbuildignore`, then it is skipped.
 
+- ‘http_retry’: (Env var: `PKG_HTTP_RETRY`, option: `pkg_http_retry`.)
+  Whether to retry failed HTTP requests. It can be `TRUE` to retry with
+  the default settings, or `FALSE` to never retry. Defaults to `TRUE`.
+  This entry is handled by pkgcache, which performs all HTTP requests.
+
 - ‘ignore_dev_library’: (Env var: `PKG_IGNORE_DEV_LIBRARY`, option:
   `pkg.ignore_dev_library`.) Whether to ignore library directories
   called `__dev_lib__`.
