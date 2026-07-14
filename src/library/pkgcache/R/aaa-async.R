@@ -84,7 +84,6 @@ is_async <- function(fun) {
   assert_that(is.function(fun))
   is.list(a <- attr(body(fun), "async")) && identical(a$async, TRUE)
 }
-
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
@@ -133,7 +132,6 @@ is_flag <- function(x) {
 on_failure(is_flag) <- function(call, env) {
   paste0(deparse(call$x), " must be a flag (length 1 logical)")
 }
-
 #' Retry an asynchronous function with exponential backoff
 #'
 #' Keeps trying until the function's deferred value resolves without
@@ -166,8 +164,7 @@ on_failure(is_flag) <- function(call, env) {
 #'
 #' @family async control flow
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
 #' afun <- function() {
 #'   wait_100_ms <- function(i) 0.1
 #'   async_backoff(
@@ -179,7 +176,6 @@ on_failure(is_flag) <- function(call, env) {
 #'
 #' # There is a slight chance that it fails
 #' tryCatch(synchronise(afun()), error = function(e) e)
-#' }
 
 async_backoff <- function(
   task,
@@ -253,7 +249,6 @@ async_backoff <- mark_as_async(async_backoff)
 default_backoff <- function(i) {
   as.integer(stats::runif(1, min = 1, max = 2^i) * 1000) / 1000
 }
-
 #' Asynchronous function call, in a worker pool
 #'
 #' The function will be called on another process, very much like
@@ -292,7 +287,6 @@ call_function <- function(func, args = list()) {
 }
 
 call_function <- mark_as_async(call_function)
-
 #' Make a minimal deferred that resolves to the specified value
 #'
 #' This is sometimes useful to start a deferred chain.
@@ -322,7 +316,6 @@ async_constant <- function(value = NULL) {
 }
 
 async_constant <- mark_as_async(async_constant)
-
 async_env <- new.env(parent = emptyenv())
 async_env$loops <- list()
 
@@ -354,7 +347,6 @@ pop_event_loop <- function() {
   async_env$loops[[num_loops]] <- NULL
   if (num_loops > 1) async_env$loops[[num_loops - 1]]$wakeup()
 }
-
 #' Async debugging utilities
 #'
 #' Helper function to help with the non-trivial debugging of async code.
@@ -753,7 +745,6 @@ async_debug_remove_shortcuts <- function() {
 debug_all <- function(fun) {
   debug(fun)
 }
-
 #' Deferred value
 #'
 #' @section Usage:
@@ -798,7 +789,7 @@ debug_all <- function(fun) {
 #' @section Deferred values:
 #'
 #' Asynchronous computation is represented by deferred values.
-#' A deferred value is an [R6](https://github.com/wch/R6) object.
+#' A deferred value is an [R6](https://github.com/r-lib/R6) object.
 #'
 #' ```
 #' deferred$new(action = NULL, on_progress = NULL, on_cancel = NULL,
@@ -1013,13 +1004,17 @@ debug_all <- function(fun) {
 #' three HTTP requests in parallel:
 #'
 #' ```
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' http_status3 <- function() {
 #'   http_status <- function(url) {
 #'     http_get(url)$then(function(response) response$status_code)
 #'   }
-#'   r1 <- http_status("https://eu.httpbin.org/status/403")
-#'   r2 <- http_status("https://eu.httpbin.org/status/404")
-#'   r3 <- http_status("https://eu.httpbin.org/status/200")
+#'   r1 <- http_status(httpbin$url("/status/403"))
+#'   r2 <- http_status(httpbin$url("/status/404"))
+#'   r3 <- http_status(httpbin$url("/status/200"))
 #'   when_all(r1, r2, r3)
 #' }
 #' synchronise(http_status3())
@@ -1169,10 +1164,18 @@ deferred <- R6Class(
         event_emitter
       )
     },
-    then = function(on_fulfilled) def_then(self, private, on_fulfilled),
-    catch = function(...) def_catch(self, private, ...),
-    finally = function(on_finally) def_finally(self, private, on_finally),
-    cancel = function(reason = "Cancelled") def_cancel(self, private, reason),
+    then = function(on_fulfilled) {
+      def_then(self, private, on_fulfilled)
+    },
+    catch = function(...) {
+      def_catch(self, private, ...)
+    },
+    finally = function(on_finally) {
+      def_finally(self, private, on_finally)
+    },
+    cancel = function(reason = "Cancelled") {
+      def_cancel(self, private, reason)
+    },
     share = function() {
       private$shared <<- TRUE
       invisible(self)
@@ -1200,13 +1203,23 @@ deferred <- R6Class(
     shared = FALSE,
     mycall = NULL,
 
-    run_action = function() def__run_action(self, private),
+    run_action = function() {
+      def__run_action(self, private)
+    },
 
-    null = function() def__null(self, private),
+    null = function() {
+      def__null(self, private)
+    },
 
-    resolve = function(value) def__resolve(self, private, value),
-    reject = function(reason) def__reject(self, private, reason),
-    progress = function(data) def__progress(self, private, data),
+    resolve = function(value) {
+      def__resolve(self, private, value)
+    },
+    reject = function(reason) {
+      def__reject(self, private, reason)
+    },
+    progress = function(data) {
+      def__progress(self, private, data)
+    },
 
     make_error_object = function(err) {
       def__make_error_object(self, private, err)
@@ -1215,12 +1228,16 @@ deferred <- R6Class(
     maybe_cancel_parents = function(reason) {
       def__maybe_cancel_parents(self, private, reason)
     },
-    add_as_parent = function(child) def__add_as_parent(self, private, child),
+    add_as_parent = function(child) {
+      def__add_as_parent(self, private, child)
+    },
     update_parent = function(old, new) {
       def__update_parent(self, private, old, new)
     },
 
-    get_info = function() def__get_info(self, private)
+    get_info = function() {
+      def__get_info(self, private)
+    }
   )
 )
 
@@ -1620,10 +1637,9 @@ def__get_info <- function(self, private) {
     parents = I(list(viapply(private$parents, function(x) get_private(x)$id))),
     label = as.character(private$id),
     call = I(list(private$mycall)),
-    children = I(list(viapply(
-      private$children,
-      function(x) get_private(x)$id
-    ))),
+    children = I(list(viapply(private$children, function(x) {
+      get_private(x)$id
+    }))),
     type = private$type %||% "unknown",
     running = private$running,
     state = private$state,
@@ -1665,7 +1681,6 @@ def__get_info <- function(self, private) {
 is_deferred <- function(x) {
   inherits(x, "deferred")
 }
-
 #' Delay async computation for the specified time
 #'
 #' Since R is single-threaded, the deferred value might be resolved (much)
@@ -1676,20 +1691,19 @@ is_deferred <- function(x) {
 #' @return A deferred object.
 #'
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' ## Two HEAD requests with 1/2 sec delay between them
 #' resp <- list()
 #' afun <- async(function() {
-#'   http_head("https://eu.httpbin.org?q=2")$
+#'   http_head(httpbin$url("/get?q=2"))$
 #'     then(function(value) resp[[1]] <<- value$status_code)$
 #'     then(function(...) delay(1/2))$
-#'     then(function(...) http_head("https://eu.httpbin.org?q=2"))$
+#'     then(function(...) http_head(httpbin$url("/get?q=2")))$
 #'     then(function(value) resp[[2]] <<- value$status_code)
 #' })
 #' synchronise(afun())
 #' resp
-#' }
 
 delay <- function(delay) {
   force(delay)
@@ -1713,7 +1727,6 @@ delay <- function(delay) {
 }
 
 delay <- mark_as_async(delay)
-
 #' Find the value of a match, asynchronously
 #'
 #' All predicates are running in parallel, and the returned match
@@ -1728,14 +1741,16 @@ delay <- mark_as_async(delay)
 #'
 #' @family async iterators
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' synchronise(async_detect(
-#'   c("https://eu.httpbin.org/status/404", "https://eu.httpbin.org",
-#'     "https://eu.httpbin.org/status/403"),
+#'   c(httpbin$url("/status/404"), httpbin$url("/get"),
+#'     httpbin$url("/status/403")),
 #'   async_sequence(http_head, function(x) x$status_code == 200)
 #' ))
-#' }
 
 async_detect <- function(.x, .p, ..., .limit = Inf) {
   if (.limit < length(.x)) {
@@ -1812,13 +1827,14 @@ async_detect_limit <- function(.x, .p, ..., .limit = .limit) {
 
   self
 }
-
 #' @importFrom R6 R6Class
 
 event_loop <- R6Class(
   "event_loop",
   public = list(
-    initialize = function() el_init(self, private),
+    initialize = function() {
+      el_init(self, private)
+    },
 
     add_http = function(
       handle,
@@ -1853,29 +1869,53 @@ event_loop <- R6Class(
       el_add_next_tick(self, private, func, callback, data)
     },
 
-    cancel = function(id) el_cancel(self, private, id),
-    cancel_all = function() el_cancel_all(self, private),
+    cancel = function(id) {
+      el_cancel(self, private, id)
+    },
+    cancel_all = function() {
+      el_cancel_all(self, private)
+    },
 
     run = function(mode = c("default", "nowait", "once")) {
       el_run(self, private, mode = match.arg(mode))
     },
 
-    suspend = function() el_suspend(self, private),
-    wakeup = function() el_wakeup(self, private)
+    suspend = function() {
+      el_suspend(self, private)
+    },
+    wakeup = function() {
+      el_wakeup(self, private)
+    }
   ),
 
   private = list(
     create_task = function(callback, ..., id = NULL, type = "foobar") {
       el__create_task(self, private, callback, ..., id = id, type = type)
     },
-    ensure_pool = function() el__ensure_pool(self, private),
-    get_poll_timeout = function() el__get_poll_timeout(self, private),
-    run_pending = function() el__run_pending(self, private),
-    run_timers = function() el__run_timers(self, private),
-    is_alive = function() el__is_alive(self, private),
-    update_time = function() el__update_time(self, private),
-    io_poll = function(timeout) el__io_poll(self, private, timeout),
-    update_curl_data = function() el__update_curl_data(self, private),
+    ensure_pool = function() {
+      el__ensure_pool(self, private)
+    },
+    get_poll_timeout = function() {
+      el__get_poll_timeout(self, private)
+    },
+    run_pending = function() {
+      el__run_pending(self, private)
+    },
+    run_timers = function() {
+      el__run_timers(self, private)
+    },
+    is_alive = function() {
+      el__is_alive(self, private)
+    },
+    update_time = function() {
+      el__update_time(self, private)
+    },
+    io_poll = function(timeout) {
+      el__io_poll(self, private, timeout)
+    },
+    update_curl_data = function() {
+      el__update_curl_data(self, private)
+    },
 
     id = NULL,
     time = Sys.time(),
@@ -2400,7 +2440,6 @@ el__update_curl_data <- function(self, private) {
     private$time + as.difftime(t / 1000.0, units = "secs")
   }
 }
-
 #' Generic Event Emitter
 #'
 #' This is a generic class that can be used to create event emitters.
@@ -2486,7 +2525,9 @@ el__update_curl_data <- function(self, private) {
 event_emitter <- R6Class(
   "event_emitter",
   public = list(
-    initialize = function(async = TRUE) ee_init(self, private, async),
+    initialize = function(async = TRUE) {
+      ee_init(self, private, async)
+    },
 
     listen_on = function(event, callback) {
       ee_listen_on(self, private, event, callback)
@@ -2500,9 +2541,13 @@ event_emitter <- R6Class(
       ee_listen_once(self, private, event, callback)
     },
 
-    emit = function(event, ...) ee_emit(self, private, event, ...),
+    emit = function(event, ...) {
+      ee_emit(self, private, event, ...)
+    },
 
-    get_event_names = function() ee_get_event_names(self, private),
+    get_event_names = function() {
+      ee_get_event_names(self, private)
+    },
 
     get_listener_count = function(event) {
       ee_get_listener_count(self, private, event)
@@ -2517,7 +2562,9 @@ event_emitter <- R6Class(
     lsts = NULL,
     async = NULL,
 
-    cleanup_events = function() ee__cleanup_events(self, private),
+    cleanup_events = function() {
+      ee__cleanup_events(self, private)
+    },
     error_callback = function(err, res) {
       ee__error_callback(self, private, err, res)
     }
@@ -2626,7 +2673,6 @@ ee__error_callback <- function(self, private, err, res) {
     stop(err)
   }
 }
-
 #' Do every or some elements of a list satisfy an asynchronous predicate?
 #'
 #' @param .x A list or atomic vector.
@@ -2670,7 +2716,6 @@ async_every <- function(.x, .p, ...) {
 }
 
 async_every <- mark_as_async(async_every)
-
 #' Keep or drop elements using an asyncronous predicate function
 #'
 #' `async_filter` keep the elements for which `.p` is true. (Tested
@@ -2683,23 +2728,25 @@ async_every <- mark_as_async(async_every)
 #'
 #' @family async iterators
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' ## Filter out non-working URLs
 #' afun <- async(function(urls) {
 #'   test_url <- async_sequence(
 #'      http_head, function(x) identical(x$status_code, 200L))
 #'   async_filter(urls, test_url)
 #' })
-#' urls <- c("https://eu.httpbin.org/get",
-#'           "https://eu.httpbin.org/status/404")
+#' urls <- c(httpbin$url("/get"),
+#'           httpbin$url("/status/404"))
 #' synchronise(afun(urls))
-#' }
 
 async_filter <- function(.x, .p, ...) {
-  when_all(.list = lapply(.x, async(.p), ...))$then(
-    function(res) .x[vlapply(res, isTRUE)]
-  )
+  when_all(.list = lapply(.x, async(.p), ...))$then(function(res) {
+    .x[vlapply(res, isTRUE)]
+  })
 }
 
 async_filter <- mark_as_async(async_filter)
@@ -2708,9 +2755,9 @@ async_filter <- mark_as_async(async_filter)
 #' @noRd
 
 async_reject <- function(.x, .p, ...) {
-  when_all(.list = lapply(.x, async(.p), ...))$then(
-    function(res) .x[!vlapply(res, isTRUE)]
-  )
+  when_all(.list = lapply(.x, async(.p), ...))$then(function(res) {
+    .x[!vlapply(res, isTRUE)]
+  })
 }
 
 async_reject <- mark_as_async(async_reject)
@@ -2873,7 +2920,6 @@ sseapp <- function() {
     }
   })
 }
-
 #' Asynchronous HTTP GET request
 #'
 #' Start an HTTP GET request in the background, and report its completion
@@ -2919,6 +2965,26 @@ sseapp <- function() {
 #'   [curl::handle_setopt()].
 #' @param on_progress Progress handler function. It is only used if the
 #'   response body is written to a file. See details below.
+#' @param retry Whether and how to retry failed requests. It can be:
+#'   * `TRUE` (the default) to retry with the default settings,
+#'   * `FALSE` or `NULL` to never retry,
+#'   * a single number to set the maximum number of retries, or
+#'   * a named list to configure retries, with entries (all optional):
+#'     - `limit`: maximum number of retries, defaults to 2.
+#'     - `methods`: character vector of HTTP methods to retry. Defaults to
+#'       the idempotent methods `GET`, `PUT`, `HEAD`, `DELETE`, `OPTIONS`,
+#'       `TRACE` and `QUERY`. In particular `POST` is not retried by
+#'       default.
+#'     - `status_codes`: integer vector of HTTP status codes to retry on.
+#'       Defaults to 408, 413, 429, 500, 502, 503, 504, 521, 522 and 524.
+#'     - `errors`: whether to retry on connection errors, defaults to `TRUE`.
+#'     - `backoff`: a function that takes the (integer) retry attempt number
+#'       and returns the number of seconds to wait before the next attempt.
+#'       Defaults to an exponential backoff.
+#'
+#'   Between retries `async` waits with an exponential backoff, unless the
+#'   response has a `Retry-After` header, which is then honored. Use the
+#'   `backoff` entry to customize the wait.
 #' @return Deferred object.
 #'
 #' @section Progress bars:
@@ -2936,31 +3002,34 @@ sseapp <- function() {
 #'
 #' @family asyncronous HTTP calls
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' afun <- async(function() {
-#'   http_get("https://eu.httpbin.org/status/200")$
+#'   http_get(httpbin$url("/status/200"))$
 #'     then(function(x) x$status_code)
 #' })
 #' synchronise(afun())
-#' }
 
 http_get <- function(
   url,
   headers = character(),
   file = NULL,
   options = list(),
-  on_progress = NULL
+  on_progress = NULL,
+  retry = TRUE
 ) {
   url
   headers
   file
   options
   on_progress
+  retry
   options <- get_default_curl_options(options)
 
   make_deferred_http(
-    function() {
+    method = "GET",
+    retry = retry,
+    cb = function() {
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
@@ -2985,7 +3054,7 @@ http_get <- function(
       curl::handle_setopt(handle, .list = options)
       list(handle = handle, options = options)
     },
-    file
+    file = file
   )
 }
 
@@ -3001,10 +3070,13 @@ http_get <- mark_as_async(http_get)
 #'
 #' @family asyncronous HTTP calls
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' afun <- async(function() {
-#'   dx <- http_head("https://eu.httpbin.org/status/200")$
+#'   dx <- http_head(httpbin$url("/status/200"))$
 #'     then(function(x) x$status_code)
 #' })
 #' synchronise(afun())
@@ -3014,26 +3086,29 @@ http_get <- mark_as_async(http_get)
 #'   when_all(.list = lapply(urls, http_head))$
 #'     then(function(x) lapply(x, "[[", "status_code"))
 #' }
-#' urls <- c("https://google.com", "https://eu.httpbin.org")
+#' urls <- c(httpbin$url("/get"), httpbin$url("/status/200"))
 #' synchronise(afun(urls))
-#' }
 
 http_head <- function(
   url,
   headers = character(),
   file = NULL,
   options = list(),
-  on_progress = NULL
+  on_progress = NULL,
+  retry = TRUE
 ) {
   url
   headers
   file
   options
   on_progress
+  retry
   options <- get_default_curl_options(options)
 
   make_deferred_http(
-    function() {
+    method = "HEAD",
+    retry = retry,
+    cb = function() {
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
@@ -3045,7 +3120,7 @@ http_head <- function(
       )
       list(handle = handle, options = options)
     },
-    file
+    file = file
   )
 }
 
@@ -3072,12 +3147,13 @@ http_head <- mark_as_async(http_head)
 #'   response body is written to a file. See details at [http_get()].
 #'
 #' @noRd
-#' @examples
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' json <- jsonlite::toJSON(list(baz = 100, foo = "bar"))
 #'
 #' do <- function() {
 #'   headers <- c("content-type" = "application/json")
-#'   http_post("https://eu.httpbin.org/post", data = json, headers = headers)$
+#'   http_post(httpbin$url("/post"), data = json, headers = headers)$
 #'     then(http_stop_for_status)$
 #'     then(function(x) {
 #'       jsonlite::fromJSON(rawToChar(x$content))$json
@@ -3094,7 +3170,8 @@ http_post <- function(
   headers = character(),
   file = NULL,
   options = list(),
-  on_progress = NULL
+  on_progress = NULL,
+  retry = TRUE
 ) {
   url
   data
@@ -3104,6 +3181,7 @@ http_post <- function(
   file
   options
   on_progress
+  retry
   if ((!is.null(data) + !is.null(data_file) + !is.null(data_form)) > 1) {
     stop(
       "At most one of `data`, `data_file` and `data_form` ",
@@ -3119,7 +3197,9 @@ http_post <- function(
   options <- get_default_curl_options(options)
 
   make_deferred_http(
-    function() {
+    method = "POST",
+    retry = retry,
+    cb = function() {
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
@@ -3135,7 +3215,7 @@ http_post <- function(
       }
       list(handle = handle, options = options)
     },
-    file
+    file = file
   )
 }
 
@@ -3145,21 +3225,25 @@ http_delete <- function(
   url,
   headers = character(),
   file = NULL,
-  options = list()
+  options = list(),
+  retry = TRUE
 ) {
   url
   headers
   options
+  retry
 
   make_deferred_http(
-    function() {
+    method = "DELETE",
+    retry = retry,
+    cb = function() {
       assert_that(is_string(url))
       handle <- curl::new_handle(url = url)
       curl::handle_setheaders(handle, .list = headers)
       curl::handle_setopt(handle, customrequest = "DELETE", .list = options)
       list(handle = handle, options = options)
     },
-    file
+    file = file
   )
 }
 
@@ -3223,11 +3307,60 @@ http_events <- R6Class(
   )
 )
 
-make_deferred_http <- function(cb, file) {
+make_deferred_http <- function(cb, file, method = "GET", retry = TRUE) {
   cb
   file
-  id <- NULL
+  method
+  retry
+  retry <- get_default_http_retry(retry, method)
   ee <- http_events$new()
+
+  ## A single HTTP attempt, sharing the event emitter across retries.
+  once <- function() make_deferred_http_once(cb, file, ee)
+
+  if (is.null(retry)) {
+    return(once())
+  }
+
+  did <- 0L
+  self <- deferred$new(
+    type = "http",
+    call = sys.call(),
+    action = function(resolve) {
+      resolve
+      once()$then(self)
+    },
+    parent_resolve = function(value, resolve) {
+      if (
+        did < retry$limit &&
+          is.integer(value$status_code) &&
+          value$status_code %in% retry$status_codes
+      ) {
+        did <<- did + 1L
+        wait <- http_retry_after(value) %||% retry$backoff(did)
+        delay(wait)$then(function() once())$then(self)
+      } else {
+        resolve(value)
+      }
+    },
+    parent_reject = function(value, resolve) {
+      if (retry$errors && did < retry$limit) {
+        did <<- did + 1L
+        delay(retry$backoff(did))$then(function() once())$then(self)
+      } else {
+        stop(value)
+      }
+    },
+    event_emitter = ee
+  )
+  self
+}
+
+make_deferred_http_once <- function(cb, file, ee) {
+  cb
+  file
+  ee
+  id <- NULL
   deferred$new(
     type = "http",
     call = sys.call(),
@@ -3249,9 +3382,96 @@ make_deferred_http <- function(cb, file) {
     },
     on_cancel = function(reason) {
       if (!is.null(id)) get_default_event_loop()$cancel(id)
-    },
-    event_emitter = ee
+    }
   )
+}
+
+## Default retry configuration, and normalization of the `retry` argument.
+
+http_retry_defaults <- list(
+  limit = 2L,
+  methods = c("GET", "PUT", "HEAD", "DELETE", "OPTIONS", "TRACE", "QUERY"),
+  status_codes = c(408L, 413L, 429L, 500L, 502L, 503L, 504L, 521L, 522L, 524L),
+  errors = TRUE,
+  backoff = default_backoff
+)
+
+get_default_http_retry <- function(retry, method) {
+  if (is.null(retry) || isFALSE(retry)) {
+    return(NULL)
+  }
+
+  if (isTRUE(retry)) {
+    spec <- http_retry_defaults
+  } else if (is.numeric(retry) && length(retry) == 1) {
+    spec <- modifyList(http_retry_defaults, list(limit = retry))
+  } else if (is.list(retry)) {
+    unknown <- setdiff(names(retry), names(http_retry_defaults))
+    if (length(unknown)) {
+      stop(
+        "Unknown `retry` entry/entries: ",
+        paste0("`", unknown, "`", collapse = ", "),
+        ". ",
+        "Allowed entries are: ",
+        paste0("`", names(http_retry_defaults), "`", collapse = ", "),
+        "."
+      )
+    }
+    spec <- modifyList(http_retry_defaults, retry)
+  } else {
+    stop(
+      "Invalid `retry` argument, it must be `TRUE`, `FALSE`, `NULL`, ",
+      "a count, or a named list."
+    )
+  }
+
+  spec$limit <- as.integer(spec$limit)
+  spec$methods <- toupper(as.character(spec$methods))
+  spec$status_codes <- as.integer(spec$status_codes)
+  spec$errors <- as.logical(spec$errors)
+
+  ## No retries if the limit is not positive, or the method is not retryable.
+  if (is.na(spec$limit) || spec$limit <= 0) {
+    return(NULL)
+  }
+  if (!toupper(method) %in% spec$methods) {
+    return(NULL)
+  }
+
+  spec
+}
+
+## Number of seconds to wait according to the `Retry-After` response header,
+## or `NULL` if there is no (usable) such header. `Retry-After` is either a
+## number of seconds, or an HTTP date.
+
+http_retry_after <- function(response) {
+  headers <- response[["headers"]]
+  if (is.null(headers)) {
+    return(NULL)
+  }
+  parsed <- tryCatch(
+    curl::parse_headers_list(headers),
+    error = function(e) NULL
+  )
+  value <- parsed[["retry-after"]]
+  if (is.null(value)) {
+    return(NULL)
+  }
+
+  secs <- suppressWarnings(as.numeric(value))
+  if (!is.na(secs)) {
+    return(max(secs, 0))
+  }
+
+  when <- tryCatch(
+    as.POSIXct(value, format = "%a, %d %b %Y %H:%M:%S", tz = "GMT"),
+    error = function(e) NA
+  )
+  if (is.na(when)) {
+    return(NULL)
+  }
+  max(as.numeric(difftime(when, Sys.time(), units = "secs")), 0)
 }
 
 #' Throw R errors for HTTP errors
@@ -3265,15 +3485,14 @@ make_deferred_http <- function(cb, file) {
 #'   Otherwise an error is thrown.
 #'
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' afun <- async(function() {
-#'   http_get("https://eu.httpbin.org/status/404")$
+#'   http_get(httpbin$url("/status/404"))$
 #'     then(http_stop_for_status)
 #' })
 #'
 #' tryCatch(synchronise(afun()), error = function(e) e)
-#' }
 
 http_stop_for_status <- function(resp) {
   if (!is.integer(resp$status_code)) {
@@ -3427,7 +3646,6 @@ http_setopt <- function(total_con = NULL, host_con = NULL, multiplex = NULL) {
   get_default_event_loop()$http_setopt(total_con, host_con, multiplex)
   invisible()
 }
-
 #' Apply an asynchronous function to each element of a vector
 #'
 #' @param .x A list or atomic vector.
@@ -3504,7 +3722,6 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 
   self
 }
-
 ## nocov start
 
 .onLoad <- function(libname, pkgname) {
@@ -3517,7 +3734,6 @@ async_map_limit <- function(.x, .f, ..., .args = list(), .limit = Inf) {
 }
 
 ## nocov end
-
 #' Asynchronous external process execution
 #'
 #' Start an external process in the background, and report its completion
@@ -3603,7 +3819,6 @@ run_process <- function(
 }
 
 run_process <- mark_as_async(run_process)
-
 #' Asynchronous call to an R function, in a background R process
 #'
 #' Start a background R process and evaluate a function call in it.
@@ -3684,7 +3899,6 @@ run_r_process <- function(
 }
 
 run_r_process <- mark_as_async(run_r_process)
-
 #' A deferred value that resolves when the specified number of deferred
 #' values resolve, or is rejected when one of them is rejected
 #'
@@ -3716,13 +3930,12 @@ async_race_some <- mark_as_async(async_race_some)
 #' @rdname async_race_some
 
 async_race <- function(..., .list = list()) {
-  when_some_internal(1L, ..., .list = .list, .race = TRUE)$then(
-    function(x) x[[1]]
-  )
+  when_some_internal(1L, ..., .list = .list, .race = TRUE)$then(function(x) {
+    x[[1]]
+  })
 }
 
 async_race <- mark_as_async(async_race)
-
 #' Make an asynchronous function that always succeeds
 #'
 #' This is sometimes useful, if the function is applied to entries in
@@ -3752,7 +3965,6 @@ async_reflect <- function(task) {
 }
 
 async_reflect <- mark_as_async(async_reflect)
-
 #' Replicate an async function a number of times
 #'
 #' Similar to [base::replicate()], with some differences:
@@ -3766,15 +3978,17 @@ async_reflect <- mark_as_async(async_reflect)
 #' @return Resolves to a list of the results of the `n` `task` calls.
 #'
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' ## perform an HTTP request three times, and list the reponse times
 #' do <- function() {
 #'   async_replicate(3,
-#'     function() http_get("https://eu.httpbin.org")$then(function(x) x$times))
+#'     function() http_get(httpbin$url("/get"))$then(function(x) x$times))
 #' }
 #' synchronise(do())
-#' }
 
 async_replicate <- function(n, task, ..., .limit = Inf) {
   assert_that(
@@ -3831,7 +4045,6 @@ async_replicate_limit <- function(n, task, ..., .limit = .limit) {
 
   self
 }
-
 #' Retry an asynchronous function a number of times
 #'
 #' Keeps trying until the function's deferred value resolves without
@@ -3844,18 +4057,17 @@ async_replicate_limit <- function(n, task, ..., .limit = .limit) {
 #'
 #' @family async control flow
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' ## Try a download at most 5 times
 #' afun <- async(function() {
 #'   async_retry(
-#'     function() http_get("https://eu.httpbin.org"),
+#'     function() http_get(httpbin$url("/get")),
 #'     times = 5
 #'   )$then(function(x) x$status_code)
 #' })
 #'
 #' synchronise(afun())
-#' }
 
 async_retry <- function(task, times, ...) {
   task <- async(task)
@@ -3887,16 +4099,15 @@ async_retry <- mark_as_async(async_retry)
 #'
 #' @family async control flow
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' ## Create a downloader that retries five times
 #' http_get_5 <- async_retryable(http_get, times = 5)
 #' ret <- synchronise(
-#'   http_get_5("https://eu.httpbin.org/get?q=1")$
+#'   http_get_5(httpbin$url("/get?q=1"))$
 #'     then(function(x) rawToChar(x$content))
 #' )
 #' cat(ret)
-#' }
 
 async_retryable <- function(task, times) {
   task <- async(task)
@@ -3905,7 +4116,17 @@ async_retryable <- function(task, times) {
     async_retry(task, times, ...)
   }
 }
+# Should the examples run?
+#
+# Internal helper for the manual pages. Returns `TRUE` if the examples
+# should run, i.e. if the `NOT_CRAN` environment variable is set to `true`.
+# Most examples use a local `webfakes` web server, so they also need
+# `webfakes` to be installed.
 
+run_examples <- function() {
+  tolower(Sys.getenv("NOT_CRAN")) == "true" &&
+    requireNamespace("webfakes", quietly = TRUE)
+}
 #' Compose asynchronous functions
 #'
 #' This is equivalent to using the `$then()` method of a deferred, but
@@ -3919,13 +4140,12 @@ async_retryable <- function(task, times) {
 #'
 #' @family async control flow
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' check_url <- async_sequence(
 #'   http_head, function(x) identical(x$status_code, 200L))
-#' synchronise(check_url("https://eu.httpbin.org/status/404"))
-#' synchronise(check_url("https://eu.httpbin.org/status/200"))
-#' }
+#' synchronise(check_url(httpbin$url("/status/404")))
+#' synchronise(check_url(httpbin$url("/status/200")))
 
 async_sequence <- function(..., .list = NULL) {
   funcs <- c(list(...), .list)
@@ -3943,7 +4163,6 @@ async_sequence <- function(..., .list = NULL) {
 }
 
 async_sequence <- mark_as_async(async_sequence)
-
 #' @noRd
 #' @rdname async_every
 
@@ -3970,7 +4189,6 @@ async_some <- function(.x, .p, ...) {
 }
 
 async_some <- mark_as_async(async_some)
-
 #' Synchronously wrap asynchronous code
 #'
 #' Evaluate an expression in an async phase. It creates an event loop,
@@ -3988,15 +4206,14 @@ async_some <- mark_as_async(async_some)
 #' to a deferred value, then it is just returned.
 #'
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(webfakes::httpbin_app())
 #' http_status <- function(url, ...) {
 #'   http_get(url, ...)$
 #'     then(function(x) x$status_code)
 #' }
 #'
-#' synchronise(http_status("https://eu.httpbin.org/status/418"))
-#' }
+#' synchronise(http_status(httpbin$url("/status/418")))
 
 synchronise <- function(expr) {
   new_el <- push_event_loop()
@@ -4188,7 +4405,6 @@ print.async_rejected_summary <- function(x, ...) {
 }
 
 # nocov end
-
 #' Asynchronous function call with a timeout
 #'
 #' If the deferred value is not resolved before the timeout expires,
@@ -4250,7 +4466,6 @@ async_timeout <- function(task, timeout, ...) {
 }
 
 async_timeout <- mark_as_async(async_timeout)
-
 #' Repeated timer
 #'
 #' The supplied callback function will be called by the event loop
@@ -4353,7 +4568,9 @@ async_timer <- R6Class(
     initialize = function(delay, callback) {
       async_timer_init(self, private, super, delay, callback)
     },
-    cancel = function() async_timer_cancel(self, private)
+    cancel = function() {
+      async_timer_cancel(self, private)
+    }
   ),
 
   private = list(
@@ -4391,7 +4608,6 @@ async_timer_cancel <- function(self, private) {
   get_default_event_loop()$cancel(private$id)
   invisible(self)
 }
-
 #' It runs each task in series but stops whenever any of the functions were
 #' successful. If one of the tasks were successful, the callback will be
 #' passed the result of the successful task. If all tasks fail, the
@@ -4455,7 +4671,6 @@ async_try_each <- function(..., .list = list()) {
 }
 
 async_try_each <- mark_as_async(async_try_each)
-
 #' Repeatedly call task until it its test function returns `TRUE`
 #'
 #' @param test Synchronous test function.
@@ -4499,7 +4714,6 @@ async_until <- function(test, task, ...) {
 }
 
 async_until <- mark_as_async(async_until)
-
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 vlapply <- function(X, FUN, ..., FUN.VALUE = logical(1)) {
@@ -4653,14 +4867,12 @@ expr_name <- function(expr) {
 
   gsub("\n.*$", "...", as.character(expr))
 }
-
 get_uuid <- function() {
   async_env$pid <- async_env$pid %||% Sys.getpid()
   async_env$counter <- async_env$counter %||% 0
   async_env$counter <- async_env$counter + 1L
   paste0(async_env$pid, "-", async_env$counter)
 }
-
 #' Deferred value for a set of deferred values
 #'
 #' Create a deferred value that is resolved when all listed deferred values
@@ -4677,17 +4889,19 @@ get_uuid <- function() {
 #'
 #' @seealso [when_any()], [when_some()]
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' ## Check that the contents of two URLs are the same
 #' afun <- async(function() {
-#'   u1 <- http_get("https://eu.httpbin.org")
-#'   u2 <- http_get("https://eu.httpbin.org/get")
+#'   u1 <- http_get(httpbin$url("/get"))
+#'   u2 <- http_get(httpbin$url("/get"))
 #'   when_all(u1, u2)$
 #'     then(function(x) identical(x[[1]]$content, x[[2]]$content))
 #' })
 #' synchronise(afun())
-#' }
 
 when_all <- function(..., .list = list()) {
   defs <- c(list(...), .list)
@@ -4718,7 +4932,6 @@ when_all <- function(..., .list = list()) {
 }
 
 when_all <- mark_as_async(when_all)
-
 #' Resolve a deferred as soon as some deferred from a list resolve
 #'
 #' `when_some` creates a deferred value that is resolved as soon as the
@@ -4745,16 +4958,18 @@ when_all <- mark_as_async(when_all)
 #'
 #' @seealso [when_all()]
 #' @noRd
-#' @examples
-#' \donttest{
+#' @examplesIf async:::run_examples()
+#' httpbin <- webfakes::new_app_process(
+#'   webfakes::httpbin_app(),
+#'   opts = webfakes::server_opts(num_threads = 3)
+#' )
 #' ## Use the URL that returns first
 #' afun <- function() {
-#'   u1 <- http_get("https://eu.httpbin.org")
-#'   u2 <- http_get("https://eu.httpbin.org/get")
+#'   u1 <- http_get(httpbin$url("/get"))
+#'   u2 <- http_get(httpbin$url("/get"))
 #'   when_any(u1, u2)$then(function(x) x$url)
 #' }
 #' synchronise(afun())
-#' }
 
 when_some <- function(count, ..., .list = list()) {
   when_some_internal(count, ..., .list = .list, .race = FALSE)
@@ -4816,7 +5031,6 @@ when_any <- function(..., .list = list()) {
 }
 
 when_any <- mark_as_async(when_any)
-
 #' Repeatedly call task, while test returns true
 #'
 #' @param test Synchronous test function.
@@ -4866,7 +5080,6 @@ async_whilst <- function(test, task, ...) {
 }
 
 async_whilst <- mark_as_async(async_whilst)
-
 #' Worker pool
 #'
 #' The worker pool functions are independent of the event loop, to allow
@@ -4881,22 +5094,42 @@ NULL
 
 worker_pool <- R6Class(
   public = list(
-    initialize = function() wp_init(self, private),
+    initialize = function() {
+      wp_init(self, private)
+    },
     add_task = function(func, args, id, event_loop) {
       wp_add_task(self, private, func, args, id, event_loop)
     },
-    get_fds = function() wp_get_fds(self, private),
-    get_pids = function() wp_get_pids(self, private),
-    get_poll_connections = function() wp_get_poll_connections(self, private),
+    get_fds = function() {
+      wp_get_fds(self, private)
+    },
+    get_pids = function() {
+      wp_get_pids(self, private)
+    },
+    get_poll_connections = function() {
+      wp_get_poll_connections(self, private)
+    },
     notify_event = function(pids, event_loop) {
       wp_notify_event(self, private, pids, event_loop)
     },
-    start_workers = function() wp_start_workers(self, private),
-    kill_workers = function() wp_kill_workers(self, private),
-    cancel_task = function(id) wp_cancel_task(self, private, id),
-    cancel_all_tasks = function() wp_cancel_all_tasks(self, private),
-    get_result = function(id) wp_get_result(self, private, id),
-    list_workers = function() wp_list_workers(self, private),
+    start_workers = function() {
+      wp_start_workers(self, private)
+    },
+    kill_workers = function() {
+      wp_kill_workers(self, private)
+    },
+    cancel_task = function(id) {
+      wp_cancel_task(self, private, id)
+    },
+    cancel_all_tasks = function() {
+      wp_cancel_all_tasks(self, private)
+    },
+    get_result = function(id) {
+      wp_get_result(self, private, id)
+    },
+    list_workers = function() {
+      wp_list_workers(self, private)
+    },
     list_tasks = function(event_loop = NULL, status = NULL) {
       wp_list_tasks(self, private, event_loop, status)
     }
@@ -4907,8 +5140,12 @@ worker_pool <- R6Class(
     tasks = list(),
 
     finalize = function() self$kill_workers(),
-    try_start = function() wp__try_start(self, private),
-    interrupt_worker = function(pid) wp__interrupt_worker(self, private, pid)
+    try_start = function() {
+      wp__try_start(self, private)
+    },
+    interrupt_worker = function(pid) {
+      wp__interrupt_worker(self, private, pid)
+    }
   )
 )
 
@@ -4928,10 +5165,9 @@ wp_start_workers <- function(self, private) {
   ## Yeah, start some more
   to_start <- num - NROW(private$workers)
   sess <- lapply(1:to_start, function(x) callr::r_session$new(wait = FALSE))
-  fd <- viapply(
-    sess,
-    function(x) processx::conn_get_fileno(x$get_poll_connection())
-  )
+  fd <- viapply(sess, function(x) {
+    processx::conn_get_fileno(x$get_poll_connection())
+  })
   new_workers <- data.frame(
     stringsAsFactors = FALSE,
     session = I(sess),
@@ -5172,7 +5408,6 @@ wp__interrupt_worker <- function(self, private, pid) {
 
   invisible()
 }
-
 #' External process via a process generator
 #'
 #' Wrap any [processx::process] object into a deferred value. The

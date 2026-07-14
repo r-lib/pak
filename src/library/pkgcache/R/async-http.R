@@ -1,17 +1,4 @@
-# The embedded async `http_get()` etc. only look at the `async_http_*` options
-# (via `get_default_curl_options()`). `set_pkgcache_curl_options()` reads the
-# pkgcache-level options and environment variables and sets the corresponding
-# curl options, so that pkgcache's HTTP requests honor them. For each curl
-# option it looks, in decreasing priority, at the `pkgcache_*` option, the
-# `PKGCACHE_*` environment variable, the `pkg_http_*` option and the
-# `PKG_HTTP_*` environment variable.
-#
-# It only sets an option when it is actually configured. An unset option must
-# not be turned into an explicit curl option, otherwise it would override the
-# `async_http_*` option and the async default further downstream in
-# `get_default_curl_options()`.
-
-set_pkgcache_curl_options <- function(options) {
+set_pkgcache_http_options <- function(options, retry = NULL) {
   nms <- c(
     "timeout",
     "connecttimeout",
@@ -41,16 +28,34 @@ set_pkgcache_curl_options <- function(options) {
       options[[nm]] <- as.integer(v)
     }
   }
-  options
+
+  if (is.null(retry)) {
+    v <- getopt("retry")
+    retry <- if (is.null(v)) TRUE else coerce_retry(v)
+  }
+
+  list(options = options, retry = retry)
+}
+
+coerce_retry <- function(v) {
+  if (!is.character(v)) {
+    return(v)
+  }
+  if (toupper(v) %in% c("TRUE", "FALSE")) {
+    as.logical(v)
+  } else {
+    as.integer(v)
+  }
 }
 
 # Wrap an embedded async HTTP function so that it applies the pkgcache-level
-# HTTP options and environment variables (see `set_pkgcache_curl_options()`)
+# HTTP options and environment variables (see `set_pkgcache_http_options()`)
 # to every request.
 wrap_pkgcache_http <- function(fun) {
   force(fun)
-  mark_as_async(function(url, ..., options = list()) {
-    fun(url, ..., options = set_pkgcache_curl_options(options))
+  mark_as_async(function(url, ..., options = list(), retry = NULL) {
+    http <- set_pkgcache_http_options(options, retry)
+    fun(url, ..., options = http$options, retry = http$retry)
   })
 }
 

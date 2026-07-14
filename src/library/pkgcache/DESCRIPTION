@@ -17,7 +17,7 @@ Depends: R (>= 3.4)
 Imports: callr (>= 2.0.4.9000), cli (>= 3.2.0), curl (>= 3.2),
         filelock, jsonlite, processx (>= 3.3.0.9001), R6, tools,
         tsitter, tstoml, utils
-Suggests: covr, debugme, desc, fs, keyring, pillar, pingr, rprojroot,
+Suggests: debugme, desc, fs, keyring, pillar, pingr, rprojroot,
         sessioninfo, spelling, testthat (>= 3.2.0), webfakes (>=
         1.1.5), withr, zip
 Remotes: r-lib/tsitter, gaborcsardi/tstoml
@@ -29,7 +29,7 @@ Language: en-US
 Roxygen: list(markdown = TRUE, r6 = FALSE)
 Config/roxygen2/version: 8.0.0
 NeedsCompilation: yes
-Packaged: 2026-07-11 09:45:48 UTC; gaborcsardi
+Packaged: 2026-07-14 15:31:42 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

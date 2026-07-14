@@ -293,7 +293,7 @@ get_package_dirs_for_platform <- function(pl, minors) {
   )
 }
 
-macos_cran_platforms <- read.table(
+macos_cran_platforms <- utils::read.table(
   header = TRUE,
   stringsAsFactors = FALSE,
   textConnection(

@@ -114,7 +114,9 @@ read_packages_file <- function(
   pkgs$type <- if (nrow(pkgs)) type else character()
   pkgs$direct <- if (nrow(pkgs)) FALSE else logical()
   pkgs$status <- if (nrow(pkgs)) "OK" else character()
-  pkgs$target <- packages_make_target(
+
+  # Strip query parameters from the final file names
+  url_target <- packages_make_target(
     pkgs$platform,
     repodir,
     pkgs$package,
@@ -122,11 +124,19 @@ read_packages_file <- function(
     pkgs[["file"]],
     pkgs[["path"]]
   )
+  pkgs$target <- packages_make_target(
+    pkgs$platform,
+    repodir,
+    pkgs$package,
+    pkgs$version,
+    packages_strip_query(pkgs[["file"]]),
+    packages_strip_query(pkgs[["path"]])
+  )
   pkgs$mirror <- if (nrow(pkgs)) mirror else character()
   pkgs$sources <- packages_make_sources(
     mirror,
     pkgs$platform,
-    pkgs$target,
+    url_target,
     repodir,
     pkgs$package,
     pkgs$version,
@@ -333,6 +343,13 @@ packages_parse_deps <- function(pkgs) {
   parsed
 }
 
+packages_strip_query <- function(x) {
+  if (is.null(x)) {
+    return(x)
+  }
+  sub("[?].*$", "", x)
+}
+
 packages_make_target <- function(
   platform,
   repodir,
@@ -359,34 +376,39 @@ packages_make_target <- function(
   res <- rep(NA_character_, length(package))
   ext <- get_cran_extension(platform)
 
-  ## 'File' field, if present
-  if (!is.null(file)) {
-    wh <- !is.na(file)
-    if (any(wh)) {
-      res[wh] <- paste0(repodir, "/", file[wh])
-    }
+  have_file <- if (is.null(file)) rep(FALSE, length(package)) else !is.na(file)
+  have_path <- if (is.null(path)) rep(FALSE, length(package)) else !is.na(path)
+
+  ## repodir / 'Path' / 'File'
+  wh <- have_path & have_file
+  if (any(wh)) {
+    res[wh] <- paste0(repodir, "/", path[wh], "/", file[wh])
   }
 
-  ## 'Path' field, if present
-  if (!is.null(path)) {
-    wh <- is.na(res) & !is.na(path)
-    if (any(wh)) {
-      res[wh] <- paste0(
-        repodir,
-        "/",
-        path[wh],
-        "/",
-        package[wh],
-        "_",
-        version[wh],
-        ext[wh]
-      )
-    }
+  ## 'File' only
+  wh <- have_file & !have_path
+  if (any(wh)) {
+    res[wh] <- paste0(repodir, "/", file[wh])
   }
 
-  ## Otherwise default
-  if (anyNA(res)) {
-    wh <- is.na(res)
+  ## 'Path' only: relative to repodir
+  wh <- have_path & !have_file
+  if (any(wh)) {
+    res[wh] <- paste0(
+      repodir,
+      "/",
+      path[wh],
+      "/",
+      package[wh],
+      "_",
+      version[wh],
+      ext[wh]
+    )
+  }
+
+  ## Default
+  wh <- !have_file & !have_path
+  if (any(wh)) {
     res[wh] <- paste0(repodir, "/", package[wh], "_", version[wh], ext[wh])
   }
 

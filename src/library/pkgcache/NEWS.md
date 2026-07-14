@@ -1,5 +1,12 @@
 # pkgcache (development version)
 
+* pkgcache now treats `PACKAGES` entries with `Path` and/or `File`
+  fields correctly (#141, @jeroen).
+
+* pkgcache now drops HTTP query parameter from `Path` and `File`
+  entries in `PACKAGES` when creating the path of the target filename
+  (#141, @jeroen).
+
 * All HTTP requests now honor the `pkgcache_http_version` option and
   `PKGCACHE_HTTP_VERSION` environment variable. Closes
   https://github.com/r-lib/pkgcache/issues/140.
