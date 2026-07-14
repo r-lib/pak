@@ -196,8 +196,9 @@ doc_config <- function() {
     "\\itemize{",
     paste(
       map_named(rd, function(name, entry) {
-        env <- toupper(chartr(".", "_", paste0("pkg_", name)))
-        opt <- paste0("pkg.", name)
+        env <- attr(entry, "envvar") %||%
+          toupper(chartr(".", "_", paste0("pkg_", name)))
+        opt <- attr(entry, "option") %||% paste0("pkg.", name)
         paste0(
           "\\item \\sQuote{",
           name,
