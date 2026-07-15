@@ -952,9 +952,9 @@ create_pak_repo <- local({
   add_repo_links <- function(root, tag) {
     repo_root <- file.path(root, tag)
     for (idx in seq_along(links)) {
-      link <- file.path(repo_root, names(lk)[idx])
+      link <- file.path(repo_root, names(links)[idx])
       mkdirp(link)
-      orig <- file.path(link, lk[[idx]])
+      orig <- file.path(link, links[[idx]])
       origfile <- file.path(orig, "PACKAGES")
       linkfile <- file.path(link, "PACKAGES")
       if (!file.exists(origfile)) {
@@ -963,7 +963,7 @@ create_pak_repo <- local({
       file.copy(origfile, linkfile, overwrite = TRUE)
       # TODO: properly update the file
       lines <- c(readLines(origfile), "")
-      entry <- paste0("Path: ", lk[[idx]], "\n")
+      entry <- paste0("Path: ", links[[idx]], "\n")
       lines[nchar(lines) == 0] <- entry
       writeLines(lines, linkfile)
       tab <- read.dcf(linkfile, all = TRUE)
