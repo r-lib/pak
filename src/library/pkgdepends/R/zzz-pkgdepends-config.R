@@ -19,6 +19,53 @@ env_decode_dependencies <- function(x, name, ...) {
   strsplit(x, ";", fixed = TRUE)[[1]]
 }
 
+is_configure_opts <- function(x) {
+  is.null(x) ||
+    (is.character(x) && !anyNA(x)) ||
+    (is.list(x) &&
+      all(vapply(
+        x,
+        function(e) is.character(e) && !anyNA(e),
+        logical(1)
+      )))
+}
+
+env_decode_configure_opts <- function(x, name, ...) {
+  if (!nzchar(x)) {
+    return(character())
+  }
+  parts <- strsplit(x, ";", fixed = TRUE)[[1]]
+  # Named form: every `;`-separated part looks like `<pkgname>=<value>`.
+  named <- regexpr("^[a-zA-Z][a-zA-Z0-9._]*=", parts) == 1L
+  if (length(parts) && all(named)) {
+    nms <- sub("=.*$", "", parts)
+    vals <- sub("^[^=]*=", "", parts)
+    stats::setNames(vals, nms)
+  } else {
+    x
+  }
+}
+
+configure_flag <- function(val, pkg, flag) {
+  if (length(val) == 0) {
+    return(character())
+  }
+  nms <- names(val)
+  if (is.null(nms) || all(!nzchar(nms))) {
+    # unnamed: applies to every package built from source
+    vals <- unlist(val, use.names = FALSE)
+  } else if (pkg %in% nms) {
+    vals <- val[[pkg]]
+  } else {
+    return(character())
+  }
+  vals <- vals[nzchar(vals)]
+  if (length(vals) == 0) {
+    return(character())
+  }
+  paste0(flag, "=", shQuote(paste(vals, collapse = " ")))
+}
+
 env_decode_difftime <- function(x, name, ...) {
   if (nchar(x) >= 2) {
     unit <- substr(x, nchar(x), nchar(x))
@@ -101,6 +148,40 @@ pkgdepends_config <- sort_by_name(list(
     docs = "Directory to download the packages to. Defaults to a temporary
        directory within the R session temporary directory, see
        [base::tempdir()]."
+  ),
+
+  # -----------------------------------------------------------------------
+  configure_args = list(
+    type = "configure_opts",
+    default = function() getOption("configure.args") %||% character(),
+    docs = "Extra `--configure-args` to pass to `R CMD INSTALL` when
+       building packages from source. It can be a single string, which is
+       then used for all packages built from source. It can also be a named
+       character vector (or a named list of character vectors) to set
+       configure arguments for individual packages: the names are package
+       names and the values are the corresponding configure arguments.
+       Defaults to the `configure.args` option (see [base::options()]), for
+       compatibility with [utils::install.packages()]. The
+       `PKG_CONFIGURE_ARGS` environment variable may be either a single
+       string (used for all packages), or a semicolon separated list of
+       `<package>=<args>` entries to set arguments for individual packages."
+  ),
+
+  # -----------------------------------------------------------------------
+  configure_vars = list(
+    type = "configure_opts",
+    default = function() getOption("configure.vars") %||% character(),
+    docs = "Extra `--configure-vars` to pass to `R CMD INSTALL` when
+       building packages from source. It can be a single string, which is
+       then used for all packages built from source. It can also be a named
+       character vector (or a named list of character vectors) to set
+       configure variables for individual packages: the names are package
+       names and the values are the corresponding configure variables.
+       Defaults to the `configure.vars` option (see [base::options()]), for
+       compatibility with [utils::install.packages()]. The
+       `PKG_CONFIGURE_VARS` environment variable may be either a single
+       string (used for all packages), or a semicolon separated list of
+       `<package>=<vars>` entries to set variables for individual packages."
   ),
 
   # -----------------------------------------------------------------------
@@ -417,6 +498,11 @@ current_config <- function() {
   conf <- config$new("pkg")
   conf$add_type("dependencies", is_dependencies, env_decode_dependencies)
   conf$add_type("difftime", is_difftime, env_decode_difftime)
+  conf$add_type(
+    "configure_opts",
+    is_configure_opts,
+    env_decode_configure_opts
+  )
 
   map_named(pkgdepends_config, function(name, entry) {
     if (isTRUE(entry$forwarded)) {

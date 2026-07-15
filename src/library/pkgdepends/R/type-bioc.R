@@ -78,11 +78,11 @@ satisfy_remote_bioc <- function(resolution, candidate, config, ...) {
   }
 
   ## 4. installed package must not be older for direct refs
-  if (resolution$direct) {
-    if (
-      candidate$type == "installed" &&
-        package_version(resolution$version) > candidate$version
-    ) {
+  if (resolution$direct && candidate$type == "installed") {
+    if (is.na(resolution$version)) {
+      return(structure(FALSE, reason = "Direct ref failed to resolve"))
+    }
+    if (package_version(resolution$version) > candidate$version) {
       return(structure(FALSE, reason = "Direct ref needs update"))
     }
   }

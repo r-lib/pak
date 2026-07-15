@@ -1383,6 +1383,8 @@ pkgplan_install_plan <- function(self, private, downloads) {
     sol$type != "installed" &
     "x86_64-w64-mingw32" %in% private$config$get("platforms") &
     private$config$get("windows-archs") == "prefer-x64"
+  configure_args <- private$config$get("configure_args")
+  configure_vars <- private$config$get("configure_vars")
   # Preserve any install_args coming from the resolution (e.g. from a
   # lockfile), and add --no-multiarch as needed, instead of overwriting
   # them (#472).
@@ -1397,6 +1399,11 @@ pkgplan_install_plan <- function(self, private, downloads) {
     if (nomulti[i] && !"--no-multiarch" %in% args) {
       args <- c(args, "--no-multiarch")
     }
+    args <- c(
+      args,
+      configure_flag(configure_args, sol$package[i], "--configure-args"),
+      configure_flag(configure_vars, sol$package[i], "--configure-vars")
+    )
     args
   })
 

@@ -108,11 +108,13 @@ satisfy_remote_standard <- function(resolution, candidate, config, ...) {
     if (!type %in% c("cran", "bioc", "standard") && remotetype != "standard") {
       return(structure(FALSE, reason = "User requested CRAN package"))
     }
-    if (
-      candidate$type == "installed" &&
-        package_version(resolution$version) > candidate$version
-    ) {
-      return(structure(FALSE, reason = "Direct ref needs update"))
+    if (candidate$type == "installed") {
+      if (is.na(resolution$version)) {
+        return(structure(FALSE, reason = "Direct ref failed to resolve"))
+      }
+      if (package_version(resolution$version) > candidate$version) {
+        return(structure(FALSE, reason = "Direct ref needs update"))
+      }
     }
   }
 
