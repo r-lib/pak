@@ -1383,7 +1383,22 @@ pkgplan_install_plan <- function(self, private, downloads) {
     sol$type != "installed" &
     "x86_64-w64-mingw32" %in% private$config$get("platforms") &
     private$config$get("windows-archs") == "prefer-x64"
-  sol$install_args <- ifelse(nomulti, "--no-multiarch", "")
+  # Preserve any install_args coming from the resolution (e.g. from a
+  # lockfile), and add --no-multiarch as needed, instead of overwriting
+  # them (#472).
+  prev_args <- if ("install_args" %in% names(sol)) {
+    sol$install_args
+  } else {
+    replicate(nrow(sol), character(), simplify = FALSE)
+  }
+  sol$install_args <- lapply(seq_len(nrow(sol)), function(i) {
+    args <- prev_args[[i]]
+    args <- args[nzchar(args)]
+    if (nomulti[i] && !"--no-multiarch" %in% args) {
+      args <- c(args, "--no-multiarch")
+    }
+    args
+  })
 
   if (downloads) {
     tree <- file.exists(sol$fulltarget_tree)

@@ -31,6 +31,7 @@ resolve_remote_github <- function(
   force(dependencies)
   ## Get the DESCRIPTION data, and the SHA we need
   type_github_get_data(remote)$then(function(resp) {
+    remote$subdir <- resp$subdir %||% remote$subdir
     data <- list(
       desc = resp$description,
       sha = resp$sha,
@@ -243,6 +244,82 @@ installedok_remote_github <- function(installed, solution, config, ...) {
 ## ----------------------------------------------------------------------
 ## Internal functions
 
+# Well-known subdirectories to probe for a DESCRIPTION when no `subdir` is
+# given. Order matters: the first match wins, and "" (the repo root) always
+# takes precedence, so repos with a root DESCRIPTION are unaffected.
+github_subdir_candidates <- function() {
+  c("", "pkg-r", "r", "R")
+}
+
+# The subdirs to query for a remote: the explicit `subdir` if supplied,
+# otherwise the well-known candidates.
+github_query_subdirs <- function(rem) {
+  sub <- rem$subdir %||% ""
+  if (nzchar(sub)) sub else github_subdir_candidates()
+}
+
+# GraphQL alias names for each candidate dir, in order: desc1, desc2, ...
+github_subdir_aliases <- function(n) {
+  if (n == 0) character() else paste0("desc", seq_len(n))
+}
+
+# Slash-suffixed, URL-encoded path prefixes (root -> "").
+github_subdir_paths <- function(dirs) {
+  vapply(
+    dirs,
+    function(d) if (nzchar(d)) paste0(utils::URLencode(d), "/") else "",
+    character(1),
+    USE.NAMES = FALSE
+  )
+}
+
+# Aliased `object(expression: "<ref>:<path>DESCRIPTION")` blocks (ref variant).
+github_ref_desc_fragment <- function(ref, dirs) {
+  aliases <- github_subdir_aliases(length(dirs))
+  paths <- github_subdir_paths(dirs)
+  frag <- sprintf(
+    "%s: object(expression: \"%s:%sDESCRIPTION\") { ... on Blob { isBinary text } }",
+    aliases,
+    ref,
+    paths
+  )
+  paste(frag, collapse = "\n      ")
+}
+
+# Aliased `file(path: "<path>DESCRIPTION")` blocks (pull/release variants).
+github_file_desc_fragment <- function(dirs) {
+  aliases <- github_subdir_aliases(length(dirs))
+  paths <- github_subdir_paths(dirs)
+  frag <- sprintf(
+    "%s: file(path: \"%sDESCRIPTION\") { object { ... on Blob { isBinary text } } }",
+    aliases,
+    paths
+  )
+  paste(frag, collapse = "\n      ")
+}
+
+# Walk the candidate dirs in priority order and return the first DESCRIPTION
+# hit as list(text=, subdir=). `get_node(obj, alias)` extracts the Blob node
+# (a list with `isBinary`/`text`) for an alias, or NULL if absent. Throws
+# baddesc if the first blob found (in priority order) is binary. Returns NULL
+# if nothing found.
+github_pick_desc <- function(obj, dirs, get_node, rem, call.) {
+  aliases <- github_subdir_aliases(length(dirs))
+  for (i in seq_along(dirs)) {
+    node <- get_node(obj, aliases[i])
+    if (is.null(node)) {
+      next
+    }
+    if (isTRUE(node$isBinary)) {
+      throw(new_github_baddesc_error(rem, call.))
+    }
+    if (!is.null(node$text)) {
+      return(list(text = node$text, subdir = dirs[i]))
+    }
+  }
+  NULL
+}
+
 type_github_builtin_token <- function() {
   pats <- c(
     paste0("3687d8b", "b0556b7c3", "72ba1681d", "e5e689b", "3ec61279"),
@@ -294,7 +371,7 @@ type_github_get_data <- function(rem) {
       dsc <- desc::desc(text = data$desc),
       new_github_baddesc_error(rem, call)
     )
-    list(sha = data$sha, description = dsc)
+    list(sha = data$sha, description = dsc, subdir = data$subdir)
   })
 }
 
@@ -302,17 +379,12 @@ type_github_get_data_ref <- function(rem) {
   user <- rem$username
   repo <- rem$repo
   ref <- rem$commitish %|z|% "HEAD"
-  subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
+  dirs <- github_query_subdirs(rem)
 
   query <- sprintf(
     "{
     repository(owner: \"%s\", name: \"%s\") {
-      description: object(expression: \"%s:%sDESCRIPTION\") {
-        ... on Blob {
-          isBinary
-          text
-        }
-      }
+      %s
       sha: object(expression: \"%s\") {
         oid
       }
@@ -320,17 +392,26 @@ type_github_get_data_ref <- function(rem) {
   }",
     user,
     repo,
-    ref,
-    subdir,
+    github_ref_desc_fragment(ref, dirs),
     ref
   )
 
   github_query(query)$then(function(resp) {
-    check_github_response_ref(resp$response, resp$obj, rem, call. = call)
-  })$then(function(obj) {
+    obj <- check_github_response_ref(resp$response, resp$obj, rem, call. = call)
+    hit <- github_pick_desc(
+      obj,
+      dirs,
+      get_node = function(o, a) o[[c("data", "repository", a)]],
+      rem = rem,
+      call. = call
+    )
+    if (is.null(hit)) {
+      throw(new_github_no_package_error(rem, call))
+    }
     list(
       sha = obj[[c("data", "repository", "sha", "oid")]],
-      desc = obj[[c("data", "repository", "description", "text")]]
+      desc = hit$text,
+      subdir = hit$subdir
     )
   })
 }
@@ -339,14 +420,8 @@ check_github_response_ref <- function(resp, obj, rem, call.) {
   if (!is.null(obj$errors)) {
     throw(new_github_query_error(rem, resp, obj, call.))
   }
-  if (isTRUE(obj[[c("data", "repository", "description", "isBinary")]])) {
-    throw(new_github_baddesc_error(rem, call.))
-  }
   if (is.null(obj[[c("data", "repository", "sha")]])) {
     throw(new_github_noref_error(rem, call.))
-  }
-  if (is.null(obj[[c("data", "repository", "description", "text")]])) {
-    throw(new_github_no_package_error(rem, call.))
   }
   obj
 }
@@ -356,7 +431,7 @@ type_github_get_data_pull <- function(rem) {
   user <- rem$username
   repo <- rem$repo
   pull <- rem$pull
-  subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
+  dirs <- github_query_subdirs(rem)
 
   query <- sprintf(
     "{
@@ -366,14 +441,7 @@ type_github_get_data_pull <- function(rem) {
         headRef {
           target {
             ... on Commit {
-              file(path: \"%sDESCRIPTION\") {
-                object {
-                  ... on Blob {
-                    isBinary
-                    text
-                  }
-                }
-              }
+              %s
             }
           }
         }
@@ -383,63 +451,39 @@ type_github_get_data_pull <- function(rem) {
     user,
     repo,
     pull,
-    subdir
+    github_file_desc_fragment(dirs)
   )
 
   github_query(query)$then(function(resp) {
-    check_github_response_pull(resp$response, resp$obj, rem, call. = call)
-  })$then(function(obj) {
+    obj <- check_github_response_pull(resp$response, resp$obj, rem, call. = call)
+    hit <- github_pick_desc(
+      obj,
+      dirs,
+      get_node = function(o, a) {
+        o[[c(
+          "data",
+          "repository",
+          "pullRequest",
+          "headRef",
+          "target",
+          a,
+          "object"
+        )]]
+      },
+      rem = rem,
+      call. = call
+    )
+    if (is.null(hit)) {
+      throw(new_github_no_package_error(rem, call))
+    }
     ref <- obj[[c("data", "repository", "pullRequest", "headRefOid")]]
-    txt <- obj[[c(
-      "data",
-      "repository",
-      "pullRequest",
-      "headRef",
-      "target",
-      "file",
-      "object",
-      "text"
-    )]]
-    list(sha = ref, desc = txt)
+    list(sha = ref, desc = hit$text, subdir = hit$subdir)
   })
 }
 
 check_github_response_pull <- function(resp, obj, rem, call.) {
   if (!is.null(obj$errors)) {
     throw(new_github_query_error(rem, resp, obj, call.))
-  }
-  # No full coverage here, because unless something goes super wrong,
-  # these cases almost never happen.
-  if (!is.null(obj$errors)) {
-    throw(new_github_query_error(rem, resp, obj, call.)) # nocov
-  }
-
-  if (
-    isTRUE(obj[[c(
-      "data",
-      "repository",
-      "pullRequest",
-      "headRef",
-      "target",
-      "file",
-      "object",
-      "isBinary"
-    )]])
-  ) {
-    throw(new_github_baddesc_error(rem, call.)) # nocov
-  }
-  if (
-    is.null(obj[[c(
-      "data",
-      "repository",
-      "pullRequest",
-      "headRef",
-      "target",
-      "file",
-      "object"
-    )]])
-  ) {
-    throw(new_github_no_package_error(rem, call.))
   }
   obj
 }
@@ -448,8 +492,7 @@ type_github_get_data_release <- function(rem) {
   call <- sys.call(-1)
   user <- rem$username
   repo <- rem$repo
-  ref <- NULL
-  subdir <- rem$subdir %&z&% paste0(utils::URLencode(rem$subdir), "/")
+  dirs <- github_query_subdirs(rem)
 
   query <- sprintf(
     "{
@@ -458,37 +501,39 @@ type_github_get_data_release <- function(rem) {
         tagName
         tagCommit {
           oid,
-          file(path: \"%sDESCRIPTION\") {
-            object {
-              ... on Blob {
-                isBinary
-                text
-              }
-            }
-          }
+          %s
         }
       }
     }
   }",
     user,
     repo,
-    subdir
+    github_file_desc_fragment(dirs)
   )
 
   github_query(query)$then(function(resp) {
-    check_github_response_release(resp$response, resp$obj, rem, call. = call)
-  })$then(function(obj) {
+    obj <- check_github_response_release(resp$response, resp$obj, rem, call. = call)
+    hit <- github_pick_desc(
+      obj,
+      dirs,
+      get_node = function(o, a) {
+        o[[c(
+          "data",
+          "repository",
+          "latestRelease",
+          "tagCommit",
+          a,
+          "object"
+        )]]
+      },
+      rem = rem,
+      call. = call
+    )
+    if (is.null(hit)) {
+      throw(new_github_no_package_error(rem, call))
+    }
     ref <- obj[[c("data", "repository", "latestRelease", "tagCommit", "oid")]]
-    txt <- obj[[c(
-      "data",
-      "repository",
-      "latestRelease",
-      "tagCommit",
-      "file",
-      "object",
-      "text"
-    )]]
-    list(sha = ref, desc = txt)
+    list(sha = ref, desc = hit$text, subdir = hit$subdir)
   })
 }
 
@@ -498,31 +543,6 @@ check_github_response_release <- function(resp, obj, rem, call.) {
   }
   if (is.null(obj[[c("data", "repository", "latestRelease")]])) {
     throw(new_github_no_release_error(rem, call.))
-  }
-  if (
-    isTRUE(obj[[c(
-      "data",
-      "repository",
-      "latestRelease",
-      "tagCommit",
-      "file",
-      "object",
-      "isBinary"
-    )]])
-  ) {
-    throw(new_github_baddesc_error(rem, call.))
-  }
-  if (
-    is.null(obj[[c(
-      "data",
-      "repository",
-      "latestRelease",
-      "tagCommit",
-      "file",
-      "object"
-    )]])
-  ) {
-    throw(new_github_no_package_error(rem, call.))
   }
   obj
 }

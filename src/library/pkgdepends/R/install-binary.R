@@ -6,6 +6,15 @@ install_extracted_binary <- function(
   metadata,
   now
 ) {
+  # Maybe a source packages was served instead of a binary
+  src <- extracted_source_package_info(pkg_cache)
+  if (!is.null(src)) {
+    return(structure(
+      list(needs_build = TRUE, needscompilation = src$needscompilation),
+      class = "install_needs_build"
+    ))
+  }
+
   pkg <- verify_extracted_package(filename, pkg_cache)
   add_metadata(pkg$path, metadata)
   pkg_name <- pkg$name

@@ -1,3 +1,30 @@
+# NeedsCompilation for source packages, NULL for binary or broken packages
+extracted_source_package_info <- function(parent_path) {
+  pkg_name <- dir(parent_path)
+  if (length(pkg_name) != 1) {
+    return(NULL)
+  }
+  pkg_path <- file.path(parent_path, pkg_name)
+
+  if (file.exists(file.path(pkg_path, "Meta", "package.rds"))) {
+    return(NULL)
+  }
+  dsc_file <- file.path(pkg_path, "DESCRIPTION")
+  if (!file.exists(dsc_file)) {
+    return(NULL)
+  }
+
+  dsc <- tryCatch(desc::desc(dsc_file), error = function(e) NULL)
+  if (is.null(dsc) || !length(dsc$fields()) || is.na(dsc$get("Package"))) {
+    return(NULL)
+  }
+  if (!is.na(dsc$get("Built"))) {
+    return(NULL)
+  }
+
+  list(needscompilation = dsc$get_field("NeedsCompilation", NA_character_))
+}
+
 verify_extracted_package <- function(filename, parent_path) {
   pkg_name <- dir(parent_path)
   pkg_path <- file.path(parent_path, pkg_name)

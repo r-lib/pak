@@ -94,6 +94,61 @@ gh_fmt_desc <- function(dsc) {
   }
 }
 
+# Extract aliased DESCRIPTION lookups from a GraphQL query string.
+# Returns a named character vector: alias name -> file path, e.g.
+# c(desc1 = "DESCRIPTION", desc2 = "pkg-r/DESCRIPTION").
+gh_app_desc_aliases <- function(query) {
+  c(
+    # ref variant: `descN: object(expression: "<ref>:<path>")`.
+    # Legacy single-field queries use the bare field name `description`, which
+    # is captured here as the alias; aliased queries use `descN:`.
+    gh_app_extract_aliases(
+      query,
+      "(?:(?<alias>\\w+):\\s*)?object\\(expression:\\s*\"[^:\"]+:(?<path>[^\"]+)\"",
+      "description"
+    ),
+    # pull/release variants: `descN: file(path: "<path>")`.
+    # Legacy single-field queries use the bare field name `file` (no alias
+    # prefix); aliased queries use `descN:`.
+    gh_app_extract_aliases(
+      query,
+      "(?:(?<alias>\\w+):\\s*)?\\bfile\\(path:\\s*\"(?<path>[^\"]+)\"",
+      "file"
+    )
+  )
+}
+
+gh_app_extract_aliases <- function(query, pattern, default_alias) {
+  hits <- regmatches(query, gregexpr(pattern, query, perl = TRUE))[[1]]
+  if (length(hits) == 0) {
+    return(character())
+  }
+  m <- re_match(hits, pattern)
+  alias <- m$alias
+  alias[is.na(alias) | alias == ""] <- default_alias
+  stats::setNames(m$path, alias)
+}
+
+# Build alias -> Blob node response for the ref variant.
+gh_app_blob_objects <- function(aliases, cmt) {
+  out <- list()
+  for (i in seq_along(aliases)) {
+    dsc <- if (is.null(cmt)) NULL else cmt$files[[aliases[[i]]]]
+    out[[names(aliases)[i]]] <- gh_fmt_desc(dsc)
+  }
+  out
+}
+
+# Build alias -> { object: Blob } response for pull/release variants.
+gh_app_file_objects <- function(aliases, cmt) {
+  out <- list()
+  for (i in seq_along(aliases)) {
+    dsc <- if (is.null(cmt)) NULL else cmt$files[[aliases[[i]]]]
+    out[[names(aliases)[i]]] <- list(object = gh_fmt_desc(dsc))
+  }
+  out
+}
+
 gh_app <- function(repos = NULL, log = interactive(), options = list()) {
   app <- webfakes::new_app()
 
@@ -159,8 +214,6 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       "(?s:.)*",
       "name:[ ]*\"(?<repo>[^\"]+)\"",
       "(?s:.)*",
-      "description:[ ]*object[(]expression:[ ]*\"[^:]+:(?<path>[^\"]+)\"",
-      "(?s:.)*",
       "sha:[ ]*object[(]expression:[ ]*\"(?<ref>[^\"]+)\""
     )
 
@@ -178,6 +231,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       return()
     }
 
+    aliases <- gh_app_desc_aliases(req$json$query)
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {
       if (
@@ -186,7 +240,6 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
           str_starts_with(cmt$sha, psd$ref)
       ) {
         add_gh_headers(res)
-        dsc <- cmt$files[[psd$path]]
         if (
           !is.null(cmt$token) &&
             (is.null(req$.token) || req$.token != cmt$token)
@@ -194,16 +247,11 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
           send_repo_not_found(res, psd)
           return()
         }
+        repository <- gh_app_blob_objects(aliases, cmt)
+        repository$sha <- list(oid = cmt$sha)
         res$send_json(
           auto_unbox = TRUE,
-          list(
-            data = list(
-              repository = list(
-                description = gh_fmt_desc(dsc),
-                sha = list(oid = cmt$sha)
-              )
-            )
-          )
+          list(data = list(repository = repository))
         )
         return()
       }
@@ -212,14 +260,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     res$set_status(200)
     res$send_json(
       auto_unbox = TRUE,
-      list(
-        data = list(
-          repository = list(
-            description = NA,
-            sha = NA
-          )
-        )
-      )
+      list(data = list(repository = list(sha = NA)))
     )
   })
 
@@ -229,9 +270,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       "(?s:.)*",
       "name:[ ]*\"(?<repo>[^\"]+)\"",
       "(?s:.)*",
-      "pullRequest[(]number:[ ]*(?<pull>[0-9]+)[)]",
-      "(?s:.)*",
-      "file[(]path:[ ]*\"(?<path>.*)\""
+      "pullRequest[(]number:[ ]*(?<pull>[0-9]+)[)]"
     )
 
     psd <- re_match(req$json$query, re_pull)
@@ -248,11 +287,11 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       return()
     }
 
+    aliases <- gh_app_desc_aliases(req$json$query)
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {
       if (!is.null(cmt$pull) && cmt$pull == psd$pull) {
         add_gh_headers(res)
-        dsc <- cmt$files[[psd$path]]
         res$send_json(
           auto_unbox = TRUE,
           list(
@@ -261,7 +300,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
                 pullRequest = list(
                   headRefOid = cmt$sha,
                   headRef = list(
-                    target = list(file = list(object = gh_fmt_desc(dsc)))
+                    target = gh_app_file_objects(aliases, cmt)
                   )
                 )
               )
@@ -282,7 +321,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       "(?s:.)*",
       "name:[ ]*\"(?<repo>[^\"]+)\"",
       "(?s:.)*",
-      "file[(]path:[ ]*\"(?<path>.*)\""
+      "latestRelease"
     )
 
     psd <- re_match(req$json$query, re_release)
@@ -290,11 +329,15 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
       return("next")
     }
 
+    aliases <- gh_app_desc_aliases(req$json$query)
     commits <- app$locals$repos$users[[psd$user]]$repos[[psd$repo]]$commits
     for (cmt in commits) {
       if (isTRUE(cmt$latestRelease)) {
         add_gh_headers(res)
-        dsc <- cmt$files[[psd$path]]
+        tagCommit <- c(
+          list(oid = cmt$sha),
+          gh_app_file_objects(aliases, cmt)
+        )
         res$send_json(
           auto_unbox = TRUE,
           list(
@@ -302,10 +345,7 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
               repository = list(
                 latestRelease = list(
                   tagName = cmt$tagName,
-                  tagCommit = list(
-                    oid = cmt$sha,
-                    file = list(object = gh_fmt_desc(dsc))
-                  )
+                  tagCommit = tagCommit
                 )
               )
             )

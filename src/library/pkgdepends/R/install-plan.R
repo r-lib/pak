@@ -272,7 +272,7 @@ handle_event <- function(state, evidx) {
   state$workers[evidx] <- list(NULL)
 
   if (is.function(proc$get_result)) {
-    proc$get_result()
+    worker$result <- proc$get_result()
   }
 
   ## Cut stdout to lines
@@ -600,8 +600,8 @@ start_task_build <- function(state, task) {
   alert("info", "Building {.pkg {pkg}} {.version {version}}")
 
   if ("install_args" %in% names(state$plan)) {
-    cmd_args <- state$plan$install_args[pkgidx]
-    if (identical(cmd_args, "")) cmd_args <- NULL
+    cmd_args <- state$plan$install_args[[pkgidx]]
+    if (length(cmd_args) == 0 || identical(cmd_args, "")) cmd_args <- NULL
   } else {
     cmd_args <- NULL
   }
@@ -937,12 +937,29 @@ installed_note <- function(pkg) {
 }
 
 stop_task_install <- function(state, worker) {
-  ## TODO: make sure the install status is non-zero on exit
-  success <- worker$process$get_exit_status() == 0
-
   pkgidx <- worker$task$args$pkgidx
   pkg <- state$plan$package[pkgidx]
   version <- state$plan$version[pkgidx]
+
+  # A source package was served instead of a binary (from PPM typically)
+  if (inherits(worker$result, "install_needs_build")) {
+    alert(
+      "info",
+      "{.pkg {pkg}} {.version {version}} was served as a source package, \\
+       building it from source"
+    )
+    state$plan$binary[[pkgidx]] <- FALSE
+    state$plan$build_done[[pkgidx]] <- FALSE
+    state$plan$worker_id[[pkgidx]] <- NA_character_
+    nc <- worker$result$needscompilation
+    if (!is.null(nc) && !is.na(nc)) {
+      state$plan$needscompilation[[pkgidx]] <- nc
+    }
+    return(state)
+  }
+
+  ## TODO: make sure the install status is non-zero on exit
+  success <- worker$process$get_exit_status() == 0
   time <- Sys.time() - state$plan$install_time[[pkgidx]]
   ptime <- format_time$pretty_sec(as.numeric(time, units = "secs"))
   note <- installed_note(state$plan[pkgidx, ])
