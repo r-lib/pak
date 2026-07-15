@@ -1,5 +1,55 @@
 # pak (development version)
 
+* pak now supports the `configure_args` and `configure_vars` configuration
+  options. They default to the `configure.args` and `configure.vars`
+  options, for compatibility with `install.packages()` (#788).
+
+* GitHub remotes now auto-detect an R package in a well-known subdirectory
+  (`pkg-r/`, `r/`, or `R/`) when no `subdir` is given and there is no
+  `DESCRIPTION` at the repository root. This lets multi-language
+  repositories be installed without specifying `subdir` (#459).
+
+* pak now handles the case when a repository (typically Posit Package
+  Manager) serves a source package instead of the requested binary (#891).
+
+* Better error messages for several dependency solver situations:
+  - when requesting a package that is installed locally, but was removed
+    from its repository (#895),
+  - when requesting an older version (e.g. `pkg@1.0.0`) of a package that
+    is no longer in the repository (#896),
+  - when resolving downloads for a different platform
+    (https://github.com/r-lib/pkgdepends/issues/462).
+
+* The dependency solver no longer silently keeps an installed package as
+  the solution for a direct package reference that failed to resolve, e.g.
+  a CRAN package that is not on CRAN but happens to be installed locally
+  from another source. pak now reports the failure instead.
+
+* `install_args` is no longer overwritten when building packages. The
+  `--no-multiarch` flag needed on some Windows configurations is now added
+  to the existing `install_args`
+  (https://github.com/r-lib/pkgdepends/issues/472).
+
+* Duplicate system requirement commands are now deduplicated (#888).
+
+* pak now behaves better when the package cache database is corrupt: it
+  gives a better error message, and cleaning the cache no longer fails in
+  this case (#884).
+
+* pak now handles `PACKAGES` files with `Path` and/or `File` fields
+  correctly, and drops HTTP query parameters from these fields when
+  constructing the target file name
+  (https://github.com/r-lib/pkgcache/issues/141, @jeroen).
+
+* All HTTP requests now honor the `pkgcache_http_version` option and the
+  `PKGCACHE_HTTP_VERSION` environment variable
+  (https://github.com/r-lib/pkgcache/issues/140).
+
+* pak now retries failed HTTP requests by default, using an exponential
+  backoff (and honoring the `Retry-After` header). Set the `PKG_HTTP_RETRY`
+  environment variable or the `pkg_http_retry` option to `FALSE` to disable
+  retries.
+
 # pak 0.10.0
 
 * pak now supports Posit Package Manager's Sigle Sign-On authentication.
