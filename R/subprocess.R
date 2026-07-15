@@ -74,7 +74,7 @@ remote <- function(func, args = list()) {
   # nocov end
 
   opts <- options()
-  extraopts <- c("Ncpus", "BioC_mirror")
+  extraopts <- c("Ncpus", "BioC_mirror", "configure.args", "configure.opts")
   pkg_options <- opts[
     grepl("^pkg[.]", names(opts)) |
       grepl("^async_http_", names(opts)) |
