@@ -53,16 +53,36 @@ process_get_poll_connection <- function(self, private) {
 process_read_output <- function(self, private, n) {
   "!DEBUG process_read_output `private$get_short_name()`"
   con <- process_get_output_connection(self, private)
-  if (private$pty) {
-    if (poll(list(con), 0)[[1]] == "timeout") return("")
+  if (private$encoding == "binary") {
+    chain_call(c_processx_connection_read_bytes, con, n)
+  } else {
+    if (private$pty) {
+      if (poll(list(con), 0)[[1]] == "timeout") return("")
+    }
+    chain_call(c_processx_connection_read_chars, con, n)
   }
-  chain_call(c_processx_connection_read_chars, con, n)
 }
 
 process_read_error <- function(self, private, n) {
   "!DEBUG process_read_error `private$get_short_name()`"
   con <- process_get_error_connection(self, private)
-  chain_call(c_processx_connection_read_chars, con, n)
+  if (private$encoding == "binary") {
+    chain_call(c_processx_connection_read_bytes, con, n)
+  } else {
+    chain_call(c_processx_connection_read_chars, con, n)
+  }
+}
+
+process_read_output_bytes <- function(self, private, n) {
+  "!DEBUG process_read_output_bytes `private$get_short_name()`"
+  con <- process_get_output_connection(self, private)
+  chain_call(c_processx_connection_read_bytes, con, n)
+}
+
+process_read_error_bytes <- function(self, private, n) {
+  "!DEBUG process_read_error_bytes `private$get_short_name()`"
+  con <- process_get_error_connection(self, private)
+  chain_call(c_processx_connection_read_bytes, con, n)
 }
 
 process_read_output_lines <- function(self, private, n) {
@@ -94,6 +114,27 @@ process_read_all_output <- function(self, private) {
   result <- ""
   while (self$is_incomplete_output()) {
     self$poll_io(-1)
+    # On Windows with pty=TRUE the IOCP loop forces timeout=0 once poll_pipe
+    # signals EOF (process exit), so poll_io(-1) returns immediately after the
+    # child exits regardless of the requested timeout.  conhost.exe processes
+    # the child's final writes asynchronously; we must poll *only* the stdout
+    # connection (not the full process) to give conhost time to flush, and then
+    # call ClosePseudoConsole() explicitly so conhost closes its end of the pipe.
+    if (private$pty && .Platform$OS.type == "windows" && !self$is_alive()) {
+      con <- self$get_output_connection()
+      repeat {
+        p <- poll(list(con), 1000L)[[1]]
+        if (!identical(p, "ready")) break
+        result <- paste0(result, self$read_output())
+      }
+      chain_call(c_processx_pty_close, private$status,
+                 private$get_short_name())
+      while (self$is_incomplete_output()) {
+        poll(list(con), -1L)
+        result <- paste0(result, self$read_output())
+      }
+      return(result)
+    }
     result <- paste0(result, self$read_output())
   }
   result

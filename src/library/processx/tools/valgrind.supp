@@ -36,7 +36,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -55,7 +55,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -112,7 +112,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:malloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:_dlfo_mappings_segment_allocate
    fun:_dl_find_object_update_1
    fun:_dl_find_object_update
@@ -165,7 +165,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -184,7 +184,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -241,7 +241,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:malloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:_dlfo_mappings_segment_allocate
    fun:_dl_find_object_update_1
    fun:_dl_find_object_update
@@ -308,7 +308,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -327,7 +327,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34
@@ -384,7 +384,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:malloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:_dlfo_mappings_segment_allocate
    fun:_dl_find_object_update_1
    fun:_dl_find_object_update
@@ -404,7 +404,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:calloc
-   fun:UnknownInlinedFun
+   fun:calloc
    fun:allocate_dtv
    fun:_dl_allocate_tls
    fun:pthread_create@@GLIBC_2.34

@@ -6,6 +6,85 @@
 
 #include <wchar.h>
 
+/* ConPTY support (Windows 10 version 1809+).
+   We load the API dynamically so processx still loads on older Windows. */
+
+#ifndef HPCON
+typedef VOID* HPCON;
+#endif
+
+#ifndef PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
+/* ProcThreadAttributeValue(22, FALSE, TRUE, FALSE) */
+#define PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE 0x00020016
+#endif
+
+/* Fallback type and constant definitions for older MinGW headers (rtools40).
+   These are Vista+ (0x0600) features; the 32-bit rtools40 toolchain sets
+   _WIN32_WINNT below that threshold so the declarations are absent.
+   We cannot use #ifndef because typedefs do not create preprocessor macros. */
+#ifndef EXTENDED_STARTUPINFO_PRESENT
+#define EXTENDED_STARTUPINFO_PRESENT 0x00080000
+#endif
+
+#if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0600)
+typedef struct _PROC_THREAD_ATTRIBUTE_LIST *PPROC_THREAD_ATTRIBUTE_LIST,
+                                           *LPPROC_THREAD_ATTRIBUTE_LIST;
+typedef struct _STARTUPINFOEXW {
+    STARTUPINFOW StartupInfo;
+    LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
+} STARTUPINFOEXW, *LPSTARTUPINFOEXW;
+#endif
+
+typedef HRESULT (WINAPI *pfn_CreatePseudoConsole)(
+    COORD, HANDLE, HANDLE, DWORD, HPCON *);
+typedef void   (WINAPI *pfn_ClosePseudoConsole)(HPCON);
+typedef BOOL   (WINAPI *pfn_InitializeProcThreadAttributeList)(
+    LPPROC_THREAD_ATTRIBUTE_LIST, DWORD, DWORD, PSIZE_T);
+typedef BOOL   (WINAPI *pfn_UpdateProcThreadAttribute)(
+    LPPROC_THREAD_ATTRIBUTE_LIST, DWORD, DWORD_PTR, PVOID, SIZE_T,
+    PVOID, PSIZE_T);
+typedef VOID   (WINAPI *pfn_DeleteProcThreadAttributeList)(
+    LPPROC_THREAD_ATTRIBUTE_LIST);
+
+static pfn_CreatePseudoConsole processx__CreatePseudoConsole = NULL;
+static pfn_ClosePseudoConsole  processx__ClosePseudoConsole  = NULL;
+static pfn_InitializeProcThreadAttributeList
+    processx__InitializeProcThreadAttributeList = NULL;
+static pfn_UpdateProcThreadAttribute
+    processx__UpdateProcThreadAttribute = NULL;
+static pfn_DeleteProcThreadAttributeList
+    processx__DeleteProcThreadAttributeList = NULL;
+/* 0 = unchecked, 1 = available, -1 = not available */
+static int processx__pty_api_state = 0;
+
+static int processx__load_pty_api(void) {
+  if (processx__pty_api_state != 0) return processx__pty_api_state == 1;
+
+  HMODULE hK32 = GetModuleHandleW(L"kernel32.dll");
+  if (hK32) {
+    processx__CreatePseudoConsole =
+        (pfn_CreatePseudoConsole) GetProcAddress(hK32, "CreatePseudoConsole");
+    processx__ClosePseudoConsole =
+        (pfn_ClosePseudoConsole)  GetProcAddress(hK32, "ClosePseudoConsole");
+    processx__InitializeProcThreadAttributeList =
+        (pfn_InitializeProcThreadAttributeList)
+            GetProcAddress(hK32, "InitializeProcThreadAttributeList");
+    processx__UpdateProcThreadAttribute =
+        (pfn_UpdateProcThreadAttribute)
+            GetProcAddress(hK32, "UpdateProcThreadAttribute");
+    processx__DeleteProcThreadAttributeList =
+        (pfn_DeleteProcThreadAttributeList)
+            GetProcAddress(hK32, "DeleteProcThreadAttributeList");
+  }
+
+  processx__pty_api_state =
+      (processx__CreatePseudoConsole && processx__ClosePseudoConsole &&
+       processx__InitializeProcThreadAttributeList &&
+       processx__UpdateProcThreadAttribute &&
+       processx__DeleteProcThreadAttributeList) ? 1 : -1;
+  return processx__pty_api_state == 1;
+}
+
 static HANDLE processx__global_job_handle = NULL;
 
 static void processx__init_global_job_handle(void) {
@@ -862,6 +941,10 @@ SEXP processx__make_handle(SEXP private, int cleanup) {
 void processx__handle_destroy(processx_handle_t *handle) {
   if (!handle) return;
   if (handle->child_stdio_buffer) free(handle->child_stdio_buffer);
+  if (handle->ptycon && processx__ClosePseudoConsole) {
+    processx__ClosePseudoConsole((HPCON) handle->ptycon);
+    handle->ptycon = NULL;
+  }
   free(handle);
 }
 
@@ -869,7 +952,7 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
 		               SEXP connections, SEXP env, SEXP windows_verbatim_args,
                    SEXP windows_hide, SEXP windows_detached_process,
                    SEXP private, SEXP cleanup, SEXP wd, SEXP encoding,
-                   SEXP tree_id) {
+                   SEXP tree_id, SEXP linux_pdeathsig) {
 
   const char *ccommand = CHAR(STRING_ELT(command, 0));
   const char *cencoding = CHAR(STRING_ELT(encoding, 0));
@@ -877,6 +960,7 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
   const char *ctree_id = CHAR(STRING_ELT(tree_id, 0));
 
   int err = 0;
+  int cpty = LOGICAL(pty)[0];
   WCHAR *path;
   WCHAR *application_path = NULL, *application = NULL, *arguments = NULL,
     *cenv = NULL, *cwd = NULL;
@@ -957,12 +1041,6 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
   result = PROTECT(processx__make_handle(private, ccleanup));
   handle = R_ExternalPtrAddr(result);
 
-  int inherit_std = 0;
-  err = processx__stdio_create(handle, connections,
-			       &handle->child_stdio_buffer, private,
-			       cencoding, ccommand, &inherit_std);
-  if (err) { R_THROW_SYSTEM_ERROR_CODE(err, "setup stdio for '%s'", ccommand); }
-
   application_path = processx__search_path(application, cwd, path);
 
   /* If a UNC Path, then we try to flip the forward slashes, if any.
@@ -977,10 +1055,262 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
 
   if (!application_path) {
     R_ClearExternalPtr(result);
-    processx__stdio_destroy(handle->child_stdio_buffer);
     free(handle);
     R_THROW_ERROR("Command '%s' not found", ccommand);
   }
+
+  /* ------------------------------------------------------------------ */
+  /* ConPTY branch (Windows 10 1809+, pty = TRUE)                       */
+  /* ------------------------------------------------------------------ */
+
+  if (cpty) {
+
+    if (!processx__load_pty_api()) {
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_ERROR("PTY is not supported on this version of Windows "
+                    "(requires Windows 10 version 1809 or later)");
+    }
+
+    /* Extract PTY options (order matches default_pty_options(): echo, rows, cols) */
+    int pty_rows = INTEGER(VECTOR_ELT(pty_options, 1))[0];
+    int pty_cols = INTEGER(VECTOR_ELT(pty_options, 2))[0];
+
+    /* stdin pipe: anonymous, synchronous.
+       parent writes to ptyin_write; ConPTY reads from ptyin_read (hInput). */
+    HANDLE ptyin_read = NULL, ptyin_write = NULL;
+    {
+      SECURITY_ATTRIBUTES sa;
+      sa.nLength = sizeof(sa);
+      sa.lpSecurityDescriptor = NULL;
+      sa.bInheritHandle = FALSE;
+      if (!CreatePipe(&ptyin_read, &ptyin_write, &sa, 0)) {
+        R_ClearExternalPtr(result);
+        free(handle);
+        R_THROW_SYSTEM_ERROR("create PTY stdin pipe for '%s'", ccommand);
+      }
+    }
+
+    /* stdout pipe: named + overlapped so the parent can read asynchronously.
+       processx__create_pipe() gives:
+         parent (ptyout_read)  – overlapped server end, parent reads from here;
+         child  (ptyout_child) – sync client end, ConPTY writes here (hOutput). */
+    HANDLE ptyout_read = NULL, ptyout_child = NULL;
+    err = processx__create_pipe(handle, &ptyout_read, &ptyout_child, ccommand);
+    if (err) {
+      CloseHandle(ptyin_read);
+      CloseHandle(ptyin_write);
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_SYSTEM_ERROR_CODE(err, "create PTY stdout pipe for '%s'", ccommand);
+    }
+
+    /* Create the pseudo-console.
+       Background R processes (callr, R CMD check, processx::run with captured
+       stdout) have their standard handles set to PIPE handles, not to the
+       console handles CONIN$/CONOUT$.  PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
+       can only intercept writes that go to CONSOLE handles; writes to pipe
+       handles bypass the ConPTY entirely, causing child output to be lost.
+       Fix: ensure the parent's standard handles are CONSOLE handles
+       (CONIN$/CONOUT$) at the point CreateProcessW is called.  The kernel
+       copies the parent's standard handles into the child; PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
+       then intercepts those console writes and routes them through the ConPTY.
+       We restore the original pipe handles immediately after CreateProcessW so
+       that R's own I/O is unaffected.
+       AllocConsole (if the process has no console yet) both makes
+       CreatePseudoConsole work on Windows 10 (which needs \Device\ConDrv) and
+       sets the standard handles to CONIN$/CONOUT$ in one step.  When the
+       process already has a console, AllocConsole returns FALSE and we open
+       CONIN$/CONOUT$ explicitly to set the standard handles.  The hidden
+       console from AllocConsole persists for the process lifetime (harmless;
+       subsequent AllocConsole calls return FALSE). */
+    COORD pty_size;
+    pty_size.X = (SHORT) pty_cols;
+    pty_size.Y = (SHORT) pty_rows;
+    HPCON hPC;
+    /* Save originals and open/set console handles for CreateProcessW. */
+    HANDLE saved_in  = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE saved_out = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE saved_err = GetStdHandle(STD_ERROR_HANDLE);
+    HANDLE hConIn  = INVALID_HANDLE_VALUE;
+    HANDLE hConOut = INVALID_HANDLE_VALUE;
+    if (AllocConsole()) {
+      /* AllocConsole already set std handles to CONIN$/CONOUT$. */
+      HWND ach = GetConsoleWindow();
+      if (ach) ShowWindow(ach, SW_HIDE);
+    } else {
+      /* Process already has a console (interactive session or a previous
+         AllocConsole call).  Std handles may still be pipe handles; open
+         CONIN$/CONOUT$ explicitly and install them as std handles. */
+      hConIn  = CreateFileA("CONIN$",  GENERIC_READ  | GENERIC_WRITE,
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,
+                            NULL, OPEN_EXISTING, 0, NULL);
+      hConOut = CreateFileA("CONOUT$", GENERIC_READ  | GENERIC_WRITE,
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,
+                            NULL, OPEN_EXISTING, 0, NULL);
+      if (hConIn  != INVALID_HANDLE_VALUE) SetStdHandle(STD_INPUT_HANDLE,  hConIn);
+      if (hConOut != INVALID_HANDLE_VALUE) {
+        SetStdHandle(STD_OUTPUT_HANDLE, hConOut);
+        SetStdHandle(STD_ERROR_HANDLE,  hConOut);
+      }
+    }
+
+    /* Helper: restores original std handles and closes any console handles
+       we opened.  Called on every error path and after CreateProcessW. */
+#define PROCESSX_PTY_RESTORE_STD_HANDLES() do { \
+      SetStdHandle(STD_INPUT_HANDLE,  saved_in);  \
+      SetStdHandle(STD_OUTPUT_HANDLE, saved_out); \
+      SetStdHandle(STD_ERROR_HANDLE,  saved_err); \
+      if (hConIn  != INVALID_HANDLE_VALUE) CloseHandle(hConIn);  \
+      if (hConOut != INVALID_HANDLE_VALUE) CloseHandle(hConOut); \
+    } while (0)
+
+    HRESULT hr = processx__CreatePseudoConsole(
+        pty_size, ptyin_read, ptyout_child, 0, &hPC);
+    /* ConPTY made its own internal copies; close the pipe ends we passed in */
+    CloseHandle(ptyin_read);
+    CloseHandle(ptyout_child);
+    if (FAILED(hr)) {
+      PROCESSX_PTY_RESTORE_STD_HANDLES();
+      CloseHandle(ptyin_write);
+      CloseHandle(ptyout_read);
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_ERROR("CreatePseudoConsole failed for '%s' (HRESULT 0x%08lx)",
+                    ccommand, (unsigned long) hr);
+    }
+
+    /* Build the process-thread attribute list containing the ConPTY handle */
+    SIZE_T attrlist_size = 0;
+    processx__InitializeProcThreadAttributeList(NULL, 1, 0, &attrlist_size);
+    LPPROC_THREAD_ATTRIBUTE_LIST lpAttrList =
+        (LPPROC_THREAD_ATTRIBUTE_LIST) malloc(attrlist_size);
+    if (!lpAttrList) {
+      PROCESSX_PTY_RESTORE_STD_HANDLES();
+      processx__ClosePseudoConsole(hPC);
+      CloseHandle(ptyin_write);
+      CloseHandle(ptyout_read);
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_ERROR("Out of memory when creating subprocess '%s'", ccommand);
+    }
+    if (!processx__InitializeProcThreadAttributeList(
+            lpAttrList, 1, 0, &attrlist_size)) {
+      PROCESSX_PTY_RESTORE_STD_HANDLES();
+      free(lpAttrList);
+      processx__ClosePseudoConsole(hPC);
+      CloseHandle(ptyin_write);
+      CloseHandle(ptyout_read);
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_SYSTEM_ERROR(
+          "InitializeProcThreadAttributeList for '%s'", ccommand);
+    }
+    if (!processx__UpdateProcThreadAttribute(
+            lpAttrList, 0, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+            hPC, sizeof(HPCON), NULL, NULL)) {
+      PROCESSX_PTY_RESTORE_STD_HANDLES();
+      processx__DeleteProcThreadAttributeList(lpAttrList);
+      free(lpAttrList);
+      processx__ClosePseudoConsole(hPC);
+      CloseHandle(ptyin_write);
+      CloseHandle(ptyout_read);
+      R_ClearExternalPtr(result);
+      free(handle);
+      R_THROW_SYSTEM_ERROR(
+          "UpdateProcThreadAttribute for '%s'", ccommand);
+    }
+
+    STARTUPINFOEXW siEx;
+    memset(&siEx, 0, sizeof(siEx));
+    siEx.StartupInfo.cb = sizeof(STARTUPINFOEXW);
+    /* Do NOT set STARTF_USESTDHANDLES: the parent's current std handles
+       (CONIN$/CONOUT$, set above) are copied into the child by CreateProcessW
+       and then intercepted by PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE. */
+    siEx.StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
+    siEx.StartupInfo.wShowWindow =
+        options.windows_hide ? SW_HIDE : SW_SHOWDEFAULT;
+    siEx.lpAttributeList = lpAttrList;
+
+    /* ConPTY requires EXTENDED_STARTUPINFO_PRESENT.
+       Do NOT use CREATE_NO_WINDOW or DETACHED_PROCESS — either flag
+       prevents the child from attaching to the pseudo-console. */
+    DWORD pty_flags = CREATE_UNICODE_ENVIRONMENT | CREATE_SUSPENDED
+                      | EXTENDED_STARTUPINFO_PRESENT;
+    if (!ccleanup) pty_flags |= CREATE_NEW_PROCESS_GROUP;
+
+    err = CreateProcessW(
+      /* lpApplicationName =    */ application_path,
+      /* lpCommandLine =        */ arguments,
+      /* lpProcessAttributes =  */ NULL,
+      /* lpThreadAttributes =   */ NULL,
+      /* bInheritHandles =      */ FALSE,
+      /* dwCreationFlags =      */ pty_flags,
+      /* lpEnvironment =        */ cenv,
+      /* lpCurrentDirectory =   */ cwd,
+      /* lpStartupInfo =        */ (LPSTARTUPINFOW) &siEx,
+      /* lpProcessInformation = */ &info);
+
+    processx__DeleteProcThreadAttributeList(lpAttrList);
+    free(lpAttrList);
+
+    /* Restore R's original standard handles now that the child exists. */
+    PROCESSX_PTY_RESTORE_STD_HANDLES();
+#undef PROCESSX_PTY_RESTORE_STD_HANDLES
+
+    if (!err) {
+      processx__ClosePseudoConsole(hPC);
+      CloseHandle(ptyin_write);
+      CloseHandle(ptyout_read);
+      R_ClearExternalPtr(result);
+      free(handle);
+      UNPROTECT(1);
+      R_THROW_SYSTEM_ERROR("create process '%s'", ccommand);
+    }
+
+    handle->ptycon = (void *) hPC;
+    handle->hProcess = info.hProcess;
+    handle->dwProcessId = info.dwProcessId;
+    handle->create_time = processx__create_time(handle->hProcess);
+
+    if (ccleanup) {
+      if (!processx__global_job_handle) processx__init_global_job_handle();
+      if (!AssignProcessToJobObject(processx__global_job_handle,
+                                    info.hProcess)) {
+        DWORD derr = GetLastError();
+        if (derr != ERROR_ACCESS_DENIED) {
+          R_THROW_SYSTEM_ERROR_CODE(derr, "Assign to job object '%s'",
+                                    ccommand);
+        }
+      }
+    }
+
+    dwerr = ResumeThread(info.hThread);
+    if (dwerr == (DWORD) -1) {
+      R_THROW_SYSTEM_ERROR("resume thread for '%s'", ccommand);
+    }
+    CloseHandle(info.hThread);
+
+    /* Create parent-side I/O connections */
+    handle->pipes[0] = processx__create_connection(
+        ptyin_write, "stdin_pipe",  private, cencoding, FALSE);
+    handle->pipes[1] = processx__create_connection(
+        ptyout_read, "stdout_pipe", private, cencoding, TRUE);
+    handle->pipes[2] = NULL;
+
+    UNPROTECT(1);
+    return result;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Normal (non-PTY) branch                                             */
+  /* ------------------------------------------------------------------ */
+
+  int inherit_std = 0;
+  err = processx__stdio_create(handle, connections,
+			       &handle->child_stdio_buffer, private,
+			       cencoding, ccommand, &inherit_std);
+  if (err) { R_THROW_SYSTEM_ERROR_CODE(err, "setup stdio for '%s'", ccommand); }
 
   startup.cb = sizeof(startup);
   startup.lpReserved = NULL;
@@ -1088,6 +1418,36 @@ void processx__collect_exit_status(SEXP status, DWORD exitcode) {
   processx_handle_t *handle = R_ExternalPtrAddr(status);
   handle->exitcode = exitcode;
   handle->collected = 1;
+  {
+    FILETIME ftCreate, ftExit, ftKernel, ftUser;
+    if (GetProcessTimes(handle->hProcess,
+                        &ftCreate, &ftExit, &ftKernel, &ftUser)) {
+      long long ll = ((LONGLONG)ftExit.dwHighDateTime) << 32;
+      ll += ftExit.dwLowDateTime - 116444736000000000LL;
+      handle->end_time = (double)(ll / 10000000) +
+                         (double)(ll % 10000000) / 10000000.0;
+    } else {
+      handle->end_time = 0.0;
+    }
+  }
+  /* Do NOT call ClosePseudoConsole() here.  ConPTY processes the child's
+     writes asynchronously: by the time GetExitCodeProcess() reports that
+     the child has exited, conhost may not have finished writing the child's
+     last output to our pipe.  Calling ClosePseudoConsole() too early
+     causes that buffered output to be silently discarded.
+     The caller is responsible for draining the stdout pipe first (via
+     processx_pty_close()) after polling until no more data arrives. */
+}
+
+/* Called from R after the stdout pipe has been drained: signals conhost
+   to flush any remaining terminal output and close the pipe (EOF). */
+SEXP processx_pty_close(SEXP status, SEXP name) {
+  processx_handle_t *handle = R_ExternalPtrAddr(status);
+  if (handle && handle->ptycon && processx__ClosePseudoConsole) {
+    processx__ClosePseudoConsole((HPCON) handle->ptycon);
+    handle->ptycon = NULL;
+  }
+  return R_NilValue;
 }
 
 SEXP processx_wait(SEXP status, SEXP timeout, SEXP name) {

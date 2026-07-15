@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "../processx.h"
 #include "../cleancall.h"
@@ -51,6 +52,10 @@ extern char **environ;
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <pthread.h>
+
+#ifdef __linux__
+#include <sys/prctl.h>
+#endif
 
 extern processx__child_list_t child_list_head;
 extern processx__child_list_t *child_list;
@@ -141,6 +146,23 @@ static void processx__child_init(processx_handle_t *handle, SEXP connections,
 
   setsid();
 
+#ifdef __linux__
+  if (options->linux_pdeathsig > 0) {
+    if (prctl(PR_SET_PDEATHSIG, options->linux_pdeathsig) == -1) {
+      processx__write_int(error_fd, -errno);
+      raise(SIGKILL);
+    }
+    /* Unblock the death signal in case the parent had it blocked at fork
+       time (e.g. sanitizer runtimes temporarily block signals in fork
+       wrappers; the child inherits the blocked mask and the signal would
+       be queued but never delivered after execvp). */
+    sigset_t sigset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, options->linux_pdeathsig);
+    sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+  }
+#endif
+
   /* Do we need a pty? */
   if (pty_name) {
     /* Do not mess with stdin/stdout/stderr, all handled by the pty */
@@ -160,7 +182,7 @@ static void processx__child_init(processx_handle_t *handle, SEXP connections,
 #endif
 
 #ifdef TIOCSWINSZ
-    struct winsize w;
+    struct winsize w = { 0 };
     w.ws_row = options->pty_rows;
     w.ws_col = options->pty_cols;
     if (ioctl(sub_fd, TIOCSWINSZ, &w) == -1) {
@@ -254,8 +276,11 @@ static void processx__child_init(processx_handle_t *handle, SEXP connections,
 	/* A file was requested, open it */
 	if (fd == 0) {
 	  use_fd = open(stroutput, O_RDONLY);
+	} else if (stroutput[0] == '>' && stroutput[1] == '>') {
+	  /* Append mode: ">>" prefix indicates appending to the file */
+	  use_fd = open(stroutput + 2, O_CREAT | O_APPEND | O_RDWR, 0644);
 	} else {
-	  use_fd = open(stroutput, O_CREAT | O_TRUNC| O_RDWR, 0644);
+	  use_fd = open(stroutput, O_CREAT | O_TRUNC | O_RDWR, 0644);
 	}
       } else {
 	/* NULL, so stdin/out/err is ignored, using /dev/null */
@@ -389,6 +414,7 @@ static SEXP processx__make_handle(SEXP private, int cleanup) {
 
 static void processx__handle_destroy(processx_handle_t *handle) {
   if (!handle) return;
+  if (handle->pty_child_fd >= 0) close(handle->pty_child_fd);
   free(handle);
 }
 
@@ -429,7 +455,7 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
                    SEXP connections, SEXP env, SEXP windows_verbatim_args,
                    SEXP windows_hide_window, SEXP windows_detached_process,
                    SEXP private, SEXP cleanup, SEXP wd, SEXP encoding,
-                   SEXP tree_id) {
+                   SEXP tree_id, SEXP linux_pdeathsig) {
 
   char *ccommand = processx__tmp_string(command, 0);
   char **cargs = processx__tmp_character(args);
@@ -460,6 +486,7 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
   for (i = 0; i < num_connections; i++) pipes[i][0] = pipes[i][1] = -1;
 
   options.wd = isNull(wd) ? 0 : CHAR(STRING_ELT(wd, 0));
+  options.linux_pdeathsig = INTEGER(linux_pdeathsig)[0];
 
   if (pipe(signal_pipe)) {
     R_THROW_SYSTEM_ERROR("Cannot create pipe when running '%s'", ccommand);
@@ -552,7 +579,18 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
   handle->create_time = processx__create_time(pid);
 
   handle->ptyfd = -1;
-  if (cpty) handle->ptyfd = pty_main_fd;
+  handle->pty_child_fd = -1;
+  if (cpty) {
+    handle->ptyfd = pty_main_fd;
+    /* Keep the PTY child fd open in the parent so that the kernel does not
+       discard unread data from the master's buffer when the child exits
+       and closes its side.  We close this fd once we have confirmed the
+       process has exited and collected its exit status. */
+    handle->pty_child_fd = open(pty_name, O_RDWR | O_NOCTTY);
+    /* Make the master non-blocking so read() returns EAGAIN instead of
+       blocking when there is no data (needed after we add O_NONBLOCK). */
+    processx__nonblock_fcntl(pty_main_fd, 1);
+  }
 
   /* We need to know the processx children */
   if (processx__child_add(pid, result)) {
@@ -608,9 +646,10 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
     return result;
   }
 
-  R_THROW_SYSTEM_ERROR_CODE(-exec_errorno,
-                            "cannot start processx process '%s'",
-                            ccommand);
+  // keep this in one line, othewise line numbers are off in sanitizer builds
+  // because -O0 changes how instructions are mapped back to source lines
+  R_THROW_SYSTEM_ERROR_CODE(-exec_errorno, "cannot start processx process '%s'", ccommand);
+
   return R_NilValue;
 }
 
@@ -636,7 +675,25 @@ void processx__collect_exit_status(SEXP status, int retval, int wstat) {
     handle->exitcode = - WTERMSIG(wstat);
   }
 
+  {
+    struct timespec _et;
+    if (clock_gettime(CLOCK_REALTIME, &_et) == 0) {
+      handle->end_time = (double)_et.tv_sec + (double)_et.tv_nsec * 1e-9;
+    } else {
+      handle->end_time = NA_REAL;
+    }
+  }
+
   handle->collected = 1;
+
+  /* Now that the child has exited, release our hold on the PTY child fd.
+     It was kept open to prevent macOS from discarding the master's read
+     buffer when the child closed its side.  After this close the master
+     will see EOF (or EIO on Linux) once all buffered data is read. */
+  if (handle->pty_child_fd >= 0) {
+    close(handle->pty_child_fd);
+    handle->pty_child_fd = -1;
+  }
 }
 
 static void processx__wait_cleanup(void *ptr) {
@@ -671,6 +728,11 @@ static void processx__wait_cleanup(void *ptr) {
  *    interruptible.
  * 7. We keep polling until the timeout expires or the process finishes.
  */
+
+/* No-op on Unix: ConPTY is Windows-only. */
+SEXP processx_pty_close(SEXP status, SEXP name) {
+  return R_NilValue;
+}
 
 SEXP processx_wait(SEXP status, SEXP timeout, SEXP name) {
   processx_handle_t *handle = R_ExternalPtrAddr(status);

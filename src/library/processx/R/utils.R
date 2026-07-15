@@ -234,6 +234,10 @@ has_package <- function(pkg) {
   requireNamespace(pkg, quietly = TRUE)
 }
 
+write_raw_stdout <- function(x) {
+  chain_call(c_processx_write_raw_stdout, x)
+}
+
 tty_echo_off <- function() {
   chain_call(c_processx__echo_off)
 }
@@ -277,6 +281,35 @@ is_interactive <- function() {
   }
 }
 
+make_raw_buffer <- function() {
+  chunks <- list()
+  total <- 0L
+  list(
+    push = function(raw_bytes) {
+      n <- length(raw_bytes)
+      if (n > 0L) {
+        chunks[[length(chunks) + 1L]] <<- raw_bytes
+        total <<- total + n
+      }
+    },
+    read = function() {
+      if (total == 0L) return(raw(0L))
+      result <- raw(total)
+      pos <- 1L
+      for (chunk in chunks) {
+        n <- length(chunk)
+        result[pos:(pos + n - 1L)] <- chunk
+        pos <- pos + n
+      }
+      result
+    },
+    done = function() {
+      chunks <<- list()
+      total <<- 0L
+    }
+  )
+}
+
 make_buffer <- function() {
   con <- file(open = "w+b")
   size <- 0L
@@ -302,6 +335,7 @@ update_vector <- function(x, y = NULL) {
 }
 
 process_env <- function(env) {
+  if (is.null(names(env))) names(env) <- rep("", length(env))
   current <- env == "current" & names(env) == ""
   if (any(current)) {
     env <- update_vector(Sys.getenv(), env[!current])

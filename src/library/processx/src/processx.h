@@ -46,9 +46,10 @@ SEXP processx_exec(SEXP command, SEXP args, SEXP pty, SEXP pty_options,
 		   SEXP connections, SEXP env, SEXP windows_verbatim_args,
 		   SEXP windows_hide_window, SEXP windows_detached_process,
 		   SEXP private_, SEXP cleanup, SEXP wd, SEXP encoding,
-		   SEXP tree_id);
+		   SEXP tree_id, SEXP linux_pdeathsig);
 SEXP processx_wait(SEXP status, SEXP timeout, SEXP name);
 SEXP processx_is_alive(SEXP status, SEXP name);
+SEXP processx_pty_close(SEXP status, SEXP name);
 SEXP processx_get_exit_status(SEXP status, SEXP name);
 SEXP processx_signal(SEXP status, SEXP signal, SEXP name);
 SEXP processx_interrupt(SEXP status, SEXP name);
@@ -60,6 +61,7 @@ SEXP processx_poll(SEXP statuses, SEXP conn, SEXP ms);
 
 SEXP processx__process_exists(SEXP pid);
 SEXP processx__proc_start_time(SEXP status);
+SEXP processx__proc_end_time(SEXP status);
 SEXP processx__unload_cleanup(void);
 
 SEXP processx_is_named_pipe_open(SEXP pipe_ext);
@@ -71,6 +73,8 @@ SEXP processx_disable_crash_dialog(void);
 
 SEXP processx_base64_encode(SEXP array);
 SEXP processx_base64_decode(SEXP array);
+
+SEXP processx_write_raw_stdout(SEXP raw_data);
 
 /* Common declarations */
 
@@ -111,6 +115,7 @@ typedef struct {
   int pty_echo;
   int pty_rows;
   int pty_cols;
+  int linux_pdeathsig;
 } processx_options_t;
 
 #ifdef __cplusplus

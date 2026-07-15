@@ -1,3 +1,60 @@
+# processx 3.9.0
+
+* New experimental `pipeline` R6 class for running two or more processes
+  connected by kernel-level pipes, like a Unix shell pipeline
+  (`cmd1 | cmd2 | cmd3`). Data flows directly between child processes
+  without passing through R. Works on Unix and Windows (#280).
+
+* New "Process cleanup" article.
+
+* New `linux_pdeathsig` argument to `process$new()`: on Linux, the child
+  process receives the specified signal when the parent R process exits.
+  Set to `TRUE` for `SIGTERM`, or pass an integer signal number directly
+  (e.g. `tools::SIGKILL`). Ignored on non-Linux platforms (#36).
+
+* New `process$get_end_time()` method returns the time when the process
+  exited as a `POSIXct`, or `NULL` if it is still running (#218).
+
+* `process$new()` and `run()` now support `pty = TRUE` on Windows 10 version
+  1809 and later, in addition to Unix. The Windows implementation uses the
+  ConPTY API (`CreatePseudoConsole`). The API is loaded dynamically so
+  processx continues to load on older Windows and emits a clear error if
+  `pty = TRUE` is requested on an unsupported version (#231).
+
+* `run()` now supports `pty = TRUE` and `pty_options` to run a process in a
+  pseudo-terminal (PTY) on Unix and Windows (see above). This causes the
+  child to see a real terminal, so programs that disable colour output or
+  interactive behaviour when not attached to a terminal will behave as if
+  they are. `stderr` is merged into `stdout` (the result's `$stderr` is
+  always `NULL`). A file-based `stdin` argument is also supported: its
+  contents are fed to the process via the PTY master, followed by an EOF
+  signal (#230).
+
+* `process$new()` now supports `">>"` as a prefix for `stdout` and `stderr`
+  file paths (e.g. `stdout = ">>output.log"`), which appends output to the
+  file instead of truncating it. The file is created if it does not exist (#403).
+
+* `env = "current"` now works correctly as a standalone value, inheriting
+  the full environment of the current process (#399).
+
+* `run()` and `process$new()` now support `encoding = "binary"` to capture
+  binary output. In this mode `run()` returns `stdout` and `stderr` as raw
+  vectors, and `process$read_output()` / `process$read_error()` return raw
+  vectors instead of character strings. All bytes are preserved exactly,
+  including null bytes and non-UTF-8 byte sequences (#406).
+
+* New `process$read_output_bytes()`, `process$read_error_bytes()` methods
+  and `conn_read_bytes()` function for reading raw bytes from a processx
+  connection directly (#406).
+
+* On Linux, `process$get_start_time()` now returns the correct wall-clock
+  start time. Previously it was systematically ~0.3–0.5 s too early because
+  the boot time was read from `/proc/stat btime`, which is truncated to whole
+  seconds. processx now derives the boot time from
+  `CLOCK_REALTIME − CLOCK_MONOTONIC`, which has nanosecond precision. The
+  ps package is updated in tandem to accept handles created by either the old
+  or the new method, so new ps + old processx continues to work (#394, #402).
+
 # processx 3.8.7
 
 No changes.
