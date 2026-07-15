@@ -1,4 +1,6 @@
-if (getRversion() < "3.3.0") setInternet2()
+if (getRversion() < "3.3.0") {
+  setInternet2()
+}
 
 if (!file.exists("../tools/zip.exe")) {
   download.file(

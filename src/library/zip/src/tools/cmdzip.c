@@ -1,5 +1,8 @@
 
 #include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "../zip.h"
@@ -27,6 +30,41 @@ void cmd_zip_error_handler(const char *reason, const char *file,
   exit(eno);
 }
 
+static int hex_nibble(unsigned int c) {
+  if (c >= '0' && c <= '9') return (int)(c - '0');
+  if (c >= 'a' && c <= 'f') return (int)(c - 'a') + 10;
+  if (c >= 'A' && c <= 'F') return (int)(c - 'A') + 10;
+  return -1;
+}
+
+/* Decode a hex string (ASCII or wide-char with ASCII-range values) into bytes.
+   Returns decoded length on success, -1 on error. Caller frees *out. */
+static int decode_hex_password(const CHAR *hex, unsigned char **out) {
+  size_t hlen = 0;
+  const CHAR *p = hex;
+  while (*p) { hlen++; p++; }
+  if (hlen % 2 != 0) return -1;
+  size_t outlen = hlen / 2;
+  *out = (unsigned char *) malloc(outlen + 1);
+  if (!*out) return -1;
+  for (size_t i = 0; i < outlen; i++) {
+    int hi = hex_nibble((unsigned int) hex[2 * i]);
+    int lo = hex_nibble((unsigned int) hex[2 * i + 1]);
+    if (hi < 0 || lo < 0) { free(*out); return -1; }
+    (*out)[i] = (unsigned char)((hi << 4) | lo);
+  }
+  return (int) outlen;
+}
+
+static int parse_int_arg(const CHAR *s) {
+  int val = 0;
+  while (*s >= '0' && *s <= '9') {
+    val = val * 10 + (int)(*s - '0');
+    s++;
+  }
+  return (*s == '\0') ? val : -1;
+}
+
 int MAIN(int argc, CHAR* argv[]) {
   int i, num_files = 0;
   int ckeysbytes, cfilesbytes;
@@ -38,8 +76,8 @@ int MAIN(int argc, CHAR* argv[]) {
   int retval = 0;
   char *ptr;
 
-  if (argc != 3) {
-    fprintf(stderr, "Usage: " CFMT " zip-file input-file\n", argv[0]);
+  if (argc != 3 && argc != 5) {
+    fprintf(stderr, "Usage: " CFMT " zip-file input-file [hex-password encryption-code]\n", argv[0]);
     return 1;
   }
 
@@ -97,6 +135,17 @@ int MAIN(int argc, CHAR* argv[]) {
     ZERROR(10);
   }
 
+  unsigned char *cpassword = NULL;
+  int cpassword_len = 0;
+  int cencryption = ZIP_ENCRYPTION_NONE;
+
+  if (argc == 5) {
+    cpassword_len = decode_hex_password(argv[3], &cpassword);
+    if (cpassword_len < 0) ZERROR(12);
+    cencryption = parse_int_arg(argv[4]);
+    if (cencryption < 0) ZERROR(13);
+  }
+
   zip_set_error_handler(cmd_zip_error_handler);
 
 #ifdef _WIN32
@@ -108,7 +157,9 @@ int MAIN(int argc, CHAR* argv[]) {
 #endif
 
   if (zip_zip(fn, num_files, ckeys, cfiles, cdirs, ctimes,
-	      /* compression_level= */ 9, /* cappend= */ 0)) {
+	      /* compression_level= */ 9, /* cappend= */ 0,
+	      cpassword, (size_t) cpassword_len, cencryption,
+	      /* progress_fn= */ NULL, /* progress_data= */ NULL)) {
     ZERROR(11);
   }
 

@@ -4,6 +4,9 @@
 #' @param pos Start position of data to uncompress in `buffer`.
 #' @param size Uncompressed size estimate, or `NULL`. If not given, or too
 #'   small, the output buffer is resized multiple times.
+#' @param raw Whether `buffer` contains a raw DEFLATE stream, i.e. one
+#'   without a zlib header and trailer. The default (`FALSE`) expects a
+#'   zlib stream.
 #' @return Named list with three entries:
 #'   - `output`: raw vector, the uncompressed data,
 #'   - `bytes_read`: number of bytes used from `buffer`,
@@ -17,14 +20,17 @@
 #' data_gz <- deflate(charToRaw("Hello world!"))
 #' inflate(data_gz$output)
 
-inflate <- function(buffer, pos = 1L, size = NULL) {
+inflate <- function(buffer, pos = 1L, size = NULL, raw = FALSE) {
   stopifnot(
     is.raw(buffer),
     is_count(pos),
-    is.null(size) || is_count(size)
+    is.null(size) || is_count(size),
+    is_flag(raw)
   )
-  if (!is.null(size)) size <- as.integer(size)
-  .Call(c_R_inflate, buffer, as.integer(pos), size)
+  if (!is.null(size)) {
+    size <- as.integer(size)
+  }
+  .Call(c_R_inflate, buffer, as.integer(pos), size, raw)
 }
 
 #' Compress a raw GZIP stream
@@ -55,6 +61,8 @@ deflate <- function(buffer, level = 6L, pos = 1L, size = NULL) {
     is_count(pos),
     is.null(size) || is_count(size)
   )
-  if (!is.null(size)) size <- as.integer(size)
+  if (!is.null(size)) {
+    size <- as.integer(size)
+  }
   .Call(c_R_deflate, buffer, as.integer(level), as.integer(pos), size)
 }

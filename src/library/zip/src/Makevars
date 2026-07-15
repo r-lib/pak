@@ -1,17 +1,29 @@
 
-PKG_CFLAGS = $(C_VISIBILITY)
+# --- Bundled Mbed TLS subset (WinZip AES crypto: AES, SHA1, HMAC, PBKDF2) ---
+# See mbedtls/include/zip_mbedtls_config.h for the trimmed configuration.
+MBEDTLS_CPPFLAGS = -Imbedtls/include -Imbedtls/library \
+	-DMBEDTLS_CONFIG_FILE='"zip_mbedtls_config.h"'
+MBEDTLS_SRC = mbedtls/library/aes.c mbedtls/library/sha1.c \
+	mbedtls/library/md.c mbedtls/library/pkcs5.c \
+	mbedtls/library/platform.c mbedtls/library/platform_util.c
+MBEDTLS_OBJ = $(MBEDTLS_SRC:.c=.o)
 
-OBJECTS = init.o miniz.o rzip.o zip.o unixutils.o
+PKG_CPPFLAGS = $(MBEDTLS_CPPFLAGS)
+PKG_CFLAGS = $(C_VISIBILITY)
+PKG_LIBS = -lpthread
+
+OBJECTS = init.o miniz.o rzip.o zip.o crypto.o unixutils.o errors.o \
+		  cleancall.o cmdunzip_lib.o $(MBEDTLS_OBJ)
 
 .PHONY: all clean
 
 all: tools/cmdzip tools/cmdunzip $(SHLIB)
 
-tools/cmdzip: miniz.c zip.c unixutils.c tools/cmdzip.c
-	$(CC) $(CFLAGS) miniz.c zip.c unixutils.c tools/cmdzip.c -o tools/cmdzip
+tools/cmdzip: miniz.c zip.c crypto.c unixutils.c $(MBEDTLS_SRC) tools/cmdzip.c
+	$(CC) $(CFLAGS) $(MBEDTLS_CPPFLAGS) miniz.c zip.c crypto.c unixutils.c $(MBEDTLS_SRC) tools/cmdzip.c -o tools/cmdzip
 
-tools/cmdunzip: miniz.c zip.c unixutils.c tools/cmdunzip.c
-	$(CC) $(CFLAGS) miniz.c zip.c unixutils.c tools/cmdunzip.c -o tools/cmdunzip
+tools/cmdunzip: miniz.c zip.c crypto.c unixutils.c $(MBEDTLS_SRC) tools/cmdunzip.c
+	$(CC) $(CFLAGS) $(MBEDTLS_CPPFLAGS) miniz.c zip.c crypto.c unixutils.c $(MBEDTLS_SRC) tools/cmdunzip.c -o tools/cmdunzip
 
 clean:
 	rm -rf $(SHLIB) $(OBJECTS) \

@@ -1,0 +1,20 @@
+{
+   R iconv() leak via R_AllocStringBuffer in zip
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:R_AllocStringBuffer
+   fun:do_iconv
+   fun:bcEval_loop
+   fun:bcEval
+   fun:bcEval
+   fun:Rf_eval
+   fun:R_execClosure
+   fun:applyClosure_core
+   fun:Rf_applyClosure
+   fun:Rf_eval
+   fun:forcePromise.part.0
+   fun:forcePromise
+   fun:getvar
+   fun:bcEval_loop
+}

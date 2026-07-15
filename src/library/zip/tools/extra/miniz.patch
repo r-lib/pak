@@ -1,0 +1,288 @@
+diff --git a/src/miniz.c b/src/miniz.c
+--- a/src/miniz.c
++++ b/src/miniz.c
+@@ -989,6 +989,27 @@
+
+         d->m_huff_count[0][256] = 1;
+
++        /* A distance Huffman tree with fewer than two codes is an incomplete
++           tree. RFC 1951 (3.2.7) permits it and lenient inflaters (zlib, .NET,
++           7-Zip) accept it, but strict ones -- notably the Windows Explorer
++           "Extract All" handler -- reject the whole entry with an "unspecified
++           error". zlib sidesteps this by forcing at least two distance codes of
++           non-zero frequency (see trees.c build_tree); do the same. This only
++           affects blocks that would otherwise use 0 or 1 distance codes (tiny or
++           match-free inputs); the extra reserved code is never emitted in the
++           payload. See https://github.com/r-lib/zip/issues/153. */
++        {
++            mz_uint num_dist_used = 0;
++            for (i = 0; i < TDEFL_MAX_HUFF_SYMBOLS_1; i++)
++                if (d->m_huff_count[1][i])
++                    num_dist_used++;
++            if (num_dist_used < 2)
++            {
++                if (!d->m_huff_count[1][0]) d->m_huff_count[1][0] = 1;
++                if (!d->m_huff_count[1][1]) d->m_huff_count[1][1] = 1;
++            }
++        }
++
+         tdefl_optimize_huffman_table(d, 0, TDEFL_MAX_HUFF_SYMBOLS_0, 15, MZ_FALSE);
+         tdefl_optimize_huffman_table(d, 1, TDEFL_MAX_HUFF_SYMBOLS_1, 15, MZ_FALSE);
+@@ -3938,7 +3938,15 @@
+                 /* I've seen archives that aren't marked as zip64 that uses zip64 ext data, argh */
+                 if ((comp_size != MZ_UINT32_MAX) && (decomp_size != MZ_UINT32_MAX))
+                 {
+-                    if (((!MZ_READ_LE32(p + MZ_ZIP_CDH_METHOD_OFS)) && (decomp_size != comp_size)) || (decomp_size && !comp_size))
++                    /* Allow STORED entries where comp_size=0 but decomp_size>0: some zip creators
++                       (e.g. old Windows tools) write 0 for the compressed size of STORED entries.
++                       Use MZ_READ_LE16 (not LE32) to avoid reading the adjacent mod-time field.
++                       Skip the stored-size check for encrypted entries: ZipCrypto stores a
++                       12-byte header inside the payload, so comp_size legitimately exceeds
++                       decomp_size even for method-0 (STORED) entries. */
++                    if ((!(MZ_READ_LE16(p + MZ_ZIP_CDH_BIT_FLAG_OFS) & 1) &&
++                         (!MZ_READ_LE16(p + MZ_ZIP_CDH_METHOD_OFS)) && (decomp_size != comp_size) && comp_size) ||
++                        (MZ_READ_LE16(p + MZ_ZIP_CDH_METHOD_OFS) && decomp_size && !comp_size))
+                         return mz_zip_set_error(pZip, MZ_ZIP_INVALID_HEADER_OR_CORRUPTED);
+                 }
+ 
+@@ -4410,6 +4418,12 @@
+             }
+         }
+ 
++        /* Some zip creators write comp_size=0 for STORED entries; treat as comp_size=uncomp_size.
++           Done after resolving any zip64 fields so the placeholder 0xFFFFFFFF (e.g. Info-ZIP
++           forced-zip64 directory entries) is not mistaken for a real uncompressed size. */
++        if ((pStat->m_method == 0) && (pStat->m_comp_size == 0) && (pStat->m_uncomp_size > 0))
++            pStat->m_comp_size = pStat->m_uncomp_size;
++
+         return MZ_TRUE;
+     }
+ 
+@@ -5421,6 +5435,9 @@
+         local_header_extra_len = MZ_READ_LE16(pLocal_header + MZ_ZIP_LDH_EXTRA_LEN_OFS);
+         local_header_comp_size = MZ_READ_LE32(pLocal_header + MZ_ZIP_LDH_COMPRESSED_SIZE_OFS);
+         local_header_uncomp_size = MZ_READ_LE32(pLocal_header + MZ_ZIP_LDH_DECOMPRESSED_SIZE_OFS);
++        /* Some zip creators write comp_size=0 for STORED entries; treat as comp_size=uncomp_size. */
++        if ((!MZ_READ_LE16(pLocal_header + MZ_ZIP_LDH_METHOD_OFS)) && (!local_header_comp_size) && local_header_uncomp_size)
++            local_header_comp_size = local_header_uncomp_size;
+         local_header_crc32 = MZ_READ_LE32(pLocal_header + MZ_ZIP_LDH_CRC32_OFS);
+         local_header_bit_flags = MZ_READ_LE16(pLocal_header + MZ_ZIP_LDH_BIT_FLAG_OFS);
+         has_data_descriptor = (local_header_bit_flags & 8) != 0;
+@@ -6241,7 +6258,14 @@
+         if (*pArchive_name == '/')
+             return MZ_FALSE;
+ 
+-        /* Making sure the name does not contain drive letters or DOS style backward slashes is the responsibility of the program using miniz*/
++        while (*pArchive_name)
++        {
++            /* We warn for colons in keys, but allow them in zip files.
++               macOS command line `zip` adds files with colons without any problems. */
++            if (*pArchive_name == '\\')
++                return MZ_FALSE;
++            pArchive_name++;
++        }
+ 
+         return MZ_TRUE;
+     }
+@@ -6485,7 +6509,7 @@
+ 
+         if (store_data_uncompressed)
+         {
+-            if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, pBuf, buf_size) != buf_size)
++            if (buf_size && pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, pBuf, buf_size) != buf_size)
+             {
+                 pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
+                 return mz_zip_set_error(pZip, MZ_ZIP_FILE_WRITE_FAILED);
+@@ -6554,6 +6578,116 @@
+ 
+         if (!mz_zip_writer_add_to_central_dir(pZip, pArchive_name, (mz_uint16)archive_name_size, pExtra_data, (mz_uint16)extra_size, pComment,
+                                               comment_size, uncomp_size, comp_size, uncomp_crc32, method, bit_flags, dos_time, dos_date, local_dir_header_ofs, ext_attributes,
++                                              user_extra_data_central, user_extra_data_central_len))
++            return MZ_FALSE;
++
++        pZip->m_total_files++;
++        pZip->m_archive_size = cur_archive_file_ofs;
++
++        return MZ_TRUE;
++    }
++
++    /* Add a pre-framed entry: `pBuf`/`buf_size` are the exact bytes to store as
++       the entry payload, with the caller-supplied compression method, general
++       purpose bit flags, CRC-32 and uncompressed size written verbatim into the
++       local and central headers. Unlike mz_zip_writer_add_mem_ex_v2 this neither
++       compresses the data nor emits a data descriptor, and it never forces the
++       sizes to zero in the local header. This is what lets the zip package emit
++       WinZip-AES entries (compression method 99, encrypted bit set, real method
++       carried in the 0x9901 extra field) which miniz's writer cannot produce on
++       its own. zip64 is not supported here. */
++    mz_bool mz_zip_writer_add_mem_raw(mz_zip_archive *pZip, const char *pArchive_name,
++                                      const void *pBuf, size_t buf_size,
++                                      mz_uint16 method, mz_uint16 bit_flags,
++                                      mz_uint32 uncomp_crc32, mz_uint64 uncomp_size,
++                                      MZ_TIME_T *last_modified, mz_uint32 ext_attributes,
++                                      const char *user_extra_data_local, mz_uint user_extra_data_local_len,
++                                      const char *user_extra_data_central, mz_uint user_extra_data_central_len)
++    {
++        mz_uint16 dos_time = 0, dos_date = 0;
++        mz_uint num_alignment_padding_bytes;
++        mz_uint64 local_dir_header_ofs = pZip->m_archive_size, cur_archive_file_ofs = pZip->m_archive_size, comp_size = buf_size;
++        size_t archive_name_size;
++        mz_uint8 local_dir_header[MZ_ZIP_LOCAL_DIR_HEADER_SIZE];
++        mz_zip_internal_state *pState;
++
++        if ((!pZip) || (!pZip->m_pState) || (pZip->m_zip_mode != MZ_ZIP_MODE_WRITING) || ((buf_size) && (!pBuf)) || (!pArchive_name))
++            return mz_zip_set_error(pZip, MZ_ZIP_INVALID_PARAMETER);
++
++        pState = pZip->m_pState;
++
++        if (pState->m_zip64)
++            return mz_zip_set_error(pZip, MZ_ZIP_ARCHIVE_TOO_LARGE);
++        if ((pZip->m_total_files == MZ_UINT16_MAX) || (comp_size > MZ_UINT32_MAX) || (uncomp_size > MZ_UINT32_MAX))
++            return mz_zip_set_error(pZip, MZ_ZIP_ARCHIVE_TOO_LARGE);
++
++        if (!mz_zip_writer_validate_archive_name(pArchive_name))
++            return mz_zip_set_error(pZip, MZ_ZIP_INVALID_FILENAME);
++
++#ifndef MINIZ_NO_TIME
++        if (last_modified != NULL)
++        {
++            mz_zip_time_t_to_dos_time(*last_modified, &dos_time, &dos_date);
++        }
++        else
++        {
++            MZ_TIME_T cur_time;
++            time(&cur_time);
++            mz_zip_time_t_to_dos_time(cur_time, &dos_time, &dos_date);
++        }
++#else
++        (void)last_modified;
++#endif
++
++        archive_name_size = strlen(pArchive_name);
++        if (archive_name_size > MZ_UINT16_MAX)
++            return mz_zip_set_error(pZip, MZ_ZIP_INVALID_FILENAME);
++
++        num_alignment_padding_bytes = mz_zip_writer_compute_padding_needed_for_file_alignment(pZip);
++
++        if (((mz_uint64)pState->m_central_dir.m_size + MZ_ZIP_CENTRAL_DIR_HEADER_SIZE + archive_name_size + user_extra_data_central_len) >= MZ_UINT32_MAX)
++            return mz_zip_set_error(pZip, MZ_ZIP_UNSUPPORTED_CDIR_SIZE);
++
++        if ((!mz_zip_array_ensure_room(pZip, &pState->m_central_dir, MZ_ZIP_CENTRAL_DIR_HEADER_SIZE + archive_name_size + user_extra_data_central_len)) ||
++            (!mz_zip_array_ensure_room(pZip, &pState->m_central_dir_offsets, 1)))
++            return mz_zip_set_error(pZip, MZ_ZIP_ALLOC_FAILED);
++
++        if (!mz_zip_writer_write_zeros(pZip, cur_archive_file_ofs, num_alignment_padding_bytes))
++            return MZ_FALSE;
++
++        local_dir_header_ofs += num_alignment_padding_bytes;
++        cur_archive_file_ofs += num_alignment_padding_bytes;
++
++        if ((local_dir_header_ofs > MZ_UINT32_MAX) || (cur_archive_file_ofs > MZ_UINT32_MAX))
++            return mz_zip_set_error(pZip, MZ_ZIP_ARCHIVE_TOO_LARGE);
++
++        if (!mz_zip_writer_create_local_dir_header(pZip, local_dir_header, (mz_uint16)archive_name_size, (mz_uint16)user_extra_data_local_len, uncomp_size, comp_size, uncomp_crc32, method, bit_flags, dos_time, dos_date))
++            return mz_zip_set_error(pZip, MZ_ZIP_INTERNAL_ERROR);
++
++        if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, local_dir_header, sizeof(local_dir_header)) != sizeof(local_dir_header))
++            return mz_zip_set_error(pZip, MZ_ZIP_FILE_WRITE_FAILED);
++        cur_archive_file_ofs += sizeof(local_dir_header);
++
++        if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, pArchive_name, archive_name_size) != archive_name_size)
++            return mz_zip_set_error(pZip, MZ_ZIP_FILE_WRITE_FAILED);
++        cur_archive_file_ofs += archive_name_size;
++
++        if (user_extra_data_local_len > 0)
++        {
++            if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, user_extra_data_local, user_extra_data_local_len) != user_extra_data_local_len)
++                return mz_zip_set_error(pZip, MZ_ZIP_FILE_WRITE_FAILED);
++            cur_archive_file_ofs += user_extra_data_local_len;
++        }
++
++        if (buf_size)
++        {
++            if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, pBuf, buf_size) != buf_size)
++                return mz_zip_set_error(pZip, MZ_ZIP_FILE_WRITE_FAILED);
++            cur_archive_file_ofs += buf_size;
++        }
++
++        if (!mz_zip_writer_add_to_central_dir(pZip, pArchive_name, (mz_uint16)archive_name_size, NULL, 0, NULL, 0,
++                                              uncomp_size, comp_size, uncomp_crc32, method, bit_flags, dos_time, dos_date, local_dir_header_ofs, ext_attributes,
+                                               user_extra_data_central, user_extra_data_central_len))
+             return MZ_FALSE;
+ 
+@@ -7900,8 +8034,40 @@
+ #endif
+ 
+         return MZ_FALSE;
++    }
++
++    int mz_zip_get_version_made_by(mz_zip_archive *pZip, mz_uint file_index,
++                                   mz_uint16 *value) {
++        mz_uint8 *p = (mz_uint8*) mz_zip_get_cdh(pZip, file_index);
++        if (!p) return 0;
++        *value = MZ_READ_LE16(p + MZ_ZIP_CDH_VERSION_MADE_BY_OFS);
++        return 1;
++    }
++
++    int mz_zip_set_version_made_by(mz_zip_archive *pZip, mz_uint file_index,
++                                   mz_uint16 value) {
++        mz_uint8 *p = (mz_uint8*) mz_zip_get_cdh(pZip, file_index);
++        if (!p) return 0;
++        MZ_WRITE_LE16(p + MZ_ZIP_CDH_VERSION_MADE_BY_OFS, value);
++        return 1;
+     }
+ 
++    int mz_zip_get_external_attr(mz_zip_archive *pZip, mz_uint file_index,
++                                 mz_uint32 *value) {
++        mz_uint8 *p = (mz_uint8*) mz_zip_get_cdh(pZip, file_index);
++        if (!p) return 0;
++        *value = MZ_READ_LE32(p + MZ_ZIP_CDH_EXTERNAL_ATTR_OFS);
++        return 1;
++    }
++
++    int mz_zip_set_external_attr(mz_zip_archive *pZip, mz_uint file_index,
++                                 mz_uint32 value) {
++        mz_uint8 *p = (mz_uint8*) mz_zip_get_cdh(pZip, file_index);
++        if (!p) return 0;
++        MZ_WRITE_LE32(p + MZ_ZIP_CDH_EXTERNAL_ATTR_OFS, value);
++        return 1;
++    }
++
+ #ifdef __cplusplus
+ }
+ #endif
+diff --git a/src/miniz.h b/src/miniz.h
+--- a/src/miniz.h
++++ b/src/miniz.h
+@@ -1449,6 +1449,15 @@
+     MINIZ_EXPORT mz_bool mz_zip_writer_add_mem_ex_v2(mz_zip_archive *pZip, const char *pArchive_name, const void *pBuf, size_t buf_size, const void *pComment, mz_uint16 comment_size, mz_uint level_and_flags,
+                                                      mz_uint64 uncomp_size, mz_uint32 uncomp_crc32, MZ_TIME_T *last_modified, const char *user_extra_data_local, mz_uint user_extra_data_local_len,
+                                                      const char *user_extra_data_central, mz_uint user_extra_data_central_len);
++
++    /* Adds a pre-framed entry: pBuf/buf_size are stored verbatim as the entry payload, with the
++       caller-supplied compression method, general purpose bit flags, CRC-32 and uncompressed size.
++       Does not compress, does not emit a data descriptor, and writes real sizes into the local
++       header. Used to emit WinZip-AES (method 99) entries. zip64 is not supported. */
++    MINIZ_EXPORT mz_bool mz_zip_writer_add_mem_raw(mz_zip_archive *pZip, const char *pArchive_name, const void *pBuf, size_t buf_size,
++                                                   mz_uint16 method, mz_uint16 bit_flags, mz_uint32 uncomp_crc32, mz_uint64 uncomp_size,
++                                                   MZ_TIME_T *last_modified, mz_uint32 ext_attributes, const char *user_extra_data_local, mz_uint user_extra_data_local_len,
++                                                   const char *user_extra_data_central, mz_uint user_extra_data_central_len);
+ 
+     /* Adds the contents of a file to an archive. This function also records the disk file's modified time into the archive. */
+     /* File data is supplied via a read callback function. User mz_zip_writer_add_(c)file to add a file directly.*/
+@@ -1503,6 +1512,15 @@
+ 
+ #endif /* #ifndef MINIZ_NO_ARCHIVE_WRITING_APIS */
+ 
++    int mz_zip_get_version_made_by(mz_zip_archive *pZip, mz_uint file_index,
++                                   mz_uint16 *value);
++    int mz_zip_set_version_made_by(mz_zip_archive *pZip, mz_uint file_index,
++                                   mz_uint16 value);
++    int mz_zip_get_external_attr(mz_zip_archive *pZip, mz_uint file_index,
++                                 mz_uint32 *value);
++    int mz_zip_set_external_attr(mz_zip_archive *pZip, mz_uint file_index,
++                                 mz_uint32 value);
++
+ #ifdef __cplusplus
+ }
+ #endif

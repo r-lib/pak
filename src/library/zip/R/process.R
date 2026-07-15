@@ -3,12 +3,16 @@ os_type <- function() {
 }
 
 get_tool <- function(prog) {
-  if (os_type() == "windows") prog <- paste0(prog, ".exe")
+  if (os_type() == "windows") {
+    prog <- paste0(prog, ".exe")
+  }
 
   exe <- system.file(package = "zip", "bin", .Platform$r_arch, prog)
   if (exe == "") {
-    pkgpath <- system.file(package = "zip")
-    if (basename(pkgpath) == "inst") pkgpath <- dirname(pkgpath)
+    pkgpath <- find.package("zip")
+    if (basename(pkgpath) == "inst") {
+      pkgpath <- dirname(pkgpath)
+    }
     exe <- file.path(pkgpath, "src", "tools", prog)
     if (!file.exists(exe)) return("")
   }
@@ -27,6 +31,38 @@ zip_data <- new.env(parent = emptyenv())
 
 ## R CMD check fix
 super <- ""
+
+can_run_unzip_exe <- function() {
+  if (isTRUE(is_true_env_var("R_ZIP_PROCESS_FALLBACK"))) {
+    return(FALSE)
+  }
+  if (!is.null(zip_data$unzip_exe_works)) {
+    return(zip_data$unzip_exe_works)
+  }
+  if (.Platform$OS.type != "windows") {
+    return(TRUE)
+  }
+  exe <- unzip_exe()
+  zip_data$unzip_exe_works <- if (exe == "") {
+    FALSE
+  } else {
+    tryCatch(
+      {
+        p <- processx::process$new(
+          exe,
+          "--test",
+          stdout = NULL,
+          stderr = NULL
+        )
+        p$wait(5000)
+        p$kill()
+        identical(p$get_exit_status(), 0L)
+      },
+      error = function(e) FALSE
+    )
+  }
+  zip_data$unzip_exe_works
+}
 
 #' Class for an external unzip process
 #'
@@ -55,7 +91,26 @@ super <- ""
 #' * `...` passed to the `initialize` method of [processx::process].
 #'
 #' @return An `unzip_process` R6 class object, a subclass of
+#' [processx::process], or a subclass of [callr::r_process] when the fallback
+#' is active (see the Fallback section below).
+#'
+#' @section Fallback:
+#' `unzip_process()` normally runs the bundled `cmdunzip` native executable
+#' via [processx::process]. If the executable cannot be found or fails its
+#' self-test it falls back to running [unzip()] in a background R process
+#' via [callr::r_process]. This may happen when system policies do not
+#' allow starting the `cmdunzip` executable., The fallback class has the
+#' same interface but inherits from [callr::r_process] instead of
 #' [processx::process].
+#'
+#' Set the environment variable `R_ZIP_PROCESS_FALLBACK=true` to force the
+#' fallback unconditionally.
+#'
+#' @section Encoding:
+#' The `unzip_process` class does not support the `encoding` argument of
+#' [unzip()]. Non-UTF-8 filenames are decoded using the IBM CP437 fallback.
+#' Use [unzip()] directly if you need to handle ZIP files with filenames in
+#' other encodings (e.g. CP932).
 #'
 #' @export
 #' @examples
@@ -69,35 +124,86 @@ super <- ""
 unzip_process <- function() {
   need_packages(c("processx", "R6"), "creating unzip processes")
   zip_data$unzip_class <- zip_data$unzip_class %||%
-    R6::R6Class(
-      "unzip_process",
-      inherit = processx::process,
-      public = list(
-        initialize = function(
-          zipfile,
-          exdir = ".",
-          poll_connection = TRUE,
-          stderr = tempfile(),
-          ...
-        ) {
-          stopifnot(
-            is_string(zipfile),
-            is_string(exdir)
-          )
-          exdir <- normalizePath(exdir, winslash = "\\", mustWork = FALSE)
-          super$initialize(
-            unzip_exe(),
-            enc2c(c(zipfile, exdir)),
-            poll_connection = poll_connection,
-            stderr = stderr,
-            ...
-          )
-        }
-      ),
-      private = list()
-    )
-
+    {
+      if (can_run_unzip_exe()) {
+        make_unzip_process_class()
+      } else {
+        need_packages("callr", "creating unzip processes (fallback)")
+        make_unzip_process_fallback_class()
+      }
+    }
   zip_data$unzip_class
+}
+
+# Subclass of processx::process that runs the bundled `cmdunzip` executable.
+make_unzip_process_class <- function() {
+  R6::R6Class(
+    "unzip_process",
+    inherit = processx::process,
+    public = list(
+      initialize = function(
+        zipfile,
+        exdir = ".",
+        password = NULL,
+        poll_connection = TRUE,
+        stderr = tempfile(),
+        ...
+      ) {
+        stopifnot(
+          is_string(zipfile),
+          is_string(exdir)
+        )
+        exdir <- normalizePath(exdir, winslash = "\\", mustWork = FALSE)
+        pw <- resolve_password(password)
+        args <- enc2c(c(zipfile, exdir))
+        if (!is.null(pw)) {
+          args <- c(args, raw_to_hex(pw))
+        }
+        super$initialize(
+          unzip_exe(),
+          args,
+          poll_connection = poll_connection,
+          stderr = stderr,
+          ...
+        )
+      }
+    ),
+    private = list()
+  )
+}
+
+# Fallback subclass of callr::r_process that unzips in a background R process,
+# used when the `cmdunzip` executable is not available or does not run.
+make_unzip_process_fallback_class <- function() {
+  R6::R6Class(
+    "unzip_process",
+    inherit = callr::r_process,
+    public = list(
+      initialize = function(
+        zipfile,
+        exdir = ".",
+        poll_connection = TRUE,
+        stderr = tempfile(),
+        ...
+      ) {
+        stopifnot(
+          is_string(zipfile),
+          is_string(exdir)
+        )
+        exdir <- normalizePath(exdir, winslash = "\\", mustWork = FALSE)
+        zipfile <- enc2c(normalizePath(zipfile))
+        opts <- callr::r_process_options(
+          func = function(zipfile, exdir) zip::unzip(zipfile, exdir = exdir),
+          args = list(zipfile = zipfile, exdir = exdir),
+          poll_connection = poll_connection,
+          stderr = stderr,
+          env = c(Sys.getenv(), ZIP_PROGRESS = "false")
+        )
+        super$initialize(opts)
+      }
+    ),
+    private = list()
+  )
 }
 
 #' Class for an external zip process
@@ -117,8 +223,9 @@ unzip_process <- function() {
 #'
 #' Arguments:
 #' * `zipfile`: Path to the zip file to create.
-#' * `files`: List of file to add to the archive. Each specified file
-#'    or directory in is created as a top-level entry in the zip archive.
+#' * `files`: Character vector of paths to files to add to the archive.
+#'    Each specified file or directory in is created as a top-level entry
+#'    in the zip archive.
 #' * `recurse`: Whether to add the contents of directories recursively.
 #' * `include_directories`: Whether to explicitly include directories
 #'   in the archive. Including directories might confuse MS Office when
@@ -156,6 +263,8 @@ zip_process <- function() {
           files,
           recurse = TRUE,
           include_directories = TRUE,
+          password = NULL,
+          encryption = "aes256",
           poll_connection = TRUE,
           stderr = tempfile(),
           ...
@@ -171,9 +280,15 @@ zip_process <- function() {
             include_directories,
             private$params_file
           )
+          pw <- resolve_password(password)
+          enc <- if (is.null(pw)) NULL else encryption_code(encryption)
+          args <- enc2c(c(zipfile, private$params_file))
+          if (!is.null(pw)) {
+            args <- c(args, raw_to_hex(pw), as.character(enc))
+          }
           super$initialize(
             zip_exe(),
-            enc2c(c(zipfile, private$params_file)),
+            args,
             poll_connection = poll_connection,
             stderr = stderr,
             ...
