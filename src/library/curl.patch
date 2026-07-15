@@ -1,0 +1,13 @@
+diff --git a/src/library/curl/src/split.c b/src/library/curl/src/split.c
+index dff6622ac..f8ba7159e 100644
+--- a/src/library/curl/src/split.c
++++ b/src/library/curl/src/split.c
+@@ -5,7 +5,7 @@ SEXP R_split_string(SEXP string, SEXP split){
+   const char * str = CHAR(STRING_ELT(string, 0));
+   cetype_t enc = Rf_getCharCE(STRING_ELT(string, 0));
+   const char * cut = CHAR(STRING_ELT(split, 0));
+-  char * out = strstr(str, cut);
++  const char * out = strstr(str, cut);
+   if(!out)
+     return string;
+   SEXP res = PROTECT(Rf_allocVector(STRSXP, 2));
