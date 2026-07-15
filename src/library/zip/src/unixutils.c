@@ -25,7 +25,7 @@ int zip_str_file_path(const char *cexdir, const char *key,
   char *newbuffer;
 
   if (cjunkpaths) {
-    char *base = strrchr(key, '/');
+    const char *base = strrchr(key, '/');
     if (base) key = base;
   }
 

@@ -5,7 +5,7 @@ SEXP R_split_string(SEXP string, SEXP split){
   const char * str = CHAR(STRING_ELT(string, 0));
   cetype_t enc = Rf_getCharCE(STRING_ELT(string, 0));
   const char * cut = CHAR(STRING_ELT(split, 0));
-  char * out = strstr(str, cut);
+  const char * out = strstr(str, cut);
   if(!out)
     return string;
   SEXP res = PROTECT(Rf_allocVector(STRSXP, 2));
