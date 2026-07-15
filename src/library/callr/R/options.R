@@ -1,3 +1,4 @@
+
 #' Create options for an [r_process] object
 #'
 #' @param ... Options to override, named arguments.
@@ -76,7 +77,7 @@ r_process_options_default <- function() {
     supervise = FALSE,
     load_hook = default_load_hook(),
     extra = list(),
-    package = NULL,
+    package = FALSE,
     arch = "same"
   )
 }
@@ -128,11 +129,7 @@ update_options <- function(old_opts, ...) {
 
 check_for_option_names <- function(old, new) {
   if (length(miss <- setdiff(names(new), names(old)))) {
-    throw(new_error(
-      "Unknown option",
-      if (length(miss) > 1) "s",
-      ":",
-      enumerate(sQuote(miss))
-    ))
+    throw(new_error("Unknown option", if (length(miss) > 1) "s", ":",
+                    enumerate(sQuote(miss))))
   }
 }

@@ -1,3 +1,4 @@
+
 #' Run an `R CMD` command
 #'
 #' Run an `R CMD` command form within R. This will usually start
@@ -40,27 +41,15 @@
 #' @examplesIf FALSE
 #' rcmd("config", "CC")
 
-rcmd <- function(
-  cmd,
-  cmdargs = character(),
-  libpath = .libPaths(),
-  repos = default_repos(),
-  stdout = NULL,
-  stderr = NULL,
-  poll_connection = TRUE,
-  echo = FALSE,
-  show = FALSE,
-  callback = NULL,
-  block_callback = NULL,
-  spinner = show && interactive(),
-  system_profile = FALSE,
-  user_profile = "project",
-  env = rcmd_safe_env(),
-  timeout = Inf,
-  wd = ".",
-  fail_on_status = FALSE,
-  ...
-) {
+rcmd <- function(cmd, cmdargs = character(), libpath = .libPaths(),
+                 repos = default_repos(),
+                 stdout = NULL, stderr = NULL, poll_connection = TRUE,
+                 echo = FALSE, show = FALSE, callback = NULL,
+                 block_callback = NULL, spinner = show && interactive(),
+                 system_profile = FALSE, user_profile = "project",
+                 env = rcmd_safe_env(), timeout = Inf, wd = ".",
+                 fail_on_status = FALSE, ...) {
+
   ## This contains the context that we set up in steps
   options <- convert_and_check_my_args(as.list(environment()))
   options$extra <- list(...)
@@ -71,16 +60,6 @@ rcmd <- function(
 
   ## This cleans up everything...
   on.exit(unlink(options$tmp_files, recursive = TRUE), add = TRUE)
-
-  if (otel::is_tracing_enabled()) {
-    otel::start_local_active_span(
-      "callr::rcmd",
-      attributes = otel::as_attributes(options)
-    )
-    hdrs <- otel::pack_http_context()
-    names(hdrs) <- toupper(names(hdrs))
-    options$env[names(hdrs)] <- hdrs
-  }
 
   run_r(options)
 }
@@ -119,6 +98,7 @@ rcmd_safe <- rcmd
 #' @export
 
 rcmd_safe_env <- function() {
+
   vars <- c(
     CYGWIN = "nodosfilewarning",
     R_TESTS = "",
@@ -143,13 +123,10 @@ rcmd_safe_env <- function() {
 #' @family R CMD commands
 #' @export
 
-rcmd_copycat <- function(
-  cmd,
-  cmdargs = character(),
-  libpath = .libPaths(),
-  repos = getOption("repos"),
-  env = character(),
-  ...
-) {
-  rcmd(cmd, cmdargs = cmdargs, libpath = libpath, repos = repos, env = env, ...)
+rcmd_copycat <- function(cmd, cmdargs = character(), libpath = .libPaths(),
+                         repos = getOption("repos"), env = character(),
+                         ...) {
+
+  rcmd(cmd, cmdargs = cmdargs, libpath = libpath, repos = repos, env = env,
+       ...)
 }

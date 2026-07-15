@@ -1,3 +1,4 @@
+
 #' Default value for the `repos` option in callr subprocesses
 #'
 #' callr sets the `repos` option in subprocesses, to make sure that
@@ -14,12 +15,10 @@
 default_repos <- function() {
   opt <- getOption("repos")
   was_list <- is.list(opt)
-  if (!"CRAN" %in% names(opt) || opt[["CRAN"]] == "@CRAN@") {
+  if (! "CRAN" %in% names(opt) || opt[["CRAN"]] == "@CRAN@") {
     opt[["CRAN"]] <- "https://cloud.r-project.org"
   }
-  if (!was_list) {
-    opt <- unlist(opt)
-  }
+  if (!was_list) opt <- unlist(opt)
   opt
 }
 
@@ -41,29 +40,12 @@ remove_source <- function(x) {
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
-callr_tempdir <- function() {
-  dir <- Sys.getenv("CALLR_TMPDIR", "")
-  if (!nzchar(dir)) {
-    return(tempdir())
-  }
-  if (!dir.exists(dir)) {
-    dir.create(dir, recursive = TRUE, showWarnings = FALSE)
-  }
-  dir
-}
-
-callr_tempfile <- function(pattern = "file", fileext = "") {
-  tempfile(pattern, tmpdir = callr_tempdir(), fileext = fileext)
-}
-
 is.named <- function(x) {
   length(names(x)) == length(x) && all(names(x) != "")
 }
 
 set_envvar <- function(envs) {
-  if (length(envs) == 0) {
-    return()
-  }
+  if (length(envs) == 0) return()
 
   stopifnot(is.named(envs))
 
@@ -72,12 +54,8 @@ set_envvar <- function(envs) {
 
   both_set <- set & !is.na(old)
 
-  if (any(set)) {
-    do.call("Sys.setenv", as.list(envs[set]))
-  }
-  if (any(!set)) {
-    Sys.unsetenv(names(envs)[!set])
-  }
+  if (any(set))  do.call("Sys.setenv", as.list(envs[set]))
+  if (any(!set)) Sys.unsetenv(names(envs)[!set])
 
   invisible(old)
 }
@@ -106,12 +84,7 @@ enumerate <- function(x) {
 ## 7845b83343afa356e4259c054e7c9a910034f170/R/trump.R
 
 crash <- function() {
-  get("attach")(
-    structure(
-      attr(file(), "conn_id"),
-      class = "UserDefinedDatabase"
-    )
-  )
+  get("attach")( structure(list(), class = "UserDefinedDatabase")  )
 }
 
 is_flag <- function(x) {
@@ -120,8 +93,8 @@ is_flag <- function(x) {
 
 is_string <- function(x) {
   is.character(x) &&
-    length(x) == 1 &&
-    !is.na(x)
+  length(x) == 1 &&
+  !is.na(x)
 }
 
 read_all <- function(filename) {
@@ -137,13 +110,11 @@ read_all <- function(filename) {
 is_complete_expression <- function(x) {
   err <- NULL
   tryCatch(parse(text = x), error = function(e) err <<- e)
-  if (is.null(err)) {
-    return(TRUE)
-  }
+  if (is.null(err)) return(TRUE)
   exp <- tryCatch(parse(text = "1+"), error = function(e) e$message)
   exp1 <- strsplit(exp, "\n")[[1]][[1]]
-  msg <- sub("^.*:\\s*([^:]+)$", "\\1", exp1, perl = TRUE)
-  !grepl(msg, conditionMessage(err), fixed = TRUE)
+  msg <- sub("^.*:\\s*([^:]+)$",  "\\1", exp1, perl = TRUE)
+  ! grepl(msg, conditionMessage(err), fixed = TRUE)
 }
 
 bold <- function(x) {
@@ -154,7 +125,7 @@ bold <- function(x) {
 }
 
 update_history <- function(cmd) {
-  tmp <- callr_tempfile("callr-hst-")
+  tmp <- tempfile("callr-hst-")
   on.exit(unlink(tmp, recursive = TRUE))
   utils::savehistory(tmp)
   cat(cmd, "\n", sep = "", file = tmp, append = TRUE)

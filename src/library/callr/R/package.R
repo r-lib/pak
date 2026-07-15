@@ -1,3 +1,4 @@
+
 ## R CMD check workaround
 dummy_r6 <- function() R6::R6Class
 
@@ -8,11 +9,7 @@ env_file <- NULL
 ## We save this as an RDS, so it can be loaded quickly
 .onLoad <- function(libname, pkgname) {
   err$onload_hook()
-
-  # Register methods on load as hacky work-around for pak double registration
-  registerS3method("format", "callr_status_error", format.callr_status_error)
-  registerS3method("print", "callr_status_error", print.callr_status_error)
-  env_file <<- callr_tempfile("callr-env-")
+  env_file <<- tempfile("callr-env-")
   clients <<- asNamespace("processx")$client
   sofiles <<- get_client_files()
   client_env$`__callr_data__`$sofile <- sofiles
@@ -36,23 +33,19 @@ prepare_client_files <- function() {
 
 get_client_files <- function() {
   archs <- ls(clients)
-  vapply(
-    archs,
-    function(aa) {
-      hash <- substr(clients[[aa]]$md5, 1, 7)
+  vapply(archs, function(aa) {
+    hash <- substr(clients[[aa]]$md5, 1, 7)
 
-      # Filename must be `client.ext` so that `dyn.load()` can find
-      # the init function
-      file.path(
-        callr_tempdir(),
-        "callr",
-        sub("arch-", "", aa), # Might be empty
-        hash,
-        paste0("client", .Platform$dynlib.ext)
-      )
-    },
-    character(1)
-  )
+    # Filename must be `client.ext` so that `dyn.load()` can find
+    # the init function
+    file.path(
+      tempdir(),
+      "callr",
+      sub("arch-", "", aa),  # Might be empty
+      hash,
+      paste0("client", .Platform$dynlib.ext)
+    )
+  }, character(1))
 }
 
 .onUnload <- function(libpath) {

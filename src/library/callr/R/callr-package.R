@@ -1,3 +1,4 @@
+
 #' Call R from R
 #'
 #' @description
@@ -12,8 +13,6 @@
 #'
 #' @keywords internal
 "_PACKAGE"
-
-otel_tracer_name <- "org.r-lib.callr"
 
 ## usethis namespace: start
 ## usethis namespace: end

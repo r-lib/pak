@@ -1,3 +1,4 @@
+
 #' Run an R child process, with no configuration
 #'
 #' It tries to mimic a fresh R installation. In particular:
@@ -19,28 +20,14 @@
 #' r(function() getOption("repos"))
 #' r_vanilla(function() getOption("repos"))
 
-r_vanilla <- function(
-  func,
-  args = list(),
-  libpath = character(),
-  repos = c(CRAN = "@CRAN@"),
-  cmdargs = "--slave",
-  system_profile = FALSE,
-  user_profile = FALSE,
-  env = character(),
-  ...
-) {
-  r(
-    func,
-    args = args,
-    libpath = libpath,
-    repos = repos,
-    cmdargs = cmdargs,
-    system_profile = system_profile,
-    user_profile = user_profile,
-    env = env,
-    ...
-  )
+r_vanilla <- function(func, args = list(), libpath = character(),
+                      repos = c(CRAN = "@CRAN@"), cmdargs = "--slave",
+                      system_profile = FALSE, user_profile = FALSE,
+                      env = character(), ...) {
+
+  r(func, args = args, libpath = libpath, repos = repos,
+    cmdargs = cmdargs, system_profile = system_profile,
+    user_profile = user_profile, env = env, ...)
 }
 
 #' @rdname r
@@ -64,26 +51,12 @@ r_safe <- r
 #' @family callr functions
 #' @export
 
-r_copycat <- function(
-  func,
-  args = list(),
-  libpath = .libPaths(),
-  repos = getOption("repos"),
-  cmdargs = "--slave",
-  system_profile = TRUE,
-  user_profile = TRUE,
-  env = character(),
-  ...
-) {
-  r(
-    func,
-    args = args,
-    libpath = libpath,
-    repos = repos,
-    cmdargs = cmdargs,
-    system_profile = system_profile,
-    user_profile = user_profile,
-    env = env,
-    ...
-  )
+r_copycat <- function(func, args = list(), libpath = .libPaths(),
+                      repos = getOption("repos"), cmdargs = "--slave",
+                      system_profile = TRUE, user_profile = TRUE,
+                      env = character(), ...) {
+
+  r(func, args = args, libpath = libpath, repos = repos, cmdargs = cmdargs,
+    system_profile = system_profile, user_profile = user_profile,
+    env = env, ...)
 }

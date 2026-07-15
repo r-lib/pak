@@ -1,3 +1,4 @@
+
 #' Run an `R CMD` command in the background
 #'
 #' The child process is started in the background, and the function
@@ -15,21 +16,14 @@
 #' @family R CMD commands
 #' @export
 
-rcmd_bg <- function(
-  cmd,
-  cmdargs = character(),
-  libpath = .libPaths(),
-  stdout = "|",
-  stderr = "|",
-  poll_connection = TRUE,
-  repos = default_repos(),
-  system_profile = FALSE,
-  user_profile = "project",
-  env = rcmd_safe_env(),
-  wd = ".",
-  supervise = FALSE,
-  ...
-) {
+rcmd_bg <- function(cmd, cmdargs = character(), libpath = .libPaths(),
+                    stdout = "|", stderr = "|",
+                    poll_connection = TRUE,
+                    repos = default_repos(),
+                    system_profile = FALSE, user_profile = "project",
+                    env = rcmd_safe_env(), wd = ".",
+                    supervise = FALSE, ...) {
+
   options <- as.list(environment())
   options$extra <- list(...)
   rcmd_process$new(options = options)

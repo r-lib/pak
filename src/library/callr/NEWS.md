@@ -1,37 +1,3 @@
-# callr 3.8.0
-
-* `r()`, `rcmd()`, `rscript()` and `rscript_process` now accept
-  `pty = TRUE` to run the child R process in a pseudo-terminal.
-
-* callr now supports `carrier::crate()`. `package = NULL`, the new
-  default, handles functions created with `carrier::crate()` automatically
-  (#249).
-
-* The `CALLR_TMPDIR` environment variable can now be set to override the
-  directory callr uses for its auxiliary temporary files. When unset, callr
-  keeps using `tempdir()` (#172).
-
-* `r_bg()` (and `r()`) subprocesses now exit with a non-zero status when
-  the evaluated expression throws an error or is interrupted, instead of
-  always exiting with status 0 (#291).
-
-* `r()`, `r_bg()`, `r_session$new()` and friends now accept `libpath = NULL`,
-  which leaves the subprocess library path alone, so the subprocess uses
-  the `.libPaths()` of a fresh R session (e.g. as set up by a project
-  `.Rprofile`) instead of inheriting the parent's library path (#255).
-
-* callr is now instrumented with [OpenTelemetry](https://opentelemetry.io/).
-  When an OpenTelemetry SDK (such as otelsdk) is loaded and configured,
-  callr emits spans for `r()`, `rcmd()`, `rscript()`, `r_process` and
-  `r_session` (including per-call `$call`, `$read` and `$close` spans),
-  and propagates the W3C `traceparent` header into the subprocess so
-  spans created inside the child are parented to the parent's span.
-  See the 'OpenTelemetry' article for details (#302).
-
-* `r()`, `rcmd()`, `rscript()` and friends no longer hang on Windows when
-  called with `stdout = "|"` (or any value of `stdout`/`stderr` other than
-  a file path or `NULL`) (#313).
-
 # callr 3.7.6
 
 * If the `CALLR_NO_TEMP_DLLS=true` env var is set then callr does not
