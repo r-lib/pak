@@ -1,3 +1,8 @@
+# zip (development version)
+
+* `unzip()` no longer errors on Unix when extracting a symlink whose target
+  is missing or is extracted later in the archive (#157).
+
 # zip 3.0.1
 
 * The progress bar option is now named `zip_progress`, to match the other

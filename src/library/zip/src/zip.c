@@ -732,17 +732,24 @@ int zip_unzip(const char *czipfile, const char **cfiles, int num_files,
       fclose(fh);
     }
 #ifndef _WIN32
-    mode_t mode;
-    /* returns 1 if there are no permissions. In that case we don't call
-       call chmod() and leave the permissions as they are, the file was
-       created with the default umask. */
-    int ret = zip_get_permissions(&file_stat, &mode);
-    if (!ret) {
-      if (chmod(buffer, mode)) {
-        mz_zip_reader_end(&zip_archive);
-        if (buffer) free(buffer);
-        fclose(zfh);
-        ZIP_ERROR(R_ZIP_ESETPERM, key, czipfile);
+    /* We skip symlinks here: chmod() follows the link, so it operates on the
+       target, not the link itself. The target may not be extracted yet (it
+       can come later in the archive) or may never exist (a broken symlink),
+       in which case chmod() fails. Symlink permissions are not meaningful on
+       most systems anyway. */
+    if (!S_ISLNK(attr)) {
+      mode_t mode;
+      /* returns 1 if there are no permissions. In that case we don't call
+         call chmod() and leave the permissions as they are, the file was
+         created with the default umask. */
+      int ret = zip_get_permissions(&file_stat, &mode);
+      if (!ret) {
+        if (chmod(buffer, mode)) {
+          mz_zip_reader_end(&zip_archive);
+          if (buffer) free(buffer);
+          fclose(zfh);
+          ZIP_ERROR(R_ZIP_ESETPERM, key, czipfile);
+        }
       }
     }
 #endif
@@ -775,6 +782,18 @@ int zip_unzip(const char *czipfile, const char **cfiles, int num_files,
       key_utf8_2 = decode_fn ? decode_fn(key, decode_data) : zip_cp437_to_utf8(key);
     }
     const char *key_for_fs2 = key_utf8_2 ? key_utf8_2 : key;
+
+#ifndef _WIN32
+    /* Skip symlinks: utimes() follows the link and would set the mtime on
+       the target (which may be missing or extracted elsewhere) rather than
+       the link, and fail for broken symlinks. See the chmod() comment above.
+       On Windows symlinks are extracted as regular files, so there is nothing
+       to skip. */
+    if (S_ISLNK(file_stat.m_external_attr >> 16)) {
+      if (key_utf8_2) free(key_utf8_2);
+      continue;
+    }
+#endif
 
     zip_str_file_path(cexdir, key_for_fs2, &buffer, &buffer_size, cjunkpaths);
     if (zip_set_mtime(buffer, file_stat.m_time)) {

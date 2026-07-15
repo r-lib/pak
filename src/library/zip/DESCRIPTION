@@ -1,6 +1,6 @@
 Package: zip
 Title: Cross-Platform 'zip' Compression
-Version: 3.0.1
+Version: 3.0.1.9000
 Authors@R: c(
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
     person("Kuba", "Podgórski", role = "ctb"),
@@ -25,9 +25,10 @@ Config/testthat/parallel: true
 Config/testthat/start-first: large-files, http
 Config/usethis/last-upkeep: 2025-05-07
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.0.0
 NeedsCompilation: yes
-Packaged: 2026-07-13 07:41:12 UTC; gaborcsardi
+Packaged: 2026-07-15 11:53:03 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Kuba Podgórski [ctb],
   Rich Geldreich [ctb],
@@ -35,5 +36,3 @@ Author: Gábor Csárdi [aut, cre],
     (Apache-2.0)),
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
-Repository: CRAN
-Date/Publication: 2026-07-13 10:00:02 UTC
