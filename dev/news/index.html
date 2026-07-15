@@ -36,7 +36,23 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
-</div>
+<ul><li><p>pak now supports the <code>configure_args</code> and <code>configure_vars</code> configuration options. They default to the <code>configure.args</code> and <code>configure.vars</code> options, for compatibility with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> (<a href="https://github.com/r-lib/pak/issues/788" class="external-link">#788</a>).</p></li>
+<li><p>GitHub remotes now auto-detect an R package in a well-known subdirectory (<code>pkg-r/</code>, <code>r/</code>, or <code>R/</code>) when no <code>subdir</code> is given and there is no <code>DESCRIPTION</code> at the repository root. This lets multi-language repositories be installed without specifying <code>subdir</code> (<a href="https://github.com/r-lib/pak/issues/459" class="external-link">#459</a>).</p></li>
+<li><p>pak now handles the case when a repository (typically Posit Package Manager) serves a source package instead of the requested binary (<a href="https://github.com/r-lib/pak/issues/891" class="external-link">#891</a>).</p></li>
+<li>
+<p>Better error messages for several dependency solver situations:</p>
+<ul><li>when requesting a package that is installed locally, but was removed from its repository (<a href="https://github.com/r-lib/pak/issues/895" class="external-link">#895</a>),</li>
+<li>when requesting an older version (e.g. <code>pkg@1.0.0</code>) of a package that is no longer in the repository (<a href="https://github.com/r-lib/pak/issues/896" class="external-link">#896</a>),</li>
+<li>when resolving downloads for a different platform (<a href="https://github.com/r-lib/pkgdepends/issues/462" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/462</a>).</li>
+</ul></li>
+<li><p>The dependency solver no longer silently keeps an installed package as the solution for a direct package reference that failed to resolve, e.g. a CRAN package that is not on CRAN but happens to be installed locally from another source. pak now reports the failure instead.</p></li>
+<li><p><code>install_args</code> is no longer overwritten when building packages. The <code>--no-multiarch</code> flag needed on some Windows configurations is now added to the existing <code>install_args</code> (<a href="https://github.com/r-lib/pkgdepends/issues/472" class="external-link uri">https://github.com/r-lib/pkgdepends/issues/472</a>).</p></li>
+<li><p>Duplicate system requirement commands are now deduplicated (<a href="https://github.com/r-lib/pak/issues/888" class="external-link">#888</a>).</p></li>
+<li><p>pak now behaves better when the package cache database is corrupt: it gives a better error message, and cleaning the cache no longer fails in this case (<a href="https://github.com/r-lib/pak/issues/884" class="external-link">#884</a>).</p></li>
+<li><p>pak now handles <code>PACKAGES</code> files with <code>Path</code> and/or <code>File</code> fields correctly, and drops HTTP query parameters from these fields when constructing the target file name (<a href="https://github.com/r-lib/pkgcache/issues/141" class="external-link uri">https://github.com/r-lib/pkgcache/issues/141</a>, <a href="https://github.com/jeroen" class="external-link">@jeroen</a>).</p></li>
+<li><p>All HTTP requests now honor the <code>pkgcache_http_version</code> option and the <code>PKGCACHE_HTTP_VERSION</code> environment variable (<a href="https://github.com/r-lib/pkgcache/issues/140" class="external-link uri">https://github.com/r-lib/pkgcache/issues/140</a>).</p></li>
+<li><p>pak now retries failed HTTP requests by default, using an exponential backoff (and honoring the <code>Retry-After</code> header). Set the <code>PKG_HTTP_RETRY</code> environment variable or the <code>pkg_http_retry</code> option to <code>FALSE</code> to disable retries.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.0" id="pak-0100">pak 0.10.0<a class="anchor" aria-label="anchor" href="#pak-0100"></a></h2><p class="text-muted">CRAN release: 2026-06-07</p>
 <ul><li>pak now supports Posit Package Manager’s Sigle Sign-On authentication.</li>
