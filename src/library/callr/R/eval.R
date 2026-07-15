@@ -1,4 +1,3 @@
-
 #' Evaluate an expression in another R session
 #'
 #' From `callr` version 2.0.0, `r()` is equivalent to `r_safe()`, and
@@ -33,7 +32,10 @@
 #'   ```
 #'   works just fine.
 #' @param args Arguments to pass to the function. Must be a list.
-#' @param libpath The library path.
+#' @param libpath The library path. If `NULL`, then the library path
+#'   is not modified at all in the subprocess. This is useful for
+#'   subprocesses that should use the library path of a fresh R session,
+#'   e.g. as set up by a project `.Rprofile`.
 #' @param repos The `repos` option. If `NULL`, then no
 #'   `repos` option is set. This options is only used if
 #'   `user_profile` or `system_profile` is set `FALSE`,
@@ -44,8 +46,10 @@
 #'   then the commands are not echoed and will not be shown
 #'   in the standard output. Also note that you need to call `print()`
 #'   explicitly to show the output of the command(s).
-#'   IF `NULL` (the default), then standard output is not returned, but
+#'   IF `NULL`, then standard output is not returned, but
 #'   it is recorded and included in the error object if an error happens.
+#'   Various special values for this argument such as `"|"` are explained
+#'   in the `stdout` argument of [processx::process].
 #' @param stderr The name of the file the standard error of
 #'   the child R process will be written to.
 #'   In particular `message()` sends output to the standard
@@ -53,8 +57,10 @@
 #'   will be empty. This argument can be the same file as `stdout`,
 #'   in which case they will be correctly interleaved. If this is the
 #'   string `"2>&1"`, then standard error is redirected to standard output.
-#'   IF `NULL` (the default), then standard output is not returned, but
+#'   IF `NULL`, then standard output is not returned, but
 #'   it is recorded and included in the error object if an error happens.
+#'   Various special values for this argument such as `"|"` are explained
+#'   in the `stdout` argument of [processx::process].
 #' @param error What to do if the remote process throws an error.
 #'   See details below.
 #' @param poll_connection Whether to have a control connection to
@@ -93,7 +99,10 @@
 #'   means no timeout.
 #' @param package Whether to keep the environment of `func` when passing
 #'   it to the other package. Possible values are:
-#'   * `FALSE`: reset the environment to `.GlobalEnv`. This is the default.
+#'   * `NULL` (the default): equivalent to `TRUE` if `func` inherits from
+#'     `"crate"` (i.e. was created with `carrier::crate()`), and `FALSE`
+#'     otherwise.
+#'   * `FALSE`: reset the environment to `.GlobalEnv`.
 #'   * `TRUE`: keep the environment as is.
 #'   * `pkg`: set the environment to the `pkg` package namespace.
 #' @param arch Architecture to use in the child process, for multi-arch
@@ -163,18 +172,28 @@
 #'
 #' @export
 
-r <- function(func, args = list(), libpath = .libPaths(),
-              repos = default_repos(),
-              stdout = NULL, stderr = NULL,
-              poll_connection = TRUE,
-              error = getOption("callr.error", "error"),
-              cmdargs = c("--slave", "--no-save", "--no-restore"),
-              show = FALSE, callback = NULL,
-              block_callback = NULL, spinner = show && interactive(),
-              system_profile = FALSE, user_profile = "project",
-              env = rcmd_safe_env(), timeout = Inf, package = FALSE,
-              arch = "same", ...) {
-
+r <- function(
+  func,
+  args = list(),
+  libpath = .libPaths(),
+  repos = default_repos(),
+  stdout = NULL,
+  stderr = NULL,
+  poll_connection = TRUE,
+  error = getOption("callr.error", "error"),
+  cmdargs = c("--slave", "--no-save", "--no-restore"),
+  show = FALSE,
+  callback = NULL,
+  block_callback = NULL,
+  spinner = show && interactive(),
+  system_profile = FALSE,
+  user_profile = "project",
+  env = rcmd_safe_env(),
+  timeout = Inf,
+  package = NULL,
+  arch = "same",
+  ...
+) {
   ## This contains the context that we set up in steps
   options <- convert_and_check_my_args(as.list(environment()))
   options$extra <- list(...)
@@ -187,6 +206,16 @@ r <- function(func, args = list(), libpath = .libPaths(),
   options <- setup_context(options)
   options <- setup_callbacks(options)
   options <- setup_r_binary_and_args(options)
+
+  if (otel::is_tracing_enabled()) {
+    otel::start_local_active_span(
+      "callr::r",
+      attributes = otel::as_attributes(options)
+    )
+    hdrs <- otel::pack_http_context()
+    names(hdrs) <- toupper(names(hdrs))
+    options$env[names(hdrs)] <- hdrs
+  }
 
   out <- run_r(options)
 

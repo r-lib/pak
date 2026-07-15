@@ -1,4 +1,3 @@
-
 #' Run an R script
 #'
 #' It uses the `Rscript` program corresponding to the current R version,
@@ -12,15 +11,28 @@
 #'
 #' @export
 
-rscript <- function(script, cmdargs = character(), libpath = .libPaths(),
-                    repos = default_repos(),
-                    stdout = NULL, stderr = NULL,
-                    poll_connection = TRUE, echo = FALSE, show = TRUE,
-                    callback = NULL, block_callback = NULL, spinner = FALSE,
-                    system_profile = FALSE, user_profile = "project",
-                    env = rcmd_safe_env(), timeout = Inf, wd = ".",
-                    fail_on_status = TRUE, color = TRUE, ...) {
-
+rscript <- function(
+  script,
+  cmdargs = character(),
+  libpath = .libPaths(),
+  repos = default_repos(),
+  stdout = NULL,
+  stderr = NULL,
+  poll_connection = TRUE,
+  echo = FALSE,
+  show = TRUE,
+  callback = NULL,
+  block_callback = NULL,
+  spinner = FALSE,
+  system_profile = FALSE,
+  user_profile = "project",
+  env = rcmd_safe_env(),
+  timeout = Inf,
+  wd = ".",
+  fail_on_status = TRUE,
+  color = TRUE,
+  ...
+) {
   load_hook <- rscript_load_hook_color(color)
 
   options <- convert_and_check_my_args(as.list(environment()))
@@ -34,18 +46,31 @@ rscript <- function(script, cmdargs = character(), libpath = .libPaths(),
   ## This cleans up everything...
   on.exit(unlink(options$tmp_files, recursive = TRUE), add = TRUE)
 
+  if (otel::is_tracing_enabled()) {
+    otel::start_local_active_span(
+      "callr::rscript",
+      attributes = otel::as_attributes(options)
+    )
+    hdrs <- otel::pack_http_context()
+    names(hdrs) <- toupper(names(hdrs))
+    options$env[names(hdrs)] <- hdrs
+  }
+
   invisible(run_r(options))
 }
 
 rscript_load_hook_color <- function(color) {
-
-  if (!color) return("")
+  if (!color) {
+    return("")
+  }
 
   nc <- tryCatch(
     cli::num_ansi_colors(),
     error = function(e) 1L
   )
-  if (nc == 1) return("")
+  if (nc == 1) {
+    return("")
+  }
 
   expr <- substitute(
     options(crayon.enabled = TRUE, crayon.colors = `_nc_`),
@@ -68,29 +93,35 @@ rscript_load_hook_color <- function(color) {
 #' rp$read_output_lines()
 #' @export
 
-rscript_process <- R6::R6Class(
+rscript_process <- suppressMessages(R6::R6Class(
   "rscript_process",
   inherit = processx::process,
   public = list(
     #' @description Create a new `Rscript` process.
     #' @param options A list of options created via
     #'   [rscript_process_options()].
-    initialize = function(options)
-      rscript_init(self, private, super, options),
-    #' @description Clean up after an `Rscript` process, remove
-    #' temporary files.
-    finalize = function() {
+    initialize = function(options) rscript_init(self, private, super, options),
+
+    #' @description Delete the temporary files created for this `Rscript`
+    #' process. Only call this method if you are sure that the process is
+    #' done. If you don't call this method explicitly, the temporary files
+    #' will be deleted when the process object is garbage collected.
+    cleanup = function() {
       unlink(private$options$tmp_files, recursive = TRUE)
+    },
+
+    #' @description Clean up after an `Rscript` process, remove temporary files.
+    finalize = function() {
+      self$cleanup()
       if ("finalize" %in% ls(super)) super$finalize()
     }
   ),
   private = list(
     options = NULL
   )
-)
+))
 
 rscript_init <- function(self, private, super, options) {
-
   options$load_hook <- rscript_load_hook_color(options$color)
   options <- convert_and_check_my_args(options)
   options <- setup_context(options)
@@ -102,12 +133,23 @@ rscript_init <- function(self, private, super, options) {
   setwd(options$wd)
   on.exit(setwd(oldwd), add = TRUE)
 
+  pty <- isTRUE(options$extra$pty)
+
   with_envvar(
     options$env,
-    do.call(super$initialize, c(list(options$bin, options$real_cmdargs,
-      stdout = options$stdout, stderr = options$stderr,
-      poll_connection = options$poll_connection),
-      options$extra))
+    do.call(
+      super$initialize,
+      c(
+        list(
+          options$bin,
+          options$real_cmdargs,
+          stdout = if (pty) NULL else options$stdout,
+          stderr = if (pty) NULL else options$stderr,
+          poll_connection = options$poll_connection
+        ),
+        options$extra
+      )
+    )
   )
 
   invisible(self)

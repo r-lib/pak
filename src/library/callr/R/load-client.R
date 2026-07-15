@@ -1,4 +1,3 @@
-
 load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   ext <- .Platform$dynlib.ext
   sofile_in_processx <- function() {
@@ -9,15 +8,24 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
     }
 
     sofile <- system.file(
-      "libs", arch, paste0("client", ext),
-      package = "processx")
-    if (sofile != "" && file.exists(sofile)) return(sofile)
+      "libs",
+      arch,
+      paste0("client", ext),
+      package = "processx"
+    )
+    if (sofile != "" && file.exists(sofile)) {
+      return(sofile)
+    }
 
     # Try this as well, this is for devtools/pkgload
     sofile <- system.file(
-      "src", paste0("client", ext),
-      package = "processx")
-    if (sofile != "" && file.exists(sofile)) return(sofile)         # nocov
+      "src",
+      paste0("client", ext),
+      package = "processx"
+    )
+    if (sofile != "" && file.exists(sofile)) {
+      return(sofile)
+    } # nocov
 
     # stop() here and not throw(), because this function should be standalone
     stop("Cannot find client file")
@@ -44,10 +52,10 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
           lib <- dyn.load(sofile)
           need_cleanup <- FALSE
         },
-	error = function(err2) {
-	  err2$message <- err2$message <- paste0(" after ", lib$message)
-	  stop(err2)
-	}
+        error = function(err2) {
+          err2$message <- err2$message <- paste0(" after ", lib$message)
+          stop(err2)
+        }
       )
     }
   }
@@ -60,7 +68,7 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   sym_encode <- getNativeSymbolInfo("processx_base64_encode", lib)
   sym_decode <- getNativeSymbolInfo("processx_base64_decode", lib)
   sym_disinh <- getNativeSymbolInfo("processx_disable_inheritance", lib)
-  sym_write  <- getNativeSymbolInfo("processx_write", lib)
+  sym_write <- getNativeSymbolInfo("processx_write", lib)
   sym_setout <- getNativeSymbolInfo("processx_set_stdout", lib)
   sym_seterr <- getNativeSymbolInfo("processx_set_stderr", lib)
   sym_setoutf <- getNativeSymbolInfo("processx_set_stdout_to_file", lib)
@@ -83,13 +91,19 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   env$disable_fd_inheritance <- function() mycall(sym_disinh)
 
   env$write_fd <- function(fd, data) {
-    if (is.character(data)) data <- charToRaw(paste0(data, collapse = ""))
+    if (is.character(data)) {
+      data <- charToRaw(paste0(data, collapse = ""))
+    }
     len <- length(data)
     repeat {
       written <- mycall(sym_write, fd, data)
       len <- len - written
-      if (len == 0) break
-      if (written) data <- data[-(1:written)]
+      if (len == 0) {
+        break
+      }
+      if (written) {
+        data <- data[-(1:written)]
+      }
       Sys.sleep(.1)
     }
   }
@@ -123,7 +137,8 @@ load_client_lib <- function(sofile = NULL, pxdir = NULL) {
   reg.finalizer(
     env,
     function(e) if (".finalize" %in% names(e)) e$.finalize(),
-    onexit = TRUE)
+    onexit = TRUE
+  )
 
   ## Clear the cleanup method
   on.exit(NULL)

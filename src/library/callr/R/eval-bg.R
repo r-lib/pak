@@ -1,10 +1,26 @@
-
 #' Evaluate an expression in another R session, in the background
 #'
 #' Starts evaluating an R function call in a background R process, and
 #' returns immediately.
 #' Use `p$get_result()` to collect the result or to throw an error
 #' if the background computation failed.
+#'
+#' # Draining standard output and error
+#'
+#' With the default `stdout = "|"` and `stderr = "|"`, the child process
+#' writes its output and error streams into OS pipes with a small fixed
+#' buffer (typically 64 KB or less). If nothing drains these pipes, a
+#' chatty child fills the buffer and then blocks on the next `write()`.
+#' The child will not
+#' terminate until the parent reads from the pipes, so `p$is_alive()` will
+#' keep returning `TRUE` even though the work appears to be done.
+#'
+#' To avoid this:
+#' * Pass a filename to `stdout` / `stderr` to redirect output to files, or
+#' * pass `NULL` to discard it, or
+#' * periodically call `p$read_output()` and `p$read_error()` (or
+#'   `p$read_all_output()` etc.) to drain the pipes while the process is
+#'   running.
 #'
 #' @inheritSection r Security considerations
 #' @inheritParams r
@@ -26,18 +42,26 @@
 #' rx$is_alive()
 #' rx$get_result()
 
-r_bg <- function(func, args = list(), libpath = .libPaths(),
-                 repos = default_repos(),
-                 stdout = "|", stderr = "|",
-                 poll_connection = TRUE,
-                 error = getOption("callr.error", "error"),
-                 cmdargs = c("--slave", "--no-save", "--no-restore"),
-                 system_profile = FALSE, user_profile = "project",
-                 env = rcmd_safe_env(), supervise = FALSE,
-                 package = FALSE, arch = "same", ...) {
-
+r_bg <- function(
+  func,
+  args = list(),
+  libpath = .libPaths(),
+  repos = default_repos(),
+  stdout = "|",
+  stderr = "|",
+  poll_connection = TRUE,
+  error = getOption("callr.error", "error"),
+  cmdargs = c("--slave", "--no-save", "--no-restore"),
+  system_profile = FALSE,
+  user_profile = "project",
+  env = rcmd_safe_env(),
+  supervise = FALSE,
+  package = NULL,
+  arch = "same",
+  ...
+) {
   options <- as.list(environment())
-  options$extra  <- list(...)
+  options$extra <- list(...)
   options$load_hook <- default_load_hook()
   r_process$new(options = options)
 }

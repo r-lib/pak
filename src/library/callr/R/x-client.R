@@ -1,4 +1,3 @@
-
 client_env <- local({
   env <- new.env(parent = emptyenv())
   env$`__callr_data__` <- new.env(parent = baseenv())
