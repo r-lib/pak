@@ -1,5 +1,9 @@
 # pkgcache (development version)
 
+* Better behavior for a corrupt package cache database: better error
+  message, and cleaning the cache does not fail in this case
+  (https://github.com/r-lib/pak/issues/884).
+
 * pkgcache now treats `PACKAGES` entries with `Path` and/or `File`
   fields correctly (#141, @jeroen).
 

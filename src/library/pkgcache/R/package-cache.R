@@ -121,7 +121,7 @@ package_cache <- R6Class(
       l <- private$lock(exclusive = FALSE)
       on.exit(filelock::unlock(l), add = TRUE)
       dbfile <- get_db_file(private$path)
-      readRDS(dbfile)
+      read_db_rds(dbfile)
     },
 
     find = function(..., .list = NULL) {
@@ -152,7 +152,7 @@ package_cache <- R6Class(
       l <- private$lock(exclusive = TRUE)
       on.exit(filelock::unlock(l), add = TRUE)
       dbfile <- get_db_file(private$path)
-      db <- readRDS(dbfile)
+      db <- read_db_rds(dbfile)
 
       extra <- c(list(...), .list)
 
@@ -429,13 +429,23 @@ package_cache <- R6Class(
       l <- private$lock(exclusive = TRUE)
       on.exit(filelock::unlock(l), add = TRUE)
       dbfile <- get_db_file(private$path)
+      pkgs <- c(list(...), .list)
 
-      ex <- private$find_locked(..., .list = .list)
-      if (nrow(ex) != 0) {
-        unlink(file.path(private$path, ex$path))
-        db <- delete_from_data_frame(readRDS(dbfile), ..., .list = .list)
-        save_rds(db, dbfile)
+      if (length(pkgs) == 0) {
+        files <- list.files(private$path, recursive = TRUE, full.names = TRUE)
+        files <- setdiff(files, get_lock_file(private$path))
+        unlink(files, recursive = TRUE, force = TRUE)
+        unlink(dbfile, force = TRUE)
+      } else {
+        db <- read_db_rds(dbfile)
+        idx <- find_in_data_frame(db, .list = pkgs)
+        if (length(idx) != 0) {
+          unlink(file.path(private$path, db$path[idx]))
+          save_rds(db[-idx, ], dbfile)
+        }
       }
+
+      invisible()
     }
   ),
 
@@ -449,7 +459,7 @@ package_cache <- R6Class(
     },
     find_locked = function(..., .list = NULL) {
       dbfile <- get_db_file(private$path)
-      db <- readRDS(dbfile)
+      db <- read_db_rds(dbfile)
 
       idx <- find_in_data_frame(db, ..., .list = .list)
       db[idx, ]
@@ -466,6 +476,24 @@ get_db_file <- function(path) {
 
 get_lock_file <- function(path) {
   file.path(path, ".db.lock")
+}
+
+read_db_rds <- function(dbfile) {
+  tryCatch(
+    suppressWarnings(readRDS(dbfile)),
+    error = function(err) {
+      cond <- new_error(
+        "Failed to read the package cache database from ",
+        encodeString(dbfile, quote = "`"),
+        ". The cache file is possibly corrupt, call ",
+        "`pkgcache::pkg_cache_delete_files()` or `pak::cache_clean()` ",
+        "to reset the cache, and then try again."
+      )
+      cond$dbfile <- dbfile
+      class(cond) <- c("pkgcache_corrupt_db_error", class(cond))
+      throw(cond, parent = err)
+    }
+  )
 }
 
 create_empty_db_file_if_needed <- function(path) {
