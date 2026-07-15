@@ -683,31 +683,21 @@ create_pak_repo <- local({
     "amd64" = "x86_64"
   )
 
+  # this can be used to map one os to another one
   os_map <- function(tag) {
-    if (tag == "devel") {
-      character()
-    } else {
-      c(
-        "linux-musl" = "linux",
-        "linux-gnu" = "linux"
-      )
-    }
+    character()
   }
 
-  # For `stable` the REAL directories containing the packages are:
-  # - linux/x86_64
-  # - linux/aarch64
-  # For `devel` the single `linux/` tree is replaced by two real trees,
-  # one per libc (glibc and musl are not interchangeable):
-  # - linux-gnu/x86_64      (glibc)
+  # The REAL directories containing the packages are:
+  # - linux-gnu/x86_64
   # - linux-gnu/aarch64
-  # - linux-musl/x86_64     (musl)
+  # - linux-musl/x86_64
   # - linux-musl/aarch64
-  # and `linux/` + the other libc variants redirect to `linux-gnu`.
-  # The rest are the same for both streams:
   # - darwin15.6.0/x86_64
   # - darwin17.0/x86_64
+  # - darwin20/x86_64
   # - darwin20/aarch64
+  # - darwin23/aarch64
   # - mingw32/x86_64
   # - freebsd15.0/x86_64
   # - freebsd14.1/x86_64
@@ -720,13 +710,11 @@ create_pak_repo <- local({
   # - mingw32/aarch64
 
   # ## New form of the install command will use these repo URL and paths.
-  # (The `linux/x86_64` targets below are for `stable`; for `devel` they
-  # resolve to `linux-gnu/x86_64` / `linux-musl/x86_64` instead.)
   # ```
   # source/linux-gnu/x85_64 + /src/contrib ->
-  #      linux/x86_64
+  #      linux-gnu/x86_64
   # source/linux-gnu/aarch64 + /src/contrib ->
-  #      linux/aarch64
+  #      linux-gnu/aarch64
   # mac.binary.big-sur-arm64/darwin20/aarch64 + /bin/macosx/big-sur-arm64/contrib/4.1 ->
   #      darwin20/aarch64
   # mac.binary/darwin17.0/x86_64 + /bin/macosx/contrib/4.1 ->
@@ -764,7 +752,7 @@ create_pak_repo <- local({
   #
   # This is the compatiblity mapping for the older, generic repo URL:
   # ```
-  # /src/contrib                           -> linux/x86_64
+  # /src/contrib                           -> linux-gnu/x86_64
   # /bin/macosx/big-sur-arm64/contrib/4.1  -> darwin20/aarch64
   # /bin/macosx/contrib/4.1                -> darwin17.0/x86_64
   # /bin/macosx/big-sur-x86_64/contrib/4.3 -> darwin20.0/x86_64
@@ -772,9 +760,42 @@ create_pak_repo <- local({
   # /bin/windows/contrib/4.1               -> mingw32/x86_64
   # ```
 
-  # Repository redirects that are identical for every stream. The Linux
-  # entries differ between `stable` and `devel` and live in `links_linux()`.
-  links_common <- c(
+  # Repository redirects.
+  #
+  # Linux has two real trees, `linux-gnu/` (glibc) and `linux-musl/` (musl),
+  # which are not interchangeable. The bare `linux/` directory, the other
+  # libc variants, and the generic old `src/contrib` URL all redirect to
+  # `linux-gnu`, because glibc is the more common Linux libc.
+  links <- c(
+    # glibc and musl each have their own real `<os>/<arch>` tree, so
+    # they are only redirected from the pkgType/os/arch install path.
+    "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+    "source/linux-musl/x86_64/src/contrib" = "../../../../../linux-musl/x86_64",
+    "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+    "source/linux-musl/aarch64/src/contrib" = "../../../../../linux-musl/aarch64",
+
+    # Everything else (bare linux, uncommon libcs) falls back to glibc.
+    "linux/x86_64" = "../../linux-gnu/x86_64",
+    "linux-uclibc/x86_64" = "../../linux-gnu/x86_64",
+    "linux-dietlibc/x86_64" = "../../linux-gnu/x86_64",
+    "linux-unknown/x86_64" = "../../linux-gnu/x86_64",
+    "linux/aarch64" = "../../linux-gnu/aarch64",
+    "linux-uclibc/aarch64" = "../../linux-gnu/aarch64",
+    "linux-dietlibc/aarch64" = "../../linux-gnu/aarch64",
+    "linux-unknown/aarch64" = "../../linux-gnu/aarch64",
+
+    "source/linux/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+    "source/linux-uclibc/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+    "source/linux-dietlibc/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+    "source/linux-unknown/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
+    "source/linux/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+    "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+    "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+    "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
+
+    # Generic, libc-agnostic repo URL (old form) -> glibc.
+    "src/contrib" = "../../linux-gnu/x86_64",
+
     # On Windows we serve bi-arch packages:
     "mingw32/i386" = "../x86_64",
 
@@ -893,83 +914,6 @@ create_pak_repo <- local({
     "bin/macosx/big-sur-x86_64/contrib/4.7" = "../../../../../darwin20/x86_64"
   )
 
-  # Linux redirects, different per stream. See `os_map()` for the layout.
-  #
-  # `stable` serves a single build per R version under `linux/`, and every
-  # libc is redirected there.
-  #
-  # `devel` serves two real trees, `linux-gnu/` (glibc) and `linux-musl/`
-  # (musl), which are not interchangeable. The bare `linux/` directory, the
-  # other libc variants, and the generic old `src/contrib` URL all redirect
-  # to `linux-gnu`, because glibc is the more common Linux libc.
-  links_linux <- function(tag) {
-    if (tag == "devel") {
-      c(
-        # glibc and musl each have their own real `<os>/<arch>` tree, so
-        # they are only redirected from the pkgType/os/arch install path.
-        "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
-        "source/linux-musl/x86_64/src/contrib" = "../../../../../linux-musl/x86_64",
-        "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
-        "source/linux-musl/aarch64/src/contrib" = "../../../../../linux-musl/aarch64",
-
-        # Everything else (bare linux, uncommon libcs) falls back to glibc.
-        "linux/x86_64" = "../../linux-gnu/x86_64",
-        "linux-uclibc/x86_64" = "../../linux-gnu/x86_64",
-        "linux-dietlibc/x86_64" = "../../linux-gnu/x86_64",
-        "linux-unknown/x86_64" = "../../linux-gnu/x86_64",
-        "linux/aarch64" = "../../linux-gnu/aarch64",
-        "linux-uclibc/aarch64" = "../../linux-gnu/aarch64",
-        "linux-dietlibc/aarch64" = "../../linux-gnu/aarch64",
-        "linux-unknown/aarch64" = "../../linux-gnu/aarch64",
-
-        "source/linux/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
-        "source/linux-uclibc/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
-        "source/linux-dietlibc/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
-        "source/linux-unknown/x86_64/src/contrib" = "../../../../../linux-gnu/x86_64",
-        "source/linux/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
-        "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
-        "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
-        "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux-gnu/aarch64",
-
-        # Generic, libc-agnostic repo URL (old form) -> glibc.
-        "src/contrib" = "../../linux-gnu/x86_64"
-      )
-    } else {
-      c(
-        # A single build per R version: every libc maps to `linux/`.
-        "linux-gnu/x86_64" = "../../linux/x86_64",
-        "linux-musl/x86_64" = "../../linux/x86_64",
-        "linux-uclibc/x86_64" = "../../linux/x86_64",
-        "linux-dietlibc/x86_64" = "../../linux/x86_64",
-        "linux-unknown/x86_64" = "../../linux/x86_64",
-        "linux-gnu/aarch64" = "../../linux/aarch64",
-        "linux-musl/aarch64" = "../../linux/aarch64",
-        "linux-uclibc/aarch64" = "../../linux/aarch64",
-        "linux-dietlibc/aarch64" = "../../linux/aarch64",
-        "linux-unknown/aarch64" = "../../linux/aarch64",
-
-        "source/linux/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux-gnu/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux-musl/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux-uclibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux-dietlibc/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux-unknown/x86_64/src/contrib" = "../../../../../linux/x86_64",
-        "source/linux/aarch64/src/contrib" = "../../../../../linux/aarch64",
-        "source/linux-gnu/aarch64/src/contrib" = "../../../../../linux/aarch64",
-        "source/linux-musl/aarch64/src/contrib" = "../../../../../linux/aarch64",
-        "source/linux-uclibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
-        "source/linux-dietlibc/aarch64/src/contrib" = "../../../../../linux/aarch64",
-        "source/linux-unknown/aarch64/src/contrib" = "../../../../../linux/aarch64",
-
-        "src/contrib" = "../../linux/x86_64"
-      )
-    }
-  }
-
-  links_for <- function(tag) {
-    c(links_linux(tag), links_common)
-  }
-
   download_uri <- function() {
     Sys.getenv(
       "PAK_GHCP_DOWNLOAD_URI",
@@ -1007,8 +951,7 @@ create_pak_repo <- local({
 
   add_repo_links <- function(root, tag) {
     repo_root <- file.path(root, tag)
-    lk <- links_for(tag)
-    for (idx in seq_along(lk)) {
+    for (idx in seq_along(links)) {
       link <- file.path(repo_root, names(lk)[idx])
       mkdirp(link)
       orig <- file.path(link, lk[[idx]])
