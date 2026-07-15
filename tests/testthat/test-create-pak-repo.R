@@ -8,8 +8,10 @@ test_that("add_repo_links", {
   mkdirp <- import_from("create_pak_repo", "mkdirp")
 
   plt <- rbind(
-    c("linux", "x86_64"),
-    c("linux", "aarch64"),
+    c("linux-gnu", "x86_64"),
+    c("linux-gnu", "aarch64"),
+    c("linux-musl", "x86_64"),
+    c("linux-musl", "aarch64"),
     c("darwin15.6.0", "x86_64"),
     c("darwin17.0", "x86_64"),
     c("darwin20", "aarch64"),
@@ -41,9 +43,9 @@ test_that("add_repo_links", {
     textConnection(
       "
     pkg_type                 os           arch    rver result
-    source                   linux-gnu    x86_64  4.1  linux/x86_64
-    source                   linux-musl   x86_64  4.1  linux/x86_64
-    source                   linux-gnu    aarch64 4.1  linux/aarch64
+    source                   linux-gnu    x86_64  4.1  linux-gnu/x86_64
+    source                   linux-musl   x86_64  4.1  linux-musl/x86_64
+    source                   linux-gnu    aarch64 4.1  linux-gnu/aarch64
     # Linux, unsupported arch
     source                   linux-gnu    s390x   4.1  NA
     win.binary               mingw32      x86_64  4.1  mingw32/x86_64
@@ -90,7 +92,7 @@ test_that("add_repo_links", {
     textConnection(
       "
     pkg_type                  rver result
-    source                    4.1  linux/x86_64
+    source                    4.1  linux-gnu/x86_64
     win.binary                4.1  mingw32/x86_64
     mac.binary.el-capitan     3.6  darwin15.6.0/x86_64
     mac.binary                4.1  darwin17.0/x86_64
