@@ -43,25 +43,15 @@ double processx__create_time(HANDLE process) {
  * on Linux. */
 
 static double processx__linux_boot_time = 0.0;
-static int processx__use_precise_boot_time = 0;
 
-/* Pass NULL to enable the CLOCK_REALTIME-CLOCK_MONOTONIC implementation
-   (requires ps >= 1.9.2.9001). Pass a numeric boot time to use the legacy
-   /proc/stat btime implementation (for older ps). */
 SEXP processx__set_boot_time(SEXP bt) {
-  if (isNull(bt)) {
-    processx__use_precise_boot_time = 1;
-  } else {
-    processx__linux_boot_time = REAL(bt)[0];
-    processx__use_precise_boot_time = 0;
-  }
+  processx__linux_boot_time = REAL(bt)[0];
   return R_NilValue;
 }
 
 #ifdef __linux__
 
 #include <sys/sysinfo.h>
-#include <time.h>
 #include <unistd.h>
 
 int processx__read_file(const char *path, char **buffer, size_t buffer_size) {
@@ -187,36 +177,23 @@ static double processx__linux_clock_period = 0.0;
 
 double processx__create_time(long pid) {
   double ct;
+  double bt;
   double clock;
 
   ct = processx__create_time_since_boot(pid);
   if (ct == 0) return 0.0;
 
-  /* Query clock tick rate if not yet queried */
+  bt = processx__boot_time();
+  if (bt == 0) return 0.0;
+
+  /* Query if not yet queried */
   if (processx__linux_clock_period == 0) {
     clock = sysconf(_SC_CLK_TCK);
     if (clock == -1) return 0.0;
     processx__linux_clock_period = 1.0 / clock;
   }
 
-  if (processx__use_precise_boot_time) {
-    /* Precise boot time: CLOCK_REALTIME - CLOCK_MONOTONIC.
-       CLOCK_MONOTONIC uses the same boot reference as /proc/<pid>/stat
-       starttime, avoiding the whole-second truncation error of /proc/stat
-       btime. Requires ps >= 1.9.2.9001 for compatible handle validation.
-       See https://github.com/r-lib/processx/issues/394 */
-    struct timespec real_time, mono_time;
-    if (clock_gettime(CLOCK_REALTIME, &real_time) == -1) return 0.0;
-    if (clock_gettime(CLOCK_MONOTONIC, &mono_time) == -1) return 0.0;
-    double real_secs = real_time.tv_sec + real_time.tv_nsec * 1e-9;
-    double mono_secs = mono_time.tv_sec + mono_time.tv_nsec * 1e-9;
-    return (real_secs - mono_secs) + ct * processx__linux_clock_period;
-  } else {
-    /* Legacy: cached boot time from /proc/stat btime (integer seconds). */
-    double bt = processx__boot_time();
-    if (bt == 0) return 0.0;
-    return bt + ct * processx__linux_clock_period;
-  }
+  return bt + ct * processx__linux_clock_period;
 }
 
 #endif
@@ -283,18 +260,4 @@ SEXP processx__proc_start_time(SEXP status) {
   }
 
   return ScalarReal(handle->create_time);
-}
-
-SEXP processx__proc_end_time(SEXP status) {
-  processx_handle_t *handle = R_ExternalPtrAddr(status);
-
-  if (!handle) {
-    R_THROW_ERROR("Internal processx error, handle already removed");
-  }
-
-  if (handle->end_time == 0.0) {
-    return R_NilValue;
-  } else {
-    return ScalarReal(handle->end_time);
-  }
 }

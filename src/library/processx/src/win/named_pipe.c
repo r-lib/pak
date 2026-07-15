@@ -74,7 +74,8 @@ SEXP processx_create_named_pipe(SEXP name, SEXP mode) {
         PIPE_ACCESS_DUPLEX,
         PIPE_TYPE_MESSAGE |       // message type pipe
         PIPE_READMODE_MESSAGE |   // message-read mode
-        PIPE_REJECT_REMOTE_CLIENTS,
+        PIPE_REJECT_REMOTE_CLIENTS |
+        PIPE_NOWAIT,              // blocking mode
         1,                        // max. instances
         1024,                     // output buffer size
         1024,                     // input buffer size

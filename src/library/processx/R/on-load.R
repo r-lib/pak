@@ -11,14 +11,8 @@ if (Sys.getenv("PAK_INSTALL_DUMMY_CROSS") != "true") {
   ## https://github.com/r-lib/processx/pull/401
   if (is_linux() && ps::ps_is_supported()) {
     ps::ps_handle()
-    if (utils::packageVersion("ps") >= "1.9.2.9001") {
-      ## Pass NULL to enable CLOCK_REALTIME-CLOCK_MONOTONIC precise boot time,
-      ## which requires ps >= 1.9.2.9001 for compatible handle validation.
-      .Call(c_processx__set_boot_time, NULL)
-    } else {
-      bt <- ps::ps_boot_time()
-      .Call(c_processx__set_boot_time, bt)
-    }
+    bt <- ps::ps_boot_time()
+    .Call(c_processx__set_boot_time, bt)
   }
 
   supervisor_reset()

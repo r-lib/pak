@@ -15,9 +15,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef WIN32
-#include <io.h>
-#endif
 
 void usage(void) {
   fprintf(stderr, "Usage: px [command arg] [command arg] ...\n\n");
@@ -35,7 +32,7 @@ void usage(void) {
   fprintf(stderr, "  errflush                   -- "
 	  "flush stderr stream\n");
   fprintf(stderr, "  cat    <filename>          -- "
-	  "print file to stdout (use '<stdin>' for standard input)\n");
+	  "print file to stdout\n");
   fprintf(stderr, "  return <exitcode>          -- "
 	  "return with exitcode\n");
   fprintf(stderr, "  writefile <path> <string>  -- "
@@ -46,10 +43,6 @@ void usage(void) {
 	  "echo from fd to another fd\n");
   fprintf(stderr, "  getenv <var>               -- "
 	  "environment variable to stdout\n");
-  fprintf(stderr, "  rawout <hexstring>         -- "
-	  "write raw bytes (hex pairs) to stdout\n");
-  fprintf(stderr, "  rawerr <hexstring>         -- "
-	  "write raw bytes (hex pairs) to stderr\n");
 }
 
 void cat2(int f, const char *s) {
@@ -210,53 +203,6 @@ int main(int argc, const char **argv) {
     } else if (!strcmp("getenv", cmd)) {
       printf("%s\n", getenv(argv[++idx]));
       fflush(stdout);
-
-    } else if (!strcmp("rawout", cmd)) {
-      const char *hex = argv[++idx];
-      int len = (int) strlen(hex);
-      int i;
-      if (len % 2 != 0) {
-        fprintf(stderr, "Invalid hex string for rawout: odd length\n");
-        return 13;
-      }
-#ifdef WIN32
-      _setmode(1, _O_BINARY);
-#endif
-      for (i = 0; i < len; i += 2) {
-        unsigned int byte;
-        if (sscanf(hex + i, "%2x", &byte) != 1) {
-          fprintf(stderr, "Invalid hex byte at position %d\n", i / 2);
-          return 14;
-        }
-        unsigned char b = (unsigned char) byte;
-        if (write(1, &b, 1) != 1) {
-          fprintf(stderr, "Write error\n");
-          return 15;
-        }
-      }
-
-    } else if (!strcmp("rawerr", cmd)) {
-      const char *hex = argv[++idx];
-      int len = (int) strlen(hex);
-      int i;
-      if (len % 2 != 0) {
-        fprintf(stderr, "Invalid hex string for rawerr: odd length\n");
-        return 13;
-      }
-#ifdef WIN32
-      _setmode(2, _O_BINARY);
-#endif
-      for (i = 0; i < len; i += 2) {
-        unsigned int byte;
-        if (sscanf(hex + i, "%2x", &byte) != 1) {
-          fprintf(stderr, "Invalid hex byte at position %d\n", i / 2);
-          return 14;
-        }
-        unsigned char b = (unsigned char) byte;
-        if (write(2, &b, 1) != 1) {
-          return 15;
-        }
-      }
 
     } else {
       fprintf(stderr, "Unknown px command: '%s'\n", cmd);

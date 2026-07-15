@@ -24,10 +24,8 @@ typedef struct processx_handle_s {
   int waitpipe[2];		/* use it for wait() with timeout */
   int cleanup;
   double create_time;
-  double end_time;          /* 0.0 until the process exits */
   processx_connection_t *pipes[3];
   int ptyfd;
-  int pty_child_fd; /* parent holds child PTY fd open to prevent data loss on macOS */
 } processx_handle_t;
 
 char *processx__tmp_string(SEXP str, int i);

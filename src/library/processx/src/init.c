@@ -4,16 +4,6 @@
 
 #include <R_ext/Rdynload.h>
 #include <R.h>
-#include <stdio.h>
-
-/* RUNNING_ON_VALGRIND is a runtime check provided by <valgrind/valgrind.h>.
-   Use __has_include so the build does not fail when the header is absent. */
-#if defined(__has_include) && __has_include(<valgrind/valgrind.h>)
-# include <valgrind/valgrind.h>
-# define PROCESSX_RUNNING_ON_VALGRIND() (RUNNING_ON_VALGRIND)
-#else
-# define PROCESSX_RUNNING_ON_VALGRIND() 0
-#endif
 
 void R_init_processx_win(void);
 void R_init_processx_unix(void);
@@ -22,7 +12,6 @@ SEXP run_testthat_tests(void);
 SEXP processx__echo_on(void);
 SEXP processx__echo_off(void);
 SEXP processx__set_boot_time(SEXP);
-SEXP is_valgrind_(void);
 
 #ifdef GCOV_COMPILE
 
@@ -41,66 +30,11 @@ SEXP gcov_flush(void) {
 
 #endif
 
-SEXP is_asan_()
-{
-#if defined(__has_feature)
-#if __has_feature(address_sanitizer) // for clang
-#define __SANITIZE_ADDRESS__         // GCC already sets this
-#endif
-#endif
-
-#ifdef __SANITIZE_ADDRESS__
-  return Rf_ScalarLogical(1);
-#else
-  return Rf_ScalarLogical(0);
-#endif
-}
-
-SEXP is_ubsan_()
-{
-#if defined(__has_feature)
-#if __has_feature(undefined_behavior_sanitizer)
-#define HAS_UBSAN 1
-#endif
-#endif
-
-#ifdef HAS_UBSAN
-  return Rf_ScalarLogical(1);
-#else
-  return Rf_ScalarLogical(0);
-#endif
-}
-
-SEXP is_valgrind_(void)
-{
-#ifdef __linux__
-  /* On Linux, /proc/self/maps lists all mapped files.  When running under
-     valgrind the map will contain paths like "vgpreload_memcheck*.so", so
-     scanning for "valgrind" reliably detects it even when the valgrind
-     development headers are not installed (common on CI). */
-  FILE *fp = fopen("/proc/self/maps", "r");
-  if (fp != NULL) {
-    char line[1024];
-    int found = 0;
-    while (fgets(line, sizeof(line), fp) != NULL) {
-      if (strstr(line, "/valgrind/") != NULL) {
-        found = 1;
-        break;
-      }
-    }
-    fclose(fp);
-    if (found) return Rf_ScalarLogical(1);
-  }
-#endif
-  return Rf_ScalarLogical(PROCESSX_RUNNING_ON_VALGRIND() != 0);
-}
-
 static const R_CallMethodDef callMethods[]  = {
   CLEANCALL_METHOD_RECORD,
-  { "processx_exec",               (DL_FUNC) &processx_exec,              15 },
+  { "processx_exec",               (DL_FUNC) &processx_exec,              14 },
   { "processx_wait",               (DL_FUNC) &processx_wait,               3 },
   { "processx_is_alive",           (DL_FUNC) &processx_is_alive,           2 },
-  { "processx_pty_close",          (DL_FUNC) &processx_pty_close,          2 },
   { "processx_get_exit_status",    (DL_FUNC) &processx_get_exit_status,    2 },
   { "processx_signal",             (DL_FUNC) &processx_signal,             3 },
   { "processx_interrupt",          (DL_FUNC) &processx_interrupt,          2 },
@@ -115,12 +49,10 @@ static const R_CallMethodDef callMethods[]  = {
   { "processx_create_named_pipe",  (DL_FUNC) &processx_create_named_pipe,  2 },
   { "processx_write_named_pipe",   (DL_FUNC) &processx_write_named_pipe,   2 },
   { "processx__proc_start_time",   (DL_FUNC) &processx__proc_start_time,   1 },
-  { "processx__proc_end_time",     (DL_FUNC) &processx__proc_end_time,     1 },
   { "processx__set_boot_time",     (DL_FUNC) &processx__set_boot_time,     1 },
 
   { "processx_connection_create",     (DL_FUNC) &processx_connection_create,     2 },
   { "processx_connection_read_chars", (DL_FUNC) &processx_connection_read_chars, 2 },
-  { "processx_connection_read_bytes", (DL_FUNC) &processx_connection_read_bytes, 2 },
   { "processx_connection_read_lines", (DL_FUNC) &processx_connection_read_lines, 2 },
   { "processx_connection_write_bytes",(DL_FUNC) &processx_connection_write_bytes,2 },
   { "processx_connection_file_name",  (DL_FUNC) &processx_connection_file_name,  1 },
@@ -142,8 +74,6 @@ static const R_CallMethodDef callMethods[]  = {
     (DL_FUNC) processx_connection_socket_state,      1 },
   { "processx_connection_create_pipepair",
     (DL_FUNC) processx_connection_create_pipepair, 2 },
-  { "processx_connection_create_proc_pipepair",
-    (DL_FUNC) processx_connection_create_proc_pipepair, 1 },
   { "processx_connection_create_fd",  (DL_FUNC) &processx_connection_create_fd,  3 },
   { "processx_connection_create_file",
     (DL_FUNC) &processx_connection_create_file,    3 },
@@ -157,14 +87,10 @@ static const R_CallMethodDef callMethods[]  = {
   { "processx_disable_crash_dialog",  (DL_FUNC) &processx_disable_crash_dialog,   0 },
   { "processx_base64_encode", (DL_FUNC) &processx_base64_encode, 1 },
   { "processx_base64_decode", (DL_FUNC) &processx_base64_decode, 1 },
-  { "processx_write_raw_stdout", (DL_FUNC) &processx_write_raw_stdout, 1 },
   { "processx__echo_on", (DL_FUNC) &processx__echo_on, 0 },
   { "processx__echo_off", (DL_FUNC) &processx__echo_off, 0 },
 
   { "gcov_flush", (DL_FUNC) gcov_flush, 0 },
-  { "is_asan_", (DL_FUNC) is_asan_, 0 },
-  { "is_ubsan_", (DL_FUNC) is_ubsan_, 0 },
-  { "is_valgrind_", (DL_FUNC) is_valgrind_, 0 },
 
   { NULL, NULL, 0 }
 };

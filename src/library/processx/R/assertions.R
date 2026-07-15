@@ -134,19 +134,6 @@ on_failure(is_env_vector) <- function(call, env) {
   )
 }
 
-is_pdeathsig <- function(x) {
-  isFALSE(x) ||
-    isTRUE(x) ||
-    (is.numeric(x) && length(x) == 1 && !is.na(x) && round(x) == x && x > 0)
-}
-
-on_failure(is_pdeathsig) <- function(call, env) {
-  paste0(
-    deparse(call$x),
-    " must be FALSE, TRUE, or a positive integer signal number"
-  )
-}
-
 is_std_conn <- function(x) {
   is.null(x) || is_string(x) || is_connection(x)
 }

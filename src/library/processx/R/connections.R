@@ -275,22 +275,6 @@ conn_create_pipepair <- function(encoding = "", nonblocking = c(TRUE, FALSE)) {
 }
 
 #' @details
-#' `conn_create_proc_pipepair()` creates a unidirectional pipe suitable for
-#' connecting two child processes: the first element is the write end (pass as
-#' `stdout` to the writing process) and the second is the read end (pass as
-#' `stdin` to the reading process). Unlike `conn_create_pipepair()`, both ends
-#' are synchronous (blocking), which is required for child-process stdin/stdout
-#' on Windows.
-#'
-#' @rdname processx_connections
-#' @export
-
-conn_create_proc_pipepair <- function(encoding = "") {
-  assert_that(is_string(encoding))
-  chain_call(c_processx_connection_create_proc_pipepair, encoding)
-}
-
-#' @details
 #' `conn_read_chars()` reads UTF-8 characters from the connections. If the
 #' connection itself is not UTF-8 encoded, it re-encodes it.
 #'
@@ -316,34 +300,6 @@ conn_read_chars.processx_connection <- function(con, n = -1) {
 processx_conn_read_chars <- function(con, n = -1) {
   assert_that(is_connection(con), is_integerish_scalar(n))
   chain_call(c_processx_connection_read_chars, con, n)
-}
-
-#' @details
-#' `conn_read_bytes()` reads raw bytes from the connection into a raw vector.
-#' Unlike `conn_read_chars()`, it bypasses UTF-8 conversion, so null bytes
-#' and arbitrary binary data are preserved exactly. Calling this function
-#' switches the connection permanently to raw mode; after that,
-#' `conn_read_chars()` and `conn_read_lines()` must not be used on the
-#' same connection.
-#'
-#' @rdname processx_connections
-#' @export
-
-conn_read_bytes <- function(con, n = -1) UseMethod("conn_read_bytes", con)
-
-#' @rdname processx_connections
-#' @export
-
-conn_read_bytes.processx_connection <- function(con, n = -1) {
-  processx_conn_read_bytes(con, n)
-}
-
-#' @rdname processx_connections
-#' @export
-
-processx_conn_read_bytes <- function(con, n = -1) {
-  assert_that(is_connection(con), is_integerish_scalar(n))
-  chain_call(c_processx_connection_read_bytes, con, n)
 }
 
 #' @details
@@ -443,9 +399,9 @@ processx_conn_write <- function(con, str, sep = "\n", encoding = "") {
 #' @details
 #' `conn_create_file()` creates a connection to a file.
 #'
-#' @param filename File name. For `conn_create_fifo()` on Windows, a
+#' @param filename File name. For `conn_create_pipe()` on Windows, a
 #' `\\?\pipe` prefix is added to this, if it does not have such a prefix.
-#' For `conn_create_fifo()` it can also be `NULL`, in which case a random
+#' For `conn_create_pipe()` it can also be `NULL`, in which case a random
 #' file name is used via `tempfile()`.
 #' @param read Whether the connection is readable.
 #' @param write Whethe the connection is writeable.

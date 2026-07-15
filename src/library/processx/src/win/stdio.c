@@ -83,35 +83,7 @@ static int processx__create_output_handle(HANDLE *handle_ptr, const char *file,
     /* hTemplateFile =         */ NULL);
   if (handle == INVALID_HANDLE_VALUE) { return GetLastError(); }
 
-  *handle_ptr = handle;
-  return 0;
-}
-
-static int processx__create_append_handle(HANDLE *handle_ptr, const char *file,
-					  DWORD access) {
-  HANDLE handle;
-  SECURITY_ATTRIBUTES sa;
-  int err;
-
-  sa.nLength = sizeof(sa);
-  sa.lpSecurityDescriptor = NULL;
-  sa.bInheritHandle = TRUE;
-  WCHAR *filew;
-
-  err = processx__utf8_to_utf16_alloc(file, &filew);
-  if (err) return(err);
-
-  handle = CreateFileW(
-    /* lpFilename =            */ filew,
-    /* dwDesiredAccess=        */ access,
-    /* dwShareMode =           */ FILE_SHARE_READ | FILE_SHARE_WRITE,
-    /* lpSecurityAttributes =  */ &sa,
-    /* dwCreationDisposition = */ OPEN_ALWAYS,
-    /* dwFlagsAndAttributes =  */ 0,
-    /* hTemplateFile =         */ NULL);
-  if (handle == INVALID_HANDLE_VALUE) { return GetLastError(); }
-
-  /* Append mode: move pointer to end of file */
+  /* We will append, so set pointer to end of file */
   SetFilePointer(handle, 0, NULL, FILE_END);
 
   *handle_ptr = handle;
@@ -380,17 +352,12 @@ int processx__stdio_create(processx_handle_t *handle,
 
     } else if (stroutput && strcmp("", stroutput)) {
       /* output to file */
-      int append = (i != 0 && stroutput[0] == '>' && stroutput[1] == '>');
-      const char *filepath = append ? stroutput + 2 : stroutput;
       if (i == 0) {
         err = processx__create_input_handle(&CHILD_STDIO_HANDLE(buffer, i),
-                                            filepath, access);
-      } else if (append) {
-        err = processx__create_append_handle(&CHILD_STDIO_HANDLE(buffer, i),
-                                             filepath, access);
+                                            stroutput, access);
       } else {
         err = processx__create_output_handle(&CHILD_STDIO_HANDLE(buffer, i),
-                                             filepath, access);
+                                             stroutput, access);
       }
       if (err) { goto error; }
       CHILD_STDIO_CRT_FLAGS(buffer, i) = FOPEN | FDEV;

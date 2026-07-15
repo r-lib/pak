@@ -179,7 +179,7 @@ err <- local({
   #' @param ... Parts of the error message, they will be converted to
   #'   character and then concatenated, like in [stop()].
   #' @param call. A call object to include in the condition, or `TRUE`
-  #'   or `NULL`, meaning that `throw()` should add a call object
+  #'   or `NULL`, meaning that [throw()] should add a call object
   #'   automatically. If `FALSE`, then no call is added.
   #' @param srcref Alternative source reference object to use instead of
   #'   the one of `call.`.
@@ -203,10 +203,10 @@ err <- local({
   #' It also adds the `rlib_error` class.
   #'
   #' @noRd
-  #' @param ... Passed to `new_cond()`.
-  #' @param call. Passed to `new_cond()`.
-  #' @param srcref Passed tp `new_cond()`.
-  #' @param domain Passed to `new_cond()`.
+  #' @param ... Passed to [new_cond()].
+  #' @param call. Passed to [new_cond()].
+  #' @param srcref Passed tp [new_cond()].
+  #' @param domain Passed to [new_cond()].
   #' @return Error condition object with classes `rlib_error`, `error`
   #'   and `condition`.
 
@@ -357,7 +357,7 @@ err <- local({
   #' @noRd
   #' @param expr Expression to evaluate.
   #' @param err Error object or message to use for the child error.
-  #' @param call Call to use in the re-thrown error. See `throw()`.
+  #' @param call Call to use in the re-thrown error. See [throw()].
 
   chain_error <- function(expr, err, call = sys.call(-1), srcref = NULL) {
     .hide_from_trace <- 1
@@ -423,7 +423,7 @@ err <- local({
 
   #' Version of entrace_call that supports cleancall
   #'
-  #' This function is the same as `entrace_call()`, except that it
+  #' This function is the same as [entrace_call()], except that it
   #' uses cleancall's [.Call()] wrapper, to enable resource cleanup.
   #' See https://github.com/r-lib/cleancall#readme for more about
   #' resource cleanup.
@@ -464,7 +464,7 @@ err <- local({
 
   #' Create a traceback
   #'
-  #' `[throw()` calls this function automatically if an error is not caught,
+  #' [throw()] calls this function automatically if an error is not caught,
   #' so there is currently not much use to call it directly.
   #'
   #' @param cond Condition to add the trace to
@@ -903,9 +903,9 @@ err <- local({
 
   format_header_line_cli <- function(x, prefix = NULL) {
     p_error <- format_error_heading_cli(x, prefix)
-    p_call <- format_call_cli(conditionCall(x))
-    p_srcref <- format_srcref_cli(p_call, x$procsrcref %||% x$srcref)
-    paste0(p_error, p_call, p_srcref, if (!is.null(p_call)) ":")
+    p_call <- format_call_cli(x[["call"]])
+    p_srcref <- format_srcref_cli(conditionCall(x), x$procsrcref %||% x$srcref)
+    paste0(p_error, p_call, p_srcref, if (!is.null(conditionCall(x))) ":")
   }
 
   format_class_cli <- function(x) {
@@ -1006,9 +1006,9 @@ err <- local({
       ifelse(visible, "", "| "),
       scope,
       vapply(
-        seq_along(x[["call"]]),
+        seq_along(x$call),
         function(i) {
-          format_trace_call_cli(x[["call"]][[i]], x$namespace[[i]])
+          format_trace_call_cli(x$call[[i]], x$namespace[[i]])
         },
         character(1)
       ),
@@ -1115,7 +1115,7 @@ err <- local({
 
   format_header_line_plain <- function(x, prefix = NULL) {
     p_error <- format_error_heading_plain(x, prefix)
-    p_call <- format_call_plain(conditionCall(x))
+    p_call <- format_call_plain(x[["call"]])
     p_srcref <- format_srcref_plain(
       conditionCall(x),
       x$procsrcref %||% x$srcref
@@ -1189,17 +1189,15 @@ err <- local({
     nchar(x, type = "bytes")
   }
 
-  minimize_call <- function(call) {
-    if (!is.call(call)) return(call)
-    dep <- deparse(call, nlines = 2)
-    result <- tryCatch(str2lang(dep[[1L]]), error = function(e) NULL)
-    if (!is.null(result)) return(result)
-    tryCatch(as.call(list(call[[1L]], quote(...))), error = function(e) NULL)
-  }
-
   process_call <- function(cond) {
     cond[c("call", "srcref", "procsrcref")] <- list(
-      call = minimize_call(cond[["call"]]),
+      call = if (is.null(cond[["call"]])) {
+        NULL
+      } else if (is.character(cond[["call"]])) {
+        cond[["call"]]
+      } else {
+        deparse(cond[["call"]], nlines = 2)
+      },
       srcref = NULL,
       procsrcref = get_srcref(cond[["call"]], cond$procsrcref %||% cond$srcref)
     )
@@ -1303,13 +1301,9 @@ err <- local({
   }
 
   frame_call <- function(frame) {
-    frames <- sys.frames()
-    for (i in seq_along(frames)) {
-      if (identical(frames[[i]], frame)) {
-        return(sys.call(i))
-      }
-    }
-    NULL
+    out <- NULL
+    delayedAssign("out", base::sys.call(), frame)
+    out
   }
 
   # Useful for snapshots so that they print without an unstable backtrace.

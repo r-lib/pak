@@ -43,8 +43,7 @@ process_initialize <- function(
   windows_hide_window,
   windows_detached_process,
   encoding,
-  post_process,
-  linux_pdeathsig
+  post_process
 ) {
   "!DEBUG process_initialize `command`"
 
@@ -68,8 +67,7 @@ process_initialize <- function(
     is_flag(windows_hide_window),
     is_flag(windows_detached_process),
     is_string(encoding),
-    is.function(post_process) || is.null(post_process),
-    is_pdeathsig(linux_pdeathsig)
+    is.function(post_process) || is.null(post_process)
   )
 
   if (cleanup_tree && !cleanup) {
@@ -80,6 +78,9 @@ process_initialize <- function(
     cleanup <- TRUE
   }
 
+  if (pty && os_type() != "unix") {
+    throw(new_error("`pty = TRUE` is only implemented on Unix"))
+  }
   if (pty && tolower(Sys.info()[["sysname"]]) == "sunos") {
     throw(new_error("`pty = TRUE` is not (yet) implemented on Solaris"))
   }
@@ -155,28 +156,9 @@ process_initialize <- function(
     wd <- normalizePath(wd, winslash = "\\", mustWork = FALSE)
   }
 
-  if (!isFALSE(linux_pdeathsig) && Sys.info()[["sysname"]] != "Linux") {
-    warning("`linux_pdeathsig` is ignored on non-Linux systems")
-  }
-  if (isTRUE(linux_pdeathsig)) {
-    linux_pdeathsig <- 15L # SIGTERM
-  } else if (isFALSE(linux_pdeathsig)) {
-    linux_pdeathsig <- 0L
-  } else {
-    linux_pdeathsig <- as.integer(linux_pdeathsig)
-  }
-
   connections <- c(list(stdin, stdout, stderr), connections)
 
   "!DEBUG process_initialize exec()"
-  ## Capture time just before the fork so we have a lower bound for the
-  ## child's start time. /proc/<pid>/stat starttime has only 10ms resolution
-  ## (100 Hz clock ticks), so it can appear to slightly predate this point.
-  ## We take max(kernel_start_time, before_start) so the reported start time
-  ## ($get_start_time()) is never earlier than when process$new() was called.
-  ## private$starttime_raw holds the unmodified kernel time and is used for
-  ## ps::ps_handle() validation (which has a 1-tick tolerance).
-  before_start <- as.numeric(Sys.time())
   private$status <- chain_call(
     c_processx_exec,
     command,
@@ -192,22 +174,20 @@ process_initialize <- function(
     cleanup,
     wd,
     encoding,
-    paste0("PROCESSX_", private$tree_id, "=YES"),
-    linux_pdeathsig
+    paste0("PROCESSX_", private$tree_id, "=YES")
   )
 
-  ## We try to query the start time according to the OS, because we can
+  ## We try the query the start time according to the OS, because we can
   ## use the (pid, start time) pair as an id when performing operations on
   ## the process, e.g. sending signals. This is only implemented on Linux,
   ## macOS and Windows and on other OSes it returns 0.0, so we just use the
   ## current time instead. (In the C process handle, there will be 0,
   ## still.)
-  private$starttime_raw <-
+  private$starttime <-
     chain_call(c_processx__proc_start_time, private$status)
-  if (private$starttime_raw == 0) {
-    private$starttime_raw <- as.numeric(Sys.time())
+  if (private$starttime == 0) {
+    private$starttime <- Sys.time()
   }
-  private$starttime <- max(private$starttime_raw, before_start)
 
   ## Need to close this, otherwise the child's end of the pipe
   ## will not be closed when the child exits, and then we cannot
@@ -220,20 +200,10 @@ process_initialize <- function(
     stdin <- full_path(stdin)
   }
   if (is.character(stdout) && stdout != "|" && stdout != "") {
-    if (startsWith(stdout, ">>")) {
-      stdout <- full_path(substring(stdout, 3))
-    } else {
-      stdout <- full_path(stdout)
-    }
+    stdout <- full_path(stdout)
   }
-  if (
-    is.character(stderr) && stderr != "|" && stderr != "" && stderr != "2>&1"
-  ) {
-    if (startsWith(stderr, ">>")) {
-      stderr <- full_path(substring(stderr, 3))
-    } else {
-      stderr <- full_path(stderr)
-    }
+  if (is.character(stderr) && stderr != "|" && stderr != "") {
+    stderr <- full_path(stderr)
   }
 
   ## Store the output and error files, we'll open them later if needed

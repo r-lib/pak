@@ -85,23 +85,6 @@ SEXP processx__echo_on(void) {
   return R_NilValue;
 }
 
-SEXP processx_write_raw_stdout(SEXP raw_data) {
-  const unsigned char *data = RAW(raw_data);
-  size_t nbytes = LENGTH(raw_data);
-  ssize_t written;
-
-  while (nbytes > 0) {
-    do {
-      written = write(STDOUT_FILENO, data, nbytes);
-    } while (written == -1 && errno == EINTR);
-    if (written < 0) R_THROW_SYSTEM_ERROR("Cannot write to stdout");
-    data += written;
-    nbytes -= written;
-  }
-
-  return R_NilValue;
-}
-
 SEXP processx__echo_off(void) {
   struct termios tp;
 
