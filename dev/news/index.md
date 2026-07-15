@@ -356,25 +356,6 @@ CRAN release: 2023-01-15
   correctly when specified in the `package=?parameter` format
   ([\#294](https://github.com/r-lib/pak/issues/294)).
 
-- The `?ignore` parameter works correctly now.
-
-- Dependency resolution now does not fail if a package is not found.
-
-- pak can now install `url::` remotes from GitHub.
-
-- pak now does not fail when the package of a `.tar.gz` GitHub snapshot
-  is in a subdirectory, or in a subdirectory of a subdirectory.
-
-- pak now errors early if it cannot deduce the name of the package from
-  a `Remotes` or `Config/Needs/*` entry.
-
-- Solver failures now include details in some cases where previously
-  they did not.
-
-- pak can now update packages in Docker containers where the old version
-  was installed in the different Docker later
-  (<https://github.com/r-lib/pak/issues/251>)
-
 - Update R version -\> Bioconductor version mapping. R 4.2.x now maps to
   Bioconductor 3.16.
 

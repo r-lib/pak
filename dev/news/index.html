@@ -171,13 +171,6 @@
 <li><p><code>url::</code> packages now always work correctly, even if the digest package is not installed (<a href="https://github.com/r-lib/pak/issues/433" class="external-link uri">https://github.com/r-lib/pak/issues/433</a>).</p></li>
 <li><p>pak is now more robust when installing packages from subdirectories of GitHub repositories (<a href="https://github.com/r-lib/pak/issues/431" class="external-link uri">https://github.com/r-lib/pak/issues/431</a>, <a href="https://github.com/paleolimbot" class="external-link">@paleolimbot</a>).</p></li>
 <li><p>Parameters <code>?reinstall</code>, <code><a href="https://rdrr.io/r/base/source.html" class="external-link">?source</a></code> and <code>?ignore</code> now work correctly when specified in the <code>package=?parameter</code> format (<a href="https://github.com/r-lib/pak/issues/294" class="external-link">#294</a>).</p></li>
-<li><p>The <code>?ignore</code> parameter works correctly now.</p></li>
-<li><p>Dependency resolution now does not fail if a package is not found.</p></li>
-<li><p>pak can now install <code>url::</code> remotes from GitHub.</p></li>
-<li><p>pak now does not fail when the package of a <code>.tar.gz</code> GitHub snapshot is in a subdirectory, or in a subdirectory of a subdirectory.</p></li>
-<li><p>pak now errors early if it cannot deduce the name of the package from a <code>Remotes</code> or <code>Config/Needs/*</code> entry.</p></li>
-<li><p>Solver failures now include details in some cases where previously they did not.</p></li>
-<li><p>pak can now update packages in Docker containers where the old version was installed in the different Docker later (<a href="https://github.com/r-lib/pak/issues/251" class="external-link uri">https://github.com/r-lib/pak/issues/251</a>)</p></li>
 <li><p>Update R version -&gt; Bioconductor version mapping. R 4.2.x now maps to Bioconductor 3.16.</p></li>
 </ul></div>
     <div class="section level2">

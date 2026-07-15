@@ -78,6 +78,28 @@ separator, but it always has the <code>pkg.</code> prefix (notice the dot!).</p>
 <p></p><ul><li><p>‘cache_dir’: (Env var: <code>PKG_CACHE_DIR</code>, option: <code>pkg.cache_dir</code>.) Directory to download the packages to. Defaults to a temporary
 directory within the R session temporary directory, see
 <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">base::tempdir()</a></code>.</p></li>
+<li><p>‘configure_args’: (Env var: <code>PKG_CONFIGURE_ARGS</code>, option: <code>pkg.configure_args</code>.) Extra <code>--configure-args</code> to pass to <code>R CMD INSTALL</code> when
+building packages from source. It can be a single string, which is
+then used for all packages built from source. It can also be a named
+character vector (or a named list of character vectors) to set
+configure arguments for individual packages: the names are package
+names and the values are the corresponding configure arguments.
+Defaults to the <code>configure.args</code> option (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), for
+compatibility with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. The
+<code>PKG_CONFIGURE_ARGS</code> environment variable may be either a single
+string (used for all packages), or a semicolon separated list of
+<code>&lt;package&gt;=&lt;args&gt;</code> entries to set arguments for individual packages.</p></li>
+<li><p>‘configure_vars’: (Env var: <code>PKG_CONFIGURE_VARS</code>, option: <code>pkg.configure_vars</code>.) Extra <code>--configure-vars</code> to pass to <code>R CMD INSTALL</code> when
+building packages from source. It can be a single string, which is
+then used for all packages built from source. It can also be a named
+character vector (or a named list of character vectors) to set
+configure variables for individual packages: the names are package
+names and the values are the corresponding configure variables.
+Defaults to the <code>configure.vars</code> option (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), for
+compatibility with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. The
+<code>PKG_CONFIGURE_VARS</code> environment variable may be either a single
+string (used for all packages), or a semicolon separated list of
+<code>&lt;package&gt;=&lt;vars&gt;</code> entries to set variables for individual packages.</p></li>
 <li><p>‘cran_mirror’: (Env var: <code>PKG_CRAN_MIRROR</code>, option: <code>pkg.cran_mirror</code>.) CRAN mirror to use. Defaults to the <code>repos</code> option
 (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), if that's not set then
 <code>https://cran.rstudio.com</code>. See also <code><a href="repo_add.html">pak::repo_add()</a></code> and
