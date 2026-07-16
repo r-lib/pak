@@ -27,8 +27,13 @@ COPY --from=libs /opt/r-lib /opt/r-lib
 
 # system requirements -----------------------------------------------------
 
-RUN apt-get update && \
-    apt-get install -y \
+# more stable arm64 mirror
+
+RUN sed -i \
+      's|http://ports.ubuntu.com/ubuntu-ports|http://mirrors.ocf.berkeley.edu/ubuntu-ports|g' \
+      /etc/apt/sources.list && \
+    apt-get -o Acquire::Retries=5 update && \
+    apt-get -o Acquire::Retries=5 install -y \
       build-essential g++ curl perl pkg-config patchelf
 
 # Install R ---------------------------------------------------------------
