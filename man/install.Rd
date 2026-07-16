@@ -24,16 +24,16 @@ Install a pre-built binary build of pak from our repository on GitHub:
 
 This is supported for the following systems:\tabular{lll}{
    OS \tab CPU \tab R version \cr
-   Linux \tab x86_64 \tab R 3.4.0 - R-devel \cr
-   Linux \tab aarch64 \tab R 3.4.0 - R-devel \cr
-   macOS High Sierra+ \tab x86_64 \tab R 3.4.0 - R-devel \cr
+   Linux \tab x86_64 \tab R 3.5.0 - R-devel \cr
+   Linux \tab aarch64 \tab R 3.5.0 - R-devel \cr
+   macOS High Sierra+ \tab x86_64 \tab R 3.5.0 - R-devel \cr
    macOS Big Sur+ \tab aarch64 \tab R 4.1.0 - R-devel \cr
-   Windows \tab x86_64 \tab R 3.4.0 - R-devel \cr
+   Windows \tab x86_64 \tab R 3.5.0 - R-devel \cr
    Windows \tab aarch64 \tab R 4.4.0 - R-devel \cr
-   FreeBSD 13.x or later \tab x86_64 \tab R 4.4.x \cr
-   OpenBSD 7.4, 7.5, 7.6 \tab x86_64 \tab R 4.2.x (7.4, 7.5), R 4.4.x (7.6) \cr
-   NetBSD 10.0 \tab x86_64 \tab R 4.4.x \cr
-   DragonFly BSD 6.4 \tab x86_64 \tab R 4.3.x \cr
+   FreeBSD 13.4 or later \tab x86_64 \tab R 4.5.x (13.x), R 4.6.x (later) \cr
+   OpenBSD 7.7, 7.8 \tab x86_64 \tab R 4.4.x (7.7), R 4.5.x (7.8) \cr
+   NetBSD 10.0 \tab x86_64 \tab R 4.5.x \cr
+   DragonFly BSD 6.4 \tab x86_64 \tab R 4.4.x \cr
 }
 
 \subsection{Notes}{
