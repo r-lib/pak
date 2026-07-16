@@ -1,3 +1,11 @@
+# Prepend the private library path to ensure embedded packages are loadable
+tryCatch({
+  lib <- asNamespace("pak")$private_lib_dir()
+  if (length(lib) > 0 && file.exists(lib)) {
+    .libPaths(c(lib, .libPaths()))
+  }
+}, error = function(e) NULL)
+
 if_fail <- function(expr, fn) {
   withCallingHandlers(expr, expectation_failure = fn)
 }

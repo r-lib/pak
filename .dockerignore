@@ -4,3 +4,13 @@
 .vscode
 inst/doc
 man/figures
+
+# Ignore compiled objects, libraries and binaries
+**/*.o
+**/*.obj
+**/*.so
+**/*.dll
+**/*.dylib
+**/*.a
+**/*.exe
+**/DONE

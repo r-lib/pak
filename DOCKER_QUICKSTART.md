@@ -44,23 +44,6 @@ docker run -it --rm \
   pak:latest R --slave
 ```
 
-## Sparky AI Integration (Future)
-
-See `SPARKY_INTEGRATION.md` for detailed guide on integrating Sparky AI for:
-- Package recommendations
-- Dependency conflict resolution
-- Task-aware installation
-
-Quick preview:
-
-```bash
-docker run -it --rm \
-  -v ~/.pak/sparky_bridge:/root/.pak/sparky_bridge \
-  -e PAK_ENABLE_SPARKY=true \
-  pak:latest \
-  R --slave -e 'pak::sparky_suggest("data science")'
-```
-
 ## Notes
 
 - pak requires build tools for some packages — all included

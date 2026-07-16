@@ -18,8 +18,8 @@ RUN find . -type f \( -name "configure*" -o -name "Makevars*" -o -name "*.sh" \)
 # Install pak dependencies first
 RUN R --quiet --slave -e "install.packages(c('callr', 'cli', 'curl', 'desc', 'jsonlite', 'pkgbuild', 'pkgsearch', 'processx', 'ps', 'yaml'), repos='https://cloud.r-project.org', Ncpus=2)"
 
-# Install pak - allow warnings, don't fail on embedded library compilation
-RUN R CMD INSTALL . 2>&1 | tail -20; true
+# Install pak
+RUN R CMD INSTALL .
 
 # Test that pak can be loaded
 RUN R --quiet --slave -e "library('pak'); cat('pak loaded successfully\n')"
