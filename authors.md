@@ -96,7 +96,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-lib/pak/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-lib/pak/blob/v0.11.0/DESCRIPTION)
 
 Csárdi G, Hester J (2026). *pak: Another Approach to Package
 Installation*. R package version 0.11.0, <https://pak.r-lib.org/>.
