@@ -14,17 +14,17 @@ repo_resolve(spec, username = NULL)
 See details below.}
 
 \item{.list}{List or character vector of repository specifications.
-This argument is easier to use programmatically than \code{...}. See
+This argument is easier to use programmatically than `...`. See
 details below.}
 
 \item{username}{User name to set, for authenticated repositories, see
-\code{\link[=repo_auth]{repo_auth()}}.}
+[repo_auth()].}
 
 \item{spec}{Repository specification, a possibly named character
 scalar.}
 }
 \value{
-\code{repo_resolve()} returns a named character scalar, the URL
+`repo_resolve()` returns a named character scalar, the URL
 of the repository.
 }
 \description{
@@ -32,114 +32,79 @@ Add a new repository to the list of repositories that pak uses to
 look for packages.
 }
 \details{
-\code{repo_add()} adds new repositories. It resolves the specified
-repositories using \code{repo_resolve()} and then modifies the \code{repos}
+`repo_add()` adds new repositories. It resolves the specified
+repositories using `repo_resolve()` and then modifies the `repos`
 global option.
 
-\code{repo_add()} only has an effect in the current R session. If you
+`repo_add()` only has an effect in the current R session. If you
 want to keep your configuration between R sessions, then set the
-\code{repos} option to the desired value in your user or project \code{.Rprofile}
+`repos` option to the desired value in your user or project `.Rprofile`
 file.
-}
-\section{Repository specifications}{
+
+
+# Repository specifications
+
 The format of a repository specification is a named or unnamed
 character scalar. If the name is missing, pak adds a name
-automatically. The repository named \code{CRAN} is the main CRAN repository,
+automatically. The repository named `CRAN` is the main CRAN repository,
 but otherwise names are informational.
 
 Currently supported repository specifications:
-\itemize{
-\item URL pointing to the root of the CRAN-like repository. Example:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{https://cloud.r-project.org
-}\if{html}{\out{</div>}}
-\item \code{PPM@latest}, PPM (Posit Package Manager, formerly RStudio Package
-Manager), the latest snapshot.
-\item \verb{PPM@<date>}, PPM (Posit Package Manager, formerly RStudio Package
-Manager) snapshot, at the specified date.
-\item \verb{PPM@<package>-<version>} PPM snapshot, for the day after the
-release of \verb{<version>} of \verb{<package>}.
-\item \verb{PPM@R-<version>} PPM snapshot, for the day after R \verb{<version>}
-was released.
-}
+- URL pointing to the root of the CRAN-like repository. Example:
+  ```
+  https://cloud.r-project.org
+  ```
+- `PPM@latest`, PPM (Posit Package Manager, formerly RStudio Package
+  Manager), the latest snapshot.
+- `PPM@<date>`, PPM (Posit Package Manager, formerly RStudio Package
+  Manager) snapshot, at the specified date.
+- `PPM@<package>-<version>` PPM snapshot, for the day after the
+  release of `<version>` of `<package>`.
+- `PPM@R-<version>` PPM snapshot, for the day after R `<version>`
+  was released.
 
 Still works for dates starting from 2017-10-10, but now deprecated,
 because MRAN is discontinued:
-\itemize{
-\item \verb{MRAN@<date>}, MRAN (Microsoft R Application Network) snapshot, at
-the specified date.
-\item \verb{MRAN@<package>-<version>} MRAN snapshot, for the
-day after the release of \verb{<version>} of \verb{<package>}.
-\item \verb{MRAN@R-<version>} MRAN snapshot, for the day
-after R \verb{<version>} was released.
-}
+- `MRAN@<date>`, MRAN (Microsoft R Application Network) snapshot, at
+  the specified date.
+- `MRAN@<package>-<version>` MRAN snapshot, for the
+  day after the release of `<version>` of `<package>`.
+- `MRAN@R-<version>` MRAN snapshot, for the day
+  after R `<version>` was released.
 
 Notes:
-\itemize{
-\item See more about PPM at \url{https://packagemanager.posit.co/client/#/}.
-\item The \verb{RSPM@} prefix is still supported and treated the same way as
-\verb{PPM@}.
-\item The MRAN service is now retired, see
-\verb{https://techcommunity.microsoft.com/blog/azuresqlblog/microsoft-r-application-network-retirement/3707161}
-for details.
-\item \code{MRAN@...} repository specifications now resolve to PPM, but note that
-PPM snapshots are only available from 2017-10-10. See more about this
-at \url{https://posit.co/blog/migrating-from-mran-to-posit-package-manager}.
-\item All dates (or times) can be specified in the ISO 8601 format.
-\item If PPM does not have a snapshot available for a date, the next
-available date is used.
-\item Dates that are before the first, or after the last PPM snapshot
-will trigger an error.
-\item Unknown R or package versions will trigger an error.
+* See more about PPM at <https://packagemanager.posit.co/client/#/>.
+* The `RSPM@` prefix is still supported and treated the same way as
+  `PPM@`.
+* The MRAN service is now retired, see
+  `https://techcommunity.microsoft.com/blog/azuresqlblog/microsoft-r-application-network-retirement/3707161`
+  for details.
+* `MRAN@...` repository specifications now resolve to PPM, but note that
+  PPM snapshots are only available from 2017-10-10. See more about this
+  at <https://posit.co/blog/migrating-from-mran-to-posit-package-manager>.
+* All dates (or times) can be specified in the ISO 8601 format.
+* If PPM does not have a snapshot available for a date, the next
+  available date is used.
+* Dates that are before the first, or after the last PPM snapshot
+  will trigger an error.
+* Unknown R or package versions will trigger an error.
 }
-}
-
 \section{Examples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
+```{asciicast repo-add}
+repo_add(PPMdplyr100 = "PPM@dplyr-1.0.0")
 repo_get()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 7 × 5</span>                                                   
-#>   name          url                         type  r_version bioc_version
-#> <span style="color: #c2c2c2;">*</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>         <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                       <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>       
-#> <span style="color: #c2c2c2;">1</span> CRAN          https://cloud.r-project.org cran  *         <span style="color: #DC322F;">NA</span>          
-#> <span style="color: #c2c2c2;">2</span> PPMdplyr100   https://packagemanager.pos… cran… *         <span style="color: #DC322F;">NA</span>          
-#> <span style="color: #c2c2c2;">3</span> BioCsoft      https://bioconductor.org/p… bioc  4.4.2     3.20        
-#> <span style="color: #c2c2c2;">4</span> BioCann       https://bioconductor.org/p… bioc  4.4.2     3.20        
-#> <span style="color: #c2c2c2;">5</span> BioCexp       https://bioconductor.org/p… bioc  4.4.2     3.20        
-#> <span style="color: #c2c2c2;">6</span> BioCworkflows https://bioconductor.org/p… bioc  4.4.2     3.20        
-#> <span style="color: #c2c2c2;">7</span> BioCbooks     https://bioconductor.org/p… bioc  4.4.2     3.20        
-</pre></div>
-}}
+```
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@2020-01-21")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                              CRAN                       
-#> "https://packagemanager.posit.co/cran/2020-01-21"                       
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@dplyr-1.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                              CRAN                       
-#> "https://packagemanager.posit.co/cran/2020-05-30"                       
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_resolve("PPM@R-4.0.0")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                              CRAN                       
-#> "https://packagemanager.posit.co/cran/2020-04-25"                       
-</pre></div>
-}}
+```{asciicast repo-add-3}
+repo_resolve("PPM@2020-01-21")
+```
+```{asciicast repo-add-5}
+repo_resolve("PPM@dplyr-1.0.0")
+```
+```{asciicast repo-add-7}
+repo_resolve("PPM@R-4.0.0")
+```
 }
 
 \seealso{

@@ -9,7 +9,7 @@ Learn how to tell pak which packages to install, and where those packages
 can be found.
 
 If you want a quick overview of package sources, see
-"\link{Get started with pak}".
+"[Get started with pak]".
 }
 \details{
 \eval{include_docs("pkgdepends", "docs/pkg-refs.rds", top = FALSE)}

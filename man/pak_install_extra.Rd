@@ -17,5 +17,5 @@ used with these packages. E.g. many functions return data frames, which
 print nicer when the pillar package is available.
 }
 \details{
-Currently only one package is optional: \strong{pillar}.
+Currently only one package is optional: **pillar**.
 }

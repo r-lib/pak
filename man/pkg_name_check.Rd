@@ -11,14 +11,12 @@ pkg_name_check(name, dictionaries = NULL)
 
 \item{dictionaries}{Character vector, the dictionaries to query.
 Available dictionaries:
-\itemize{
-\item \code{wikipedia}
-\item \code{wiktionary},
-\item \code{sentiment} (\url{https://github.com/fnielsen/afinn}),
-\item \code{urban} (Urban Dictionary).
+* \code{wikipedia}
+* \code{wiktionary},
+* \code{sentiment} (\url{https://github.com/fnielsen/afinn}),
+* \code{urban} (Urban Dictionary).
 If \code{NULL} (by default), the Urban Dictionary is omitted, as it
-is often offensive.
-}}
+is often offensive.}
 }
 \value{
 \code{pkg_name_check} object with a custom print method.
@@ -60,33 +58,8 @@ See the \code{dictionaries} argument.
 }
 \section{Examples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_name_check("sicily")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #B58900;">╔══════════════════════════════════════════════════════════════════════╗</span>
-#> <span style="color: #B58900;">║</span>                            <span style="color: #B58900;">–*–</span> <span style="font-weight: bold;color: #268BD2;">sicily</span> <span style="color: #B58900;">–*–</span>                            <span style="color: #B58900;">║</span>
-#> <span style="color: #B58900;">╚══════════════════════════════════════════════════════════════════════╝</span>
-#> <span style="color: #525252;">┌──────────────────────────────────────────────────────────────────────┐</span>
-#> <span style="color: #525252;">│</span> <span style="color: #859900;">v</span>  valid name          <span style="color: #859900;">v</span>  CRAN               <span style="color: #859900;">v</span>  Bioconductor         <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> <span style="color: #859900;">v</span>  not a profanity                                                   <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">└──────────────────────────────────────────────────────────────────────┘</span>
-#> <span style="color: #525252;">┌ </span><span style="color: #859900;">Wikipedia</span><span style="color: #525252;"> ───────────────────────────────────────────────────────────┐</span>
-#> <span style="color: #525252;">│</span> <span style="text-decoration: underline;">Sicily</span> Sicily (Italian: Sicilia [siˈtʃiːlja], Sicilian               <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> pronunciation: [sɪˈʃiːlja]) is the largest island in the             <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> Mediterranean Sea and one of the 20 regions of Italy. The Strait of  <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> Messina divides it from the region of Calabria in Southern Italy.    <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> It is one of the five Italian autonomous regions and is officially   <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> referred to as Regione Siciliana. The region has 5 million           <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">│</span> …                                                                    <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">└──────────────────────────────── </span><span style="color: #268BD2;">https://en.wikipedia.org/wiki/Sicily</span><span style="color: #525252;"> ┘</span>
-#> <span style="color: #525252;">┌ </span><span style="color: #859900;">Wiktionary</span><span style="color: #525252;"> ──────────────────────────────────────────────────────────┐</span>
-#> <span style="color: #525252;">│</span> <span style="text-decoration: underline;">sicily</span> No English definition found                                   <span style="color: #525252;">│</span>
-#> <span style="color: #525252;">└────────────────────────────────────────────────────────────────────  ┘</span>
-#> <span style="color: #525252;">┌──────────────────────────────────────────────────────────────────────┐</span>
-#> <span style="color: #525252;">│</span> Sentiment: 😐<span style="color: #525252;"> (0)</span>                                                    <span style="color: #525252;">│</span> 
-#> <span style="color: #525252;">└──────────────────────────────────────────────────────────────────────┘</span>
-</pre></div>
-}}
+```{asciicast pkg-name-check}
+pkg_name_check("sicily")
+```
 }
 

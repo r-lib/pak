@@ -8,17 +8,15 @@ sysreqs_platforms()
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{name}: human readable OS name.
-\item \code{os}: OS name, e.g. \code{linux}.
-\item \code{distribution}: OS id, e.g. \code{ubuntu} or \code{redhat}.
-\item \code{version}: distribution version. A star means that all versions are
-supported, that are also supported by the vendor.
-\item \code{update_command}: command to run to update the system package metadata.
-\item \code{install_command}: command to run to install packages.
-\item \code{query_command}: name of the tool to use to query system package
-information.
-}
+* `name`: human readable OS name.
+* `os`: OS name, e.g. `linux`.
+* `distribution`: OS id, e.g. `ubuntu` or `redhat`.
+* `version`: distribution version. A star means that all versions are
+   supported, that are also supported by the vendor.
+* `update_command`: command to run to update the system package metadata.
+* `install_command`: command to run to install packages.
+* `query_command`: name of the tool to use to query system package
+   information.
 }
 \description{
 List platforms with system requirements support

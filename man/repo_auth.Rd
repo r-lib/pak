@@ -13,127 +13,122 @@ repo_auth(
 }
 \arguments{
 \item{r_version}{R version to use to determine the correct Bioconductor
-version, if \code{bioc = TRUE}.}
+version, if `bioc = TRUE`.}
 
 \item{bioc}{Whether to automatically add the Bioconductor repositories
 to the result.}
 
-\item{cran_mirror}{CRAN mirror to use. Leave it at \code{NULL} to use the
-mirror in \code{getOption("repos")} or an automatically selected one.}
+\item{cran_mirror}{CRAN mirror to use. Leave it at `NULL` to use the
+mirror in `getOption("repos")` or an automatically selected one.}
 
 \item{check_credentials}{Whether to check that credentials are
 available for authenticated repositories.}
 }
 \value{
 Data frame with columns:
-\itemize{
-\item all columns from the output of \code{\link[=repo_get]{repo_get()}},
-\item \code{auth_domains}: authentication domains. pak tries to find the
-credentials for these domains, until the search is successful or all
-domains fail.
-\item \code{auth_domain}: if the credential lookup is successful, then this is
-the authentication domain that was used to get the credentials.
-\item \code{auth_source}: where the credentials were found. E.g.
-\verb{keyring:<backend>} means it was in the default macos keyring.
-\item \code{auth_error}: for failed credential searches this is the description
-of why the search failed. E.g. maybe the keyring package is not
-installed, or pak found no credentials for any of the
-authentication domains.
-}
+  - all columns from the output of [repo_get()],
+  - `auth_domains`: authentication domains. pak tries to find the
+    credentials for these domains, until the search is successful or all
+    domains fail.
+  - `auth_domain`: if the credential lookup is successful, then this is
+    the authentication domain that was used to get the credentials.
+  - `auth_source`: where the credentials were found. E.g.
+    `keyring:<backend>` means it was in the default macos keyring.
+  - `auth_error`: for failed credential searches this is the description
+    of why the search failed. E.g. maybe the keyring package is not
+    installed, or pak found no credentials for any of the
+    authentication domains.
 }
 \description{
 pak supports HTTP basic authentication when interacting with
 CRAN-like repositories. To use authentication, include a username
 in the repo URL:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{https://<username>@<repo-host>/<repo-path>
-}\if{html}{\out{</div>}}
+```
+https://<username>@<repo-host>/<repo-path>
+```
 }
 \details{
 pak will look up the password for this url and username from the
-the user's \code{.netrc} file and from the system credential store using
+the user's `.netrc` file and from the system credential store using
 the keyring package.
-\subsection{`.netrc`` files}{
 
-First pak searches in the \code{.netrc} file. If the \code{NETRC} environment
+## `.netrc`` files
+
+First pak searches in the `.netrc` file. If the `NETRC` environment
 variable is set, pak uses its value to determine the location of the
-\code{netrc} file.
+`netrc` file.
 
-Otherwise pak looks for the \code{netrc} file in current user's home
-directory, at \verb{~/.netrc}. On Windows it also looks for \verb{~/_netrc} if the
+Otherwise pak looks for the `netrc` file in current user's home
+directory, at `~/.netrc`. On Windows it also looks for `~/_netrc` if the
 file starting with a dot does not exist.
 
-If you create a \code{netrc} file, make sure that is only readable by you.
+If you create a `netrc` file, make sure that is only readable by you.
 E.g. on Unix run
+```sh
+chmod 600 ~/.netrc
+```
 
-\if{html}{\out{<div class="sourceCode sh">}}\preformatted{chmod 600 ~/.netrc
-}\if{html}{\out{</div>}}
-
-\code{netrc} files are simple text files that can store passwords for multiple
+`netrc` files are simple text files that can store passwords for multiple
 hosts. They may contain three types of tokens:
-\subsection{\verb{machine <hostname>}}{
 
-A host name, without the protocol. Subsequent \code{login} and \code{password}
-tokens belong to this host, until another \code{machine} token is found, or
+### `machine <hostname>`
+
+A host name, without the protocol. Subsequent `login` and `password`
+tokens belong to this host, until another `machine` token is found, or
 the end of file.
-}
 
-\subsection{\verb{login <username>}}{
+### `login <username>`
 
-User name. It must be preceded by a \code{machine} token.
-}
+User name. It must be preceded by a `machine` token.
 
-\subsection{\verb{password <password>}}{
+### `password <password>`
 
-Password. It must be preceded by a \code{machine} and a \code{login} token.
+Password. It must be preceded by a `machine` and a `login` token.
 
-Whitespace is ignored in \code{netrc} files. You may include multiple tokens
+Whitespace is ignored in `netrc` files. You may include multiple tokens
 on the same line, or have one token per line. Here is an example:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{machine myhost.mydomain.com login myuser password secret
+```
+machine myhost.mydomain.com login myuser password secret
 machine myhost2.mydomain.com
 login myuser
 password secret
 login anotheruser
 password stillsecret
-}\if{html}{\out{</div>}}
+```
 
 If you need to include whitespace in a password, put the password in double
 quotes.
-}
 
-}
 
-\subsection{The system credential store}{
+## The system credential store
 
 pak currently supports the following keyring
 backends:
-\itemize{
-\item Windows credential store,
-\item macOS Keychain,
-\item Linux Secret Service via libsecret, if built with libsecret support,
-\item environment variables.
-}
+
+* Windows credential store,
+* macOS Keychain,
+* Linux Secret Service via libsecret, if built with libsecret support,
+* environment variables.
 
 For the URL above it tries the following keyring
 keys, in this order:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{https://<username>@repo-host/<repo-path>
+```
+https://<username>@repo-host/<repo-path>
 https://repo-host/<repo-path>
 https://<username>@repo-host
 https://repo-host
-}\if{html}{\out{</div>}}
+```
 
-To add an authenticated repository use \code{\link[=repo_add]{repo_add()}} with the \code{username}
-argument. Alternatively, you can set the \code{repos} option directly using
-\code{\link[base:options]{base::options()}} and including the username in the repository URL.
+To add an authenticated repository use [repo_add()] with the `username`
+argument. Alternatively, you can set the `repos` option directly using
+[base::options()] and including the username in the repository URL.
 
-\code{repo_auth()} lists authentication information for all configured
+`repo_auth()` lists authentication information for all configured
 repositories.
 }
-}
 \seealso{
-\link{Authenticated repositories}.
+[Authenticated repositories].
 
 Other authenticated repositories:
 \code{\link{Authenticated repositories}},

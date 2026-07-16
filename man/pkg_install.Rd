@@ -14,39 +14,35 @@ pkg_install(
 }
 \arguments{
 \item{pkg}{Package names or package references. E.g.
-\itemize{
-\item \code{ggplot2}: package from CRAN, Bioconductor or a CRAN-like repository
-in general,
-\item \code{tidyverse/ggplot2}: package from GitHub,
-\item \code{tidyverse/ggplot2@v3.4.0}: package from GitHub tag or branch,
-\item \verb{https://examples.com/.../ggplot2_3.3.6.tar.gz}: package from URL,
-\item \code{.}: package in the current working directory.
-}
+  - `ggplot2`: package from CRAN, Bioconductor or a CRAN-like repository
+    in general,
+  - `tidyverse/ggplot2`: package from GitHub,
+  - `tidyverse/ggplot2@v3.4.0`: package from GitHub tag or branch,
+  - `https://examples.com/.../ggplot2_3.3.6.tar.gz`: package from URL,
+  - `.`: package in the current working directory.
 
-See "\link{Package sources}" for more details.}
+  See "[Package sources]" for more details.}
 
 \item{lib}{Character vector of library paths to consider when creating the
 installation plan.
-\itemize{
-\item The first library path is the target where packages will be installed.
-\item Additional library paths, if provided, are visible to the solver as
-candidates for satisfying dependency requirements. If a needed package is
-found here at an acceptable version, it won't be re-installed in
-\code{lib[1]}.
-\item Base and recommended packages in \code{.Library} are always considered, i.e.
-a recommended package is only duplicated in \code{lib[1]} if a newer version
-is required.
-}}
+- The first library path is the target where packages will be installed.
+- Additional library paths, if provided, are visible to the solver as
+  candidates for satisfying dependency requirements. If a needed package is
+  found here at an acceptable version, it won't be re-installed in
+  `lib[1]`.
+- Base and recommended packages in `.Library` are always considered, i.e.
+  a recommended package is only duplicated in `lib[1]` if a newer version
+  is required.}
 
-\item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version(s) of \code{pkg}. It will only upgrade
-dependent packages if \code{pkg}, or one of their dependencies explicitly
-require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even if the binary
-package is older.
+\item{upgrade}{When `FALSE`, the default, pak does the minimum amount
+  of work to give you the latest version(s) of `pkg`. It will only upgrade
+  dependent packages if `pkg`, or one of their dependencies explicitly
+  require a higher version than what you currently have. It will also
+  prefer a binary package over to source package, even if the binary
+  package is older.
 
-When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version(s) of \code{pkg} and all their dependencies.}
+  When `upgrade = TRUE`, pak will ensure that you have the latest
+  version(s) of `pkg` and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
@@ -54,19 +50,17 @@ add new packages never require confirmation.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \value{
 (Invisibly) A data frame with information about the installed
-package(s).
+  package(s).
 }
 \description{
 Install one or more packages and their dependencies into a single
@@ -74,151 +68,30 @@ package library.
 }
 \section{Examples}{
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                         
-#> → Will <span style="font-style: italic;">install</span> 5 packages.                                              
-#> → All 5 packages (2.14 MB) are cached.                                  
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span>        1.0.9                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">generics</span>     0.1.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">purrr</span>        0.3.4                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">R6</span>           2.5.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyselect</span>   1.1.2                                                    
-#> <span style="color: #2AA198;">i</span> No downloads are needed, 5 pkgs (2.14 MB) are cached                  
-#> <span style="color: #859900;">v</span> Got <span style="color: #268BD2;">R6</span> 2.5.1 (aarch64-apple-darwin20) (82.52 kB)                      
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(43ms)</span>                                            
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">generics</span> 0.1.2  <span style="color: #a3a3a3;">(62ms)</span>                                      
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.9  <span style="color: #a3a3a3;">(88ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">purrr</span> 0.3.4  <span style="color: #a3a3a3;">(88ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.1.2  <span style="color: #a3a3a3;">(94ms)</span>                                    
-#> <span style="color: #859900;">v</span> 1 pkg + 17 deps: kept 12, added 5, dld 1 (82.52 kB) <span style="color: #b8b8b8;">[1.2s]</span>            
-</pre></div>
-}}
-
+```{asciicast pkg-install-dplyr}
+pkg_install("dplyr")
+```
 
 Upgrade dplyr and all its dependencies:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr", upgrade = TRUE)
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#>                                                                         
-#> → Will <span style="font-style: italic;">update</span> 1 package.                                                
-#> → The package (742.51 kB) is cached.                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span> 1.0.2 → 1.0.<span style="font-weight: bold;">3</span> 👷🏿‍♀️🔧                                            
-#> <span style="color: #2AA198;">i</span> No downloads are needed, 1 pkg (742.51 kB) is cached                  
-#> <span style="color: #2AA198;">i</span> Building <span style="color: #268BD2;">rlang</span> 1.0.3                                                  
-#> <span style="color: #859900;">v</span> Built <span style="color: #268BD2;">rlang</span> 1.0.3 <span style="color: #a3a3a3;">(5.8s)</span>                                              
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.3  <span style="color: #a3a3a3;">(32ms)</span>                                         
-#> <span style="color: #859900;">v</span> 1 pkg + 17 deps: kept 17, upd 1 <span style="color: #b8b8b8;">[6.3s]</span>                                
-</pre></div>
-}}
-
+```{asciicast pkg-install-upgrade}
+pkg_install("dplyr", upgrade = TRUE)
+````
 
 Install the development version of dplyr:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("tidyverse/dplyr")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">v</span> Loading metadata database ... done                                    
-#>                                                                         
-#> → Will <span style="font-style: italic;">install</span> 16 packages.                                             
-#> → All 16 packages (8.09 MB) are cached.                                 
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>          3.4.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span>        1.0.99.9000 👷🏾‍♂️🔧 (GitHub: e6252f8)                     
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>        1.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">generics</span>     0.1.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>         1.6.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>    1.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>     2.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>       1.8.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>    2.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">R6</span>           2.5.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>        1.0.6                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>       3.1.8                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyselect</span>   1.2.0                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>         1.2.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>        0.5.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0                                                    
-#> <span style="color: #2AA198;">i</span> No downloads are needed, 16 pkgs (8.09 MB) are cached                 
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(58ms)</span>                                            
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(69ms)</span>                                           
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(92ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(99ms)</span>                                      
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(108ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(144ms)</span>                                    
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(152ms)</span>                                     
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(160ms)</span>                                       
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(63ms)</span>                                     
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(37ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(41ms)</span>                                        
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.2.0  <span style="color: #a3a3a3;">(38ms)</span>                                    
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(36ms)</span>                                          
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(39ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(30ms)</span>                                         
-#> <span style="color: #2AA198;">i</span> Packaging <span style="color: #268BD2;">dplyr</span> 1.0.99.9000                                           
-#> <span style="color: #859900;">v</span> Packaged <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 <span style="color: #a3a3a3;">(8.3s)</span>                                     
-#> <span style="color: #2AA198;">i</span> Building <span style="color: #268BD2;">dplyr</span> 1.0.99.9000                                            
-#> <span style="color: #859900;">v</span> Built <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 <span style="color: #a3a3a3;">(5.2s)</span>                                        
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.99.9000 (github::tidyverse/dplyr@e6252f8) <span style="color: #a3a3a3;">(24ms)</span>  
-#> <span style="color: #859900;">v</span> 1 pkg + 15 deps: added 16 <span style="color: #b8b8b8;">[18.9s]</span>                                     
-</pre></div>
-}}
-
+```{asciicast pkg-install-gh}
+pkg_install("tidyverse/dplyr")
+```
 
 Switch back to the CRAN version. This will be fast because
 pak will have cached the prior install.
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{pkg_install("dplyr")
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #859900;">v</span> Updated metadata database: 2.43 MB in 6 files.                        
-#> <span style="color: #859900;">v</span> Updating metadata database ... done                                   
-#>                                                                         
-#> → Will <span style="font-style: italic;">install</span> 16 packages.                                             
-#> → All 16 packages (9.42 MB) are cached.                                 
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">cli</span>          3.4.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">dplyr</span>        1.0.10                                                   
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">fansi</span>        1.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">generics</span>     0.1.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">glue</span>         1.6.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">lifecycle</span>    1.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">magrittr</span>     2.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pillar</span>       1.8.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">pkgconfig</span>    2.0.3                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">R6</span>           2.5.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">rlang</span>        1.0.6                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tibble</span>       3.1.8                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">tidyselect</span>   1.2.0                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">utf8</span>         1.2.2                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">vctrs</span>        0.5.1                                                    
-#> <span style="color: #525252;">+ </span><span style="color: #268BD2;">withr</span>        2.5.0                                                    
-#> <span style="color: #2AA198;">i</span> No downloads are needed, 16 pkgs (9.42 MB) are cached                 
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">R6</span> 2.5.1  <span style="color: #a3a3a3;">(66ms)</span>                                            
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">cli</span> 3.4.1  <span style="color: #a3a3a3;">(76ms)</span>                                           
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">dplyr</span> 1.0.10  <span style="color: #a3a3a3;">(111ms)</span>                                       
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">fansi</span> 1.0.3  <span style="color: #a3a3a3;">(119ms)</span>                                        
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">generics</span> 0.1.3  <span style="color: #a3a3a3;">(125ms)</span>                                     
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">glue</span> 1.6.2  <span style="color: #a3a3a3;">(132ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">lifecycle</span> 1.0.3  <span style="color: #a3a3a3;">(149ms)</span>                                    
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">magrittr</span> 2.0.3  <span style="color: #a3a3a3;">(162ms)</span>                                     
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pillar</span> 1.8.1  <span style="color: #a3a3a3;">(56ms)</span>                                        
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">pkgconfig</span> 2.0.3  <span style="color: #a3a3a3;">(35ms)</span>                                     
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">rlang</span> 1.0.6  <span style="color: #a3a3a3;">(57ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">tibble</span> 3.1.8  <span style="color: #a3a3a3;">(41ms)</span>                                        
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">tidyselect</span> 1.2.0  <span style="color: #a3a3a3;">(40ms)</span>                                    
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">utf8</span> 1.2.2  <span style="color: #a3a3a3;">(37ms)</span>                                          
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">vctrs</span> 0.5.1  <span style="color: #a3a3a3;">(39ms)</span>                                         
-#> <span style="color: #859900;">v</span> Installed <span style="color: #268BD2;">withr</span> 2.5.0  <span style="color: #a3a3a3;">(31ms)</span>                                         
-#> <span style="color: #859900;">v</span> 1 pkg + 15 deps: added 16 <span style="color: #b8b8b8;">[7.2s]</span>                                      
-</pre></div>
-}}
+```{asciicast pkg-install-cran}
+pkg_install("dplyr")
+```
 }
 
 \seealso{
-\link{Get started with pak}, \link{Package sources}, \link{FAQ},
-\link{The dependency solver}.
+[Get started with pak], [Package sources], [FAQ],
+  [The dependency solver].
 
 Other package functions:
 \code{\link[=lib_status]{lib_status()}},

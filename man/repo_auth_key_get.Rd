@@ -14,30 +14,30 @@ repo_auth_unlock(keyring_password)
 }
 \arguments{
 \item{url}{Repository URL. It may contain a username, in which case
-\code{username} may be \code{NULL}.}
+`username` may be `NULL`.}
 
-\item{username}{User name, if it is not included in \code{url}.}
+\item{username}{User name, if it is not included in `url`.}
 
 \item{password}{Password (key) to set.}
 
 \item{keyring_password}{Password to unlock the keyring.}
 }
 \value{
-\code{repo_auth_key_get()} returns a single string, the repository
-password.
+`repo_auth_key_get()` returns a single string, the repository
+  password.
 }
 \description{
 Use pak's keyring functions to query or set a repository password in
 the system credential store.
 }
 \details{
-\code{repo_auth_key_get()} retrieves a password from the default keyring. It
-errors if it cannot find the credentials for \code{url}.
+`repo_auth_key_get()` retrieves a password from the default keyring. It
+errors if it cannot find the credentials for `url`.
 
-\code{repo_auth_key_set()} adds or updates a password in the system
+`repo_auth_key_set()` adds or updates a password in the system
 credential store.
 
-\code{repo_auth_unlock()} unlocks the default keyring, if it is locked.
+`repo_auth_unlock()` unlocks the default keyring, if it is locked.
 You might need this if the keyring is locked. If you are using
 ecrypted files to store the keys, then you typically need to call this
 function in each session. You typically don't need to do that if you

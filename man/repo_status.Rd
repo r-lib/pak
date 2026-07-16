@@ -21,128 +21,72 @@ repo_ping(
 }
 \arguments{
 \item{platforms}{Platforms to use, default is the current platform,
-plus source packages, via the \code{\link[=pak-config]{pkg.platforms}} option.}
+plus source packages, via the [`pkg.platforms`][pak-config] option.}
 
 \item{r_version}{R version(s) to use, the default is the current
-R version, via \code{\link[=getRversion]{getRversion()}}.}
+R version, via [getRversion()].}
 
 \item{bioc}{Whether to add the Bioconductor repositories. If you
-already configured them via \code{options(repos)}, then you can
-set this to \code{FALSE}. Defaults to the \code{\link[=pak-config]{pkg.use_bioconductor}}
+already configured them via `options(repos)`, then you can
+set this to `FALSE`. Defaults to the [`pkg.use_bioconductor`][pak-config]
 option.}
 
 \item{cran_mirror}{The CRAN mirror to use. Defaults to the
-\code{\link[=pak-config]{pkg.cran_mirror}} option.}
+[`pkg.cran_mirror`][pak-config] option.}
 }
 \value{
 A data frame that has a row for every repository, on every
 queried platform and R version. It has these columns:
-\itemize{
-\item \code{name}: the name of the repository. This comes from the names
-of the configured repositories in \code{options("repos")}, or
-added by pak. It is typically \code{CRAN} for CRAN, and the
-current Bioconductor repositories are \code{BioCsoft}, \code{BioCann},
-\code{BioCexp}, \code{BioCworkflows}.
-\item \code{url}: base URL of the repository.
-\item \code{bioc_version}: Bioconductor version, or \code{NA} for
-non-Bioconductor repositories.
-\item \code{username}: Included if at least one repository is authenticated.
-\code{NA_character_} for repositories without authentication. See
-\code{\link[=repo_auth]{repo_auth()}}.
-\item \code{has_password}: \code{TRUE} is the function could retrieve the password
-for the authenticated repository. It is \code{NA} for repositories without
-authentication. This column is included only if at least one
-repository has authentication. See \code{\link[=repo_auth]{repo_auth()}}.
-\item \code{platform}: platform, possible values are \code{source}, \code{macos} and
-\code{windows} currently.
-\item \code{path}: the path to the packages within the base URL, for a
-given platform and R version.
-\item \code{r_version}: R version, one of the specified R versions.
-\item \code{ok}: Logical flag, whether the repository contains a metadata
-file for the given platform and R version.
-\item \code{ping}: HTTP response time of the repository in seconds. If
-the \code{ok} column is \code{FALSE}, then this columns in \code{NA}.
-\item \code{error}: the error object if the HTTP query failed for this
-repository, platform and R version.
-}
+* `name`: the name of the repository. This comes from the names
+  of the configured repositories in `options("repos")`, or
+  added by pak. It is typically `CRAN` for CRAN, and the
+  current Bioconductor repositories are `BioCsoft`, `BioCann`,
+  `BioCexp`, `BioCworkflows`.
+* `url`: base URL of the repository.
+* `bioc_version`: Bioconductor version, or `NA` for
+  non-Bioconductor repositories.
+* `username`: Included if at least one repository is authenticated.
+  `NA_character_` for repositories without authentication. See
+  [repo_auth()].
+* `has_password`: `TRUE` is the function could retrieve the password
+  for the authenticated repository. It is `NA` for repositories without
+  authentication. This column is included only if at least one
+  repository has authentication. See [repo_auth()].
+* `platform`: platform, possible values are `source`, `macos` and
+  `windows` currently.
+* `path`: the path to the packages within the base URL, for a
+  given platform and R version.
+* `r_version`: R version, one of the specified R versions.
+* `ok`: Logical flag, whether the repository contains a metadata
+  file for the given platform and R version.
+* `ping`: HTTP response time of the repository in seconds. If
+  the `ok` column is `FALSE`, then this columns in `NA`.
+* `error`: the error object if the HTTP query failed for this
+  repository, platform and R version.
 }
 \description{
 It checks the status of the configured or supplied repositories.
 }
 \details{
-\code{repo_ping()} is similar to \code{repo_status()} but also prints a short
+`repo_ping()` is similar to `repo_status()` but also prints a short
 summary of the data, and it returns its result invisibly.
 }
 \section{Examples}{
 
+```{asciicast repo-status}
+repo_status()
+```
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_status()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 12 × 10</span>                                                 
-#>    name    url   type  bioc_version platform path  r_version ok     ping
-#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>   <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span> <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
-#> <span style="color: #c2c2c2;"> 1</span> CRAN    http… cran  <span style="color: #DC322F;">NA</span>           source   src/… 4.4       TRUE  0.246
-#> <span style="color: #c2c2c2;"> 2</span> CRAN    http… cran  <span style="color: #DC322F;">NA</span>           aarch64… bin/… 4.4       TRUE  0.298
-#> <span style="color: #c2c2c2;"> 3</span> BioCso… http… bioc  3.20         source   src/… 4.4       TRUE  0.298
-#> <span style="color: #c2c2c2;"> 4</span> BioCso… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.322
-#> <span style="color: #c2c2c2;"> 5</span> BioCann http… bioc  3.20         source   src/… 4.4       TRUE  0.530
-#> <span style="color: #c2c2c2;"> 6</span> BioCann http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.643
-#> <span style="color: #c2c2c2;"> 7</span> BioCexp http… bioc  3.20         source   src/… 4.4       TRUE  0.498
-#> <span style="color: #c2c2c2;"> 8</span> BioCexp http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.707
-#> <span style="color: #c2c2c2;"> 9</span> BioCwo… http… bioc  3.20         source   src/… 4.4       TRUE  0.569
-#> <span style="color: #c2c2c2;">10</span> BioCwo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.724
-#> <span style="color: #c2c2c2;">11</span> BioCbo… http… bioc  3.20         source   src/… 4.4       TRUE  0.662
-#> <span style="color: #c2c2c2;">12</span> BioCbo… http… bioc  3.20         aarch64… bin/… 4.4       TRUE  0.754
-#> <span style="color: #999999;"># i 1 more variable: error &lt;list&gt;</span>                                       
-</pre></div>
-}}
-
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_status(
+```{asciicast repo-status-2}
+repo_status(
   platforms = c("windows", "macos"),
   r_version = c("4.0", "4.1")
 )
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> <span style="color: #999999;"># A data frame: 18 × 10</span>                                                 
-#>    name   url   type  bioc_version platform r_version path  ok      ping
-#>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>    <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;lgl&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
-#> <span style="color: #c2c2c2;"> 1</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           i386+x8… 4.0       bin/… TRUE   0.175
-#> <span style="color: #c2c2c2;"> 2</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           i386+x8… 4.1       bin/… TRUE   0.180
-#> <span style="color: #c2c2c2;"> 3</span> CRAN   http… cran  <span style="color: #DC322F;">NA</span>           aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #c2c2c2;"> 4</span> BioCs… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.539
-#> <span style="color: #c2c2c2;"> 5</span> BioCa… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.538
-#> <span style="color: #c2c2c2;"> 6</span> BioCe… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   1.04 
-#> <span style="color: #c2c2c2;"> 7</span> BioCw… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.809
-#> <span style="color: #c2c2c2;"> 8</span> BioCb… http… bioc  3.12         i386+x8… 4.0       bin/… TRUE   0.610
-#> <span style="color: #c2c2c2;"> 9</span> BioCs… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   1.16 
-#> <span style="color: #c2c2c2;">10</span> BioCs… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #c2c2c2;">11</span> BioCa… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.659
-#> <span style="color: #c2c2c2;">12</span> BioCa… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #c2c2c2;">13</span> BioCe… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.913
-#> <span style="color: #c2c2c2;">14</span> BioCe… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #c2c2c2;">15</span> BioCw… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   0.811
-#> <span style="color: #c2c2c2;">16</span> BioCw… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #c2c2c2;">17</span> BioCb… http… bioc  3.14         i386+x8… 4.1       bin/… TRUE   1.04 
-#> <span style="color: #c2c2c2;">18</span> BioCb… http… bioc  3.14         aarch64… 4.1       bin/… FALSE <span style="color: #DC322F;">NA</span>    
-#> <span style="color: #999999;"># i 1 more variable: error &lt;list&gt;</span>                                       
-</pre></div>
-}}
+```
 
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{repo_ping()
-}\if{html}{\out{</div>}}\if{html}{\out{
-<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
-#> Repository summary:                   source aarch64-apple-darwin20<span style="color: #2AA198;">          </span>
-#> CRAN          @ cloud.r-project.org   <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (63ms )</span>
-#> BioCsoft      @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (68ms )</span>
-#> BioCann       @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (153ms)</span>
-#> BioCexp       @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (186ms)</span>
-#> BioCworkflows @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (112ms)</span>
-#> BioCbooks     @ bioconductor.org      <span style="color: #859900;">  v   </span> <span style="color: #859900;">          v           </span><span style="color: #2AA198;">   (193ms)</span>
-</pre></div>
-}}
+```{asciicast repo-status-3, asciicast_cols = 77, asciicast_width = 77, R.options = list(cli.width = 77, width = 77)}
+repo_ping()
+```
 }
 
 \seealso{

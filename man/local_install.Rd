@@ -17,26 +17,24 @@ local_install(
 
 \item{lib}{Character vector of library paths to consider when creating the
 installation plan.
-\itemize{
-\item The first library path is the target where packages will be installed.
-\item Additional library paths, if provided, are visible to the solver as
-candidates for satisfying dependency requirements. If a needed package is
-found here at an acceptable version, it won't be re-installed in
-\code{lib[1]}.
-\item Base and recommended packages in \code{.Library} are always considered, i.e.
-a recommended package is only duplicated in \code{lib[1]} if a newer version
-is required.
-}}
+- The first library path is the target where packages will be installed.
+- Additional library paths, if provided, are visible to the solver as
+  candidates for satisfying dependency requirements. If a needed package is
+  found here at an acceptable version, it won't be re-installed in
+  `lib[1]`.
+- Base and recommended packages in `.Library` are always considered, i.e.
+  a recommended package is only duplicated in `lib[1]` if a newer version
+  is required.}
 
-\item{upgrade}{When \code{FALSE}, the default, pak does the minimum amount
-of work to give you the latest version(s) of \code{pkg}. It will only upgrade
-dependent packages if \code{pkg}, or one of their dependencies explicitly
-require a higher version than what you currently have. It will also
-prefer a binary package over to source package, even if the binary
-package is older.
+\item{upgrade}{When `FALSE`, the default, pak does the minimum amount
+  of work to give you the latest version(s) of `pkg`. It will only upgrade
+  dependent packages if `pkg`, or one of their dependencies explicitly
+  require a higher version than what you currently have. It will also
+  prefer a binary package over to source package, even if the binary
+  package is older.
 
-When \code{upgrade = TRUE}, pak will ensure that you have the latest
-version(s) of \code{pkg} and all their dependencies.}
+  When `upgrade = TRUE`, pak will ensure that you have the latest
+  version(s) of `pkg` and all their dependencies.}
 
 \item{ask}{Whether to ask for confirmation when installing a different
 version of a package that is already installed. Installations that only
@@ -44,15 +42,13 @@ add new packages never require confirmation.}
 
 \item{dependencies}{What kinds of dependencies to install. Most commonly
 one of the following values:
-\itemize{
-\item \code{NA}: only required (hard) dependencies,
-\item \code{TRUE}: required dependencies plus optional and development
-dependencies,
-\item \code{FALSE}: do not install any dependencies. (You might end up with a
-non-working package, and/or the installation might fail.)
-See \link{Package dependency types} for other possible values and more
-information about package dependencies.
-}}
+- `NA`: only required (hard) dependencies,
+- `TRUE`: required dependencies plus optional and development
+  dependencies,
+- `FALSE`: do not install any dependencies. (You might end up with a
+  non-working package, and/or the installation might fail.)
+See [Package dependency types] for other possible values and more
+information about package dependencies.}
 }
 \value{
 Data frame, with information about the installed package(s).
@@ -62,7 +58,7 @@ Installs a package tree (or source package file), together with its
 dependencies.
 }
 \details{
-\code{local_install()} is equivalent to \code{pkg_install("local::.")}.
+`local_install()` is equivalent to `pkg_install("local::.")`.
 }
 \seealso{
 Other local package trees:

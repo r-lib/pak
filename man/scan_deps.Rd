@@ -8,112 +8,105 @@ scan_deps(path = NULL, root = NULL)
 }
 \arguments{
 \item{path}{Files and/or directories to scan. Defaults to the current
-project, detected by finding the first parent directory of the current
-working directory, that contains a file or directory called
-DESCRIPTION, .git, .Rproj.user, renv.lock, or renv.
-(Note that this is different from \code{renv::dependencies()}, which only
-scans the current working directory by default!)
+  project, detected by finding the first parent directory of the current
+  working directory, that contains a file or directory called
+  `r cli::format_inline("{.or {pkgdepends:::project_root_anchors}}")`.
+  (Note that this is different from `renv::dependencies()`, which only
+  scans the current working directory by default!)
 
-If \code{path} is not \code{NULL}, then only the specified files and directories
-are scanned, the directories recursively. In this case the \code{root}
-argument is used as the project root, to find \code{.gitignore} and
-\code{.renvignore} files. All entries of \code{path} must be within the \code{root},
-the project root.}
+  If `path` is not `NULL`, then only the specified files and directories
+  are scanned, the directories recursively. In this case the `root`
+  argument is used as the project root, to find `.gitignore` and
+  `.renvignore` files. All entries of `path` must be within the `root`,
+  the project root.}
 
 \item{root}{The root directory of the project. It is used to find the
-\code{.gitignore} and \code{.renvignore} files. By default the same algorithm
-is used to detect this as for \code{path}. If \code{path} is specified and it is
-not within the detected or specified \code{root}, \code{scan_path()} throws an
+`.gitignore` and `.renvignore` files. By default the same algorithm
+is used to detect this as for `path`. If `path` is specified and it is
+not within the detected or specified `root`, `scan_path()` throws an
 error.}
 }
 \value{
 Data frame with columns:
-\itemize{
-\item \code{path}: Path to the file in which the dependencies was found.
-\item \code{package}: Detected package dependency. Typically a package name,
-but it can also be a package reference, e.g. a package from GitHub.
-\item \code{type}: Dependency type. It is \code{"prod"}, \code{"test"} or \code{"dev"}. See
-'Dependency types' below.
-\item \code{code}: The piece of code the dependency was extracted from.
-\item \code{start_row}: Start row of the code the dependency was extracted
-from.
-\item \code{start_column}: Start column of the code the dependency was
-extracted from.
-\item \code{start_byte}: Start byte of the code the dependency was extracted
-from.
-}
+  * `path`: Path to the file in which the dependencies was found.
+  * `package`: Detected package dependency. Typically a package name,
+    but it can also be a package reference, e.g. a package from GitHub.
+  * `type`: Dependency type. It is `"prod"`, `"test"` or `"dev"`. See
+    'Dependency types' below.
+  * `code`: The piece of code the dependency was extracted from.
+  * `start_row`: Start row of the code the dependency was extracted
+    from.
+  * `start_column`: Start column of the code the dependency was
+    extracted from.
+  * `start_byte`: Start byte of the code the dependency was extracted
+    from.
 
 Note the data frame may contain the same package multiple times, if it
-was detected multiple times, e.g. multiple \code{library()} calls load the
+was detected multiple times, e.g. multiple `library()` calls load the
 same package.
 }
 \description{
 Scan all R files of a project or directory for packages used within
-them. It parses R code to find \code{library(package)}, \code{package::func()},
+them. It parses R code to find `library(package)`, `package::func()`,
 and similar calls that imply package dependencies. See details below.
 }
-\section{Detected dependencies}{
-\code{scan_deps()} detects package dependencies from these R expressions:
-\itemize{
-\item \code{library()}, \code{require()}, \code{loadNamespace()} and \code{requireNamespace}
-calls.
-\item \code{::} and \code{:::} operators.
-\item Any of the calls in this list in R code from R markdown or quarto
-\code{R} and \code{Rscript} (case insensitive) code blocks or inline R code.
-\item A dependency on the methods package is inferred from finding
-\code{setClass()} and/or \code{setGeneric()} calls.
-\item \code{xfun::pkg_attach()} and \code{xfun::pkg_attach2()} calls.
-\item \code{pacman::p_load()} calls.
-\item \code{modules::import()} and \code{modules::module()} calls.
-\item \code{import::from()}, \code{import::here()} and \code{import::into()} calls.
-\item \code{box::use()} calls.
-\item \code{targets::tar_option_set(packages = ...)} calls.
-\item Any of the calls in this list in R code from \code{glue::glue()} strings.
-\item A dependency on the svglite package is inferred from
-\code{ggplot2::ggsave()} calls saving \code{.svg} files.
-\item Dependencies from \code{parsnip::set_engine()} calls, the default engine
-to package mapping is:
-\itemize{
-\item \code{"glm"} -> stats,
-\item \code{"glmnet"} -> glmnet,
-\item \code{"keras"} -> keras,
-\item \code{"kknn"} -> kknn,
-\item \code{"nnet"} -> nnet,
-\item \code{"rpart"} -> rpart,
-\item \code{"spark"} -> sparklyr,
-\item \code{"stan"} -> rstanarm.
-You can override the default mapping by setting the
-\code{renv.parsnip.engines} option to a named list.
-}
-\item A dependency on the xml2 package is inferred from using the
-"Junit" reporter (\code{JunitReporter}) from the testthat package.
-\item A dependency on the ragg package is inferred from setting the default
-knitr device (\code{dev} option) to \code{"ragg_png"}.
-\item A dependency on the hexbin package is inferred from using
-\code{ggplot2::geom_hex()}.
-\item A custom symbol name to package name mapping can be defined in the
-\code{renv.dependencies.database} option. This must be a named list of
-named lists, where the outer names are package names, the inner names
-are function or object names, and the values are package names. E.g.
+\details{
+# Detected dependencies
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{options(renv.dependencies.database = list(
-  ggplot2 = list(geom_hex = "hexbin"),
-  testthat = list(JunitReporter = "xml2")
-))
-}\if{html}{\out{</div>}}
-}
-}
+`scan_deps()` detects package dependencies from these R expressions:
+* `library()`, `require()`, `loadNamespace()` and `requireNamespace`
+  calls.
+* `::` and `:::` operators.
+* Any of the calls in this list in R code from R markdown or quarto
+  `R` and `Rscript` (case insensitive) code blocks or inline R code.
+* A dependency on the methods package is inferred from finding
+  `setClass()` and/or `setGeneric()` calls.
+* `xfun::pkg_attach()` and `xfun::pkg_attach2()` calls.
+* `pacman::p_load()` calls.
+* `modules::import()` and `modules::module()` calls.
+* `import::from()`, `import::here()` and `import::into()` calls.
+* `box::use()` calls.
+* `targets::tar_option_set(packages = ...)` calls.
+* Any of the calls in this list in R code from `glue::glue()` strings.
+* A dependency on the svglite package is inferred from
+  `ggplot2::ggsave()` calls saving `.svg` files.
+* Dependencies from `parsnip::set_engine()` calls, the default engine
+  to package mapping is:
+  - `"glm"` -> stats,
+  - `"glmnet"` -> glmnet,
+  - `"keras"` -> keras,
+  - `"kknn"` -> kknn,
+  - `"nnet"` -> nnet,
+  - `"rpart"` -> rpart,
+  - `"spark"` -> sparklyr,
+  - `"stan"` -> rstanarm.
+  You can override the default mapping by setting the
+  `renv.parsnip.engines` option to a named list.
+* A dependency on the xml2 package is inferred from using the
+  "Junit" reporter (`JunitReporter`) from the testthat package.
+* A dependency on the ragg package is inferred from setting the default
+  knitr device (`dev` option) to `"ragg_png"`.
+* A dependency on the hexbin package is inferred from using
+  `ggplot2::geom_hex()`.
+* A custom symbol name to package name mapping can be defined in the
+  `renv.dependencies.database` option. This must be a named list of
+  named lists, where the outer names are package names, the inner names
+  are function or object names, and the values are package names. E.g.
+  ```
+  options(renv.dependencies.database = list(
+    ggplot2 = list(geom_hex = "hexbin"),
+    testthat = list(JunitReporter = "xml2")
+  ))
+  ```
 
-\section{Dependency types}{
-\code{scan_deps()} classifies package dependencies into three groups, based
+# Dependency types
+
+`scan_deps()` classifies package dependencies into three groups, based
 on which files they were found:
-\itemize{
-\item Production dependencies: \code{"prod"}.
-\item Test dependencies: \code{"test"}.
-\item Development dependencies: \code{"dev"}.
+* Production dependencies: `"prod"`.
+* Test dependencies: `"test"`.
+* Development dependencies: `"dev"`.
 }
-}
-
 \examples{
 \dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 scan_deps("myproject")

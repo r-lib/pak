@@ -7,7 +7,7 @@
 handle_package_not_found(err)
 }
 \arguments{
-\item{err}{The error object, of class \code{packageNotFoundError}.}
+\item{err}{The error object, of class `packageNotFoundError`.}
 }
 \value{
 Nothing.
@@ -20,25 +20,26 @@ and in some cases it can also remedy the error and restart the code.
 }
 \details{
 You are not supposed to call this function directly. Instead, set it
-up as a global error handler, possibly in your \code{.Rprofile} file:
+up as a global error handler, possibly in your `.Rprofile` file:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{if (interactive() && getRversion() >= "4.0.0") \{
+```r
+if (interactive() && getRversion() >= "4.0.0") {
   globalCallingHandlers(
-    packageNotFoundError = function(err) \{
+    packageNotFoundError = function(err) {
       try(pak::handle_package_not_found(err))
-    \}
+    }
   )
-\}
-}\if{html}{\out{</div>}}
+}
+```
 
 Global error handlers are only supported in R 4.0.0 and later.
 
-Currently \code{handle_package_not_found()} does not do anything in
+Currently `handle_package_not_found()` does not do anything in
 non-interactive mode (including in knitr, testthat and RStudio
 notebooks), this might change in the future.
 
 In some cases it is possible to remedy the original computation that
 tried to load the missing package, and pak will offer you to do so
 after a successful installation. Currently, in R 4.0.4, it is not
-possible to continue a failed \code{library()} call.
+possible to continue a failed `library()` call.
 }
