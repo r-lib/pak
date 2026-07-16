@@ -1,5 +1,14 @@
 # pak (development version)
 
+* Fixed a Windows installation issue where `R CMD INSTALL pak` from source
+  would fail with "Access is denied" during the staged installation
+  `file.rename()` step. pak now sets `StagedInstall: no` in its
+  `DESCRIPTION` to avoid the staged install mechanism that triggers this
+  Windows-specific file-locking problem.
+
+* `pak_update()` now passes `--no-test-load` when reinstalling pak from
+  source, to avoid the same file-locking issue on Windows.
+
 * pak now supports the `configure_args` and `configure_vars` configuration
   options. They default to the `configure.args` and `configure.vars`
   options, for compatibility with `install.packages()` (#788).

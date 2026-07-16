@@ -133,7 +133,13 @@ pak_update <- function(
     }
     tgt <- tgt2
   }
-  utils::install.packages(tgt, repos = NULL, type = "source", lib = lib)
+  utils::install.packages(
+    tgt,
+    repos = NULL,
+    type = "source",
+    lib = lib,
+    INSTALL_opts = "--no-test-load"
+  )
 
   attached <- "package:pak" %in% search()
   message("\nReloading pak.")
