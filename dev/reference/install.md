@@ -19,19 +19,19 @@ pre-built binary build of pak from our repository on GitHub:
 
 This is supported for the following systems:
 
-|                       |         |                                   |
-|-----------------------|---------|-----------------------------------|
-| OS                    | CPU     | R version                         |
-| Linux                 | x86_64  | R 3.4.0 - R-devel                 |
-| Linux                 | aarch64 | R 3.4.0 - R-devel                 |
-| macOS High Sierra+    | x86_64  | R 3.4.0 - R-devel                 |
-| macOS Big Sur+        | aarch64 | R 4.1.0 - R-devel                 |
-| Windows               | x86_64  | R 3.4.0 - R-devel                 |
-| Windows               | aarch64 | R 4.4.0 - R-devel                 |
-| FreeBSD 13.x or later | x86_64  | R 4.4.x                           |
-| OpenBSD 7.4, 7.5, 7.6 | x86_64  | R 4.2.x (7.4, 7.5), R 4.4.x (7.6) |
-| NetBSD 10.0           | x86_64  | R 4.4.x                           |
-| DragonFly BSD 6.4     | x86_64  | R 4.3.x                           |
+|                       |         |                                 |
+|-----------------------|---------|---------------------------------|
+| OS                    | CPU     | R version                       |
+| Linux                 | x86_64  | R 3.5.0 - R-devel               |
+| Linux                 | aarch64 | R 3.5.0 - R-devel               |
+| macOS High Sierra+    | x86_64  | R 3.5.0 - R-devel               |
+| macOS Big Sur+        | aarch64 | R 4.1.0 - R-devel               |
+| Windows               | x86_64  | R 3.5.0 - R-devel               |
+| Windows               | aarch64 | R 4.4.0 - R-devel               |
+| FreeBSD 13.4 or later | x86_64  | R 4.5.x (13.x), R 4.6.x (later) |
+| OpenBSD 7.7, 7.8      | x86_64  | R 4.4.x (7.7), R 4.5.x (7.8)    |
+| NetBSD 10.0           | x86_64  | R 4.5.x                         |
+| DragonFly BSD 6.4     | x86_64  | R 4.4.x                         |
 
 #### Notes
 

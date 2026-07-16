@@ -2,6 +2,10 @@
 
 ## pak (development version)
 
+## pak 0.11.0
+
+CRAN release: 2026-07-15
+
 - pak now supports the `configure_args` and `configure_vars`
   configuration options. They default to the `configure.args` and
   `configure.vars` options, for compatibility with
