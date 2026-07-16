@@ -349,7 +349,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ macos, windows, linux, macos-arm64, bsd ]
     if: |
-      always() && (
+      !cancelled() && (
         needs.macos.result != 'skipped' ||
         needs.windows.result != 'skipped' ||
         needs.linux.result != 'skipped' ||
@@ -431,7 +431,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && always() }}
+    if: ${{ (github.event.inputs.deploy == '' || github.event.inputs.deploy == 'yes') && !cancelled() }}
     needs: [ push ]
 
     steps:
