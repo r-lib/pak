@@ -9,7 +9,7 @@ options (as in base::options())."><script src="https://cdn.jsdelivr.net/gh/posit
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ options (as in base::options())."><script src="https://cdn.jsdelivr.net/gh/posit
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Environment variables and options that modify the default behavior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/v0.10.0/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/pak/blob/main/R/docs.R" class="external-link"><code>R/docs.R</code></a></small>
       <div class="d-none name"><code>pak-config.Rd</code></div>
     </div>
 
@@ -78,6 +78,28 @@ separator, but it always has the <code>pkg.</code> prefix (notice the dot!).</p>
 <p></p><ul><li><p>‘cache_dir’: (Env var: <code>PKG_CACHE_DIR</code>, option: <code>pkg.cache_dir</code>.) Directory to download the packages to. Defaults to a temporary
 directory within the R session temporary directory, see
 <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">base::tempdir()</a></code>.</p></li>
+<li><p>‘configure_args’: (Env var: <code>PKG_CONFIGURE_ARGS</code>, option: <code>pkg.configure_args</code>.) Extra <code>--configure-args</code> to pass to <code>R CMD INSTALL</code> when
+building packages from source. It can be a single string, which is
+then used for all packages built from source. It can also be a named
+character vector (or a named list of character vectors) to set
+configure arguments for individual packages: the names are package
+names and the values are the corresponding configure arguments.
+Defaults to the <code>configure.args</code> option (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), for
+compatibility with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. The
+<code>PKG_CONFIGURE_ARGS</code> environment variable may be either a single
+string (used for all packages), or a semicolon separated list of
+<code>&lt;package&gt;=&lt;args&gt;</code> entries to set arguments for individual packages.</p></li>
+<li><p>‘configure_vars’: (Env var: <code>PKG_CONFIGURE_VARS</code>, option: <code>pkg.configure_vars</code>.) Extra <code>--configure-vars</code> to pass to <code>R CMD INSTALL</code> when
+building packages from source. It can be a single string, which is
+then used for all packages built from source. It can also be a named
+character vector (or a named list of character vectors) to set
+configure variables for individual packages: the names are package
+names and the values are the corresponding configure variables.
+Defaults to the <code>configure.vars</code> option (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), for
+compatibility with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. The
+<code>PKG_CONFIGURE_VARS</code> environment variable may be either a single
+string (used for all packages), or a semicolon separated list of
+<code>&lt;package&gt;=&lt;vars&gt;</code> entries to set variables for individual packages.</p></li>
 <li><p>‘cran_mirror’: (Env var: <code>PKG_CRAN_MIRROR</code>, option: <code>pkg.cran_mirror</code>.) CRAN mirror to use. Defaults to the <code>repos</code> option
 (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code>), if that's not set then
 <code>https://cran.rstudio.com</code>. See also <code><a href="repo_add.html">pak::repo_add()</a></code> and
@@ -87,6 +109,10 @@ affects <code>git::</code> and <code>gitlab::</code> package sources only.
 If the R package is in a subdirectory then only the submodules
 within that directory are updated. If a submodule appears in
 <code>.Rbuildignore</code>, then it is skipped.</p></li>
+<li><p>‘http_retry’: (Env var: <code>PKG_HTTP_RETRY</code>, option: <code>pkg_http_retry</code>.) Whether to retry failed HTTP requests. It can be <code>TRUE</code> to retry
+with the default settings, or <code>FALSE</code> to never retry. Defaults to
+<code>TRUE</code>. This entry is handled by pkgcache, which performs all HTTP
+requests.</p></li>
 <li><p>‘ignore_dev_library’: (Env var: <code>PKG_IGNORE_DEV_LIBRARY</code>, option: <code>pkg.ignore_dev_library</code>.) Whether to ignore library directories called <code>__dev_lib__</code>.</p></li>
 <li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
 of and installation, even if they are needed because the packages
@@ -189,7 +215,7 @@ configuration change.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
   </div></footer></body></html>

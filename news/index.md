@@ -1,5 +1,68 @@
 # Changelog
 
+## pak 0.11.0
+
+CRAN release: 2026-07-15
+
+- pak now supports the `configure_args` and `configure_vars`
+  configuration options. They default to the `configure.args` and
+  `configure.vars` options, for compatibility with
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  ([\#788](https://github.com/r-lib/pak/issues/788)).
+
+- GitHub remotes now auto-detect an R package in a well-known
+  subdirectory (`pkg-r/`, `r/`, or `R/`) when no `subdir` is given and
+  there is no `DESCRIPTION` at the repository root. This lets
+  multi-language repositories be installed without specifying `subdir`
+  ([\#459](https://github.com/r-lib/pak/issues/459)).
+
+- pak now handles the case when a repository (typically Posit Package
+  Manager) serves a source package instead of the requested binary
+  ([\#891](https://github.com/r-lib/pak/issues/891)).
+
+- Better error messages for several dependency solver situations:
+
+  - when requesting a package that is installed locally, but was removed
+    from its repository
+    ([\#895](https://github.com/r-lib/pak/issues/895)),
+  - when requesting an older version (e.g. `pkg@1.0.0`) of a package
+    that is no longer in the repository
+    ([\#896](https://github.com/r-lib/pak/issues/896)),
+  - when resolving downloads for a different platform
+    (<https://github.com/r-lib/pkgdepends/issues/462>).
+
+- The dependency solver no longer silently keeps an installed package as
+  the solution for a direct package reference that failed to resolve,
+  e.g. a CRAN package that is not on CRAN but happens to be installed
+  locally from another source. pak now reports the failure instead.
+
+- `install_args` is no longer overwritten when building packages. The
+  `--no-multiarch` flag needed on some Windows configurations is now
+  added to the existing `install_args`
+  (<https://github.com/r-lib/pkgdepends/issues/472>).
+
+- Duplicate system requirement commands are now deduplicated
+  ([\#888](https://github.com/r-lib/pak/issues/888)).
+
+- pak now behaves better when the package cache database is corrupt: it
+  gives a better error message, and cleaning the cache no longer fails
+  in this case ([\#884](https://github.com/r-lib/pak/issues/884)).
+
+- pak now handles `PACKAGES` files with `Path` and/or `File` fields
+  correctly, and drops HTTP query parameters from these fields when
+  constructing the target file name
+  (<https://github.com/r-lib/pkgcache/issues/141>,
+  [@jeroen](https://github.com/jeroen)).
+
+- All HTTP requests now honor the `pkgcache_http_version` option and the
+  `PKGCACHE_HTTP_VERSION` environment variable
+  (<https://github.com/r-lib/pkgcache/issues/140>).
+
+- pak now retries failed HTTP requests by default, using an exponential
+  backoff (and honoring the `Retry-After` header). Set the
+  `PKG_HTTP_RETRY` environment variable or the `pkg_http_retry` option
+  to `FALSE` to disable retries.
+
 ## pak 0.10.0
 
 CRAN release: 2026-06-07
@@ -353,25 +416,6 @@ CRAN release: 2023-01-15
   [`?source`](https://rdrr.io/r/base/source.html) and `?ignore` now work
   correctly when specified in the `package=?parameter` format
   ([\#294](https://github.com/r-lib/pak/issues/294)).
-
-- The `?ignore` parameter works correctly now.
-
-- Dependency resolution now does not fail if a package is not found.
-
-- pak can now install `url::` remotes from GitHub.
-
-- pak now does not fail when the package of a `.tar.gz` GitHub snapshot
-  is in a subdirectory, or in a subdirectory of a subdirectory.
-
-- pak now errors early if it cannot deduce the name of the package from
-  a `Remotes` or `Config/Needs/*` entry.
-
-- Solver failures now include details in some cases where previously
-  they did not.
-
-- pak can now update packages in Docker containers where the old version
-  was installed in the different Docker later
-  (<https://github.com/r-lib/pak/issues/251>)
 
 - Update R version -\> Bioconductor version mapping. R 4.2.x now maps to
   Bioconductor 3.16.

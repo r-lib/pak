@@ -42,6 +42,36 @@ Some examples:
   directory within the R session temporary directory, see
   [`base::tempdir()`](https://rdrr.io/r/base/tempfile.html).
 
+- ‘configure_args’: (Env var: `PKG_CONFIGURE_ARGS`, option:
+  `pkg.configure_args`.) Extra `--configure-args` to pass to
+  `R CMD INSTALL` when building packages from source. It can be a single
+  string, which is then used for all packages built from source. It can
+  also be a named character vector (or a named list of character
+  vectors) to set configure arguments for individual packages: the names
+  are package names and the values are the corresponding configure
+  arguments. Defaults to the `configure.args` option (see
+  [`base::options()`](https://rdrr.io/r/base/options.html)), for
+  compatibility with
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html).
+  The `PKG_CONFIGURE_ARGS` environment variable may be either a single
+  string (used for all packages), or a semicolon separated list of
+  `<package>=<args>` entries to set arguments for individual packages.
+
+- ‘configure_vars’: (Env var: `PKG_CONFIGURE_VARS`, option:
+  `pkg.configure_vars`.) Extra `--configure-vars` to pass to
+  `R CMD INSTALL` when building packages from source. It can be a single
+  string, which is then used for all packages built from source. It can
+  also be a named character vector (or a named list of character
+  vectors) to set configure variables for individual packages: the names
+  are package names and the values are the corresponding configure
+  variables. Defaults to the `configure.vars` option (see
+  [`base::options()`](https://rdrr.io/r/base/options.html)), for
+  compatibility with
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html).
+  The `PKG_CONFIGURE_VARS` environment variable may be either a single
+  string (used for all packages), or a semicolon separated list of
+  `<package>=<vars>` entries to set variables for individual packages.
+
 - ‘cran_mirror’: (Env var: `PKG_CRAN_MIRROR`, option:
   `pkg.cran_mirror`.) CRAN mirror to use. Defaults to the `repos` option
   (see [`base::options()`](https://rdrr.io/r/base/options.html)), if
@@ -55,6 +85,11 @@ Some examples:
   only. If the R package is in a subdirectory then only the submodules
   within that directory are updated. If a submodule appears in
   `.Rbuildignore`, then it is skipped.
+
+- ‘http_retry’: (Env var: `PKG_HTTP_RETRY`, option: `pkg_http_retry`.)
+  Whether to retry failed HTTP requests. It can be `TRUE` to retry with
+  the default settings, or `FALSE` to never retry. Defaults to `TRUE`.
+  This entry is handled by pkgcache, which performs all HTTP requests.
 
 - ‘ignore_dev_library’: (Env var: `PKG_IGNORE_DEV_LIBRARY`, option:
   `pkg.ignore_dev_library`.) Whether to ignore library directories
