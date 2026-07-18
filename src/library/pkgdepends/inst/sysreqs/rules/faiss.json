@@ -1,0 +1,22 @@
+{
+  "patterns": [
+    "\\bfaiss\\b",
+    "\\bfaiss c\\+\\+\\b"
+  ],
+  "dependencies": [
+    {
+      "packages": ["libfaiss-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu",
+          "versions": ["22.04", "26.04"]
+        },
+        {
+          "os": "linux",
+          "distribution": "debian"
+        }
+      ]
+    }
+  ]
+}

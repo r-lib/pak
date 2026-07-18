@@ -13,7 +13,7 @@
         {
           "os": "linux",
           "distribution": "ubuntu",
-          "versions": ["22.04", "24.04"]
+          "versions": ["22.04", "24.04", "26.04"]
         }
       ]
     },
@@ -74,10 +74,10 @@
     {
       "pre_install": [
         {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-$(rpm -E %rhel)-$(arch)-rpms"
         },
         {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         }
       ],
       "packages": ["chromium"],
@@ -86,26 +86,7 @@
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["8"]
-        }
-      ]
-    },
-    {
-      "pre_install": [
-        {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms"
-        },
-        {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
-        }
-      ],
-      "packages": ["chromium"],
-      "post_install": [],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["9", "10"]
+          "versions": ["8", "9", "10"]
         }
       ]
     },

@@ -30,7 +30,8 @@
         },
         {
           "os": "linux",
-          "distribution": "redhat"
+          "distribution": "redhat",
+          "versions": ["9", "10"]
         },
         {
           "os": "linux",
@@ -39,6 +40,23 @@
         {
           "os": "linux",
           "distribution": "sle"
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        {
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
+        }
+      ],
+      "packages": [
+        "SDL2-devel"
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["8"]
         }
       ]
     },

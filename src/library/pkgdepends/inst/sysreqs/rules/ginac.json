@@ -11,10 +11,9 @@
     {
       "packages": ["ginac-devel"],
       "constraints": [
-        { "os": "linux", "distribution": "fedora" },
-        { "os": "linux", "distribution": "redhat" }
+        { "os": "linux", "distribution": "fedora" }
       ]
-    },
+    },  
     {
       "packages": ["ginac-devel"],
       "constraints": [

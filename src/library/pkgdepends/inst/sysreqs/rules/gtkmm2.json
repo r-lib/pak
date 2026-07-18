@@ -1,0 +1,88 @@
+{
+  "patterns": ["\\bgtkmm-2\\.4\\b"],
+  "dependencies": [
+    {
+      "packages": ["libgtkmm-2.4-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu"
+        }
+      ]
+    },
+    {
+      "packages": ["libgtkmm-2.4-dev"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "debian",
+          "versions": ["10", "11", "12", "13"]
+        }
+      ]
+    },
+    {
+      "packages": ["gtkmm24-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "fedora"
+        }
+      ]
+    },
+    {
+      "packages": ["gtkmm24-devel"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos",
+          "versions": ["7"]
+        }
+      ]
+    },
+    {
+      "packages": ["gtkmm24-devel"],
+      "pre_install": [
+        { "command": "dnf install -y dnf-plugins-core" },
+        { "command": "dnf config-manager --set-enabled powertools" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "centos",
+          "versions": ["8"]
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8"]
+        }
+      ]
+    },
+    {
+      "packages": ["gtkmm24-devel"],
+      "pre_install": [
+        { "command": "rpm -q epel-release || yum install -y epel-release" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["7"]
+        }
+      ]
+    },
+    {
+      "packages": ["gtkmm24-devel"],
+      "pre_install": [
+        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms" }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["8"]
+        }
+      ]
+    }
+  ]
+}

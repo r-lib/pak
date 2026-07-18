@@ -57,40 +57,14 @@
       "packages": ["udunits2-devel"],
       "pre_install": [
         {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["8"]
-        }
-      ]
-    },
-    {
-      "packages": ["udunits2-devel"],
-      "pre_install": [
-        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["9"]
-        }
-      ]
-    },
-    {
-      "packages": ["udunits2-devel"],
-      "pre_install": [
-        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
-      ],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["10"]
+          "versions": ["8", "9", "10"]
         }
       ]
     },
@@ -125,6 +99,24 @@
         {
           "os": "linux",
           "distribution": "rockylinux"
+        }
+      ]
+    },
+    {
+      "packages": ["udunits2-devel"],
+      "pre_install": [
+        {
+          "command": "zypper repos --uri 2>/dev/null | grep -q 'devel:languages:R:released' || zypper --non-interactive --gpg-auto-import-keys addrepo https://download.opensuse.org/repositories/devel:languages:R:released/15.6/devel:languages:R:released.repo"
+        },
+        {
+          "command": "zypper --non-interactive --gpg-auto-import-keys refresh"
+        }
+      ],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "opensuse",
+          "versions": ["15.6"]
         }
       ]
     },

@@ -22,7 +22,7 @@
         {
           "os": "linux",
           "distribution": "ubuntu",
-          "versions": ["20.04", "22.04", "24.04"]
+          "versions": ["20.04", "22.04", "24.04", "26.04"]
         },
         {
           "os": "linux",
@@ -135,26 +135,15 @@
     {
       "packages": ["libgit2-devel"],
       "pre_install": [
-        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm" }
-      ],
-      "constraints": [
         {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["9"]
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         }
-      ]
-    },
-    {
-      "packages": ["libgit2-devel"],
-      "pre_install": [
-        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm" }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["10"]
+          "versions": ["9", "10"]
         }
       ]
     },

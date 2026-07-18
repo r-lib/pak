@@ -1,0 +1,20 @@
+{
+  "patterns": ["\\bdotnet9\\b"],
+  "dependencies": [
+    {
+      "packages": ["dotnet-runtime-9.0"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["8", "9", "10"]
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8", "9", "10"]
+        }
+      ]
+    }
+  ]
+}

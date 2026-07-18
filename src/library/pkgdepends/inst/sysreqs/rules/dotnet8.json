@@ -1,0 +1,40 @@
+{
+  "patterns": ["\\bdotnet8\\b"],
+  "dependencies": [
+    {
+      "packages": ["dotnet-runtime-8.0"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu",
+          "versions": ["22.04", "24.04"]
+        },
+        {
+          "os": "linux",
+          "distribution": "redhat",
+          "versions": ["8", "9", "10"]
+        },
+        {
+          "os": "linux",
+          "distribution": "rockylinux",
+          "versions": ["8", "9", "10"]
+        }
+      ]
+    },
+    {
+      "pre_install": [
+        { "command": "apt-get install -y software-properties-common" },
+        { "command": "add-apt-repository -y ppa:dotnet/backports" },
+        { "command": "apt-get update" }
+      ],
+      "packages": ["dotnet-runtime-8.0"],
+      "constraints": [
+        {
+          "os": "linux",
+          "distribution": "ubuntu",
+          "versions": ["26.04"]
+        }
+      ]
+    }
+  ]
+}

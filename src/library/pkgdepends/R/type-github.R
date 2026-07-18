@@ -320,6 +320,28 @@ github_pick_desc <- function(obj, dirs, get_node, rem, call.) {
   NULL
 }
 
+# The pull/release DESCRIPTION probes use GraphQL `file(path:)` fields, one per
+# candidate subdir. GitHub reports a `NOT_FOUND` error (not just a null node)
+# for every candidate that does not exist, which is expected while probing more
+# than one subdir. Drop those aliased file errors so that only genuine failures
+# (a missing repo, PR, release, ...) are left in `obj$errors`.
+github_drop_subdir_errors <- function(obj) {
+  if (is.null(obj$errors)) {
+    return(obj)
+  }
+  probe_miss <- vlapply(obj$errors, function(e) {
+    n <- length(e$path)
+    identical(e$type, "NOT_FOUND") &&
+      n > 0 &&
+      grepl("^desc[0-9]+$", e$path[[n]])
+  })
+  obj$errors <- obj$errors[!probe_miss]
+  if (length(obj$errors) == 0) {
+    obj$errors <- NULL
+  }
+  obj
+}
+
 type_github_builtin_token <- function() {
   pats <- c(
     paste0("3687d8b", "b0556b7c3", "72ba1681d", "e5e689b", "3ec61279"),
@@ -482,6 +504,7 @@ type_github_get_data_pull <- function(rem) {
 }
 
 check_github_response_pull <- function(resp, obj, rem, call.) {
+  obj <- github_drop_subdir_errors(obj)
   if (!is.null(obj$errors)) {
     throw(new_github_query_error(rem, resp, obj, call.))
   }
@@ -538,6 +561,7 @@ type_github_get_data_release <- function(rem) {
 }
 
 check_github_response_release <- function(resp, obj, rem, call.) {
+  obj <- github_drop_subdir_errors(obj)
   if (!is.null(obj$errors)) {
     throw(new_github_query_error(rem, resp, obj, call.))
   }
@@ -689,21 +713,24 @@ new_github_query_error <- function(rem, response, obj, call. = NULL) {
 
     # we don't actually get this response currently
   } else if (
-    grepl("Could not resolve to a User", vcapply(obj$errors, "[[", "message"))
+    any(grepl(
+      "Could not resolve to a User",
+      vcapply(obj$errors, "[[", "message")
+    ))
   ) {
     return(new_github_nouser_error(rem, obj, call. = call.)) # nocov
   } else if (
-    grepl(
+    any(grepl(
       "Could not resolve to a Repository",
       vcapply(obj$errors, "[[", "message")
-    )
+    ))
   ) {
     return(new_github_norepo_error(rem, obj, call. = call.))
   } else if (
-    grepl(
+    any(grepl(
       "Could not resolve to a PullRequest",
       vcapply(obj$errors, "[[", "message")
-    )
+    ))
   ) {
     return(new_github_nopr_error(rem, obj, call. = call.))
   }

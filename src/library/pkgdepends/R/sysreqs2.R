@@ -138,8 +138,8 @@ sysreqs2_scripts <- function(recs, sysreqs_platform, missing = FALSE) {
   plt <- parse_sysreqs_platform(sysreqs_platform)
   flatrecs <- unlist(recs, recursive = FALSE)
   upd <- sysreqs2_command(sysreqs_platform, "update")
-  pre <- unlist(lapply(flatrecs, "[[", "pre_install"))
-  post <- unlist(lapply(flatrecs, "[[", "post_install"))
+  pre <- unique(unlist(lapply(flatrecs, "[[", "pre_install")))
+  post <- unique(unlist(lapply(flatrecs, "[[", "post_install")))
   if (is.na(upd)) {
     upd <- character()
   }

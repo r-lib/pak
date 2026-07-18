@@ -54,26 +54,28 @@
     {
       "packages": ["grpc-devel", "pkgconf"],
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms" }
+        { "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && dnf copr enable -y ceph/grpc" }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["9"]
+          "versions": ["8"]
         }
       ]
     },
     {
       "packages": ["grpc-devel", "pkgconf"],
       "pre_install": [
-        { "command": "subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms" }
+        {
+          "command": "rpm -q epel-release || yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
+        }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["10"]
+          "versions": ["9", "10"]
         }
       ]
     },

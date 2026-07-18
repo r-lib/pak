@@ -59,10 +59,10 @@
     {
       "pre_install": [
         {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms"
+          "command": "subscription-manager repos --enable codeready-builder-for-rhel-$(rpm -E %rhel)-$(arch)-rpms"
         },
         {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         }
       ],
       "packages": ["mecab-devel"],
@@ -70,43 +70,7 @@
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["8"]
-        }
-      ]
-    },
-    {
-      "pre_install": [
-        {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms"
-        },
-        {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
-        }
-      ],
-      "packages": ["mecab-devel"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["9"]
-        }
-      ]
-    },
-    {
-      "pre_install": [
-        {
-          "command": "subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms"
-        },
-        {
-          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm"
-        }
-      ],
-      "packages": ["mecab-devel"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "redhat",
-          "versions": ["10"]
+          "versions": ["8", "9", "10"]
         }
       ]
     }

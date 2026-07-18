@@ -149,6 +149,28 @@ gh_app_file_objects <- function(aliases, cmt) {
   out
 }
 
+# GitHub reports a partial `NOT_FOUND` error for every `file(path:)` probe that
+# misses, even when the query otherwise succeeds. Mirror that here so tests hit
+# the same multi-error path real GitHub produces. `base_path` is the GraphQL
+# path prefix (a list of strings) up to, but not including, the alias.
+gh_app_file_errors <- function(aliases, cmt, base_path) {
+  errs <- list()
+  for (i in seq_along(aliases)) {
+    dsc <- if (is.null(cmt)) NULL else cmt$files[[aliases[[i]]]]
+    if (is.null(dsc)) {
+      errs[[length(errs) + 1L]] <- list(
+        type = "NOT_FOUND",
+        path = c(base_path, list(names(aliases)[i])),
+        message = sprintf(
+          "Could not resolve file for path '%s'.",
+          aliases[[i]]
+        )
+      )
+    }
+  }
+  errs
+}
+
 gh_app <- function(repos = NULL, log = interactive(), options = list()) {
   app <- webfakes::new_app()
 
@@ -292,21 +314,27 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
     for (cmt in commits) {
       if (!is.null(cmt$pull) && cmt$pull == psd$pull) {
         add_gh_headers(res)
-        res$send_json(
-          auto_unbox = TRUE,
-          list(
-            data = list(
-              repository = list(
-                pullRequest = list(
-                  headRefOid = cmt$sha,
-                  headRef = list(
-                    target = gh_app_file_objects(aliases, cmt)
-                  )
+        resp <- list(
+          data = list(
+            repository = list(
+              pullRequest = list(
+                headRefOid = cmt$sha,
+                headRef = list(
+                  target = gh_app_file_objects(aliases, cmt)
                 )
               )
             )
           )
         )
+        errs <- gh_app_file_errors(
+          aliases,
+          cmt,
+          list("repository", "pullRequest", "headRef", "target")
+        )
+        if (length(errs)) {
+          resp$errors <- errs
+        }
+        res$send_json(auto_unbox = TRUE, resp)
         return()
       }
     }
@@ -338,19 +366,25 @@ gh_app <- function(repos = NULL, log = interactive(), options = list()) {
           list(oid = cmt$sha),
           gh_app_file_objects(aliases, cmt)
         )
-        res$send_json(
-          auto_unbox = TRUE,
-          list(
-            data = list(
-              repository = list(
-                latestRelease = list(
-                  tagName = cmt$tagName,
-                  tagCommit = tagCommit
-                )
+        resp <- list(
+          data = list(
+            repository = list(
+              latestRelease = list(
+                tagName = cmt$tagName,
+                tagCommit = tagCommit
               )
             )
           )
         )
+        errs <- gh_app_file_errors(
+          aliases,
+          cmt,
+          list("repository", "latestRelease", "tagCommit")
+        )
+        if (length(errs)) {
+          resp$errors <- errs
+        }
+        res$send_json(auto_unbox = TRUE, resp)
         return()
       }
     }

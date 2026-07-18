@@ -1,21 +1,31 @@
 {
-  "patterns": ["\\bfluidsynth\\b"],
+  "patterns": [
+    "\\blibavif\\b"
+  ],
   "dependencies": [
     {
-      "packages": ["libfluidsynth-dev"],
+      "packages": [
+        "libavif-dev"
+      ],
       "constraints": [
+        {
+          "os": "linux",
+          "distribution": "debian"
+        },
         {
           "os": "linux",
           "distribution": "ubuntu"
         },
         {
           "os": "linux",
-          "distribution": "debian"
+          "distribution": "alpine"
         }
       ]
     },
     {
-      "packages": ["fluidsynth-devel"],
+      "packages": [
+        "libavif-devel"
+      ],
       "constraints": [
         {
           "os": "linux",
@@ -28,15 +38,15 @@
       ]
     },
     {
-      "packages": ["fluidsynth-devel"],
+      "packages": [
+        "libavif-devel"
+      ],
       "pre_install": [
-        { "command": "yum install -y epel-release" }
+        {
+          "command": "dnf install -y epel-release"
+        }
       ],
       "constraints": [
-        {
-          "os": "linux",
-          "distribution": "centos"
-        },
         {
           "os": "linux",
           "distribution": "rockylinux"
@@ -44,26 +54,23 @@
       ]
     },
     {
-      "packages": ["fluidsynth-devel"],
+      "packages": [
+        "libavif-devel"
+      ],
       "pre_install": [
         {
-          "command": "rpm -q epel-release || yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
+          "command": "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         }
       ],
       "constraints": [
         {
           "os": "linux",
           "distribution": "redhat",
-          "versions": ["8", "9", "10"]
-        }
-      ]
-    },
-    {
-      "packages": ["fluidsynth-dev"],
-      "constraints": [
-        {
-          "os": "linux",
-          "distribution": "alpine"
+          "versions": [
+            "8",
+            "9",
+            "10"
+          ]
         }
       ]
     }
