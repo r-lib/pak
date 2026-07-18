@@ -943,19 +943,7 @@ stop_task_install <- function(state, worker) {
 
   # A source package was served instead of a binary (from PPM typically)
   if (inherits(worker$result, "install_needs_build")) {
-    alert(
-      "info",
-      "{.pkg {pkg}} {.version {version}} was served as a source package, \\
-       building it from source"
-    )
-    state$plan$binary[[pkgidx]] <- FALSE
-    state$plan$build_done[[pkgidx]] <- FALSE
-    state$plan$worker_id[[pkgidx]] <- NA_character_
-    nc <- worker$result$needscompilation
-    if (!is.null(nc) && !is.na(nc)) {
-      state$plan$needscompilation[[pkgidx]] <- nc
-    }
-    return(state)
+    return(handle_install_needs_build(state, worker))
   }
 
   ## TODO: make sure the install status is non-zero on exit
@@ -994,6 +982,93 @@ stop_task_install <- function(state, worker) {
   state$plan$deps_left <- lapply(state$plan$deps_left, setdiff, pkg)
 
   state
+}
+
+# binary -> source fallback
+# 1. need all dependencies installed first
+# 2. need to restore LinkingTo dependencies as well
+# 3. a LinkingTo dependency might be missing from the plan, error
+# https://github.com/r-lib/pak/issues/891.
+
+handle_install_needs_build <- function(state, worker) {
+  pkgidx <- worker$task$args$pkgidx
+  pkg <- state$plan$package[pkgidx]
+  version <- state$plan$version[pkgidx]
+
+  check_source_fallback_linkingto(state$plan, pkgidx)
+
+  alert(
+    "info",
+    "{.pkg {pkg}} {.version {version}} was served as a source package,
+     will build it from source"
+  )
+
+  state$plan$binary[[pkgidx]] <- FALSE
+  state$plan$build_done[[pkgidx]] <- FALSE
+  state$plan$worker_id[[pkgidx]] <- NA_character_
+  nc <- worker$result$needscompilation
+  if (!is.null(nc) && !is.na(nc)) {
+    state$plan$needscompilation[[pkgidx]] <- nc
+  }
+
+  state$plan$dependencies[[pkgidx]] <- source_deps(state$plan, pkgidx)
+
+  # Now that the package is a source package, it must wait for its complete
+  # (recursive) dependency tree to be installed before it can be built.
+  # `add_recursive_dependencies()` expands the `dependencies` of every source
+  # package to its recursive closure; re-running it now picks up this package
+  # too. It is idempotent for the packages that were already source packages.
+  state$plan <- add_recursive_dependencies(state$plan)
+  installed <- state$plan$package[state$plan$install_done]
+  state$plan$deps_left[[pkgidx]] <-
+    setdiff(state$plan$dependencies[[pkgidx]], installed)
+
+  state
+}
+
+check_source_fallback_linkingto <- function(plan, pkgidx) {
+  pkg <- plan$package[[pkgidx]]
+  deps <- plan$deps[[pkgidx]]
+  if (is.null(deps) || !all(c("package", "type") %in% names(deps))) {
+    return(invisible())
+  }
+  linkingto <- deps$package[tolower(deps$type) == "linkingto"]
+  linkingto <- setdiff(linkingto, c("R", base_packages()))
+  missing <- setdiff(linkingto, plan$package)
+  if (length(missing) == 0) {
+    return(invisible())
+  }
+  throw(pkg_error(
+    "Cannot install {.pkg {pkg}} from source: it was served as a source
+     package instead of a binary (typically by Posit Package Manager), but
+     {cli::qty(missing)} its {.code LinkingTo} dependenc{?y/ies}
+     {.pkg {missing}} {cli::qty(missing)}{?is/are} not part of the
+     installation plan.",
+    i = "{.code LinkingTo} dependencies are omitted from the plan for binary
+      packages, because they are not needed to install a binary.",
+    i = "To build {.pkg {pkg}} from source, set the
+      {.code pkg.include_linkingto} option or the
+      {.envvar PKG_INCLUDE_LINKINGTO} environment variable to {.code TRUE}
+      and try again, to always include {.code LinkingTo} dependencies in the
+      installation plan."
+  ))
+}
+
+source_deps <- function(plan, pkgidx) {
+  known <- plan$dependencies[[pkgidx]]
+  deps <- plan$deps[[pkgidx]]
+  if (is.null(deps) || !all(c("package", "type") %in% names(deps))) {
+    return(known)
+  }
+  types <- if ("dep_types" %in% names(plan)) {
+    intersect(plan$dep_types[[pkgidx]], pkg_dep_types_hard())
+  } else {
+    pkg_dep_types_hard()
+  }
+  pkgs <- deps$package[tolower(deps$type) %in% tolower(types)]
+  pkgs <- intersect(pkgs, plan$package)
+  pkgs <- setdiff(pkgs, c(plan$package[[pkgidx]], "R", base_packages()))
+  unique(c(known, pkgs))
 }
 
 create_install_result <- function(state) {

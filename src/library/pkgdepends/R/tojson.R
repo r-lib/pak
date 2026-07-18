@@ -55,6 +55,9 @@ tojson <- local({
   # Atomic columns are unboxed. Atomic NA values are omitted.
   # List columns remove the extra wrapping list.
   j_df <- function(x, opts) {
+    if (nrow(x) == 0L) {
+      return("[]")
+    }
     sub <- unlist(comma(
       lapply(seq_len(nrow(x)), function(i) {
         row <- as.list(x[i, ])

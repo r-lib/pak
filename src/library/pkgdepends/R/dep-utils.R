@@ -30,6 +30,22 @@ make_null_deps <- function() {
   )
 }
 
+lockfile_deps <- function(deps) {
+  if (length(deps) == 0) {
+    return(make_null_deps())
+  }
+  get <- function(field) {
+    vcapply(deps, function(d) d[[field]] %||% NA_character_)
+  }
+  data_frame(
+    ref = get("ref"),
+    type = get("type"),
+    package = get("package"),
+    op = get("op"),
+    version = get("version")
+  )
+}
+
 parse_deps <- function(deps, type) {
   assert_that(length(deps) == length(type))
   deps <- lapply(strsplit(deps, ","), str_trim)
