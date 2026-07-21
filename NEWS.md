@@ -52,8 +52,8 @@
   environment variable or the `pkg_http_retry` option to `FALSE` to disable
   retries.
 
-* `pkg_status()`, `pkg_deps_explaion()`, `pkg_deps_tree()` now check length of
-  `pkg` input correctly (#333, @jmbarbone)
+* `pkg_status()`, `pkg_deps()`, `pkg_deps_tree()`, `pkg_deps_explain()`,  now 
+  check length of `pkg` input correctly (#333, @jmbarbone)
 
 # pak 0.10.0
 
