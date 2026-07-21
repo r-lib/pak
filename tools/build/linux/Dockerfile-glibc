@@ -61,6 +61,11 @@ RUN printf '#!/bin/sh\nexec /usr/bin/pkg-config --static "$@"\n' \
       > /usr/local/bin/pkg-config && \
     chmod +x /usr/local/bin/pkg-config
 
+# hide bundled static-library symbols -------------------------------------
+
+RUN printf 'LDFLAGS += -Wl,--exclude-libs,ALL -Wl,-Bsymbolic\n' \
+      >> "$(R RHOME)/etc/Makevars.site"
+
 # Build binary package ----------------------------------------------------
 
 COPY pak_*.tar.gz /root/
