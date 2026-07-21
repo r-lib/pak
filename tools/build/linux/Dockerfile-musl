@@ -36,6 +36,11 @@ RUN for w in pkg-config pkgconf; do \
       chmod +x /usr/local/bin/$w; \
     done
 
+# hide bundled static-library symbols --------------------------------------
+
+RUN printf 'LDFLAGS += -Wl,--exclude-libs,ALL -Wl,-Bsymbolic\n' \
+      >> "$(R RHOME)/etc/Makevars.site"
+
 # Build binary package -----------------------------------------------------
 
 # needed for C23, which is the default on R-devel
