@@ -1,5 +1,17 @@
 # Changelog
 
+## pak 0.11.1
+
+CRAN release: 2026-07-22
+
+- Installing a package from a GitHub release (e.g. `user/repo@*release`)
+  or pull request works again
+  ([\#900](https://github.com/r-lib/pak/issues/900)).
+
+- More improvements when a repository (typically Posit Package Manager)
+  serves a source package instead of the requested binary
+  ([\#891](https://github.com/r-lib/pak/issues/891)).
+
 ## pak 0.11.0
 
 CRAN release: 2026-07-15

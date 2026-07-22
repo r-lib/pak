@@ -9,7 +9,7 @@ options (as in base::options())."><script src="https://cdn.jsdelivr.net/gh/posit
 
     <a class="navbar-brand me-2" href="../index.html">pak</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.11.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,9 +115,13 @@ with the default settings, or <code>FALSE</code> to never retry. Defaults to
 requests.</p></li>
 <li><p>‘ignore_dev_library’: (Env var: <code>PKG_IGNORE_DEV_LIBRARY</code>, option: <code>pkg.ignore_dev_library</code>.) Whether to ignore library directories called <code>__dev_lib__</code>.</p></li>
 <li><p>‘include_linkingto’: (Env var: <code>PKG_INCLUDE_LINKINGTO</code>, option: <code>pkg.include_linkingto</code>.) Whether to always include <code>LinkingTo</code> dependencies in the solution
-of and installation, even if they are needed because the packages
+of and installation, even if they are not needed because the packages
 are installed from binaries. This is sometimes useful, see e.g.
-<a href="https://github.com/r-lib/pak/issues/485" class="external-link">https://github.com/r-lib/pak/issues/485</a> for an example use case.</p></li>
+<a href="https://github.com/r-lib/pak/issues/485" class="external-link">https://github.com/r-lib/pak/issues/485</a> for an example use case.
+It is also needed if a repository (Posit Package Manager typically)
+might serve a source package instead of a binary, so that the source
+package can be built, see
+<a href="https://github.com/r-lib/pak/issues/891" class="external-link">https://github.com/r-lib/pak/issues/891</a>.</p></li>
 <li><p>‘library’: (Env var: <code>PKG_LIBRARY</code>, option: <code>pkg.library</code>.) Package library to install packages to. It is also used for
 already installed packages when considering dependencies.</p></li>
 <li><p>‘metadata_cache_dir’: (Env var: <code>PKG_METADATA_CACHE_DIR</code>, option: <code>pkg.metadata_cache_dir</code>.) Location of metadata replica of
