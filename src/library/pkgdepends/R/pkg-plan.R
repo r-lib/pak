@@ -255,6 +255,7 @@ pkgplan_init_lockfile <- function(
       pkgs,
       function(x) unlist(x$dependencies) %||% character()
     ),
+    deps = lapply(pkgs, function(x) lockfile_deps(x$deps)),
     sources = lapply(pkgs, function(x) unlist(x$sources)),
     metadata = lapply(pkgs, function(x) unlist(x$metadata)),
     dep_types = lapply(pkgs, function(x) unlist(x$dep_types)),

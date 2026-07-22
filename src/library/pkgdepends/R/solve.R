@@ -1426,6 +1426,7 @@ pkgplan_export_install_plan <- function(self, private, plan_file, version) {
     "direct",
     "binary",
     "dependencies",
+    "deps",
     "vignettes",
     "needscompilation",
     "metadata",
