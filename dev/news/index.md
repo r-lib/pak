@@ -2,6 +2,10 @@
 
 ## pak (development version)
 
+## pak 0.11.1
+
+CRAN release: 2026-07-22
+
 - Installing a package from a GitHub release (e.g. `user/repo@*release`)
   or pull request works again
   ([\#900](https://github.com/r-lib/pak/issues/900)).
