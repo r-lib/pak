@@ -1,5 +1,11 @@
 # pak (development version)
 
+* Installing a package from a GitHub release (e.g. `user/repo@*release`) or
+  pull request works again (#900).
+
+* More improvements when a repository (typically Posit Package Manager)
+  serves a source package instead of the requested binary (#891).
+
 # pak 0.11.0
 
 * pak now supports the `configure_args` and `configure_vars` configuration
