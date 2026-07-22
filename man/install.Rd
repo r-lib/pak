@@ -32,7 +32,7 @@ This is supported for the following systems:\tabular{lll}{
    Windows \tab aarch64 \tab R 4.4.0 - R-devel \cr
    FreeBSD 13.4 or later \tab x86_64 \tab R 4.5.x (13.x), R 4.6.x (later) \cr
    OpenBSD 7.7, 7.8 \tab x86_64 \tab R 4.4.x (7.7), R 4.5.x (7.8) \cr
-   NetBSD 10.0 \tab x86_64 \tab R 4.5.x \cr
+   NetBSD 10.1 \tab x86_64 \tab R 4.6.x \cr
    DragonFly BSD 6.4 \tab x86_64 \tab R 4.4.x \cr
 }
 
