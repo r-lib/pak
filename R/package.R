@@ -78,6 +78,7 @@ pkg_install <- function(
   ask = interactive(),
   dependencies = NA
 ) {
+  stopifnot(length(pkg) > 0L)
   start <- Sys.time()
 
   lib <- lib %||% lib_default()
