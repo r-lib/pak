@@ -98,10 +98,13 @@ Some examples:
 
 - ‘include_linkingto’: (Env var: `PKG_INCLUDE_LINKINGTO`, option:
   `pkg.include_linkingto`.) Whether to always include `LinkingTo`
-  dependencies in the solution of and installation, even if they are
+  dependencies in the solution of and installation, even if they are not
   needed because the packages are installed from binaries. This is
   sometimes useful, see e.g. <https://github.com/r-lib/pak/issues/485>
-  for an example use case.
+  for an example use case. It is also needed if a repository (Posit
+  Package Manager typically) might serve a source package instead of a
+  binary, so that the source package can be built, see
+  <https://github.com/r-lib/pak/issues/891>.
 
 - ‘library’: (Env var: `PKG_LIBRARY`, option: `pkg.library`.) Package
   library to install packages to. It is also used for already installed
