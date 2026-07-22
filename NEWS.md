@@ -58,6 +58,10 @@
   environment variable or the `pkg_http_retry` option to `FALSE` to disable
   retries.
 
+* Length checks for `pkg` are improved for `pkg_status()`, `pkg_deps()`, 
+  `pkg_deps_tree()`, `pkg_deps_explain()`, and `pkg_install()` (#333, #716, 
+  https://github.com/r-lib//pkgdepends/issues/449, @jmbarbone)
+
 # pak 0.10.0
 
 * pak now supports Posit Package Manager's Sigle Sign-On authentication.
