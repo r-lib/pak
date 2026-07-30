@@ -15,6 +15,15 @@
   `PKGCACHE_HTTP_VERSION` environment variable. Closes
   https://github.com/r-lib/pkgcache/issues/140.
 
+* pkgcache now supports the custom binary package types of R 4.6.0 and
+  later.
+
+* `current_r_platform_data()` gained a `pkg_type` column, for custom binary
+  package types.
+
+* `current_r_platform()` now handles setting `PKG_CURRENT_PLATFORM` to
+  a non-Linux platform correctly.
+
 * New `PKG_USE_BIOCONDUCTOR` environment variable and new
   `pkg.use_bioconductor` option to opt out from automatic Bioconductor
   support.

@@ -131,7 +131,9 @@ cmc__data <- new.env(parent = emptyenv())
 #'    column is either
 #'    * `"source"` for source packages,
 #'    * a platform string, e.g. `x86_64-apple-darwin17.0` for macOS
-#'      packages compatible with macOS High Sierra or newer.
+#'      packages compatible with macOS High Sierra or newer,
+#'    * a platform string with a custom binary package type, e.g.
+#'      `aarch64-w64-mingw32-windows.binary.clang-aarch64`.
 #' * `needscompilation`: Whether the package needs compilation.
 #' * `type`: `bioc` or `cran`  currently.
 #' * `target`: The path of the package file inside the repository.
@@ -487,7 +489,6 @@ cmc__get_cache_files <- function(self, private, which) {
     version = private$cache_version
   ))
 
-  str_platforms <- paste(private$platforms, collapse = "+")
   rds_file <- paste0("pkgs-", substr(repo_hash, 1, 10), ".rds")
 
   repo_enc <- rep(repo_encode(private$repos), each = nrow(private$dirs))

@@ -41,6 +41,20 @@
 #'   - `x86_64-pc-linux-gnu-unknown`: Unknown Linux Distribution on x86_64.
 #'   - `s390x-ibm-linux-gnu-ubuntu-20.04`: Ubuntu Linux 20.04 on S390x.
 #'   - `amd64-portbld-freebsd12.1`: FreeBSD 12.1 on x86_64.
+#' * A platform string as above, followed by a custom binary package type.
+#'   From R 4.6.0 `.Platform$pkgType` may be `<system>.binary.<build>`, and
+#'   then binary packages live in `bin/<system>/<build>/contrib/<x.y>` in
+#'   the repository, see [utils::contrib.url()]. pkgcache includes the
+#'   package type in the platform name, so that two builds of R for the
+#'   same platform triple remain distinguishable. Examples:
+#'   - `aarch64-w64-mingw32-windows.binary.clang-aarch64`: Windows on arm64,
+#'     built with clang.
+#'   - `aarch64-apple-darwin23-mac.binary.sonoma-arm64`: macOS Sonoma on
+#'     arm64. (This is the same as `aarch64-apple-darwin23`, which pkgcache
+#'     already knows about, so `current_r_platform()` uses the shorter form.)
+#'
+#'   A package type on its own, without a platform triple, is not a valid
+#'   platform name.
 #'
 #' @return `current_r_platform()` returns a character scalar.
 #'
@@ -51,6 +65,7 @@
 #'   * `os`,
 #'   * `distribution` (only on Linux),
 #'   * `release` (only on Linux),
+#'   * `pkg_type` (only for a custom binary package type),
 #'   * `platform`: the concatenation of the other columns, separated by
 #'     a dash.
 #' @export
@@ -74,9 +89,16 @@ current_r_platform_data <- function() {
     if (platform$os == "linux" || substr(platform$os, 1, 6) == "linux-") {
       platform <- current_r_platform_data_linux(platform)
     }
+    # Must come after the Linux amendment, `pkg_type` is the last column
+    pkg_type <- current_r_custom_pkg_type(platform$os)
+    if (!is.null(pkg_type)) {
+      platform$pkg_type <- pkg_type
+    }
   }
 
-  platform$platform <- apply(platform, 1, paste, collapse = "-")
+  platform$platform <- apply(platform, 1, function(x) {
+    paste0(na_omit(x), collapse = "-")
+  })
   platform
 }
 
@@ -92,8 +114,9 @@ forced_platform <- function() {
     }
     if (!valid_platform_string(opt)) {
       stop(
-        "The pkg.current_platform` option must be a valid platform ",
-        "triple: `cpu-vendor-os`. \"",
+        "The pkg.current_platform` option must be a valid platform name: ",
+        "`cpu-vendor-os`, optionally followed by a Linux distribution and ",
+        "release, or a binary package type. \"",
         opt,
         "\" is not."
       )
@@ -105,7 +128,8 @@ forced_platform <- function() {
     if (is.na(env) || !valid_platform_string(env)) {
       stop(
         "The `PKG_CURRENT_PLATFORM` environment variable must be a valid ",
-        "platform triple: \"cpu-vendor-os\". \"",
+        "platform name: \"cpu-vendor-os\", optionally followed by a Linux ",
+        "distribution and release, or a binary package type. \"",
         env,
         "\" is not."
       )
@@ -120,8 +144,81 @@ get_platform <- function(forced = TRUE) {
   (if (forced) forced_platform()) %||% R.version$platform
 }
 
+re_pkg_type <- function() {
+  paste0(
+    "^",
+    "(?P<system>[[:lower:]]+)",
+    "[.]binary",
+    "(?:|[.](?P<build>[[:alnum:]_-]+))",
+    "$"
+  )
+}
+
+# NULL if `x` is not a binary package type
+
+parse_pkg_type <- function(x) {
+  mch <- re_match(x, re_pkg_type())
+  if (is.na(mch$.match)) {
+    return(NULL)
+  }
+  system <- switch(mch$system, mac = "macosx", win = "windows", mch$system)
+  list(
+    system = system,
+    build = if (nzchar(mch$build)) mch$build else NA_character_
+  )
+}
+
+is_custom_pkg_type <- function(x) {
+  !is.null(parse_pkg_type(x)) &&
+    x != "win.binary" &&
+    !startsWith(x, "mac.binary")
+}
+
+current_r_pkg_type <- function() {
+  # `.Platform$pkgType` already includes R_PLATFORM_PKGTYPE, if set
+  .Platform$pkgType
+}
+
+# The `<system>` of the package type that we expect for an OS name. Used to
+# reject package types that do not belong to the current platform.
+
+pkg_type_system_for_os <- function(os) {
+  ifelse(
+    is.na(os),
+    NA_character_,
+    ifelse(
+      os == "mingw32",
+      "windows",
+      ifelse(
+        grepl("^darwin", os),
+        "macosx",
+        ifelse(
+          os == "linux" | startsWith(os, "linux-"),
+          "linux",
+          # freebsd12.1 -> freebsd, solaris2.10 -> solaris
+          sub("[0-9].*$", "", os)
+        )
+      )
+    )
+  )
+}
+
+# The custom package type of the current R, or NULL
+
+current_r_custom_pkg_type <- function(os) {
+  type <- current_r_pkg_type()
+  if (!is_custom_pkg_type(type)) {
+    return(NULL)
+  }
+  pt <- parse_pkg_type(type)
+  if (!identical(pt$system, pkg_type_system_for_os(os))) {
+    return(NULL)
+  }
+  type
+}
+
 #' @details
-#' `default_platfoms()` returns the default platforms for the current R
+#' `default_platforms()` returns the default platforms for the current R
 #' session. These typically consist of the detected platform of the current
 #' R session, and `"source"`, for source packages.
 #'
@@ -137,6 +234,11 @@ default_platforms <- function() {
 }
 
 parse_platform <- function(x) {
+  # custom binary package via .Platform$pkgType?
+  pkgtype <- re_match(x, re_platform_pkg_type())
+  haspt <- !is.na(pkgtype$.match)
+  x[haspt] <- pkgtype$rest[haspt]
+
   pcs <- strsplit(x, "-", fixed = TRUE)
   plt <- data.frame(
     stringsAsFactors = FALSE,
@@ -154,7 +256,20 @@ parse_platform <- function(x) {
     linuxos$release[linuxos$release == ""] <- NA_character_
     plt <- cbind(plt, linuxos[, c("distribution", "release")])
   }
+  if (any(haspt)) {
+    plt$pkg_type <- ifelse(haspt, pkgtype$pkg_type, NA_character_)
+  }
   plt
+}
+
+re_platform_pkg_type <- function() {
+  paste0(
+    "^",
+    "(?P<rest>.*)",
+    "[-]",
+    "(?P<pkg_type>[[:lower:]]+[.]binary(?:[.][[:alnum:]_-]+)?)",
+    "$"
+  )
 }
 
 re_linux_platform <- function() {
@@ -170,19 +285,14 @@ re_linux_platform <- function() {
 get_cran_extension <- function(platform) {
   res <- rep(NA_character_, length(platform))
   res[platform == "source"] <- ".tar.gz"
-  res[
-    platform %in%
-      c(
-        "windows",
-        "i386+x86_64-w64-mingw32",
-        "x86_64-w64-mingw32",
-        "i386-w64-mingw32"
-      )
-  ] <- ".zip"
+  # These are not platform triples, `parse_platform()` cannot help
+  res[platform == "windows"] <- ".zip"
   res[platform == "macos"] <- ".tgz"
 
   dtl <- parse_platform(platform)
-  res[!is.na(dtl$os) & grepl("^darwin", dtl$os)] <- ".tgz"
+  res[is.na(res) & !is.na(dtl$os) & dtl$os == "mingw32"] <- ".zip"
+  res[is.na(res) & !is.na(dtl$os) & grepl("^darwin", dtl$os)] <- ".tgz"
+
   if (anyNA(res)) {
     res[is.na(res)] <- paste0("_R_", platform[is.na(res)], ".tar.gz")
   }
@@ -228,6 +338,19 @@ get_package_dirs_for_platform <- function(pl, minors) {
     return(cbind("source", "*", "src/contrib"))
   }
 
+  # Custom binary package type in the platform name. This is unambiguous,
+  # the `<system>` and `<build>` come straight from the package type, we do
+  # not need to look at the OS at all.
+  ppl <- parse_platform(pl)
+  if (!is.null(ppl$pkg_type) && !is.na(ppl$pkg_type)) {
+    pt <- parse_pkg_type(ppl$pkg_type)
+    return(cbind(
+      pl,
+      minors,
+      contrib_url_path(pt$system, pt$build, minors)
+    ))
+  }
+
   if (
     pl %in%
       c("x86_64-w64-mingw32", "i386-w64-mingw32", "i386+x86_64-w64-mingw32")
@@ -235,7 +358,7 @@ get_package_dirs_for_platform <- function(pl, minors) {
     return(cbind(
       pl,
       minors,
-      paste0("bin/windows/contrib/", minors)
+      contrib_url_path("windows", NA_character_, minors)
     ))
   }
 
@@ -243,7 +366,7 @@ get_package_dirs_for_platform <- function(pl, minors) {
     return(cbind(
       "i386+x86_64-w64-mingw32",
       minors,
-      paste0("bin/windows/contrib/", minors)
+      contrib_url_path("windows", NA_character_, minors)
     ))
   }
 
@@ -263,12 +386,7 @@ get_package_dirs_for_platform <- function(pl, minors) {
         cbind(
           rpl$platform,
           v,
-          paste0(
-            "bin/macosx/",
-            ifelse(nchar(rpl$subdir), paste0(rpl$subdir, "/"), ""),
-            "contrib/",
-            v
-          )
+          contrib_url_path("macosx", rpl$subdir, v)
         )
       }
     })
@@ -281,15 +399,25 @@ get_package_dirs_for_platform <- function(pl, minors) {
 
   rbind(
     if (nrow(cranmrv)) {
-      dirs <- paste0(
-        "bin/macosx/",
-        ifelse(nchar(cranmrv$subdir), paste0(cranmrv$subdir, "/"), ""),
-        "contrib/",
+      dirs <- contrib_url_path(
+        "macosx",
+        cranmrv$subdir,
         cranmrv$rversion
       )
       cbind(pl, cranmrv$rversion, dirs)
     },
     if (xtr) cbind(pl, minors, paste0("bin/", pl, "/", minors))
+  )
+}
+
+contrib_url_path <- function(system, build, rversion) {
+  paste0(
+    "bin/",
+    system,
+    "/",
+    ifelse(is.na(build) | !nzchar(build), "", paste0(build, "/")),
+    "contrib/",
+    rversion
   )
 }
 

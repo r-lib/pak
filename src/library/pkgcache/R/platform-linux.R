@@ -11,7 +11,10 @@ current_r_platform_data_linux <- function(raw, etc = "/etc") {
   )
 
   cbind(
-    raw[, setdiff(names(raw), c("distribution", "release")), drop = FALSE],
+    raw[,
+      setdiff(names(raw), c("distribution", "release", "pkg_type")),
+      drop = FALSE
+    ],
     parse_linux_platform_info(os, rh)
   )
 }
