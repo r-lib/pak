@@ -20,7 +20,15 @@ on:
         - 'no'
         default: 'yes'
       windows:
-        description: 'Windows'
+        description: 'Windows x86_64'
+        required: true
+        type: choice
+        options:
+        - 'yes'
+        - 'no'
+        default: 'yes'
+      windows-arm64:
+        description: 'Windows aarch64'
         required: true
         type: choice
         options:
@@ -67,11 +75,13 @@ jobs:
         run: |
           echo "macos: ${{ github.event.inputs.macos }}"
           echo "windows: ${{ github.event.inputs.windows }}"
+          echo "windows-arm64: ${{ github.event.inputs.windows-arm64 }}"
           echo "linux: ${{ github.event.inputs.linux }}"
           echo "macos-arm64: ${{ github.event.inputs.macos-arm64 }}"
           echo "deploy: ${{ github.event.inputs.deploy }}"
           echo "macos: ${{ github.event.inputs.macos == 'yes' }}"
           echo "windows: ${{ github.event.inputs.windows == 'yes' }}"
+          echo "windows-arm64: ${{ github.event.inputs.windows-arm64 == 'yes' }}"
           echo "linux: ${{ github.event.inputs.linux == 'yes' }}"
           echo "macos-arm64: ${{ github.event.inputs.macos-arm64 == 'yes' }}"
           echo "bsd: ${{ github.event.inputs.bsd == 'yes' }}"
@@ -238,6 +248,58 @@ jobs:
         path: tools/build/windows/lib/*/pak_*.zip
         if-no-files-found: error
 
+  # ------------------------------------------------------------------------
+
+  windows-arm64:
+    runs-on: windows-11-arm
+    if: ${{ github.event.inputs.windows-arm64 == '' || github.event.inputs.windows-arm64 == 'yes' }}
+    name: Windows aarch64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: '4.4' }
+          # - { r: '4.5' }
+          # - { r: '4.6' }
+          # - { r: devel }
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 10
+
+    - name: git config
+      run: |
+        git config --global user.name "GHA nightly build"
+        git config --global user.email "gaborcsardi@users.noreply.github.com"
+
+    - name: Install rig
+      run: |
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha/rig-windows-arm64-0.10.0-alpha.exe -OutFile rig-install.exe
+        Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
+
+    - name: Install R and RTools
+      run: |
+        Foreach($ver in (rig ls --plain)) { rig rm $ver }
+        rig config set mode=user
+        rig add ${{ matrix.config.r }}
+        rig rtools add
+        choco install make zip
+
+    - name: Build pak binaries
+      run: |
+        cd tools/build/windows && make build
+
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v7
+      with:
+        name: pkg-windows-aarch64-${{ matrix.config.r }}
+        path: tools/build/windows/lib/*/pak_*.zip
+        if-no-files-found: error
+
   # -----------------------------------------------------------------------
 
   linux:
@@ -347,11 +409,12 @@ jobs:
 
   push:
     runs-on: ubuntu-latest
-    needs: [ macos, windows, linux, macos-arm64, bsd ]
+    needs: [ macos, windows, windows-arm64, linux, macos-arm64, bsd ]
     if: |
       !cancelled() && (
         needs.macos.result != 'skipped' ||
         needs.windows.result != 'skipped' ||
+        needs.windows-arm64.result != 'skipped' ||
         needs.linux.result != 'skipped' ||
         needs.macos-arm64.result != 'skipped' ||
         needs.bsd.result != 'skipped'

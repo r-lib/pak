@@ -19,7 +19,7 @@ build: $(DONE)
 R-%: lib/R-%.done
 	@true
 
-R="C:\Program Files\R\R-$(RVERSION_DEFAULT)\bin\R.exe"
+R="R-$(RVERSION_DEFAULT).bat"
 pak_$(PAKVERSION).tar.gz:
 	$(R) CMD build $(PKGROOT)
 
@@ -27,7 +27,7 @@ lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	@echo "----- CLEANING INSTALLATION ($*) ---------------------------"
 	rm -rf $@
 	mkdir -p lib/$*
-	"C:\Program Files\R\R-$*\bin\R.exe" CMD INSTALL -l lib/$* \
+	"R-$*.bat" CMD INSTALL -l lib/$* \
 		pak_$(PAKVERSION).tar.gz
 	rm -rf lib/$*/pak/library/_cache
 	rm -rf lib/$*/pak/library/*/help
