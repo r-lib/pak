@@ -1853,29 +1853,29 @@
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.4",
-          "pak.version": "0.9.0",
+          "pak.version": "0.11.1",
           "pak.revision": "TODO",
-          "buildtime": "2025-10-08T13:12:06+00:00",
-          "size": 9142596,
-          "digest": "sha256:3f54026a237f7fb33a7cfc2220dd6a8edc6459c903db934052e0cfbee7bb5634"
+          "buildtime": "2026-08-01T13:52:37+00:00",
+          "size": 10827150,
+          "digest": "sha256:5d8da49d1dc48c9bdb78ebeeeb4399c081753d9589005d6675205fa5e15ba389"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.5",
-          "pak.version": "0.9.0",
+          "pak.version": "0.11.1",
           "pak.revision": "TODO",
-          "buildtime": "2025-10-08T13:16:11+00:00",
-          "size": 9144707,
-          "digest": "sha256:a483376070e92c2047cb21dc55c5637ef90d16fe604d4a139b65fba8527dc270"
+          "buildtime": "2026-08-01T13:52:36+00:00",
+          "size": 10823884,
+          "digest": "sha256:79725c709e395a812b9af7dc562e8e3dc1acefb43df686a9d74bb82522e0fc1d"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.6",
-          "pak.version": "0.9.5",
+          "pak.version": "0.11.1",
           "pak.revision": "TODO",
-          "buildtime": "2026-05-04T09:39:01+00:00",
-          "size": 9182523,
-          "digest": "sha256:4c0112e9272327950607611759fa26f8f1ef18b057cb4328525d61492292eee3"
+          "buildtime": "2026-08-01T13:52:37+00:00",
+          "size": 10825177,
+          "digest": "sha256:911d460f619dbd562c4ad1d01148689b7ec63d5959d7a943f19f36c9dc7e19d0"
         },
         {
           "r.platform": "amd64-portbld-freebsd13.5",
@@ -1952,11 +1952,11 @@
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.7",
-          "pak.version": "0.9.5",
+          "pak.version": "0.11.1",
           "pak.revision": "TODO",
-          "buildtime": "2026-05-04T09:48:50+00:00",
-          "size": 9181373,
-          "digest": "sha256:3b916d7c97ff88a6143b87db808a2ca45704cde24fbb79ad1481800da8c703b2"
+          "buildtime": "2026-08-01T13:52:37+00:00",
+          "size": 10821272,
+          "digest": "sha256:61079d216845689bd3036d9623139659a8528ceb801496ae00b93362cbce231d"
         },
         {
           "r.platform": "amd64-portbld-freebsd15.0",
