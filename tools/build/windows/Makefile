@@ -19,15 +19,15 @@ build: $(DONE)
 R-%: lib/R-%.done
 	@true
 
-R="R-$(RVERSION_DEFAULT).bat"
+R=rig run -r $(RVERSION_DEFAULT)
 pak_$(PAKVERSION).tar.gz:
-	$(R) CMD build $(PKGROOT)
+	$(R) --cmd build $(PKGROOT)
 
 lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	@echo "----- CLEANING INSTALLATION ($*) ---------------------------"
 	rm -rf $@
 	mkdir -p lib/$*
-	"R-$*.bat" CMD INSTALL -l lib/$* \
+	rig run -r $* --cmd INSTALL -l lib/$* \
 		pak_$(PAKVERSION).tar.gz
 	rm -rf lib/$*/pak/library/_cache
 	rm -rf lib/$*/pak/library/*/help
