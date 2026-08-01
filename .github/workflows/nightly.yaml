@@ -278,7 +278,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha/rig-windows-arm64-0.10.0-alpha.exe -OutFile rig-install.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-arm64-0.10.0-alpha2.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install R and RTools
