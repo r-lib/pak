@@ -260,9 +260,9 @@ jobs:
       matrix:
         config:
           - { r: '4.4' }
-          # - { r: '4.5' }
-          # - { r: '4.6' }
-          # - { r: devel }
+          - { r: '4.5' }
+          - { r: '4.6' }
+          - { r: devel }
 
     steps:
 
