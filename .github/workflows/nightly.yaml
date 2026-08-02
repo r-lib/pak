@@ -226,7 +226,7 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.8.0/rig-windows-0.8.0.exe -OutFile rig-install.exe
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-0.10.0-alpha2.exe -OutFile rig-install.exe
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     # no P3M, because a pak bug fails to install glue@1.6.2 from PPM
