@@ -240,6 +240,8 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/windows && make build
+      env:
+        RTOOLS40_HOME: C:\rtools40
 
     - name: Upload package artifacts
       uses: actions/upload-artifact@v7
