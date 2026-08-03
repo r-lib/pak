@@ -248,7 +248,9 @@ res_init <- function(self, private, config, cache, library, remote_types) {
       fail_val <- data_frame(
         ref = rec$ref,
         type = vcapply(rec$remote, "[[", "type"),
-        package = vcapply(rec$remote, function(r) r$package %|z|% NA_character_),
+        package = vcapply(rec$remote, function(r) {
+          r$package %|z|% NA_character_
+        }),
         version = NA_character_,
         sources = replicate(nrow(rec), NA_character_, simplify = FALSE),
         direct = rec$direct,
@@ -445,7 +447,13 @@ res__set_result_list <- function(self, private, row_idx, value) {
 
 res__sysreqs_match <- function(self, private) {
   if ("sysreqs" %in% names(self$result)) {
-    sys <- sysreqs2_match(self$result$sysreqs, config = private$config)
+    # Manylinux binaries don't need system packages.
+    sysreqs <- self$result$sysreqs
+    sysreqs[binary_needs_no_sysreqs(
+      self$result$platform,
+      self$result$mirror
+    )] <- NA_character_
+    sys <- sysreqs2_match(sysreqs, config = private$config)
     if (!is.null(spkgs <- private$system_packages)) {
       spkgs <- spkgs[grepl("^.i$", spkgs$status), ] # nocovif !is_linux()
       allspkgs <- unique(unlist(c(spkgs$package, spkgs$provides))) # nocovif !is_linux()

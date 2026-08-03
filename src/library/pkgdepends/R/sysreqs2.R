@@ -334,6 +334,29 @@ sysreqs2_match <- function(
   result
 }
 
+# Same as pkgcache. E.g. https://p3m.dev/cran/__linux__/manylinux_2_28/latest
+
+re_ppm_linux_repo <- function() {
+  paste0(
+    "^",
+    "(?<base>.*/)",
+    "(?<repo>[^/]+)/",
+    "__linux__/",
+    "(?<distro>[a-zA-Z0-9_]+)/",
+    "(?<version>latest|[-0-9]+)",
+    "$"
+  )
+}
+
+is_ppm_manylinux_repo <- function(urls) {
+  mch <- re_match(sub("/+$", "", as.character(urls)), re_ppm_linux_repo())
+  !is.na(mch$.match) & grepl("^manylinux", mch$distro)
+}
+
+binary_needs_no_sysreqs <- function(platform, mirror) {
+  !is.na(platform) & platform != "source" & is_ppm_manylinux_repo(mirror)
+}
+
 sysreqs_update_state <- function(sys, spkgs = NULL) {
   spkgs <- spkgs %||% sysreqs_list_system_packages()
   spkgs <- spkgs[grepl("^.i$", spkgs$status), ]
