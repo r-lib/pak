@@ -1,4 +1,4 @@
-# For this to work, you need `make` and `zip` on the PATH.
+# For this to work, you need `make` and either `zip` or `7z` on the PATH.
 # You can have them from RtoolsXX, e.g. at `C:\rtools43\usr\bin`
 # if you use Rtools43.
 # You also need rig, or set the `RVERSIONS` and `RVERSION_DEFAULT`
@@ -6,6 +6,12 @@
 
 RVERSIONS ?= $(shell rig list --plain)
 RVERSION_DEFAULT ?= $(shell rig default)
+
+# `zip` is not always there (installing it from Chocolatey is flaky), but
+# 7-Zip is pre-installed on the GHA Windows runners. Both take the archive
+# before the input, so the call site is the same.
+ZIP ?= $(shell if command -v zip >/dev/null 2>&1; \
+	then echo "zip -r"; else echo "7z a -tzip"; fi)
 
 PAKVERSION=$(shell grep "^Version:" ../../../DESCRIPTION | tr -cd '0-9.')
 PKGROOT=../../..
@@ -32,7 +38,8 @@ lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	rm -rf lib/$*/pak/library/_cache
 	rm -rf lib/$*/pak/library/*/help
 	rm -rf lib/$*/pak/library/*/doc
-	cd lib/$* && zip -r pak_$(PAKVERSION).zip pak
+	rm -f lib/$*/pak_$(PAKVERSION).zip
+	cd lib/$* && $(ZIP) pak_$(PAKVERSION).zip pak
 	touch $@
 
 # ------------------------------------------------------------------------
