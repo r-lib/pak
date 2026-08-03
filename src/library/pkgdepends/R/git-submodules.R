@@ -224,6 +224,9 @@ in_r_build_ignore <- function(paths, ignore_file) {
     ignore <- c(ignore, readLines(ignore_file, warn = FALSE))
   }
 
+  # Empty patterns match everything, R CMD build drops them as well
+  ignore <- ignore[nzchar(ignore)]
+
   matches_ignores <- function(x) {
     any(vlapply(ignore, grepl, x, perl = TRUE, ignore.case = TRUE))
   }
