@@ -353,6 +353,11 @@ res_push <- function(self, private, ..., direct, .list = .list) {
 
     dx$dx$then(private$deferred)
   }
+
+  ## There is nothing to resolve at all.
+  if (!nrow(private$state) && !length(private$delayed)) {
+    async_constant()$then(private$deferred)
+  }
 }
 
 res__resolve_delayed <- function(self, private, resolve) {

@@ -151,8 +151,10 @@ pkgplan_init <- function(
 
   assert_that(is_character(refs))
 
-  private$refs <- refs
-  private$remotes <- parse_pkg_refs(refs)
+  remotes <- parse_pkg_refs(refs)
+  keep <- drop_base_refs(remotes)
+  private$refs <- refs[keep]
+  private$remotes <- remotes[keep]
   private$config <- current_config()$update(config)
   private$remote_types <- remote_types %||% default_remote_types()
 
@@ -190,6 +192,20 @@ pkgplan_init <- function(
 
   private$dirty <- TRUE
   invisible(self)
+}
+
+drop_base_refs <- function(remotes) {
+  types <- vcapply(remotes, "[[", "type")
+  pkgs <- vcapply(remotes, function(r) r$package %||% NA_character_)
+  base <- types %in% c("standard", "cran", "bioc") & pkgs %in% base_packages()
+  if (any(base)) {
+    basepkgs <- pkgs[base]
+    cli::cli_alert_warning(c(
+      "Ignoring base package{?s} {.pkg {basepkgs}}: base packages are part ",
+      "of R, they cannot be installed or updated separately."
+    ))
+  }
+  !base
 }
 
 pkgplan_init_lockfile <- function(

@@ -208,7 +208,8 @@ make_start_state <- function(plan, config) {
     install_time = I(rep_list(nrow(plan), as.POSIXct(NA))),
     install_error = I(rep_list(nrow(plan), list())),
     install_stdout = I(rep_list(nrow(plan), character())),
-    worker_id = NA_character_
+    # `rep()`, because `plan` might have zero rows
+    worker_id = rep(NA_character_, nrow(plan))
   )
   plan <- cbind(plan, install_cols)
 

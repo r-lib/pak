@@ -86,10 +86,12 @@ pkgplan__create_progress_bar <- function(what) {
   bar <- new.env(parent = emptyenv())
 
   bar$what <- what[, c("type", "filesize", "package", "cache_status")]
+  # `rep()` instead of a scalar, because `what` might have zero rows
   bar$what$idx <- seq_len(nrow(what))
-  bar$what$current <- 0L # We got this many bytes
+  bar$what$current <- rep(0L, nrow(what)) # We got this many bytes
   bar$what$need <- bar$what$filesize
-  bar$what$status <- "todo" # "todo", "data", "got", "had", "error"
+  # "todo", "data", "got", "had", "error"
+  bar$what$status <- rep("todo", nrow(what))
   bar$what$skip <-
     what$type %in% c("installed", "deps") | what$cache_status != "miss"
   bar$what$status[bar$what$skip] <- "skip"

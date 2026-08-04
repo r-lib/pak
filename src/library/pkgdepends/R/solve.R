@@ -122,10 +122,24 @@ pkgplan_solve <- function(self, private, policy) {
 
   metadata <- list(solution_start = Sys.time())
   pkgs <- self$get_resolution()
-  rversion <- private$config$get("r_versions")
+
+  ## Every direct ref must have at least one candidate.
+  drefs <- vcapply(private$remotes, "[[", "ref")
+  dtypes <- vcapply(private$remotes, "[[", "type")
+  if (length(miss <- setdiff(drefs[dtypes != "param"], pkgs$ref))) {
+    throw(pkg_error(
+      # nocov start
+      "Could not resolve package{?s} {.pkg {miss}}.",
+      i = msg_internal_error()
+    )) # nocov end
+  }
 
   prb <- private$create_lp_problem(pkgs, policy)
-  sol <- private$solve_lp_problem(prb)
+  sol <- if (prb$total == 0) {
+    list(status = 0L, objval = 0, solution = numeric())
+  } else {
+    private$solve_lp_problem(prb)
+  }
 
   if (sol$status != 0) {
     throw(pkg_error(
@@ -1367,7 +1381,7 @@ pkgplan_install_plan <- function(self, private, downloads) {
     !sol$type %in% c("cran", "bioc", "standard") &
     private$config$get("build-vignettes")
 
-  sol$library <- private$config$get("library")[[1L]]
+  sol$library <- rep(private$config$get("library")[[1L]], nrow(sol))
   sol$binary <- binary
   sol$direct <- direct
   if (has_deps) {
@@ -1851,13 +1865,14 @@ format.pkg_solution_result <- function(x, ...) {
   c(
     "<pkg_solution>",
     paste0("+ result: ", if (ok) "OK" else "FAILED"),
-    "+ refs:",
-    paste0("  - ", refs),
+    if (length(refs) == 0) "+ no refs",
+    if (length(refs) > 0) c("+ refs:", paste0("  - ", refs)),
     if (nc == 0) "+ no constraints",
     if (nc > 0) paste0("+ constraints (", length(cnst), "):"),
     if (nc > 0) paste0("  - ", utils::head(cnst, 10)),
     if (nc > 10) "  ...",
-    if (ok) c("+ solution:", paste0("  - ", solrefs)),
+    if (ok && length(solrefs) == 0) "+ empty solution",
+    if (ok && length(solrefs) > 0) c("+ solution:", paste0("  - ", solrefs)),
     if (!ok) c("x failures:", format(x$failures))
   )
 }
