@@ -66,6 +66,18 @@ current_r_platform <- function() {
 
 default_platforms <- function() unique(c(current_r_platform(), "source"))
 
+# Platform of a PPM manylinux binary package, e.g.
+# `x86_64-pc-linux-gnu-manylinux-2.28`.
+
+re_manylinux_platform <- function() {
+  "^(?<triple>.*)-manylinux-[0-9.]+$"
+}
+
+is_manylinux_platform <- function(platform) {
+  mch <- re_match(as.character(platform), re_manylinux_platform())
+  !is.na(mch$.match)
+}
+
 # Is `cand` an OK platform for `exp`? This is pretty straightforward,
 # except for windows.
 #
@@ -89,7 +101,7 @@ platform_is_ok <- function(cand, exp, exp_archs = NULL) {
   # expected Linux platform with the same cpu-vendor-os triple, e.g.
   # cand = x86_64-pc-linux-gnu-manylinux-2.28 vs
   # exp = x86_64-pc-linux-gnu-ubuntu-24.04
-  mlx <- re_match(cand, "^(?<triple>.*)-manylinux-[0-9.]+$")
+  mlx <- re_match(cand, re_manylinux_platform())
   if (
     !is.na(mlx$.match) &&
       grepl("-linux", mlx$triple) &&

@@ -143,6 +143,9 @@ sysreqs_db_update
 #' see \eval{man_config_link("Configuration")}. Set this if
 #' `r pak_or_pkgdepends()` does not detect your platform correctly.
 #'
+#' Packages installed from a Posit Package Manager `manylinux` repository
+#' are self-contained: they bundle the shared libraries they need.
+#'
 #' @param packages If not `NULL`, then only these packages are checked.
 #'   If a package in `packages` is not installed, then
 #'   `r pak_or_pkgdepends()` throws a warning.
@@ -159,9 +162,11 @@ sysreqs_db_update
 #'    * `post_install`: list column of character vectors. Commands to run
 #'      after the installation of the system package.
 #'
-#' The data frame also have two attributes with additional data:
-#' * `sysreqs_records`: the raw system requirements records, and
-#' * `system_packages`: the list of the installed system packages.
+#' The data frame also have three attributes with additional data:
+#' * `sysreqs_records`: the raw system requirements records,
+#' * `system_packages`: the list of the installed system packages, and
+#' * `manylinux_packages`: the names of the installed self-contained
+#'   `manylinux` packages, whose system requirements were ignored.
 #'
 #' `sysreqs_fix_packages()` returns the same value, but invisibly.
 #'

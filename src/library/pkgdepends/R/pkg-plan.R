@@ -251,6 +251,11 @@ pkgplan_init_lockfile <- function(
     sq
   })
 
+  # Manylinux packages are self-contained, ignore their system requirements.
+  # (Lockfiles created by older versions may still list these.)
+  mlx <- is_manylinux_platform(vcapply(pkgs, "[[", "platform"))
+  sysreqs_packages[mlx] <- list(NULL)
+
   soldata <- data_frame(
     ref = refs,
     type = vcapply(pkgs, "[[", "type"),

@@ -1069,11 +1069,19 @@ check_source_fallback_linkingto <- function(plan, pkgidx) {
 }
 
 plan_sysreqs_suppressed <- function(plan, pkgidx) {
-  if (!all(c("mirror", "sysreqs") %in% names(plan))) {
+  if (!"sysreqs" %in% names(plan)) {
     return(FALSE)
   }
   sq <- plan$sysreqs[[pkgidx]]
-  !is.na(sq) && nzchar(sq) && is_ppm_manylinux_repo(plan$mirror[[pkgidx]])
+  if (is.na(sq) || !nzchar(sq)) {
+    return(FALSE)
+  }
+  ("platform" %in%
+    names(plan) &&
+    is_manylinux_platform(plan$platform[[pkgidx]])) ||
+    ("mirror" %in%
+      names(plan) &&
+      is_ppm_manylinux_repo(plan$mirror[[pkgidx]]))
 }
 
 source_deps <- function(plan, pkgidx) {

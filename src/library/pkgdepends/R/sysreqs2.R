@@ -354,7 +354,23 @@ is_ppm_manylinux_repo <- function(urls) {
 }
 
 binary_needs_no_sysreqs <- function(platform, mirror) {
-  !is.na(platform) & platform != "source" & is_ppm_manylinux_repo(mirror)
+  is_manylinux_platform(platform) |
+    (!is.na(platform) & platform != "source" & is_ppm_manylinux_repo(mirror))
+}
+
+# Manylinux binaries from PPM bundle their system libraries in
+# `<pkg>/libs/.libs`, so their system requirements are already embedded, and
+# they do not need to be installed. Such a package always has
+# `Repository: RSPM` in its DESCRIPTION file.
+
+installed_needs_no_sysreqs <- function(package, repository, libpath) {
+  if (length(package) == 0 || is.null(repository) || is.null(libpath)) {
+    return(rep(FALSE, length(package)))
+  }
+  repository <- as.character(repository)
+  !is.na(repository) &
+    repository == "RSPM" &
+    dir.exists(file.path(libpath, package, "libs", ".libs"))
 }
 
 sysreqs_update_state <- function(sys, spkgs = NULL) {

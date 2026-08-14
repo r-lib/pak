@@ -212,6 +212,16 @@ sysreqs_check_installed <- function(packages = NULL, library = NULL) {
   if (is.null(rpkgs$SystemRequirements)) {
     rpkgs$SystemRequirements <- rep(NA, nrow(rpkgs))
   }
+
+  # Manylinux packages are self-contained, ignore their system requirements
+  mlx <- installed_needs_no_sysreqs(
+    rpkgs$Package,
+    rpkgs$Repository,
+    rpkgs$LibPath
+  )
+  mlx_pkgs <- rpkgs$Package[mlx]
+  rpkgs$SystemRequirements[mlx] <- NA_character_
+
   sys <- sysreqs2_match(rpkgs$SystemRequirements)
   sys <- sysreqs_update_state(sys, spkgs)
   rpkgs$sysreqs_packages <- sys
@@ -254,6 +264,7 @@ sysreqs_check_installed <- function(packages = NULL, library = NULL) {
 
   attr(res, "sysreqs_records") <- sys
   attr(res, "system_packages") <- spkgs
+  attr(res, "manylinux_packages") <- mlx_pkgs
 
   class(res) <- c("pkg_sysreqs_check_result", class(res))
   res
@@ -289,6 +300,13 @@ sysreqs_fix_installed <- function(packages = NULL, library = NULL) {
   config <- current_config()
   library <- library %||% config$get("library")
   chk <- sysreqs_check_installed(packages = packages, library = library)
+  mlx <- attr(chk, "manylinux_packages")
+  if (length(mlx) > 0) {
+    cli::cli_alert_info(
+      "Ignoring the system requirements of {length(mlx)} self-contained
+       manylinux package{?s}: {.pkg {mlx}}."
+    )
+  }
   if (nrow(chk) == 0) {
     cli::cli_alert("No system requirements.")
   } else if (all(chk$installed)) {
