@@ -85,6 +85,19 @@ platform_is_ok <- function(cand, exp, exp_archs = NULL) {
     return(TRUE)
   }
 
+  # PPM manylinux binaries are generic Linux builds, they are OK for any
+  # expected Linux platform with the same cpu-vendor-os triple, e.g.
+  # cand = x86_64-pc-linux-gnu-manylinux-2.28 vs
+  # exp = x86_64-pc-linux-gnu-ubuntu-24.04
+  mlx <- re_match(cand, "^(?<triple>.*)-manylinux-[0-9.]+$")
+  if (
+    !is.na(mlx$.match) &&
+      grepl("-linux", mlx$triple) &&
+      any(startsWith(exp, paste0(mlx$triple, "-")))
+  ) {
+    return(TRUE)
+  }
+
   if (cand %in% c("i386+x86_64-w64-mingw32", "x86_64+i386-w64-mingw32")) {
     # This is a multi-arch binary, that is OK, if binaries are allowed
     any(c("x86_64-w64-mingw32", "i386-w64-mingw32") %in% exp)
