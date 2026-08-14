@@ -2,7 +2,22 @@
 
 fake_env <- new.env(parent = emptyenv())
 
+# Some R builds set `TAR` in `etc/Renviron` to a program that does not exist
+# on the machine that runs R. E.g. the manylinux builds of R have
+# `TAR=${TAR-'/usr/bin/gtar'}`, and most distributions do not have `gtar`.
+# `tools::write_PACKAGES()` then cannot read the `DESCRIPTION` files of the
+# packages of the fake repository, and creates an empty `PACKAGES` file.
+# Use R's internal tar in this case.
+
+local_working_tar <- function(.local_envir = parent.frame()) {
+  tar <- Sys.getenv("TAR")
+  if (tar != "" && tar != "internal" && !nzchar(Sys.which(tar))) {
+    withr::local_envvar(c(TAR = "internal"), .local_envir = .local_envir)
+  }
+}
+
 make_dummy_package <- function(data, path) {
+  local_working_tar()
   package <- data$Package
   data$Version <- data$Version %||% "1.0.0"
   mkdirp(tmp <- tempfile())
@@ -67,6 +82,7 @@ make_dummy_binary <- function(
   # Meta/hsearch.rds -- can be the same if no manual
   # libs/<pkg>.so -- use the same dummy .so
 
+  local_working_tar()
   path <- normalizePath(path, mustWork = FALSE)
   mkdirp(path)
 
@@ -163,6 +179,7 @@ make_dummy_repo <- function(repo, packages = NULL, options = list()) {
 }
 
 make_dummy_repo_platform <- function(repo, packages = NULL, options = list()) {
+  local_working_tar()
   mkdirp(repo)
 
   options[["platform"]] <- options[["platform"]] %||% "source"

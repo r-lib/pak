@@ -216,7 +216,19 @@ canonicalize_ppm_platforms <- function(distros) {
     )
   }
 
-  # TODO: - windows - macos - manylinux
+  # manylinux repositories serve generic Linux binaries, but PPM reports the
+  # distribution and release of the build machine (currently centos 8) for
+  # them. Use the glibc version from the binary URL instead, and make sure
+  # that they never match a real system.
+  mlx <- grep("^manylinux", distros$binary_url)
+  for (idx in mlx) {
+    sfx <- manylinux_platform_suffix(distros$binary_url[idx])
+    distros$distribution[idx] <- "manylinux"
+    distros$release[idx] <- sub("^manylinux-", "", sfx)
+    distros$platforms[[idx]] <- sfx
+  }
+
+  # TODO: - windows - macos
 
   distros
 }

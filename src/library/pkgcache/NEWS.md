@@ -1,5 +1,10 @@
 # pkgcache (development version)
 
+* Binary packages from a PPM `manylinux` repository now have the correct
+  platform, e.g. `aarch64-unknown-linux-gnu-manylinux-2.28`. Similarly,
+  `ppm_platforms()` now reports the correct glibc version of `manylinux`
+  repositories.
+
 * Better behavior for a corrupt package cache database: better error
   message, and cleaning the cache does not fail in this case
   (https://github.com/r-lib/pak/issues/884).

@@ -197,10 +197,17 @@ read_packages_file <- function(
     pkgs$systemrequirements <- NULL
   }
 
-  # PPM sources are really binaries for the current platform
-  hasbin <- pkgs$package %in% bin$Package
+  # PPM sources are really binaries for the current platform, except in a
+  # manylinux repository, where they are generic Linux binaries. PPM only
+  # serves Linux binaries as source packages, so we only look at `src/contrib`.
+  hasbin <- pkgs$package %in% bin$Package & platform == "source"
   if (length(orig_r_version) == 1 && sum(hasbin) > 0) {
-    plat <- current_r_platform()
+    mlx <- ppm_manylinux_platform_suffix(mirror)
+    plat <- if (is.na(mlx)) {
+      current_r_platform()
+    } else {
+      linux_platform_with_suffix(mlx)
+    }
     pkgs$platform[hasbin] <- plat
     pkgs$rversion[hasbin] <- orig_r_version
     pkgs$target[hasbin] <- paste0(

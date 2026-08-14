@@ -39,6 +39,7 @@
 #'   - `x86_64-pc-linux-gnu-debian-10`: Debian Linux 10 on x86_64.
 #'   - `x86_64-pc-linux-musl-alpine-3.14.1`: Alpine Linux.
 #'   - `x86_64-pc-linux-gnu-unknown`: Unknown Linux Distribution on x86_64.
+#'   - `aarch64-unknown-linux-gnu-manylinux-2.28`: manylinux binaries from PPM
 #'   - `s390x-ibm-linux-gnu-ubuntu-20.04`: Ubuntu Linux 20.04 on S390x.
 #'   - `amd64-portbld-freebsd12.1`: FreeBSD 12.1 on x86_64.
 #' * A platform string as above, followed by a custom binary package type.
@@ -100,6 +101,16 @@ current_r_platform_data <- function() {
     paste0(na_omit(x), collapse = "-")
   })
   platform
+}
+
+# The platform of a Linux binary package that runs on the current machine,
+# but was built for another distribution, e.g. "centos-8", or for a generic
+# Linux, e.g. "manylinux-2.28". The `cpu`, `vendor` and `os` parts come from
+# the current platform, `suffix` replaces the distribution and release.
+
+linux_platform_with_suffix <- function(suffix) {
+  current <- current_r_platform_data()
+  paste0(current$cpu, "-", current$vendor, "-", current$os, "-", suffix)
 }
 
 valid_platform_string <- function(x) {

@@ -613,6 +613,25 @@ is_ppm_linux_repo_url <- function(urls) {
   grepl(re_ppm_linux(), urls, perl = TRUE)
 }
 
+# "https://p3m.dev/cran/__linux__/manylinux_2_28/latest" -> "manylinux-2.28"
+
+ppm_manylinux_platform_suffix <- function(urls) {
+  mch <- re_match(sub("/+$", "", urls), re_ppm_linux())
+  isml <- !is.na(mch$.match) & startsWith(mch$distro, "manylinux")
+  res <- rep(NA_character_, length(urls))
+  res[isml] <- manylinux_platform_suffix(mch$distro[isml])
+  res
+}
+
+# "manylinux_2_28" -> "manylinux-2.28"
+
+manylinux_platform_suffix <- function(binary_url) {
+  paste0(
+    "manylinux-",
+    gsub("_", ".", sub("^manylinux_", "", binary_url), fixed = TRUE)
+  )
+}
+
 #' Load the cache, asynchronously, with as little work as possible
 #'
 #' 1. If it is already loaded, and fresh return it.

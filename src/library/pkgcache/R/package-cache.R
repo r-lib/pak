@@ -549,20 +549,11 @@ update_fields_for_ppm_download <- function(path, extra, headers) {
 
     # fix platform if neeeded
     if (!is.null(extra$platform) && extra$platform == "source") {
-      current <- current_r_platform_data()
       wdist <- match(binurl, pkgenv$ppm_distros$binary_url)
       distro <- pkgenv$ppm_distros$distribution[wdist]
       release <- pkgenv$ppm_distros$release[wdist]
-      res$extra$platform <- paste0(
-        current$cpu,
-        "-",
-        current$vendor,
-        "-",
-        current$os,
-        "-",
-        distro,
-        "-",
-        release
+      res$extra$platform <- linux_platform_with_suffix(
+        paste0(distro, "-", release)
       )
     }
 
@@ -570,7 +561,7 @@ update_fields_for_ppm_download <- function(path, extra, headers) {
     if (dirname(path) == "src/contrib") {
       res$path <- paste0(
         "src/contrib/",
-        res$extra$platform %||% current$platform,
+        res$extra$platform %||% current_r_platform(),
         "/",
         rver,
         "/",
