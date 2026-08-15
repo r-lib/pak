@@ -1,6 +1,7 @@
-# For this to work, you need `make` and `zip` on the PATH.
-# You can have them from RtoolsXX, e.g. at `C:\rtools43\usr\bin`
-# if you use Rtools43.
+# For this to work, you need `make` and `7z` on the PATH.
+# You can have `make` from RtoolsXX, e.g. at `C:\rtools43\usr\bin`
+# if you use Rtools43. `7z` is from 7-Zip, which is pre-installed on
+# the GitHub Actions Windows runners, on both x86_64 and aarch64.
 # You also need rig, or set the `RVERSIONS` and `RVERSION_DEFAULT`
 # environment variables.
 
@@ -32,7 +33,8 @@ lib/R-%.done: pak_$(PAKVERSION).tar.gz
 	rm -rf lib/$*/pak/library/_cache
 	rm -rf lib/$*/pak/library/*/help
 	rm -rf lib/$*/pak/library/*/doc
-	cd lib/$* && zip -r pak_$(PAKVERSION).zip pak
+	rm -f lib/$*/pak_$(PAKVERSION).zip
+	cd lib/$* && 7z a -tzip -bso0 pak_$(PAKVERSION).zip pak
 	touch $@
 
 # ------------------------------------------------------------------------
