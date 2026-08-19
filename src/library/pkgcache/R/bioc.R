@@ -95,7 +95,10 @@ bioconductor <- local({
   config_url <- function() {
     Sys.getenv(
       "R_BIOC_CONFIG_URL",
-      "https://bioconductor.posit.co/config.yaml"
+      getOption(
+        "BIOCONDUCTOR_CONFIG_FILE",
+        "https://bioconductor.posit.co/config.yaml"
+      )
     )
   }
 
