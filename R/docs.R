@@ -87,10 +87,10 @@ NULL
 #' instead of a standard package, so installing `user/pkgB` satisfies both
 #' requirements.
 #'
-#' Note that that `cran::pkgB` and `user/pkgB` requirements result a
+#' Note that the `cran::pkgB` and `user/pkgB` requirements result in a
 #' conflict that pak cannot resolve. This is because the first one _must_
 #' be a CRAN package, and the second one _must_ be a GitHub package, and
-#' two different packages with the same cannot be installed into an R
+#' two different packages with the same name cannot be installed into an R
 #' package library.
 #'
 #' @name The dependency solver
