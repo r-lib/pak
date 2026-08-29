@@ -9,333 +9,333 @@
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7430829,
-          "digest": "sha256:23a58c4c45240f78a6c0709a59e5575b9a87ef8631a35b94e5c5a4b318536ada"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 7431177,
+          "digest": "sha256:3b6f08913cdde3de814c371ba33c6569a938339a398a429c19a1160f8a7ef1e4"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:07+00:00",
-          "size": 7421807,
-          "digest": "sha256:092b907ea08064ec9af72d8717321f2b110dc06352872cc2d4285f8d573296de"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7423048,
+          "digest": "sha256:482d504c84b1990a9d41f2d83df681056bd79d2795937ac1ac1bd89297c08ff6"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7489781,
-          "digest": "sha256:5c8192790162944c66b2b5b69fbef7e2bbbffc187719ffdeb385caeaa7ea2778"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7489969,
+          "digest": "sha256:45c6bb6d86c9399aeecf3e3186b09f3345cc4db00fd09b137d881b0bb2bebdaa"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7491009,
-          "digest": "sha256:fb838789d36f75d0f515054e4b94047c279467d139a8b428e9591584c6bd1ea4"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7491078,
+          "digest": "sha256:ca56b8e5268853c2cdb11c434dc6ac6d76d73b2b163e8f3494681e52e40eac00"
         },
         {
           "r.platform": "x86_64-apple-darwin17.0",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7481801,
-          "digest": "sha256:be45f8fb3af17ffda8e8183b9cc719cb8116597a37d96cf6fdeee640bdc40dd0"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7482474,
+          "digest": "sha256:bc0f54ea32f3b679fe688d2911518df065df443e4347f5a562a38e90059ba22b"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7445902,
-          "digest": "sha256:ce540ebf36a09653f5d955bad75a8f4a5b9a37800ca690a5f3f78a88b2103c80"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7443940,
+          "digest": "sha256:7b8cf2dcaa41943c9adeaa4381511551979bbae1d8cffffd852bf47ecb749668"
         },
         {
           "r.platform": "x86_64-apple-darwin15.6.0",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7493404,
-          "digest": "sha256:e36c1d7976943d7a1f96377169b2135acf340516df85e793664f6e4521d1dd23"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7495442,
+          "digest": "sha256:28453d9ca0ba47b4329853eb0bf922b5e70a7701fb7253fdc1a500a2b7a3f4df"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 12844664,
-          "digest": "sha256:48abb2497c9ba2a503972cb860225e6101a11e9543c7071242c71e60afe50c3a"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 12845032,
+          "digest": "sha256:ef5794bac75a5bff087fe28038bb3e7528d3c95945ee65119fa6f5d3b15a8e7f"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 12895366,
-          "digest": "sha256:f6b74f5d38c630c0a2eab10b3fe4421685c1d3bd9442dc3faf08d7ee2d45569e"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 12894573,
+          "digest": "sha256:f22386d8b999798e150a4408fe99e87cc05194da4c66fdf2ab5c027137627b4c"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:04+00:00",
-          "size": 14222133,
-          "digest": "sha256:c6e2ff7cfc21773726f8847afdf840df1a44b5e1592c53cf7ac65a1f172dad29"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 14221337,
+          "digest": "sha256:21e629b445c742b0ff2562406cdcd76bfaf093579c0784bffc3616418129cc2d"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:04+00:00",
-          "size": 14252456,
-          "digest": "sha256:4658960f8d4b1f5119c4995029844d7e7b8875ad5a3753a3f9a4873ac6749c2c"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 14250976,
+          "digest": "sha256:3bef27d0da5d2e9496b2a1c63f078b7de43b1084ca23b3a00ede73f99b005f59"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11069064,
-          "digest": "sha256:d4c027d13c25cb34150436ffc88a7826e4ed0fd4074eb69d9436463113390db5"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11070010,
+          "digest": "sha256:1bcc4bd83dca23bc8785bafb9c73437ff928882af0232aaa520030201613e97e"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10279097,
-          "digest": "sha256:194da7c586575559dad686a9d1aca2185f26efcad7c3b91810af25a3e5179f57"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10274845,
+          "digest": "sha256:63a73d12c8085d968d9411a2378428f21ac4c07eeaf71e826c6930887515ba36"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9874236,
-          "digest": "sha256:64d4c817909367617b16d682ebe1f1a6fc6f60cc0b176243b6921b79d1ce3532"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9866100,
+          "digest": "sha256:14f3b9594386b96d29426785f85783b9b4127b55bfc122d34c8caa14ba3e75b0"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9871503,
-          "digest": "sha256:6be2c9f5b8df97ef12d849319ef237409dd3b183ca0f95e49af9b3e64b1d4a8a"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9861889,
+          "digest": "sha256:cdda867916a230eedbd1c83caaff57a27b0e4fd235e31e263cd80cb8c107751a"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9867973,
-          "digest": "sha256:742b5d28656e3ff35091f88ea35218388c1e1d4e9a199c9933e17074e24bb1a9"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9867412,
+          "digest": "sha256:5ca37ceff6eab205e61f8d1c595786c749ec9c1e35e4bfaaab6f8be0d576f012"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9864138,
-          "digest": "sha256:6267c32b4f3282a89419256126141d49d332573792f2567b209ef2aae71feb3b"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9854429,
+          "digest": "sha256:b3d066285cb5c60bc5606cf64e1e5b1db03f32709e285c23be2c5511872cfa29"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10151920,
-          "digest": "sha256:f1304411367c0395f553f3d8d9f6833dd64be66bcc00e0492b8b4faec37c59f4"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10152085,
+          "digest": "sha256:3af8c41887144bdea1c49ce0638852204a10f92c34dcdf7cc47dc13ebc21ecbf"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10141079,
-          "digest": "sha256:2de736a4a9a10667364d782e8c18374a8ca8b133bdf4683280f9fd64cad08c28"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10144012,
+          "digest": "sha256:862d1a2fe7e822ecbf22e294e512a56e34dab7ab9f63048110a44465b5466764"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10144984,
-          "digest": "sha256:3fcd5185824e4011da883e53b8f238901aa0316251f7e905a5805b28527079ca"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10144333,
+          "digest": "sha256:44d72c5ab96d007fee92a1f70850d916b18e702c26fea10547c4307fb501c422"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10157114,
-          "digest": "sha256:d161fa5f60d8986a7aca93e1fab993157e7151a1ff1fb10f71aa443ac1be28a3"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10147339,
+          "digest": "sha256:409b20b27aacc8392c230c1200f0d468d86eb6d36e0dc2f57a82fa1bf2b62e57"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10226794,
-          "digest": "sha256:3cc0ff2c54ab0e73276e548a26840c4e110ad60f918a995f571fc59c54c5ab98"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10223363,
+          "digest": "sha256:7181666df068ffd011b3b80ef716f764cedd364bb6d8e1bf748406d601f1befa"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:04+00:00",
-          "size": 7422442,
-          "digest": "sha256:701e3d9da9c95edad78933606c80f1bae5045c21668169e089c961c013148799"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 7423302,
+          "digest": "sha256:070cba0ab6b699d1a9a80c8fc2f0a8ddd2a21ed79cd80136c4811925d16d4f8d"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10144547,
-          "digest": "sha256:02a8b2f84d7b5ad9692d34b47e2cd95d1428f1bd505f242bcafa556a06559fad"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10144506,
+          "digest": "sha256:a3dd7c4321992d86dd9de9e834478b4afaf6768af3292812ab48cb3311feacd5"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11090477,
-          "digest": "sha256:24c58ccd659673d359858564a9a006515543856e33eb8bafc9d2d90dccec28b9"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11091841,
+          "digest": "sha256:b687f11afa3c411674e033c04c7ad0cdb493150d6e03321311ede725a7f0e54a"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9859809,
-          "digest": "sha256:00935eea31f4cc5dce48dbe827debc6f3ea08f5c57763f7da18b0643758125cb"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9861172,
+          "digest": "sha256:feaf916a9d6412a64fd6cb8d92c20f151c6cab08b27ba4a1f40360e5c2db126c"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9870172,
-          "digest": "sha256:b9380a536e243cbd3e5b22a64f6d1bddfa1a3fec7b5f06212f326da8677b86c2"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9856952,
+          "digest": "sha256:962d9ca547e22cc90b775c975ede26aeb71b16f2a0a0d11e1f1d1a5c91406324"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11085659,
-          "digest": "sha256:989994fdb61dc4c9ed04048774e3eb225e9f6ab61042a566b05dbdb9e7906bf3"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11085157,
+          "digest": "sha256:fc5cf1580557cea2f5e684362d8d7c70a9cfa4b1ffc95404f04196153bef888e"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:06+00:00",
-          "size": 7420665,
-          "digest": "sha256:53c5a6a83588d2cf64e12996b4d395ec5041681fe12bdbf29dc526b2147e2de4"
+          "buildtime": "2026-08-29T12:21:56+00:00",
+          "size": 7420700,
+          "digest": "sha256:4620fc0214084782604e863ba290ec66e78082c8af23c78473bc97b4a0866988"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10147967,
-          "digest": "sha256:b2c3bc63d2ea4bedd0089695201eb74477e140d89ec5a54de46c72c5a81d3161"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10147326,
+          "digest": "sha256:cc4a7d8ee064496f0df024402d5a69ab916b85f89de71263064f2d4f5ca528aa"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7486674,
-          "digest": "sha256:23a932e05e86574e54f2e9557095c56e789c07bdf50432d0aaecb12cfdd87e70"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7486896,
+          "digest": "sha256:c935836d4aa835c9048f79f8bd883c4bce4c7caa43ae3fac13717266a6ea67d0"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7485904,
-          "digest": "sha256:f334989d4eae959d6345be8f89660aea41c23d00d6c396e8711f2bbbcccb2c4b"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7486102,
+          "digest": "sha256:ce2eb8b9a8d13d7c495dc0148a3c93dac32ca87910596fa11bc78d53ea5434e0"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10146118,
-          "digest": "sha256:375e54fed29f4d2701354cbcd089be2b00134168b4f56de2db428a5a57357ab8"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10144550,
+          "digest": "sha256:2f4ecea63ed6466e59d3c8d204ea48fc1b87124f8137109a21f1036ae089a39e"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9866770,
-          "digest": "sha256:b054cd6e1139cafb6843d9ff1f9c6c91767a6f26cfb06abba0aef507122e9619"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9865398,
+          "digest": "sha256:43db3b065286a7ab8b43f26ed2da392640b466e264f4159be06f4b5ee9cc50c3"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7474934,
-          "digest": "sha256:04fc7e68b8df1a657ce1b7124e37f5a21ed23689edb12bed2e557454613c8a38"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7475332,
+          "digest": "sha256:9004f5490319464e3caab07415a238c902e3b334984107bb3169efdcc19801c4"
         },
         {
           "r.platform": "aarch64-apple-darwin20",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:09+00:00",
-          "size": 7409534,
-          "digest": "sha256:710bd64fc19095ddd0c6e40c5f02bb085afb9eb46f61515593609ecb5fa26d63"
+          "buildtime": "2026-08-29T12:21:56+00:00",
+          "size": 7408723,
+          "digest": "sha256:c7733f7e58dcb7d906e0a661041db90e8490c6244e819a6eed4a5b50f6f251d4"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11125032,
-          "digest": "sha256:55f2b9a0eb60f0d2e1c92798e8dd102e92b1d2745071daf43b149c5b433f1ea6"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11124423,
+          "digest": "sha256:0dba46586d2de3a9c4894fe2ec09f28f3acc2b263b1c695992691fb859e77310"
         },
         {
           "r.platform": "amd64-portbld-freebsd13.3",
@@ -432,45 +432,45 @@
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7474881,
-          "digest": "sha256:39b31799cf488ddf487a710316da59e3ea958365d3151d955e8e01d37a48c5c4"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7475225,
+          "digest": "sha256:9546a446672a27c5173e1d1771fe7a37265e227f0de3907f3fcf8a368d09bb7e"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9868383,
-          "digest": "sha256:55ad96b851af35f78879f019b3dd7ca4d0471d3802382659e17ce48ea71ef38e"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9861135,
+          "digest": "sha256:6cbcde7c66c377c6a269dfc67666876db18127e8f186ac6bb16824fac6983214"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10150101,
-          "digest": "sha256:d1a009ceb698206edc1e10aa9908469cc3f8fab5c15f49e740cfd61416ed4318"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10150200,
+          "digest": "sha256:58147fd940944b874704301682518e46c5b64c163bbd4b787444433a13103842"
         },
         {
           "r.platform": "x86_64-portbld-dragonfly6.4",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7170702,
-          "digest": "sha256:aa0a5fc5b957ca20214aace6a1c2edea1e93457f609e2b362a3c5cdf8e2c8cfe"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7171207,
+          "digest": "sha256:3812e5790e2d56c3aa7fa7091f89f3eab022970651631e28b41771c67d2e795e"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11126459,
-          "digest": "sha256:6f6aaa26499cdf6f0e5edef305288b5d469f3be241d9dad5ddaaa394cba5509f"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11126065,
+          "digest": "sha256:ffe2020d6bb4db8f9b1cb0ec67ab06b229a72c3766fc96fd8495e6bd06547886"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.2",
@@ -513,36 +513,36 @@
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7221181,
-          "digest": "sha256:22dfe7602a93df47f5431ecd7dae000741b503ecc007d76488ff386d7825e6d5"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7221281,
+          "digest": "sha256:79518d7869101cd3a2bf22af995fcee3aa770b17c3128d50033fd460eb1e5178"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10660749,
-          "digest": "sha256:90c7cce726d33c273188fd8fecd48556bc32b164c0a517f58ed9b335221b98a4"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10660666,
+          "digest": "sha256:082fd4132949c93603447f7afb91f7a8fe9fa2169197de10b4aba271019b5089"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10662404,
-          "digest": "sha256:167f56337d1dedaece2e87119438eb7a2fa07a83daf18d7a0428e096a707700d"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10662735,
+          "digest": "sha256:2297f63d36ab51349dec6952ce5421cb1d411045a335a1d6bbb98b9267fdea24"
         },
         {
           "r.platform": "aarch64-w64-mingw32",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10659518,
-          "digest": "sha256:65c713c5021e131f5df278dd9c4f5ef9fde9b84d8077e6af4314c448ac7d9a6d"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10659061,
+          "digest": "sha256:1669c9202674600cfa813955dfce0ce7a2f7aebea4654e37317e6df5be2e3c69"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.3",
@@ -558,36 +558,36 @@
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7260027,
-          "digest": "sha256:054adfc8b6ff9df77d41b850cc4dab4e2f8acdf625519e12fc2596d88ae37019"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7259974,
+          "digest": "sha256:38f4e2998047775f8a5ab3e5832a6b02ca122d3bf522d3bbf1480cca06ddb326"
         },
         {
           "r.platform": "x86_64-unknown-openbsd7.8",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7264354,
-          "digest": "sha256:e8daa3fd6df8765b3396271dbea1322a4888fb20114bc2ce0290e6a0cded4a3b"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7264600,
+          "digest": "sha256:8cd3751e3c3ebc3c8e2d8c0549839c48141dad0d33b3d2aa99da2fbf75b5a61b"
         },
         {
           "r.platform": "aarch64-apple-darwin23",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:10+00:00",
-          "size": 7407094,
-          "digest": "sha256:6f17b5361d885de7e02142b3060e73999ecc6db18b0e1e15d97a363c84097541"
+          "buildtime": "2026-08-29T12:21:56+00:00",
+          "size": 7407404,
+          "digest": "sha256:bf71382d321ae0b23accdfbc3703e07017036c6baab7f87bf94c433dacfcc6b7"
         },
         {
           "r.platform": "x86_64-w64-mingw32",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 11122254,
-          "digest": "sha256:856c8fbced3d39e7ee5f3cf833469772558a26128d4482b231716c6a539bc81d"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 11122840,
+          "digest": "sha256:219a944f014a9987a13f1aeb5e316fc3283efe837e47f3845925576dd99bf70c"
         },
         {
           "r.platform": "x86_64--netbsd",
@@ -603,18 +603,18 @@
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10657334,
-          "digest": "sha256:55afc9878c4da2e73b12ef172fd60f5d794ca38af23227f03cdeb8fdfe423f13"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10656825,
+          "digest": "sha256:130abe20526a0ee173977a948d1c80e86622796fe62ce3765f7551688fc7ab69"
         },
         {
           "r.platform": "amd64-portbld-freebsd15.0",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7234961,
-          "digest": "sha256:419fa9dbbc65c0175efea8de0808e539f16946597400a0889ed817f6504bb650"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7235194,
+          "digest": "sha256:9633837bae93fab67f3c678960f4f00b21ed5983d3b29163e40f2062dc66b71d"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.3",
@@ -630,234 +630,234 @@
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:11+00:00",
-          "size": 7403497,
-          "digest": "sha256:130e9c0edf7ea61e17252405db97dc08dbcb82c5692b55d75c93151e05a43826"
+          "buildtime": "2026-08-29T12:21:56+00:00",
+          "size": 7403699,
+          "digest": "sha256:2ca720ef33f6ccfdacf1dd84103b23236aca141891d616e7cdf4d30a068d4788"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9866209,
-          "digest": "sha256:f4507bf5476ab77fe3284618fe33b167509e58aaa12b052d2821da004a91ff24"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9862813,
+          "digest": "sha256:c8123a3632e47d196ed37400d4ecd5ea1a13af8281cb9fd7f97d263fdef2fbfc"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10148363,
-          "digest": "sha256:a1f342ce2b59765bac43ae6d22a5175c2b330d1c027e35ae4f6e79093638dd95"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10145285,
+          "digest": "sha256:c13238db99cf1c0d9e08272f005e6cc944ce23eab620081a56aa698f60d1ef03"
         },
         {
           "r.platform": "amd64-portbld-freebsd14.4",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7233814,
-          "digest": "sha256:275b96da0051891c28fe4006500aa457dab8a166001b9cdd8fe7f734d5fd7779"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7233991,
+          "digest": "sha256:78a4d7ebb092bbb619d2502d173999fa6e3cd98959b81fa681721d25205337e0"
         },
         {
           "r.platform": "x86_64-apple-darwin20",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7471080,
-          "digest": "sha256:833b053b40cf1a3ad6760dfc938a5889233617db3c53399c7584967fce4fb926"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7469902,
+          "digest": "sha256:2948effc4657d3511fa5b00f615ca6925a80a72eddb530c1bb6afb0d5d597a29"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10236927,
-          "digest": "sha256:18929eed749cbb27d8490304f7ebea9273eec43b2bee4bdd3af5c0421978fa7b"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10232013,
+          "digest": "sha256:f95b31ef0738e4627ce0c97b45c1171686b2ab35e5b65ed80d11f881c2076b86"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10232876,
-          "digest": "sha256:73ca3eae80545b0b3541f160949b3ed7de24e4ff75c52645de6d6ae1332b9d96"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10229945,
+          "digest": "sha256:6196ca0976abb70170a53c149597f42a15cc49e9674bb5735fcdf4c6aa523130"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10235305,
-          "digest": "sha256:3fd85bf33ce5ea24af973f5646609e240e524d8955eb6662a2996aedfa7ccfd5"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10232573,
+          "digest": "sha256:96bf580a6068ccb2d62e8f308b6952a4aec764e714bb29db47b62f4abdd929e0"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10234439,
-          "digest": "sha256:e411815a739de340a4794465821691dfd76d44c01dc431513cb41b026a31857a"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10234341,
+          "digest": "sha256:5cde035faa4095dba7522bafb3ec6173339d8920fe2e483ef6fb03589578f24f"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10229302,
-          "digest": "sha256:290102eccee7bcfb584ef11730df6b6e30ca32436a836c07e73713a296435767"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10229490,
+          "digest": "sha256:df75213546f98673fcfe96156d9ea1060e9d295ac0a3e2546f46aa2f407cc2db"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10235389,
-          "digest": "sha256:4ba4dc1f4c43ec43afc34d4fb9539c77383b929aa8c8a819c55b571a72de18f9"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10234097,
+          "digest": "sha256:92304026db9811e5c1c11fbaf217c8fee13faa18164807982e2bac3e0c90545e"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10243864,
-          "digest": "sha256:311e06e847255eef5bb2eb50289230b2d86e1da12df04a26c2ef89e36bf77a10"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10243314,
+          "digest": "sha256:449c265a717b17f549d91f120b9d6373a87ad767414dc527c3a69619710eaae2"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10245329,
-          "digest": "sha256:01ae51cd62aee6db209ff2bbe180e92378909972839cfe36501a05e04da4a1f8"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10245878,
+          "digest": "sha256:0dc1b9e0e7b0178c9a60270c232c1ef97d21b0a3955e7d6c4e92276de981e94e"
         },
         {
           "r.platform": "aarch64-unknown-linux-gnu",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10231417,
-          "digest": "sha256:16660580a523fb1a68687abb2f762a57038e8eb0f6cb96b7e6ea5dc4055b0a13"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10231765,
+          "digest": "sha256:83995ef0abb766a468cef8e87920963bf9183903e7a606ea36916db1b40f724a"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "3.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10289188,
-          "digest": "sha256:4cb6d426d450611cef8dfd102d29cd7944f57164bf1800919adc2b2ec1ab5a9c"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10289198,
+          "digest": "sha256:9b3e9757fc061aef8ba91a8b893d3342975fec02c96f4f9b77e4de8bde846168"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.0",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10281872,
-          "digest": "sha256:c1cfd437fe8361d2b9b2009f110800a536c567ba5b3f55c4c6d06dd947d1dc5f"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10281924,
+          "digest": "sha256:dac8b664bf87b0bcfbfae6607db0588c5db76a4b22eefe2c5c349d3d798c2854"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.1",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10285972,
-          "digest": "sha256:db6375787613779a5de787509b5fa23493089550ddb9b3f11e81317323ef1eb2"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10279227,
+          "digest": "sha256:ad661c4fc87e8b96c1747156c250d53c4cb0533a8bff2c9b1722cc04c746f29d"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.2",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10283811,
-          "digest": "sha256:61cc4974c048d42787413243d1f4348094d902867c41dfdc98bca7ed0e4facf6"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10283749,
+          "digest": "sha256:4c22adbd4a8864daf786feefb1355775067af725c25652470abfa44e3c8d040a"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.3",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10279233,
-          "digest": "sha256:24ea7883657b5f8ed9880c3ff36e0e86e29c4a5f98a29c6af0fdd56ef1d6a4a7"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10279789,
+          "digest": "sha256:8e29faf44f50df0921c57ae4174b4eebabbb6dc5ea9caf036074f1bb8f0588ed"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.4",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10282802,
-          "digest": "sha256:75151e54b18e43b98d69d282ba49e6ab7c7f26f2033279b5d136c2347fb370b9"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10283181,
+          "digest": "sha256:6d357435dfe6739ec496337bebee5929124106f428e07f5187aafa4c5c59e81d"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10288565,
-          "digest": "sha256:65165d59f6a83af32e465bdf77f2fa2d333ee1cb7ad93670d7a762bade3ed99c"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10288100,
+          "digest": "sha256:63e5aac5d6b335c52057b4441b68a4d827dd1b9d907800fa84c6c81fa75e21e3"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10290989,
-          "digest": "sha256:a73737969e566ed7915e8a71f38503e9fbba699df0ffcb38418cb49b67fa46e1"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10290540,
+          "digest": "sha256:64da12dd9f47cf23fcd91153f6b8ed9ef8dd4e089d3156ee4247e234c41e60ce"
         },
         {
           "r.platform": "x86_64-pc-linux-gnu",
           "r.version": "4.7",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10280104,
-          "digest": "sha256:524a8a9bfc0dfd305719a6a31fd23ecfaf8b4b8bbc814a46d6bbe44d61d309e2"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10279517,
+          "digest": "sha256:973f5f7b066fa61cc34cc71508227cca12a157e06427ceb084343d33212e66f3"
         },
         {
           "r.platform": "aarch64-unknown-linux-musl",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 10170383,
-          "digest": "sha256:1d75ac6ee38c4cf9631315640c29278ddd28120532c0cf668a72463e086f8856"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 10164553,
+          "digest": "sha256:4dfcbfe7d59db7e1c4736cdc154a11be28af01d8ab298348cb5e023eb2d362d1"
         },
         {
           "r.platform": "x86_64-pc-linux-musl",
           "r.version": "3.5",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:03+00:00",
-          "size": 9872677,
-          "digest": "sha256:aa39c0db6f9de665c54de67fe80af0cec4797f7f4c49584ca118990a11aca3de"
+          "buildtime": "2026-08-29T12:21:55+00:00",
+          "size": 9871012,
+          "digest": "sha256:3ef00c24bab254cc5724e2f2fa9ba45ab2f956ee296b009021dfce4e12991530"
         },
         {
           "r.platform": "x86_64--netbsd",
           "r.version": "4.6",
           "pak.version": "0.11.1.9000",
           "pak.revision": "TODO",
-          "buildtime": "2026-08-28T18:19:02+00:00",
-          "size": 7147090,
-          "digest": "sha256:ff70d9bdfbf31cebbd77e1f12b2588359a3f260b565c1ab976023ba7cc2f8fa2"
+          "buildtime": "2026-08-29T12:21:54+00:00",
+          "size": 7142728,
+          "digest": "sha256:3a5bebfd58db4b087638903b83dbe72a6970ae286c6c30566d7aa9c351e0119e"
         }
       ]
     },
