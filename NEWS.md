@@ -3,6 +3,9 @@
 * `pkg_status()`, `pkg_deps_tree()` and `pkg_deps_explain()` now correctly
   error if `pkg` is not a length-1 character vector.
 
+* The install confirmation summary is now used when all download sizes are
+  known.
+
 # pak 0.11.1
 
 * Installing a package from a GitHub release (e.g. `user/repo@*release`) or
