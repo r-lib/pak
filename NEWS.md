@@ -1,5 +1,8 @@
 # pak (development version)
 
+* `pkg_status()`, `pkg_deps_tree()` and `pkg_deps_explain()` now correctly
+  error if `pkg` is not a length-1 character vector.
+
 # pak 0.11.1
 
 * Installing a package from a GitHub release (e.g. `user/repo@*release`) or
