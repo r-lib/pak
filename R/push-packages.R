@@ -837,6 +837,7 @@ create_pak_repo <- local({
 
     "mac.binary.big-sur-arm64/darwin20/aarch64/src/contrib" = "../../../../../darwin20/aarch64",
     "mac.binary.sonoma-arm64/darwin23/aarch64/src/contrib" = "../../../../../darwin23/aarch64",
+    "macos.binary.arm64/darwin23/aarch64/src/contrib" = "../../../../../darwin23/aarch64",
     "mac.binary/darwin17.0/x86_64/src/contrib" = "../../../../../darwin17.0/x86_64",
     "mac.binary.el-capitan/darwin15.6.0/x86_64/src/contrib" = "../../../../../darwin15.6.0/x86_64",
     "mac.binary.big-sur-x86_64/darwin20/x86_64/src/contrib" = "../../../../../darwin20/x86_64",
@@ -863,6 +864,7 @@ create_pak_repo <- local({
     "mac.binary.big-sur-arm64/darwin20/aarch64/bin/macosx/big-sur-arm64/contrib/4.6" = "../../../../../../../../darwin20/aarch64",
     "mac.binary.sonoma-arm64/darwin23/aarch64/bin/macosx/sonoma-arm64/contrib/4.6" = "../../../../../../../../darwin23/aarch64",
     "mac.binary.sonoma-arm64/darwin23/aarch64/bin/macosx/sonoma-arm64/contrib/4.7" = "../../../../../../../../darwin23/aarch64",
+    "macos.binary.arm64/darwin23/aarch64/bin/macos/arm64/contrib/4.7" = "../../../../../../../../darwin23/aarch64",
     "mac.binary.big-sur-x86_64/darwin20/x86_64/bin/macosx/big-sur-x86_64/contrib/4.3" = "../../../../../../../../darwin20/x86_64",
     "mac.binary.big-sur-x86_64/darwin20/x86_64/bin/macosx/big-sur-x86_64/contrib/4.4" = "../../../../../../../../darwin20/x86_64",
     "mac.binary.big-sur-x86_64/darwin20/x86_64/bin/macosx/big-sur-x86_64/contrib/4.5" = "../../../../../../../../darwin20/x86_64",
@@ -899,6 +901,7 @@ create_pak_repo <- local({
     "bin/macosx/big-sur-arm64/contrib/4.6" = "../../../../../darwin20/aarch64",
     "bin/macosx/sonoma-arm64/contrib/4.6" = "../../../../../darwin23/aarch64",
     "bin/macosx/sonoma-arm64/contrib/4.7" = "../../../../../darwin23/aarch64",
+    "bin/macos/arm64/contrib/4.7" = "../../../../../darwin23/aarch64",
     "bin/macosx/contrib/4.0" = "../../../../darwin17.0/x86_64",
     "bin/macosx/contrib/4.1" = "../../../../darwin17.0/x86_64",
     "bin/macosx/contrib/4.2" = "../../../../darwin17.0/x86_64",
