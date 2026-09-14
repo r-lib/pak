@@ -38,7 +38,7 @@ pak_sitrep_data <- local({
     target_platform_arg = target_platform,
     "github-repository" = Sys.getenv("GITHUB_REPOSITORY", "-"),
     "github-sha" = Sys.getenv("GITHUB_SHA", "-"),
-    "github-ref" <- Sys.getenv("GITHUB_REF", "-"),
+    "github-ref" = Sys.getenv("GITHUB_REF", "-"),
     bundledata = bundledata
   )
 })

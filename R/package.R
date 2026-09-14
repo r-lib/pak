@@ -173,7 +173,7 @@ pkg_install_do_plan <- function(proposal) {
 #' ```
 
 pkg_status <- function(pkg, lib = NULL) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
 
   lib <- lib %||% lib_default()
   load_extra("pillar")
@@ -290,7 +290,7 @@ pkg_deps_internal2 <- function(pkg, upgrade, dependencies) {
 #' ```
 
 pkg_deps_tree <- function(pkg, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1 && is.character(pkg))
   ret <- remote(
     function(...) {
       get("pkg_deps_tree_internal", asNamespace("pak"))(...)
