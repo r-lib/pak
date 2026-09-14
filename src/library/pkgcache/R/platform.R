@@ -53,6 +53,10 @@
 #'   - `aarch64-apple-darwin23-mac.binary.sonoma-arm64`: macOS Sonoma on
 #'     arm64. (This is the same as `aarch64-apple-darwin23`, which pkgcache
 #'     already knows about, so `current_r_platform()` uses the shorter form.)
+#'   - `aarch64-apple-darwin23-macos.binary.arm64`: macOS on arm64, as built
+#'     by R-devel (4.7.0). Unlike the `mac.binary.*` types above this one is
+#'     kept in the platform name, because its binaries live in
+#'     `bin/macos/arm64/contrib/<x.y>`.
 #'
 #'   A package type on its own, without a platform triple, is not a valid
 #'   platform name.
@@ -214,6 +218,16 @@ pkg_type_system_for_os <- function(os) {
   )
 }
 
+# All `<system>` names a package type may use for an OS name. macOS has two:
+# `macosx` for the classic `mac.binary*` types, and `macos` for the
+# `macos.binary.*` types that R-devel (4.7.0) uses on arm64, which serve
+# binaries from `bin/macos/<build>/contrib/<x.y>`.
+
+pkg_type_systems_for_os <- function(os) {
+  sys <- pkg_type_system_for_os(os)
+  if (!is.na(sys) && sys == "macosx") c("macosx", "macos") else sys
+}
+
 # The custom package type of the current R, or NULL
 
 current_r_custom_pkg_type <- function(os) {
@@ -222,7 +236,7 @@ current_r_custom_pkg_type <- function(os) {
     return(NULL)
   }
   pt <- parse_pkg_type(type)
-  if (!identical(pt$system, pkg_type_system_for_os(os))) {
+  if (!pt$system %in% pkg_type_systems_for_os(os)) {
     return(NULL)
   }
   type
