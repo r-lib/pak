@@ -27,7 +27,7 @@
 #' ```
 
 pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
-  stopifnot(length(pkg == 1) && is.character(pkg))
+  stopifnot(length(pkg) == 1L, is.character(pkg))
   remote(
     function(...) {
       get("pkg_deps_explain_internal", asNamespace("pak"))(...)
