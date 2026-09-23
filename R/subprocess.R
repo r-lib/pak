@@ -275,16 +275,11 @@ load_private_package <- function(
         if (!is.null(pkg_env[[".onUnload"]])) {
           tryCatch(pkg_env[[".onUnload"]](pkg_dir), error = function(e) e)
         }
-        libs <- .dynLibs()
-        paths <- suppressWarnings(normalizePath(vcapply(libs, "[[", "path")))
-        matchidx <- grepl(pkg_dir, paths, fixed = TRUE)
-        if (any(matchidx)) {
-          pkglibs <- libs[matchidx]
-          for (lib in pkglibs) {
-            dyn.unload(lib[["path"]])
-          }
-          .dynLibs(libs[!matchidx])
-        }
+        # Do not dyn.unload() the DLLs. Other code may still point into
+        # them: parallel saves processx's SIGCHLD handler at its first fork
+        # and reinstalls it in its own exit finalizer, which can run after
+        # this one. If processx.so is unmapped by then, the next child
+        # process (R's own tempdir cleanup) segfaults R at exit.
         unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)
       },
       error = function(e) e
