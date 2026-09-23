@@ -63,3 +63,29 @@ test_that("no interference", {
   expect_true("ps" %in% loadedNamespaces())
   expect_true("ps" %in% sapply(.dynLibs(), "[[", "name"))
 })
+
+test_that("R does not crash at exit after processx and parallel forks", {
+  # parallel is loaded first, so its exit finalizer runs after pak's.
+  # It reinstalls processx's SIGCHLD handler, which must still be mapped.
+  skip_on_cran()
+  skip_on_os("windows")
+  code <- c(
+    if (Sys.getenv("_R_CHECK_PACKAGE_NAME_") == "") {
+      sprintf("pkgload::load_all(%s, quiet = TRUE)", deparse(find_package_root()))
+    },
+    "loadNamespace('parallel')",
+    "pak:::load_private_package('processx', 'c_')",
+    "p <- pak:::pkg_data$ns$processx$process$new('true'); p$wait()",
+    "j <- parallel::mcparallel(1); invisible(parallel::mccollect(j))"
+  )
+  script <- tempfile(fileext = ".R")
+  on.exit(unlink(script), add = TRUE)
+  writeLines(code, script)
+  status <- suppressWarnings(system2(
+    file.path(R.home("bin"), "Rscript"),
+    shQuote(script),
+    stdout = FALSE,
+    stderr = FALSE
+  ))
+  expect_equal(status, 0L)
+})
