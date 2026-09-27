@@ -1,5 +1,9 @@
 # pak (development version)
 
+* R no longer segfaults at exit when pak's private processx started a
+  process and `parallel` then forked. The finalizer that unloads pak's
+  private DLLs no longer runs at exit.
+
 # pak 0.11.1
 
 * Installing a package from a GitHub release (e.g. `user/repo@*release`) or

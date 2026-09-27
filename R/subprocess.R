@@ -265,7 +265,12 @@ load_private_package <- function(
   pkg_env[[".packageName"]] <- package
   pkg_env[["__pkg-dir__"]] <- pkg_dir
 
-  reg.finalizer(pkg_env, onexit = TRUE, function(x) {
+  # onexit = FALSE: never run this at exit. parallel saves processx's SIGCHLD
+  # handler at its first fork and reinstalls it in its own exit finalizer,
+  # which can run after this one; if processx.so were unloaded by then, the
+  # next child process (R's own tempdir cleanup) segfaults R. At exit nothing
+  # is lost: pkg_dir is under tempfile(), which R removes anyway.
+  reg.finalizer(pkg_env, onexit = FALSE, function(x) {
     tryCatch(
       {
         pkg_dir <- pkg_env[["__pkg-dir__"]]
