@@ -454,6 +454,10 @@ download_files <- function(
 
   dls <- lapply(seq_len(nrow(data)), function(idx) {
     row <- data[idx, ]
+    row_options <- options
+    if ("timeout" %in% names(row) && !is.na(row$timeout)) {
+      row_options$timeout <- row$timeout
+    }
     dx <- download_if_newer(
       row$url,
       row$path,
@@ -461,7 +465,7 @@ download_files <- function(
       headers = c(headers, row$headers[[1L]]),
       on_progress = prog_cb,
       error_on_status = error_on_status,
-      options = options,
+      options = row_options,
       ...
     )
 
@@ -473,7 +477,7 @@ download_files <- function(
           row$etag,
           headers = c(headers, row$headers[[1L]]),
           error_on_status = error_on_status,
-          options = options,
+          options = row_options,
           ...
         )
       })
