@@ -818,6 +818,7 @@ create_pak_repo <- local({
     "source/freebsd13.5/amd64/src/contrib" = "../../../../../freebsd13.5/x86_64",
     "source/freebsd13.4/amd64/src/contrib" = "../../../../../freebsd13.4/x86_64",
     "source/freebsd13.3/amd64/src/contrib" = "../../../../../freebsd13.3/x86_64",
+    "source/openbsd7.9/x86_64/src/contrib" = "../../../../../openbsd7.9/x86_64",
     "source/openbsd7.8/x86_64/src/contrib" = "../../../../../openbsd7.8/x86_64",
     "source/openbsd7.7/x86_64/src/contrib" = "../../../../../openbsd7.7/x86_64",
     "source/openbsd7.6/x86_64/src/contrib" = "../../../../../openbsd7.6/x86_64",
