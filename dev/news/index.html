@@ -36,7 +36,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="pak-development-version">pak (development version)<a class="anchor" aria-label="anchor" href="#pak-development-version"></a></h2>
-<ul><li>R no longer segfaults at exit when pak’s private processx started a process and <code>parallel</code> then forked. The finalizer that unloads pak’s private DLLs no longer runs at exit.</li>
+<ul><li><p><code><a href="../reference/pkg_remove.html">pkg_remove()</a></code> now accepts a character vector of packages, as documented (<a href="https://github.com/r-lib/pak/issues/813" class="external-link">#813</a>, <a href="https://github.com/taekop" class="external-link">@taekop</a>).</p></li>
+<li><p>R no longer segfaults at exit when pak’s private processx started a process and <code>parallel</code> then forked. The finalizer that unloads pak’s private DLLs no longer runs at exit.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.1" id="pak-0111">pak 0.11.1<a class="anchor" aria-label="anchor" href="#pak-0111"></a></h2><p class="text-muted">CRAN release: 2026-07-22</p>
