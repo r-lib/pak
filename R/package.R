@@ -209,10 +209,13 @@ pkg_remove <- function(pkg, lib = NULL) {
 }
 
 pkg_remove_internal <- function(pkg, lib = NULL) {
-  pr <- pkgdepends::parse_pkg_ref(pkg)
+  prs <- pkgdepends::parse_pkg_refs(pkg)
   lib <- lib %||% lib_default()
-  suppressMessages(utils::remove.packages(pr$package, lib))
-  invisible(pr)
+  suppressMessages(utils::remove.packages(
+    vapply(prs, "[[", character(1), "package"),
+    lib
+  ))
+  invisible(prs)
 }
 
 #' Look up the dependencies of a package
