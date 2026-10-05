@@ -1,5 +1,8 @@
 # pak (development version)
 
+* `pkg_remove()` now accepts a character vector of packages, as documented
+  (#813, @taekop).
+
 * R no longer segfaults at exit when pak's private processx started a
   process and `parallel` then forked. The finalizer that unloads pak's
   private DLLs no longer runs at exit.
