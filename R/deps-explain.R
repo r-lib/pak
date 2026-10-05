@@ -39,6 +39,9 @@ pkg_deps_explain <- function(pkg, deps, upgrade = TRUE, dependencies = NA) {
 pkg_deps_explain_internal <- function(pkg, deps, upgrade, dependencies = NA) {
   data <- pkg_deps_internal2(pkg, upgrade, dependencies)$get_solution()$data
   wpkg <- match(pkg, data$ref)
+  if (is.na(wpkg)) {
+    wpkg <- which(data$direct)[1]
+  }
 
   paths <- structure(vector("list", length(deps)), names = deps)
 
