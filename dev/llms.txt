@@ -26,7 +26,7 @@ pak::pkg_install("tibble")
 
     #> ✔ Loading metadata database ... done
     #>
-    #> → Package library at /tmp/RtmpN7E3Cy/file2ead4f650ffc.
+    #> → Package library at /tmp/RtmpqYkRZt/file2e262d7e39c.
     #> → Will install 10 packages.
     #> → Will download 10 CRAN packages (4.25 MB).
     #> + cli         3.6.6  [bld][cmp][dl] (644.13 kB)
@@ -41,47 +41,47 @@ pak::pkg_install("tibble")
     #> + vctrs       0.7.3  [bld][cmp][dl] (1.08 MB)
     #>
     #> ℹ Getting 10 pkgs (4.25 MB)
-    #> ✔ Got glue 1.8.1 (source) (129.79 kB)
     #> ✔ Got lifecycle 1.0.5 (source) (107.14 kB)
-    #> ✔ Got cli 3.6.6 (source) (644.13 kB)
-    #> ✔ Got pillar 1.11.1 (source) (409.51 kB)
-    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
+    #> ✔ Got glue 1.8.1 (source) (129.79 kB)
     #> ✔ Got rlang 1.3.0 (source) (784.08 kB)
-    #> ✔ Got magrittr 2.0.5 (source) (281.81 kB)
+    #> ✔ Got cli 3.6.6 (source) (644.13 kB)
     #> ✔ Got vctrs 0.7.3 (source) (1.08 MB)
-    #> ✔ Got tibble 3.3.1 (source) (557.13 kB)
+    #> ✔ Got pkgconfig 2.0.3 (source) (6.08 kB)
     #> ✔ Got utf8 1.2.6 (source) (243.86 kB)
+    #> ✔ Got magrittr 2.0.5 (source) (281.81 kB)
+    #> ✔ Got pillar 1.11.1 (source) (409.51 kB)
+    #> ✔ Got tibble 3.3.1 (source) (557.13 kB)
     #> ℹ Building cli 3.6.6
     #> ℹ Building glue 1.8.1
     #> ℹ Building magrittr 2.0.5
     #> ℹ Building pkgconfig 2.0.3
-    #> ✔ Built pkgconfig 2.0.3 (1.4s)
+    #> ✔ Built pkgconfig 2.0.3 (1.2s)
     #> ℹ Building rlang 1.3.0
-    #> ✔ Built magrittr 2.0.5 (1.9s)
+    #> ✔ Built magrittr 2.0.5 (1.8s)
     #> ℹ Building utf8 1.2.6
-    #> ✔ Built glue 1.8.1 (2.4s)
+    #> ✔ Built glue 1.8.1 (2.2s)
     #> ✔ Installed glue 1.8.1  (1s)
-    #> ✔ Installed magrittr 2.0.5  (72ms)
-    #> ✔ Installed pkgconfig 2.0.3  (31ms)
-    #> ✔ Built utf8 1.2.6 (5.1s)
-    #> ✔ Installed utf8 1.2.6  (33ms)
-    #> ✔ Built cli 3.6.6 (12.2s)
-    #> ✔ Installed cli 3.6.6  (34ms)
-    #> ✔ Built rlang 1.3.0 (12.4s)
-    #> ✔ Installed rlang 1.3.0  (1s)
+    #> ✔ Installed magrittr 2.0.5  (33ms)
+    #> ✔ Installed pkgconfig 2.0.3  (22ms)
+    #> ✔ Built utf8 1.2.6 (4.5s)
+    #> ✔ Installed utf8 1.2.6  (29ms)
+    #> ✔ Built cli 3.6.6 (11.6s)
+    #> ✔ Installed cli 3.6.6  (52ms)
+    #> ✔ Built rlang 1.3.0 (12.5s)
+    #> ✔ Installed rlang 1.3.0  (38ms)
     #> ℹ Building lifecycle 1.0.5
-    #> ✔ Built lifecycle 1.0.5 (1.5s)
-    #> ✔ Installed lifecycle 1.0.5  (1s)
+    #> ✔ Built lifecycle 1.0.5 (1.4s)
+    #> ✔ Installed lifecycle 1.0.5  (17ms)
     #> ℹ Building vctrs 0.7.3
-    #> ✔ Built vctrs 0.7.3 (22.6s)
-    #> ✔ Installed vctrs 0.7.3  (58ms)
+    #> ✔ Built vctrs 0.7.3 (23.1s)
+    #> ✔ Installed vctrs 0.7.3  (56ms)
     #> ℹ Building pillar 1.11.1
     #> ✔ Built pillar 1.11.1 (3.3s)
-    #> ✔ Installed pillar 1.11.1  (32ms)
+    #> ✔ Installed pillar 1.11.1  (25ms)
     #> ℹ Building tibble 3.3.1
-    #> ✔ Built tibble 3.3.1 (3s)
-    #> ✔ Installed tibble 3.3.1  (28ms)
-    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.25 MB) [53.9s]
+    #> ✔ Built tibble 3.3.1 (2.9s)
+    #> ✔ Installed tibble 3.3.1  (27ms)
+    #> ✔ 1 pkg + 9 deps: added 10, dld 10 (4.25 MB) [51.9s]
 
 #### Install packages from GitHub
 
@@ -92,7 +92,7 @@ pak::pkg_install("tidyverse/tibble")
 
 
     #>
-    #> → Package library at /tmp/RtmpN7E3Cy/file2ead4f650ffc.
+    #> → Package library at /tmp/RtmpqYkRZt/file2e262d7e39c.
     #> → Will update 1 package.
     #> → The package (0 B) is cached.
     #> + tibble 3.3.1 → 3.3.1.9032 [bld][cmp] (GitHub: e9c3ffb)
@@ -100,11 +100,11 @@ pak::pkg_install("tidyverse/tibble")
     #> ℹ No downloads are needed, 1 pkg is cached
     #> ✔ Got tibble 3.3.1.9032 (source) (1.41 MB)
     #> ℹ Packaging tibble 3.3.1.9032
-    #> ✔ Packaged tibble 3.3.1.9032 (817ms)
+    #> ✔ Packaged tibble 3.3.1.9032 (752ms)
     #> ℹ Building tibble 3.3.1.9032
     #> ✔ Built tibble 3.3.1.9032 (2.8s)
-    #> ✔ Installed tibble 3.3.1.9032 (github::tidyverse/tibble@e9c3ffb) (26ms)
-    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [5.7s]
+    #> ✔ Installed tibble 3.3.1.9032 (github::tidyverse/tibble@e9c3ffb) (24ms)
+    #> ✔ 1 pkg + 9 deps: kept 9, upd 1, dld 1 (NA B) [5.9s]
 
 #### Look up dependencies
 
@@ -163,7 +163,7 @@ pak::local_install("cli")
 
 
     #>
-    #> → Package library at /tmp/RtmpN7E3Cy/file2ead4f650ffc.
+    #> → Package library at /tmp/RtmpqYkRZt/file2e262d7e39c.
     #> → Will update 1 package.
     #> → The package (0 B) is cached.
     #> + cli 3.6.6 → 3.6.6 [bld][cmp]
@@ -173,9 +173,9 @@ pak::local_install("cli")
     #> ℹ Packaging cli 3.6.6
     #> ✔ Packaged cli 3.6.6 (1.4s)
     #> ℹ Building cli 3.6.6
-    #> ✔ Built cli 3.6.6 (9.2s)
-    #> ✔ Installed cli 3.6.6 (local) (1s)
-    #> ✔ 1 pkg: upd 1, dld 1 (644.13 kB) [12.3s]
+    #> ✔ Built cli 3.6.6 (9.1s)
+    #> ✔ Installed cli 3.6.6 (local) (37ms)
+    #> ✔ 1 pkg: upd 1, dld 1 (644.13 kB) [11s]
 
 ## 🔗 Quick links (start here if in doubt!)
 
