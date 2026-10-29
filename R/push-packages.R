@@ -271,13 +271,34 @@ push_packages <- local({
     old
   }
 
+  # The same platform may be reported with a different CPU name or vendor,
+  # e.g. amd64-portbld-freebsd15.1 and x86_64-portbld-freebsd15.1.
+  # These map to the same package file in the repo, so they must be the
+  # same entry in the metadata.
+  platform_key <- function(platform) {
+    cpu_map <- c("arm64" = "aarch64", "amd64" = "x86_64")
+    pcs <- strsplit(platform, "-", fixed = TRUE)
+    vapply(
+      pcs,
+      function(x) {
+        cpu <- if (x[1] %in% names(cpu_map)) cpu_map[[x[1]]] else x[1]
+        paste(c(cpu, x[-(1:2)]), collapse = "-")
+      },
+      character(1)
+    )
+  }
+
   update_metadata <- function(dir, tag, pkgs) {
     old <- read_metadata(dir, tag)
     new <- parse_metadata(pkgs)
     if (is.null(old)) {
       new
     } else {
-      update_df(old, new, by = c("r.platform", "r.version"))
+      old$platform.key <- platform_key(old$r.platform)
+      new$platform.key <- platform_key(new$r.platform)
+      upd <- update_df(old, new, by = c("platform.key", "r.version"))
+      upd$platform.key <- NULL
+      upd
     }
   }
 
