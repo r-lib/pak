@@ -3,6 +3,9 @@
 * `pkg_remove()` now accepts a character vector of packages, as documented
   (#813, @taekop).
 
+* `pkg_deps_explain()` no longer fails with an error in the subprocess when
+  `pkg` is a local package path like `"."` (#470, @taekop).
+
 * R no longer segfaults at exit when pak's private processx started a
   process and `parallel` then forked. The finalizer that unloads pak's
   private DLLs no longer runs at exit.
