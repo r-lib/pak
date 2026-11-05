@@ -74,6 +74,8 @@ export(sysreqs_is_supported)
 export(sysreqs_list_system_packages)
 export(sysreqs_platforms)
 importFrom(stats,na.omit)
-importFrom(utils,modifyList)
-importFrom(utils,untar)
+importFrom(utils,
+  modifyList,
+  untar
+)
 useDynLib(pkgdepends, .registration = TRUE, .fixes = "c_")

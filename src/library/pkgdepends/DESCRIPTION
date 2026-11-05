@@ -35,9 +35,9 @@ Config/Needs/website: r-lib/asciicast, pkgdown (>= 2.0.2),
 Config/testthat/edition: 3
 Config/usethis/last-upkeep: 2025-05-05
 Encoding: UTF-8
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1
 NeedsCompilation: yes
-Packaged: 2026-08-14 17:25:21 UTC; gaborcsardi
+Packaged: 2026-11-05 08:21:25 UTC; gaborcsardi
 Author: Gábor Csárdi [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>

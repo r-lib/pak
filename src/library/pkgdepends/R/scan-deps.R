@@ -71,7 +71,8 @@
 #'   are scanned, the directories recursively. In this case the `root`
 #'   argument is used as the project root, to find `.gitignore` and
 #'   `.renvignore` files. All entries of `path` must be within the `root`,
-#'   the project root.
+#'   the project root. Files in `path` are scanned if they have a
+#'   supported file type. Paths in the result are relative to `root`.
 #' @param root The root directory of the project. It is used to find the
 #'   `.gitignore` and `.renvignore` files. By default the same algorithm
 #'   is used to detect this as for `path`. If `path` is specified and it is
@@ -115,13 +116,43 @@ scan_deps <- function(path = NULL, root = NULL) {
     throw(pkg_error("Path{?s} do{?es/} not exist: {.path {path[bad]}}."))
   }
   check_inside_dir(root, path)
-  paths <- c(
-    dir(path, pattern = scan_deps_pattern(), recursive = TRUE),
-    if (root %in% path) {
-      dir(root, pattern = scan_deps_pattern_root(), recursive = FALSE)
-    }
-  )
-  full_paths <- normalizePath(file.path(path, paths), winslash = "/")
+
+  nroot <- normalizePath(root, winslash = "/")
+  npath <- normalizePath(path, winslash = "/")
+  isdir <- dir.exists(npath)
+
+  # files that were explicitly specified
+  files <- npath[!isdir]
+  bsn <- basename(files)
+  if (
+    any(
+      bad <- !grepl(scan_deps_pattern(), bsn) &
+        !grepl(scan_deps_pattern_root(), bsn)
+    )
+  ) {
+    throw(pkg_error(
+      "Cannot scan {.path {path[!isdir][bad]}} for dependencies,
+       unsupported file type{?s}."
+    ))
+  }
+
+  # files in the specified directories, recursively
+  dir_files <- unlist(lapply(npath[isdir], function(d) {
+    file.path(d, dir(d, pattern = scan_deps_pattern(), recursive = TRUE))
+  }))
+
+  # special files in the project root
+  root_files <- if (nroot %in% npath[isdir]) {
+    file.path(
+      nroot,
+      dir(nroot, pattern = scan_deps_pattern_root(), recursive = FALSE)
+    )
+  }
+
+  full_paths <- unique(c(files, dir_files, root_files))
+  # paths relative to the project root
+  paths <- substring(full_paths, nchar(dir_with_slash(nroot)) + 1L)
+
   deps_list <- lapply(full_paths, scan_path_deps)
   deps <- do.call("rbind", c(list(scan_deps_df()), deps_list))
   # write back the relative paths

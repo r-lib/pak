@@ -1,6 +1,9 @@
 #' @export
 
 format.pkg_scan_deps <- function(x, ...) {
+  if (nrow(x) == 0) {
+    return("No dependencies found.")
+  }
   labels <- c(
     prod = "Dependencies",
     test = "Test dependencies",

@@ -602,12 +602,16 @@ is_truthy <- function(x) {
 }
 
 # check that all `path` are inside `root`
+dir_with_slash <- function(x) {
+  ifelse(endsWith(x, "/"), x, paste0(x, "/"))
+}
+
 check_inside_dir <- function(root, path) {
   # we can assume that `root` and all `path` do exist
   # normalizePath removes trailing '/'
   nroot <- normalizePath(root, winslash = "/")
   npath <- normalizePath(path, winslash = "/")
-  if (any(bad <- nroot != npath & !startsWith(paste0(npath, "/"), nroot))) {
+  if (any(bad <- nroot != npath & !startsWith(npath, dir_with_slash(nroot)))) {
     throw(pkg_error(
       "{.path {path[bad]}} {?is/are} outside of project
        root {.path {root}}."
