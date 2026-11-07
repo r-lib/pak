@@ -12,7 +12,7 @@ embed <- local({
   }
 
   get_repos <- function() {
-    c(CRAN = "https://cran.r-project.org")
+    c(CRAN = "https://cran.rstudio.com")
   }
 
   base_packages <- function() {
