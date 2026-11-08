@@ -232,9 +232,18 @@ jobs:
     # no P3M, because a pak bug fails to install glue@1.6.2 from PPM
     - name: Install R and RTools
       run: |
+        function Retry-Rig {
+          for ($i = 1; $i -le 5; $i++) {
+            rig @args
+            if ($LASTEXITCODE -eq 0) { return }
+            Write-Host "rig $args failed (attempt $i of 5), retrying in 10s"
+            Start-Sleep -Seconds 10
+          }
+          throw "rig $args failed after 5 attempts"
+        }
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
-        rig add ${{ matrix.config.r }} --without-p3m
-        rig add rtools
+        Retry-Rig add ${{ matrix.config.r }} --without-p3m
+        Retry-Rig add rtools
 
     - name: Build pak binaries
       run: |
@@ -284,10 +293,19 @@ jobs:
 
     - name: Install R and RTools
       run: |
+        function Retry-Rig {
+          for ($i = 1; $i -le 5; $i++) {
+            rig @args
+            if ($LASTEXITCODE -eq 0) { return }
+            Write-Host "rig $args failed (attempt $i of 5), retrying in 10s"
+            Start-Sleep -Seconds 10
+          }
+          throw "rig $args failed after 5 attempts"
+        }
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
         rig config set mode=user
-        rig add ${{ matrix.config.r }}
-        rig rtools add
+        Retry-Rig add ${{ matrix.config.r }}
+        Retry-Rig rtools add
 
     - name: Build pak binaries
       run: |
