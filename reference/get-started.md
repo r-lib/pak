@@ -43,7 +43,7 @@ Use the `user/repo` form. You can specify a branch or tag:
 ### Install a package from a URL
 
     pak::pkg_install(
-      "url::https://cran.r-project.org/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz"
+      "url::https://cran.rstudio.com/src/contrib/Archive/tibble/tibble_3.1.7.tar.gz"
     )
 
 
