@@ -226,20 +226,20 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-0.10.0-alpha2.exe -OutFile rig-install.exe -MaximumRetryCount 5 -RetryIntervalSec 10
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-0.10.0-alpha2.exe -OutFile rig-install.exe -MaximumRetryCount 10 -RetryIntervalSec 30
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     # no P3M, because a pak bug fails to install glue@1.6.2 from PPM
     - name: Install R and RTools
       run: |
         function Retry-Rig {
-          for ($i = 1; $i -le 5; $i++) {
+          for ($i = 1; $i -le 10; $i++) {
             rig @args
             if ($LASTEXITCODE -eq 0) { return }
-            Write-Host "rig $args failed (attempt $i of 5), retrying in 10s"
-            Start-Sleep -Seconds 10
+            Write-Host "rig $args failed (attempt $i of 10), retrying in 30s"
+            Start-Sleep -Seconds 30
           }
-          throw "rig $args failed after 5 attempts"
+          throw "rig $args failed after 10 attempts"
         }
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
         Retry-Rig add ${{ matrix.config.r }} --without-p3m
@@ -288,19 +288,19 @@ jobs:
 
     - name: Install rig
       run: |
-        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-arm64-0.10.0-alpha2.exe -OutFile rig-install.exe -MaximumRetryCount 5 -RetryIntervalSec 10
+        Invoke-WebRequest -Uri https://github.com/r-lib/rig/releases/download/v0.10.0-alpha2/rig-windows-arm64-0.10.0-alpha2.exe -OutFile rig-install.exe -MaximumRetryCount 10 -RetryIntervalSec 30
         Start-Process ".\rig-install.exe" -ArgumentList "/verysilent /suppressmsgboxes" -Wait -NoNewWindow
 
     - name: Install R and RTools
       run: |
         function Retry-Rig {
-          for ($i = 1; $i -le 5; $i++) {
+          for ($i = 1; $i -le 10; $i++) {
             rig @args
             if ($LASTEXITCODE -eq 0) { return }
-            Write-Host "rig $args failed (attempt $i of 5), retrying in 10s"
-            Start-Sleep -Seconds 10
+            Write-Host "rig $args failed (attempt $i of 10), retrying in 30s"
+            Start-Sleep -Seconds 30
           }
-          throw "rig $args failed after 5 attempts"
+          throw "rig $args failed after 10 attempts"
         }
         Foreach($ver in (rig ls --plain)) { rig rm $ver }
         rig config set mode=user
