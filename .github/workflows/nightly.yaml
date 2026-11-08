@@ -250,6 +250,7 @@ jobs:
         cd tools/build/windows && make build
       env:
         RTOOLS40_HOME: C:\rtools40
+        R_DEFAULT_INTERNET_TIMEOUT: 600
 
     - name: Upload package artifacts
       uses: actions/upload-artifact@v7
@@ -310,6 +311,8 @@ jobs:
     - name: Build pak binaries
       run: |
         cd tools/build/windows && make build
+      env:
+        R_DEFAULT_INTERNET_TIMEOUT: 600
 
     - name: Upload package artifacts
       uses: actions/upload-artifact@v7
