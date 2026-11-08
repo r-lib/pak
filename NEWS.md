@@ -1,3 +1,5 @@
+# pak (development version)
+
 # pak 0.11.2
 
 * `pkg_remove()` now accepts a character vector of packages, as documented
