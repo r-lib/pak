@@ -2,6 +2,10 @@
 
 ## pak (development version)
 
+## pak 0.11.2
+
+CRAN release: 2026-11-07
+
 - [`pkg_remove()`](https://pak.r-lib.org/dev/reference/pkg_remove.md)
   now accepts a character vector of packages, as documented
   ([\#813](https://github.com/r-lib/pak/issues/813),
@@ -10,6 +14,55 @@
 - R no longer segfaults at exit when pak’s private processx started a
   process and `parallel` then forked. The finalizer that unloads pak’s
   private DLLs no longer runs at exit.
+
+- pak now supports the custom binary package types of R 4.6.0 and later.
+  It also detects the `macos.binary.arm64` package type that R-devel
+  (4.7.0) uses on macOS arm64, and looks for binaries in
+  `bin/macos/arm64/contrib/<x.y>`, where CRAN now serves them.
+
+- pak now accepts binary packages from a Posit Package Manager
+  `manylinux` repository. These now have the correct platform, e.g.
+  `aarch64-unknown-linux-gnu-manylinux-2.28`, and they are OK for any
+  requested Linux platform with the same `cpu-vendor-os` triple.
+
+- pak now skips the system requirements of binary packages that come
+  from a Posit Package Manager `manylinux` repository
+  ([\#815](https://github.com/r-lib/pak/issues/815)).
+  [`sysreqs_check_installed()`](https://pak.r-lib.org/dev/reference/sysreqs_check_installed.md)
+  and
+  [`sysreqs_fix_installed()`](https://pak.r-lib.org/dev/reference/sysreqs_check_installed.md)
+  also ignore the system requirements of installed `manylinux` packages.
+
+- [`scan_deps()`](https://pak.r-lib.org/dev/reference/scan_deps.md) now
+  scans files given in `path`, not only directories. Paths in the result
+  are now always relative to the project root
+  ([\#844](https://github.com/r-lib/pak/issues/844)).
+
+- Directly requested base packages are now ignored with a warning
+  (<https://github.com/r-lib/pkgdepends/issues/478>).
+
+- When a repository serves a source package instead of the requested
+  binary, and a `LinkingTo` dependency needed for the build is missing
+  from the installation plan, pak now fails with an informative error,
+  suggesting the `include_linkingto` configuration option. The raw
+  dependencies of each package, including `LinkingTo`, are now also
+  recorded in the lockfile
+  ([\#891](https://github.com/r-lib/pak/issues/891)).
+
+- Blank lines in `.Rbuildignore` no longer cause all git submodules of a
+  package to be skipped
+  (<https://github.com/r-lib/pkgdepends/issues/480>).
+
+- The `BIOCONDUCTOR_CONFIG_FILE` option is now used for the URL of the
+  Bioconductor config file, if the `R_BIOC_CONFIG_URL` environment
+  variable is not set (<https://github.com/r-lib/pkgcache/pull/143>,
+  [@Fan-iX](https://github.com/Fan-iX)).
+
+- Per-file download timeouts are now honored
+  (<https://github.com/r-lib/pkgcache/issues/146>).
+
+- Setting the `PKG_CURRENT_PLATFORM` environment variable to a non-Linux
+  platform now works correctly.
 
 ## pak 0.11.1
 
