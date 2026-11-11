@@ -49,6 +49,11 @@ elif [ `uname` = "Darwin" ]; then
   # Temporary fix for: https://github.com/jeroen/curl/issues/376
   curl -sfL "https://autobrew.github.io/scripts/libcurl-macos" > autobrew
   . ./autobrew
+  # pak: the autobrew libcurl uses iconv. Link it explicitly, otherwise
+  # it might be bound to libR.dylib, if that exports it (e.g. R 4.3.3),
+  # and then curl.so fails to load on other R versions (e.g. R 4.3.1).
+  # https://github.com/r-lib/pak/issues/925
+  PKG_LIBS="$PKG_LIBS -liconv"
 fi
 
 # Find compiler

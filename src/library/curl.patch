@@ -11,3 +11,19 @@ index dff6622ac..f8ba7159e 100644
    if(!out)
      return string;
    SEXP res = PROTECT(Rf_allocVector(STRSXP, 2));
+diff --git a/src/library/curl/configure b/src/library/curl/configure
+index d84579f1c..12fd06ea3 100755
+--- a/src/library/curl/configure
++++ b/src/library/curl/configure
+@@ -49,6 +49,11 @@ elif [ `uname` = "Darwin" ]; then
+   # Temporary fix for: https://github.com/jeroen/curl/issues/376
+   curl -sfL "https://autobrew.github.io/scripts/libcurl-macos" > autobrew
+   . ./autobrew
++  # pak: the autobrew libcurl uses iconv. Link it explicitly, otherwise
++  # it might be bound to libR.dylib, if that exports it (e.g. R 4.3.3),
++  # and then curl.so fails to load on other R versions (e.g. R 4.3.1).
++  # https://github.com/r-lib/pak/issues/925
++  PKG_LIBS="$PKG_LIBS -liconv"
+ fi
+ 
+ # Find compiler
