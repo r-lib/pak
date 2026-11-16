@@ -669,7 +669,11 @@ resolve_from_description <- function(
   platform <- if (dsc$has_fields("Built")) {
     built <- dsc$get_built()
     archs <- gsub(" ", "", dsc$get("Archs"))
-    if (built$OStype == "windows") {
+    if (built$Platform != "" && dsc$has_fields("RemoteBuildPlatform")) {
+      # Built by pak, this has the full platform, including the custom
+      # package type, if any
+      dsc$get_field("RemoteBuildPlatform")
+    } else if (built$OStype == "windows") {
       if (is.na(archs) || archs == "i386,x64" || archs == "x64,i386") {
         "i386+x86_64-w64-mingw32"
       } else {

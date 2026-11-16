@@ -91,9 +91,13 @@ platform_is_ok <- function(cand, exp, exp_archs = NULL) {
     return(TRUE)
   }
 
-  # This is an installed linux package, probably, prefix is OK, e.g.
+  # A package not built by pak (installed, or a local binary file) has
+  # the platform from its `Built` field, and that does not include the
+  # Linux distribution or the custom package type. So a prefix is OK, e.g.
   # cand = x86_64-pc-linux-gnu vs exp = x86_64-pc-linux-gnu-ubuntu-18.04
-  if (grepl("-linux-", cand) && any(substr(exp, 1, nchar(cand)) == cand)) {
+  # cand = aarch64-apple-darwin23 vs
+  # exp = aarch64-apple-darwin23-macos.binary.arm64
+  if (any(startsWith(exp, paste0(cand, "-")))) {
     return(TRUE)
   }
 

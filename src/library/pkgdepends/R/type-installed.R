@@ -166,6 +166,18 @@ make_installed_cache1 <- function(library, packages = NULL, priority = NULL) {
   }
   pkgs$platform[pkgs$platform == ""] <- "*"
 
+  # Packages built by pak have the full platform, including the custom
+  # package type, if any. Packages without compiled code have an empty
+  # platform in `Built`, they are OK for any platform, we keep that.
+  rbp <- inst[["remotebuildplatform"]]
+  if (!is.null(rbp)) {
+    pkgs$platform <- ifelse(
+      is.na(rbp) | pkgs$platform == "*",
+      pkgs$platform,
+      rbp
+    )
+  }
+
   pkgs$sources <- replicate(nrow(pkgs), character(), simplify = FALSE)
   pkgs$needscompilation <- ifelse(
     is.na(pkgs$needscompilation),

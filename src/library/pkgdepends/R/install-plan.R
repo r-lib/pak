@@ -637,6 +637,14 @@ start_task_install <- function(state, task) {
   lib <- state$config$lib
   metadata <- state$plan$metadata[[pkgidx]]
 
+  # If we built the package, now, or earlier and it is in the cache, then
+  # record the platform. This includes the custom package type, if any,
+  # unlike `Built`. We use this to match installed packages to the current
+  # platform. (Cached binaries are only used for the current platform.)
+  if (!state$plan$binary[pkgidx]) {
+    metadata <- c(metadata, RemoteBuildPlatform = current_r_platform())
+  }
+
   pkg <- state$plan$package[pkgidx]
   version <- state$plan$version[pkgidx]
   update_progress_bar(state)
